@@ -1,0 +1,123 @@
+---
+// web/src/components/bis/PlayItPanel.astro
+// "Play it · {band label}" (bis rebuild spec §4.C.3) -- one row per rotation line, icon
+// first (tenet 3), rank suffix only when spellranks.json names a real rank above 0, the
+// condition sentence printed in full, never CSS-clipped.
+//
+// Known, verified data gap (this lane's own report): the build carries NO icon-by-spell-id
+// data for a trained (non-talent) ability anywhere -- `spells.json`, `spellranks.json` and
+// `spellconst/<class>.json` were all checked and none names one; the per-class
+// `talents/<class>.json` files carry an `icon` per TALENT rank only, which Arcane
+// Shot/Aimed Shot/Serpent Sting (trainer abilities, not talents) never are. This panel
+// renders the client's own neutral "no icon resolved" placeholder for every line rather
+// than fabricate a spell-icon lookup the pipeline does not yet have (tenet 8) -- flagged in
+// the build lane's own report as a new blocking data-lane gap, parallel to the two named
+// sentence-level defects the spec itself calls out (§4.C.3's own condition truncation,
+// §4.D's Bronze Dory claim).
+import { bisCopy } from '../../lib/bis/copy';
+import type { RotationLineView } from '../../lib/bis/rotation-view';
+
+interface Props {
+  bandLabel: string;
+  lines: RotationLineView[];
+  specName: string;
+  guideHref: string;
+}
+
+const { bandLabel, lines, specName, guideHref } = Astro.props;
+---
+
+<div class="panel-box play-it-panel" data-testid="bis-play-it">
+  <span class="label">{bisCopy.playItHeading(bandLabel)}</span>
+  <ul class="play-it-lines">
+    {lines.map((line) => (
+      <li class="play-it-line" data-testid={`bis-rotation-line-${line.spellId}`}>
+        <span class="play-it-icon" aria-hidden="true" title={bisCopy.noKnownSourceForSlot} />
+        <span class="play-it-body">
+          <span class="play-it-name-line">
+            <span class="play-it-name">{line.name}</span>
+            {line.rank !== undefined && <span class="text-muted play-it-rank">Rank {line.rank}</span>}
+          </span>
+          <span
+            class="play-it-condition"
+            data-testid={line.truncatedAtSource ? 'bis-rotation-truncated' : undefined}
+          >
+            {line.condition}
+          </span>
+        </span>
+      </li>
+    ))}
+  </ul>
+  <a class="play-it-guide-link" href={guideHref}>
+    {bisCopy.openGuideLink(specName)}
+  </a>
+</div>
+
+<style>
+  .panel-box {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .play-it-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 20px;
+    /* Never a fixed max-height or CSS ellipsis on the condition line below -- the panel
+       grows to fit whatever the real sentence's length is (spec §4.C.3). */
+  }
+  .play-it-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .play-it-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .play-it-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+  }
+  .play-it-body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .play-it-name-line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .play-it-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color-strong);
+  }
+  .play-it-rank {
+    font-size: 11px;
+  }
+  .play-it-condition {
+    font-size: 13px;
+    color: var(--color-text);
+    /* No text-overflow/ellipsis, no max-height -- see the panel's own note above. */
+  }
+  .play-it-guide-link {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: auto;
+  }
+</style>

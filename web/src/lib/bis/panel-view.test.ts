@@ -5,6 +5,7 @@ import type { LootFile } from '../sim/loot';
 import { bisCopy } from './copy';
 import { bandInfosFor, collectModelsInto, parseSwapNote, type PanelViewDeps } from './panel-view';
 import type { BisAlternative, BisBand, BisFile, BisSlot, ItemDetail, LootQuestsFile } from './types';
+import { SLOTS } from '../planner/types';
 
 function slot(overrides: Partial<BisSlot> = {}): BisSlot {
   return {
@@ -112,7 +113,7 @@ describe('bandInfosFor: empty slots', () => {
     );
     const offHand = infos[0].rows.find((r) => r.slot === 'off_hand');
     expect(offHand?.empty).toBe(true);
-    expect(offHand?.emptyCopy).toBe('Two-hander equipped');
+    expect(offHand?.emptyCopy).toBe('Test Helm is a two-hander; the off hand is taken.');
   });
 
   it('never applies the two-hander copy to a slot other than off-hand', () => {
@@ -784,7 +785,7 @@ describe('bandInfosFor: empty_reason copy', () => {
     );
   });
 
-  it('falls back to the plain no-source line for no_sourced_item and any unrecognised value', () => {
+  it('computes the "no sourced item" sentence for no_sourced_item, and falls back to the plain line for any unrecognised value', () => {
     const file = fileWith([
       band({
         slots: [
@@ -794,8 +795,10 @@ describe('bandInfosFor: empty_reason copy', () => {
       }),
     ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    // finger1/finger2 both collapse to the "Ring" display label (bis rebuild spec §4.D) --
+    // no later band in this one-band fixture to name, so the second sentence is dropped.
     expect(infos[0].rows.find((r) => r.slot === 'finger1')?.emptyCopy).toBe(
-      'No sourced item at this level yet',
+      'No ring you can get at 20 to 29 raises your damage.',
     );
     expect(infos[0].rows.find((r) => r.slot === 'finger2')?.emptyCopy).toBe(
       'No sourced item at this level yet',
@@ -843,6 +846,100 @@ describe('bandInfosFor: empty_reason copy', () => {
       'alliance',
       depsWith({ tooltipFor: (id) => (id === 99 ? twoHandModel : undefined) }),
     );
-    expect(infos[0].rows.find((r) => r.slot === 'off_hand')?.emptyCopy).toBe('Two-hander equipped');
+    expect(infos[0].rows.find((r) => r.slot === 'off_hand')?.emptyCopy).toBe(
+      'Test Helm is a two-hander; the off hand is taken.',
+    );
+  });
+});
+
+describe('bandInfosFor: no_sourced_item across bands (bis rebuild spec §4.D)', () => {
+  const noSourcedTrinket = { ...missingSlot('trinket1'), empty_reason: 'no_sourced_item' } as BisSlot;
+
+  it('names the real "comes at N" band by scanning forward, never the next band by default', () => {
+    const file = fileWith([
+      band({ band: 20, slots: [noSourcedTrinket] }),
+      band({ band: 30, slots: [noSourcedTrinket] }),
+      band({ band: 40, slots: [slot({ slot: 'trinket1' })] }),
+    ]);
+    const infos = bandInfosFor(file, [20, 30, 40], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
+      'No trinket you can get at 20 to 29 raises your damage. The first that does comes at 40.',
+    ); // "comes at N" names the plain band number, never its own "N to N+9" range
+    expect(infos[1].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe('Nothing here either until 40.');
+    expect(infos[2].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBeUndefined();
+  });
+
+  it('drops the second sentence entirely when no later band ever sources the slot', () => {
+    const file = fileWith([
+      band({ band: 20, slots: [noSourcedTrinket] }),
+      band({ band: 30, slots: [noSourcedTrinket] }),
+    ]);
+    const infos = bandInfosFor(file, [20, 30], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
+      'No trinket you can get at 20 to 29 raises your damage.',
+    );
+    expect(infos[1].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
+      'Nothing here helps at this level either.',
+    );
+  });
+
+  it('plain 60 never reads "60 to 69"', () => {
+    const file = fileWith([band({ band: 60, slots: [noSourcedTrinket] })]);
+    const infos = bandInfosFor(file, [60], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
+      'No trinket you can get at 60 raises your damage.',
+    );
+  });
+});
+
+describe('bandInfosFor: totalSlots (spec §4.B/§4.E denominator)', () => {
+  it('is 17 with nothing empty', () => {
+    const file = fileWith([
+      band({
+        slots: SLOTS.map((slotName) => slot({ slot: slotName, item_id: 1 + SLOTS.indexOf(slotName) })),
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].totalSlots).toBe(17);
+  });
+
+  it('drops one for a two-hander and one per still-empty trinket', () => {
+    const twoHandModel: ItemTooltipModel = {
+      id: 99,
+      name: 'Big Staff',
+      quality: 3,
+      icon: 'inv_staff_25',
+      slotLabel: 'Main Hand',
+      typeLabel: 'Two-Handed Weapon',
+      itemLevel: 20,
+      requiredLevel: 18,
+      armor: null,
+      weapon: null,
+      stats: [],
+      effectText: null,
+      setName: null,
+      sourceLines: [],
+      unique: false,
+      clientUnconfirmed: false,
+    };
+    const file = fileWith([
+      band({
+        slots: [
+          slot({ slot: 'main_hand', item_id: 99 }),
+          missingSlot('off_hand'),
+          { ...missingSlot('trinket1'), empty_reason: 'no_sourced_item' } as BisSlot,
+          { ...missingSlot('trinket2'), empty_reason: 'no_sourced_item' } as BisSlot,
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(
+      file,
+      [20],
+      'alliance',
+      depsWith({ tooltipFor: (id) => (id === 99 ? twoHandModel : undefined) }),
+    );
+    // 17 - 1 (off hand, two-hander) - 2 (both trinkets empty) = 14, matching the worked
+    // example's verified real number (hunter-marksmanship band 20 horde).
+    expect(infos[0].totalSlots).toBe(14);
   });
 });

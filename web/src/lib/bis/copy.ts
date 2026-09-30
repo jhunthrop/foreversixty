@@ -254,6 +254,119 @@ export const bisCopy = {
    *  text (spec's "unknown -> the last"), never a fabricated reason. */
   emptyReasonNoDpsValue: 'Nothing sourced at this level helps your DPS',
   emptyReasonEffectNotModelled: "Relic effects aren't simulated yet",
+
+  // --- "The list" rebuild (bis rebuild spec, 2026-09-30) -----------------------------------
+  headerEyebrow: 'Best in slot · leveling',
+  /** `{band}` -> `"20 to 29"` through `"50 to 59"`, and plain `"60"` for the top band --
+   *  design system's own explicit rule, never `"60 to 60"` (spec §4.A). Every band in this
+   *  contract is a ten-level bracket (`bands` are `[20, 30, 40, 50, 60]`, one entry per
+   *  lower bound) except the last, which has no bracket to show. */
+  bandRangeLabel: (band: number): string => (band === 60 ? '60' : `${band} to ${band + 9}`),
+  /** The header's one summary sentence (spec §4.A) -- `bandHigh` is `undefined` only for
+   *  the plain-60 band, which drops the whole "from X to Y" clause rather than say "at 60
+   *  to 60" or invent a range the contract does not have. */
+  headerSummary: (bandLow: number, bandHigh: number | undefined): string =>
+    bandHigh === undefined
+      ? `The gear that raises your damage most at ${bandLow}, ranked by the simulator with every item equipped, and where each piece comes from.`
+      : `The gear that raises your damage most from ${bandLow} to ${bandHigh}, ranked by the simulator with every item equipped, and where each piece comes from.`,
+  thisSetLabel: 'This set',
+  /** "DPS on the training dummy, level 29 Troll, 11 talent points" -- `characterLevel` is
+   *  the band's own training-dummy level (never a signed-in character's real level, spec
+   *  §4.C.1's own explicit warning: the two are unrelated facts that happen to coincide in
+   *  the mock's own worked example). */
+  thisSetFigureLine: (characterLevel: number, race: string, talentPoints: number): string =>
+    `DPS on the training dummy, level ${characterLevel} ${capitalise(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
+  simmedLine: (generatedAtDate: string): string =>
+    `Simmed ${generatedAtDate}, every pick measured with the item equipped`,
+  openInSimulator: 'Open in simulator',
+  talentsInPlanner: 'Talents in planner',
+  statWeightsAtBand: (bandLabel: string): string => `Stat weights at ${bandLabel}`,
+  playItHeading: (bandLabel: string): string => `Play it · ${bandLabel}`,
+  openGuideLink: (specName: string): string => `Open the ${specName} guide`,
+  theListHeading: 'The list',
+  hoverOrTapCaption: 'Hover or tap an item for its stats',
+  slotHeaderLabel: 'Slot',
+  pickHeaderLabel: 'Best in slot · where it comes from',
+  runnersUpHeaderLabel: 'Runners-up · DPS vs the pick',
+  youHeaderLabel: 'You',
+  whereToGetItHeading: 'Where to get it',
+  newAtThisBandHeading: 'New at this band',
+  /** `source_kind === 'world_drop'`'s own group label for "Where to get it" (spec §4.E) --
+   *  never `worldDropSourceLabel`'s `"World drop (BoE)"` phrasing, which is pipeline jargon
+   *  for the same row's own individual source line; this is the one place on the page
+   *  naming the actual action a player takes (the auction house), for a whole GROUP of
+   *  items rather than one row. */
+  worldDropGroupLabel: 'World drop (auction house)',
+  groupCountSuffix: (count: number): string => `×${count}`,
+  firstBandEveryPickNew: 'This is the first band — every pick here is new.',
+  /** Sentence 1 of "New at this band" (spec §4.E) for every band past the first -- `parts`
+   *  is the already-built, ordered list of instance names and `"the <faction> rewards"`
+   *  clauses (`joinWithAnd` below joins them into one clause). */
+  reachingBandOpens: (bandLow: number, joinedParts: string, n: number, total: number): string =>
+    `Reaching ${bandLow} opens ${joinedParts}: ${n} of the ${total} picks come from there.`,
+  /** Sentence 2, the next band's own preview -- `joinedParts` is `''` when the next band
+   *  opens nothing a dungeon/rep clause would name (every new pick there is a vendor/quest/
+   *  world/crafted source), in which case the sentence starts straight from the slot clause
+   *  (or is empty entirely when neither clause has anything to say). */
+  nextBandLine: (bandLabel: string, joinedParts: string, helpfulSlotLabel: string | undefined): string => {
+    const head = `Next band (${bandLabel})`;
+    const slotClause = helpfulSlotLabel === undefined ? '' : `the first ${helpfulSlotLabel} that helps`;
+    if (joinedParts === '' && slotClause === '') return `${head}.`;
+    if (joinedParts === '') return `${head}: ${slotClause}.`;
+    if (slotClause === '') return `${head}: ${joinedParts}.`;
+    return `${head}: ${joinedParts}, and ${slotClause}.`;
+  },
+  seeBandLink: (bandLabel: string): string => `See ${bandLabel}`,
+  /** The off-hand's own empty row when the main hand is a two-hander, NAMING the weapon
+   *  (spec §4.D) -- replaces the older, generic `twoHanderEquippedLabel` for this rebuild's
+   *  list row (kept above, unchanged, for any other surface that still reads it). */
+  twoHanderEquippedNamed: (mainHandName: string): string =>
+    `${mainHandName} is a two-hander; the off hand is taken.`,
+  /** `no_sourced_item`, this slot's own first empty occurrence in the file (spec §4.D) --
+   *  `nextRealBand` is `undefined` when no later band in this same file ever sources the
+   *  slot either, which drops the second sentence entirely rather than name a band that
+   *  also turns out empty. Named as the plain band NUMBER ("comes at 30"), not the band's
+   *  own range label -- verified against the approved mock's own exact wording ("No
+   *  trinket you can get at 20 to 29 raises your damage. The first that does comes at
+   *  30."): the band this sentence is ABOUT gets the range, the band a bare "comes at"
+   *  points to does not. */
+  noSourcedItemFirst: (slotLower: string, bandLabel: string, nextRealBand: number | undefined): string =>
+    nextRealBand === undefined
+      ? `No ${slotLower} you can get at ${bandLabel} raises your damage.`
+      : `No ${slotLower} you can get at ${bandLabel} raises your damage. The first that does comes at ${nextRealBand}.`,
+  /** `no_sourced_item`, a LATER empty band for a slot this file's already named once (spec
+   *  §4.D) -- `undefined` the same way `noSourcedItemFirst`'s own clause is: no later band
+   *  ever sources it either. Same plain-band-number rule as above (mock: "Nothing here
+   *  either until 30."). */
+  noSourcedItemLater: (nextRealBand: number | undefined): string =>
+    nextRealBand === undefined
+      ? 'Nothing here helps at this level either.'
+      : `Nothing here either until ${nextRealBand}.`,
+
+  // --- Character card (bis rebuild spec §4.B) ----------------------------------------------
+  yourCharacterLabel: 'Your character',
+  samplePillLabel: 'Sample',
+  switchLabel: 'Switch',
+  syncedRelative: (relative: string): string => `synced ${relative}`,
+  notSyncedYetLabel: 'Not synced yet',
+  characterCardIdentityLine: (level: number, race: string): string => `${level} ${capitalise(race)}`,
+  upgradesLabel: 'Upgrades',
+  togetherLabel: 'Together',
+  togetherDpsValue: (delta: number): string => `+${delta.toFixed(1)} DPS`,
+  equippedLabel: 'Equipped',
+  equippedValue: (n: number, total: number): string => `${n} / ${total}`,
+  sendListToAddon: 'Send this list to the addon',
+  installTheAddon: 'Install the addon',
+  installAddonToCompare: 'Install the addon to compare your gear against this list.',
+  gearSyncNotHereYet: "Gear sync isn't here yet — install the addon to compare your gear against this list.",
+  characterCardLoadError: 'Your character did not load.',
+  /** The list row's own "You" column (spec §4.D/§7 `GearRow`'s `you` slot) -- unused today
+   *  (the column itself is omitted entirely while the worn-gear gap is open, §9), kept here
+   *  so the component that renders it needs no second copy module once a future lane
+   *  supplies real data. */
+  equippedTickLabel: 'equipped',
+  youGainOverWorn: (dpsDelta: number, wornItemName: string): string =>
+    `+${dpsDelta.toFixed(1)} DPS over your ${wornItemName}`,
 } as const;
 
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner
@@ -261,6 +374,17 @@ export const bisCopy = {
  *  one, so every caller gets the fix for free rather than re-capitalising it themselves. */
 function capitalise(word: string): string {
   return word.length === 0 ? word : word[0]!.toUpperCase() + word.slice(1);
+}
+
+/** `["A"]` -> `"A"`, `["A", "B"]` -> `"A and B"`, `["A", "B", "C"]` -> `"A, B and C"` --
+ *  the one join "New at this band"'s two computed sentences use for an instance/rep list of
+ *  any length, English's own list convention (no Oxford comma, one "and" before the last
+ *  item). `[]` -> `""`, so a caller can always check for the empty string rather than a
+ *  separate "were there any parts at all" branch. */
+export function joinWithAnd(parts: readonly string[]): string {
+  if (parts.length === 0) return '';
+  if (parts.length === 1) return parts[0]!;
+  return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
 }
 
 // --- pvp rank titles (third wow-player sweep defect, 2026-09-29) --------------------------

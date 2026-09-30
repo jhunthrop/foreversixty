@@ -1,0 +1,8 @@
+---
+// web/src/pages/addon.astro
+// A minimal placeholder: every "send this list/these weights to the addon" button on the
+// site (bis rebuild spec §4.B/§4.C.2, owner instruction) links here until the real addon-
+// send feature ships. Redirects to /setup#pair rather than link live to a 404 -- a 302, not
+// a 301, since this route's own destination is expected to change once that feature lands.
+return Astro.redirect('/setup#pair', 302);
+---

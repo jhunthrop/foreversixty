@@ -1,0 +1,139 @@
+---
+// web/src/components/bis/StatWeightsPanel.astro
+// "Stat weights at {band label}" (bis rebuild spec §4.C.2) -- the design system's own
+// SimulationCraft-familiar convention, in Forever Sixty's own words. Reads the view-model
+// `lib/bis/panel-view.ts`'s `bandInfosFor` already computes (`scaleRows`/`scaleNoteLine`/
+// `hasteCaptionLine`, landed on main by the bis-weights-simc lane, merged into this branch)
+// rather than a second stat-weights formula: this component's own job is the mock's exact
+// 4-column table layout (Stat / bar / Scale / Per point / Error) that view-model's own
+// interim page render did not yet use, one component so a later merge only has to reconcile
+// markup, never two competing sets of numbers.
+import { bisCopy } from '../../lib/bis/copy';
+import type { ScaleRow } from '../../lib/bis/panel-view';
+import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+
+interface Props {
+  bandLabel: string;
+  scaleRows: ScaleRow[];
+  scaleNoteLine: string;
+  hasteCaptionLine: string | undefined;
+}
+
+const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine } = Astro.props;
+const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLine} ${hasteCaptionLine}`;
+---
+
+<div class="panel-box stat-weights-panel" data-testid="bis-stat-weights">
+  <span class="label">{bisCopy.statWeightsAtBand(bandLabel)}</span>
+  <p class="stat-weights-caption text-muted">{caption}</p>
+  <div class="stat-weights-header" role="row">
+    <span class="label">Stat</span>
+    <span aria-hidden="true"></span>
+    <span class="label stat-weights-num-header">Scale</span>
+    <span class="label stat-weights-num-header">Per point</span>
+    <span class="label stat-weights-num-header">Error</span>
+  </div>
+  {scaleRows.map((row) => (
+    <div
+      class:list={['stat-weights-row', !row.significant && 'stat-weights-row-faint']}
+      role="row"
+      title={row.significant ? row.ratingFactorTitle : `${row.label} not significant`}
+      data-testid={`bis-weight-row-${row.stat}`}
+    >
+      <span class="stat-weights-stat">{row.label}</span>
+      <span class="stat-weights-bar" aria-hidden="true">
+        {row.significant && <span class="stat-weights-bar-fill" style={`width:${row.barPercent}%`} />}
+      </span>
+      <span class="font-mono tabular stat-weights-num">
+        {row.significant ? row.scaleFactor.toFixed(2) : bisCopy.weightsNotSignificant}
+      </span>
+      <span class="font-mono tabular stat-weights-num stat-weights-num-muted">
+        {row.significant && row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} DPS` : ''}
+      </span>
+      <span class="font-mono tabular stat-weights-num stat-weights-num-muted">
+        {row.significant ? `±${row.scaleError.toFixed(2)}` : ''}
+      </span>
+    </div>
+  ))}
+  <p class="stat-weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
+  <a
+    href="/addon"
+    class={`${SECONDARY_BUTTON} border-line-warm text-text justify-center px-4`}
+    data-testid="bis-weights-addon-button"
+  >
+    {bisCopy.weightsAddonButton}
+  </a>
+</div>
+
+<style>
+  .panel-box {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .stat-weights-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 20px;
+  }
+  .stat-weights-caption {
+    margin: 0 0 4px;
+    font-size: 12px;
+  }
+  .stat-weights-header,
+  .stat-weights-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 56px 70px 56px;
+    gap: 10px;
+    align-items: center;
+  }
+  .stat-weights-header {
+    padding-bottom: 6px;
+  }
+  .stat-weights-num-header {
+    text-align: right;
+  }
+  .stat-weights-row-faint {
+    opacity: 0.5;
+  }
+  .stat-weights-stat {
+    font-size: 13px;
+    color: var(--color-strong);
+    line-height: 1.2;
+  }
+  .stat-weights-bar {
+    position: relative;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-line-soft);
+    overflow: hidden;
+  }
+  .stat-weights-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--color-gold);
+  }
+  .stat-weights-num {
+    text-align: right;
+    font-size: 13px;
+    color: var(--color-strong);
+  }
+  .stat-weights-num-muted {
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+  .stat-weights-addon-blurb {
+    margin: 4px 0 0;
+    font-size: 12px;
+  }
+
+  @media (max-width: 1023px) {
+    .stat-weights-header,
+    .stat-weights-row {
+      grid-template-columns: 90px 1fr 48px 60px 48px;
+      gap: 6px;
+    }
+  }
+</style>
