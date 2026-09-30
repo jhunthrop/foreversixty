@@ -604,6 +604,76 @@ describe('bandInfosFor: effect_unmodelled and low_value flags', () => {
   });
 });
 
+describe('bandInfosFor: sim_status and set_dps_partial (spec addendum 3)', () => {
+  it('sets notSimChecked on a pick carrying sim_status "not_in_sim"', () => {
+    const file = fileWith([band({ slots: [slot({ sim_status: 'not_in_sim' })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.notSimChecked).toBe(true);
+  });
+
+  it('is undefined on a pick that carries no sim_status flag', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.notSimChecked).toBe(false);
+  });
+
+  it('carries both notSimChecked and effectUnmodelled independently on one row', () => {
+    const file = fileWith([band({ slots: [slot({ sim_status: 'not_in_sim', effect_unmodelled: true })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.notSimChecked).toBe(true);
+    expect(head?.effectUnmodelled).toBe(true);
+  });
+
+  it('never flags an alternative -- BisAlternative carries no sim_status field at all', () => {
+    const alt: BisAlternative = {
+      item_id: 42,
+      item_name: 'Weakness Analyzer',
+      source_kind: 'vendor',
+      source: 'Vendor: Someone',
+      dps_delta: -4.5,
+    };
+    const file = fileWith([band({ slots: [slot({ sim_status: 'not_in_sim', alternatives: [alt] })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect((head?.alternatives?.[0] as { notSimChecked?: boolean }).notSimChecked).toBeUndefined();
+  });
+
+  it('reports setDpsPartial false and a zero count when the band carries no flag', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].setDpsPartial).toBe(false);
+    expect(infos[0].setDpsPartialCount).toBe(0);
+  });
+
+  it('reports setDpsPartial true with a count matching the notSimChecked rows', () => {
+    const file = fileWith([
+      band({
+        set_dps_partial: true,
+        slots: [
+          slot({ sim_status: 'not_in_sim' }),
+          slot({ slot: 'neck', sim_status: 'not_in_sim' }),
+          slot({ slot: 'shoulder' }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].setDpsPartial).toBe(true);
+    expect(infos[0].setDpsPartialCount).toBe(2);
+  });
+
+  it('computes setDpsPartialCount from the same rows array, never a second counter', () => {
+    // Even when the band's own flag disagrees with reality (should never happen from a
+    // real pipeline file, but the view layer must never trust a second backend count it
+    // did not itself derive from `rows`), the count always matches the rows the template
+    // actually renders.
+    const file = fileWith([band({ set_dps_partial: true, slots: [slot({ sim_status: 'not_in_sim' })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const notSimCheckedRows = infos[0].rows.filter((r) => r.notSimChecked).length;
+    expect(infos[0].setDpsPartialCount).toBe(notSimCheckedRows);
+  });
+});
+
 describe('bandInfosFor: empty_reason copy', () => {
   it('reads the thin-pool line for no_dps_value', () => {
     const file = fileWith([

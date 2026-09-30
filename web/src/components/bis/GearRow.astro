@@ -98,6 +98,15 @@ function hasRealIcon(icon: string | undefined): icon is string {
                   {bisCopy.unverified}
                 </span>
               )}
+              {row.notSimChecked && (
+                <span
+                  class="flag-tag"
+                  data-testid="bis-row-not-sim-checked"
+                  title={bisCopy.notSimCheckedTitle}
+                >
+                  {bisCopy.notSimCheckedTag}
+                </span>
+              )}
               {row.effectUnmodelled && (
                 <span
                   class="flag-tag"

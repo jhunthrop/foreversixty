@@ -201,6 +201,11 @@ export interface RowView {
    *  simulated, so its DPS number is stats-only (fourth wow-player sweep, day 3: "Serenity
    *  Field" beating a real combat trinket by less than its own blind spot). */
   effectUnmodelled?: boolean;
+  /** `BisSlot.sim_status === 'not_in_sim'` -- true when this build's sim database does not
+   *  carry the pick at all, so it stays ranked by stat weights alone with no full sim run
+   *  behind it (spec addendum 3, §D). Main-pick-only: `AlternativeView` has no counterpart
+   *  -- `BisAlternative` never carries `sim_status` (`report.go`'s `alternativeRow`). */
+  notSimChecked?: boolean;
   /** `BisSlot.low_value` -- true for a weapon row where no sourced candidate scored above
    *  zero and the ranker published the best-by-item-level fallback instead of an empty
    *  slot. */
@@ -284,6 +289,7 @@ function buildRowView(
     evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta),
     verifiedGlyphTitle: verifiedGlyphTitleFor(row),
     effectUnmodelled: row.effect_unmodelled,
+    notSimChecked: row.sim_status === 'not_in_sim',
     lowValue: row.low_value,
   };
 }
@@ -375,6 +381,14 @@ export interface BandInfo {
   upgradesCount: number;
   setDps: number;
   dpsDelta: number | undefined;
+  /** `BisBand.set_dps_partial` -- true when `setDps` excludes at least one pick's own
+   *  contribution (a `notSimChecked` row this same band's `rows` also carries). */
+  setDpsPartial: boolean;
+  /** Count of this band's own `rows` carrying `notSimChecked: true` -- always computed
+   *  from the SAME `rows` array the paperdoll renders, never a second backend counter, so
+   *  `setDpsPartialNote`'s number always matches a row a player can find (spec addendum 3,
+   *  §E). Meaningful only when `setDpsPartial` is true. */
+  setDpsPartialCount: number;
   race: string;
   talentPoints: number;
   weightBars: WeightBarRow[];
@@ -464,6 +478,8 @@ export function bandInfosFor(
         upgradesCount: changed?.length ?? 0,
         setDps: bandData.set_dps,
         dpsDelta: previousSetDps === undefined ? undefined : bandData.set_dps - previousSetDps,
+        setDpsPartial: bandData.set_dps_partial ?? false,
+        setDpsPartialCount: rows.filter((r) => r.notSimChecked).length,
         race: bandData.race,
         talentPoints: bandData.talent_points,
         weightBars,
