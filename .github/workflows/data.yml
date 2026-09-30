@@ -84,29 +84,6 @@ jobs:
           path: data/.icon-cache
           key: icon-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: icon-cache-${{ runner.os }}-
-      - run: uv run python -m pipeline normalize --build "$BUILD" $SHRINK
-      - run: uv run python -m pipeline icons --build "$BUILD"
-      - run: uv run python -m pipeline tree-art --build "$BUILD"
-      # Re-run the offline normalize so manifest.json also covers the icons and tree art
-      # the steps above just wrote.
-      - run: uv run python -m pipeline normalize --build "$BUILD" $SHRINK
-      # The fetched build's copy of the curated stat weights, and the addon's
-      # data. Without these a new build lands with neither file. They read only
-      # classes.json, talents/ and curated/, so they run straight after
-      # normalize; the later stages' manifest refreshes then list both files.
-      #
-      # `addon-data` also renders addon/ForeverSixty/Data.lua, and that render
-      # is DELIBERATELY NOT COMMITTED here (the commit step adds builds/ and
-      # diffs/ only). Data.lua is a single unversioned file that tracks the
-      # ACTIVE build, and pipeline/addonlua.py stamps whichever build the CLI
-      # was given into it -- but what activates a build is a human editing
-      # web/src/data/active-build.json, which this bot does not touch. Commit
-      # it here and the addon ships a build the site is not serving, and the
-      # `test` job's `addon-data --build 1.60.1.70009 --check` gate reports it
-      # as drift and fails on the bot's own push. Letting the runner discard
-      # the render is the correct outcome. Do not add `git add ../addon`.
-      - run: uv run python -m pipeline weights --build "$BUILD"
-      - run: uv run python -m pipeline addon-data --build "$BUILD"
       # loot.json, enchants.json and suffixes.json come out of the engine
       # fork's own item database, which is not in this repository: nothing
       # in a DB2 export says which boss drops an item. The fork is cloned
@@ -125,6 +102,31 @@ jobs:
         run: |
           git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
           git -C .engine checkout --quiet "${{ steps.pin.outputs.sha }}"
+      # classicdb-fidelity, 2026-09-30: normalize reads the fork's item database for the
+      # icon names of classic-db-only rows, so the fork checkout moves ahead of it.
+      - run: uv run python -m pipeline normalize --build "$BUILD" --engine ../.engine $SHRINK
+      - run: uv run python -m pipeline icons --build "$BUILD"
+      - run: uv run python -m pipeline tree-art --build "$BUILD"
+      # Re-run the offline normalize so manifest.json also covers the icons and tree art
+      # the steps above just wrote.
+      - run: uv run python -m pipeline normalize --build "$BUILD" --engine ../.engine $SHRINK
+      # The fetched build's copy of the curated stat weights, and the addon's
+      # data. Without these a new build lands with neither file. They read only
+      # classes.json, talents/ and curated/, so they run straight after
+      # normalize; the later stages' manifest refreshes then list both files.
+      #
+      # `addon-data` also renders addon/ForeverSixty/Data.lua, and that render
+      # is DELIBERATELY NOT COMMITTED here (the commit step adds builds/ and
+      # diffs/ only). Data.lua is a single unversioned file that tracks the
+      # ACTIVE build, and pipeline/addonlua.py stamps whichever build the CLI
+      # was given into it -- but what activates a build is a human editing
+      # web/src/data/active-build.json, which this bot does not touch. Commit
+      # it here and the addon ships a build the site is not serving, and the
+      # `test` job's `addon-data --build 1.60.1.70009 --check` gate reports it
+      # as drift and fails on the bot's own push. Letting the runner discard
+      # the render is the correct outcome. Do not add `git add ../addon`.
+      - run: uv run python -m pipeline weights --build "$BUILD"
+      - run: uv run python -m pipeline addon-data --build "$BUILD"
       # Before simdb: it writes items.json's `suffixes` and
       # `faction_restriction`, which pipeline/simdb/items.py reads into
       # SimItem. Both refresh the same manifest, and the diff step at the
