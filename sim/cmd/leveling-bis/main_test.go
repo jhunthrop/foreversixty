@@ -301,3 +301,139 @@ func TestRunSpecEveryPlainDPSRequestCarriesTheBandsTalents(t *testing.T) {
 		}
 	}
 }
+
+// TestRunSpecRetriesWeightsSweepAndUsesTheResolvedResult is this
+// lane's brief, item 1's guard: a band whose reference stat measured
+// "not positive beyond its own error" at the ordinary iteration count
+// re-runs the sweep once at weightsRetryIterationsFactor iterations
+// before giving up on it. Band 20 here always measures significant
+// (one call); band 30's own fake result depends on req.Iterations - the
+// ordinary run (5, this test's own weightsIterations) is not
+// trustworthy, the retry run (5*weightsRetryIterationsFactor) is - so
+// band 30 must publish an EMPTY WeightsReason and its own
+// ReferenceDPSPerPoint, not band 20's carried-forward weights.
+func TestRunSpecRetriesWeightsSweepAndUsesTheResolvedResult(t *testing.T) {
+	const weightsIterations = 5
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsFunc: func(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+			significant := map[string]api.StatWeight{
+				"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0, Error: 0.01},
+				"agility":             {Stat: "agility", Weight: 1.8, Error: 0.05},
+			}
+			if req.Character.Level == 20 {
+				return significant, 1.0, nil
+			}
+			// Band 30: the ordinary iteration count reads noisy (a
+			// small reference delta well within its own error); the
+			// retry count reads clean.
+			if req.Iterations == weightsIterations {
+				return map[string]api.StatWeight{
+					"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1, Error: -5},
+					"agility":             {Stat: "agility", Weight: 1.8, Error: 0.05},
+				}, -0.02, nil
+			}
+			return significant, 1.0, nil
+		},
+	}
+	outDir := t.TempDir()
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, weightsIterations); err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))
+	var band30 *bandReport
+	for i := range report.Bands {
+		if report.Bands[i].Band == 30 {
+			band30 = &report.Bands[i]
+			break
+		}
+	}
+	if band30 == nil {
+		t.Fatal("no band-30 report published")
+	}
+	if band30.WeightsReason != "" {
+		t.Errorf("band 30 weights_reason = %q, want \"\" (the retry resolved it)", band30.WeightsReason)
+	}
+	if band30.ReferenceDPSPerPoint == nil || *band30.ReferenceDPSPerPoint != 1.0 {
+		t.Errorf("band 30 reference_dps_per_point = %v, want 1.0 (the retry's own measurement)", band30.ReferenceDPSPerPoint)
+	}
+	// Band 20 (significant first try) issues exactly one RunWeights
+	// call; band 30 (insignificant first try) issues two, the second
+	// at weightsRetryIterationsFactor times the ordinary count.
+	want := []int{weightsIterations, weightsIterations, weightsIterations * weightsRetryIterationsFactor}
+	if len(fake.WeightsIterationsSeen) != len(want) {
+		t.Fatalf("WeightsIterationsSeen = %v, want %v", fake.WeightsIterationsSeen, want)
+	}
+	for i, w := range want {
+		if fake.WeightsIterationsSeen[i] != w {
+			t.Errorf("WeightsIterationsSeen[%d] = %d, want %d (%v)", i, fake.WeightsIterationsSeen[i], w, fake.WeightsIterationsSeen)
+		}
+	}
+}
+
+// TestRunSpecFallsBackToNearestLowerBandWeightsWhenRetryStillFails is
+// this lane's brief, item 1's fallback half: when even the
+// weightsRetryIterationsFactor-iteration retry still measures the
+// reference stat "not positive beyond its own error", the band ranks
+// and verifies its picks against the nearest LOWER band's own
+// significant weights instead of publishing every slot empty
+// (warlock-destruction band 60's own repro, this lane's report) - and
+// says exactly that in weights_reason.
+func TestRunSpecFallsBackToNearestLowerBandWeightsWhenRetryStillFails(t *testing.T) {
+	const weightsIterations = 5
+	significant := map[string]api.StatWeight{
+		"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0, Error: 0.01},
+		"agility":             {Stat: "agility", Weight: 1.8, Error: 0.05},
+	}
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsFunc: func(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+			if req.Character.Level == 20 {
+				return significant, 1.0, nil
+			}
+			// Band 30 never resolves, at either iteration count.
+			return map[string]api.StatWeight{
+				"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1, Error: -5},
+				"agility":             {Stat: "agility", Weight: 1.8, Error: 0.05},
+			}, -0.02, nil
+		},
+	}
+	outDir := t.TempDir()
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, weightsIterations); err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))
+	var band30 *bandReport
+	for i := range report.Bands {
+		if report.Bands[i].Band == 30 {
+			band30 = &report.Bands[i]
+			break
+		}
+	}
+	if band30 == nil {
+		t.Fatal("no band-30 report published")
+	}
+	if !strings.Contains(band30.WeightsReason, "weights carried from band 20") {
+		t.Errorf("band 30 weights_reason = %q, want it to say weights were carried from band 20", band30.WeightsReason)
+	}
+	if !strings.Contains(band30.WeightsReason, "band 30's own sweep measured") {
+		t.Errorf("band 30 weights_reason = %q, want it to name band 30's own (still-untrustworthy) measurement", band30.WeightsReason)
+	}
+	if band30.ReferenceDPSPerPoint != nil {
+		t.Errorf("band 30 reference_dps_per_point = %v, want nil (weights_reason is set)", *band30.ReferenceDPSPerPoint)
+	}
+	// The whole point of the guard: an empty slot is only ever
+	// published when no candidate exists, never because a sweep was
+	// noisy - band 30 must score picks the same way band 20 did
+	// (carried weights), not publish every slot no_dps_value.
+	allEmptyForNoDPSValue := true
+	for _, slot := range band30.Slots {
+		if slot.EmptyReason != noDPSValueReason {
+			allEmptyForNoDPSValue = false
+			break
+		}
+	}
+	if allEmptyForNoDPSValue {
+		t.Errorf("band 30 published every slot with empty_reason=%q - the fallback weights should have scored real candidates", noDPSValueReason)
+	}
+}

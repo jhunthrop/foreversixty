@@ -922,6 +922,54 @@ func TestWeightsConvertsPopulationStdevToStandardError(t *testing.T) {
 	}
 }
 
+// TestWeightsErrorIsNeverNegativeEvenWhenTheReferenceScaleIsNegative
+// pins bis-ranker-integrity-11's own bug: warlock-destruction band 60
+// published Error: -5.7 on spell_power (its own repro) because this
+// engine holds "no stat lowers a damage spec's own DPS", so a
+// reference stat's raw DPS-per-point that measures negative is always
+// measurement noise, never a real effect (sim/cmd/leveling-bis/
+// weights.go's referenceMeasurementReason flags exactly this band as
+// untrustworthy) - but errAmt here divided the ALWAYS-NON-NEGATIVE
+// population stdev by that same signed, negative scale, flipping its
+// sign into a negative "error bar", which is not a standard error and
+// is not even a well-formed one (an error bar has no sign).
+// sim/core/statweight.go's own calcEpResults divides by
+// math.Abs(reference weight) for exactly this reason; Weights must
+// match it.
+func TestWeightsErrorIsNeverNegativeEvenWhenTheReferenceScaleIsNegative(t *testing.T) {
+	req := api.SimRequest{
+		Iterations: 100,
+		Weights: &api.WeightsSpec{
+			Stats:     []string{"spell_power", "intellect"},
+			Reference: "spell_power",
+		},
+	}
+	stats := make([]float64, len(proto.Stat_name))
+	stdev := make([]float64, len(proto.Stat_name))
+	// A negative reference scale - the exact shape
+	// warlock-destruction band 60 measured (reference_dps_per_point
+	// -0.0234): noise around zero, not a real "spell power hurts"
+	// effect.
+	stats[proto.Stat_StatSpellPower] = -0.0234
+	stats[proto.Stat_StatIntellect] = -11.63
+	stdev[proto.Stat_StatSpellPower] = 0.7
+	stdev[proto.Stat_StatIntellect] = 0.5
+
+	res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: stdev},
+	}}
+	got, err := Weights(res, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, w := range got {
+		if w.Error < 0 {
+			t.Errorf("stat %s: Error = %v, want >= 0 (an error bar is never signed, whatever the reference scale's own sign is)", w.Stat, w.Error)
+		}
+	}
+}
+
 // TestInsignificant is the table task 5(b2) pins: error compared to
 // the absolute value of the weight, error >= weight (not just >)
 // flags a row the boundary case included, and the reference stat's

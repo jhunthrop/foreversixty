@@ -48,6 +48,15 @@ import (
 // below is the only production implementation.
 type engineRunner interface {
 	RunPlainDPS(req api.SimRequest) (float64, error)
+	// RunPlainDPSWithError is RunPlainDPS plus the same run's own
+	// standard error (bis-ranker-integrity-11's brief, item 2) -
+	// trinkets.go's own tournament and no-trinket baseline are its only
+	// callers, so a trinket's real DPS gain can be checked "positive
+	// beyond its own error" the same way weights.go's
+	// referenceMeasurementReason already checks a band's reference
+	// stat (item 1), instead of against a flat, noise-blind DPS
+	// threshold.
+	RunPlainDPSWithError(req api.SimRequest) (mean, stdErr float64, err error)
 	// RunWeights' second return is referenceDPSPerPoint (this lane's
 	// brief, item 2) - see runWeights' own doc for why it has to be
 	// read out of the weights run's raw result rather than the
@@ -61,6 +70,10 @@ type engineRunner interface {
 type realEngine struct{}
 
 func (realEngine) RunPlainDPS(req api.SimRequest) (float64, error) { return runPlainDPS(req) }
+
+func (realEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64, error) {
+	return runPlainDPSWithError(req)
+}
 
 func (realEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
 	return runWeights(req)
@@ -86,24 +99,53 @@ func nextRunID() string {
 // api.SimRequest.Validate's closed set (request.Options.OpenIterations
 // below is what lets an arbitrary count through).
 func runPlainDPS(req api.SimRequest) (float64, error) {
+	est, err := runPlainDPSEstimate(req)
+	if err != nil {
+		return 0, err
+	}
+	return est.Mean, nil
+}
+
+// runPlainDPSWithError is runPlainDPS plus the same run's own standard
+// error (api.Estimate.Error - adapter.DPS's own Stdev/sqrt(iterations)
+// - this lane's brief, item 2: "a [trinket] pick must have... a
+// tournament delta positive beyond its error", the same "positive
+// beyond its own error" bar weights.go's referenceMeasurementReason
+// already applies to a band's reference stat measurement (item 1).
+// trinkets.go is the only caller - the per-candidate tournament loop
+// and the no-trinket baseline both already run exactly this sim, so
+// this reads an error the engine had already computed rather than
+// spending a second sim run to get it.
+func runPlainDPSWithError(req api.SimRequest) (mean, stdErr float64, err error) {
+	est, err := runPlainDPSEstimate(req)
+	if err != nil {
+		return 0, 0, err
+	}
+	return est.Mean, est.Error, nil
+}
+
+// runPlainDPSEstimate is runPlainDPS/runPlainDPSWithError's shared
+// engine call - one sim, read back as api.Estimate (Mean and Error
+// both, so a caller needing either never duplicates the run).
+func runPlainDPSEstimate(req api.SimRequest) (api.Estimate, error) {
 	registerEngine()
 	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: true})
 	if err != nil {
-		return 0, fmt.Errorf("building the request: %w", err)
+		return api.Estimate{}, fmt.Errorf("building the request: %w", err)
 	}
 	if err := simdb.Attach(engineReq); err != nil {
-		return 0, fmt.Errorf("attaching the item database: %w", err)
+		return api.Estimate{}, fmt.Errorf("attaching the item database: %w", err)
 	}
 	reporter := make(chan *proto.ProgressMetrics, 32)
 	core.RunRaidSimConcurrentAsync(engineReq, reporter, nextRunID())
 	res := simdrain.ToResult(reporter, nil)
 	if res == nil {
-		return 0, errors.New("the engine produced no result")
+		return api.Estimate{}, errors.New("the engine produced no result")
 	}
 	if err := adapter.ResultError(res); err != nil {
-		return 0, fmt.Errorf("the sim failed: %w", err)
+		return api.Estimate{}, fmt.Errorf("the sim failed: %w", err)
 	}
-	return adapter.DPS(res).Mean, nil
+	return adapter.DPS(res), nil
 }
 
 // runWeights runs req (which must carry a Weights block) and returns

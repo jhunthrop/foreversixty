@@ -2154,3 +2154,50 @@ func TestBuildReportNeverPublishesAPositiveDPSDeltaOnAnAlternative(t *testing.T)
 		t.Fatal("Weakness Analyzer (id 2) missing from trinket2's own alternatives entirely")
 	}
 }
+
+// TestBuildReportEmptiesATrinketWhoseGainDoesNotClearTwiceItsError is
+// bis-ranker-integrity-11's own repro at the buildReport level: a
+// trinket whose MeasuredGainDPS is comfortably positive (well above
+// the old flat trinketZeroGainThresholdDPS floor) but does not clear
+// trinketGainSignificanceMultiplier times its own MeasuredGainStdErr
+// (Fire Ruby's own hunter-beast-mastery band 50 Alliance numbers -
+// gain 0.773, stdErr 0.7125) must still publish empty, not verified -
+// the exact case a bare positive-DPS-gain check let through before
+// this fix.
+func TestBuildReportEmptiesATrinketWhoseGainDoesNotClearTwiceItsError(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 20036, Name: "Fire Ruby"}, MeasuredDPS: 233.6139, MeasuredGainDPS: 0.773, MeasuredGainStdErr: 0.7125, GainMeasured: true}},
+	}
+	r := buildReport(reportSpec(), 50, "alliance", "dwarf", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.ItemID != 0 || row.EmptyReason != noDPSValueReason {
+		t.Fatalf("trinket1 row = %+v, want empty with EmptyReason %q (gain 0.773 does not clear 2x its own stdErr 0.7125)", row, noDPSValueReason)
+	}
+}
+
+// TestBuildReportKeepsATrinketWhoseGainClearsTwiceItsError is the
+// symmetric real-signal case: Frozen Heart of the Mountain's own
+// rogue-assassination band 50 Horde numbers (gain 3.03, stdErr 0.98)
+// comfortably clear 2x and must still publish, exactly as this lane's
+// brief requires ("Frozen Heart of the Mountain at band 50... stays
+// legitimate").
+func TestBuildReportKeepsATrinketWhoseGainClearsTwiceItsError(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket2": {Item: &scored{candidate: candidate{ID: 249469, Name: "Frozen Heart of the Mountain"}, MeasuredDPS: 123.3857, MeasuredGainDPS: 3.03, MeasuredGainStdErr: 0.98, GainMeasured: true}},
+	}
+	r := buildReport(reportSpec(), 50, "horde", "troll", "", 0, nil, nil, picks, 123.3857, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket2" {
+			row = s
+		}
+	}
+	if row.ItemID != 249469 || row.EmptyReason != "" {
+		t.Fatalf("trinket2 row = %+v, want item 249469 published with no EmptyReason (gain 3.03 clears 2x its own stdErr 0.98)", row)
+	}
+}

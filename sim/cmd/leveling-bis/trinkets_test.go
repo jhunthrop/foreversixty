@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"math"
 	"strings"
 	"testing"
 
@@ -768,5 +769,51 @@ func TestTrinketEffectUnmodelled(t *testing.T) {
 		if got := trinketEffectUnmodelled(tc.c); got != tc.want {
 			t.Errorf("%s: trinketEffectUnmodelled(%+v) = %v, want %v", tc.name, tc.c, got, tc.want)
 		}
+	}
+}
+
+// TestRankTrinketSlotComputesMeasuredGainStdErrInQuadrature is this
+// lane's brief, item 2: MeasuredGainStdErr must combine the winning
+// candidate's own run error and the no-trinket baseline's own run
+// error the ordinary way for a difference of two independent means -
+// sqrt(a^2 + b^2) - not just copy one or the other, so report.go's
+// trinketGainSignificant gate has a real combined error to check
+// MeasuredGainDPS against.
+func TestRankTrinketSlotComputesMeasuredGainStdErrInQuadrature(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "Placeholder"}}},
+	}
+	bySlot := map[string][]scored{
+		"trinket1": {trinket(2, "Only Candidate", 20)},
+	}
+	winnerGear := gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}})
+	baselineGear := gearKey(nil) // swapSlot's own itemID-0 shape: no other slot is set in picks, so the baseline gear list is empty.
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			winnerGear:   210,
+			baselineGear: 200,
+		},
+		StdErrByGear: map[string]float64{
+			winnerGear:   0.6,
+			baselineGear: 0.5,
+		},
+	}
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none", notes)
+	}
+	item := out["trinket1"].Item
+	if item == nil || item.ID != 2 {
+		t.Fatalf("trinket1 pick = %+v, want item 2", item)
+	}
+	if !item.GainMeasured {
+		t.Fatal("GainMeasured = false, want true")
+	}
+	if diff := item.MeasuredGainDPS - 10; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("MeasuredGainDPS = %v, want 10 (210-200)", item.MeasuredGainDPS)
+	}
+	want := math.Sqrt(0.6*0.6 + 0.5*0.5)
+	if diff := item.MeasuredGainStdErr - want; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("MeasuredGainStdErr = %v, want %v (sqrt(0.6^2+0.5^2), combined in quadrature)", item.MeasuredGainStdErr, want)
 	}
 }

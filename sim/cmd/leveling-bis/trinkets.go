@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"sort"
 	"strings"
 )
@@ -251,20 +252,21 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	}
 
 	type measured struct {
-		item scored
-		dps  float64
+		item   scored
+		dps    float64
+		stdErr float64
 	}
 	var results []measured
 	var notes []string
 	for _, c := range candidates {
 		gear := swapSlot(picks, slot, c.ID, false)
 		req := plainRequest(spec, bandCharacter("trinket-rank", race, classSlug, spec.Spec, level, talents, gear), trinketRankIterations, verifySeed)
-		dps, err := runner.RunPlainDPS(req)
+		dps, stdErr, err := runner.RunPlainDPSWithError(req)
 		if err != nil {
 			notes = append(notes, formatTrinketRankError(slot, c, err))
 			continue
 		}
-		results = append(results, measured{item: c, dps: dps})
+		results = append(results, measured{item: c, dps: dps, stdErr: stdErr})
 	}
 	if len(results) == 0 {
 		return out, notes
@@ -373,9 +375,18 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	// the ranking itself.
 	baselineGear := swapSlot(picks, slot, 0, false)
 	baselineReq := plainRequest(spec, bandCharacter("trinket-rank-baseline", race, classSlug, spec.Spec, level, talents, baselineGear), trinketRankIterations, verifySeed)
-	baselineDPS, baselineErr := runner.RunPlainDPS(baselineReq)
+	baselineDPS, baselineStdErr, baselineErr := runner.RunPlainDPSWithError(baselineReq)
 	if baselineErr != nil {
 		notes = append(notes, slot+": measuring the no-trinket baseline failed: "+baselineErr.Error())
+	}
+
+	// gainStdErr is MeasuredGainDPS's own standard error: the candidate
+	// run and the baseline run are two independent sims, so their
+	// difference's error is the two combined in quadrature (the
+	// ordinary rule for the error of a difference of independent
+	// means) - this lane's brief, item 2.
+	gainStdErr := func(candidateStdErr float64) float64 {
+		return math.Sqrt(candidateStdErr*candidateStdErr + baselineStdErr*baselineStdErr)
 	}
 
 	best := results[winner].item
@@ -388,6 +399,7 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	best.MeasuredDPS = results[winner].dps
 	if baselineErr == nil {
 		best.MeasuredGainDPS = results[winner].dps - baselineDPS
+		best.MeasuredGainStdErr = gainStdErr(results[winner].stdErr)
 		best.GainMeasured = true
 	}
 	sp := slotPick{Item: &best}
@@ -396,6 +408,7 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 		runnerUp.MeasuredDPS = results[runnerUpIdx].dps
 		if baselineErr == nil {
 			runnerUp.MeasuredGainDPS = results[runnerUpIdx].dps - baselineDPS
+			runnerUp.MeasuredGainStdErr = gainStdErr(results[runnerUpIdx].stdErr)
 			runnerUp.GainMeasured = true
 		}
 		sp.RunnerUp = &runnerUp

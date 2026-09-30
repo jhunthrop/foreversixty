@@ -157,3 +157,62 @@ func TestPublishWeightRatingUnitsConvertsOnlyRatingFamilyRows(t *testing.T) {
 		t.Errorf("publishWeightRatingUnits mutated its input: %+v", rows[0])
 	}
 }
+
+// TestDedupeAlternativesCollapsesByNameToo is this lane's brief, item
+// 3: "Signet Ring of the Bronze Dragonflight" published twice in the
+// same band-60 finger1 Alternatives list under two different item
+// ids (the same shape Sentinel's/Scout's Medallion, Highlander's/
+// Defiler's Leather Girdle and Sentinel's Chain Leggings share) -
+// dedupeAlternatives already collapsed a shared ID (Grand Marshal's
+// Stave); it must also collapse a shared NAME across two DIFFERENT
+// ids, keeping the better-ranked row (betterAlternative's own rule),
+// the same way it already does for ID.
+func TestDedupeAlternativesCollapsesByNameToo(t *testing.T) {
+	rows := []alternativeRow{
+		{ItemID: 19147, ItemName: "Signet Ring of the Bronze Dragonflight", DPSDelta: -1.2},
+		{ItemID: 19148, ItemName: "Signet Ring of the Bronze Dragonflight", DPSDelta: -0.4},
+	}
+	got := dedupeAlternatives(rows)
+	if len(got) != 1 {
+		t.Fatalf("dedupeAlternatives(%+v) = %+v, want exactly 1 row (same name, two ids)", rows, got)
+	}
+	if got[0].ItemID != 19148 {
+		t.Errorf("dedupeAlternatives kept item id %d, want 19148 (the higher DPSDelta row, betterAlternative's own rule)", got[0].ItemID)
+	}
+}
+
+// TestDedupeAlternativesNameCollapseRunsAfterIDCollapse guards the
+// order: two rows sharing BOTH an id and a name (the ordinary case,
+// every alternative in practice) must still collapse to exactly one
+// row, not be treated as "already distinct because the ID pass ran
+// first and left one row per id, so the name pass finds nothing to
+// do" - the two passes compose, they do not each have to independently
+// find every duplicate on their own axis.
+func TestDedupeAlternativesNameCollapseRunsAfterIDCollapse(t *testing.T) {
+	rows := []alternativeRow{
+		{ItemID: 500, ItemName: "Grand Marshal's Stave", DPSDelta: 0, SourceKind: "vendor"},
+		{ItemID: 500, ItemName: "Grand Marshal's Stave", DPSDelta: 0, SourceKind: "pvp"},
+	}
+	got := dedupeAlternatives(rows)
+	if len(got) != 1 {
+		t.Fatalf("dedupeAlternatives(%+v) = %+v, want exactly 1 row", rows, got)
+	}
+	if got[0].SourceKind != "pvp" {
+		t.Errorf("dedupeAlternatives kept SourceKind %q, want \"pvp\" (betterAlternative's own tie-break)", got[0].SourceKind)
+	}
+}
+
+// TestDedupeAlternativesDistinctNamesSurviveBoth pins the boundary:
+// two rows with DIFFERENT ids and DIFFERENT names are two genuinely
+// different items and must both survive - neither pass may collapse
+// unrelated alternatives just because they happen to share a slot.
+func TestDedupeAlternativesDistinctNamesSurviveBoth(t *testing.T) {
+	rows := []alternativeRow{
+		{ItemID: 1, ItemName: "Band of Circling Vultures", DPSDelta: -0.5},
+		{ItemID: 2, ItemName: "Master Dragonslayer's Ring", DPSDelta: -0.8},
+	}
+	got := dedupeAlternatives(rows)
+	if len(got) != 2 {
+		t.Fatalf("dedupeAlternatives(%+v) = %+v, want both distinct rows kept", rows, got)
+	}
+}

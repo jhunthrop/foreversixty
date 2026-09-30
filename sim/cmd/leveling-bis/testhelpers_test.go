@@ -33,8 +33,35 @@ type fakeEngine struct {
 	// exactly that gear fingerprint - how tests exercise this
 	// command's per-candidate/per-slot error tolerance.
 	FailGear string
+
+	// StdErrByGear/DefaultStdErr/StdErrFunc are RunPlainDPSWithError's
+	// own standard-error return - the DPSByGear/DefaultDPS/DPSFunc
+	// trio, one level up (bis-ranker-integrity-11's brief, item 2).
+	// Every field defaults to 0 ("no measurement noise"), so a test
+	// that never sets one gets an always-significant gain, the same
+	// as this command's real 0-error fixtures before this method
+	// existed.
+	StdErrByGear  map[string]float64
+	DefaultStdErr float64
+	StdErrFunc    func(req api.SimRequest) float64
 	// FailWeights, if true, makes RunWeights return an error.
 	FailWeights bool
+
+	// WeightsFunc, when set, computes RunWeights' return value
+	// directly from the full request rather than
+	// WeightsResult/ReferenceDPSPerPoint - the only way a test can vary
+	// the sweep's own result by req.Character.Level (which band) or
+	// req.Iterations (main.go's own retry runs at
+	// weightsRetryIterationsFactor iterations), the same shape DPSFunc
+	// already gives RunPlainDPS below.
+	WeightsFunc func(req api.SimRequest) (map[string]api.StatWeight, float64, error)
+
+	// WeightsIterationsSeen records req.Iterations for every RunWeights
+	// call, in order - so a test can assert main.go's own retry guard
+	// (bis-ranker-integrity-11's brief, item 1) actually re-ran at
+	// weightsRetryIterationsFactor iterations, not just that its log
+	// line claims to have.
+	WeightsIterationsSeen []int
 
 	// DPSFunc, when set, computes RunPlainDPS's return value directly
 	// from the full request rather than DPSByGear/DefaultDPS - the only
@@ -96,9 +123,37 @@ func (f *fakeEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
 	return f.DefaultDPS, nil
 }
 
+// RunPlainDPSWithError delegates its mean to RunPlainDPS (so every
+// existing test's DPSByGear/DefaultDPS/DPSFunc/FailGear/Calls/
+// TalentsSeen behaviour is exercised identically whichever method a
+// call site uses), then adds a standard error from StdErrFunc/
+// StdErrByGear/DefaultStdErr - defaulting to 0 (a "no measurement
+// noise at all" fixture) for every test that does not set one, so
+// this lane's brief, item 2's own significance check (trinkets.go)
+// can be driven deterministically by a test without depending on the
+// real engine's own noise.
+func (f *fakeEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64, error) {
+	mean, err := f.RunPlainDPS(req)
+	if err != nil {
+		return 0, 0, err
+	}
+	if f.StdErrFunc != nil {
+		return mean, f.StdErrFunc(req), nil
+	}
+	key := gearKey(req.Character.Gear)
+	if stdErr, ok := f.StdErrByGear[key]; ok {
+		return mean, stdErr, nil
+	}
+	return mean, f.DefaultStdErr, nil
+}
+
 func (f *fakeEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+	f.WeightsIterationsSeen = append(f.WeightsIterationsSeen, req.Iterations)
 	if f.FailWeights {
 		return nil, 0, fmt.Errorf("fakeEngine: forced weights failure")
+	}
+	if f.WeightsFunc != nil {
+		return f.WeightsFunc(req)
 	}
 	return f.WeightsResult, f.ReferenceDPSPerPoint, nil
 }

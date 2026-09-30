@@ -171,3 +171,42 @@ func TestBandPoolNeverPublishesANegativeScoreFromANegativeWeight(t *testing.T) {
 		t.Errorf("Score = %v, want 0 (spirit's weight is negative), not negative", pool.Scored[0].Score)
 	}
 }
+
+// TestTrinketGainSignificantRequiresTwiceItsOwnError pins this lane's
+// brief, item 2's own dogfooded numbers (weights.go's
+// trinketGainSignificanceMultiplier doc): Fire Ruby on hunter-beast-
+// mastery band 50 Alliance measured gain 0.773 against its own
+// combined stdErr 0.7125 - clears a bare 1x bar but must not clear the
+// 2x this gate actually uses, since it sits right next to Sanctified
+// Orb's own (0.691/0.699) - two same-magnitude, effectively
+// indistinguishable-from-noise readings for two trinkets with no real
+// DPS relevance to a non-mana, non-mage spec.
+func TestTrinketGainSignificantRequiresTwiceItsOwnError(t *testing.T) {
+	if trinketGainSignificant(0.773, 0.7125) {
+		t.Error("trinketGainSignificant(0.773, 0.7125) = true, want false (clears 1x but not 2x its own error - this lane's own Fire Ruby repro)")
+	}
+}
+
+// TestTrinketGainSignificantAllowsARealSmallGain is the same
+// dogfooded run's other half: Frozen Heart of the Mountain's own +9
+// Hit measured gain 3.03 against stdErr 0.98 for rogue-assassination
+// band 50 Horde - comfortably beyond 2x (1.97) - must stay a
+// legitimate, verified pick under this rule (this lane's brief: "Frozen
+// Heart of the Mountain at band 50... stays legitimate").
+func TestTrinketGainSignificantAllowsARealSmallGain(t *testing.T) {
+	if !trinketGainSignificant(3.03, 0.98) {
+		t.Error("trinketGainSignificant(3.03, 0.98) = false, want true (comfortably beyond 2x its own error - Frozen Heart of the Mountain's own repro)")
+	}
+}
+
+// TestTrinketGainSignificantRejectsAZeroNoiseZeroGain is the hard-
+// capped boundary (matching isWeightSignificant's own >= convention,
+// referenceMeasurementTrustworthy's own strict >): a gain of exactly 0
+// with a stdErr of exactly 0 (an item simdb silently stripped, or one
+// truly identical to the baseline every iteration) is not
+// distinguishably positive and must not pass.
+func TestTrinketGainSignificantRejectsAZeroNoiseZeroGain(t *testing.T) {
+	if trinketGainSignificant(0, 0) {
+		t.Error("trinketGainSignificant(0, 0) = true, want false")
+	}
+}

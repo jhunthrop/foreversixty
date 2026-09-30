@@ -23,6 +23,21 @@ import (
 // trust.
 const significanceErrorFraction = 0.25
 
+// weightsRetryIterationsFactor is how much main.go's own retry-then-
+// fallback guard (this lane's brief, item 1's second half) multiplies
+// -weights-iterations by for a band whose reference stat measured "not
+// positive beyond its own error" (referenceMeasurementReason):
+// warlock-destruction band 60's own repro (bis-ranker-integrity-11)
+// re-ran at 4x (400 iterations/direction instead of 100) and its raw
+// standard error tightened from ±0.1332 to ±0.0642 - almost exactly
+// the sqrt(4)=2x this sweep's own merged-sample-count math
+// (adapter.Weights' own sampleCount comment) predicts - but the
+// measured reference DPS/point itself stayed negative (-0.1039), so
+// 4x alone did not resolve that particular band; the guard's fallback
+// half (the nearest lower band's own significant weights) exists for
+// exactly that case.
+const weightsRetryIterationsFactor = 4
+
 // isWeightSignificant applies significanceErrorFraction to one
 // engine-reported weight. A weight of exactly zero is never
 // significant (there is nothing for a 25%-of-value bar to compare
@@ -106,6 +121,24 @@ func isWeightSignificant(w api.StatWeight) bool {
 // but not distinguishably so) is caught the same way a negative one
 // is.
 func referenceMeasurementReason(referenceStat string, wresult map[string]api.StatWeight, referenceDPSPerPoint float64) string {
+	trustworthy, rawStderr := referenceMeasurementTrustworthy(referenceStat, wresult, referenceDPSPerPoint)
+	if trustworthy {
+		return ""
+	}
+	return fmt.Sprintf(
+		"reference stat %s measured %.4f ± %.4f DPS per point at this band's gear - not positive beyond its own error, so no weight this band measured can be trusted",
+		referenceStat, referenceDPSPerPoint, rawStderr,
+	)
+}
+
+// referenceMeasurementTrustworthy is the arithmetic
+// referenceMeasurementReason and fallbackWeightsReason (below) both
+// build their wording from - split out so main.go's retry-then-fallback
+// guard (this lane's brief, item 1's second half) and the fallback
+// band's own reason text can each report the SAME raw standard error
+// referenceMeasurementReason already computed, rather than recomputing
+// it with a second formula that could drift from this one.
+func referenceMeasurementTrustworthy(referenceStat string, wresult map[string]api.StatWeight, referenceDPSPerPoint float64) (trustworthy bool, rawStderr float64) {
 	ref, ok := wresult[referenceStat]
 	if !ok {
 		// Every real request's WeightStats carries its own
@@ -113,15 +146,102 @@ func referenceMeasurementReason(referenceStat string, wresult map[string]api.Sta
 		// unreachable in production; leave the band alone rather than
 		// invent a reason for a case that cannot happen with real
 		// data.
-		return ""
+		return true, 0
 	}
-	rawStderr := math.Abs(ref.Error * referenceDPSPerPoint)
-	if referenceDPSPerPoint > rawStderr {
-		return ""
-	}
+	rawStderr = math.Abs(ref.Error * referenceDPSPerPoint)
+	return positiveBeyondError(referenceDPSPerPoint, rawStderr), rawStderr
+}
+
+// positiveBeyondError is this command's one shared significance test -
+// used by referenceMeasurementTrustworthy above (a band's own
+// reference-stat measurement, this lane's brief item 1) and by
+// report.go's trinketLowGain gate (a trinket's own measured DPS gain,
+// item 2): delta is trusted only when it clears its own standard
+// error, not merely when it is positive - a delta sitting inside its
+// own error bar (small and positive, or negative) is measurement
+// noise, whichever of the two quantities it happens to be. Strict `>`,
+// not `>=`: a delta exactly AT its own error (or a zero-noise 0-vs-0)
+// is not distinguishably positive either, the same boundary
+// sim/adapter.Weights' own Insignificant flag draws.
+func positiveBeyondError(delta, stdErr float64) bool {
+	return delta > stdErr
+}
+
+// trinketGainSignificanceMultiplier is report.go's trinketLowGain gate
+// own bar on a trinket's MeasuredGainDPS/MeasuredGainStdErr
+// (trinkets.go) - bis-ranker-integrity-11's brief, item 2. A bare 1x
+// (positiveBeyondError's own bar, ~84% one-sided confidence) is not
+// tight enough here: dogfooded directly (this lane's report) at
+// trinketRankIterations (100), a trinket with NO real DPS relevance at
+// all for the spec wearing it - Fire Ruby (a mage-only Fire Ward/Fire
+// Blast interaction) on hunter-beast-mastery band 50 Alliance - still
+// measured gain 0.773 against its own combined stdErr 0.7125 (a
+// same-magnitude coin flip against Sanctified Orb's genuinely-noise
+// 0.691/0.699 right next to it), clearing a bare 1x bar and winning
+// the slot anyway. 2x (~95% one-sided confidence, the ordinary
+// scientific convention for "not just noise") correctly fails that
+// same case (0.773 < 1.425) while still passing every genuine small
+// gain this lane re-measured (Frozen Heart of the Mountain's own +9
+// Hit: 3.03 DPS against a 0.98 stdErr for rogue-assassination band 50
+// Horde, 4.11 against 1.64 for band 60 Alliance - both comfortably
+// beyond 2x).
+const trinketGainSignificanceMultiplier = 2.0
+
+// trinketGainSignificant is report.go's trinketLowGain gate: whether a
+// trinket's own measured DPS gain (over the no-trinket baseline,
+// trinkets.go) clears trinketGainSignificanceMultiplier times its own
+// combined standard error - stricter than positiveBeyondError's bare
+// 1x (see trinketGainSignificanceMultiplier's own doc for why this
+// gate needs the wider margin and that one does not).
+func trinketGainSignificant(gainDPS, gainStdErr float64) bool {
+	return gainDPS > trinketGainSignificanceMultiplier*gainStdErr
+}
+
+// Known limitation (bis-ranker-integrity-11 lane report): this gate
+// only ever catches a candidate's gain being pure SAMPLING noise
+// around a true value at or near zero - it cannot catch a gain that
+// is itself real and reproducible by the engine's own math for a
+// reason unrelated to the trinket's own stated effect. Dogfooded
+// directly: hunter-beast-mastery band 60 (both factions) still
+// measures Fire Ruby/Burst of Knowledge/Second Wind/Sanctified Orb
+// each gaining 1-7 DPS over the no-trinket baseline, and the gain does
+// NOT shrink toward zero as trinketRankIterations rises (100 to 2000,
+// a 20x rerun of this exact repro) - only gainStdErr shrinks, exactly
+// as it would for a REAL, non-noise effect, so no iteration count or
+// significance multiplier this lane could choose would ever gate it.
+// Every simmable candidate in that slot's own pool measures a
+// similarly-shaped positive gain regardless of whether its own effect
+// text has anything to do with this spec (Sanctified Orb's mana
+// restore and Frozen Heart of the Mountain's own +9 Hit rating measure
+// the same order of magnitude there) - the likely cause is the spec's
+// own APL's unconditional `autocastOtherCooldowns` action (this
+// spec's own data/curated/apl/hunter-beast-mastery.json) crediting ANY
+// equipped on-use item with some economy-of-action value the moment
+// it is off cooldown, independent of what the item's own effect
+// actually does - an engine-side (sim/core's item-effect/APL
+// interaction) question, not a ranker one, and the engine fork is
+// read-only for this lane. Flagged for the controller as a follow-up:
+// either the engine's own autocastOtherCooldowns handling needs to
+// stop crediting a no-op on-use effect, or trinketShortlist needs a
+// genuinely spec-aware relevance check (does this item's own effect
+// reference a resource/spell this spec's class actually has) rather
+// than a DPS-measurement significance test, since the measurement
+// here is not wrong, only the premise that a positive measurement
+// implies real value is.
+
+// fallbackWeightsReason is the weights_reason main.go publishes when a
+// band's own sweep - even re-run once at weightsRetryIterationsFactor
+// iterations (main.go's own guard) - still fails
+// referenceMeasurementTrustworthy: this band's picks are ranked and
+// verified against fromBand's own last-trusted weights instead of an
+// empty map (an empty slot must only ever mean no candidate exists,
+// never that a sweep was noisy - this lane's brief), and the report
+// says exactly that rather than a bare "not significant".
+func fallbackWeightsReason(referenceStat string, wresult map[string]api.StatWeight, referenceDPSPerPoint float64, band, fromBand int) string {
+	_, rawStderr := referenceMeasurementTrustworthy(referenceStat, wresult, referenceDPSPerPoint)
 	return fmt.Sprintf(
-		"reference stat %s measured %.4f ± %.4f DPS per point at this band's gear - not positive beyond its own error, so no weight this band measured can be trusted",
-		referenceStat, referenceDPSPerPoint, rawStderr,
+		"weights carried from band %d: band %d's own sweep measured %.4f ± %.4f DPS per point at this band's gear - not positive beyond its own error",
+		fromBand, band, referenceDPSPerPoint, rawStderr,
 	)
 }
 
