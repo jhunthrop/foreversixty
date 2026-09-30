@@ -97251,9 +97251,10 @@
       "source_origin": "wowhead"
     },
     {
-      "id": "vendor:11036",
+      "id": "vendor:11036:later",
       "kind": "vendor",
       "name": "Leonid Barthalomew the Revered",
+      "opens": "later",
       "npc_id": 11036,
       "items": [
         239512,
@@ -97449,7 +97450,8 @@
         246061,
         246062
       ],
-      "source_origin": "wowhead"
+      "source_origin": "wowhead",
+      "source_note": "wowhead prices this row in an ItemExtendedCost item id that is not itself a real, separately obtainable item at launch (missing from this build's own catalogue, or obtainable only from this same vendor) -- beta/test data, not a real purchase."
     },
     {
       "id": "vendor:11038",
@@ -101546,9 +101548,10 @@
       "source_origin": "classic-db"
     },
     {
-      "id": "vendor:240248",
+      "id": "vendor:240248:later",
       "kind": "vendor",
       "name": "Bryon Steelblade",
+      "opens": "later",
       "npc_id": 240248,
       "items": [
         239512,
@@ -101744,7 +101747,8 @@
         246061,
         246062
       ],
-      "source_origin": "wowhead"
+      "source_origin": "wowhead",
+      "source_note": "wowhead prices this row in an ItemExtendedCost item id that is not itself a real, separately obtainable item at launch (missing from this build's own catalogue, or obtainable only from this same vendor) -- beta/test data, not a real purchase."
     },
     {
       "id": "vendor:2482",
