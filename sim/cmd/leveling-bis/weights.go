@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -74,6 +75,56 @@ func isWeightSignificant(w api.StatWeight) bool {
 // aside still sees the real number, its error bar and whether this
 // command trusts it enough to print as a fact -- only ranking's own,
 // narrower rule is decided here.
+// referenceMeasurementReason reports why a band's whole weights sweep
+// cannot be trusted - "" when it can (the ordinary case, every band
+// but one seen so far).
+//
+// Every other published Weights[i].Weight is raw[i]/scale, where scale
+// is this same band's raw, un-normalised DPS delta for one point of
+// the spec's own reference stat (simrun.go's referenceStatRawWeight;
+// bandReport.ReferenceDPSPerPoint). Dividing by a scale that is at or
+// below zero flips or garbles every ratio: warlock-demonology band 60
+// published reference_dps_per_point -0.189 (spell power made the raid
+// dummy hit LESS hard at this band's gear - noise, not a real effect)
+// with intellect 4.55, hit -5.57, crit -1.77, spell_haste -2.24, NONE
+// insignificant - a caster page reading that would tell a player
+// Intellect helps roughly as much as Spell Power and Hit actively
+// hurts, both false. A weight born of two negative-noise raw deltas
+// can even land positive (two negatives divide to a positive) and
+// still be worthless - "not insignificant" here is not enough cover;
+// the whole band has to publish as untrustworthy, not just each stat
+// on its own noise bar (isWeightSignificant).
+//
+// The check is "positive beyond its own error" (this lane's brief):
+// wresult[referenceStat].Error is sim/adapter.Weights' own
+// errAmt/scale, and scale is exactly referenceDPSPerPoint (both read
+// the identical raw array entry - simrun.go's own doc), so
+// wresult[referenceStat].Error*referenceDPSPerPoint recovers the raw
+// standard error without asking the engine for it a second time.
+// referenceDPSPerPoint must clear that error, not just be positive,
+// so a reference sitting at its own noise floor (small and positive,
+// but not distinguishably so) is caught the same way a negative one
+// is.
+func referenceMeasurementReason(referenceStat string, wresult map[string]api.StatWeight, referenceDPSPerPoint float64) string {
+	ref, ok := wresult[referenceStat]
+	if !ok {
+		// Every real request's WeightStats carries its own
+		// ReferenceStat (weightsRequest's own doc), so this is
+		// unreachable in production; leave the band alone rather than
+		// invent a reason for a case that cannot happen with real
+		// data.
+		return ""
+	}
+	rawStderr := math.Abs(ref.Error * referenceDPSPerPoint)
+	if referenceDPSPerPoint > rawStderr {
+		return ""
+	}
+	return fmt.Sprintf(
+		"reference stat %s measured %.4f ± %.4f DPS per point at this band's gear - not positive beyond its own error, so no weight this band measured can be trusted",
+		referenceStat, referenceDPSPerPoint, rawStderr,
+	)
+}
+
 func effectiveWeights(weights map[string]api.StatWeight) map[string]float64 {
 	out := make(map[string]float64, len(weights))
 	for stat, w := range weights {

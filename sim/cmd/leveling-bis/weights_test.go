@@ -91,6 +91,58 @@ func TestEffectiveWeightsZeroesAZeroWeightToo(t *testing.T) {
 	}
 }
 
+// TestReferenceMeasurementReasonCatchesANegativeReference pins this
+// lane's brief, item 2: warlock-demonology band 60 published
+// reference_dps_per_point -0.189 (spell_power's own measured DPS
+// delta went negative) with every OTHER weight sign-flipped
+// (intellect 4.55, crit -1.77, hit -5.57), none marked insignificant.
+// wresult[reference].Error is sim/adapter.Weights' own errAmt/scale;
+// this test's error (-0.62) times its referenceDPSPerPoint (-0.189)
+// recovers a positive raw standard error (0.117), and -0.189 does not
+// clear it, so this band must not be trusted.
+func TestReferenceMeasurementReasonCatchesANegativeReference(t *testing.T) {
+	wresult := map[string]api.StatWeight{
+		"spell_power": {Stat: "spell_power", Weight: 1, Error: -0.6199033936015775},
+	}
+	reason := referenceMeasurementReason("spell_power", wresult, -0.1893283096184771)
+	if reason == "" {
+		t.Fatal("referenceMeasurementReason(...) = \"\", want a non-empty reason for a negative reference delta")
+	}
+}
+
+// TestReferenceMeasurementReasonCatchesAReferenceWithinItsOwnError is
+// the boundary the brief's own wording draws: "positive beyond its own
+// error" is stricter than merely positive - a small positive delta
+// that does not clear its own standard error is exactly as
+// untrustworthy as a negative one, since the "true" value could
+// plausibly be zero or negative.
+func TestReferenceMeasurementReasonCatchesAReferenceWithinItsOwnError(t *testing.T) {
+	// error 1.5 * scale/delta 0.1 recovers raw stderr = 0.15, which the
+	// reference delta itself (0.1) does not clear.
+	wresult := map[string]api.StatWeight{
+		"attack_power": {Stat: "attack_power", Weight: 1, Error: 1.5},
+	}
+	reason := referenceMeasurementReason("attack_power", wresult, 0.1)
+	if reason == "" {
+		t.Fatal("referenceMeasurementReason(...) = \"\", want a non-empty reason: 0.1 does not clear its own 0.15 error")
+	}
+}
+
+// TestReferenceMeasurementReasonAllowsAConfidentlyPositiveReference is
+// the ordinary case: a reference delta clearly above its own error
+// (error 0.1/scale 0.07 recovers raw stderr 0.007, well under the
+// 0.07 delta) must not be flagged - every band this lane measured but
+// warlock-demonology 60 looks like this.
+func TestReferenceMeasurementReasonAllowsAConfidentlyPositiveReference(t *testing.T) {
+	wresult := map[string]api.StatWeight{
+		"attack_power": {Stat: "attack_power", Weight: 1, Error: 0.1},
+	}
+	reason := referenceMeasurementReason("attack_power", wresult, 0.07)
+	if reason != "" {
+		t.Errorf("referenceMeasurementReason(...) = %q, want \"\" (0.07 clears its own 0.007 error)", reason)
+	}
+}
+
 // TestBandPoolNeverPublishesANegativeScoreFromANegativeWeight is an
 // end-to-end pin of the same bug at buildBandPool's own level (the
 // actual call site score() is reached from): an item whose only stat

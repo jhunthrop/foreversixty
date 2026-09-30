@@ -603,7 +603,14 @@ type bandReport struct {
 	// "Strength 1.99" into "1 Attack Power = 0.07 DPS, Strength 1.99 (=
 	// 0.14 DPS per point)" instead of publishing a bare, unitless
 	// ratio with nothing saying what "1" means.
-	ReferenceDPSPerPoint float64 `json:"reference_dps_per_point"`
+	//
+	// A pointer, not a bare float64: nil (omitted from the JSON
+	// entirely) when WeightsReason below is set, because a band whose
+	// reference measurement is not trustworthy was never actually
+	// divided into any of this band's Weights - publishing 0 here
+	// would read as "this stat is worth zero DPS", a specific false
+	// claim, not "unknown" (this lane's brief, item 2).
+	ReferenceDPSPerPoint *float64 `json:"reference_dps_per_point,omitempty"`
 	// ScoreUnit documents slotRow.Score's own unit for every consumer
 	// of this JSON (alternativeRow carries no score at all as of
 	// bis-ranker-integrity-3 - see its own doc) - this lane's brief,
@@ -615,6 +622,13 @@ type bandReport struct {
 	// leave old JSON ambiguous about which one an already-written file
 	// used.
 	ScoreUnit string `json:"score_unit"`
+	// WeightsReason is set only when this band's whole weights sweep
+	// could not be trusted (referenceMeasurementReason, weights.go) -
+	// this lane's brief, item 2: a caster reading "not significant" on
+	// every row with no explanation would not know this band differs
+	// from ordinary sweep noise. Empty on every ordinary band (the
+	// overwhelming majority).
+	WeightsReason string `json:"weights_reason,omitempty"`
 }
 
 // scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value
@@ -659,7 +673,17 @@ const noSourceSampleSize = 15
 // brief adds) simply publishes no alternatives, same as an empty map
 // would. referenceDPSPerPoint is runWeights' own second return
 // (simrun.go) - this lane's brief, item 2.
-func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]api.StatWeight, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string, coverage map[string]coverageRow, bySlot map[string][]scored, referenceDPSPerPoint float64) bandReport {
+// weightsReason is referenceMeasurementReason's own return
+// (weights.go): "" for the ordinary band, or the reason this whole
+// band's weights sweep could not be trusted - this lane's brief, item
+// 2. A non-empty reason forces every weightRow to publish
+// Insignificant regardless of what isWeightSignificant says about its
+// own stat in isolation (a poisoned reference can make an individual
+// ratio look deceptively clean - see referenceMeasurementReason's own
+// doc), and ReferenceDPSPerPoint is omitted from the JSON entirely
+// (nil, not a misleading 0) rather than publish the ratio every other
+// weight was never actually normalised against.
+func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]api.StatWeight, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string, coverage map[string]coverageRow, bySlot map[string][]scored, referenceDPSPerPoint float64, weightsReason string) bandReport {
 	swapBySlot := make(map[string]swapResult, len(swaps))
 	for _, s := range swaps {
 		swapBySlot[s.Slot] = s
@@ -866,11 +890,21 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 	for _, id := range weightOrder {
 		w := weights[id]
 		wrows = append(wrows, weightRow{
-			Stat:          id,
-			Weight:        w.Weight,
-			Error:         w.Error,
-			Insignificant: !isWeightSignificant(w),
+			Stat:   id,
+			Weight: w.Weight,
+			Error:  w.Error,
+			// weightsReason != "" overrides isWeightSignificant for
+			// every row: the band's own reference measurement makes
+			// none of them trustworthy, whatever their own noise bar
+			// says (weightsReason's own doc).
+			Insignificant: weightsReason != "" || !isWeightSignificant(w),
 		})
+	}
+
+	var referenceDPSPerPointOut *float64
+	if weightsReason == "" {
+		v := referenceDPSPerPoint
+		referenceDPSPerPointOut = &v
 	}
 
 	return bandReport{
@@ -890,7 +924,8 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		VerifyRunSeconds:     verifySeconds,
 		VerifyErrors:         verifyErrors,
 		Coverage:             coverage,
-		ReferenceDPSPerPoint: referenceDPSPerPoint,
+		ReferenceDPSPerPoint: referenceDPSPerPointOut,
+		WeightsReason:        weightsReason,
 		ScoreUnit:            scoreUnitReferenceStatPoints,
 	}
 }
