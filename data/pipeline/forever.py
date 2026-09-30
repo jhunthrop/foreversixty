@@ -114,12 +114,17 @@ def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
     tree_class: dict[int, int] = {}
     tree_names: dict[int, str] = {}
     tree_backgrounds: dict[int, str] = {}
+    tree_icons: dict[int, str] = {}
     for path in sorted((src / "talents").glob("*.json")):
         data = json.loads(path.read_text())
         for tree in data["trees"]:
             tree_class[tree["id"]] = data["class_id"]
             tree_names[tree["id"]] = tree["name"]
             tree_backgrounds[tree["id"]] = tree["background"]
+            # `.get` with a placeholder fallback, not `tree["icon"]`: a
+            # from_build normalized before the tree-icon field existed
+            # (data-followups-11 lane) has no "icon" key at all.
+            tree_icons[tree["id"]] = tree.get("icon") or PLACEHOLDER_ICON
 
     per_class = normalize_forever_talents(
         payload,
@@ -128,6 +133,7 @@ def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
         tree_class=tree_class,
         tree_names=tree_names,
         tree_backgrounds=tree_backgrounds,
+        tree_icons=tree_icons,
     )
 
     (dst / "talents").mkdir(parents=True, exist_ok=True)

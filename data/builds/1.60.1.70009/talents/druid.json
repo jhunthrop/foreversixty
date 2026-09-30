@@ -401,7 +401,8 @@
           "spell_id": 24858
         }
       ],
-      "background": "druidbalance"
+      "background": "druidbalance",
+      "icon": "spell_nature_starfall"
     },
     {
       "id": 281,
@@ -860,7 +861,8 @@
           "spell_id": 417141
         }
       ],
-      "background": "druidferalcombat"
+      "background": "druidferalcombat",
+      "icon": "ability_racial_bearform"
     },
     {
       "id": 282,
@@ -1280,7 +1282,8 @@
           "spell_id": 408120
         }
       ],
-      "background": "druidrestoration"
+      "background": "druidrestoration",
+      "icon": "spell_nature_healingtouch"
     }
   ]
 }

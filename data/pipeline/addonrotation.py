@@ -30,6 +30,7 @@ Two decisions are load-bearing:
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from pathlib import Path
 
 from pipeline.csvio import read_csv
@@ -177,32 +178,30 @@ def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int,
     return family, learned[-1][1]
 
 
-def _resolve_icon(
-    spell_id: int, spell_text: SpellText | None, icons: dict[int, str] | None
-) -> str:
-    """The resolved rank's icon, off the same client tables a talent's icon
-    already joins through (`pipeline.icons.resolve_icon`,
-    `SpellMisc.SpellIconFileDataID` -> `ManifestInterfaceData`).
+def _resolve_icon(spell_id: int, icon_of: Callable[[int], str] | None) -> str:
+    """The resolved rank's icon, via `icon_of` -- a lookup a caller supplies
+    (see `build_rotations` below, which looks one up in the committed
+    `spellicons.json`, and `compute_spell_icons`, which resolves one fresh
+    off the client's own tables).
 
-    `spell_text`/`icons` are `None` when `build_rotation` is called with
-    no client tables at all (every existing caller before this field
-    existed, and a merge-only run that has no `raw/` -- see
-    `_load_spell_icons`): the placeholder is what every other icon-
-    bearing field in this pipeline emits for "the client gave us
-    nothing to resolve" (`pipeline.icons.resolve_icon`'s own doc), never
-    an empty string, which would put `icons/.webp` in the output.
+    `icon_of` is `None` when `build_rotation` is called with no way to
+    resolve an icon at all (every existing caller before this field
+    existed, and a build whose committed `spellicons.json` does not exist
+    yet -- see `_load_spell_icons`): the placeholder is what every other
+    icon-bearing field in this pipeline emits for "nothing to resolve"
+    (`pipeline.icons.resolve_icon`'s own doc), never an empty string,
+    which would put `icons/.webp` in the output.
     """
-    if spell_text is None or icons is None:
+    if icon_of is None:
         return PLACEHOLDER_ICON
-    return resolve_icon(spell_text.icon_file_id(spell_id), icons, f"rotation spell {spell_id}")
+    return icon_of(spell_id)
 
 
 def build_rotation(
     spec: str,
     curated_dir: Path,
     spellranks: dict,
-    spell_text: SpellText | None = None,
-    icons: dict[int, str] | None = None,
+    icon_of: Callable[[int], str] | None = None,
 ) -> list[AddonRotationBand]:
     """One spec's rotation table, one band per LEVEL_BANDS entry."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
@@ -223,7 +222,7 @@ def build_rotation(
                 continue
             name, resolved_id = resolved
             condition = _one_line(cast["notes"])
-            icon = _resolve_icon(resolved_id, spell_text, icons)
+            icon = _resolve_icon(resolved_id, icon_of)
             lines.append(
                 AddonRotationLine(
                     spell_id=resolved_id, name=name, condition=condition, icon=icon
@@ -236,7 +235,9 @@ def build_rotation(
 #: The client tables a rotation line's icon needs, straight off `raw/` --
 #: the same five `pipeline.normalize.__init__` already reads to build a
 #: talent's own icon (`load_spell_text` for `SpellMisc.SpellIconFileDataID`,
-#: `icon_names` for `ManifestInterfaceData`).
+#: `icon_names` for `ManifestInterfaceData`). Read only by
+#: `compute_spell_icons` below -- the one function in this module that
+#: still touches `raw/` at all.
 _ICON_RAW_TABLES = (
     "Spell.csv",
     "SpellMisc.csv",
@@ -246,13 +247,13 @@ _ICON_RAW_TABLES = (
 )
 
 
-def _load_spell_icons(raw: Path) -> tuple[SpellText | None, dict[int, str] | None]:
+def _load_client_spell_tables(raw: Path) -> tuple[SpellText | None, dict[int, str] | None]:
     """`(spell_text, icon_names)` off `build/raw/`, or `(None, None)` when
-    this build has no `raw/` at all (or is missing one of the five
-    tables) -- `pipeline.loot.merge_loot_files`' own situation, a re-derive
-    with no fresh client tables available. `build_rotation` already treats
-    that as "resolve nothing, use the placeholder" rather than refusing;
-    this is what lets `build_rotations` keep working then too."""
+    this build has no `raw/` at all, or is missing one of the five tables.
+    `compute_spell_icons` is the only caller: it needs these to resolve a
+    rotation line's icon from the client's own tables in the first place,
+    at the one point in the pipeline (`python -m pipeline icons`) raw/ is
+    guaranteed to actually be there."""
     if not raw.exists() or not all((raw / name).exists() for name in _ICON_RAW_TABLES):
         return None, None
     spell_text = load_spell_text(
@@ -265,6 +266,86 @@ def _load_spell_icons(raw: Path) -> tuple[SpellText | None, dict[int, str] | Non
     return spell_text, icons
 
 
+def compute_spell_icons(
+    root: Path, build: str, curated_dir: Path = Path("curated")
+) -> dict[int, str]:
+    """spell id -> icon name for every id a rotation line resolves to,
+    across every curated spec and every `LEVEL_BANDS` entry, read straight
+    off this build's `raw/` client tables.
+
+    This is the one function in this module that still needs `raw/` at
+    all: `pipeline.icons.icons_for_build` (the step that already requires
+    `raw/`, to download icon art) calls this and persists the result at
+    `builds/<build>/spellicons.json` (`write_spell_icons`); `build_rotations`
+    below then reads only that committed file, never `raw/` itself, which
+    is what lets `addon-data --check` (data.yml's `test` job) and bis.yml's
+    nightly regen -- both run against a plain checkout with no `raw/`
+    CSVs -- see the same real icons the fetch job saw instead of
+    re-deriving nothing and publishing placeholders over them.
+
+    A build whose `raw/` is missing or incomplete resolves every id to
+    the placeholder (`_resolve_icon`'s own fallback) rather than refusing;
+    `write_spell_icons` would then commit an all-placeholder file, which is
+    a visible regression, not a silent one, and no worse than what this
+    build already had before `raw/` was fetched at all.
+
+    Sorted by id on return: small, deterministic, and a stable diff when a
+    curated APL or spellranks.json changes which ids are referenced.
+    """
+    spellranks_path = root / build / "spellranks.json"
+    if not spellranks_path.exists():
+        raise AddonRotationError(f"missing {spellranks_path}")
+    spellranks = json.loads(spellranks_path.read_text(encoding="utf-8"))
+    spell_text, icon_lookup = _load_client_spell_tables(root / build / "raw")
+    icon_of = (
+        (
+            lambda spell_id: resolve_icon(
+                spell_text.icon_file_id(spell_id), icon_lookup, f"rotation spell {spell_id}"
+            )
+        )
+        if spell_text is not None and icon_lookup is not None
+        else None
+    )
+
+    apl_dir = curated_dir / "apl"
+    specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
+    icons: dict[int, str] = {}
+    for spec in specs:
+        for band in build_rotation(spec, curated_dir, spellranks, icon_of):
+            for line in band.lines:
+                icons.setdefault(line.spell_id, line.icon)
+    return dict(sorted(icons.items()))
+
+
+def write_spell_icons(
+    build: str, root: Path = Path("builds"), curated_dir: Path = Path("curated")
+) -> Path:
+    """Write `builds/<build>/spellicons.json`: `compute_spell_icons`'
+    id -> icon map, committed like every other per-build JSON file
+    (`spellranks.json` beside it) so a later run needs no `raw/` at all to
+    read it back. Called by `python -m pipeline icons`, the step that
+    already has `raw/` -- see `compute_spell_icons`'s own doc."""
+    icons = compute_spell_icons(root, build, curated_dir)
+    path = root / build / "spellicons.json"
+    payload = {str(spell_id): icon for spell_id, icon in icons.items()}
+    path.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    return path
+
+
+def _load_spell_icons(build_dir: Path) -> dict[int, str] | None:
+    """spell id -> icon name off the committed `build_dir/spellicons.json`
+    (`write_spell_icons`), or `None` when this build predates that file.
+    `build_rotations` is the only caller, and never falls back to `raw/`
+    itself -- see `compute_spell_icons`'s own doc for why."""
+    path = build_dir / "spellicons.json"
+    if not path.exists():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return {int(spell_id): icon for spell_id, icon in payload.items()}
+
+
 def build_rotations(
     root: Path, build: str, curated_dir: Path = Path("curated")
 ) -> dict[str, list[AddonRotationBand]]:
@@ -273,9 +354,12 @@ def build_rotations(
     if not spellranks_path.exists():
         raise AddonRotationError(f"missing {spellranks_path}")
     spellranks = json.loads(spellranks_path.read_text(encoding="utf-8"))
-    spell_text, icons = _load_spell_icons(root / build / "raw")
+    spell_icons = _load_spell_icons(root / build)
+    icon_of = (
+        (lambda spell_id: spell_icons.get(spell_id, PLACEHOLDER_ICON))
+        if spell_icons is not None
+        else None
+    )
     apl_dir = curated_dir / "apl"
     specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
-    return {
-        spec: build_rotation(spec, curated_dir, spellranks, spell_text, icons) for spec in specs
-    }
+    return {spec: build_rotation(spec, curated_dir, spellranks, icon_of) for spec in specs}

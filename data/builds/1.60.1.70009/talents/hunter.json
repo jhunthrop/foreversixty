@@ -393,7 +393,8 @@
           "spell_id": 19574
         }
       ],
-      "background": "hunterbeastmastery"
+      "background": "hunterbeastmastery",
+      "icon": "ability_hunter_beasttaming"
     },
     {
       "id": 363,
@@ -850,7 +851,8 @@
           "spell_id": 1310687
         }
       ],
-      "background": "huntermarksmanship"
+      "background": "huntermarksmanship",
+      "icon": "ability_marksmanship"
     },
     {
       "id": 362,
@@ -1300,7 +1302,8 @@
           "spell_id": 1310533
         }
       ],
-      "background": "huntersurvival"
+      "background": "huntersurvival",
+      "icon": "ability_hunter_swiftstrike"
     }
   ]
 }

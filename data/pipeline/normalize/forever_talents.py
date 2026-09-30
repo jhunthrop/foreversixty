@@ -68,18 +68,21 @@ def normalize_forever_talents(
     tree_class: dict[int, int],
     tree_names: dict[int, str],
     tree_backgrounds: dict[int, str],
+    tree_icons: dict[int, str],
 ) -> list[ClassTalents]:
     """Build one `ClassTalents` per class from Wowhead's payload.
 
     `classes` is our own class table (id, name, slug), `tree_class` maps a tree id to a
-    class id, `tree_names` gives each tree its display name and `tree_backgrounds` its
-    background art name. All four come from the build we already normalized, so nothing
-    about the class, tree list or art is inferred from Wowhead. The tree names matter:
-    Wowhead's `description` glues the class onto the tree with no separator
-    ("WarriorArms", "HunterBeastMastery"), and un-gluing it would have to guess where the
-    words break. The tree ids are identical on both sides, so a lookup is exact where a
-    split would be a guess. Wowhead's payload carries no background art at all, so that
-    field is always the already-normalized build's own.
+    class id, `tree_names` gives each tree its display name, `tree_backgrounds` its
+    background art name and `tree_icons` its own tab icon (tenet 3's spec-icon
+    counterpart; `pipeline.models.TalentTree.icon`'s own doc). All five come from the
+    build we already normalized, so nothing about the class, tree list or art is
+    inferred from Wowhead. The tree names matter: Wowhead's `description` glues the
+    class onto the tree with no separator ("WarriorArms", "HunterBeastMastery"), and
+    un-gluing it would have to guess where the words break. The tree ids are identical
+    on both sides, so a lookup is exact where a split would be a guess. Wowhead's
+    payload carries no background art or tab icon at all, so both fields are always
+    the already-normalized build's own.
     """
     trees_meta = payload.get("trees") or {}
     talents_by_tree = payload.get("talents") or {}
@@ -135,6 +138,9 @@ def normalize_forever_talents(
         background = tree_backgrounds.get(tree_id)
         if not background:
             raise ForeverTalentError(f"tree {tree_id} has no background in our tables")
+        icon = tree_icons.get(tree_id)
+        if not icon:
+            raise ForeverTalentError(f"tree {tree_id} has no icon in our tables")
         by_class.setdefault(class_id, []).append(
             TalentTree(
                 id=tree_id,
@@ -142,6 +148,7 @@ def normalize_forever_talents(
                 position=0,
                 talents=entries,
                 background=background,
+                icon=icon,
             )
         )
 

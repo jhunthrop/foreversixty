@@ -431,7 +431,8 @@
           "spell_id": 12042
         }
       ],
-      "background": "magearcane"
+      "background": "magearcane",
+      "icon": "spell_holy_magicalsentry"
     },
     {
       "id": 41,
@@ -844,7 +845,8 @@
           "spell_id": 11129
         }
       ],
-      "background": "magefire"
+      "background": "magefire",
+      "icon": "spell_fire_firebolt02"
     },
     {
       "id": 61,
@@ -1311,7 +1313,8 @@
           "spell_id": 11426
         }
       ],
-      "background": "magefrost"
+      "background": "magefrost",
+      "icon": "spell_frost_frostbolt02"
     }
   ]
 }

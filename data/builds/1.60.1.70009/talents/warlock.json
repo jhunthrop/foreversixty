@@ -426,7 +426,8 @@
           "spell_id": 1316697
         }
       ],
-      "background": "warlockcurses"
+      "background": "warlockcurses",
+      "icon": "spell_shadow_deathcoil"
     },
     {
       "id": 303,
@@ -881,7 +882,8 @@
           "spell_id": 425464
         }
       ],
-      "background": "warlocksummoning"
+      "background": "warlocksummoning",
+      "icon": "spell_shadow_metamorphosis"
     },
     {
       "id": 301,
@@ -1297,7 +1299,8 @@
           "spell_id": 412758
         }
       ],
-      "background": "warlockdestruction"
+      "background": "warlockdestruction",
+      "icon": "spell_shadow_rainoffire"
     }
   ]
 }

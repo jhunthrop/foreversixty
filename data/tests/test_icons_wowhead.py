@@ -193,6 +193,15 @@ def test_icons_for_build_routes_a_client_owned_supplement_icon_through_casc(
     write_classes(build_dir)
     (build_dir / "talents").mkdir()
     (build_dir / "items").mkdir()
+    # rotation_icon_names (icons_for_build's own addition, day3 data-
+    # followups-11 lane) needs a spellranks.json to read even though this
+    # test has nothing to do with rotations; an empty-but-well-formed one,
+    # with curated_dir pointing at a directory with no apl/ folder (so the
+    # REAL data/curated/apl specs this test's default cwd would otherwise
+    # pick up never enter it), resolves to "no rotation icons" rather than
+    # a missing-file refusal -- the same stub
+    # test_icons_for_build_downloads_what_the_build_refers_to uses.
+    (build_dir / "spellranks.json").write_text(json.dumps({"build": "1.0.0.1", "classes": {}}))
 
     casc_calls: list[str] = []
     zamimg_calls: list[str] = []
@@ -206,7 +215,11 @@ def test_icons_for_build_routes_a_client_owned_supplement_icon_through_casc(
 
     client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://wago.tools")
     written = icons_for_build(
-        "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", client=client
+        "1.0.0.1",
+        root=tmp_path / "builds",
+        cache_dir=tmp_path / "cache",
+        client=client,
+        curated_dir=tmp_path / "curated",
     )
     assert written == 2
     assert casc_calls == ["/api/casc/1"]  # the cloak, through CASC
@@ -227,13 +240,21 @@ def test_icons_for_build_is_unaffected_by_a_build_with_no_wowhead_payload(tmp_pa
     write_classes(build_dir)
     (build_dir / "talents").mkdir()
     (build_dir / "items").mkdir()
+    # Same stub as the test above, for the same reason: rotation_icon_names
+    # needs a spellranks.json to read, and curated_dir must not be the real
+    # data/curated/ this test's default cwd would otherwise resolve to.
+    (build_dir / "spellranks.json").write_text(json.dumps({"build": "1.0.0.1", "classes": {}}))
 
     client = httpx.Client(
         transport=httpx.MockTransport(lambda request: httpx.Response(200, content=make_blp2())),
         base_url="https://wago.tools",
     )
     written = icons_for_build(
-        "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", client=client
+        "1.0.0.1",
+        root=tmp_path / "builds",
+        cache_dir=tmp_path / "cache",
+        client=client,
+        curated_dir=tmp_path / "curated",
     )
     assert written == 0  # nothing referenced by the (empty) talents/items JSON
     assert not (build_dir / "icons").exists() or list((build_dir / "icons").iterdir()) == []

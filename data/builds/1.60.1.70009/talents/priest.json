@@ -447,7 +447,8 @@
           "spell_id": 10060
         }
       ],
-      "background": "priestdiscipline"
+      "background": "priestdiscipline",
+      "icon": "spell_holy_wordfortitude"
     },
     {
       "id": 202,
@@ -868,7 +869,8 @@
           "spell_id": 401859
         }
       ],
-      "background": "priestholy"
+      "background": "priestholy",
+      "icon": "spell_holy_guardianspirit"
     },
     {
       "id": 203,
@@ -1306,7 +1308,8 @@
           "spell_id": 15473
         }
       ],
-      "background": "priestshadow"
+      "background": "priestshadow",
+      "icon": "spell_shadow_shadowwordpain"
     }
   ]
 }

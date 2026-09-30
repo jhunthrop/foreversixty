@@ -340,21 +340,22 @@ def _referenced_names(build_dir: Path, extra: frozenset[str] = frozenset()) -> s
 
 
 def rotation_icon_names(build_dir: Path, curated_dir: Path = Path("curated")) -> set[str]:
-    """Every icon name `pipeline.addonrotation.build_rotations` resolves for
-    this build's rotation lines.
+    """Every icon name a rotation line resolves to for this build, read
+    straight off `raw/` (`pipeline.addonrotation.compute_spell_icons`).
 
     Unlike a talent's or an item's icon, a rotation line's icon is not sitting
     in an already-emitted file under build_dir at the point `icons_for_build`
-    runs -- `addon-data.json` (the file that would carry it) is written by a
-    LATER pipeline step (`.github/workflows/data.yml` runs `icons` before
-    `addon-data`, so this step's own output cannot be a dependency of this
-    one), so it is recomputed here the same way `build_addon_data` itself
-    will, rather than read back off a file.
+    runs -- the committed `spellicons.json` this same step is about to write
+    (`write_spell_icons`, called from `icons_for_build` below) does not exist
+    yet on the first run for a build, so this reads `raw/` directly rather
+    than that file. `pipeline.addonrotation.build_rotations` (what
+    `build_addon_data` calls) is the read-only counterpart: it reads only
+    the committed file `icons_for_build` writes, never `raw/` itself.
     """
-    from pipeline.addonrotation import build_rotations
+    from pipeline.addonrotation import compute_spell_icons
 
-    rotations = build_rotations(build_dir.parent, build_dir.name, curated_dir=curated_dir)
-    return {line.icon for bands in rotations.values() for band in bands for line in band.lines}
+    icons = compute_spell_icons(build_dir.parent, build_dir.name, curated_dir=curated_dir)
+    return set(icons.values())
 
 
 def spec_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
@@ -451,5 +452,15 @@ def icons_for_build(
 
     written = download_icons(wanted, build_dir / "icons", cache_dir, client, version=build)
     written += download_zamimg_icons(zamimg_names, build_dir / "icons", cache_dir, client)
+
+    # Persist the same rotation-icon resolution rotation_icon_names just did
+    # (above) as a committed file, so a LATER `addon-data` run -- in data.yml's
+    # `test` job, or bis.yml's nightly regen, neither of which has `raw/` --
+    # reads the real icons back rather than re-deriving nothing and
+    # publishing placeholders over them. See pipeline.addonrotation's own doc.
+    from pipeline.addonrotation import write_spell_icons
+
+    write_spell_icons(build, root, curated_dir)
+
     print(f"{written} icons written, {len(wanted) + len(zamimg_names)} referenced")
     return written
