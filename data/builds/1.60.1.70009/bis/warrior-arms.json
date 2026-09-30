@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:21:57Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:49:14Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -542,8 +542,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.448756164,
-      "verify_run_seconds": 1.239975831,
+      "weights_run_seconds": 1.5542459979999999,
+      "verify_run_seconds": 1.258264329,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1174,8 +1174,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.448756164,
-      "verify_run_seconds": 1.195711655,
+      "weights_run_seconds": 1.5542459979999999,
+      "verify_run_seconds": 1.216164866,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1834,8 +1834,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.594569924,
-      "verify_run_seconds": 1.400535335,
+      "weights_run_seconds": 1.669241869,
+      "verify_run_seconds": 1.466309708,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2501,8 +2501,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.594569924,
-      "verify_run_seconds": 1.428450908,
+      "weights_run_seconds": 1.669241869,
+      "verify_run_seconds": 1.425619975,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3175,8 +3175,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.012629689,
-      "verify_run_seconds": 1.5172113,
+      "weights_run_seconds": 2.094037179,
+      "verify_run_seconds": 1.5920821219999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3855,8 +3855,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.012629689,
-      "verify_run_seconds": 1.49369355,
+      "weights_run_seconds": 2.094037179,
+      "verify_run_seconds": 1.636138747,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4031,19 +4031,19 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 7731,
-              "item_name": "Ghostshard Talisman",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.16810930414534653,
-              "verified": true
-            },
-            {
               "item_id": 13089,
               "item_name": "Skibi's Pendant",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.6536156390011306
+            },
+            {
+              "item_id": 7731,
+              "item_name": "Ghostshard Talisman",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Azshir the Sleepless",
+              "dps_delta": -0.6856115628227144,
+              "verified": true
             },
             {
               "item_id": 13084,
@@ -4082,7 +4082,7 @@
               "item_name": "Officer's Pauldrons",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.0067855700471995,
+              "dps_delta": -1.129957882047762,
               "verified": true
             }
           ]
@@ -4130,14 +4130,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 8274,
-              "item_name": "Valorous Chestguard",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.3541894078292529,
-              "verified": true
-            },
-            {
               "item_id": 12793,
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
@@ -4150,6 +4142,14 @@
               "source_kind": "quest",
               "source": "A Better Ingredient",
               "dps_delta": -0.5009716429441546
+            },
+            {
+              "item_id": 8274,
+              "item_name": "Valorous Chestguard",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.7926246772674119,
+              "verified": true
             }
           ]
         },
@@ -4174,7 +4174,8 @@
               "source_kind": "world",
               "source": "Arena Treasure Chest",
               "dps_delta": 0,
-              "verified": true
+              "verified": true,
+              "sim_dps": 129.5040093207497
             },
             {
               "item_id": 12550,
@@ -4220,7 +4221,7 @@
               "item_name": "Gauntlets of Divinity",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Scarlet Commander Mograine",
-              "dps_delta": -1.37868742073816,
+              "dps_delta": -2.8406716795456504,
               "verified": true
             }
           ]
@@ -4236,14 +4237,6 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20116,
-              "item_name": "Highlander's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -1.0198487561930847,
-              "verified": true
-            },
-            {
               "item_id": 10798,
               "item_name": "Atal'alarion's Tusk Ring",
               "source_kind": "dungeon",
@@ -4256,6 +4249,14 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.105439469084676
+            },
+            {
+              "item_id": 20116,
+              "item_name": "Highlander's Leather Girdle",
+              "source_kind": "rep",
+              "source": "The League of Arathor",
+              "dps_delta": -1.5253880817852377,
+              "verified": true
             }
           ]
         },
@@ -4273,7 +4274,7 @@
               "item_name": "Scarlet Leggings",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.09353653055072186,
+              "dps_delta": -0.15779064572615198,
               "verified": true
             },
             {
@@ -4320,7 +4321,7 @@
               "item_name": "Prowler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.36479709180389364,
+              "dps_delta": -0.5187554165628114,
               "verified": true
             }
           ]
@@ -4333,8 +4334,8 @@
           "source_kind": "dungeon",
           "score": 20.978192955277656,
           "verified": true,
-          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +2.7 DPS over it",
-          "dps_delta": 2.7410510589630093,
+          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +3.8 DPS (129.5 vs 125.7 set DPS)",
+          "dps_delta": 3.792383095839199,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4380,7 +4381,8 @@
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
               "dps_delta": 0,
-              "verified": true
+              "verified": true,
+              "sim_dps": 129.5040093207497
             },
             {
               "item_id": 19516,
@@ -4404,6 +4406,7 @@
           "item_name": "Diamond Flask",
           "source": "Voodoo Feathers",
           "source_kind": "quest",
+          "sim_dps": 129.5040093207497,
           "verified": true,
           "alternatives": [
             {
@@ -4411,7 +4414,7 @@
               "item_name": "Sanctified Orb",
               "source_kind": "quest",
               "source": "Forging the Mightstone",
-              "dps_delta": -2.7775923102949918,
+              "dps_delta": -3.1504688687286944,
               "verified": true
             }
           ]
@@ -4427,6 +4430,7 @@
           "item_name": "Nightblade",
           "source": "World drop",
           "source_kind": "world_drop",
+          "sim_dps": 129.5040093207497,
           "verified": true,
           "alternatives": [
             {
@@ -4448,7 +4452,7 @@
               "item_name": "Glowing Brightwood Staff",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.142320213717966,
+              "dps_delta": -7.553076938681016,
               "verified": true
             }
           ]
@@ -4464,6 +4468,7 @@
           "item_name": "Skull Splitting Crossbow",
           "source": "World drop",
           "source_kind": "world_drop",
+          "sim_dps": 129.5040093207497,
           "verified": true,
           "alternatives": [
             {
@@ -4485,7 +4490,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.0360547977277719,
+              "dps_delta": -1.8745528109384395,
               "verified": true
             }
           ]
@@ -4525,8 +4530,8 @@
         "trinket1: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.128358883,
-      "verify_run_seconds": 1.922650729,
+      "weights_run_seconds": 2.244982388,
+      "verify_run_seconds": 1.870689478,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5210,8 +5215,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.128358883,
-      "verify_run_seconds": 1.820527181,
+      "weights_run_seconds": 2.244982388,
+      "verify_run_seconds": 1.86835324,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5605,7 +5610,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.071645739611836
+              "dps_delta": -3.071645739611837
             },
             {
               "item_id": 22385,
@@ -5857,8 +5862,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.108283593,
-      "verify_run_seconds": 1.757950358,
+      "weights_run_seconds": 2.201026665,
+      "verify_run_seconds": 1.8383111749999999,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6211,7 +6216,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 169.77262092861727,
+          "score": 169.77262092861724,
           "verified": true,
           "alternatives": [
             {
@@ -6219,14 +6224,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.678352469737099
+              "dps_delta": -1.6783524697370982
             },
             {
               "item_id": 16547,
               "item_name": "General's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.9563626954386188
+              "dps_delta": -1.9563626954386177
             },
             {
               "item_id": 227814,
@@ -6534,8 +6539,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.108283593,
-      "verify_run_seconds": 1.7463664479999998,
+      "weights_run_seconds": 2.201026665,
+      "verify_run_seconds": 1.732132571,
       "coverage": {
         "back": {
           "eligible": 451,

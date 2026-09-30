@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:18:52Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:46:05Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -560,8 +560,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.099904646,
-      "verify_run_seconds": 1.379409559,
+      "weights_run_seconds": 1.144234682,
+      "verify_run_seconds": 1.418519768,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1197,8 +1197,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.099904646,
-      "verify_run_seconds": 1.409580797,
+      "weights_run_seconds": 1.144234682,
+      "verify_run_seconds": 1.459430769,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1860,8 +1860,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.22455603,
-      "verify_run_seconds": 1.543363238,
+      "weights_run_seconds": 1.291903139,
+      "verify_run_seconds": 1.559084152,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2549,8 +2549,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.22455603,
-      "verify_run_seconds": 1.578543134,
+      "weights_run_seconds": 1.291903139,
+      "verify_run_seconds": 1.606625892,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3210,8 +3210,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.27512254,
-      "verify_run_seconds": 1.5680801500000001,
+      "weights_run_seconds": 1.327898247,
+      "verify_run_seconds": 1.6137347389999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3871,8 +3871,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.27512254,
-      "verify_run_seconds": 1.605049979,
+      "weights_run_seconds": 1.327898247,
+      "verify_run_seconds": 1.647037558,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4010,7 +4010,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.7273604252093024
+              "dps_delta": -0.7273604252093027
             },
             {
               "item_id": 8348,
@@ -4024,7 +4024,7 @@
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -1.0466278896657144,
+              "dps_delta": -1.1581477320363973,
               "verified": true
             }
           ]
@@ -4077,7 +4077,7 @@
               "item_name": "Phytoskin Spaulders",
               "source_kind": "dungeon",
               "source": "Maraudon: Razorlash",
-              "dps_delta": -0.2915156877831606,
+              "dps_delta": -0.26878922943635075,
               "verified": true
             },
             {
@@ -4249,7 +4249,7 @@
           "score": 30,
           "verified": true,
           "swap_note": "confirmed by the sim against Highlander's Leather Girdle (id 20116): kept the pick, +0.6 DPS over it",
-          "dps_delta": 0.5981354418055389,
+          "dps_delta": 0.6016932139582423,
           "effect_unmodelled": true,
           "ties": [
             {
@@ -4296,7 +4296,7 @@
               "item_name": "Knight's Leather Pants",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.05261630861716926
+              "dps_delta": -0.052616308617169066
             },
             {
               "item_id": 14668,
@@ -4328,7 +4328,7 @@
               "item_name": "Whisperwalk Boots",
               "source_kind": "quest",
               "source": "The Azure Key",
-              "dps_delta": -0.2250748803948568,
+              "dps_delta": -0.25688271398404083,
               "verified": true
             },
             {
@@ -4348,8 +4348,8 @@
           "source_kind": "dungeon",
           "score": 20.529363291462424,
           "verified": true,
-          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.8 DPS over it",
-          "dps_delta": 1.831845899539701,
+          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.7 DPS over it",
+          "dps_delta": 1.6978875840368914,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4450,7 +4450,7 @@
               "item_name": "Shadowblade",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.106190476622885,
+              "dps_delta": -2.5038363605115705,
               "verified": true
             }
           ]
@@ -4464,7 +4464,7 @@
           "score": 511.56,
           "verified": true,
           "swap_note": "confirmed by the sim against Barman Shanker (id 12791): kept the pick, +15.9 DPS over it",
-          "dps_delta": 15.902743111032692,
+          "dps_delta": 15.910195780906506,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -4517,7 +4517,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.7205065166026259,
+              "dps_delta": -1.777377959306392,
               "verified": true
             }
           ]
@@ -4555,8 +4555,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.338828112,
-      "verify_run_seconds": 2.015503399,
+      "weights_run_seconds": 1.3646911990000001,
+      "verify_run_seconds": 2.047992996,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4981,7 +4981,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.052616308617169066
+              "dps_delta": -0.05261630861716926
             },
             {
               "item_id": 14668,
@@ -5267,8 +5267,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.338828112,
-      "verify_run_seconds": 1.9500373309999999,
+      "weights_run_seconds": 1.3646911990000001,
+      "verify_run_seconds": 1.981904942,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5589,7 +5589,7 @@
           "item_name": "Duskwraith Gauntlets",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 49.90440186674942,
+          "score": 49.90440186674941,
           "verified": true,
           "alternatives": [
             {
@@ -5597,14 +5597,14 @@
               "item_name": "Knight-Lieutenant's Leather Gauntlets",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -0.32403755469214396
+              "dps_delta": -0.32403755469214357
             },
             {
               "item_id": 13395,
               "item_name": "Skul's Fingerbone Claws",
               "source_kind": "dungeon",
               "source": "Stratholme: Skul",
-              "dps_delta": -0.5264415682160052
+              "dps_delta": -0.5264415682160049
             },
             {
               "item_id": 14640,
@@ -5688,7 +5688,7 @@
           "item_name": "Duskwraith Sabatons",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 49.90440186674941,
+          "score": 49.90440186674942,
           "verified": true,
           "alternatives": [
             {
@@ -5696,14 +5696,14 @@
               "item_name": "Highlander's Leather Boots",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -1.0489496231874218
+              "dps_delta": -1.0489496231874222
             },
             {
               "item_id": 226831,
               "item_name": "Darkmantle Footpads",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.1291992607358827
+              "dps_delta": -1.1291992607358832
             },
             {
               "item_id": 13210,
@@ -5976,8 +5976,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.34322184,
-      "verify_run_seconds": 1.959767545,
+      "weights_run_seconds": 1.35431204,
+      "verify_run_seconds": 2.027140005,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6397,7 +6397,7 @@
           "item_name": "Duskwraith Sabatons",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 49.90440186674942,
+          "score": 49.90440186674941,
           "verified": true,
           "alternatives": [
             {
@@ -6405,14 +6405,14 @@
               "item_name": "Defiler's Leather Boots",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -1.0489496231874222
+              "dps_delta": -1.0489496231874218
             },
             {
               "item_id": 226831,
               "item_name": "Darkmantle Footpads",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.1291992607358832
+              "dps_delta": -1.1291992607358827
             },
             {
               "item_id": 13210,
@@ -6462,14 +6462,14 @@
               "item_name": "White Bone Band",
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons",
-              "dps_delta": -0.03063665177139357
+              "dps_delta": -0.030636651771393762
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.21890270316722488
+              "dps_delta": -0.21890270316722507
             },
             {
               "item_id": 11669,
@@ -6686,8 +6686,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.34322184,
-      "verify_run_seconds": 2.033135323,
+      "weights_run_seconds": 1.35431204,
+      "verify_run_seconds": 2.06205918,
       "coverage": {
         "back": {
           "eligible": 451,
