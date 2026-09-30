@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (night-elf, 32500000100000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 35.8. Weights run: 1.1s. Verify run: 1.3s. 361 eligible items had no known source.
+Set DPS (verified): 35.8. Weights run: 1.1s. Verify run: 1.2s. 361 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.097 ± 0.028, crit=2.157 ± 0.106, hit=1.402 ± 0.268, melee_haste=not significant (1.169 ± 0.749)
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 361, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 32500000551000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 43.5. Weights run: 1.1s. Verify run: 1.6s. 694 eligible items had no known source.
+Set DPS (verified): 43.5. Weights run: 1.1s. Verify run: 1.7s. 694 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.099 ± 0.022, crit=3.270 ± 0.122, hit=1.653 ± 0.289, melee_haste=not significant (1.560 ± 0.801)
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 694, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 32500000551501040-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 85.4. Weights run: 1.2s. Verify run: 1.6s. 962 eligible items had no known source.
+Set DPS (verified): 85.4. Weights run: 1.2s. Verify run: 1.7s. 962 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.100 ± 0.014, crit=2.696 ± 0.072, hit=1.350 ± 0.103, melee_haste=2.063 ± 0.041
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 962, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32500000551501051-32300000000000000-0000000000000000000)
 
-Set DPS (verified): 122.0. Weights run: 1.2s. Verify run: 1.5s. 1220 eligible items had no known source.
+Set DPS (verified): 122.0. Weights run: 1.2s. Verify run: 1.6s. 1220 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, agility=1.103 ± 0.015, crit=3.283 ± 0.085, hit=1.682 ± 0.129, melee_haste=2.580 ± 0.051
 
@@ -126,33 +126,33 @@ No-known-source sample (15 of 1220, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (night-elf, 32500000551501051-32520000000000000-5100000000000000000)
 
-Set DPS (verified): 288.3. Weights run: 1.2s. Verify run: 1.9s. 1717 eligible items had no known source.
+Set DPS (verified): 228.0. Weights run: 1.2s. Verify run: 1.9s. 1792 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, agility=1.131 ± 0.020, crit=4.124 ± 0.104, hit=not significant (0.000 ± 0.000), melee_haste=3.276 ± 0.064
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Bonescythe Helmet (22478) | Bonescythe Helmet [quest] | 149.4 | yes | Bloodvine Lens (19998, -1.12 DPS) [crafted]; Champion's Leather Helm (23257, -1.85 DPS) [vendor]; Ragefury Eyepatch (11735, -10.27 DPS, sim-verified) [dungeon] |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas: Kel'Thuzad [raid] | 141.5 | yes | Gem of Trapped Innocents (23057, -0.86 DPS) [raid]; Barbed Choker (21664, -1.32 DPS) [raid]; Medallion of the Dawn (22659, -1.98 DPS) [quest] |
-| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 82.6 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.10 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.10 DPS) [pvp]; Champion's Leather Shoulders (23258, -3.43 DPS, sim-verified) [vendor] |
-| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 57.7 | yes | Cloak of the Honor Guard (20073, +1.41 DPS, sim-verified) [rep]; Cape of the Black Baron (13340, -0.69 DPS) [dungeon]; Cloak of the Fallen God (21710, -0.94 DPS) [quest] |
-| chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 195.5 | yes | Stormshroud Armor (15056, -2.65 DPS) [crafted]; Deathdealer's Vest (21364, -3.18 DPS) [quest]; Zandalar Madcap's Tunic (19834, -7.54 DPS, sim-verified) [quest] |
-| wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 87.1 | yes | General's Leather Armsplints (16559, -2.18 DPS) [pvp]; Forest Stalker's Bracers (19587, -2.18 DPS) [rep]; Marshal's Leather Armsplints (16460, -2.45 DPS, sim-verified) [pvp] |
-| hands | Bonescythe Gauntlets (22481) | Bonescythe Gauntlets [quest] | 123.7 | yes | Marshal's Leather Handgrips (16454, -1.44 DPS) [vendor]; General's Leather Mitts (16560, -1.44 DPS) [vendor]; Devilsaur Gauntlets (15063, -7.70 DPS, sim-verified) [crafted] |
-| waist | Belt of Never-ending Agony (21586) | Ahn'Qiraj: C'Thun [raid] | 121.7 | yes | Bonescythe Waistguard (22482, -1.22 DPS) [quest]; Highlander's Leather Girdle (20115, -1.46 DPS) [rep]; Highlander's Leather Girdle (20045, -7.06 DPS, sim-verified) [rep] |
+| head | Bonescythe Helmet (22478) | Bonescythe Helmet [quest] | 149.4 | yes | Bloodvine Lens (19998, -1.12 DPS) [crafted]; Champion's Leather Helm (23257, -1.85 DPS) [vendor]; Ragefury Eyepatch (11735, -8.49 DPS, sim-verified) [dungeon] |
+| neck | Blazefury Medallion (17111) | Lord Kazzak [world] | 14.7 | yes | Medallion of the Dawn (22659, +0.01 DPS, sim-verified) [quest]; Onyxia Tooth Pendant (18404, +0.00 DPS) [quest]; Choker of the Shifting Sands (21505, +0.00 DPS) [quest] |
+| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 82.6 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.10 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.10 DPS) [pvp]; Champion's Leather Shoulders (23258, -3.17 DPS, sim-verified) [vendor] |
+| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 57.7 | yes | Cloak of the Honor Guard (20073, +1.64 DPS, sim-verified) [rep]; Cape of the Black Baron (13340, -0.69 DPS) [dungeon]; Cloak of the Fallen God (21710, -0.94 DPS) [quest] |
+| chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 195.5 | yes | Stormshroud Armor (15056, -2.65 DPS) [crafted]; Deathdealer's Vest (21364, -3.18 DPS) [quest]; Zandalar Madcap's Tunic (19834, -6.17 DPS, sim-verified) [quest] |
+| wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 87.1 | yes | Marshal's Leather Armsplints (16460, -2.00 DPS, sim-verified) [pvp]; General's Leather Armsplints (16559, -2.18 DPS) [pvp]; Forest Stalker's Bracers (19587, -2.18 DPS) [rep] |
+| hands | Bonescythe Gauntlets (22481) | Bonescythe Gauntlets [quest] | 123.7 | yes | Marshal's Leather Handgrips (16454, -1.44 DPS) [vendor]; General's Leather Mitts (16560, -1.44 DPS) [vendor]; Devilsaur Gauntlets (15063, -6.33 DPS, sim-verified) [crafted] |
+| waist | Bonescythe Waistguard (22482) | Bonescythe Waistguard [quest] | 84.9 | yes | Highlander's Leather Girdle (20115, -0.24 DPS) [rep]; Belt of the Archmage (18405, -0.90 DPS) [crafted]; Highlander's Leather Girdle (20045, -2.60 DPS, sim-verified) [rep] |
 | legs | Stormshroud Pants (15057) (or Knight-Captain's Leather Legguards (16419), Legionnaire's Leather Leggings (16508)) | Leatherworking [crafted] | 115.5 | yes | Knight-Captain's Leather Legguards (16419, +0.57 DPS, sim-verified) [pvp]; Legionnaire's Leather Leggings (16508, +0.00 DPS) [pvp]; Devilsaur Leggings (15062, -0.39 DPS) [crafted] |
-| feet | Bonescythe Sabatons (22480) | Bonescythe Sabatons [quest] | 121.7 | yes | Deathdealer's Boots (21359, -3.06 DPS) [quest]; Blood Guard's Leather Walkers (22856, -3.11 DPS) [vendor]; Highlander's Leather Boots (20052, -8.82 DPS, sim-verified) [rep] |
-| finger1 | Band of Unnatural Forces (23038) | Naxxramas: Loatheb [raid] | 109.7 | yes | Quick Strike Ring (18821, -0.73 DPS) [raid]; Don Julio's Band (19325, -1.19 DPS) [rep]; Band of the Penitent (13217, -1.72 DPS) [quest] |
-| finger2 | Ring of the Qiraji Fury (21677) | Ahn'Qiraj: Viscidus [raid] | 97.7 | yes | Quick Strike Ring (18821, -0.41 DPS, sim-verified) [raid]; Don Julio's Band (19325, -0.80 DPS) [rep]; Band of the Penitent (13217, -1.33 DPS) [quest] |
-| trinket1 | Kiss of the Spider (22954) | Naxxramas: Maexxna [raid] | 57.7 | yes | Drake Fang Talisman (19406, -0.06 DPS) [raid]; Thunderbrew's Boot Flask (744, -1.91 DPS) [quest]; Eye of Diminution (23001, -6.86 DPS, sim-verified) [raid] |
-| trinket2 | Slayer's Crest (23041) | Naxxramas: Sapphiron [raid] | 64.0 | yes | Drake Fang Talisman (19406, -0.27 DPS) [raid]; Thunderbrew's Boot Flask (744, -2.12 DPS) [quest]; Eye of Diminution (23001, -5.45 DPS, sim-verified) [raid] |
-| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Rise, Thunderfury! [quest] | 761.0 | yes | Death's Sting (21126, +6.85 DPS) [raid]; Grand Marshal's Swiftblade (234579, +6.36 DPS) [pvp]; The Hungering Cold (23577, -17.02 DPS, sim-verified) [raid] |
-| off_hand | High Warlord's Quickblade (234553) | Rank 18 [pvp] | 952.9 | yes | High Warlord's Left Claw (234558, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (234584, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (18847, -1.14 DPS) [vendor] |
-| ranged | Larvae of the Great Worm (23557) | Ahn'Qiraj: Ouro [raid] | 75.7 | yes | The Purifier (22656, -0.60 DPS) [quest]; Huhuran's Stinger (21616, -1.84 DPS) [raid]; Precisely Calibrated Boomstick (2100, -1.99 DPS) [world_drop] |
+| feet | Bonescythe Sabatons (22480) | Bonescythe Sabatons [quest] | 121.7 | yes | Deathdealer's Boots (21359, -3.06 DPS) [quest]; Blood Guard's Leather Walkers (22856, -3.11 DPS) [vendor]; Highlander's Leather Boots (20052, -7.22 DPS, sim-verified) [rep] |
+| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | 73.7 | yes | Dragonslayer's Signet (18403, -0.53 DPS) [quest]; Ring of Entropy (18543, -0.53 DPS) [world]; Mindtear Band (20632, -0.53 DPS) [world] |
+| finger2 | Band of the Penitent (13217) (or Dragonslayer's Signet (18403), Ring of Entropy (18543), Mindtear Band (20632), Band of Earthen Wrath (21179), Band of Earthen Might (21182), Don Rodrigo's Band (21563), Ritssyn's Ring of Chaos (21836), Ring of the Eternal Flame (23237)) | Houses of the Holy [quest] | 57.7 | yes | Dragonslayer's Signet (18403, +0.00 DPS, sim-verified) [quest]; Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world] |
+| trinket1 | Onyxia Blood Talisman (18406) | Celebrating Good Times [quest] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest] |
+| trinket2 | Talisman of Arathor (20071) | The League of Arathor [rep] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest] |
+| main_hand | High Warlord's Quickblade (234553) | Rank 18 [pvp] | 952.9 | yes | High Warlord's Blade (234552, -0.10 DPS) [pvp]; High Warlord's Bludgeon (234555, -0.10 DPS) [pvp]; High Warlord's Right Claw (234557, -0.10 DPS) [pvp] |
+| off_hand | Grand Marshal's Swiftblade (234579) | Rank 18 [pvp] | 952.9 | yes | High Warlord's Left Claw (234558, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (234584, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (18847, -1.14 DPS) [vendor] |
+| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | 57.7 | yes | Precisely Calibrated Boomstick (2100, -1.39 DPS) [world_drop]; Houndmaster's Bow (11628, -1.52 DPS) [dungeon]; Eaglehorn Long Bow (13023, -1.54 DPS) [world] |
 
-**New at 60:** head: Bonescythe Helmet; neck: Stormrage's Talisman of Seething; shoulder: Bonescythe Pauldrons; back: Chromatic Cloak; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Belt of Never-ending Agony; legs: Stormshroud Pants; feet: Bonescythe Sabatons; finger1: Band of Unnatural Forces; finger2: Ring of the Qiraji Fury; trinket1: Kiss of the Spider; trinket2: Slayer's Crest; main_hand: Thunderfury, Blessed Blade of the Windseeker; off_hand: High Warlord's Quickblade; ranged: Larvae of the Great Worm
+**New at 60:** head: Bonescythe Helmet; neck: Blazefury Medallion; shoulder: Bonescythe Pauldrons; back: Chromatic Cloak; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Bonescythe Waistguard; legs: Stormshroud Pants; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of the Penitent; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: High Warlord's Quickblade; off_hand: Grand Marshal's Swiftblade; ranged: The Purifier
 
-No-known-source sample (15 of 1717, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1792, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ## Horde
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 695, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 32500000551501040-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 83.1. Weights run: 1.2s. Verify run: 1.7s. 962 eligible items had no known source.
+Set DPS (verified): 83.1. Weights run: 1.2s. Verify run: 1.6s. 962 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.100 ± 0.014, crit=2.696 ± 0.072, hit=1.350 ± 0.103, melee_haste=2.063 ± 0.041
 
@@ -248,61 +248,61 @@ No-known-source sample (15 of 962, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 32500000551501051-32300000000000000-0000000000000000000)
 
-Set DPS (verified): 120.5. Weights run: 1.2s. Verify run: 1.6s. 1220 eligible items had no known source.
+Set DPS (verified): 125.0. Weights run: 1.2s. Verify run: 1.5s. 1220 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, agility=1.103 ± 0.015, crit=3.283 ± 0.085, hit=1.682 ± 0.129, melee_haste=2.580 ± 0.051
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Knight-Lieutenant's Leather Headband (220850) (or Blood Guard's Leather Headband (220851)) | Captain Dirgehammer [vendor] | 78.8 | yes | Blood Guard's Leather Headband (220851, +0.00 DPS, sim-verified) [vendor]; Eye of Theradras (17715, -1.11 DPS) [dungeon]; Helm of Fire (8348, -2.03 DPS) [crafted] |
-| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes | Scout's Medallion (19535, +0.09 DPS, sim-verified) [rep]; Scout's Medallion (19536, -0.06 DPS) [rep]; Woven Ivy Necklace (19159, -0.14 DPS) [quest] |
+| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes | Scout's Medallion (19535, +0.07 DPS, sim-verified) [rep]; Scout's Medallion (19536, -0.06 DPS) [rep]; Woven Ivy Necklace (19159, -0.14 DPS) [quest] |
 | shoulder | Knight-Lieutenant's Leather Shoulders (220852) (or Blood Guard's Leather Shoulders (220853)) | Captain Dirgehammer [vendor] | 70.8 | yes | Blood Guard's Leather Shoulders (220853, +0.00 DPS, sim-verified) [vendor]; Sunburn Spaulders (274751, -1.58 DPS) [vendor]; Forest Tracker Epaulets (2278, -1.98 DPS) [world_drop] |
-| back | Serpentskin Cloak (8259) | Maraudon: Princess Theradras [dungeon] | 12.1 | yes | Nightscape Cloak (8195, -0.05 DPS, sim-verified) [crafted]; Wolfmaster Cape (6314, -0.07 DPS) [dungeon]; Battlehard Cape (11858, -0.07 DPS) [quest] |
+| back | Serpentskin Cloak (8259) | Maraudon: Princess Theradras [dungeon] | 12.1 | yes | Nightscape Cloak (8195, -0.06 DPS, sim-verified) [crafted]; Wolfmaster Cape (6314, -0.07 DPS) [dungeon]; Battlehard Cape (11858, -0.07 DPS) [quest] |
 | chest | Knight's Leather Armor (220854) (or Stone Guard's Leather Armor (220855)) | Captain Dirgehammer [vendor] | 80.8 | yes | Stone Guard's Leather Armor (220855, +0.00 DPS, sim-verified) [vendor]; Blazewind Breastplate (11193, -1.87 DPS) [quest]; Warbear Harness (15064, -2.06 DPS) [crafted] |
-| wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 | yes | Deepfury Bracers (13120, +0.17 DPS, sim-verified) [world]; Wicked Leather Bracers (15084, -0.27 DPS) [crafted]; Pridelord Bands (14672, -0.30 DPS) [dungeon] |
+| wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 | yes | Deepfury Bracers (13120, +0.15 DPS, sim-verified) [world]; Wicked Leather Bracers (15084, -0.27 DPS) [crafted]; Pridelord Bands (14672, -0.30 DPS) [dungeon] |
 | hands | Gloves of Holy Might (867) | World drop [world_drop] | 66.0 | yes | First Sergeant's Leather Gauntlets (220857, -0.20 DPS) [vendor]; Sergeant Major's Leather Gauntlets (220856, -0.24 DPS, sim-verified) [vendor]; Fletcher's Gloves (7348, -0.68 DPS) [crafted] |
-| waist | Defiler's Leather Girdle (20193) | The Defilers [rep] | 66.0 | yes | Defiler's Lizardhide Girdle (20174, -0.68 DPS) [rep]; Defiler's Cloth Girdle (20165, -0.79 DPS, sim-verified) [rep]; Defiler's Leather Girdle (20192, -1.22 DPS) [rep] |
-| legs | Knight's Leather Pants (220858) | Captain Dirgehammer [vendor] | 80.8 | yes | Stone Guard's Leather Pants (220859, +0.00 DPS) [vendor]; Stormshroud Pants (15057, -0.99 DPS, sim-verified) [crafted]; Ferine Leggings (6690, -1.85 DPS) [dungeon] |
-| feet | Albino Crocscale Boots (17728) | Maraudon: Rotgrip [dungeon] | 22.1 | yes | Sandstalker Ankleguards (12470, +0.08 DPS, sim-verified) [dungeon]; Sergeant Major's Leather Boots (220860, -0.14 DPS) [vendor]; First Sergeant's Leather Boots (220861, -0.14 DPS) [vendor] |
+| waist | Defiler's Leather Girdle (20193) | The Defilers [rep] | 66.0 | yes | Defiler's Lizardhide Girdle (20174, -0.68 DPS) [rep]; Defiler's Cloth Girdle (20165, -0.80 DPS, sim-verified) [rep]; Defiler's Leather Girdle (20192, -1.22 DPS) [rep] |
+| legs | Knight's Leather Pants (220858) | Captain Dirgehammer [vendor] | 80.8 | yes | Stone Guard's Leather Pants (220859, +0.00 DPS) [vendor]; Stormshroud Pants (15057, -0.90 DPS, sim-verified) [crafted]; Ferine Leggings (6690, -1.85 DPS) [dungeon] |
+| feet | Albino Crocscale Boots (17728) | Maraudon: Rotgrip [dungeon] | 22.1 | yes | Sandstalker Ankleguards (12470, +0.06 DPS, sim-verified) [dungeon]; Sergeant Major's Leather Boots (220860, -0.14 DPS) [vendor]; First Sergeant's Leather Boots (220861, -0.14 DPS) [vendor] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 36.8 | yes | Masons Fraternity Ring (9533, -0.72 DPS) [quest]; Insurgent's Band (272065, -0.74 DPS) [vendor]; Insurgent's Band (272066, -0.84 DPS) [vendor] |
-| finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 | yes | Masons Fraternity Ring (9533, -0.20 DPS, sim-verified) [quest]; Insurgent's Band (272065, -0.30 DPS) [vendor]; Insurgent's Band (272066, -0.41 DPS) [vendor] |
-| trinket1 | Smoking Heart of the Mountain (11811) | Enchanting [crafted] | 0.0 | yes | Rune of the Guard Captain (19120, +1.82 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest] |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 15.1 | yes | Rune of the Guard Captain (19120, +1.31 DPS) [quest]; Tidal Charm (1404, -0.51 DPS) [vendor]; Guardian Talisman (1490, -0.51 DPS) [quest] |
+| finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 | yes | Masons Fraternity Ring (9533, -0.22 DPS, sim-verified) [quest]; Insurgent's Band (272065, -0.30 DPS) [vendor]; Insurgent's Band (272066, -0.41 DPS) [vendor] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 53.8 | yes | Tidal Charm (1404, -1.82 DPS) [vendor]; Guardian Talisman (1490, -1.82 DPS) [quest]; Ankh of Life (1713, -1.82 DPS) [world_drop] |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 15.1 | yes | Tidal Charm (1404, -0.51 DPS) [vendor]; Guardian Talisman (1490, -0.51 DPS) [quest]; Ankh of Life (1713, -0.51 DPS) [world_drop] |
 | main_hand | Hammer of the Northern Wind (810) | World drop [world_drop] | 553.3 | yes | Inventor's Focal Sword (17719, +0.00 DPS, sim-verified) [dungeon]; Julie's Dagger (6660, -1.41 DPS) [world_drop]; Might of Hakkar (10838, -1.46 DPS) [world] |
 | off_hand | Thorium Cestus (250614) | Blacksmithing [crafted] | 526.4 | yes | Claw of Celebras (17738, -1.50 DPS) [dungeon]; White Bone Shredder (11863, -2.83 DPS) [quest]; Thermotastic Egg Timer (9644, -17.68 DPS) [quest] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | 15.4 | yes | Houndmaster's Bow (11628, -0.12 DPS) [dungeon]; Booty Bay Bruiser's Buckshot (274748, -0.22 DPS) [vendor]; Guttbuster (13139, -0.22 DPS) [world] |
 
-**New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Serpentskin Cloak; chest: Knight's Leather Armor; waist: Defiler's Leather Girdle; legs: Knight's Leather Pants; feet: Albino Crocscale Boots; finger1: Blackstone Ring; finger2: White Bone Band; trinket1: Smoking Heart of the Mountain; trinket2: Frozen Heart of the Mountain; main_hand: Hammer of the Northern Wind; off_hand: Thorium Cestus; ranged: Precisely Calibrated Boomstick
+**New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Serpentskin Cloak; chest: Knight's Leather Armor; waist: Defiler's Leather Girdle; legs: Knight's Leather Pants; feet: Albino Crocscale Boots; finger1: Blackstone Ring; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Hammer of the Northern Wind; off_hand: Thorium Cestus; ranged: Precisely Calibrated Boomstick
 
 No-known-source sample (15 of 1220, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ### Band 60 (troll, 32500000551501051-32520000000000000-5100000000000000000)
 
-Set DPS (verified): 288.0. Weights run: 1.2s. Verify run: 1.9s. 1716 eligible items had no known source.
+Set DPS (verified): 232.9. Weights run: 1.2s. Verify run: 1.9s. 1791 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, agility=1.131 ± 0.020, crit=4.124 ± 0.104, hit=not significant (0.000 ± 0.000), melee_haste=3.276 ± 0.064
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Bonescythe Helmet (22478) | Bonescythe Helmet [quest] | 149.4 | yes | Bloodvine Lens (19998, -1.12 DPS) [crafted]; Champion's Leather Helm (23257, -1.85 DPS) [vendor]; Ragefury Eyepatch (11735, -11.56 DPS, sim-verified) [dungeon] |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas: Kel'Thuzad [raid] | 141.5 | yes | Gem of Trapped Innocents (23057, -0.86 DPS) [raid]; Barbed Choker (21664, -1.32 DPS) [raid]; Medallion of the Dawn (22659, -1.98 DPS) [quest] |
-| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 82.6 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.10 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.10 DPS) [pvp]; Champion's Leather Shoulders (23258, -3.48 DPS, sim-verified) [vendor] |
-| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 57.7 | yes | Deathguard's Cloak (20068, +1.28 DPS, sim-verified) [rep]; Cape of the Black Baron (13340, -0.69 DPS) [dungeon]; Cloak of the Fallen God (21710, -0.94 DPS) [quest] |
-| chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 195.5 | yes | Stormshroud Armor (15056, -2.65 DPS) [crafted]; Deathdealer's Vest (21364, -3.18 DPS) [quest]; Zandalar Madcap's Tunic (19834, -8.59 DPS, sim-verified) [quest] |
-| wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 87.1 | yes | General's Leather Armsplints (16559, -2.18 DPS) [pvp]; Forest Stalker's Bracers (19587, -2.18 DPS) [rep]; Marshal's Leather Armsplints (16460, -2.61 DPS, sim-verified) [pvp] |
-| hands | Bonescythe Gauntlets (22481) | Bonescythe Gauntlets [quest] | 123.7 | yes | Marshal's Leather Handgrips (16454, -1.44 DPS) [vendor]; General's Leather Mitts (16560, -1.44 DPS) [vendor]; Devilsaur Gauntlets (15063, -8.75 DPS, sim-verified) [crafted] |
-| waist | Belt of Never-ending Agony (21586) | Ahn'Qiraj: C'Thun [raid] | 121.7 | yes | Bonescythe Waistguard (22482, -1.22 DPS) [quest]; Defiler's Leather Girdle (20193, -1.46 DPS) [rep]; Defiler's Leather Girdle (20190, -8.11 DPS, sim-verified) [rep] |
-| legs | Stormshroud Pants (15057) (or Knight-Captain's Leather Legguards (16419), Legionnaire's Leather Leggings (16508)) | Leatherworking [crafted] | 115.5 | yes | Knight-Captain's Leather Legguards (16419, +0.57 DPS, sim-verified) [pvp]; Legionnaire's Leather Leggings (16508, +0.00 DPS) [pvp]; Devilsaur Leggings (15062, -0.39 DPS) [crafted] |
-| feet | Bonescythe Sabatons (22480) | Bonescythe Sabatons [quest] | 121.7 | yes | Deathdealer's Boots (21359, -3.06 DPS) [quest]; Blood Guard's Leather Walkers (22856, -3.11 DPS) [vendor]; Defiler's Leather Boots (20186, -9.98 DPS, sim-verified) [rep] |
-| finger1 | Band of Unnatural Forces (23038) | Naxxramas: Loatheb [raid] | 109.7 | yes | Quick Strike Ring (18821, -0.73 DPS) [raid]; Don Julio's Band (19325, -1.19 DPS) [rep]; Band of the Penitent (13217, -1.72 DPS) [quest] |
-| finger2 | Ring of the Qiraji Fury (21677) | Ahn'Qiraj: Viscidus [raid] | 97.7 | yes | Quick Strike Ring (18821, -0.41 DPS, sim-verified) [raid]; Don Julio's Band (19325, -0.80 DPS) [rep]; Band of the Penitent (13217, -1.33 DPS) [quest] |
-| trinket1 | Kiss of the Spider (22954) | Naxxramas: Maexxna [raid] | 57.7 | yes | Drake Fang Talisman (19406, -0.06 DPS) [raid]; Rune of the Guard Captain (19120, -0.52 DPS) [quest]; Eye of Diminution (23001, -8.78 DPS, sim-verified) [raid] |
-| trinket2 | Slayer's Crest (23041) | Naxxramas: Sapphiron [raid] | 64.0 | yes | Drake Fang Talisman (19406, -0.27 DPS) [raid]; Rune of the Guard Captain (19120, -0.73 DPS) [quest]; Eye of Diminution (23001, -5.32 DPS, sim-verified) [raid] |
-| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Rise, Thunderfury! [quest] | 761.0 | yes | Death's Sting (21126, +6.85 DPS) [raid]; Grand Marshal's Swiftblade (234579, +6.36 DPS) [pvp]; The Hungering Cold (23577, -18.10 DPS, sim-verified) [raid] |
-| off_hand | High Warlord's Quickblade (234553) | Rank 18 [pvp] | 952.9 | yes | High Warlord's Left Claw (234558, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (234584, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (18847, -1.14 DPS) [vendor] |
-| ranged | Larvae of the Great Worm (23557) | Ahn'Qiraj: Ouro [raid] | 75.7 | yes | The Purifier (22656, -0.60 DPS) [quest]; Huhuran's Stinger (21616, -1.84 DPS) [raid]; Precisely Calibrated Boomstick (2100, -1.99 DPS) [world_drop] |
+| head | Bonescythe Helmet (22478) | Bonescythe Helmet [quest] | 149.4 | yes | Bloodvine Lens (19998, -1.12 DPS) [crafted]; Champion's Leather Helm (23257, -1.85 DPS) [vendor]; Ragefury Eyepatch (11735, -9.03 DPS, sim-verified) [dungeon] |
+| neck | Blazefury Medallion (17111) | Lord Kazzak [world] | 14.7 | yes | Onyxia Tooth Pendant (18404, +0.00 DPS) [quest]; Choker of the Shifting Sands (21505, +0.00 DPS) [quest]; Medallion of the Dawn (22659, -0.88 DPS, sim-verified) [quest] |
+| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 82.6 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.10 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.10 DPS) [pvp]; Champion's Leather Shoulders (23258, -3.39 DPS, sim-verified) [vendor] |
+| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 57.7 | yes | Deathguard's Cloak (20068, +1.45 DPS, sim-verified) [rep]; Cape of the Black Baron (13340, -0.69 DPS) [dungeon]; Cloak of the Fallen God (21710, -0.94 DPS) [quest] |
+| chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 195.5 | yes | Stormshroud Armor (15056, -2.65 DPS) [crafted]; Deathdealer's Vest (21364, -3.18 DPS) [quest]; Zandalar Madcap's Tunic (19834, -6.47 DPS, sim-verified) [quest] |
+| wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 87.1 | yes | General's Leather Armsplints (16559, -2.18 DPS) [pvp]; Forest Stalker's Bracers (19587, -2.18 DPS) [rep]; Marshal's Leather Armsplints (16460, -2.29 DPS, sim-verified) [pvp] |
+| hands | Bonescythe Gauntlets (22481) | Bonescythe Gauntlets [quest] | 123.7 | yes | Marshal's Leather Handgrips (16454, -1.44 DPS) [vendor]; General's Leather Mitts (16560, -1.44 DPS) [vendor]; Devilsaur Gauntlets (15063, -6.63 DPS, sim-verified) [crafted] |
+| waist | Bonescythe Waistguard (22482) | Bonescythe Waistguard [quest] | 84.9 | yes | Defiler's Leather Girdle (20193, -0.24 DPS) [rep]; Belt of the Archmage (18405, -0.90 DPS) [crafted]; Defiler's Leather Girdle (20190, -2.72 DPS, sim-verified) [rep] |
+| legs | Stormshroud Pants (15057) (or Knight-Captain's Leather Legguards (16419), Legionnaire's Leather Leggings (16508)) | Leatherworking [crafted] | 115.5 | yes | Knight-Captain's Leather Legguards (16419, +0.58 DPS, sim-verified) [pvp]; Legionnaire's Leather Leggings (16508, +0.00 DPS) [pvp]; Devilsaur Leggings (15062, -0.39 DPS) [crafted] |
+| feet | Bonescythe Sabatons (22480) | Bonescythe Sabatons [quest] | 121.7 | yes | Deathdealer's Boots (21359, -3.06 DPS) [quest]; Blood Guard's Leather Walkers (22856, -3.11 DPS) [vendor]; Defiler's Leather Boots (20186, -7.57 DPS, sim-verified) [rep] |
+| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 73.7 | yes | Dragonslayer's Signet (18403, -0.53 DPS) [quest]; Ring of Entropy (18543, -0.53 DPS) [world]; Mindtear Band (20632, -0.53 DPS) [world] |
+| finger2 | Band of the Penitent (13217) (or Dragonslayer's Signet (18403), Ring of Entropy (18543), Mindtear Band (20632), Band of Earthen Wrath (21179), Band of Earthen Might (21182), Don Rodrigo's Band (21563), Ritssyn's Ring of Chaos (21836), Ring of the Eternal Flame (23237)) | Houses of the Holy [quest] | 57.7 | yes | Dragonslayer's Signet (18403, +0.00 DPS, sim-verified) [quest]; Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 42.0 | yes | Tidal Charm (1404, -1.39 DPS) [vendor]; Guardian Talisman (1490, -1.39 DPS) [quest]; Ankh of Life (1713, -1.39 DPS) [world_drop] |
+| trinket2 | Onyxia Blood Talisman (18406) | For All To See [quest] | 0.0 | yes | Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop] |
+| main_hand | High Warlord's Quickblade (234553) | Rank 18 [pvp] | 952.9 | yes | High Warlord's Blade (234552, -0.10 DPS) [pvp]; High Warlord's Bludgeon (234555, -0.10 DPS) [pvp]; High Warlord's Right Claw (234557, -0.10 DPS) [pvp] |
+| off_hand | Grand Marshal's Swiftblade (234579) | Rank 18 [pvp] | 952.9 | yes | High Warlord's Left Claw (234558, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (234584, -0.10 DPS) [pvp]; Grand Marshal's Left Hand Blade (18847, -1.14 DPS) [vendor] |
+| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | 57.7 | yes | Precisely Calibrated Boomstick (2100, -1.39 DPS) [world_drop]; Houndmaster's Bow (11628, -1.52 DPS) [dungeon]; Eaglehorn Long Bow (13023, -1.54 DPS) [world] |
 
-**New at 60:** head: Bonescythe Helmet; neck: Stormrage's Talisman of Seething; shoulder: Bonescythe Pauldrons; back: Chromatic Cloak; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Belt of Never-ending Agony; legs: Stormshroud Pants; feet: Bonescythe Sabatons; finger1: Band of Unnatural Forces; finger2: Ring of the Qiraji Fury; trinket1: Kiss of the Spider; trinket2: Slayer's Crest; main_hand: Thunderfury, Blessed Blade of the Windseeker; off_hand: High Warlord's Quickblade; ranged: Larvae of the Great Worm
+**New at 60:** head: Bonescythe Helmet; neck: Blazefury Medallion; shoulder: Bonescythe Pauldrons; back: Chromatic Cloak; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Bonescythe Waistguard; legs: Stormshroud Pants; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of the Penitent; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Quickblade; off_hand: Grand Marshal's Swiftblade; ranged: The Purifier
 
-No-known-source sample (15 of 1716, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 1791, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 

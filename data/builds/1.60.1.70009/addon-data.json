@@ -7793,11 +7793,6 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -7870,11 +7865,6 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -7945,7 +7935,6 @@
         "new_at_band": {
           "alliance": [
             252507,
-            20444,
             4315,
             4311,
             252492,
@@ -7962,7 +7951,6 @@
           ],
           "horde": [
             252507,
-            20442,
             4315,
             4311,
             252492,
@@ -8434,9 +8422,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 220864,
+              "item_id": 220865,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "feet": {
               "item_id": 220862,
@@ -8454,19 +8442,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
+            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "main_hand": {
-              "item_id": 7959,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
             }
           },
           "horde": {
@@ -8511,9 +8494,9 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 220865,
+              "item_id": 220864,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 220862,
@@ -8531,19 +8514,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "main_hand": {
-              "item_id": 7959,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             }
           }
         },
@@ -8556,13 +8534,12 @@
             15092,
             867,
             20097,
-            220864,
+            220865,
             220862,
             17713,
             19523,
-            249469,
-            11811,
-            7959
+            1713,
+            249469
           ],
           "horde": [
             220850,
@@ -8572,13 +8549,12 @@
             15092,
             867,
             20165,
-            220865,
+            220864,
             220862,
             17713,
             19519,
-            249469,
-            11811,
-            7959
+            1713,
+            19120
           ]
         },
         "weights": {
@@ -8625,9 +8601,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 19686,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 18405,
@@ -8650,31 +8626,31 @@
               "source": "The Savior of Kalimdor"
             },
             "finger2": {
-              "item_id": 23031,
-              "source_kind": "raid",
-              "source": "Naxxramas: Noth the Plaguebringer"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             }
           },
           "horde": {
             "head": {
-              "item_id": 19999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 13404,
+              "source_kind": "dungeon",
+              "source": "Stratholme: The Unforgiven"
             },
             "neck": {
               "item_id": 18404,
@@ -8702,9 +8678,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 19686,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 18405,
@@ -8727,24 +8703,24 @@
               "source": "The Savior of Kalimdor"
             },
             "finger2": {
-              "item_id": 23031,
-              "source_kind": "raid",
-              "source": "Naxxramas: Noth the Plaguebringer"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             }
           }
         },
@@ -8755,30 +8731,27 @@
             21187,
             19682,
             21186,
-            21585,
-            18405,
-            19684,
-            21709,
-            23031,
-            23046,
-            23047,
-            22589
-          ],
-          "horde": [
-            19999,
-            18404,
-            21187,
-            19682,
-            21186,
-            21585,
+            19686,
             18405,
             220864,
             19684,
             21709,
-            23031,
-            23046,
-            23047,
-            22589
+            19325,
+            744,
+            234549
+          ],
+          "horde": [
+            13404,
+            18404,
+            21187,
+            19682,
+            21186,
+            19686,
+            18405,
+            19684,
+            21709,
+            19325,
+            234549
           ]
         },
         "weights": {
@@ -9535,12 +9508,12 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 11811,
+              "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -9577,8 +9550,8 @@
             252468,
             19511,
             11862,
+            19120,
             249469,
-            11811,
             7959
           ]
         },
@@ -9621,9 +9594,9 @@
               "source": "Captain Dirgehammer"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 19587,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
               "item_id": 15063,
@@ -9631,9 +9604,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 20045,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "legs": {
               "item_id": 16450,
@@ -9646,24 +9619,24 @@
               "source": "Rank 11"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 18821,
-              "source_kind": "raid",
-              "source": "Molten Core: Magmadar"
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 20071,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "main_hand": {
               "item_id": 234545,
@@ -9698,9 +9671,9 @@
               "source": "Captain Dirgehammer"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 19587,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
               "item_id": 15063,
@@ -9708,9 +9681,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 20190,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "legs": {
               "item_id": 16450,
@@ -9723,24 +9696,24 @@
               "source": "Rank 11"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 18821,
-              "source_kind": "raid",
-              "source": "Molten Core: Magmadar"
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "main_hand": {
               "item_id": 234545,
@@ -9756,15 +9729,15 @@
             227172,
             21710,
             16452,
-            21602,
+            19587,
             15063,
-            21586,
+            20045,
             16450,
             227181,
-            23038,
-            18821,
-            23041,
-            22954,
+            19325,
+            21182,
+            18406,
+            20071,
             234545
           ],
           "horde": [
@@ -9773,15 +9746,14 @@
             227172,
             21710,
             16452,
-            21602,
+            19587,
             15063,
-            21586,
+            20190,
             16450,
             227181,
-            23038,
-            18821,
-            23041,
-            22954,
+            19325,
+            21182,
+            18406,
             234545
           ]
         },
@@ -10508,14 +10480,14 @@
               "source": "Divino-matic Rod"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
               "item_id": 12774,
@@ -10595,9 +10567,9 @@
               "source": "Divino-matic Rod"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -10610,9 +10582,9 @@
               "source": "Blacksmithing"
             },
             "off_hand": {
-              "item_id": 10823,
-              "source_kind": "quest",
-              "source": "Bring the End"
+              "item_id": 17719,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Tinkerer Gizlock"
             },
             "ranged": {
               "item_id": 285281,
@@ -10634,8 +10606,8 @@
             22240,
             17713,
             9533,
-            249469,
-            11811,
+            1713,
+            744,
             12774,
             17719,
             285281
@@ -10652,10 +10624,10 @@
             22240,
             17713,
             9533,
-            11811,
+            19120,
             249469,
             12774,
-            10823,
+            17719,
             285281
           ]
         },
@@ -10676,9 +10648,9 @@
               "source": "Cryptstalker Headpiece"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 22439,
@@ -10721,24 +10693,24 @@
               "source": "Cryptstalker Boots"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 21677,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Viscidus"
+              "item_id": 13217,
+              "source_kind": "quest",
+              "source": "Houses of the Holy"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 12584,
@@ -10751,9 +10723,9 @@
               "source": "Sergeant Thunderhorn"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -10763,9 +10735,9 @@
               "source": "Cryptstalker Headpiece"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 22439,
@@ -10808,24 +10780,24 @@
               "source": "Cryptstalker Boots"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 21677,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Viscidus"
+              "item_id": 13217,
+              "source_kind": "quest",
+              "source": "Houses of the Holy"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "main_hand": {
               "item_id": 12584,
@@ -10838,16 +10810,16 @@
               "source": "Sergeant Thunderhorn"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22438,
-            23053,
+            22659,
             22439,
             21710,
             22874,
@@ -10856,17 +10828,17 @@
             22442,
             22875,
             22440,
-            23038,
-            21677,
-            23041,
-            22954,
+            19325,
+            13217,
+            744,
+            1713,
             12584,
             16345,
-            23557
+            22656
           ],
           "horde": [
             22438,
-            23053,
+            22659,
             22439,
             21710,
             22874,
@@ -10875,13 +10847,12 @@
             22442,
             22875,
             22440,
-            23038,
-            21677,
-            23041,
-            22954,
+            19325,
+            13217,
+            18406,
             12584,
             16345,
-            23557
+            22656
           ]
         },
         "weights": {
@@ -11612,9 +11583,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
               "item_id": 12774,
@@ -11622,9 +11593,9 @@
               "source": "Blacksmithing"
             },
             "off_hand": {
-              "item_id": 10823,
-              "source_kind": "quest",
-              "source": "Bring the Light"
+              "item_id": 17719,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Tinkerer Gizlock"
             },
             "ranged": {
               "item_id": 285281,
@@ -11694,9 +11665,9 @@
               "source": "Divino-matic Rod"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -11734,9 +11705,9 @@
             17713,
             9533,
             249469,
-            11811,
+            744,
             12774,
-            10823,
+            17719,
             285281
           ],
           "horde": [
@@ -11751,7 +11722,7 @@
             22240,
             17713,
             9533,
-            11811,
+            19120,
             249469,
             12774,
             10823,
@@ -11776,9 +11747,9 @@
               "source": "Cryptstalker Headpiece"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 22439,
@@ -11821,24 +11792,24 @@
               "source": "Cryptstalker Boots"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 21677,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Viscidus"
+              "item_id": 13217,
+              "source_kind": "quest",
+              "source": "Houses of the Holy"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
               "item_id": 12584,
@@ -11851,9 +11822,9 @@
               "source": "Sergeant Thunderhorn"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -11863,9 +11834,9 @@
               "source": "Cryptstalker Headpiece"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 22439,
@@ -11908,24 +11879,24 @@
               "source": "Cryptstalker Boots"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 21677,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Viscidus"
+              "item_id": 13217,
+              "source_kind": "quest",
+              "source": "Houses of the Holy"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 12584,
@@ -11938,16 +11909,16 @@
               "source": "Sergeant Thunderhorn"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22438,
-            23053,
+            22659,
             22439,
             21710,
             22874,
@@ -11956,17 +11927,16 @@
             22442,
             22875,
             22440,
-            23038,
-            21677,
-            23041,
-            22954,
+            19325,
+            13217,
+            1713,
             12584,
             16345,
-            23557
+            22656
           ],
           "horde": [
             22438,
-            23053,
+            22659,
             22439,
             21710,
             22874,
@@ -11975,13 +11945,12 @@
             22442,
             22875,
             22440,
-            23038,
-            21677,
-            23041,
-            22954,
+            19325,
+            13217,
+            1713,
             12584,
             16345,
-            23557
+            22656
           ]
         },
         "weights": {
@@ -12731,9 +12700,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 12774,
@@ -12813,9 +12782,9 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -12852,7 +12821,6 @@
             17713,
             19516,
             249469,
-            11811,
             12774,
             250614,
             2100
@@ -12868,7 +12836,7 @@
             22240,
             17713,
             11862,
-            11811,
+            19120,
             249469,
             12774,
             250614,
@@ -12893,9 +12861,9 @@
               "source": "Cryptstalker Headpiece"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
               "item_id": 227078,
@@ -12913,19 +12881,19 @@
               "source": "Cryptstalker Tunic"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 22443,
+              "source_kind": "quest",
+              "source": "Cryptstalker Wristguards"
             },
             "hands": {
-              "item_id": 16463,
+              "item_id": 22862,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22442,
+              "source_kind": "quest",
+              "source": "Cryptstalker Girdle"
             },
             "legs": {
               "item_id": 22875,
@@ -12938,39 +12906,39 @@
               "source": "Rank 16"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
+            "finger2": {
+              "item_id": 19384,
+              "source_kind": "quest",
+              "source": "The Lord of Blackrock"
+            },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234553,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 21244,
-              "source_kind": "quest",
-              "source": "Imperial Qiraji Armaments"
+              "item_id": 234579,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -12980,9 +12948,9 @@
               "source": "Cryptstalker Headpiece"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 227078,
@@ -13000,9 +12968,9 @@
               "source": "Cryptstalker Tunic"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 22443,
+              "source_kind": "quest",
+              "source": "Cryptstalker Wristguards"
             },
             "hands": {
               "item_id": 16463,
@@ -13010,9 +12978,9 @@
               "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22442,
+              "source_kind": "quest",
+              "source": "Cryptstalker Girdle"
             },
             "legs": {
               "item_id": 22875,
@@ -13025,80 +12993,76 @@
               "source": "Rank 16"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
             },
+            "finger2": {
+              "item_id": 19384,
+              "source_kind": "quest",
+              "source": "The Lord of Blackrock"
+            },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234553,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 21244,
-              "source_kind": "quest",
-              "source": "Imperial Qiraji Armaments"
+              "item_id": 234579,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22438,
-            23053,
+            18404,
             227078,
             18509,
             22436,
-            21602,
-            16463,
-            21586,
+            22443,
+            22862,
+            22442,
             22875,
             231564,
-            23038,
             19325,
-            23041,
-            22954,
-            19019,
-            21244,
-            23557
+            19384,
+            234553,
+            234579,
+            22656
           ],
           "horde": [
             22438,
-            23053,
+            17111,
             227078,
             18509,
             22436,
-            21602,
+            22443,
             16463,
-            21586,
+            22442,
             22875,
             231564,
-            23038,
             19325,
-            23041,
-            22954,
-            19019,
-            21244,
-            23557
+            19384,
+            234553,
+            234579,
+            22656
           ]
         },
         "weights": {
@@ -13120,11 +13084,6 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -13139,11 +13098,6 @@
               "item_id": 253901,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "wrist": {
-              "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -13185,11 +13139,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -13206,11 +13155,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
             },
             "shoulder": {
               "item_id": 4315,
@@ -13272,11 +13216,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -13292,11 +13231,9 @@
         "new_at_band": {
           "alliance": [
             253949,
-            20444,
             4315,
             4311,
             253901,
-            1974,
             5970,
             253925,
             23173,
@@ -13305,13 +13242,11 @@
             20431,
             21566,
             21568,
-            727,
             279898,
             8071
           ],
           "horde": [
             253949,
-            20442,
             4315,
             4311,
             253901,
@@ -13324,7 +13259,6 @@
             1156,
             21566,
             21568,
-            727,
             279898,
             8071
           ]
@@ -13808,9 +13742,9 @@
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 220909,
+              "item_id": 220891,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 17713,
@@ -13828,9 +13762,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 11750,
@@ -13910,9 +13844,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 11750,
@@ -13934,11 +13868,11 @@
             220886,
             20097,
             220888,
-            220909,
+            220891,
             17713,
             19523,
             249469,
-            11811,
+            11302,
             11750,
             249232
           ],
@@ -13953,7 +13887,7 @@
             17713,
             19519,
             249469,
-            11811,
+            19120,
             11750,
             249232
           ]
@@ -13977,9 +13911,9 @@
               "source": "Frostfire Circlet"
             },
             "neck": {
-              "item_id": 23057,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
               "item_id": 19050,
@@ -14002,14 +13936,14 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 18405,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 22497,
@@ -14027,27 +13961,27 @@
               "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22630,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 249232,
+              "item_id": 249385,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -14059,9 +13993,9 @@
               "source": "Frostfire Circlet"
             },
             "neck": {
-              "item_id": 23057,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "shoulder": {
               "item_id": 19050,
@@ -14084,14 +14018,14 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 18405,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 22497,
@@ -14109,27 +14043,27 @@
               "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22630,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 249232,
+              "item_id": 249385,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -14138,37 +14072,36 @@
         "new_at_band": {
           "alliance": [
             22498,
-            23057,
+            18404,
             19050,
             18509,
             22496,
             21186,
-            21585,
-            22502,
+            14146,
+            18405,
             22497,
             22500,
             19325,
-            21182,
-            23046,
-            22954,
-            22630
+            21709,
+            234549,
+            249385
           ],
           "horde": [
             22498,
-            23057,
+            18404,
             19050,
             18509,
             22496,
             21186,
-            21585,
-            22502,
+            14146,
+            18405,
             22497,
             22500,
             19325,
-            21182,
-            23046,
-            22954,
-            22630
+            21709,
+            11302,
+            234549,
+            249385
           ]
         },
         "weights": {
@@ -14190,11 +14123,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
             },
             "shoulder": {
               "item_id": 4315,
@@ -14273,11 +14201,6 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -14353,7 +14276,6 @@
         "new_at_band": {
           "alliance": [
             253949,
-            20444,
             4315,
             5542,
             253901,
@@ -14371,7 +14293,6 @@
           ],
           "horde": [
             253949,
-            20442,
             4315,
             5542,
             253901,
@@ -14892,9 +14813,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 11750,
@@ -14909,9 +14830,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 220889,
+              "item_id": 220907,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 23169,
@@ -14934,9 +14855,9 @@
               "source": "Captain Dirgehammer"
             },
             "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 9448,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
               "item_id": 10019,
@@ -14969,14 +14890,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 11750,
@@ -15004,24 +14925,23 @@
             17713,
             19523,
             249469,
-            11811,
             11750,
             249232
           ],
           "horde": [
-            220889,
+            220907,
             220887,
             11623,
             220886,
-            254061,
+            9448,
             10019,
             20165,
             220888,
             220891,
             17713,
             19519,
-            249469,
-            11811,
+            1713,
+            11302,
             11750,
             249232
           ]
@@ -15064,9 +14984,9 @@
               "source": "Frostfire Robe"
             },
             "wrist": {
-              "item_id": 22503,
+              "item_id": 21186,
               "source_kind": "quest",
-              "source": "Frostfire Bindings"
+              "source": "Stalwart's Battlegear"
             },
             "hands": {
               "item_id": 14146,
@@ -15094,29 +15014,29 @@
               "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 23001,
-              "source_kind": "raid",
-              "source": "Naxxramas: Thaddius"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris"
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -15141,9 +15061,9 @@
               "source": "Volunteer's Battlegear"
             },
             "chest": {
-              "item_id": 19682,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 22496,
+              "source_kind": "quest",
+              "source": "Frostfire Robe"
             },
             "wrist": {
               "item_id": 21186,
@@ -15151,9 +15071,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 22502,
@@ -15176,29 +15096,29 @@
               "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 23001,
-              "source_kind": "raid",
-              "source": "Naxxramas: Thaddius"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris"
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -15209,35 +15129,35 @@
             19050,
             21187,
             22496,
-            22503,
+            21186,
             14146,
             22502,
             22497,
             21344,
             19325,
-            21182,
-            23046,
-            23001,
-            22589,
-            11860
+            21709,
+            1713,
+            249469,
+            234549,
+            249385
           ],
           "horde": [
             22498,
             18404,
             19050,
             21187,
-            19682,
+            22496,
             21186,
-            21585,
+            22066,
             22502,
             22497,
             21344,
             19325,
-            21182,
-            23046,
-            23001,
-            22589,
-            11860
+            21709,
+            249469,
+            19120,
+            234549,
+            249385
           ]
         },
         "weights": {
@@ -15257,11 +15177,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
             },
             "shoulder": {
               "item_id": 4315,
@@ -15340,11 +15255,6 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -15420,7 +15330,6 @@
         "new_at_band": {
           "alliance": [
             253949,
-            20444,
             4315,
             4311,
             253901,
@@ -15438,7 +15347,6 @@
           ],
           "horde": [
             253949,
-            20442,
             4315,
             4311,
             253901,
@@ -15953,9 +15861,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 11750,
@@ -16030,14 +15938,14 @@
               "source": "World drop"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 11750,
@@ -16066,7 +15974,7 @@
             17713,
             1993,
             249469,
-            11811,
+            11302,
             11750,
             11860
           ],
@@ -16083,8 +15991,8 @@
             220891,
             17713,
             1993,
-            249469,
-            11811,
+            11302,
+            19120,
             11750,
             11860
           ]
@@ -16106,9 +16014,9 @@
               "source": "Frostfire Circlet"
             },
             "neck": {
-              "item_id": 23057,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 19601,
+              "source_kind": "quest",
+              "source": "The Jewel of Kajaro"
             },
             "shoulder": {
               "item_id": 19050,
@@ -16126,14 +16034,14 @@
               "source": "Frostfire Robe"
             },
             "wrist": {
-              "item_id": 21186,
+              "item_id": 22503,
               "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "source": "Frostfire Bindings"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 22502,
@@ -16156,27 +16064,27 @@
               "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 249232,
+              "item_id": 249385,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -16213,9 +16121,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 22502,
@@ -16238,27 +16146,27 @@
               "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 249232,
+              "item_id": 249385,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -16267,21 +16175,20 @@
         "new_at_band": {
           "alliance": [
             22498,
-            23057,
+            19601,
             19050,
             21187,
             22496,
-            21186,
-            21585,
+            22503,
+            22066,
             22502,
             22497,
             21344,
             19325,
-            21182,
-            23046,
-            23047,
-            22589,
-            249232
+            21709,
+            1713,
+            234549,
+            249385
           ],
           "horde": [
             22498,
@@ -16290,16 +16197,15 @@
             21187,
             22496,
             21186,
-            21585,
+            14146,
             22502,
             22497,
             21344,
             19325,
-            21182,
-            23046,
-            23047,
-            22589,
-            249232
+            21709,
+            249469,
+            234549,
+            249385
           ]
         },
         "weights": {
@@ -16606,9 +16512,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 6404,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 3841,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "back": {
               "item_id": 6314,
@@ -16693,7 +16599,7 @@
           "horde": [
             6686,
             7731,
-            6404,
+            3841,
             6314,
             2870,
             4438,
@@ -16982,12 +16888,12 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 11811,
+              "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -17039,9 +16945,9 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 220797,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 22240,
@@ -17059,14 +16965,14 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 250613,
@@ -17087,8 +16993,8 @@
             22240,
             17713,
             19516,
+            1713,
             249469,
-            11811,
             250613
           ],
           "horde": [
@@ -17099,12 +17005,11 @@
             220794,
             17714,
             20151,
-            220797,
+            15057,
             22240,
             17713,
             11862,
-            11811,
-            249469,
+            19120,
             250613
           ]
         },
@@ -17127,9 +17032,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
               "item_id": 220795,
@@ -17147,19 +17052,19 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 13400,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Timmy the Cruel"
             },
             "hands": {
-              "item_id": 21581,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 21278,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 20041,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "legs": {
               "item_id": 22385,
@@ -17172,29 +17077,29 @@
               "source": "Redemption Boots"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234542,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             }
           },
           "horde": {
@@ -17204,9 +17109,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "shoulder": {
               "item_id": 220795,
@@ -17224,19 +17129,19 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 13400,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Timmy the Cruel"
             },
             "hands": {
-              "item_id": 21581,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 21278,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 20204,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "legs": {
               "item_id": 22385,
@@ -17249,64 +17154,62 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234542,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             12640,
-            17111,
+            18404,
             21187,
             19690,
-            21602,
-            21581,
-            21586,
+            13400,
+            21278,
+            20041,
             22385,
             22430,
-            23038,
             19325,
-            23046,
-            23041,
-            19019
+            21182,
+            249469,
+            744,
+            234542
           ],
           "horde": [
             12640,
-            23053,
+            18404,
             21187,
             19690,
-            21602,
-            21581,
-            21586,
+            13400,
+            21278,
+            20204,
             22385,
             19684,
-            23038,
             19325,
-            23046,
-            23041,
-            19019
+            21182,
+            234542
           ]
         },
         "weights": {
@@ -17328,11 +17231,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
             },
             "shoulder": {
               "item_id": 4315,
@@ -17394,11 +17292,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "main_hand": {
-              "item_id": 789,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -17415,11 +17308,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
             },
             "shoulder": {
               "item_id": 4315,
@@ -17481,11 +17369,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "main_hand": {
-              "item_id": 789,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -17501,7 +17384,6 @@
         "new_at_band": {
           "alliance": [
             253949,
-            20444,
             4315,
             4311,
             253901,
@@ -17514,13 +17396,11 @@
             20431,
             21566,
             21568,
-            789,
             279898,
             8071
           ],
           "horde": [
             253949,
-            20442,
             4315,
             4311,
             253901,
@@ -17533,7 +17413,6 @@
             286535,
             21566,
             21568,
-            789,
             279898,
             8071
           ]
@@ -18035,9 +17914,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 10838,
@@ -18122,9 +18001,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 10838,
@@ -18155,7 +18034,7 @@
             17713,
             19523,
             249469,
-            11811,
+            11302,
             10838,
             7685,
             249232
@@ -18171,7 +18050,6 @@
             17713,
             19519,
             249469,
-            11811,
             10838,
             7685,
             249232
@@ -18214,14 +18092,14 @@
               "source": "Vestments of the Oracle"
             },
             "wrist": {
-              "item_id": 21611,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 21186,
+              "source_kind": "quest",
+              "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 18405,
@@ -18229,9 +18107,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 16687,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
+              "item_id": 19683,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 19684,
@@ -18249,24 +18127,24 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris"
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -18296,14 +18174,14 @@
               "source": "Vestments of the Oracle"
             },
             "wrist": {
-              "item_id": 21611,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 16705,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lorekeeper Polkelt"
             },
             "waist": {
               "item_id": 18405,
@@ -18331,22 +18209,22 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 249232,
+              "item_id": 249385,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -18359,17 +18237,15 @@
             19050,
             21187,
             21351,
-            21611,
-            21585,
+            21186,
+            14146,
             18405,
-            16687,
+            19683,
             19684,
             21709,
             19325,
-            23046,
-            23047,
-            22589,
-            11860
+            234549,
+            249385
           ],
           "horde": [
             21348,
@@ -18377,16 +18253,17 @@
             19050,
             21187,
             21351,
-            21611,
-            21585,
+            19595,
+            16705,
             18405,
             16687,
             19684,
             21709,
             19325,
-            23046,
-            23047,
-            22589
+            1713,
+            11302,
+            234549,
+            249385
           ]
         },
         "weights": {
@@ -19214,9 +19091,9 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -19267,7 +19144,7 @@
             17728,
             17713,
             11862,
-            11811,
+            19120,
             249469,
             810,
             250614,
@@ -19292,9 +19169,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 22479,
@@ -19322,9 +19199,9 @@
               "source": "Bonescythe Gauntlets"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22482,
+              "source_kind": "quest",
+              "source": "Bonescythe Waistguard"
             },
             "legs": {
               "item_id": 15057,
@@ -19337,39 +19214,39 @@
               "source": "Bonescythe Sabatons"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 21677,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Viscidus"
+              "item_id": 13217,
+              "source_kind": "quest",
+              "source": "Houses of the Holy"
             },
             "trinket1": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "trinket2": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 20071,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
-            },
-            "off_hand": {
               "item_id": 234553,
               "source_kind": "pvp",
               "source": "Rank 18"
             },
+            "off_hand": {
+              "item_id": 234579,
+              "source_kind": "pvp",
+              "source": "Rank 18"
+            },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -19379,9 +19256,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 22479,
@@ -19409,9 +19286,9 @@
               "source": "Bonescythe Gauntlets"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22482,
+              "source_kind": "quest",
+              "source": "Bonescythe Waistguard"
             },
             "legs": {
               "item_id": 15057,
@@ -19424,80 +19301,79 @@
               "source": "Bonescythe Sabatons"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 21677,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Viscidus"
+              "item_id": 13217,
+              "source_kind": "quest",
+              "source": "Houses of the Holy"
             },
             "trinket1": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
-            },
-            "off_hand": {
               "item_id": 234553,
               "source_kind": "pvp",
               "source": "Rank 18"
             },
+            "off_hand": {
+              "item_id": 234579,
+              "source_kind": "pvp",
+              "source": "Rank 18"
+            },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22478,
-            23053,
+            17111,
             22479,
             18509,
             22476,
             22483,
             22481,
-            21586,
+            22482,
             15057,
             22480,
-            23038,
-            21677,
-            22954,
-            23041,
-            19019,
+            19325,
+            13217,
+            18406,
+            20071,
             234553,
-            23557
+            234579,
+            22656
           ],
           "horde": [
             22478,
-            23053,
+            17111,
             22479,
             18509,
             22476,
             22483,
             22481,
-            21586,
+            22482,
             15057,
             22480,
-            23038,
-            21677,
-            22954,
-            23041,
-            19019,
+            19325,
+            13217,
+            18406,
             234553,
-            23557
+            234579,
+            22656
           ]
         },
         "weights": {
@@ -20306,9 +20182,9 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 220858,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 17728,
@@ -20326,9 +20202,9 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -20377,11 +20253,11 @@
             8259,
             220854,
             20193,
-            220858,
+            15057,
             17728,
             17713,
             11862,
-            11811,
+            19120,
             249469,
             17719,
             810,
@@ -20404,9 +20280,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 22479,
@@ -20434,9 +20310,9 @@
               "source": "Bonescythe Gauntlets"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22482,
+              "source_kind": "quest",
+              "source": "Bonescythe Waistguard"
             },
             "legs": {
               "item_id": 231548,
@@ -20449,39 +20325,39 @@
               "source": "Bonescythe Sabatons"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234553,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 23577,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 234579,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -20491,9 +20367,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "shoulder": {
               "item_id": 22479,
@@ -20501,9 +20377,9 @@
               "source": "Bonescythe Pauldrons"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 21406,
+              "source_kind": "quest",
+              "source": "Cloak of Veiled Shadows"
             },
             "chest": {
               "item_id": 22476,
@@ -20521,9 +20397,9 @@
               "source": "Bonescythe Gauntlets"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22482,
+              "source_kind": "quest",
+              "source": "Bonescythe Waistguard"
             },
             "legs": {
               "item_id": 231548,
@@ -20536,80 +20412,77 @@
               "source": "Bonescythe Sabatons"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234553,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 23577,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 234579,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22478,
-            23053,
+            17111,
             22479,
             21406,
             22476,
             22483,
             22481,
-            21586,
+            22482,
             231548,
             22480,
-            23038,
             19325,
-            23041,
-            22954,
-            19019,
-            23577,
-            23557
+            21182,
+            18406,
+            234553,
+            234579,
+            22656
           ],
           "horde": [
             22478,
-            17111,
+            18404,
             22479,
-            18509,
+            21406,
             22476,
             22483,
             22481,
-            21586,
+            22482,
             231548,
             22480,
-            23038,
             19325,
-            23041,
-            22954,
-            19019,
-            23577,
-            23557
+            21182,
+            234553,
+            234579,
+            22656
           ]
         },
         "weights": {
@@ -20695,14 +20568,14 @@
               "source": "Silverwing Sentinels"
             },
             "main_hand": {
-              "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "item_id": 2236,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
-              "item_id": 5191,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Edwin VanCleef"
+              "item_id": 251485,
+              "source_kind": "quest",
+              "source": "A Frightened Request"
             },
             "ranged": {
               "item_id": 11304,
@@ -20782,14 +20655,14 @@
               "source": "Warsong Outriders"
             },
             "main_hand": {
-              "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "item_id": 2236,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
-              "item_id": 5191,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Edwin VanCleef"
+              "item_id": 251485,
+              "source_kind": "quest",
+              "source": "A Frightened Request"
             },
             "ranged": {
               "item_id": 11304,
@@ -20814,8 +20687,8 @@
             20439,
             21566,
             21568,
-            1482,
-            5191,
+            2236,
+            251485,
             11304
           ],
           "horde": [
@@ -20833,8 +20706,8 @@
             20429,
             21566,
             21568,
-            1482,
-            5191,
+            2236,
+            251485,
             11304
           ]
         },
@@ -20925,7 +20798,7 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "off_hand": {
-              "item_id": 7683,
+              "item_id": 7682,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Interrogator Vishas"
             },
@@ -21012,7 +20885,7 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "off_hand": {
-              "item_id": 7683,
+              "item_id": 7682,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Interrogator Vishas"
             },
@@ -21039,7 +20912,7 @@
             21119,
             272059,
             6691,
-            7683,
+            7682,
             274748
           ],
           "horde": [
@@ -21057,7 +20930,7 @@
             21120,
             272059,
             6691,
-            7683,
+            7682,
             274748
           ]
         },
@@ -21142,14 +21015,14 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 868,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 274753,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "off_hand": {
-              "item_id": 10823,
+              "item_id": 6831,
               "source_kind": "quest",
-              "source": "Bring the Light"
+              "source": "In the Name of the Light"
             },
             "ranged": {
               "item_id": 274748,
@@ -21229,14 +21102,14 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 868,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 274753,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "off_hand": {
-              "item_id": 10823,
-              "source_kind": "quest",
-              "source": "Bring the End"
+              "item_id": 10761,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer"
             },
             "ranged": {
               "item_id": 274748,
@@ -21257,8 +21130,8 @@
             2951,
             21565,
             1713,
-            868,
-            10823
+            274753,
+            6831
           ],
           "horde": [
             8176,
@@ -21272,8 +21145,8 @@
             2951,
             21565,
             1713,
-            868,
-            10823
+            274753,
+            10761
           ]
         },
         "weights": {
@@ -21357,14 +21230,14 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Tinkerer Gizlock"
-            },
-            "off_hand": {
-              "item_id": 810,
+              "item_id": 6660,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "off_hand": {
+              "item_id": 10750,
+              "source_kind": "quest",
+              "source": "The God Hakkar"
             },
             "ranged": {
               "item_id": 2100,
@@ -21434,9 +21307,9 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -21444,14 +21317,14 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Tinkerer Gizlock"
-            },
-            "off_hand": {
-              "item_id": 810,
+              "item_id": 6660,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "off_hand": {
+              "item_id": 10750,
+              "source_kind": "quest",
+              "source": "The God Hakkar"
             },
             "ranged": {
               "item_id": 2100,
@@ -21475,8 +21348,8 @@
             9533,
             249469,
             11811,
-            17719,
-            810,
+            6660,
+            10750,
             2100
           ],
           "horde": [
@@ -21491,10 +21364,10 @@
             17728,
             17713,
             11862,
-            11811,
+            19120,
             249469,
-            17719,
-            810,
+            6660,
+            10750,
             2100
           ]
         },
@@ -21515,9 +21388,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
               "item_id": 22479,
@@ -21525,9 +21398,9 @@
               "source": "Bonescythe Pauldrons"
             },
             "back": {
-              "item_id": 21406,
-              "source_kind": "quest",
-              "source": "Cloak of Veiled Shadows"
+              "item_id": 18509,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "chest": {
               "item_id": 22476,
@@ -21545,9 +21418,9 @@
               "source": "Bonescythe Gauntlets"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22482,
+              "source_kind": "quest",
+              "source": "Bonescythe Waistguard"
             },
             "legs": {
               "item_id": 16456,
@@ -21560,39 +21433,39 @@
               "source": "Bonescythe Sabatons"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234556,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 23577,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 234582,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -21602,9 +21475,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 22479,
@@ -21632,9 +21505,9 @@
               "source": "Bonescythe Gauntlets"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22482,
+              "source_kind": "quest",
+              "source": "Bonescythe Waistguard"
             },
             "legs": {
               "item_id": 16456,
@@ -21647,80 +21520,77 @@
               "source": "Bonescythe Sabatons"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234556,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 23577,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 234582,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22478,
-            23053,
+            18404,
             22479,
-            21406,
+            18509,
             22476,
             22483,
             22481,
-            21586,
+            22482,
             16456,
             22480,
-            23038,
             19325,
-            23041,
-            22954,
-            19019,
-            23577,
-            23557
+            21182,
+            18406,
+            234556,
+            234582,
+            22656
           ],
           "horde": [
             22478,
-            23053,
+            17111,
             22479,
             21406,
             22476,
             22483,
             22481,
-            21586,
+            22482,
             16456,
             22480,
-            23038,
             19325,
-            23041,
-            22954,
-            19019,
-            23577,
-            23557
+            21182,
+            234556,
+            234582,
+            22656
           ]
         },
         "weights": {
@@ -21739,11 +21609,6 @@
               "item_id": 250532,
               "source_kind": "crafted",
               "source": "Blacksmithing"
-            },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
             },
             "shoulder": {
               "item_id": 4315,
@@ -21817,11 +21682,6 @@
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -21892,7 +21752,6 @@
         "new_at_band": {
           "alliance": [
             250532,
-            20444,
             4315,
             4311,
             252492,
@@ -21909,7 +21768,6 @@
           ],
           "horde": [
             250532,
-            20442,
             4315,
             5542,
             252492,
@@ -22339,19 +22197,19 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 220848,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 17715,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "neck": {
-              "item_id": 272073,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 13085,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "shoulder": {
-              "item_id": 15067,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 220849,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "back": {
               "item_id": 272076,
@@ -22399,19 +22257,14 @@
               "source": "World drop"
             },
             "trinket1": {
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
+            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "main_hand": {
-              "item_id": 810,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           },
           "horde": {
@@ -22476,27 +22329,22 @@
               "source": "World drop"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "main_hand": {
-              "item_id": 810,
+              "item_id": 1713,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            220848,
-            272073,
-            15067,
+            17715,
+            13085,
+            220849,
             272076,
             220844,
             15092,
@@ -22506,9 +22354,8 @@
             22240,
             17713,
             1993,
-            249469,
-            11811,
-            810
+            1713,
+            249469
           ],
           "horde": [
             17715,
@@ -22523,9 +22370,8 @@
             22240,
             17713,
             1993,
-            249469,
-            11811,
-            810
+            1713,
+            19120
           ]
         },
         "weights": {
@@ -22541,19 +22387,19 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 13404,
-              "source_kind": "dungeon",
-              "source": "Stratholme: The Unforgiven"
+              "item_id": 19999,
+              "source_kind": "crafted",
+              "source": "Engineering"
             },
             "neck": {
-              "item_id": 23057,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 227154,
+              "item_id": 231659,
               "source_kind": "pvp",
-              "source": "Rank 14"
+              "source": "Rank 17"
             },
             "back": {
               "item_id": 18509,
@@ -22596,41 +22442,36 @@
               "source": "Stormpike Guard"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22630,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             }
           },
           "horde": {
             "head": {
-              "item_id": 13404,
-              "source_kind": "dungeon",
-              "source": "Stratholme: The Unforgiven"
-            },
-            "neck": {
-              "item_id": 23057,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 19999,
+              "source_kind": "crafted",
+              "source": "Engineering"
             },
             "shoulder": {
-              "item_id": 227154,
+              "item_id": 231659,
               "source_kind": "pvp",
-              "source": "Rank 14"
+              "source": "Rank 17"
             },
             "back": {
               "item_id": 18509,
@@ -22648,9 +22489,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 227159,
-              "source_kind": "pvp",
-              "source": "Rank 11"
+              "item_id": 21278,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 18405,
@@ -22658,9 +22499,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 22673,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 19684,
@@ -22673,32 +22514,32 @@
               "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 21182,
+              "item_id": 21709,
               "source_kind": "quest",
-              "source": "Veteran's Battlegear"
+              "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 22630,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            13404,
-            23057,
-            227154,
+            19999,
+            18404,
+            231659,
             18509,
             19682,
             21186,
@@ -22707,27 +22548,23 @@
             22748,
             19684,
             19325,
-            21182,
-            23046,
-            22954,
-            22630
+            21709,
+            11302,
+            234549
           ],
           "horde": [
-            13404,
-            23057,
-            227154,
+            19999,
+            231659,
             18509,
             19682,
             21186,
-            227159,
+            21278,
             18405,
-            22673,
+            15057,
             19684,
             19325,
-            21182,
-            23046,
-            22954,
-            22630
+            21709,
+            234549
           ]
         },
         "weights": {
@@ -23387,9 +23224,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 220820,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 7719,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Herod"
             },
             "neck": {
               "item_id": 7731,
@@ -23402,9 +23239,9 @@
               "source": "Lady Palanseer"
             },
             "back": {
-              "item_id": 16336,
-              "source_kind": "pvp",
-              "source": "Rank 9"
+              "item_id": 14801,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "chest": {
               "item_id": 220826,
@@ -23452,9 +23289,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 12774,
@@ -23529,9 +23366,9 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -23552,8 +23389,8 @@
         },
         "new_at_band": {
           "alliance": [
-            220820,
             220823,
+            14801,
             220826,
             17714,
             20088,
@@ -23562,7 +23399,6 @@
             17713,
             19516,
             249469,
-            11811,
             12774,
             810
           ],
@@ -23577,7 +23413,7 @@
             22240,
             17713,
             19511,
-            11811,
+            19120,
             249469,
             12774,
             810
@@ -23602,9 +23438,9 @@
               "source": "Engineering"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
               "item_id": 227154,
@@ -23612,9 +23448,9 @@
               "source": "Rank 14"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 21187,
+              "source_kind": "quest",
+              "source": "Volunteer's Battlegear"
             },
             "chest": {
               "item_id": 227157,
@@ -23622,9 +23458,9 @@
               "source": "Rank 12"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 19687,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "hands": {
               "item_id": 227159,
@@ -23632,9 +23468,9 @@
               "source": "Rank 11"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 20043,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "legs": {
               "item_id": 227156,
@@ -23647,32 +23483,32 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "main_hand": {
-              "item_id": 19170,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 234554,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 234554,
+              "item_id": 234555,
               "source_kind": "pvp",
               "source": "Rank 18"
             }
@@ -23684,9 +23520,9 @@
               "source": "Engineering"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "shoulder": {
               "item_id": 227154,
@@ -23704,9 +23540,9 @@
               "source": "Rank 12"
             },
             "wrist": {
-              "item_id": 21602,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 19687,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "hands": {
               "item_id": 227159,
@@ -23714,9 +23550,9 @@
               "source": "Rank 11"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 20150,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "legs": {
               "item_id": 227156,
@@ -23729,32 +23565,32 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
             },
+            "finger2": {
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
+            },
             "trinket1": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 12798,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 234554,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
-              "item_id": 234554,
+              "item_id": 234555,
               "source_kind": "pvp",
               "source": "Rank 18"
             }
@@ -23763,39 +23599,36 @@
         "new_at_band": {
           "alliance": [
             19999,
-            23053,
+            18404,
             227154,
-            18509,
+            21187,
             227157,
-            21602,
+            19687,
             227159,
-            21586,
+            20043,
             227156,
             19684,
-            23038,
             19325,
-            22954,
-            23041,
-            19170,
-            234554
+            21182,
+            18406,
+            234554,
+            234555
           ],
           "horde": [
             19999,
-            23053,
+            18404,
             227154,
             18509,
             227157,
-            21602,
+            19687,
             227159,
-            21586,
+            20150,
             227156,
             19684,
-            23038,
             19325,
-            22954,
-            23041,
-            12798,
-            234554
+            21182,
+            234554,
+            234555
           ]
         },
         "weights": {
@@ -23817,11 +23650,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
             },
             "shoulder": {
               "item_id": 4315,
@@ -23900,11 +23728,6 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -23980,7 +23803,6 @@
         "new_at_band": {
           "alliance": [
             253949,
-            20444,
             4315,
             4311,
             253901,
@@ -23998,7 +23820,6 @@
           ],
           "horde": [
             253949,
-            20442,
             4315,
             4311,
             253901,
@@ -24098,11 +23919,6 @@
               "source_kind": "rep",
               "source": "The League of Arathor"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 249394,
               "source_kind": "crafted",
@@ -24185,11 +24001,6 @@
               "source_kind": "rep",
               "source": "The Defilers"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 249394,
               "source_kind": "crafted",
@@ -24217,7 +24028,6 @@
             274746,
             272059,
             21119,
-            727,
             249394,
             5214
           ],
@@ -24235,7 +24045,6 @@
             274746,
             272059,
             21120,
-            727,
             249394,
             5214
           ]
@@ -24520,14 +24329,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
               "item_id": 20536,
@@ -24567,9 +24376,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 9448,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
               "item_id": 10019,
@@ -24577,9 +24386,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 17755,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Lord Vyletongue"
+              "item_id": 20165,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "legs": {
               "item_id": 14132,
@@ -24602,14 +24411,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 20536,
@@ -24617,7 +24426,7 @@
               "source": "Trolls of a Feather"
             },
             "ranged": {
-              "item_id": 249232,
+              "item_id": 249234,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -24633,8 +24442,8 @@
             220891,
             17713,
             19523,
-            249469,
-            11811,
+            11302,
+            20534,
             20536,
             249234
           ],
@@ -24642,16 +24451,16 @@
             15999,
             220887,
             11623,
-            254061,
-            17755,
+            9448,
+            20165,
             14132,
             220891,
             17713,
             19519,
-            249469,
-            11811,
+            20534,
+            11302,
             20536,
-            249232
+            249234
           ]
         },
         "weights": {
@@ -24697,9 +24506,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22077,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 22510,
@@ -24727,22 +24536,22 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 249234,
+              "item_id": 249385,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -24779,9 +24588,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22077,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 22510,
@@ -24809,22 +24618,22 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 249232,
+              "item_id": 249237,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -24838,15 +24647,14 @@
             21187,
             22504,
             21186,
-            21585,
+            22077,
             22510,
             19683,
             19684,
             21417,
             21709,
-            23046,
-            23047,
-            22589
+            234549,
+            249385
           ],
           "horde": [
             22506,
@@ -24855,15 +24663,14 @@
             21187,
             22504,
             21186,
-            21585,
+            22077,
             22510,
             19683,
             19684,
             21417,
             21709,
-            23046,
-            23047,
-            22589
+            234549,
+            249237
           ]
         },
         "weights": {
@@ -24882,11 +24689,6 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -24901,11 +24703,6 @@
               "item_id": 253901,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "wrist": {
-              "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -24947,11 +24744,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -24968,11 +24760,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
             },
             "shoulder": {
               "item_id": 4315,
@@ -25034,11 +24821,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -25054,11 +24836,9 @@
         "new_at_band": {
           "alliance": [
             253949,
-            20444,
             4315,
             4311,
             253901,
-            1974,
             5970,
             253925,
             23173,
@@ -25067,13 +24847,11 @@
             20431,
             21566,
             21568,
-            727,
             279898,
             5198
           ],
           "horde": [
             253949,
-            20442,
             4315,
             4311,
             253901,
@@ -25086,7 +24864,6 @@
             286535,
             21566,
             21568,
-            727,
             279898,
             5198
           ]
@@ -25585,14 +25362,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
               "item_id": 15106,
@@ -25667,14 +25444,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 15106,
@@ -25699,8 +25476,8 @@
             220891,
             17713,
             19523,
-            249469,
-            11811,
+            11302,
+            20534,
             249232
           ],
           "horde": [
@@ -25713,8 +25490,8 @@
             220891,
             17713,
             19519,
-            249469,
-            11811,
+            20534,
+            11302,
             249232
           ]
         },
@@ -25734,9 +25511,9 @@
               "source": "Plagueheart Circlet"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 21504,
+              "source_kind": "quest",
+              "source": "The Fall of Ossirian"
             },
             "shoulder": {
               "item_id": 17580,
@@ -25754,14 +25531,14 @@
               "source": "Plagueheart Robe"
             },
             "wrist": {
-              "item_id": 21611,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22511,
+              "source_kind": "quest",
+              "source": "Plagueheart Bindings"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22509,
+              "source_kind": "quest",
+              "source": "Plagueheart Gloves"
             },
             "waist": {
               "item_id": 17585,
@@ -25774,39 +25551,39 @@
               "source": "Plagueheart Leggings"
             },
             "feet": {
-              "item_id": 21600,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 22508,
+              "source_kind": "quest",
+              "source": "Plagueheart Sandals"
             },
             "finger1": {
-              "item_id": 19138,
-              "source_kind": "raid",
-              "source": "Molten Core: Ragnaros"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "finger2": {
-              "item_id": 19403,
-              "source_kind": "raid",
-              "source": "Blackwing Lair: Ebonroc"
+              "item_id": 19140,
+              "source_kind": "world",
+              "source": "Flamewaker Elite"
             },
             "trinket1": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22589,
+              "item_id": 22631,
               "source_kind": "quest",
               "source": "Atiesh, Greatstaff of the Guardian"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris"
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -25816,9 +25593,9 @@
               "source": "Plagueheart Circlet"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 21504,
+              "source_kind": "quest",
+              "source": "The Fall of Ossirian"
             },
             "shoulder": {
               "item_id": 17580,
@@ -25836,14 +25613,14 @@
               "source": "Plagueheart Robe"
             },
             "wrist": {
-              "item_id": 21611,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22511,
+              "source_kind": "quest",
+              "source": "Plagueheart Bindings"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 22509,
+              "source_kind": "quest",
+              "source": "Plagueheart Gloves"
             },
             "waist": {
               "item_id": 17585,
@@ -25856,78 +25633,76 @@
               "source": "Plagueheart Leggings"
             },
             "feet": {
-              "item_id": 21600,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Emperor Vek'lor"
+              "item_id": 22508,
+              "source_kind": "quest",
+              "source": "Plagueheart Sandals"
             },
             "finger1": {
-              "item_id": 19138,
-              "source_kind": "raid",
-              "source": "Molten Core: Ragnaros"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "finger2": {
-              "item_id": 19403,
-              "source_kind": "raid",
-              "source": "Blackwing Lair: Ebonroc"
+              "item_id": 19140,
+              "source_kind": "world",
+              "source": "Flamewaker Elite"
             },
             "trinket1": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
-              "item_id": 22589,
+              "item_id": 22631,
               "source_kind": "quest",
               "source": "Atiesh, Greatstaff of the Guardian"
             },
             "ranged": {
-              "item_id": 19118,
-              "source_kind": "quest",
-              "source": "Dark Vessels"
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22506,
-            17111,
+            21504,
             17580,
             18510,
             22504,
-            21611,
-            21585,
+            22511,
+            22509,
             17585,
             22505,
-            21600,
-            19138,
-            19403,
-            23047,
-            23046,
-            22589,
-            11860
+            22508,
+            20682,
+            19140,
+            20534,
+            11302,
+            22631,
+            249385
           ],
           "horde": [
             22506,
-            17111,
+            21504,
             17580,
             18510,
             22504,
-            21611,
-            21585,
+            22511,
+            22509,
             17585,
             22505,
-            21600,
-            19138,
-            19403,
-            23047,
-            23046,
-            22589,
-            19118
+            22508,
+            20682,
+            19140,
+            22631,
+            249385
           ]
         },
         "weights": {
@@ -25951,11 +25726,6 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
-            },
             "shoulder": {
               "item_id": 4315,
               "source_kind": "crafted",
@@ -25970,11 +25740,6 @@
               "item_id": 253901,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "wrist": {
-              "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -26016,11 +25781,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -26037,11 +25797,6 @@
               "item_id": 253949,
               "source_kind": "crafted",
               "source": "Tailoring"
-            },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
             },
             "shoulder": {
               "item_id": 4315,
@@ -26103,11 +25858,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 279898,
               "source_kind": "quest",
@@ -26123,11 +25873,9 @@
         "new_at_band": {
           "alliance": [
             253949,
-            20444,
             4315,
             4311,
             253901,
-            1974,
             5970,
             253925,
             23173,
@@ -26136,13 +25884,11 @@
             20431,
             21566,
             21568,
-            727,
             279898,
             5198
           ],
           "horde": [
             253949,
-            20442,
             4315,
             4311,
             253901,
@@ -26155,7 +25901,6 @@
             286535,
             21566,
             21568,
-            727,
             279898,
             5198
           ]
@@ -26240,11 +25985,6 @@
               "source_kind": "rep",
               "source": "The League of Arathor"
             },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "off_hand": {
               "item_id": 249394,
               "source_kind": "crafted",
@@ -26326,11 +26066,6 @@
               "item_id": 21120,
               "source_kind": "rep",
               "source": "The Defilers"
-            },
-            "main_hand": {
-              "item_id": 727,
-              "source_kind": "world_drop",
-              "source": "World drop"
             },
             "off_hand": {
               "item_id": 249394,
@@ -26663,14 +26398,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
               "item_id": 20536,
@@ -26690,9 +26425,9 @@
               "source": "Captain Dirgehammer"
             },
             "neck": {
-              "item_id": 23169,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Scorn"
+              "item_id": 13085,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "shoulder": {
               "item_id": 220887,
@@ -26745,14 +26480,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 20536,
@@ -26780,13 +26515,14 @@
             220891,
             17713,
             19523,
-            249469,
-            11811,
+            11302,
+            20534,
             20536,
             11860
           ],
           "horde": [
             220889,
+            13085,
             220887,
             19121,
             220886,
@@ -26797,8 +26533,8 @@
             220891,
             17713,
             19519,
-            249469,
-            11811,
+            20534,
+            11302,
             20536,
             11860
           ]
@@ -26819,9 +26555,9 @@
               "source": "Plagueheart Circlet"
             },
             "neck": {
-              "item_id": 23057,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
               "item_id": 22507,
@@ -26844,9 +26580,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 22510,
@@ -26859,9 +26595,9 @@
               "source": "Plagueheart Leggings"
             },
             "feet": {
-              "item_id": 22508,
-              "source_kind": "quest",
-              "source": "Plagueheart Sandals"
+              "item_id": 19684,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 21417,
@@ -26874,24 +26610,24 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris"
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -26901,9 +26637,9 @@
               "source": "Plagueheart Circlet"
             },
             "neck": {
-              "item_id": 23057,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "shoulder": {
               "item_id": 22507,
@@ -26926,9 +26662,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21585,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 22510,
@@ -26956,61 +26692,61 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 23046,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 23047,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 22589,
-              "source_kind": "quest",
-              "source": "Atiesh, Greatstaff of the Guardian"
+              "item_id": 234549,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris"
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             22506,
-            23057,
+            18404,
             22507,
             21187,
             22504,
             21186,
-            21585,
-            22510,
-            22505,
-            22508,
-            21417,
-            19325,
-            23046,
-            23047,
-            22589
-          ],
-          "horde": [
-            22506,
-            23057,
-            22507,
-            21187,
-            22504,
-            21186,
-            21585,
+            14146,
             22510,
             22505,
             19684,
             21417,
             19325,
-            23046,
-            23047,
-            22589
+            249469,
+            234549,
+            249385
+          ],
+          "horde": [
+            22506,
+            18404,
+            22507,
+            21187,
+            22504,
+            21186,
+            14146,
+            22510,
+            22505,
+            19684,
+            21417,
+            19325,
+            249469,
+            234549,
+            249385
           ]
         },
         "weights": {
@@ -27029,11 +26765,6 @@
               "item_id": 250528,
               "source_kind": "crafted",
               "source": "Blacksmithing"
-            },
-            "neck": {
-              "item_id": 20444,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
             },
             "shoulder": {
               "item_id": 3480,
@@ -27112,11 +26843,6 @@
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
-            "neck": {
-              "item_id": 20442,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
             "shoulder": {
               "item_id": 3480,
               "source_kind": "crafted",
@@ -27192,7 +26918,6 @@
         "new_at_band": {
           "alliance": [
             250528,
-            20444,
             3480,
             4706,
             6627,
@@ -27210,7 +26935,6 @@
           ],
           "horde": [
             250528,
-            20442,
             3480,
             4706,
             6627,
@@ -27664,9 +27388,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 220804,
+              "item_id": 220803,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 7731,
@@ -27806,9 +27530,9 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -27829,7 +27553,7 @@
         },
         "new_at_band": {
           "alliance": [
-            220804,
+            220803,
             220795,
             14801,
             220794,
@@ -27857,7 +27581,7 @@
             252468,
             17713,
             11862,
-            11811,
+            19120,
             249469,
             7959,
             11628
@@ -27878,9 +27602,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 23243,
@@ -27898,14 +27622,14 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 21618,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Princess Huhuran"
+              "item_id": 13400,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Timmy the Cruel"
             },
             "hands": {
-              "item_id": 21581,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 16484,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "waist": {
               "item_id": 19823,
@@ -27923,24 +27647,24 @@
               "source": "Conqueror's Greaves"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 21393,
+              "source_kind": "quest",
+              "source": "Signet of Unyielding Strength"
             },
             "finger2": {
-              "item_id": 18821,
-              "source_kind": "raid",
-              "source": "Molten Core: Magmadar"
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 20071,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "main_hand": {
               "item_id": 234542,
@@ -27948,9 +27672,9 @@
               "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -27960,9 +27684,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 23243,
@@ -27980,14 +27704,14 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 21618,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Princess Huhuran"
+              "item_id": 13400,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Timmy the Cruel"
             },
             "hands": {
-              "item_id": 21581,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 16484,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "waist": {
               "item_id": 19823,
@@ -28000,29 +27724,29 @@
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 21333,
-              "source_kind": "quest",
-              "source": "Conqueror's Greaves"
+              "item_id": 16483,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 21393,
+              "source_kind": "quest",
+              "source": "Signet of Unyielding Strength"
             },
             "finger2": {
-              "item_id": 18821,
-              "source_kind": "raid",
-              "source": "Molten Core: Magmadar"
+              "item_id": 21182,
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "main_hand": {
               "item_id": 234542,
@@ -28030,48 +27754,47 @@
               "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             12640,
-            23053,
+            22659,
             23243,
             21710,
             19690,
-            21618,
-            21581,
+            13400,
+            16484,
             19823,
             16479,
             21333,
-            23038,
-            18821,
-            23041,
-            22954,
+            21393,
+            21182,
+            18406,
+            20071,
             234542,
-            23557
+            22656
           ],
           "horde": [
             12640,
-            23053,
+            22659,
             23243,
             21710,
             19690,
-            21618,
-            21581,
+            13400,
+            16484,
             19823,
             16479,
-            21333,
-            23038,
-            18821,
-            23041,
-            22954,
+            16483,
+            21393,
+            21182,
+            18406,
             234542,
-            23557
+            22656
           ]
         },
         "weights": {
@@ -28907,9 +28630,9 @@
               "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
               "item_id": 249469,
@@ -28962,7 +28685,7 @@
             252468,
             17713,
             11862,
-            11811,
+            19120,
             249469,
             12774,
             810,
@@ -28987,9 +28710,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 23243,
@@ -29007,19 +28730,19 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 21618,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Princess Huhuran"
+              "item_id": 21184,
+              "source_kind": "quest",
+              "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 21581,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 16484,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 19823,
+              "source_kind": "quest",
+              "source": "Paragons of Power: The Vindicator's Belt"
             },
             "legs": {
               "item_id": 16479,
@@ -29032,29 +28755,29 @@
               "source": "Conqueror's Greaves"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 21393,
+              "source_kind": "quest",
+              "source": "Signet of Unyielding Strength"
             },
             "finger2": {
-              "item_id": 18821,
-              "source_kind": "raid",
-              "source": "Molten Core: Magmadar"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 20071,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234553,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
               "item_id": 234579,
@@ -29062,9 +28785,9 @@
               "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           },
           "horde": {
@@ -29074,9 +28797,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid",
-              "source": "Naxxramas: Kel'Thuzad"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 23243,
@@ -29099,14 +28822,14 @@
               "source": "Stratholme: Timmy the Cruel"
             },
             "hands": {
-              "item_id": 21581,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 16484,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 21586,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: C'Thun"
+              "item_id": 19823,
+              "source_kind": "quest",
+              "source": "Paragons of Power: The Vindicator's Belt"
             },
             "legs": {
               "item_id": 16479,
@@ -29114,34 +28837,34 @@
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 21333,
-              "source_kind": "quest",
-              "source": "Conqueror's Greaves"
+              "item_id": 16483,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
-              "item_id": 23038,
-              "source_kind": "raid",
-              "source": "Naxxramas: Loatheb"
+              "item_id": 21393,
+              "source_kind": "quest",
+              "source": "Signet of Unyielding Strength"
             },
             "finger2": {
-              "item_id": 18821,
-              "source_kind": "raid",
-              "source": "Molten Core: Magmadar"
+              "item_id": 19325,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 23041,
-              "source_kind": "raid",
-              "source": "Naxxramas: Sapphiron"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 22954,
-              "source_kind": "raid",
-              "source": "Naxxramas: Maexxna"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "main_hand": {
-              "item_id": 19019,
-              "source_kind": "quest",
-              "source": "Rise, Thunderfury!"
+              "item_id": 234553,
+              "source_kind": "pvp",
+              "source": "Rank 18"
             },
             "off_hand": {
               "item_id": 234579,
@@ -29149,50 +28872,49 @@
               "source": "Rank 18"
             },
             "ranged": {
-              "item_id": 23557,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj: Ouro"
+              "item_id": 22656,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             12640,
-            23053,
+            22659,
             23243,
             21394,
             19690,
-            21618,
-            21581,
-            21586,
+            21184,
+            16484,
+            19823,
             16479,
             21333,
-            23038,
-            18821,
-            23041,
-            22954,
-            19019,
+            21393,
+            19325,
+            18406,
+            20071,
+            234553,
             234579,
-            23557
+            22656
           ],
           "horde": [
             12640,
-            23053,
+            22659,
             23243,
             21394,
             19690,
             13400,
-            21581,
-            21586,
+            16484,
+            19823,
             16479,
-            21333,
-            23038,
-            18821,
-            23041,
-            22954,
-            19019,
+            16483,
+            21393,
+            19325,
+            18406,
+            234553,
             234579,
-            23557
+            22656
           ]
         },
         "weights": {
