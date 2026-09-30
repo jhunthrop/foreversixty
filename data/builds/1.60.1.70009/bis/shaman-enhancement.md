@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-253100000000000000-0000000000000000)
 
-Set DPS (verified): 43.1. Weights run: 1.5s. Verify run: 1.4s. 399 eligible items had no known source.
+Set DPS (verified): 43.1. Weights run: 1.6s. Verify run: 1.5s. 399 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.025, crit=4.333 ± 0.103, hit=4.241 ± 0.303, melee_haste=2.440 ± 0.609
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 821, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 93.3. Weights run: 1.8s. Verify run: 1.9s. 1152 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 1.9s. Verify run: 1.9s. 1152 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.386 ± 0.051, crit=7.710 ± 0.213, hit=5.187 ± 0.448, melee_haste=3.244 ± 0.122
 
@@ -128,39 +128,39 @@ No-known-source sample (15 of 1491, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 5533220000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 195.6. Weights run: 2.0s. Verify run: 2.1s. 2225 eligible items had no known source.
+Set DPS (verified): 231.5. Weights run: 1.9s. Verify run: 2.2s. 2170 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.519 ± 0.068, crit=10.313 ± 0.324, hit=11.159 ± 1.127, melee_haste=3.972 ± 0.142
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Mask of the Unforgiven (13404) (or Bloodvine Goggles (19999)) | Stratholme: The Unforgiven [dungeon] | 367.6 | yes | Bloodvine Goggles (19999, -0.30 DPS, sim-verified) [crafted]; Ragefury Eyepatch (11735, -2.41 DPS) [dungeon]; Bloodvine Lens (19998, -2.84 DPS) [crafted] |
-| neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | sim-verified (196.0 DPS) | yes | Blazefury Medallion (17111, -1.99 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -3.29 DPS) [quest]; Beads of Ogre Might (22150, -4.47 DPS) [quest] |
-| shoulder | Warlord's Mail Pauldrons (231654) | Lady Palanseer [vendor] | 290.0 | yes | Champion's Mail Pauldrons (227154, -0.29 DPS) [vendor]; Knight-Lieutenant's Mail Epaulets (223073, -4.60 DPS) [vendor]; Blood Guard's Mail Epaulets (220823, -5.35 DPS, sim-verified) [vendor] |
-| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 144.4 | yes | Earthweave Cloak (21187, +0.00 DPS, sim-verified) [quest]; Cloak of the Honor Guard (20073, -3.89 DPS) [rep]; Cloak of the Fallen God (21710, -3.93 DPS) [quest] |
-| chest | Warlord's Mail Hauberk (231653) | Lady Palanseer [vendor] | 300.0 | yes | Legionnaire's Mail Hauberk (227157, +0.00 DPS) [vendor]; Stormshroud Armor (15056, -0.40 DPS) [crafted]; Bloodsoul Breastplate (19690, -6.02 DPS, sim-verified) [crafted] |
-| wrist | Primal Batskin Bracers (19687) | Leatherworking [crafted] | 118.9 | yes | Rockfury Bracers (21186, -1.17 DPS, sim-verified) [quest]; Windtalker's Wristguards (19582, -2.92 DPS) [rep]; Windtalker's Wristguards (19583, -3.06 DPS) [rep] |
-| hands | General's Mail Vices (231655) | Lady Palanseer [vendor] | 288.0 | yes | Blood Guard's Mail Vices (227159, -0.43 DPS) [vendor]; Primal Batskin Gloves (19686, -2.15 DPS) [crafted]; Stormshroud Gloves (21278, -5.18 DPS, sim-verified) [crafted] |
-| waist | Highlander's Chain Girdle (20043) (or Highlander's Leather Girdle (20045)) | The League of Arathor [rep] | 178.4 | yes | Highlander's Leather Girdle (20045, +0.00 DPS, sim-verified) [rep]; Light Obsidian Belt (22195, -0.07 DPS) [crafted]; Highlander's Chain Girdle (20088, -0.50 DPS) [rep] |
-| legs | Sentinel's Chain Leggings (237819) | Illiyana Moonblaze [vendor] | 418.5 | yes | General's Mail Legguards (231658, -0.36 DPS, sim-verified) [vendor]; Sentinel's Leather Pants (237818, -4.17 DPS) [vendor]; Legionnaire's Mail Legguards (227156, -4.27 DPS) [vendor] |
-| feet | General's Mail Greaves (231656) | Lady Palanseer [vendor] | 145.6 | yes | Blood Guard's Mail Greaves (227158, -0.22 DPS) [vendor]; Bloodvine Boots (19684, -1.23 DPS) [crafted]; Fine Dawn Treaders (227815, -5.87 DPS, sim-verified) [vendor] |
+| head | Soulcrusher Headpiece (240096) | Leonid Barthalomew the Revered [vendor] | 433.2 | yes | Bloodvine Goggles (19999, -2.36 DPS) [crafted]; Ragefury Eyepatch (11735, -4.77 DPS) [dungeon]; Mask of the Unforgiven (13404, -7.41 DPS, sim-verified) [dungeon] |
+| neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | sim-verified (225.7 DPS) | yes | Blazefury Medallion (17111, -0.72 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -3.29 DPS) [quest]; Beads of Ogre Might (22150, -4.47 DPS) [quest] |
+| shoulder | Soulcrusher Mantle (240125) | Leonid Barthalomew the Revered [vendor] | sim-verified (226.4 DPS) | yes | Champion's Mail Pauldrons (227154, +0.00 DPS) [vendor]; Warlord's Mail Pauldrons (231654, -2.60 DPS, sim-verified) [vendor]; Soulcrusher Epaulets (240135, -2.83 DPS) [vendor] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | sim-verified (227.0 DPS) | yes | Earthweave Cloak (21187, -0.73 DPS) [quest]; Arcanoweave Cloak (272411, -1.01 DPS) [vendor]; Chromatic Cloak (18509, -3.19 DPS, sim-verified) [crafted] |
+| chest | Soulcrusher Armor (240128) | Leonid Barthalomew the Revered [vendor] | 609.9 | yes | Legionnaire's Mail Hauberk (227157, -11.18 DPS) [vendor]; Bloodsoul Breastplate (19690, -11.41 DPS) [crafted]; Warlord's Mail Hauberk (231653, -12.22 DPS, sim-verified) [vendor] |
+| wrist | Soulcrusher Vambraces (240137) | Leonid Barthalomew the Revered [vendor] | 163.6 | yes | Primal Batskin Bracers (19687, -1.61 DPS) [crafted]; Rockfury Bracers (21186, -1.87 DPS) [quest]; Soulcrusher Bracers (240108, -3.60 DPS, sim-verified) [vendor] |
+| hands | Soulcrusher Grips (240130) | Leonid Barthalomew the Revered [vendor] | 352.8 | yes | Soulcrusher Mitts (240122, -2.31 DPS) [vendor]; General's Mail Vices (231655, -2.34 DPS) [vendor]; Soulcrusher Handguards (240095, -7.83 DPS, sim-verified) [vendor] |
+| waist | Soulcrusher Girdle (240099) | Leonid Barthalomew the Revered [vendor] | 288.8 | yes | Soulcrusher Waistguard (240107, +0.00 DPS, sim-verified) [vendor]; Soulcrusher Belt (240136, -2.61 DPS) [vendor]; Highlander's Chain Girdle (20043, -3.98 DPS) [rep] |
+| legs | Soulcrusher Leggings (240134) | Leonid Barthalomew the Revered [vendor] | sim-verified (227.1 DPS) | yes | General's Mail Legguards (231658, -2.77 DPS) [vendor]; Sentinel's Leather Pants (237818, -3.10 DPS) [vendor]; Sentinel's Chain Leggings (237819, -3.27 DPS, sim-verified) [vendor] |
+| feet | General's Mail Greaves (231656) | Lady Palanseer [vendor] | 145.6 | yes | Blood Guard's Mail Greaves (227158, -0.22 DPS) [vendor]; Fine Dawn Treaders (227815, -1.02 DPS) [vendor]; Soulcrusher Sabatons (240102, -2.64 DPS, sim-verified) [vendor] |
 | finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | 272.0 | yes | Master Dragonslayer's Ring (19384, -4.05 DPS) [quest]; Signet Ring of the Bronze Dragonflight (234034, -4.05 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234030, -4.20 DPS) [vendor] |
-| finger2 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | 268.0 | yes | Master Dragonslayer's Ring (19384, -0.12 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234034, -3.91 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234030, -4.05 DPS) [vendor] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (191.5 DPS) | yes | Onyxia Blood Talisman (18406, -2.79 DPS, sim-verified) [quest]; Thunderbrew's Boot Flask (744, -3.62 DPS) [quest]; Guardian Talisman (1490, -3.62 DPS) [quest] |
-| trinket2 | Ankh of Life (1713) | Maraudon: Theradrim Shardling [dungeon] | sim-verified (191.8 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [dungeon]; Thunderbrew's Boot Flask (744, -1.16 DPS, sim-verified) [quest] |
-| main_hand | Ebon Hand (19170) | Blacksmithing [crafted] | sim-verified (196.0 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; High Warlord's Hacker (235476, -4.46 DPS, sim-verified) [vendor] |
-| off_hand | High Warlord's Bonecracker (235477) | Sergeant Thunderhorn [vendor] | sim-verified (196.0 DPS) | yes | High Warlord's Left Claw (234558, -0.11 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.11 DPS) [vendor]; Force Reactive Disk (18168, -27.27 DPS, sim-verified) [crafted] |
-| ranged | Totem of the Storm (23199) (or Totem of Thunder (228176), Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Totem of Thunder (228176, +0.00 DPS, sim-verified) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS) [world] |
+| finger2 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | 268.0 | yes | Master Dragonslayer's Ring (19384, +0.00 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234034, -3.91 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234030, -4.05 DPS) [vendor] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (220.2 DPS) | yes | Serenity Field (272439, -0.65 DPS, sim-verified) [vendor]; Guardian Talisman (1490, -3.62 DPS) [quest]; Ankh of Life (1713, -3.62 DPS) [dungeon] |
+| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-verified (220.2 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [dungeon]; Ankh of Life (1713, -1.56 DPS, sim-verified) [dungeon] |
+| main_hand | Ebon Hand (19170) | Blacksmithing [crafted] | sim-verified (225.7 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; High Warlord's Hacker (235476, -1.69 DPS, sim-verified) [vendor] |
+| off_hand | High Warlord's Bonecracker (235477) | Sergeant Thunderhorn [vendor] | sim-verified (225.7 DPS) | yes | High Warlord's Left Claw (234558, -0.11 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.11 DPS) [vendor]; Force Reactive Disk (18168, -27.26 DPS, sim-verified) [crafted] |
+| ranged | Totem of the Storm (23199) (or Totem of Thunder (228176), Tidal Totem (272431), Totem of the Storm (272432), Burning Totem (272433), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Totem of Thunder (228176, +0.00 DPS, sim-verified) [vendor]; Tidal Totem (272431, +0.00 DPS) [vendor]; Totem of the Storm (272432, +0.00 DPS) [world] |
 
-**New at 60:** head: Mask of the Unforgiven; neck: Onyxia Tooth Pendant; shoulder: Warlord's Mail Pauldrons; back: Chromatic Cloak; chest: Warlord's Mail Hauberk; wrist: Primal Batskin Bracers; hands: General's Mail Vices; waist: Highlander's Chain Girdle; legs: Sentinel's Chain Leggings; feet: General's Mail Greaves; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: Ebon Hand; off_hand: High Warlord's Bonecracker; ranged: Totem of the Storm
+**New at 60:** head: Soulcrusher Headpiece; neck: Onyxia Tooth Pendant; shoulder: Soulcrusher Mantle; back: Howler's Furs; chest: Soulcrusher Armor; wrist: Soulcrusher Vambraces; hands: Soulcrusher Grips; waist: Soulcrusher Girdle; legs: Soulcrusher Leggings; feet: General's Mail Greaves; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Thunderbrew's Boot Flask; main_hand: Ebon Hand; off_hand: High Warlord's Bonecracker; ranged: Totem of the Storm
 
-No-known-source sample (15 of 2225, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2170, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ## Horde
 
 ### Band 20 (orc, 0000000000000000-253100000000000000-0000000000000000)
 
-Set DPS (verified): 45.8. Weights run: 1.5s. Verify run: 1.4s. 401 eligible items had no known source.
+Set DPS (verified): 45.8. Weights run: 1.6s. Verify run: 1.3s. 401 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.025, crit=4.333 ± 0.103, hit=4.241 ± 0.303, melee_haste=2.440 ± 0.609
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 826, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 84.8. Weights run: 1.8s. Verify run: 1.7s. 1158 eligible items had no known source.
+Set DPS (verified): 84.8. Weights run: 1.9s. Verify run: 1.8s. 1158 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.386 ± 0.051, crit=7.710 ± 0.213, hit=5.187 ± 0.448, melee_haste=3.244 ± 0.122
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 1158, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (orc, 5500000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 121.0. Weights run: 1.9s. Verify run: 1.8s. 1498 eligible items had no known source.
+Set DPS (verified): 121.0. Weights run: 1.9s. Verify run: 1.9s. 1498 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.512 ± 0.061, crit=9.934 ± 0.268, hit=7.977 ± 0.662, melee_haste=3.814 ± 0.090
 
@@ -280,31 +280,31 @@ No-known-source sample (15 of 1498, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (orc, 5533220000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 208.0. Weights run: 2.0s. Verify run: 2.2s. 2213 eligible items had no known source.
+Set DPS (verified): 237.0. Weights run: 1.9s. Verify run: 2.3s. 2158 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.519 ± 0.068, crit=10.313 ± 0.324, hit=11.159 ± 1.127, melee_haste=3.972 ± 0.142
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Mask of the Unforgiven (13404) (or Bloodvine Goggles (19999)) | Stratholme: The Unforgiven [dungeon] | 367.6 | yes | Bloodvine Goggles (19999, +0.00 DPS, sim-verified) [crafted]; Ragefury Eyepatch (11735, -2.41 DPS) [dungeon]; Bloodvine Lens (19998, -2.84 DPS) [crafted] |
-| neck | Onyxia Tooth Pendant (18404) | For All To See [quest] | sim-verified (204.1 DPS) | yes | Blazefury Medallion (17111, -0.90 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -3.29 DPS) [quest]; Beads of Ogre Might (22150, -4.47 DPS) [quest] |
-| shoulder | Warlord's Mail Pauldrons (231654) | Lady Palanseer [vendor] | 290.0 | yes | Champion's Mail Pauldrons (227154, -0.29 DPS) [vendor]; Knight-Lieutenant's Mail Epaulets (223073, -4.60 DPS) [vendor]; Blood Guard's Mail Epaulets (220823, -4.81 DPS, sim-verified) [vendor] |
-| back | Earthweave Cloak (21187) | Volunteer's Battlegear [quest] | sim-verified (206.5 DPS) | yes | Chromatic Cloak (18509, -2.37 DPS, sim-verified) [crafted]; Deathguard's Cloak (20068, -2.98 DPS) [rep]; Cloak of the Fallen God (21710, -3.02 DPS) [quest] |
-| chest | Warlord's Mail Hauberk (231653) | Lady Palanseer [vendor] | 300.0 | yes | Legionnaire's Mail Hauberk (227157, +0.00 DPS) [vendor]; Stormshroud Armor (15056, -0.40 DPS) [crafted]; Bloodsoul Breastplate (19690, -5.04 DPS, sim-verified) [crafted] |
-| wrist | Primal Batskin Bracers (19687) | Leatherworking [crafted] | 118.9 | yes | Rockfury Bracers (21186, -0.31 DPS, sim-verified) [quest]; Windtalker's Wristguards (19582, -2.92 DPS) [rep]; Windtalker's Wristguards (19583, -3.06 DPS) [rep] |
-| hands | General's Mail Vices (231655) | Lady Palanseer [vendor] | 288.0 | yes | Blood Guard's Mail Vices (227159, -0.43 DPS) [vendor]; Primal Batskin Gloves (19686, -2.15 DPS) [crafted]; Stormshroud Gloves (21278, -4.51 DPS, sim-verified) [crafted] |
-| waist | Defiler's Chain Girdle (20150) (or Defiler's Leather Girdle (20190)) | The Defilers [rep] | 178.4 | yes | Defiler's Leather Girdle (20190, +0.00 DPS, sim-verified) [rep]; Light Obsidian Belt (22195, -0.07 DPS) [crafted]; Defiler's Chain Girdle (20151, -0.50 DPS) [rep] |
-| legs | General's Mail Legguards (231658) | Lady Palanseer [vendor] | sim-verified (207.1 DPS) | yes | Sentinel's Leather Pants (237818, -0.33 DPS) [vendor]; Legionnaire's Mail Legguards (227156, -0.43 DPS) [vendor]; Sentinel's Chain Leggings (237819, -2.95 DPS, sim-verified) [vendor] |
-| feet | General's Mail Greaves (231656) | Lady Palanseer [vendor] | 145.6 | yes | Blood Guard's Mail Greaves (227158, -0.22 DPS) [vendor]; Bloodvine Boots (19684, -1.23 DPS) [crafted]; Fine Dawn Treaders (227815, -4.75 DPS, sim-verified) [vendor] |
+| head | Soulcrusher Headpiece (240096) | Leonid Barthalomew the Revered [vendor] | 433.2 | yes | Bloodvine Goggles (19999, -2.36 DPS) [crafted]; Ragefury Eyepatch (11735, -4.77 DPS) [dungeon]; Mask of the Unforgiven (13404, -5.15 DPS, sim-verified) [dungeon] |
+| neck | Onyxia Tooth Pendant (18404) | For All To See [quest] | sim-verified (235.2 DPS) | yes | Blazefury Medallion (17111, -2.75 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -3.29 DPS) [quest]; Beads of Ogre Might (22150, -4.47 DPS) [quest] |
+| shoulder | Warlord's Mail Pauldrons (231654) | Lady Palanseer [vendor] | 290.0 | yes | Soulcrusher Mantle (240125, +0.00 DPS, sim-verified) [vendor]; Champion's Mail Pauldrons (227154, -0.29 DPS) [vendor]; Soulcrusher Epaulets (240135, -4.05 DPS) [vendor] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | sim-verified (237.0 DPS) | yes | Earthweave Cloak (21187, -0.73 DPS) [quest]; Arcanoweave Cloak (272411, -1.01 DPS) [vendor]; Chromatic Cloak (18509, -2.66 DPS, sim-verified) [crafted] |
+| chest | Soulcrusher Armor (240128) | Leonid Barthalomew the Revered [vendor] | 609.9 | yes | Legionnaire's Mail Hauberk (227157, -11.18 DPS) [vendor]; Bloodsoul Breastplate (19690, -11.41 DPS) [crafted]; Warlord's Mail Hauberk (231653, -11.92 DPS, sim-verified) [vendor] |
+| wrist | Soulcrusher Vambraces (240137) | Leonid Barthalomew the Revered [vendor] | 163.6 | yes | Primal Batskin Bracers (19687, -1.61 DPS) [crafted]; Rockfury Bracers (21186, -1.87 DPS) [quest]; Soulcrusher Bracers (240108, -3.26 DPS, sim-verified) [vendor] |
+| hands | Soulcrusher Grips (240130) | Leonid Barthalomew the Revered [vendor] | 352.8 | yes | Soulcrusher Mitts (240122, -2.31 DPS) [vendor]; General's Mail Vices (231655, -2.34 DPS) [vendor]; Soulcrusher Handguards (240095, -3.93 DPS, sim-verified) [vendor] |
+| waist | Soulcrusher Girdle (240099) | Leonid Barthalomew the Revered [vendor] | 288.8 | yes | Soulcrusher Waistguard (240107, +0.00 DPS, sim-verified) [vendor]; Soulcrusher Belt (240136, -2.61 DPS) [vendor]; Defiler's Chain Girdle (20150, -3.98 DPS) [rep] |
+| legs | Sentinel's Chain Leggings (237819) | Illiyana Moonblaze [vendor] | 418.5 | yes | Soulcrusher Leggings (240134, +0.00 DPS, sim-verified) [vendor]; General's Mail Legguards (231658, -3.84 DPS) [vendor]; Sentinel's Leather Pants (237818, -4.17 DPS) [vendor] |
+| feet | General's Mail Greaves (231656) | Lady Palanseer [vendor] | 145.6 | yes | Soulcrusher Sabatons (240102, +0.00 DPS, sim-verified) [vendor]; Blood Guard's Mail Greaves (227158, -0.22 DPS) [vendor]; Fine Dawn Treaders (227815, -1.02 DPS) [vendor] |
 | finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 272.0 | yes | Master Dragonslayer's Ring (19384, -4.05 DPS) [quest]; Signet Ring of the Bronze Dragonflight (234034, -4.05 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234030, -4.20 DPS) [vendor] |
 | finger2 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | 268.0 | yes | Master Dragonslayer's Ring (19384, +0.00 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234034, -3.91 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234030, -4.05 DPS) [vendor] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (204.1 DPS) | yes | Ankh of Life (1713, -4.15 DPS, sim-verified) [dungeon]; Guardian Talisman (1490, -4.33 DPS) [quest]; Blazing Emblem (2802, -4.33 DPS) [dungeon] |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (204.1 DPS) | yes | Ankh of Life (1713, -1.16 DPS, sim-verified) [dungeon]; Guardian Talisman (1490, -3.62 DPS) [quest]; Blazing Emblem (2802, -3.62 DPS) [dungeon] |
-| main_hand | High Warlord's Hacker (235476) | Sergeant Thunderhorn [vendor] | sim-verified (204.1 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; Ebon Hand (19170, -16.53 DPS, sim-verified) [crafted] |
-| off_hand | High Warlord's Bonecracker (235477) | Sergeant Thunderhorn [vendor] | sim-verified (204.1 DPS) | yes | High Warlord's Left Claw (234558, -0.11 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.11 DPS) [vendor]; Force Reactive Disk (18168, -30.83 DPS, sim-verified) [crafted] |
-| ranged | Totem of the Storm (23199) (or Totem of Thunder (228176), Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Totem of Thunder (228176, +0.00 DPS, sim-verified) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS) [world] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (234.1 DPS) | yes | Frozen Heart of the Mountain (249469, -0.71 DPS) [crafted]; Guardian Talisman (1490, -4.33 DPS) [quest]; Ankh of Life (1713, -4.33 DPS) [dungeon] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (235.2 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Weakness Analyzer (272438, -0.35 DPS, sim-verified) [vendor] |
+| main_hand | High Warlord's Hacker (235476) | Sergeant Thunderhorn [vendor] | sim-verified (235.2 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; Ebon Hand (19170, -20.12 DPS, sim-verified) [crafted] |
+| off_hand | High Warlord's Bonecracker (235477) | Sergeant Thunderhorn [vendor] | sim-verified (235.2 DPS) | yes | High Warlord's Left Claw (234558, -0.11 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.11 DPS) [vendor]; Force Reactive Disk (18168, -30.17 DPS, sim-verified) [crafted] |
+| ranged | Totem of the Storm (23199) (or Totem of Thunder (228176), Tidal Totem (272431), Totem of the Storm (272432), Burning Totem (272433), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Totem of Thunder (228176, +0.00 DPS, sim-verified) [vendor]; Tidal Totem (272431, +0.00 DPS) [vendor]; Totem of the Storm (272432, +0.00 DPS) [world] |
 
-**New at 60:** head: Mask of the Unforgiven; neck: Onyxia Tooth Pendant; shoulder: Warlord's Mail Pauldrons; back: Earthweave Cloak; chest: Warlord's Mail Hauberk; wrist: Primal Batskin Bracers; hands: General's Mail Vices; waist: Defiler's Chain Girdle; legs: General's Mail Legguards; feet: General's Mail Greaves; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: High Warlord's Hacker; off_hand: High Warlord's Bonecracker; ranged: Totem of the Storm
+**New at 60:** head: Soulcrusher Headpiece; neck: Onyxia Tooth Pendant; shoulder: Warlord's Mail Pauldrons; back: Howler's Furs; chest: Soulcrusher Armor; wrist: Soulcrusher Vambraces; hands: Soulcrusher Grips; waist: Soulcrusher Girdle; legs: Sentinel's Chain Leggings; feet: General's Mail Greaves; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Serenity Field; main_hand: High Warlord's Hacker; off_hand: High Warlord's Bonecracker; ranged: Totem of the Storm
 
-No-known-source sample (15 of 2213, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2158, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 

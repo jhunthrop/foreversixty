@@ -38,7 +38,7 @@ No-known-source sample (15 of 438, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-353211005010000000-000000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 1.6s. Verify run: 1.7s. 891 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 1.7s. Verify run: 1.7s. 891 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.218, strength=2.528 ± 0.266, agility=not significant (0.203 ± 0.078), crit=4.156 ± 0.307, hit=not significant (0.000 ± 0.000), melee_haste=2.879 ± 0.352
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 1330, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (human, 35100000000000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 93.3. Weights run: 2.0s. Verify run: 1.9s. 1762 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 2.1s. Verify run: 2.0s. 1762 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.214, strength=1.584 ± 0.298, agility=not significant (0.351 ± 0.116), crit=4.668 ± 0.389, hit=not significant (0.000 ± 0.000), melee_haste=2.879 ± 0.401
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (human, 35311103002000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 300.8. Weights run: 2.1s. Verify run: 2.3s. 2522 eligible items had no known source.
+Set DPS (verified): 300.8. Weights run: 2.1s. Verify run: 2.3s. 2500 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.427), strength=not significant (2.344 ± 0.596), agility=not significant (0.450 ± 0.239), crit=13.060 ± 0.873, hit=not significant (0.000 ± 0.000), melee_haste=6.782 ± 0.884
 
@@ -136,7 +136,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Lionheart Helm (12640) | Blacksmithing [crafted] | 407.9 | yes | Bloodvine Lens (19998, -2.44 DPS) [crafted]; Lightbreaker Greathelm (239517, -5.70 DPS) [vendor]; Ragefury Eyepatch (11735, -9.78 DPS, sim-verified) [dungeon] |
 | neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (287.7 DPS) | yes | Blazefury Medallion (17111, +0.00 DPS, sim-verified) [world]; Onyxia Tooth Pendant (18404, -1.20 DPS) [quest]; Choker of the Shifting Sands (21505, -9.52 DPS) [quest] |
-| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 269.3 | yes | Champion's Plate Shoulders (23243, -2.69 DPS) [vendor]; Lieutenant Commander's Plate Shoulders (23315, -2.69 DPS) [vendor]; Knight-Lieutenant's Plate Pauldrons (220795, -11.89 DPS, sim-verified) [vendor] |
+| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 269.3 | yes | Champion's Plate Shoulders (23243, -2.69 DPS) [vendor]; Lieutenant Commander's Plate Shoulders (23315, -2.69 DPS) [vendor]; Darkspear Spaulders (272108, -11.35 DPS, sim-verified) [vendor] |
 | back | Drape of Unyielding Strength (21394) | Drape of Unyielding Strength [quest] | sim-verified (294.5 DPS) | yes | Cloak of the Fallen God (21710, -0.10 DPS) [quest]; Cloak of the Honor Guard (20073, -0.17 DPS) [rep]; Chromatic Cloak (18509, -9.26 DPS, sim-verified) [crafted] |
 | chest | Lightbreaker Cuirass (239519) | Leonid Barthalomew the Revered [vendor] | 485.9 | yes | Stormshroud Armor (15056, -6.94 DPS) [crafted]; Savage Gladiator Chain (11726, -9.69 DPS) [dungeon]; Bloodsoul Breastplate (19690, -15.70 DPS, sim-verified) [crafted] |
 | wrist | Lightbreaker Wrists (239512) | Leonid Barthalomew the Revered [vendor] | sim-verified (297.8 DPS) | yes | Deeprock Bracers (21184, -1.35 DPS) [quest]; Berserker Bracers (19578, -1.41 DPS) [rep]; Vambraces of the Sadist (13400, -12.58 DPS, sim-verified) [dungeon] |
@@ -152,9 +152,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | High Warlord's Bonecracker (235477) | Sergeant Thunderhorn [vendor] | sim-verified (287.7 DPS) | yes | High Warlord's Left Claw (234558, -0.18 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.18 DPS) [vendor]; Force Reactive Disk (18168, -81.14 DPS, sim-verified) [crafted] |
 | ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (287.7 DPS) | yes | High Warlord's Recurve (234559, +0.00 DPS) [vendor]; High Warlord's Crossbow (234560, +0.00 DPS) [vendor]; Dark Iron Rifle (16004, -2.71 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Lightbreaker Shoulders; back: Drape of Unyielding Strength; chest: Lightbreaker Cuirass; wrist: Lightbreaker Wrists; hands: Lightbreaker Grips; waist: Lightbreaker Belt; legs: Lightbreaker Tassets; feet: Lightbreaker Greaves; finger1: Signet of Unyielding Strength; finger2: Don Julio's Band; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: High Warlord's Hacker; off_hand: High Warlord's Bonecracker; ranged: The Purifier
+**New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Lightbreaker Shoulders; back: Drape of Unyielding Strength; chest: Lightbreaker Cuirass; wrist: Lightbreaker Wrists; hands: Lightbreaker Grips; waist: Lightbreaker Belt; legs: Lightbreaker Tassets; feet: Lightbreaker Greaves; finger1: Signet of Unyielding Strength; finger2: Don Julio's Band; trinket1: Onyxia Blood Talisman; trinket2: Weakness Analyzer; main_hand: High Warlord's Hacker; off_hand: High Warlord's Bonecracker; ranged: The Purifier
 
-No-known-source sample (15 of 2522, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2500, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ## Horde
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 440, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-353211005010000000-000000000000000000)
 
-Set DPS (verified): 52.9. Weights run: 1.6s. Verify run: 1.6s. 896 eligible items had no known source.
+Set DPS (verified): 52.9. Weights run: 1.7s. Verify run: 1.7s. 896 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.218, strength=2.528 ± 0.266, agility=not significant (0.203 ± 0.078), crit=4.156 ± 0.307, hit=not significant (0.000 ± 0.000), melee_haste=2.879 ± 0.352
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 896, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-353211005050010050-000000000000000000)
 
-Set DPS (verified): 82.4. Weights run: 1.9s. Verify run: 1.9s. 1335 eligible items had no known source.
+Set DPS (verified): 82.4. Weights run: 1.9s. Verify run: 2.0s. 1335 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.333), strength=1.931 ± 0.393, agility=0.609 ± 0.145, crit=7.890 ± 0.549, hit=not significant (0.000 ± 0.000), melee_haste=3.559 ± 0.547
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 1335, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (troll, 35100000000000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 97.3. Weights run: 2.0s. Verify run: 2.0s. 1767 eligible items had no known source.
+Set DPS (verified): 97.3. Weights run: 2.1s. Verify run: 2.0s. 1767 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.214, strength=1.584 ± 0.298, agility=not significant (0.351 ± 0.116), crit=4.668 ± 0.389, hit=not significant (0.000 ± 0.000), melee_haste=2.879 ± 0.401
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 1767, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (troll, 35311103002000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 315.9. Weights run: 2.1s. Verify run: 2.4s. 2528 eligible items had no known source.
+Set DPS (verified): 315.9. Weights run: 2.1s. Verify run: 2.4s. 2506 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.427), strength=not significant (2.344 ± 0.596), agility=not significant (0.450 ± 0.239), crit=13.060 ± 0.873, hit=not significant (0.000 ± 0.000), melee_haste=6.782 ± 0.884
 
@@ -288,7 +288,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Lionheart Helm (12640) | Blacksmithing [crafted] | 407.9 | yes | Bloodvine Lens (19998, -2.44 DPS) [crafted]; Lightbreaker Greathelm (239517, -5.70 DPS) [vendor]; Ragefury Eyepatch (11735, -11.61 DPS, sim-verified) [dungeon] |
 | neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (300.8 DPS) | yes | Blazefury Medallion (17111, +0.00 DPS, sim-verified) [world]; Onyxia Tooth Pendant (18404, -1.20 DPS) [quest]; Choker of the Shifting Sands (21505, -9.52 DPS) [quest] |
-| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 269.3 | yes | Champion's Plate Shoulders (23243, -2.69 DPS) [vendor]; Lieutenant Commander's Plate Shoulders (23315, -2.69 DPS) [vendor]; Knight-Lieutenant's Plate Pauldrons (220795, -14.09 DPS, sim-verified) [vendor] |
+| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 269.3 | yes | Champion's Plate Shoulders (23243, -2.69 DPS) [vendor]; Lieutenant Commander's Plate Shoulders (23315, -2.69 DPS) [vendor]; Darkspear Spaulders (272108, -14.30 DPS, sim-verified) [vendor] |
 | back | Drape of Unyielding Strength (21394) | Drape of Unyielding Strength [quest] | sim-verified (307.1 DPS) | yes | Cloak of the Fallen God (21710, -0.10 DPS) [quest]; Deathguard's Cloak (20068, -0.17 DPS) [rep]; Chromatic Cloak (18509, -8.32 DPS, sim-verified) [crafted] |
 | chest | Lightbreaker Cuirass (239519) | Leonid Barthalomew the Revered [vendor] | 485.9 | yes | Stormshroud Armor (15056, -6.94 DPS) [crafted]; Savage Gladiator Chain (11726, -9.69 DPS) [dungeon]; Bloodsoul Breastplate (19690, -16.64 DPS, sim-verified) [crafted] |
 | wrist | Lightbreaker Wrists (239512) | Leonid Barthalomew the Revered [vendor] | sim-verified (308.8 DPS) | yes | Deeprock Bracers (21184, -1.35 DPS) [quest]; Berserker Bracers (19578, -1.41 DPS) [rep]; Vambraces of the Sadist (13400, -10.10 DPS, sim-verified) [dungeon] |
@@ -306,5 +306,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Lightbreaker Shoulders; back: Drape of Unyielding Strength; chest: Lightbreaker Cuirass; wrist: Lightbreaker Wrists; hands: Lightbreaker Grips; waist: Lightbreaker Belt; legs: Lightbreaker Tassets; feet: Lightbreaker Greaves; finger1: Signet of Unyielding Strength; finger2: Don Julio's Band; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Hacker; off_hand: High Warlord's Bonecracker; ranged: The Purifier
 
-No-known-source sample (15 of 2528, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2506, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 

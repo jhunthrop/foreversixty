@@ -38,7 +38,7 @@ No-known-source sample (15 of 309, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 88.0. Weights run: 1.9s. Verify run: 2.0s. 639 eligible items had no known source.
+Set DPS (verified): 88.0. Weights run: 2.0s. Verify run: 2.0s. 639 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.050 ± 0.013, strength=1.000 ± 0.001, crit=2.706 ± 0.100, hit=2.932 ± 0.210, melee_haste=not significant (0.559 ± 0.829)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 639, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 122.6. Weights run: 2.0s. Verify run: 2.0s. 1144 eligible items had no known source.
+Set DPS (verified): 122.6. Weights run: 1.9s. Verify run: 2.0s. 1144 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.166 ± 0.016, strength=1.000 ± 0.001, crit=3.251 ± 0.109, hit=3.500 ± 0.276, melee_haste=not significant (3.438 ± 1.346)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 1144, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (dwarf, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 153.2. Weights run: 1.9s. Verify run: 1.9s. 1478 eligible items had no known source.
+Set DPS (verified): 153.2. Weights run: 2.0s. Verify run: 1.9s. 1478 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.196 ± 0.022, strength=1.000 ± 0.001, crit=4.313 ± 0.156, hit=4.434 ± 0.410, melee_haste=not significant (2.108 ± 0.907)
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 1478, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 290.3. Weights run: 1.9s. Verify run: 2.2s. 2088 eligible items had no known source.
+Set DPS (verified): 292.8. Weights run: 2.0s. Verify run: 2.3s. 2069 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=6.402 ± 0.250, hit=5.883 ± 0.716, melee_haste=not significant (0.393 ± 1.319)
 
@@ -137,10 +137,10 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | head | Dawnstalker Visor (239532) | Leonid Barthalomew the Revered [vendor] | 318.7 | yes | Champion's Chain Greathelm (227080, -4.60 DPS) [vendor]; Lieutenant Commander's Chain Greathelm (227086, -4.60 DPS) [vendor]; Dawnstalker Headpiece (239540, -7.01 DPS, sim-verified) [vendor] |
 | neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | sim-verified (270.9 DPS) | yes | Blazefury Medallion (17111, -0.45 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -2.18 DPS) [quest]; Beads of Ogre Might (22150, -3.73 DPS) [quest] |
 | shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | sim-verified (274.4 DPS) | yes | Dawnstalker Spaulders (239542, -3.81 DPS, sim-verified) [vendor]; Lieutenant Commander's Chain Pauldrons (227084, -5.04 DPS) [pvp]; Cryptstalker Spaulders (22439, -5.28 DPS) [quest] |
-| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 89.6 | yes | Cloak of the Unseen Path (21403, +0.00 DPS, sim-verified) [quest]; Earthweave Cloak (21187, -0.64 DPS) [quest]; Cloak of the Fallen God (21710, -2.38 DPS) [quest] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | sim-verified (273.4 DPS) | yes | Cloak of the Unseen Path (21403, -0.38 DPS) [quest]; Earthweave Cloak (21187, -0.50 DPS) [quest]; Chromatic Cloak (18509, -2.77 DPS, sim-verified) [crafted] |
 | chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (275.1 DPS) | yes | Legionnaire's Chain Armor (227083, -3.43 DPS) [vendor]; Knight-Captain's Chain Armor (227089, -3.43 DPS) [vendor]; Dawnstalker Tunic (239543, -4.48 DPS, sim-verified) [vendor] |
 | wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | 137.4 | yes | Dawnstalker Wristguards (239544, -1.70 DPS, sim-verified) [vendor]; Cryptstalker Wristguards (22443, -2.38 DPS) [quest]; Primal Batskin Bracers (19687, -3.11 DPS) [crafted] |
-| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (274.2 DPS) | yes | Stormshroud Gloves (21278, -1.42 DPS) [crafted]; Marshal's Chain Grips (231560, -2.16 DPS) [vendor]; Dawnstalker Handguards (239539, -3.59 DPS, sim-verified) [vendor] |
+| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (274.2 DPS) | yes | Stormshroud Gloves (21278, -1.42 DPS) [crafted]; General's Chain Grips (231569, -2.16 DPS) [vendor]; Dawnstalker Handguards (239539, -3.59 DPS, sim-verified) [vendor] |
 | waist | Cryptstalker Girdle (22442) | Cryptstalker Girdle [quest] | 176.2 | yes | Dawnstalker Belt (239535, -1.39 DPS, sim-verified) [vendor]; Dawnstalker Girdle (239538, -2.18 DPS) [vendor]; Highlander's Chain Girdle (20043, -2.65 DPS) [rep] |
 | legs | Dawnstalker Leggings (239533) | Leonid Barthalomew the Revered [vendor] | 317.5 | yes | Dawnstalker Legguards (239541, -4.11 DPS) [vendor]; Legionnaire's Chain Legplates (227079, -4.90 DPS) [vendor]; Sentinel's Chain Leggings (237819, -8.34 DPS, sim-verified) [vendor] |
 | feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | sim-verified (277.0 DPS) | yes | Marshal's Chain Sabatons (231561, -3.40 DPS) [vendor]; General's Chain Sabatons (231564, -3.40 DPS) [vendor]; Dawnstalker Boots (239537, -6.39 DPS, sim-verified) [vendor] |
@@ -152,15 +152,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | Grand Marshal's Hacker (235481) | Captain O'Neal [vendor] | 984.8 | yes | High Warlord's Left Claw (234558, -0.16 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.16 DPS) [vendor]; High Warlord's Shiv (235478, -0.70 DPS, sim-verified) [vendor] |
 | ranged | Core Marksman Rifle (18282) | Engineering [crafted] | sim-verified (270.9 DPS) | yes | High Warlord's Recurve (234559, +0.00 DPS) [vendor]; High Warlord's Crossbow (234560, +0.00 DPS) [vendor]; Dark Iron Rifle (16004, -1.02 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Dawnstalker Visor; neck: Onyxia Tooth Pendant; shoulder: Dawnstalker Pauldrons; back: Chromatic Cloak; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Cryptstalker Girdle; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Don Julio's Band; finger2: Master Dragonslayer's Ring; trinket2: Ankh of Life; main_hand: High Warlord's Hacker; off_hand: Grand Marshal's Hacker; ranged: Core Marksman Rifle
+**New at 60:** head: Dawnstalker Visor; neck: Onyxia Tooth Pendant; shoulder: Dawnstalker Pauldrons; back: Howler's Furs; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Cryptstalker Girdle; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Don Julio's Band; finger2: Master Dragonslayer's Ring; trinket2: Ankh of Life; main_hand: High Warlord's Hacker; off_hand: Grand Marshal's Hacker; ranged: Core Marksman Rifle
 
-No-known-source sample (15 of 2088, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 2069, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ## Horde
 
 ### Band 20 (troll, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 56.7. Weights run: 1.9s. Verify run: 1.6s. 315 eligible items had no known source.
+Set DPS (verified): 56.7. Weights run: 1.9s. Verify run: 1.7s. 315 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.041 ± 0.008, strength=1.000 ± 0.001, crit=1.602 ± 0.050, hit=not significant (0.000 ± 0.000), melee_haste=not significant (0.818 ± 0.763)
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 315, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 87.8. Weights run: 1.9s. Verify run: 1.9s. 650 eligible items had no known source.
+Set DPS (verified): 87.8. Weights run: 2.0s. Verify run: 2.0s. 650 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.050 ± 0.013, strength=1.000 ± 0.001, crit=2.706 ± 0.100, hit=2.932 ± 0.210, melee_haste=not significant (0.559 ± 0.829)
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 650, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 121.1. Weights run: 2.0s. Verify run: 2.0s. 1150 eligible items had no known source.
+Set DPS (verified): 121.1. Weights run: 1.9s. Verify run: 2.0s. 1150 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.166 ± 0.016, strength=1.000 ± 0.001, crit=3.251 ± 0.109, hit=3.500 ± 0.276, melee_haste=not significant (3.438 ± 1.346)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 1150, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (troll, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 157.9. Weights run: 1.9s. Verify run: 1.9s. 1485 eligible items had no known source.
+Set DPS (verified): 157.9. Weights run: 2.0s. Verify run: 1.9s. 1485 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.196 ± 0.022, strength=1.000 ± 0.001, crit=4.313 ± 0.156, hit=4.434 ± 0.410, melee_haste=not significant (2.108 ± 0.907)
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 1485, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (troll, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 295.9. Weights run: 1.9s. Verify run: 2.3s. 2095 eligible items had no known source.
+Set DPS (verified): 297.9. Weights run: 2.0s. Verify run: 2.3s. 2076 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=6.402 ± 0.250, hit=5.883 ± 0.716, melee_haste=not significant (0.393 ± 1.319)
 
@@ -289,7 +289,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | head | Dawnstalker Visor (239532) | Leonid Barthalomew the Revered [vendor] | 318.7 | yes | Champion's Chain Greathelm (227080, -4.60 DPS) [vendor]; Lieutenant Commander's Chain Greathelm (227086, -4.60 DPS) [vendor]; Dawnstalker Headpiece (239540, -7.75 DPS, sim-verified) [vendor] |
 | neck | Blazefury Medallion (17111) | Lord Kazzak [world] | sim-verified (277.7 DPS) | yes | Beads of Ogre Might (22150, +0.00 DPS) [quest]; Medallion of the Dawn (22659, +0.00 DPS) [quest]; Onyxia Tooth Pendant (18404, -0.92 DPS, sim-verified) [quest] |
 | shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | sim-verified (281.0 DPS) | yes | Dawnstalker Spaulders (239542, -3.90 DPS, sim-verified) [vendor]; Champion's Chain Pauldrons (227078, -5.04 DPS) [pvp]; Cryptstalker Spaulders (22439, -5.28 DPS) [quest] |
-| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 89.6 | yes | Cloak of the Unseen Path (21403, +0.00 DPS, sim-verified) [quest]; Earthweave Cloak (21187, -0.64 DPS) [quest]; Cloak of the Fallen God (21710, -2.38 DPS) [quest] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | sim-verified (280.1 DPS) | yes | Cloak of the Unseen Path (21403, -0.38 DPS) [quest]; Earthweave Cloak (21187, -0.50 DPS) [quest]; Chromatic Cloak (18509, -3.02 DPS, sim-verified) [crafted] |
 | chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (281.2 DPS) | yes | Legionnaire's Chain Armor (227083, -3.43 DPS) [vendor]; Knight-Captain's Chain Armor (227089, -3.43 DPS) [vendor]; Dawnstalker Tunic (239543, -4.09 DPS, sim-verified) [vendor] |
 | wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | 137.4 | yes | Dawnstalker Wristguards (239544, -1.66 DPS, sim-verified) [vendor]; Cryptstalker Wristguards (22443, -2.38 DPS) [quest]; Primal Batskin Bracers (19687, -3.11 DPS) [crafted] |
 | hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (280.2 DPS) | yes | Stormshroud Gloves (21278, -1.42 DPS) [crafted]; Marshal's Chain Grips (231560, -2.16 DPS) [vendor]; Dawnstalker Handguards (239539, -3.13 DPS, sim-verified) [vendor] |
@@ -304,7 +304,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | Grand Marshal's Hacker (235481) | Captain O'Neal [vendor] | 984.8 | yes | High Warlord's Shiv (235478, +0.00 DPS, sim-verified) [vendor]; High Warlord's Left Claw (234558, -0.16 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.16 DPS) [vendor] |
 | ranged | Core Marksman Rifle (18282) | Engineering [crafted] | sim-verified (277.7 DPS) | yes | High Warlord's Recurve (234559, +0.00 DPS) [vendor]; High Warlord's Crossbow (234560, +0.00 DPS) [vendor]; Dark Iron Rifle (16004, -1.26 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Dawnstalker Visor; neck: Blazefury Medallion; shoulder: Dawnstalker Pauldrons; back: Chromatic Cloak; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Cryptstalker Girdle; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Don Julio's Band; finger2: Master Dragonslayer's Ring; trinket2: Ankh of Life; main_hand: High Warlord's Hacker; off_hand: Grand Marshal's Hacker; ranged: Core Marksman Rifle
+**New at 60:** head: Dawnstalker Visor; neck: Blazefury Medallion; shoulder: Dawnstalker Pauldrons; back: Howler's Furs; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Cryptstalker Girdle; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Don Julio's Band; finger2: Master Dragonslayer's Ring; trinket2: Ankh of Life; main_hand: High Warlord's Hacker; off_hand: Grand Marshal's Hacker; ranged: Core Marksman Rifle
 
-No-known-source sample (15 of 2095, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2076, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 

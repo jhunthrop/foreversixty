@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T04:04:27Z",
+  "generated_at": "2026-09-30T04:41:34Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -615,8 +615,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.514986458,
-      "verify_run_seconds": 1.470431435,
+      "weights_run_seconds": 1.546002588,
+      "verify_run_seconds": 1.494540076,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1300,8 +1300,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.514986458,
-      "verify_run_seconds": 1.384900046,
+      "weights_run_seconds": 1.546002588,
+      "verify_run_seconds": 1.4127725500000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1987,8 +1987,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.610380362,
-      "verify_run_seconds": 1.676084945,
+      "weights_run_seconds": 1.674566357,
+      "verify_run_seconds": 1.68893494,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2671,8 +2671,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.610380362,
-      "verify_run_seconds": 1.623139224,
+      "weights_run_seconds": 1.674566357,
+      "verify_run_seconds": 1.687500912,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3355,8 +3355,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.906150207,
-      "verify_run_seconds": 1.870496131,
+      "weights_run_seconds": 1.911752465,
+      "verify_run_seconds": 1.89182399,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4045,8 +4045,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.906150207,
-      "verify_run_seconds": 1.9358986059999999,
+      "weights_run_seconds": 1.911752465,
+      "verify_run_seconds": 1.960849496,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4772,8 +4772,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.043270531,
-      "verify_run_seconds": 1.9366623189999999,
+      "weights_run_seconds": 2.06376459,
+      "verify_run_seconds": 1.957354865,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5499,8 +5499,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.043270531,
-      "verify_run_seconds": 2.027852761,
+      "weights_run_seconds": 2.06376459,
+      "verify_run_seconds": 2.013595869,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -5641,7 +5641,7 @@
               "item_name": "Lightbreaker Greathelm",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.700655314219416
+              "dps_delta": -5.70065531421942
             },
             {
               "item_id": 11735,
@@ -5712,13 +5712,13 @@
               "dps_delta": -2.6904137199785634
             },
             {
-              "item_id": 220795,
-              "item_name": "Knight-Lieutenant's Plate Pauldrons",
+              "item_id": 272108,
+              "item_name": "Darkspear Spaulders",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -11.891884793403392,
+              "source": "Creeg Bothunk",
+              "dps_delta": -11.346004685208925,
               "verified": true,
-              "sim_dps": 273.3593861810706
+              "sim_dps": 273.90526628926506
             }
           ]
         },
@@ -6145,7 +6145,7 @@
         }
       ],
       "set_dps": 300.76443712180804,
-      "no_source_count": 2522,
+      "no_source_count": 2500,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6177,17 +6177,17 @@
         "finger1: Signet of Unyielding Strength",
         "finger2: Don Julio's Band",
         "trinket1: Onyxia Blood Talisman",
-        "trinket2: Talisman of Arathor",
+        "trinket2: Weakness Analyzer",
         "main_hand: High Warlord's Hacker",
         "off_hand: High Warlord's Bonecracker",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.113447775,
-      "verify_run_seconds": 2.297677902,
+      "weights_run_seconds": 2.11042938,
+      "verify_run_seconds": 2.322179997,
       "coverage": {
         "back": {
           "eligible": 370,
-          "sourced": 210
+          "sourced": 214
         },
         "chest": {
           "eligible": 718,
@@ -6199,15 +6199,15 @@
         },
         "finger1": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "finger2": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "hands": {
           "eligible": 623,
-          "sourced": 420
+          "sourced": 424
         },
         "head": {
           "eligible": 451,
@@ -6235,19 +6235,19 @@
         },
         "shoulder": {
           "eligible": 470,
-          "sourced": 279
+          "sourced": 285
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 571,
-          "sourced": 382
+          "sourced": 383
         },
         "wrist": {
           "eligible": 478,
@@ -6324,7 +6324,7 @@
               "item_name": "Lightbreaker Greathelm",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.700655314219416
+              "dps_delta": -5.70065531421942
             },
             {
               "item_id": 11735,
@@ -6395,13 +6395,13 @@
               "dps_delta": -2.6904137199785634
             },
             {
-              "item_id": 220795,
-              "item_name": "Knight-Lieutenant's Plate Pauldrons",
+              "item_id": 272108,
+              "item_name": "Darkspear Spaulders",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -14.088792545048705,
+              "source": "Creeg Bothunk",
+              "dps_delta": -14.295574734301113,
               "verified": true,
-              "sim_dps": 284.6530167187152
+              "sim_dps": 284.4462345294628
             }
           ]
         },
@@ -6583,7 +6583,7 @@
           "item_name": "Lightbreaker Tassets",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 487.38176249165406,
+          "score": 487.3817624916541,
           "verified": true,
           "alternatives": [
             {
@@ -6591,14 +6591,14 @@
               "item_name": "Marshal's Plate Legguards",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -4.31973855350995
+              "dps_delta": -4.3197385535099535
             },
             {
               "item_id": 16543,
               "item_name": "General's Plate Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -4.31973855350995
+              "dps_delta": -4.3197385535099535
             },
             {
               "item_id": 237825,
@@ -6856,7 +6856,7 @@
         }
       ],
       "set_dps": 315.86383487779545,
-      "no_source_count": 2528,
+      "no_source_count": 2506,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6892,12 +6892,12 @@
         "off_hand: High Warlord's Bonecracker",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.113447775,
-      "verify_run_seconds": 2.363483128,
+      "weights_run_seconds": 2.11042938,
+      "verify_run_seconds": 2.3864666359999998,
       "coverage": {
         "back": {
           "eligible": 375,
-          "sourced": 213
+          "sourced": 217
         },
         "chest": {
           "eligible": 713,
@@ -6909,15 +6909,15 @@
         },
         "finger1": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "finger2": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "hands": {
           "eligible": 623,
-          "sourced": 416
+          "sourced": 420
         },
         "head": {
           "eligible": 451,
@@ -6945,19 +6945,19 @@
         },
         "shoulder": {
           "eligible": 467,
-          "sourced": 276
+          "sourced": 282
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 571,
-          "sourced": 382
+          "sourced": 383
         },
         "wrist": {
           "eligible": 483,

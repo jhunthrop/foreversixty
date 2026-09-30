@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T03:55:01Z",
+  "generated_at": "2026-09-30T04:32:03Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -538,8 +538,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.534770869,
-      "verify_run_seconds": 1.077817491,
+      "weights_run_seconds": 1.5519025210000001,
+      "verify_run_seconds": 0.97609333,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1146,8 +1146,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.534770869,
-      "verify_run_seconds": 0.966523126,
+      "weights_run_seconds": 1.5519025210000001,
+      "verify_run_seconds": 0.963366383,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1807,8 +1807,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.70681533,
-      "verify_run_seconds": 1.335612348,
+      "weights_run_seconds": 1.7226783289999998,
+      "verify_run_seconds": 1.474277212,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2474,8 +2474,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.70681533,
-      "verify_run_seconds": 1.334900967,
+      "weights_run_seconds": 1.7226783289999998,
+      "verify_run_seconds": 1.369242681,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3139,8 +3139,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.81990322,
-      "verify_run_seconds": 1.355871868,
+      "weights_run_seconds": 1.821530236,
+      "verify_run_seconds": 1.36755703,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -3804,8 +3804,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.81990322,
-      "verify_run_seconds": 1.34221006,
+      "weights_run_seconds": 1.821530236,
+      "verify_run_seconds": 1.350524603,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4523,8 +4523,8 @@
         "trinket2: Thunderbrew's Boot Flask",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.870876094,
-      "verify_run_seconds": 1.279309624,
+      "weights_run_seconds": 1.903639815,
+      "verify_run_seconds": 1.327385377,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5243,8 +5243,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.870876094,
-      "verify_run_seconds": 1.319338292,
+      "weights_run_seconds": 1.903639815,
+      "verify_run_seconds": 1.311205814,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -5378,36 +5378,35 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 19999,
-          "item_name": "Bloodvine Goggles",
-          "source": "Engineering",
-          "source_kind": "crafted",
-          "sim_dps": 143.88715748449061,
+          "item_id": 240072,
+          "item_name": "Waywatcher Hood",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 175.71642529602252,
           "verified": true,
-          "swap_note": "beat the scored pick Mask of the Unforgiven (id 13404) in the sim: 143.9 vs 141.5 set DPS",
           "alternatives": [
+            {
+              "item_id": 19999,
+              "item_name": "Bloodvine Goggles",
+              "source_kind": "crafted",
+              "source": "Engineering",
+              "dps_delta": -2.5107549352586327
+            },
+            {
+              "item_id": 240088,
+              "item_name": "Waywatcher Headpiece",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -6.5701524822616175
+            },
             {
               "item_id": 13404,
               "item_name": "Mask of the Unforgiven",
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
-              "dps_delta": -2.4067242742690382,
+              "dps_delta": -14.282760710834424,
               "verified": true,
-              "sim_dps": 141.48043321022158
-            },
-            {
-              "item_id": 220850,
-              "item_name": "Knight-Lieutenant's Leather Headband",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -6.513393355418427
-            },
-            {
-              "item_id": 220851,
-              "item_name": "Blood Guard's Leather Headband",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -6.513393355418427
+              "sim_dps": 198.39006712019855
             }
           ]
         },
@@ -5417,7 +5416,7 @@
           "item_name": "Onyxia Tooth Pendant",
           "source": "Celebrating Good Times",
           "source_kind": "quest",
-          "sim_dps": 141.58304559597929,
+          "sim_dps": 211.8936580590085,
           "verified": true,
           "alternatives": [
             {
@@ -5425,9 +5424,9 @@
               "item_name": "Blazefury Medallion",
               "source_kind": "world",
               "source": "Lord Kazzak",
-              "dps_delta": -1.7561016909826037,
+              "dps_delta": -2.3307283614419703,
               "verified": true,
-              "sim_dps": 139.72433151923897
+              "sim_dps": 210.342099469591
             },
             {
               "item_id": 22150,
@@ -5447,153 +5446,147 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 220852,
-          "item_name": "Knight-Lieutenant's Leather Shoulders",
-          "source": "Captain Dirgehammer",
+          "item_id": 240070,
+          "item_name": "Waywatcher Mantle",
+          "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 94.09600526487097,
+          "score": 203.68969044541538,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220853,
-              "item_name": "Blood Guard's Leather Shoulders"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 220853,
               "item_name": "Blood Guard's Leather Shoulders",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": 0,
+              "dps_delta": -12.116939197489405
+            },
+            {
+              "item_id": 220852,
+              "item_name": "Knight-Lieutenant's Leather Shoulders",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -12.196092067634254,
               "verified": true,
-              "sim_dps": 141.48043321022158
+              "sim_dps": 200.47673576339872
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -0.9666066401906429
-            },
-            {
-              "item_id": 220870,
-              "item_name": "Knight-Lieutenant's Crackling Leather Spaulders",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -1.877675573902709
+              "dps_delta": -13.083545837680047
             }
           ]
         },
         {
           "slot": "back",
-          "item_id": 21187,
-          "item_name": "Earthweave Cloak",
-          "source": "Volunteer's Battlegear",
-          "source_kind": "quest",
-          "score": 58.911476670501074,
+          "item_id": 272411,
+          "item_name": "Arcanoweave Cloak",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "score": 79.87273867624012,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18509,
-              "item_name": "Chromatic Cloak",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.5707515595815948,
+              "item_id": 272414,
+              "item_name": "Howler's Furs",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -2.31752711671086
+            },
+            {
+              "item_id": 272415,
+              "item_name": "Stalwart Cloak",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -2.31752711671086
+            },
+            {
+              "item_id": 21187,
+              "item_name": "Earthweave Cloak",
+              "source_kind": "quest",
+              "source": "Volunteer's Battlegear",
+              "dps_delta": -5.035666395114049,
               "verified": true,
-              "sim_dps": 140.90968165063998
-            },
-            {
-              "item_id": 18510,
-              "item_name": "Hide of the Wild",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -4.279858768598554
-            },
-            {
-              "item_id": 11623,
-              "item_name": "Spritecaster Cape",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -4.554123248195716
+              "sim_dps": 207.63716143591893
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 19682,
-          "item_name": "Bloodvine Vest",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 152.8850041003281,
+          "item_id": 240075,
+          "item_name": "Waywatcher Leathers",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 172.99547879171823,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 231686,
-              "item_name": "Warlord's Dragonhide Chestpiece",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -3.3953190030811697,
+              "item_id": 19682,
+              "item_name": "Bloodvine Vest",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -5.4255072098035555,
               "verified": true,
-              "sim_dps": 138.0851142071404
+              "sim_dps": 207.24732062122942
             },
             {
-              "item_id": 227176,
-              "item_name": "Knight-Captain's Dragonhide Chestpiece",
+              "item_id": 240091,
+              "item_name": "Waywatcher Tunic",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -5.608492355194569
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -5.815925163369421
             },
             {
-              "item_id": 227179,
-              "item_name": "Legionnaire's Dragonhide Chestpiece",
+              "item_id": 240067,
+              "item_name": "Waywatcher Vest",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -5.608492355194569
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -7.763388277536034
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 21186,
-          "item_name": "Rockfury Bracers",
-          "source": "Stalwart's Battlegear",
-          "source_kind": "quest",
-          "score": 85.91147667050107,
+          "item_id": 240068,
+          "item_name": "Waywatcher Bindings",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 102.97352742982703,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 240084,
+              "item_name": "Waywatcher Wristguards",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -4.502868506746733
+            },
             {
               "item_id": 19687,
               "item_name": "Primal Batskin Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.6135607562588916,
+              "dps_delta": -4.8716054131029844
+            },
+            {
+              "item_id": 21186,
+              "item_name": "Rockfury Bracers",
+              "source_kind": "quest",
+              "source": "Stalwart's Battlegear",
+              "dps_delta": -5.047609494927656,
               "verified": true,
-              "sim_dps": 137.86687245396269
-            },
-            {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -6.517676320448023
-            },
-            {
-              "item_id": 19596,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -6.875933329936171
+              "sim_dps": 207.62521833610532
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 19686,
-          "item_name": "Primal Batskin Gloves",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 117.82295334100215,
+          "item_id": 240073,
+          "item_name": "Waywatcher Mitts",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 183.0635311228711,
           "verified": true,
           "alternatives": [
             {
@@ -5601,131 +5594,125 @@
               "item_name": "Stormshroud Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.4377004309804988,
+              "dps_delta": -9.836461832600444
+            },
+            {
+              "item_id": 19686,
+              "item_name": "Primal Batskin Gloves",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -11.683984833571742,
               "verified": true,
-              "sim_dps": 141.04273277924108
+              "sim_dps": 200.98884299746123
             },
             {
-              "item_id": 16705,
-              "item_name": "Dreadmist Wraps",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lorekeeper Polkelt",
-              "dps_delta": -5.896298276324814
-            },
-            {
-              "item_id": 227180,
-              "item_name": "Blood Guard's Dragonhide Grips",
+              "item_id": 240065,
+              "item_name": "Waywatcher Grips",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -6.513393355418429
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -12.766621545043392
             }
           ]
         },
         {
           "slot": "waist",
-          "item_id": 228190,
-          "item_name": "Knowledge of the Timbermaw",
-          "source": "Meilosh",
+          "item_id": 240069,
+          "item_name": "Waywatcher Cord",
+          "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 97.55494718628347,
+          "score": 176.12531960176287,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 228190,
+              "item_name": "Knowledge of the Timbermaw",
+              "source_kind": "vendor",
+              "source": "Meilosh",
+              "dps_delta": -5.355285178328188,
+              "verified": true,
+              "sim_dps": 207.3175426527048
+            },
+            {
+              "item_id": 240085,
+              "item_name": "Waywatcher Girdle",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -11.611070051334572
+            },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.3248225982789563,
-              "verified": true,
-              "sim_dps": 139.15561061194262
-            },
-            {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": -4.27251425890398
-            },
-            {
-              "item_id": 226772,
-              "item_name": "Feralheart Sash",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -4.719710311406708
+              "dps_delta": -12.274444360403274
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 220864,
-          "item_name": "Knight's Crackling Leather Leggings",
-          "source": "Captain Dirgehammer",
+          "item_id": 240071,
+          "item_name": "Waywatcher Kilt",
+          "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 112.29758277204478,
+          "score": 224.79047919900228,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220865,
-              "item_name": "Stone Guard's Crackling Leather Leggings"
-            }
-          ],
           "alternatives": [
+            {
+              "item_id": 240087,
+              "item_name": "Waywatcher Legguards",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -0.7385122638053758,
+              "verified": true,
+              "sim_dps": 211.9343155672276
+            },
+            {
+              "item_id": 220864,
+              "item_name": "Knight's Crackling Leather Leggings",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -12.437482907061653
+            },
             {
               "item_id": 220865,
               "item_name": "Stone Guard's Crackling Leather Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 141.48043321022158
-            },
-            {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -0.4120602674897428
-            },
-            {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -0.4120602674897428
+              "dps_delta": -12.437482907061653
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 19684,
-          "item_name": "Bloodvine Boots",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 87.83400068197918,
+          "item_id": 240074,
+          "item_name": "Waywatcher Sandals",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 171.10226911713204,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 220863,
-              "item_name": "First Sergeant's Crackling Leather Boots",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -1.295895798154012
+              "item_id": 19684,
+              "item_name": "Bloodvine Boots",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -4.237130038583473,
+              "verified": true,
+              "sim_dps": 208.4356977924495
             },
             {
               "item_id": 220862,
               "item_name": "Sergeant Major's Crackling Leather Boots",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.750414757908203,
-              "verified": true,
-              "sim_dps": 138.73001845231337
+              "dps_delta": -10.502234138240127
             },
             {
-              "item_id": 227815,
-              "item_name": "Fine Dawn Treaders",
+              "item_id": 220863,
+              "item_name": "First Sergeant's Crackling Leather Boots",
               "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana",
-              "dps_delta": -3.1977432304395355
+              "source": "Lady Palanseer",
+              "dps_delta": -10.502234138240127
             }
           ]
         },
@@ -5737,7 +5724,7 @@
           "source_kind": "quest",
           "score": 99.63242317480535,
           "verified": true,
-          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, 141.5 vs 133.3 set DPS",
+          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, 212.7 vs 202.4 set DPS",
           "alternatives": [
             {
               "item_id": 21182,
@@ -5782,9 +5769,9 @@
               "item_name": "Band of Earthen Might",
               "source_kind": "quest",
               "source": "Veteran's Battlegear",
-              "dps_delta": -0.12553864951402716,
+              "dps_delta": -0.13220490237446825,
               "verified": true,
-              "sim_dps": 141.35489456070755
+              "sim_dps": 212.5406229286585
             },
             {
               "item_id": 234032,
@@ -5804,20 +5791,19 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 1713,
-          "item_name": "Ankh of Life",
-          "source": "Maraudon: Theradrim Shardling",
-          "source_kind": "dungeon",
-          "sim_dps": 140.1368589715865,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 211.8936580590085,
           "verified": true,
-          "swap_note": "confirmed by the sim against Thunderbrew's Boot Flask (id 744): kept the pick, 141.5 vs 138.9 set DPS",
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 1490,
-              "item_name": "Guardian Talisman",
-              "source_kind": "quest",
-              "source": "Into The Temple of Atal'Hakkar",
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "dps_delta": 0
             },
             {
@@ -5825,34 +5811,29 @@
               "item_name": "Uther's Strength",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0
+              "dps_delta": -0.8844990787582685
             },
             {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "dps_delta": -3.1021753224708277,
+              "verified": true,
+              "sim_dps": 209.57065250856215
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 744,
-          "item_name": "Thunderbrew's Boot Flask",
-          "source": "Sweet Amber",
-          "source_kind": "quest",
-          "sim_dps": 141.58304559597929,
+          "item_id": 272438,
+          "item_name": "Weakness Analyzer",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 211.8936580590085,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 1490,
-              "item_name": "Guardian Talisman",
-              "source_kind": "quest",
-              "source": "Into The Temple of Atal'Hakkar",
-              "dps_delta": 0
-            },
             {
               "item_id": 249469,
               "item_name": "Frozen Heart of the Mountain",
@@ -5865,9 +5846,16 @@
               "item_name": "Uther's Strength",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.835056213491896,
+              "dps_delta": -1.768998157516537
+            },
+            {
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "dps_delta": -2.0641065361515416,
               "verified": true,
-              "sim_dps": 140.64537699672968
+              "sim_dps": 210.60872129488143
             }
           ]
         },
@@ -5877,7 +5865,7 @@
           "item_name": "High Warlord's Pig Poker",
           "source": "Sergeant Thunderhorn",
           "source_kind": "vendor",
-          "sim_dps": 141.58304559597929,
+          "sim_dps": 211.8936580590085,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5900,9 +5888,9 @@
               "item_name": "Sulfuron Hammer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -8.869422455570572,
+              "dps_delta": -9.086266330776937,
               "verified": true,
-              "sim_dps": 132.611010754651
+              "sim_dps": 203.58656150025604
             }
           ]
         },
@@ -5919,6 +5907,22 @@
           "source_kind": "world",
           "verified": true,
           "ties": [
+            {
+              "item_id": 272427,
+              "item_name": "Howling Idol"
+            },
+            {
+              "item_id": 272428,
+              "item_name": "Enraged Idol"
+            },
+            {
+              "item_id": 272429,
+              "item_name": "Idol of Synthesis"
+            },
+            {
+              "item_id": 272430,
+              "item_name": "Swarming Idol"
+            },
             {
               "item_id": 220606,
               "item_name": "Idol of the Dream"
@@ -5966,34 +5970,34 @@
           ],
           "alternatives": [
             {
-              "item_id": 220606,
-              "item_name": "Idol of the Dream",
-              "source_kind": "dungeon",
-              "source": "The Temple of Atal'Hakkar: Hazzas",
+              "item_id": 272427,
+              "item_name": "Howling Idol",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 141.48043321022158
+              "sim_dps": 212.67282783103298
             },
             {
-              "item_id": 220915,
-              "item_name": "Idol of the Raging Shambler",
+              "item_id": 272428,
+              "item_name": "Enraged Idol",
               "source_kind": "vendor",
-              "source": "Rune Broker",
+              "source": "Pix Xizzix",
               "dps_delta": 0
             },
             {
-              "item_id": 227444,
-              "item_name": "Idol of the Huntress",
+              "item_id": 272429,
+              "item_name": "Idol of Synthesis",
               "source_kind": "vendor",
-              "source": "Rune Broker",
+              "source": "Pix Xizzix",
               "dps_delta": 0
             }
           ],
           "low_value": true
         }
       ],
-      "set_dps": 143.88715748449061,
-      "no_source_count": 1704,
+      "set_dps": 212.67282783103298,
+      "no_source_count": 1649,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6012,53 +6016,57 @@
         "6478 Rat Stompers"
       ],
       "new_at_band": [
-        "head: Bloodvine Goggles",
+        "head: Waywatcher Hood",
         "neck: Onyxia Tooth Pendant",
-        "back: Earthweave Cloak",
-        "chest: Bloodvine Vest",
-        "wrist: Rockfury Bracers",
-        "hands: Primal Batskin Gloves",
-        "waist: Knowledge of the Timbermaw",
-        "feet: Bloodvine Boots",
+        "shoulder: Waywatcher Mantle",
+        "back: Arcanoweave Cloak",
+        "chest: Waywatcher Leathers",
+        "wrist: Waywatcher Bindings",
+        "hands: Waywatcher Mitts",
+        "waist: Waywatcher Cord",
+        "legs: Waywatcher Kilt",
+        "feet: Waywatcher Sandals",
         "finger1: Ring of the Fallen God",
         "finger2: Don Julio's Band",
+        "trinket1: Serenity Field",
+        "trinket2: Weakness Analyzer",
         "main_hand: High Warlord's Pig Poker",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.91015402,
-      "verify_run_seconds": 1.38451021,
+      "weights_run_seconds": 1.9369930869999998,
+      "verify_run_seconds": 1.3141773319999999,
       "coverage": {
         "back": {
           "eligible": 371,
-          "sourced": 210
+          "sourced": 214
         },
         "chest": {
           "eligible": 501,
-          "sourced": 340
+          "sourced": 344
         },
         "feet": {
           "eligible": 390,
-          "sourced": 266
+          "sourced": 270
         },
         "finger1": {
           "eligible": 302,
-          "sourced": 163
+          "sourced": 167
         },
         "finger2": {
           "eligible": 302,
-          "sourced": 163
+          "sourced": 167
         },
         "hands": {
           "eligible": 407,
-          "sourced": 274
+          "sourced": 280
         },
         "head": {
           "eligible": 312,
-          "sourced": 203
+          "sourced": 207
         },
         "legs": {
           "eligible": 412,
-          "sourced": 275
+          "sourced": 279
         },
         "main_hand": {
           "eligible": 635,
@@ -6074,27 +6082,27 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 12
+          "sourced": 16
         },
         "shoulder": {
           "eligible": 305,
-          "sourced": 187
+          "sourced": 194
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 365,
-          "sourced": 245
+          "sourced": 252
         },
         "wrist": {
           "eligible": 297,
-          "sourced": 171
+          "sourced": 175
         }
       },
       "reference_dps_per_point": 0.11056238484478356,
@@ -6160,222 +6168,215 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 19999,
-          "item_name": "Bloodvine Goggles",
-          "source": "Engineering",
-          "source_kind": "crafted",
-          "sim_dps": 141.0878389581125,
+          "item_id": 240072,
+          "item_name": "Waywatcher Hood",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 175.71642529602252,
           "verified": true,
-          "swap_note": "beat the scored pick Mask of the Unforgiven (id 13404) in the sim: 141.1 vs 138.8 set DPS",
           "alternatives": [
+            {
+              "item_id": 19999,
+              "item_name": "Bloodvine Goggles",
+              "source_kind": "crafted",
+              "source": "Engineering",
+              "dps_delta": -2.5107549352586327
+            },
+            {
+              "item_id": 240088,
+              "item_name": "Waywatcher Headpiece",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -6.5701524822616175
+            },
             {
               "item_id": 13404,
               "item_name": "Mask of the Unforgiven",
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
-              "dps_delta": -2.273693346406219,
+              "dps_delta": -13.792063143599876,
               "verified": true,
-              "sim_dps": 138.8141456117063
-            },
-            {
-              "item_id": 220850,
-              "item_name": "Knight-Lieutenant's Leather Headband",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -6.513393355418427
-            },
-            {
-              "item_id": 220851,
-              "item_name": "Blood Guard's Leather Headband",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -6.513393355418427
+              "sim_dps": 197.07592358303157
             }
           ]
         },
         {
           "slot": "neck",
-          "item_id": 17111,
-          "item_name": "Blazefury Medallion",
-          "source": "Lord Kazzak",
-          "source_kind": "world",
-          "sim_dps": 139.5821955017937,
+          "item_id": 18404,
+          "item_name": "Onyxia Tooth Pendant",
+          "source": "For All To See",
+          "source_kind": "quest",
+          "sim_dps": 210.2507591901915,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18404,
-              "item_name": "Onyxia Tooth Pendant",
-              "source_kind": "quest",
-              "source": "For All To See",
-              "dps_delta": 0,
+              "item_id": 17111,
+              "item_name": "Blazefury Medallion",
+              "source_kind": "world",
+              "source": "Lord Kazzak",
+              "dps_delta": -2.4518951167513023,
               "verified": true,
-              "sim_dps": 139.1607694254368
+              "sim_dps": 208.41609160988014
             },
             {
               "item_id": 22150,
               "item_name": "Beads of Ogre Might",
               "source_kind": "quest",
               "source": "Falrin's Vendetta",
-              "dps_delta": 0
+              "dps_delta": -3.8900853910330158
             },
             {
               "item_id": 22659,
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": 0
+              "dps_delta": -6.513393355418429
             }
           ]
         },
         {
           "slot": "shoulder",
-          "item_id": 220852,
-          "item_name": "Knight-Lieutenant's Leather Shoulders",
-          "source": "Captain Dirgehammer",
+          "item_id": 240070,
+          "item_name": "Waywatcher Mantle",
+          "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 94.09600526487097,
+          "score": 203.68969044541538,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220853,
-              "item_name": "Blood Guard's Leather Shoulders"
-            }
-          ],
           "alternatives": [
+            {
+              "item_id": 220852,
+              "item_name": "Knight-Lieutenant's Leather Shoulders",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -11.495656012487302,
+              "verified": true,
+              "sim_dps": 199.37233071414414
+            },
             {
               "item_id": 220853,
               "item_name": "Blood Guard's Leather Shoulders",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 138.8141456117063
+              "dps_delta": -12.116939197489405
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -0.9666066401906429
-            },
-            {
-              "item_id": 220870,
-              "item_name": "Knight-Lieutenant's Crackling Leather Spaulders",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -1.877675573902709
+              "dps_delta": -13.083545837680047
             }
           ]
         },
         {
           "slot": "back",
-          "item_id": 21187,
-          "item_name": "Earthweave Cloak",
-          "source": "Volunteer's Battlegear",
-          "source_kind": "quest",
-          "score": 58.911476670501074,
+          "item_id": 272411,
+          "item_name": "Arcanoweave Cloak",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "score": 79.87273867624012,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18509,
-              "item_name": "Chromatic Cloak",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.8733707720856501,
+              "item_id": 272414,
+              "item_name": "Howler's Furs",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -2.31752711671086
+            },
+            {
+              "item_id": 272415,
+              "item_name": "Stalwart Cloak",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -2.31752711671086
+            },
+            {
+              "item_id": 21187,
+              "item_name": "Earthweave Cloak",
+              "source_kind": "quest",
+              "source": "Volunteer's Battlegear",
+              "dps_delta": -3.987106488959256,
               "verified": true,
-              "sim_dps": 137.94077483962064
-            },
-            {
-              "item_id": 18510,
-              "item_name": "Hide of the Wild",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -4.279858768598554
-            },
-            {
-              "item_id": 11623,
-              "item_name": "Spritecaster Cape",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -4.554123248195716
+              "sim_dps": 206.8808802376722
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 19682,
-          "item_name": "Bloodvine Vest",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 152.8850041003281,
+          "item_id": 240075,
+          "item_name": "Waywatcher Leathers",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 172.99547879171823,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 231686,
-              "item_name": "Warlord's Dragonhide Chestpiece",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -2.8905249529013872,
+              "item_id": 19682,
+              "item_name": "Bloodvine Vest",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -4.951681690908913,
               "verified": true,
-              "sim_dps": 135.9236206588049
+              "sim_dps": 205.91630503572253
             },
             {
-              "item_id": 227176,
-              "item_name": "Knight-Captain's Dragonhide Chestpiece",
+              "item_id": 240091,
+              "item_name": "Waywatcher Tunic",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -5.608492355194569
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -5.815925163369421
             },
             {
-              "item_id": 227179,
-              "item_name": "Legionnaire's Dragonhide Chestpiece",
+              "item_id": 240067,
+              "item_name": "Waywatcher Vest",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -5.608492355194569
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -7.763388277536034
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 21186,
-          "item_name": "Rockfury Bracers",
-          "source": "Stalwart's Battlegear",
-          "source_kind": "quest",
-          "score": 85.91147667050107,
+          "item_id": 240068,
+          "item_name": "Waywatcher Bindings",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 102.97352742982703,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 240084,
+              "item_name": "Waywatcher Wristguards",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -4.502868506746733
+            },
             {
               "item_id": 19687,
               "item_name": "Primal Batskin Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.544247400610743,
+              "dps_delta": -4.8716054131029844
+            },
+            {
+              "item_id": 21186,
+              "item_name": "Rockfury Bracers",
+              "source_kind": "quest",
+              "source": "Stalwart's Battlegear",
+              "dps_delta": -4.905251581398261,
               "verified": true,
-              "sim_dps": 135.26989821109555
-            },
-            {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -6.517676320448023
-            },
-            {
-              "item_id": 19596,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -6.875933329936171
+              "sim_dps": 205.96273514523318
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 19686,
-          "item_name": "Primal Batskin Gloves",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 117.82295334100215,
+          "item_id": 240073,
+          "item_name": "Waywatcher Mitts",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 183.0635311228711,
           "verified": true,
           "alternatives": [
             {
@@ -6383,131 +6384,125 @@
               "item_name": "Stormshroud Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7080822971320799,
+              "dps_delta": -9.836461832600444
+            },
+            {
+              "item_id": 19686,
+              "item_name": "Primal Batskin Gloves",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -12.475820825488597,
               "verified": true,
-              "sim_dps": 138.10606331457421
+              "sim_dps": 198.39216590114285
             },
             {
-              "item_id": 16705,
-              "item_name": "Dreadmist Wraps",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lorekeeper Polkelt",
-              "dps_delta": -5.896298276324814
-            },
-            {
-              "item_id": 227180,
-              "item_name": "Blood Guard's Dragonhide Grips",
+              "item_id": 240065,
+              "item_name": "Waywatcher Grips",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -6.513393355418429
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -12.766621545043392
             }
           ]
         },
         {
           "slot": "waist",
-          "item_id": 228190,
-          "item_name": "Knowledge of the Timbermaw",
-          "source": "Meilosh",
+          "item_id": 240069,
+          "item_name": "Waywatcher Cord",
+          "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 97.55494718628347,
+          "score": 176.12531960176287,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 228190,
+              "item_name": "Knowledge of the Timbermaw",
+              "source_kind": "vendor",
+              "source": "Meilosh",
+              "dps_delta": -4.4713054639339305,
+              "verified": true,
+              "sim_dps": 206.3966812626975
+            },
+            {
+              "item_id": 240085,
+              "item_name": "Waywatcher Girdle",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -11.611070051334572
+            },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.5137736365283558,
-              "verified": true,
-              "sim_dps": 137.30037197517794
-            },
-            {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": -4.27251425890398
-            },
-            {
-              "item_id": 226772,
-              "item_name": "Feralheart Sash",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -4.719710311406708
+              "dps_delta": -12.274444360403274
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 220864,
-          "item_name": "Knight's Crackling Leather Leggings",
-          "source": "Captain Dirgehammer",
+          "item_id": 240071,
+          "item_name": "Waywatcher Kilt",
+          "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 112.29758277204478,
+          "score": 224.79047919900228,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220865,
-              "item_name": "Stone Guard's Crackling Leather Leggings"
-            }
-          ],
           "alternatives": [
+            {
+              "item_id": 240087,
+              "item_name": "Waywatcher Legguards",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -0.33213835150155546,
+              "verified": true,
+              "sim_dps": 210.5358483751299
+            },
+            {
+              "item_id": 220864,
+              "item_name": "Knight's Crackling Leather Leggings",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -12.437482907061653
+            },
             {
               "item_id": 220865,
               "item_name": "Stone Guard's Crackling Leather Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 138.8141456117063
-            },
-            {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -0.4120602674897428
-            },
-            {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -0.4120602674897428
+              "dps_delta": -12.437482907061653
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 19684,
-          "item_name": "Bloodvine Boots",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 87.83400068197918,
+          "item_id": 240074,
+          "item_name": "Waywatcher Sandals",
+          "source": "Leonid Barthalomew the Revered",
+          "source_kind": "vendor",
+          "score": 171.10226911713204,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 220863,
-              "item_name": "First Sergeant's Crackling Leather Boots",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -1.295895798154012
+              "item_id": 19684,
+              "item_name": "Bloodvine Boots",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -3.323585690936625,
+              "verified": true,
+              "sim_dps": 207.54440103569482
             },
             {
               "item_id": 220862,
               "item_name": "Sergeant Major's Crackling Leather Boots",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.6889698934944306,
-              "verified": true,
-              "sim_dps": 137.12517571821186
+              "dps_delta": -10.502234138240127
             },
             {
-              "item_id": 227815,
-              "item_name": "Fine Dawn Treaders",
+              "item_id": 220863,
+              "item_name": "First Sergeant's Crackling Leather Boots",
               "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana",
-              "dps_delta": -3.1977432304395355
+              "source": "Lady Palanseer",
+              "dps_delta": -10.502234138240127
             }
           ]
         },
@@ -6519,7 +6514,7 @@
           "source_kind": "quest",
           "score": 99.63242317480535,
           "verified": true,
-          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, 138.8 vs 131.9 set DPS",
+          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, 210.9 vs 201.6 set DPS",
           "alternatives": [
             {
               "item_id": 21182,
@@ -6564,9 +6559,9 @@
               "item_name": "Band of Earthen Might",
               "source_kind": "quest",
               "source": "Veteran's Battlegear",
-              "dps_delta": -0.12333944662171348,
+              "dps_delta": -0.1298175608525014,
               "verified": true,
-              "sim_dps": 138.69080616508458
+              "sim_dps": 210.73816916577894
             },
             {
               "item_id": 234032,
@@ -6586,19 +6581,20 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 1713,
-          "item_name": "Ankh of Life",
-          "source": "Maraudon: Theradrim Shardling",
-          "source_kind": "dungeon",
-          "sim_dps": 139.11609726408847,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 208.3382644585203,
           "verified": true,
+          "swap_note": "confirmed by the sim against Weakness Analyzer (id 272438): kept the pick, 210.9 vs 206.1 set DPS",
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 1490,
-              "item_name": "Guardian Talisman",
+              "item_id": 19120,
+              "item_name": "Rune of the Guard Captain",
               "source_kind": "quest",
-              "source": "The Temple of Atal'Hakkar",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
               "dps_delta": 0
             },
             {
@@ -6613,20 +6609,19 @@
               "item_name": "Uther's Strength",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.0750664519529494,
-              "verified": true,
-              "sim_dps": 137.73907915975335
+              "dps_delta": -0.8844990787582685
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 19120,
-          "item_name": "Rune of the Guard Captain",
-          "source": "Job Opening: Guard Captain of Revantusk Village",
-          "source_kind": "quest",
-          "sim_dps": 139.11609726408847,
+          "item_id": 272438,
+          "item_name": "Weakness Analyzer",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 210.2507591901915,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 249469,
@@ -6636,20 +6631,20 @@
               "dps_delta": 0
             },
             {
+              "item_id": 19120,
+              "item_name": "Rune of the Guard Captain",
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "dps_delta": -1.6182430040703935,
+              "verified": true,
+              "sim_dps": 209.24974372256105
+            },
+            {
               "item_id": 11302,
               "item_name": "Uther's Strength",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.2991687141231694,
-              "verified": true,
-              "sim_dps": 137.51497689758313
-            },
-            {
-              "item_id": 1490,
-              "item_name": "Guardian Talisman",
-              "source_kind": "quest",
-              "source": "The Temple of Atal'Hakkar",
-              "dps_delta": -4.5593753487929005
+              "dps_delta": -1.768998157516537
             }
           ]
         },
@@ -6659,7 +6654,7 @@
           "item_name": "High Warlord's Pig Poker",
           "source": "Sergeant Thunderhorn",
           "source_kind": "vendor",
-          "sim_dps": 139.11609726408847,
+          "sim_dps": 210.2507591901915,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6682,9 +6677,9 @@
               "item_name": "Sulfuron Hammer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -9.137702197229487,
+              "dps_delta": -9.46894869898307,
               "verified": true,
-              "sim_dps": 129.6764434144768
+              "sim_dps": 201.39903802764837
             }
           ]
         },
@@ -6701,6 +6696,22 @@
           "source_kind": "world",
           "verified": true,
           "ties": [
+            {
+              "item_id": 272427,
+              "item_name": "Howling Idol"
+            },
+            {
+              "item_id": 272428,
+              "item_name": "Enraged Idol"
+            },
+            {
+              "item_id": 272429,
+              "item_name": "Idol of Synthesis"
+            },
+            {
+              "item_id": 272430,
+              "item_name": "Swarming Idol"
+            },
             {
               "item_id": 220606,
               "item_name": "Idol of the Dream"
@@ -6748,34 +6759,34 @@
           ],
           "alternatives": [
             {
-              "item_id": 220606,
-              "item_name": "Idol of the Dream",
-              "source_kind": "dungeon",
-              "source": "The Temple of Atal'Hakkar: Hazzas",
+              "item_id": 272427,
+              "item_name": "Howling Idol",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 138.8141456117063
+              "sim_dps": 210.86798672663144
             },
             {
-              "item_id": 220915,
-              "item_name": "Idol of the Raging Shambler",
+              "item_id": 272428,
+              "item_name": "Enraged Idol",
               "source_kind": "vendor",
-              "source": "Rune Broker",
+              "source": "Pix Xizzix",
               "dps_delta": 0
             },
             {
-              "item_id": 227444,
-              "item_name": "Idol of the Huntress",
+              "item_id": 272429,
+              "item_name": "Idol of Synthesis",
               "source_kind": "vendor",
-              "source": "Rune Broker",
+              "source": "Pix Xizzix",
               "dps_delta": 0
             }
           ],
           "low_value": true
         }
       ],
-      "set_dps": 141.0878389581125,
-      "no_source_count": 1713,
+      "set_dps": 210.86798672663144,
+      "no_source_count": 1658,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6794,54 +6805,57 @@
         "6478 Rat Stompers"
       ],
       "new_at_band": [
-        "head: Bloodvine Goggles",
-        "neck: Blazefury Medallion",
-        "back: Earthweave Cloak",
-        "chest: Bloodvine Vest",
-        "wrist: Rockfury Bracers",
-        "hands: Primal Batskin Gloves",
-        "waist: Knowledge of the Timbermaw",
-        "feet: Bloodvine Boots",
+        "head: Waywatcher Hood",
+        "neck: Onyxia Tooth Pendant",
+        "shoulder: Waywatcher Mantle",
+        "back: Arcanoweave Cloak",
+        "chest: Waywatcher Leathers",
+        "wrist: Waywatcher Bindings",
+        "hands: Waywatcher Mitts",
+        "waist: Waywatcher Cord",
+        "legs: Waywatcher Kilt",
+        "feet: Waywatcher Sandals",
         "finger1: Ring of the Fallen God",
         "finger2: Don Julio's Band",
-        "trinket1: Ankh of Life",
+        "trinket1: Serenity Field",
+        "trinket2: Weakness Analyzer",
         "main_hand: High Warlord's Pig Poker",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.91015402,
-      "verify_run_seconds": 1.375553341,
+      "weights_run_seconds": 1.9369930869999998,
+      "verify_run_seconds": 1.32196939,
       "coverage": {
         "back": {
           "eligible": 376,
-          "sourced": 213
+          "sourced": 217
         },
         "chest": {
           "eligible": 498,
-          "sourced": 334
+          "sourced": 338
         },
         "feet": {
           "eligible": 394,
-          "sourced": 268
+          "sourced": 272
         },
         "finger1": {
           "eligible": 302,
-          "sourced": 163
+          "sourced": 167
         },
         "finger2": {
           "eligible": 302,
-          "sourced": 163
+          "sourced": 167
         },
         "hands": {
           "eligible": 407,
-          "sourced": 271
+          "sourced": 277
         },
         "head": {
           "eligible": 313,
-          "sourced": 205
+          "sourced": 209
         },
         "legs": {
           "eligible": 407,
-          "sourced": 269
+          "sourced": 273
         },
         "main_hand": {
           "eligible": 640,
@@ -6857,27 +6871,27 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 12
+          "sourced": 16
         },
         "shoulder": {
           "eligible": 301,
-          "sourced": 184
+          "sourced": 191
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 368,
-          "sourced": 247
+          "sourced": 254
         },
         "wrist": {
           "eligible": 300,
-          "sourced": 173
+          "sourced": 177
         }
       },
       "reference_dps_per_point": 0.11056238484478356,

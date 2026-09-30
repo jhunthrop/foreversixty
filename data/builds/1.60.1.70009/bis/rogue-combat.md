@@ -68,7 +68,7 @@ No-known-source sample (15 of 598, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 88.2. Weights run: 1.1s. Verify run: 1.5s. 858 eligible items had no known source.
+Set DPS (verified): 88.2. Weights run: 1.2s. Verify run: 1.5s. 858 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.025 ± 0.009, crit=0.925 ± 0.148, hit=not significant (3.384 ± 0.980), melee_haste=not significant (-0.099 ± 1.840)
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 1107, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (night-elf, 32531000000000000-32531300000515201-5100000000000000000)
 
-Set DPS (verified): 290.5. Weights run: 1.2s. Verify run: 1.7s. 1603 eligible items had no known source.
+Set DPS (verified): 290.0. Weights run: 1.2s. Verify run: 1.7s. 1586 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.397 ± 0.131, crit=8.223 ± 0.549, hit=not significant (4.397 ± 2.027), melee_haste=not significant (4.644 ± 4.093)
 
@@ -136,13 +136,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Duskwraith Helmet (239560) | Leonid Barthalomew the Revered [vendor] | sim-verified (273.4 DPS) | yes | Ragefury Eyepatch (11735, -2.21 DPS) [dungeon]; Bloodvine Lens (19998, -2.21 DPS) [crafted]; Bonescythe Helmet (22478, -4.26 DPS, sim-verified) [quest] |
 | neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | sim-verified (270.0 DPS) | yes | Blazefury Medallion (17111, +0.00 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -1.59 DPS) [quest]; Beads of Ogre Might (22150, -5.40 DPS) [quest] |
-| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 189.8 | yes | Champion's Leather Shoulders (23258, -0.47 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (23313, -0.47 DPS) [vendor]; Knight-Lieutenant's Leather Shoulders (220852, -6.13 DPS, sim-verified) [vendor] |
-| back | Cloak of Veiled Shadows (21406) | Cloak of Veiled Shadows [quest] | sim-verified (272.4 DPS) | yes | Earthweave Cloak (21187, -0.22 DPS) [quest]; Cloak of the Honor Guard (20073, -1.51 DPS) [rep]; Chromatic Cloak (18509, -3.22 DPS, sim-verified) [crafted] |
+| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 189.8 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.47 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.47 DPS) [vendor]; Knight-Lieutenant's Leather Shoulders (220852, -6.13 DPS, sim-verified) [vendor] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | sim-verified (272.0 DPS) | yes | Cloak of Veiled Shadows (21406, -0.15 DPS) [quest]; Earthweave Cloak (21187, -0.38 DPS) [quest]; Chromatic Cloak (18509, -2.87 DPS, sim-verified) [crafted] |
 | chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 354.2 | yes | Zandalar Madcap's Tunic (19834, -6.20 DPS, sim-verified) [quest]; Stormshroud Armor (15056, -6.64 DPS) [crafted]; Duskwraith Breastplate (239562, -6.78 DPS) [vendor] |
 | wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 151.4 | yes | Duskwraith Bracers (239555, +0.00 DPS, sim-verified) [vendor]; Primal Batskin Bracers (19687, -4.71 DPS) [crafted]; Duskwraith Wristguards (239547, -4.71 DPS) [vendor] |
 | hands | Bonescythe Gauntlets (22481) | Bonescythe Gauntlets [quest] | 225.1 | yes | Duskwraith Gauntlets (239557, +0.00 DPS, sim-verified) [vendor]; Stormshroud Gloves (21278, -3.53 DPS) [crafted]; Devilsaur Gauntlets (15063, -4.39 DPS) [crafted] |
 | waist | Duskwraith Waistguard (239556) | Leonid Barthalomew the Revered [vendor] | 205.2 | yes | Bonescythe Waistguard (22482, -3.03 DPS) [quest]; Highlander's Leather Girdle (20115, -3.75 DPS) [rep]; Highlander's Leather Girdle (20045, -6.08 DPS, sim-verified) [rep] |
-| legs | Duskwraith Legplates (239561) | Leonid Barthalomew the Revered [vendor] | 272.9 | yes | Marshal's Leather Leggings (16456, -1.72 DPS) [vendor]; General's Leather Legguards (16564, -1.72 DPS) [vendor]; Sentinel's Leather Pants (237818, -8.55 DPS, sim-verified) [vendor] |
+| legs | Duskwraith Legplates (239561) | Leonid Barthalomew the Revered [vendor] | 272.9 | yes | General's Leather Legguards (16564, -1.72 DPS) [vendor]; Marshal's Leather Leggings (16456, -1.72 DPS) [vendor]; Sentinel's Leather Pants (237818, -8.55 DPS, sim-verified) [vendor] |
 | feet | Bonescythe Sabatons (22480) | Bonescythe Sabatons [quest] | 223.1 | yes | Duskwraith Sabatons (239558, +0.00 DPS, sim-verified) [vendor]; Deathdealer's Boots (21359, -7.65 DPS) [quest]; Duskwraith Treads (239553, -8.17 DPS) [vendor] |
 | finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | 175.1 | yes | Band of the Penitent (13217, -3.21 DPS) [quest]; Dragonslayer's Signet (18403, -3.21 DPS) [quest]; Ring of Entropy (18543, -3.21 DPS) [world] |
 | finger2 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | 159.1 | yes | Dragonslayer's Signet (18403, -2.35 DPS) [quest]; Ring of Entropy (18543, -2.35 DPS) [world]; Band of the Penitent (13217, -2.58 DPS, sim-verified) [quest] |
@@ -152,9 +152,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | High Warlord's Shiv (235478) | Sergeant Thunderhorn [vendor] | sim-verified (282.6 DPS) | yes | High Warlord's Left Claw (234558, -0.05 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.05 DPS) [vendor]; Grand Marshal's Bonecracker (235480, -13.44 DPS, sim-verified) [vendor] |
 | ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (270.0 DPS) | yes | High Warlord's Recurve (234559, +0.00 DPS) [vendor]; High Warlord's Crossbow (234560, +0.00 DPS) [vendor]; Dark Iron Rifle (16004, -2.36 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Duskwraith Helmet; neck: Onyxia Tooth Pendant; shoulder: Bonescythe Pauldrons; back: Cloak of Veiled Shadows; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Duskwraith Waistguard; legs: Duskwraith Legplates; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Bonecracker; off_hand: High Warlord's Shiv; ranged: The Purifier
+**New at 60:** head: Duskwraith Helmet; neck: Onyxia Tooth Pendant; shoulder: Bonescythe Pauldrons; back: Howler's Furs; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Duskwraith Waistguard; legs: Duskwraith Legplates; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Bonecracker; off_hand: High Warlord's Shiv; ranged: The Purifier
 
-No-known-source sample (15 of 1603, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1586, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ## Horde
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 610, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 87.2. Weights run: 1.1s. Verify run: 1.5s. 870 eligible items had no known source.
+Set DPS (verified): 87.2. Weights run: 1.2s. Verify run: 1.5s. 870 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.025 ± 0.009, crit=0.925 ± 0.148, hit=not significant (3.384 ± 0.980), melee_haste=not significant (-0.099 ± 1.840)
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 1119, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (troll, 32531000000000000-32531300000515201-5100000000000000000)
 
-Set DPS (verified): 292.7. Weights run: 1.2s. Verify run: 1.7s. 1616 eligible items had no known source.
+Set DPS (verified): 290.0. Weights run: 1.2s. Verify run: 1.7s. 1599 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.397 ± 0.131, crit=8.223 ± 0.549, hit=not significant (4.397 ± 2.027), melee_haste=not significant (4.644 ± 4.093)
 
@@ -288,8 +288,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Duskwraith Helmet (239560) | Leonid Barthalomew the Revered [vendor] | sim-verified (277.8 DPS) | yes | Ragefury Eyepatch (11735, -2.21 DPS) [dungeon]; Bloodvine Lens (19998, -2.21 DPS) [crafted]; Bonescythe Helmet (22478, -3.98 DPS, sim-verified) [quest] |
 | neck | Onyxia Tooth Pendant (18404) | For All To See [quest] | sim-verified (274.5 DPS) | yes | Blazefury Medallion (17111, -1.30 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -1.59 DPS) [quest]; Beads of Ogre Might (22150, -5.40 DPS) [quest] |
-| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 189.8 | yes | Champion's Leather Shoulders (23258, -0.47 DPS) [vendor]; Champion's Leather Shoulders (227056, -0.47 DPS) [vendor]; Knight-Lieutenant's Leather Shoulders (220852, -6.58 DPS, sim-verified) [vendor] |
-| back | Cloak of Veiled Shadows (21406) | Cloak of Veiled Shadows [quest] | sim-verified (276.7 DPS) | yes | Earthweave Cloak (21187, -0.22 DPS) [quest]; Deathguard's Cloak (20068, -1.51 DPS) [rep]; Chromatic Cloak (18509, -2.85 DPS, sim-verified) [crafted] |
+| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 189.8 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.47 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.47 DPS) [vendor]; Knight-Lieutenant's Leather Shoulders (220852, -6.58 DPS, sim-verified) [vendor] |
+| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 115.1 | yes | Howler's Furs (272414, +0.00 DPS, sim-verified) [vendor]; Cloak of Veiled Shadows (21406, -2.46 DPS) [quest]; Earthweave Cloak (21187, -2.69 DPS) [quest] |
 | chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 354.2 | yes | Stormshroud Armor (15056, -6.64 DPS) [crafted]; Duskwraith Breastplate (239562, -6.78 DPS) [vendor]; Zandalar Madcap's Tunic (19834, -7.74 DPS, sim-verified) [quest] |
 | wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 151.4 | yes | Duskwraith Bracers (239555, -0.27 DPS, sim-verified) [vendor]; Primal Batskin Bracers (19687, -4.71 DPS) [crafted]; Duskwraith Wristguards (239547, -4.71 DPS) [vendor] |
 | hands | Bonescythe Gauntlets (22481) | Bonescythe Gauntlets [quest] | 225.1 | yes | Duskwraith Gauntlets (239557, +0.00 DPS, sim-verified) [vendor]; Stormshroud Gloves (21278, -3.53 DPS) [crafted]; Devilsaur Gauntlets (15063, -4.39 DPS) [crafted] |
@@ -304,7 +304,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | High Warlord's Shiv (235478) | Sergeant Thunderhorn [vendor] | sim-verified (285.3 DPS) | yes | High Warlord's Left Claw (234558, -0.05 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.05 DPS) [vendor]; Grand Marshal's Bonecracker (235480, -11.51 DPS, sim-verified) [vendor] |
 | ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (274.5 DPS) | yes | High Warlord's Recurve (234559, +0.00 DPS) [vendor]; High Warlord's Crossbow (234560, +0.00 DPS) [vendor]; Dark Iron Rifle (16004, -2.96 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Duskwraith Helmet; neck: Onyxia Tooth Pendant; shoulder: Bonescythe Pauldrons; back: Cloak of Veiled Shadows; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Duskwraith Waistguard; legs: Duskwraith Legplates; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: High Warlord's Bonecracker; off_hand: High Warlord's Shiv; ranged: The Purifier
+**New at 60:** head: Duskwraith Helmet; neck: Onyxia Tooth Pendant; shoulder: Bonescythe Pauldrons; back: Chromatic Cloak; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Duskwraith Waistguard; legs: Duskwraith Legplates; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: High Warlord's Bonecracker; off_hand: High Warlord's Shiv; ranged: The Purifier
 
-No-known-source sample (15 of 1616, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 1599, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 

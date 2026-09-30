@@ -8534,9 +8534,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 19999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 240072,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -8544,44 +8544,44 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 220852,
+              "item_id": 240070,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 19682,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240075,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240068,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 19686,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 240073,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 228190,
+              "item_id": 240069,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 220864,
+              "item_id": 240071,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240074,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 21709,
@@ -8594,14 +8594,14 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 744,
-              "source_kind": "quest",
-              "source": "Sweet Amber"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 234548,
@@ -8616,54 +8616,54 @@
           },
           "horde": {
             "head": {
-              "item_id": 19999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 240072,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 18404,
+              "source_kind": "quest",
+              "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 220852,
+              "item_id": 240070,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 19682,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240075,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240068,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 19686,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 240073,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 228190,
+              "item_id": 240069,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 220864,
+              "item_id": 240071,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240074,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 21709,
@@ -8676,14 +8676,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 234548,
@@ -8699,31 +8699,38 @@
         },
         "new_at_band": {
           "alliance": [
-            19999,
+            240072,
             18404,
-            21187,
-            19682,
-            21186,
-            19686,
-            228190,
-            19684,
+            240070,
+            272411,
+            240075,
+            240068,
+            240073,
+            240069,
+            240071,
+            240074,
             21709,
             19325,
+            272439,
+            272438,
             234548,
             23197
           ],
           "horde": [
-            19999,
-            17111,
-            21187,
-            19682,
-            21186,
-            19686,
-            228190,
-            19684,
+            240072,
+            18404,
+            240070,
+            272411,
+            240075,
+            240068,
+            240073,
+            240069,
+            240071,
+            240074,
             21709,
             19325,
-            1713,
+            272439,
+            272438,
             234548,
             23197
           ]
@@ -9462,9 +9469,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 11735,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Guzzler"
+              "item_id": 240064,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 17111,
@@ -9482,19 +9489,19 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 252484,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 240075,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 19587,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
+              "item_id": 240060,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 231694,
+              "item_id": 240073,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
               "item_id": 20045,
@@ -9507,9 +9514,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 231683,
+              "item_id": 240074,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -9534,9 +9541,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 11735,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Guzzler"
+              "item_id": 240064,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 17111,
@@ -9554,19 +9561,19 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 252484,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 240075,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 19587,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 240060,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 231688,
+              "item_id": 240073,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
               "item_id": 20190,
@@ -9612,29 +9619,29 @@
         },
         "new_at_band": {
           "alliance": [
-            11735,
+            240064,
             17111,
             231684,
             21710,
-            252484,
-            19587,
-            231694,
+            240075,
+            240060,
+            240073,
             20045,
             237818,
-            231683,
+            240074,
             19325,
             21182,
             234548,
             23197
           ],
           "horde": [
-            11735,
+            240064,
             17111,
             231684,
             21710,
-            252484,
-            19587,
-            231688,
+            240075,
+            240060,
+            240073,
             20190,
             237818,
             231683,
@@ -11725,9 +11732,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 1713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 235476,
@@ -11779,6 +11786,7 @@
             239530,
             19325,
             13217,
+            272439,
             235476,
             235481,
             22656
@@ -12658,9 +12666,9 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 239529,
@@ -12745,9 +12753,9 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 239529,
@@ -12821,7 +12829,7 @@
             239532,
             18404,
             239534,
-            18509,
+            272414,
             239529,
             239536,
             239531,
@@ -12839,7 +12847,7 @@
             239532,
             17111,
             239534,
-            18509,
+            272414,
             239529,
             239536,
             239531,
@@ -13560,9 +13568,9 @@
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 220909,
+              "item_id": 220891,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 17713,
@@ -13621,7 +13629,7 @@
             226930,
             20165,
             220888,
-            220909,
+            220891,
             17713,
             19519,
             249469,
@@ -13654,44 +13662,44 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240054,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 22496,
-              "source_kind": "quest",
-              "source": "Frostfire Robe"
+              "item_id": 240059,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240052,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240057,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 240045,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 22497,
-              "source_kind": "quest",
-              "source": "Frostfire Leggings"
+              "item_id": 240055,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 22500,
-              "source_kind": "quest",
-              "source": "Frostfire Sandals"
+              "item_id": 240050,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -13704,14 +13712,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 20069,
@@ -13736,44 +13744,44 @@
               "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240054,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 22496,
-              "source_kind": "quest",
-              "source": "Frostfire Robe"
+              "item_id": 240059,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240052,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240057,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 240045,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 22497,
-              "source_kind": "quest",
-              "source": "Frostfire Leggings"
+              "item_id": 240055,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 22500,
-              "source_kind": "quest",
-              "source": "Frostfire Sandals"
+              "item_id": 240050,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -13786,14 +13794,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 20220,
@@ -13801,9 +13809,9 @@
               "source": "The Defilers"
             },
             "ranged": {
-              "item_id": 249385,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19108,
+              "source_kind": "quest",
+              "source": "The Legend of Korrak"
             }
           }
         },
@@ -13811,34 +13819,38 @@
           "alliance": [
             22498,
             18404,
-            227808,
-            18509,
-            22496,
-            21186,
-            14146,
-            22502,
-            22497,
-            22500,
+            240054,
+            272411,
+            240059,
+            240052,
+            240057,
+            240045,
+            240055,
+            240050,
             19325,
             21709,
+            272439,
+            272438,
             20069,
             19108
           ],
           "horde": [
             22498,
             18404,
-            227808,
-            18509,
-            22496,
-            21186,
-            14146,
-            22502,
-            22497,
-            22500,
+            240054,
+            272411,
+            240059,
+            240052,
+            240057,
+            240045,
+            240055,
+            240050,
             19325,
             21709,
+            272439,
+            272438,
             20220,
-            249385
+            19108
           ]
         },
         "weights": {
@@ -14640,24 +14652,24 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 19999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 22498,
+              "source_kind": "quest",
+              "source": "Frostfire Circlet"
             },
             "neck": {
-              "item_id": 19601,
+              "item_id": 18404,
               "source_kind": "quest",
-              "source": "The Jewel of Kajaro"
+              "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240054,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 22496,
@@ -14665,19 +14677,19 @@
               "source": "Frostfire Robe"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240052,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240057,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 240053,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
               "item_id": 22497,
@@ -14700,14 +14712,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 20069,
@@ -14727,19 +14739,19 @@
               "source": "Frostfire Circlet"
             },
             "neck": {
-              "item_id": 19601,
+              "item_id": 18404,
               "source_kind": "quest",
-              "source": "The Jewel of Kajaro"
+              "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240054,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 22496,
@@ -14747,19 +14759,19 @@
               "source": "Frostfire Robe"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240052,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 240057,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 240053,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
               "item_id": 22497,
@@ -14782,9 +14794,9 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
               "item_id": 249469,
@@ -14805,35 +14817,37 @@
         },
         "new_at_band": {
           "alliance": [
-            19999,
-            19601,
-            227808,
-            21187,
+            22498,
+            18404,
+            240054,
+            272411,
             22496,
-            21186,
-            14146,
-            22502,
+            240052,
+            240057,
+            240053,
             22497,
             21344,
             19325,
             21709,
+            272439,
+            272438,
             20069,
             19108
           ],
           "horde": [
             22498,
-            19601,
-            227808,
-            21187,
+            18404,
+            240054,
+            272411,
             22496,
-            21186,
-            22066,
-            22502,
+            240052,
+            240057,
+            240053,
             22497,
             21344,
             19325,
             21709,
-            1713,
+            272439,
             249469,
             20220,
             16997
@@ -15653,44 +15667,44 @@
               "source": "The Jewel of Kajaro"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240054,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 22496,
-              "source_kind": "quest",
-              "source": "Frostfire Robe"
+              "item_id": 240059,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240052,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240057,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 240053,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 22497,
-              "source_kind": "quest",
-              "source": "Frostfire Leggings"
+              "item_id": 240055,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 21344,
-              "source_kind": "quest",
-              "source": "Enigma Boots"
+              "item_id": 240050,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -15703,14 +15717,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 20069,
@@ -15735,44 +15749,44 @@
               "source": "The Jewel of Kajaro"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240054,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 22496,
-              "source_kind": "quest",
-              "source": "Frostfire Robe"
+              "item_id": 240059,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240052,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240057,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 22502,
-              "source_kind": "quest",
-              "source": "Frostfire Belt"
+              "item_id": 240053,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 22497,
-              "source_kind": "quest",
-              "source": "Frostfire Leggings"
+              "item_id": 240055,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 21344,
-              "source_kind": "quest",
-              "source": "Enigma Boots"
+              "item_id": 240050,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -15785,14 +15799,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 20220,
@@ -15800,9 +15814,9 @@
               "source": "The Defilers"
             },
             "ranged": {
-              "item_id": 19108,
+              "item_id": 16997,
               "source_kind": "quest",
-              "source": "The Legend of Korrak"
+              "source": "The Scarlet Oracle, Demetria"
             }
           }
         },
@@ -15810,34 +15824,38 @@
           "alliance": [
             22498,
             19601,
-            227808,
-            21187,
-            22496,
-            21186,
-            14146,
-            22502,
-            22497,
-            21344,
+            240054,
+            272411,
+            240059,
+            240052,
+            240057,
+            240053,
+            240055,
+            240050,
             19325,
             21709,
+            272439,
+            272438,
             20069,
             19108
           ],
           "horde": [
             22498,
             19601,
-            227808,
-            21187,
-            22496,
-            21186,
-            14146,
-            22502,
-            22497,
-            21344,
+            240054,
+            272411,
+            240059,
+            240052,
+            240057,
+            240053,
+            240055,
+            240050,
             19325,
             21709,
+            272439,
+            272438,
             20220,
-            19108
+            16997
           ]
         },
         "weights": {
@@ -16487,9 +16505,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 220803,
+              "item_id": 220804,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 19159,
@@ -16579,7 +16597,7 @@
             250613
           ],
           "horde": [
-            220803,
+            220804,
             19159,
             220795,
             14801,
@@ -16609,9 +16627,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 12640,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 240027,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 17111,
@@ -16619,24 +16637,24 @@
               "source": "Lord Kazzak"
             },
             "shoulder": {
-              "item_id": 220795,
+              "item_id": 240021,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 252483,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 246060,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 13400,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Timmy the Cruel"
+              "item_id": 246056,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
               "item_id": 21278,
@@ -16644,19 +16662,19 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 227814,
+              "item_id": 240024,
               "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 22385,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 240026,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 22430,
-              "source_kind": "quest",
-              "source": "Redemption Boots"
+              "item_id": 240029,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -16669,9 +16687,14 @@
               "source": "Veteran's Battlegear"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            "trinket2": {
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 234548,
@@ -16681,9 +16704,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 12640,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 240027,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 17111,
@@ -16691,24 +16714,24 @@
               "source": "Lord Kazzak"
             },
             "shoulder": {
-              "item_id": 220795,
+              "item_id": 240021,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 252483,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 246060,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 13400,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Timmy the Cruel"
+              "item_id": 246056,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
               "item_id": 21278,
@@ -16716,19 +16739,19 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 227814,
+              "item_id": 240024,
               "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 22385,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 240026,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 227146,
+              "item_id": 240029,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -16741,52 +16764,56 @@
               "source": "Veteran's Battlegear"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
-              "item_id": 234548,
+              "item_id": 234570,
               "source_kind": "vendor",
-              "source": "Sergeant Thunderhorn"
+              "source": "Captain O'Neal"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            12640,
+            240027,
             17111,
-            21187,
-            252483,
-            13400,
+            240021,
+            272414,
+            246060,
+            246056,
             21278,
-            227814,
-            22385,
-            22430,
+            240024,
+            240026,
+            240029,
             19325,
             21182,
-            249469,
+            272439,
+            272438,
             234548
           ],
           "horde": [
-            12640,
+            240027,
             17111,
-            21187,
-            252483,
-            13400,
+            240021,
+            272414,
+            246060,
+            246056,
             21278,
-            227814,
-            22385,
-            227146,
+            240024,
+            240026,
+            240029,
             19325,
             21182,
-            249469,
-            234548
+            272439,
+            272438,
+            234570
           ]
         },
         "weights": {
@@ -17613,39 +17640,39 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 226955,
-              "source_kind": "vendor",
-              "source": "Mokvar"
-            },
-            "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
-            },
-            "chest": {
-              "item_id": 19682,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
-            },
-            "hands": {
-              "item_id": 16705,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lorekeeper Polkelt"
-            },
-            "waist": {
-              "item_id": 228190,
+              "item_id": 227808,
               "source_kind": "vendor",
               "source": "Meilosh"
             },
+            "back": {
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            "chest": {
+              "item_id": 21351,
+              "source_kind": "quest",
+              "source": "Vestments of the Oracle"
+            },
+            "wrist": {
+              "item_id": 239588,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "hands": {
+              "item_id": 239584,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "waist": {
+              "item_id": 239590,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
             "legs": {
-              "item_id": 19683,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 239587,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
               "item_id": 19684,
@@ -17663,14 +17690,14 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 744,
-              "source_kind": "quest",
-              "source": "Sweet Amber"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 234551,
@@ -17683,9 +17710,9 @@
               "source": "The Lord of Blackrock"
             },
             "ranged": {
-              "item_id": 19108,
+              "item_id": 16997,
               "source_kind": "quest",
-              "source": "Korrak the Bloodrager"
+              "source": "Order Must Be Restored"
             }
           },
           "horde": {
@@ -17705,9 +17732,9 @@
               "source": "Mokvar"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 21351,
@@ -17715,14 +17742,14 @@
               "source": "Vestments of the Oracle"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 239588,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 16705,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lorekeeper Polkelt"
+              "item_id": 239584,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
               "item_id": 228190,
@@ -17730,9 +17757,9 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 19683,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 239587,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
               "item_id": 19684,
@@ -17750,14 +17777,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 234551,
@@ -17780,36 +17807,37 @@
           "alliance": [
             21348,
             18404,
-            226955,
-            21187,
-            19682,
-            21186,
-            16705,
-            228190,
-            19683,
+            227808,
+            272411,
+            21351,
+            239588,
+            239584,
+            239590,
+            239587,
             19684,
             21709,
             19325,
-            744,
+            272439,
+            272438,
             234551,
             19366,
-            19108
+            16997
           ],
           "horde": [
             21348,
             18404,
             226955,
-            21187,
+            272411,
             21351,
-            21186,
-            16705,
+            239588,
+            239584,
             228190,
-            19683,
+            239587,
             19684,
             21709,
             19325,
-            1713,
-            11302,
+            272439,
+            272438,
             234551,
             19366,
             19108
@@ -18640,9 +18668,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 22659,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 22479,
@@ -18660,9 +18688,9 @@
               "source": "Bonescythe Breastplate"
             },
             "wrist": {
-              "item_id": 239555,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22483,
+              "source_kind": "quest",
+              "source": "Bonescythe Bracers"
             },
             "hands": {
               "item_id": 22481,
@@ -18717,9 +18745,9 @@
               "source": "Bonescythe Helmet"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 22659,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 22479,
@@ -18782,9 +18810,9 @@
               "source": "Sergeant Thunderhorn"
             },
             "off_hand": {
-              "item_id": 235478,
+              "item_id": 235480,
               "source_kind": "vendor",
-              "source": "Sergeant Thunderhorn"
+              "source": "Captain O'Neal"
             },
             "ranged": {
               "item_id": 18282,
@@ -18795,23 +18823,6 @@
         },
         "new_at_band": {
           "alliance": [
-            22478,
-            22659,
-            22479,
-            18509,
-            22476,
-            239555,
-            22481,
-            239556,
-            237818,
-            22480,
-            19325,
-            13217,
-            235477,
-            235478,
-            18282
-          ],
-          "horde": [
             22478,
             17111,
             22479,
@@ -18826,6 +18837,23 @@
             13217,
             235477,
             235478,
+            18282
+          ],
+          "horde": [
+            22478,
+            22659,
+            22479,
+            18509,
+            22476,
+            22483,
+            22481,
+            239556,
+            237818,
+            22480,
+            19325,
+            13217,
+            235477,
+            235480,
             18282
           ]
         },
@@ -19662,9 +19690,9 @@
               "source": "Bonescythe Pauldrons"
             },
             "back": {
-              "item_id": 21406,
-              "source_kind": "quest",
-              "source": "Cloak of Veiled Shadows"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 22476,
@@ -19744,9 +19772,9 @@
               "source": "Bonescythe Pauldrons"
             },
             "back": {
-              "item_id": 21406,
-              "source_kind": "quest",
-              "source": "Cloak of Veiled Shadows"
+              "item_id": 18509,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "chest": {
               "item_id": 22476,
@@ -19820,7 +19848,7 @@
             239560,
             18404,
             22479,
-            21406,
+            272414,
             22476,
             22483,
             22481,
@@ -19837,7 +19865,7 @@
             239560,
             18404,
             22479,
-            21406,
+            18509,
             22476,
             22483,
             22481,
@@ -20686,9 +20714,9 @@
               "source": "Bonescythe Pauldrons"
             },
             "back": {
-              "item_id": 21406,
-              "source_kind": "quest",
-              "source": "Cloak of Veiled Shadows"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 22476,
@@ -20768,9 +20796,9 @@
               "source": "Bonescythe Pauldrons"
             },
             "back": {
-              "item_id": 21406,
-              "source_kind": "quest",
-              "source": "Cloak of Veiled Shadows"
+              "item_id": 18509,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "chest": {
               "item_id": 22476,
@@ -20844,7 +20872,7 @@
             239560,
             18404,
             22479,
-            21406,
+            272414,
             22476,
             22483,
             22481,
@@ -20861,7 +20889,7 @@
             239560,
             17111,
             22479,
-            21406,
+            18509,
             22476,
             22483,
             22481,
@@ -21629,9 +21657,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 19999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 240123,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -21639,19 +21667,19 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240125,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 19682,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240109,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
               "item_id": 21186,
@@ -21659,24 +21687,24 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 231655,
+              "item_id": 240122,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 228190,
+              "item_id": 240099,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 237815,
+              "item_id": 240097,
               "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240110,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -21689,14 +21717,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 21188,
@@ -21711,9 +21739,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 19999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 240096,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -21721,19 +21749,19 @@
               "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 240125,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 19682,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240109,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
               "item_id": 21186,
@@ -21741,24 +21769,24 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 231655,
+              "item_id": 240122,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 228190,
+              "item_id": 240099,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 237815,
+              "item_id": 240097,
               "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240110,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 19325,
@@ -21771,14 +21799,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 21188,
@@ -21794,35 +21822,38 @@
         },
         "new_at_band": {
           "alliance": [
-            19999,
+            240123,
             18404,
-            227808,
-            18509,
-            19682,
+            240125,
+            272411,
+            240109,
             21186,
-            231655,
-            228190,
-            237815,
-            19684,
+            240122,
+            240099,
+            240097,
+            240110,
             19325,
             21709,
-            249469,
+            272439,
+            272438,
             21188,
             23199
           ],
           "horde": [
-            19999,
+            240096,
             18404,
-            227808,
-            18509,
-            19682,
+            240125,
+            272411,
+            240109,
             21186,
-            231655,
-            228190,
-            237815,
-            19684,
+            240122,
+            240099,
+            240097,
+            240110,
             19325,
             21709,
+            272439,
+            272438,
             21188,
             23199
           ]
@@ -22647,9 +22678,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 13404,
-              "source_kind": "dungeon",
-              "source": "Stratholme: The Unforgiven"
+              "item_id": 240096,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -22657,39 +22688,39 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 231654,
+              "item_id": 240125,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 231653,
+              "item_id": 240128,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 19687,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 240137,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 231655,
+              "item_id": 240130,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 20043,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 240099,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 237819,
+              "item_id": 240134,
               "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
               "item_id": 231656,
@@ -22712,9 +22743,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 1713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
               "item_id": 19170,
@@ -22734,9 +22765,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 13404,
-              "source_kind": "dungeon",
-              "source": "Stratholme: The Unforgiven"
+              "item_id": 240096,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -22749,34 +22780,34 @@
               "source": "Lady Palanseer"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 231653,
+              "item_id": 240128,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 19687,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 240137,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 231655,
+              "item_id": 240130,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 20150,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 240099,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 231658,
+              "item_id": 237819,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
               "item_id": 231656,
@@ -22799,9 +22830,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 235476,
@@ -22822,35 +22853,37 @@
         },
         "new_at_band": {
           "alliance": [
-            13404,
+            240096,
             18404,
-            231654,
-            18509,
-            231653,
-            19687,
-            231655,
-            20043,
-            237819,
+            240125,
+            272414,
+            240128,
+            240137,
+            240130,
+            240099,
+            240134,
             231656,
             19325,
             21182,
+            744,
             19170,
             235477,
             23199
           ],
           "horde": [
-            13404,
+            240096,
             18404,
             231654,
-            21187,
-            231653,
-            19687,
-            231655,
-            20150,
-            231658,
+            272414,
+            240128,
+            240137,
+            240130,
+            240099,
+            237819,
             231656,
             19325,
             21182,
+            272439,
             235476,
             235477,
             23199
@@ -23647,9 +23680,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 22506,
-              "source_kind": "quest",
-              "source": "Plagueheart Circlet"
+              "item_id": 240141,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -23657,14 +23690,14 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 22507,
-              "source_kind": "quest",
-              "source": "Plagueheart Shoulderpads"
+              "item_id": 240143,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 22504,
@@ -23677,24 +23710,24 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 22077,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 240140,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 228190,
+              "item_id": 240144,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 19683,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240142,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240139,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 21417,
@@ -23707,14 +23740,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 235478,
@@ -23734,9 +23767,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 22506,
-              "source_kind": "quest",
-              "source": "Plagueheart Circlet"
+              "item_id": 240141,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -23744,14 +23777,14 @@
               "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 22507,
-              "source_kind": "quest",
-              "source": "Plagueheart Shoulderpads"
+              "item_id": 240143,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 22504,
@@ -23764,24 +23797,24 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 22077,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 240140,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 22510,
-              "source_kind": "quest",
-              "source": "Plagueheart Belt"
+              "item_id": 240144,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 19683,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240142,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240139,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 21417,
@@ -23794,14 +23827,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 235478,
@@ -23822,35 +23855,39 @@
         },
         "new_at_band": {
           "alliance": [
-            22506,
+            240141,
             18404,
-            22507,
-            21187,
+            240143,
+            272411,
             22504,
             21186,
-            22077,
-            228190,
-            19683,
-            19684,
+            240140,
+            240144,
+            240142,
+            240139,
             21417,
             21709,
+            272439,
+            272438,
             235478,
             19315,
             19108
           ],
           "horde": [
-            22506,
+            240141,
             18404,
-            22507,
-            21187,
+            240143,
+            272411,
             22504,
             21186,
-            22077,
-            22510,
-            19683,
-            19684,
+            240140,
+            240144,
+            240142,
+            240139,
             21417,
             21709,
+            272439,
+            272438,
             235478,
             19315,
             19108
@@ -24639,9 +24676,9 @@
               "source": "The Fall of Ossirian"
             },
             "shoulder": {
-              "item_id": 16689,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Ras Frostwhisper"
+              "item_id": 272103,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "back": {
               "item_id": 272063,
@@ -24659,9 +24696,9 @@
               "source": "Plagueheart Bindings"
             },
             "hands": {
-              "item_id": 22509,
-              "source_kind": "quest",
-              "source": "Plagueheart Gloves"
+              "item_id": 272097,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 228190,
@@ -24689,14 +24726,14 @@
               "source": "Anachronos"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 19102,
@@ -24721,9 +24758,9 @@
               "source": "The Fall of Ossirian"
             },
             "shoulder": {
-              "item_id": 16689,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Ras Frostwhisper"
+              "item_id": 272103,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "back": {
               "item_id": 272063,
@@ -24741,9 +24778,9 @@
               "source": "Plagueheart Bindings"
             },
             "hands": {
-              "item_id": 22509,
-              "source_kind": "quest",
-              "source": "Plagueheart Gloves"
+              "item_id": 272097,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 228190,
@@ -24771,14 +24808,14 @@
               "source": "Anachronos"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 13000,
@@ -24796,36 +24833,36 @@
           "alliance": [
             22506,
             21504,
-            16689,
+            272103,
             272063,
             22504,
             22511,
-            22509,
+            272097,
             228190,
             22505,
             22508,
             20682,
             234436,
-            20534,
-            11302,
+            272438,
+            272439,
             19102,
             249385
           ],
           "horde": [
             22506,
             21504,
-            16689,
+            272103,
             272063,
             22504,
             22511,
-            22509,
+            272097,
             228190,
             22505,
             22508,
             20682,
             234436,
-            20534,
-            11302,
+            272438,
+            272439,
             13000,
             249385
           ]
@@ -25616,9 +25653,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 22506,
-              "source_kind": "quest",
-              "source": "Plagueheart Circlet"
+              "item_id": 240141,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -25626,44 +25663,44 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 22507,
-              "source_kind": "quest",
-              "source": "Plagueheart Shoulderpads"
+              "item_id": 240143,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 22504,
-              "source_kind": "quest",
-              "source": "Plagueheart Robe"
+              "item_id": 240138,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240145,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240140,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 228190,
+              "item_id": 240144,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 237815,
+              "item_id": 240142,
               "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 22508,
-              "source_kind": "quest",
-              "source": "Plagueheart Sandals"
+              "item_id": 240139,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 21417,
@@ -25676,14 +25713,14 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 20069,
@@ -25698,9 +25735,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 22506,
-              "source_kind": "quest",
-              "source": "Plagueheart Circlet"
+              "item_id": 240141,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
               "item_id": 18404,
@@ -25708,14 +25745,14 @@
               "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 22507,
-              "source_kind": "quest",
-              "source": "Plagueheart Shoulderpads"
+              "item_id": 240143,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "back": {
-              "item_id": 21187,
-              "source_kind": "quest",
-              "source": "Volunteer's Battlegear"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
               "item_id": 22504,
@@ -25723,29 +25760,29 @@
               "source": "Plagueheart Robe"
             },
             "wrist": {
-              "item_id": 21186,
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear"
+              "item_id": 240145,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 240140,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "waist": {
-              "item_id": 228190,
+              "item_id": 240144,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Leonid Barthalomew the Revered"
             },
             "legs": {
-              "item_id": 237815,
+              "item_id": 240142,
               "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 22508,
-              "source_kind": "quest",
-              "source": "Plagueheart Sandals"
+              "item_id": 240139,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
               "item_id": 21417,
@@ -25758,14 +25795,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 20220,
@@ -25773,45 +25810,48 @@
               "source": "The Defilers"
             },
             "ranged": {
-              "item_id": 16997,
+              "item_id": 19108,
               "source_kind": "quest",
-              "source": "The Scarlet Oracle, Demetria"
+              "source": "The Legend of Korrak"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            22506,
+            240141,
             18404,
-            22507,
-            21187,
-            22504,
-            21186,
-            14146,
-            228190,
-            237815,
-            22508,
+            240143,
+            272411,
+            240138,
+            240145,
+            240140,
+            240144,
+            240142,
+            240139,
             21417,
             19325,
-            249469,
+            272439,
+            272438,
             20069,
             16997
           ],
           "horde": [
-            22506,
+            240141,
             18404,
-            22507,
-            21187,
+            240143,
+            272411,
             22504,
-            21186,
-            14146,
-            228190,
-            237815,
-            22508,
+            240145,
+            240140,
+            240144,
+            240142,
+            240139,
             21417,
             19325,
+            272439,
+            272438,
             20220,
-            16997
+            19108
           ]
         },
         "weights": {

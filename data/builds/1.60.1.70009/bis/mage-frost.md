@@ -38,7 +38,7 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-2535111300000000000)
 
-Set DPS (verified): 63.5. Weights run: 0.7s. Verify run: 0.7s. 409 eligible items had no known source.
+Set DPS (verified): 63.5. Weights run: 0.7s. Verify run: 0.6s. 409 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.313 ± 0.311), crit=1.967 ± 0.110, hit=3.120 ± 0.172, spell_haste=not significant (0.830 ± 0.313), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 409, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 000000000000000000-00000000000000000-2535111300000301051)
 
-Set DPS (verified): 94.4. Weights run: 0.7s. Verify run: 0.7s. 568 eligible items had no known source.
+Set DPS (verified): 94.4. Weights run: 0.6s. Verify run: 0.6s. 568 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.530 ± 0.476), crit=2.880 ± 0.172, hit=4.181 ± 0.341, spell_haste=not significant (1.576 ± 0.546), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -128,39 +128,39 @@ No-known-source sample (15 of 722, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 000000000000000000-23552300000000000-2535111300000301051)
 
-Set DPS (verified): 212.8. Weights run: 0.7s. Verify run: 0.7s. 1114 eligible items had no known source.
+Set DPS (verified): 239.9. Weights run: 0.7s. Verify run: 0.7s. 1084 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.124 ± 1.054), crit=8.680 ± 0.479, hit=12.852 ± 0.837, spell_haste=not significant (1.136 ± 1.257), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Frostfire Circlet (22498) | Frostfire Circlet [quest] | 409.4 | yes | Bloodvine Goggles (19999, -6.71 DPS, sim-verified) [crafted]; Enigma Circlet (21347, -15.41 DPS) [quest]; Field Marshal's Coronet (231604, -31.57 DPS) [vendor] |
-| neck | Jewel of Kajaro (19601) | The Jewel of Kajaro [quest] | sim-verified (197.6 DPS) | yes | Beads of Ogre Might (22150, +0.00 DPS) [quest]; Medallion of the Dawn (22659, +0.00 DPS) [quest]; Onyxia Tooth Pendant (18404, -2.53 DPS, sim-verified) [quest] |
-| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 150.4 | yes | Champion's Silk Mantle (23264, -1.56 DPS) [vendor]; Lieutenant Commander's Silk Mantle (23319, -1.56 DPS) [vendor]; Mantle of the Timbermaw (19050, -2.20 DPS, sim-verified) [crafted] |
-| back | Earthweave Cloak (21187) | Volunteer's Battlegear [quest] | 128.5 | yes | Chromatic Cloak (18509, -0.87 DPS, sim-verified) [crafted]; Drape of Vaulted Secrets (21415, -13.67 DPS) [quest]; Hide of the Wild (18510, -14.15 DPS) [crafted] |
-| chest | Frostfire Robe (22496) | Frostfire Robe [quest] | 300.4 | yes | Bloodvine Vest (19682, -7.33 DPS, sim-verified) [crafted]; Enigma Robes (21343, -17.11 DPS) [quest]; Robe of the Archmage (14152, -17.16 DPS) [crafted] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 155.5 | yes | Frostfire Bindings (22503, +0.00 DPS, sim-verified) [quest]; Dryad's Wrist Bindings (19595, -16.55 DPS) [rep]; Dryad's Wrist Bindings (19596, -16.83 DPS) [rep] |
-| hands | Gloves of Spell Mastery (14146) | Tailoring [crafted] | 253.3 | yes | Sorcerer's Gloves (22066, +0.00 DPS, sim-verified) [quest]; Sorcerer's Gauntlets (226930, -13.87 DPS) [vendor]; Dreadmist Wraps (16705, -15.44 DPS) [dungeon] |
-| waist | Frostfire Belt (22502) | Frostfire Belt [quest] | 159.1 | yes | Knowledge of the Timbermaw (228190, -1.37 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -1.95 DPS) [crafted]; Highlander's Cloth Girdle (20047, -2.86 DPS) [rep] |
-| legs | Frostfire Leggings (22497) | Frostfire Leggings [quest] | sim-verified (204.5 DPS) | yes | Bloodvine Leggings (19683, -1.43 DPS) [crafted]; Enigma Leggings (21346, -2.37 DPS) [quest]; Sentinel's Silk Leggings (237815, -5.43 DPS, sim-verified) [vendor] |
-| feet | Enigma Boots (21344) | Enigma Boots [quest] | 158.4 | yes | Frostfire Sandals (22500, -0.72 DPS, sim-verified) [quest]; General's Silk Boots (16539, -0.89 DPS) [vendor]; Marshal's Silk Footwraps (16437, -0.89 DPS) [vendor] |
-| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Stormpike Guard [rep] | 250.0 | yes | Band of Earthen Might (21182, -4.00 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234032, -11.54 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -11.81 DPS) [vendor] |
-| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | sim-verified (205.2 DPS) | yes | Signet Ring of the Bronze Dragonflight (234032, -1.08 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -1.34 DPS) [vendor]; Band of Earthen Might (21182, -6.08 DPS, sim-verified) [quest] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (195.3 DPS) | yes | Ankh of Life (1713, -1.47 DPS, sim-verified) [dungeon]; Thunderbrew's Boot Flask (744, -14.45 DPS) [quest]; Guardian Talisman (1490, -14.45 DPS) [quest] |
-| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (195.3 DPS) | yes | Thunderbrew's Boot Flask (744, -0.75 DPS) [quest]; Guardian Talisman (1490, -0.75 DPS) [quest]; Ankh of Life (1713, -0.94 DPS, sim-verified) [dungeon] |
-| main_hand | Ironbark Staff (20069) | The League of Arathor [rep] | sim-verified (195.3 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; The Lobotomizer (19324, -5.55 DPS, sim-verified) [rep] |
+| head | Frostfire Circlet (22498) | Frostfire Circlet [quest] | 409.4 | yes | Bloodvine Goggles (19999, -5.61 DPS, sim-verified) [crafted]; Enigma Circlet (21347, -15.41 DPS) [quest]; Fireleaf Circlet (240056, -28.17 DPS) [vendor] |
+| neck | Jewel of Kajaro (19601) | The Jewel of Kajaro [quest] | sim-verified (224.7 DPS) | yes | Beads of Ogre Might (22150, +0.00 DPS) [quest]; Medallion of the Dawn (22659, +0.00 DPS) [quest]; Onyxia Tooth Pendant (18404, -3.12 DPS, sim-verified) [quest] |
+| shoulder | Fireleaf Shoulderpads (240054) | Leonid Barthalomew the Revered [vendor] | 164.4 | yes | Rugged Mantle of the Timbermaw (227808, -2.70 DPS, sim-verified) [vendor]; Mantle of the Timbermaw (19050, -3.03 DPS) [crafted]; Champion's Silk Mantle (23264, -3.31 DPS) [vendor] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 145.5 | yes | Howler's Furs (272414, -2.12 DPS) [vendor]; Stalwart Cloak (272415, -2.12 DPS) [vendor]; Earthweave Cloak (21187, -4.84 DPS, sim-verified) [quest] |
+| chest | Fireleaf Robe (240059) | Leonid Barthalomew the Revered [vendor] | 308.4 | yes | Frostfire Robe (22496, +0.00 DPS, sim-verified) [quest]; Bloodvine Vest (19682, -2.84 DPS) [crafted]; Fireleaf Garb (240051, -14.91 DPS) [vendor] |
+| wrist | Fireleaf Bindings (240052) | Leonid Barthalomew the Revered [vendor] | 158.5 | yes | Fireleaf Wristwraps (240044, -0.94 DPS) [vendor]; Rockfury Bracers (21186, -5.89 DPS, sim-verified) [quest]; Frostfire Bindings (22503, -16.19 DPS) [quest] |
+| hands | Fireleaf Gloves (240057) | Leonid Barthalomew the Revered [vendor] | 286.8 | yes | Gloves of Spell Mastery (14146, -7.67 DPS, sim-verified) [crafted]; Fireleaf Mitts (240049, -14.54 DPS) [vendor]; Sorcerer's Gloves (22066, -18.05 DPS) [quest] |
+| waist | Fireleaf Belt (240053) | Leonid Barthalomew the Revered [vendor] | 176.1 | yes | Fireleaf Waistguard (240045, -1.14 DPS, sim-verified) [vendor]; Frostfire Belt (22502, -2.12 DPS) [quest]; Knowledge of the Timbermaw (228190, -2.48 DPS) [vendor] |
+| legs | Fireleaf Leggings (240055) | Leonid Barthalomew the Revered [vendor] | sim-verified (231.8 DPS) | yes | Frostfire Leggings (22497, -0.77 DPS) [quest]; Bloodvine Leggings (19683, -2.20 DPS) [crafted]; Sentinel's Silk Leggings (237815, -6.16 DPS, sim-verified) [vendor] |
+| feet | Fireleaf Boots (240050) (or Fireleaf Sandals (240058)) | Leonid Barthalomew the Revered [vendor] | 166.2 | yes | Fireleaf Sandals (240058, +0.00 DPS, sim-verified) [vendor]; Enigma Boots (21344, -0.98 DPS) [quest]; Frostfire Sandals (22500, -1.81 DPS) [quest] |
+| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Stormpike Guard [rep] | 250.0 | yes | Band of Earthen Might (21182, -4.68 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234032, -11.54 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -11.81 DPS) [vendor] |
+| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | sim-verified (231.8 DPS) | yes | Signet Ring of the Bronze Dragonflight (234032, -1.08 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -1.34 DPS) [vendor]; Band of Earthen Might (21182, -6.18 DPS, sim-verified) [quest] |
+| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (222.1 DPS) | yes | Uther's Strength (11302, -1.00 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -1.75 DPS) [quest]; Frozen Heart of the Mountain (249469, -3.23 DPS, sim-verified) [crafted] |
+| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (222.1 DPS) | yes | Uther's Strength (11302, -2.00 DPS) [world_drop]; Frozen Heart of the Mountain (249469, -2.07 DPS, sim-verified) [crafted]; Thunderbrew's Boot Flask (744, -2.75 DPS) [quest] |
+| main_hand | Ironbark Staff (20069) | The League of Arathor [rep] | sim-verified (222.1 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; The Lobotomizer (19324, -6.41 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Wand of Biting Cold (19108) | Korrak the Bloodrager [quest] | 512.4 | yes | Stormrager (16997, -1.06 DPS, sim-verified) [quest]; Brilliant Wand (249385, -3.19 DPS) [crafted]; Torch of Austen (13004, -7.21 DPS) [world_drop] |
+| ranged | Wand of Biting Cold (19108) | Korrak the Bloodrager [quest] | 512.4 | yes | Stormrager (16997, -0.24 DPS, sim-verified) [quest]; Brilliant Wand (249385, -3.19 DPS) [crafted]; Torch of Austen (13004, -7.21 DPS) [world_drop] |
 
-**New at 60:** head: Frostfire Circlet; neck: Jewel of Kajaro; shoulder: Rugged Mantle of the Timbermaw; back: Earthweave Cloak; chest: Frostfire Robe; wrist: Rockfury Bracers; hands: Gloves of Spell Mastery; waist: Frostfire Belt; legs: Frostfire Leggings; feet: Enigma Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; main_hand: Ironbark Staff; ranged: Wand of Biting Cold
+**New at 60:** head: Frostfire Circlet; neck: Jewel of Kajaro; shoulder: Fireleaf Shoulderpads; back: Arcanoweave Cloak; chest: Fireleaf Robe; wrist: Fireleaf Bindings; hands: Fireleaf Gloves; waist: Fireleaf Belt; legs: Fireleaf Leggings; feet: Fireleaf Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket1: Serenity Field; trinket2: Weakness Analyzer; main_hand: Ironbark Staff; ranged: Wand of Biting Cold
 
-No-known-source sample (15 of 1114, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1084, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ## Horde
 
 ### Band 20 (troll, 000000000000000000-00000000000000000-2531000000000000000)
 
-Set DPS (verified): 33.9. Weights run: 0.6s. Verify run: 0.7s. 202 eligible items had no known source.
+Set DPS (verified): 33.9. Weights run: 0.6s. Verify run: 0.6s. 202 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=0.741 ± 0.174, crit=0.951 ± 0.045, hit=2.241 ± 0.102, spell_haste=not significant (-0.108 ± 0.181), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 410, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 000000000000000000-00000000000000000-2535111300000301051)
 
-Set DPS (verified): 85.6. Weights run: 0.7s. Verify run: 0.7s. 569 eligible items had no known source.
+Set DPS (verified): 85.6. Weights run: 0.6s. Verify run: 0.7s. 569 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.530 ± 0.476), crit=2.880 ± 0.172, hit=4.181 ± 0.341, spell_haste=not significant (1.576 ± 0.546), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -280,31 +280,31 @@ No-known-source sample (15 of 723, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 000000000000000000-23552300000000000-2535111300000301051)
 
-Set DPS (verified): 191.4. Weights run: 0.7s. Verify run: 0.7s. 1117 eligible items had no known source.
+Set DPS (verified): 213.3. Weights run: 0.7s. Verify run: 0.7s. 1087 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.124 ± 1.054), crit=8.680 ± 0.479, hit=12.852 ± 0.837, spell_haste=not significant (1.136 ± 1.257), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Frostfire Circlet (22498) | Frostfire Circlet [quest] | 409.4 | yes | Bloodvine Goggles (19999, -12.25 DPS, sim-verified) [crafted]; Enigma Circlet (21347, -15.41 DPS) [quest]; Warlord's Silk Cowl (16533, -31.57 DPS) [vendor] |
-| neck | Jewel of Kajaro (19601) | The Jewel of Kajaro [quest] | sim-verified (178.5 DPS) | yes | Beads of Ogre Might (22150, +0.00 DPS) [quest]; Medallion of the Dawn (22659, +0.00 DPS) [quest]; Onyxia Tooth Pendant (18404, -2.12 DPS, sim-verified) [quest] |
-| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 150.4 | yes | Champion's Silk Mantle (23264, -1.56 DPS) [vendor]; Lieutenant Commander's Silk Mantle (23319, -1.56 DPS) [vendor]; Mantle of the Timbermaw (19050, -1.91 DPS, sim-verified) [crafted] |
-| back | Earthweave Cloak (21187) | Volunteer's Battlegear [quest] | 128.5 | yes | Chromatic Cloak (18509, -0.33 DPS, sim-verified) [crafted]; Drape of Vaulted Secrets (21415, -13.67 DPS) [quest]; Hide of the Wild (18510, -14.15 DPS) [crafted] |
-| chest | Frostfire Robe (22496) | Frostfire Robe [quest] | 300.4 | yes | Bloodvine Vest (19682, -6.27 DPS, sim-verified) [crafted]; Enigma Robes (21343, -17.11 DPS) [quest]; Robe of the Archmage (14152, -17.16 DPS) [crafted] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 155.5 | yes | Frostfire Bindings (22503, +0.00 DPS, sim-verified) [quest]; Dryad's Wrist Bindings (19595, -16.55 DPS) [rep]; Dryad's Wrist Bindings (19596, -16.83 DPS) [rep] |
-| hands | Gloves of Spell Mastery (14146) | Tailoring [crafted] | 253.3 | yes | Sorcerer's Gloves (22066, +0.00 DPS, sim-verified) [quest]; Sorcerer's Gauntlets (226930, -13.87 DPS) [vendor]; Dreadmist Wraps (16705, -15.44 DPS) [dungeon] |
-| waist | Frostfire Belt (22502) | Frostfire Belt [quest] | 159.1 | yes | Knowledge of the Timbermaw (228190, -0.82 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -1.95 DPS) [crafted]; Defiler's Cloth Girdle (20163, -2.86 DPS) [rep] |
-| legs | Frostfire Leggings (22497) | Frostfire Leggings [quest] | sim-verified (185.2 DPS) | yes | Bloodvine Leggings (19683, -1.43 DPS) [crafted]; Enigma Leggings (21346, -2.37 DPS) [quest]; Sentinel's Silk Leggings (237815, -5.89 DPS, sim-verified) [vendor] |
-| feet | Enigma Boots (21344) | Enigma Boots [quest] | 158.4 | yes | Frostfire Sandals (22500, -0.58 DPS, sim-verified) [quest]; Marshal's Silk Footwraps (16437, -0.89 DPS) [vendor]; General's Silk Boots (16539, -0.89 DPS) [vendor] |
-| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Frostwolf Clan [rep] | 250.0 | yes | Band of Earthen Might (21182, -2.98 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234032, -11.54 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -11.81 DPS) [vendor] |
-| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | sim-verified (185.6 DPS) | yes | Signet Ring of the Bronze Dragonflight (234032, -1.08 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -1.34 DPS) [vendor]; Band of Earthen Might (21182, -6.29 DPS, sim-verified) [quest] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (176.3 DPS) | yes | Uther's Strength (11302, -0.47 DPS, sim-verified) [world_drop]; Guardian Talisman (1490, -14.45 DPS) [quest]; Ankh of Life (1713, -14.45 DPS) [dungeon] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (176.3 DPS) | yes | Uther's Strength (11302, -0.12 DPS, sim-verified) [world_drop]; Guardian Talisman (1490, -11.24 DPS) [quest]; Ankh of Life (1713, -11.24 DPS) [dungeon] |
-| main_hand | Ironbark Staff (20220) | The Defilers [rep] | sim-verified (176.3 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; The Lobotomizer (19324, -4.84 DPS, sim-verified) [rep] |
+| head | Frostfire Circlet (22498) | Frostfire Circlet [quest] | 409.4 | yes | Bloodvine Goggles (19999, -5.04 DPS, sim-verified) [crafted]; Enigma Circlet (21347, -15.41 DPS) [quest]; Fireleaf Circlet (240056, -28.17 DPS) [vendor] |
+| neck | Jewel of Kajaro (19601) | The Jewel of Kajaro [quest] | sim-verified (199.9 DPS) | yes | Beads of Ogre Might (22150, +0.00 DPS) [quest]; Medallion of the Dawn (22659, +0.00 DPS) [quest]; Onyxia Tooth Pendant (18404, -1.56 DPS, sim-verified) [quest] |
+| shoulder | Fireleaf Shoulderpads (240054) | Leonid Barthalomew the Revered [vendor] | 164.4 | yes | Rugged Mantle of the Timbermaw (227808, -2.34 DPS, sim-verified) [vendor]; Mantle of the Timbermaw (19050, -3.03 DPS) [crafted]; Champion's Silk Mantle (23264, -3.31 DPS) [vendor] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 145.5 | yes | Howler's Furs (272414, -2.12 DPS) [vendor]; Stalwart Cloak (272415, -2.12 DPS) [vendor]; Earthweave Cloak (21187, -3.84 DPS, sim-verified) [quest] |
+| chest | Fireleaf Robe (240059) | Leonid Barthalomew the Revered [vendor] | 308.4 | yes | Frostfire Robe (22496, -0.31 DPS, sim-verified) [quest]; Bloodvine Vest (19682, -2.84 DPS) [crafted]; Fireleaf Garb (240051, -14.91 DPS) [vendor] |
+| wrist | Fireleaf Bindings (240052) | Leonid Barthalomew the Revered [vendor] | 158.5 | yes | Fireleaf Wristwraps (240044, -0.94 DPS) [vendor]; Rockfury Bracers (21186, -4.96 DPS, sim-verified) [quest]; Frostfire Bindings (22503, -16.19 DPS) [quest] |
+| hands | Fireleaf Gloves (240057) | Leonid Barthalomew the Revered [vendor] | 286.8 | yes | Gloves of Spell Mastery (14146, -5.61 DPS, sim-verified) [crafted]; Fireleaf Mitts (240049, -14.54 DPS) [vendor]; Sorcerer's Gloves (22066, -18.05 DPS) [quest] |
+| waist | Fireleaf Belt (240053) | Leonid Barthalomew the Revered [vendor] | 176.1 | yes | Fireleaf Waistguard (240045, -0.95 DPS, sim-verified) [vendor]; Frostfire Belt (22502, -2.12 DPS) [quest]; Knowledge of the Timbermaw (228190, -2.48 DPS) [vendor] |
+| legs | Fireleaf Leggings (240055) | Leonid Barthalomew the Revered [vendor] | sim-verified (205.7 DPS) | yes | Frostfire Leggings (22497, -0.77 DPS) [quest]; Bloodvine Leggings (19683, -2.20 DPS) [crafted]; Sentinel's Silk Leggings (237815, -5.60 DPS, sim-verified) [vendor] |
+| feet | Fireleaf Boots (240050) (or Fireleaf Sandals (240058)) | Leonid Barthalomew the Revered [vendor] | 166.2 | yes | Fireleaf Sandals (240058, +0.00 DPS, sim-verified) [vendor]; Enigma Boots (21344, -0.98 DPS) [quest]; Frostfire Sandals (22500, -1.81 DPS) [quest] |
+| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Frostwolf Clan [rep] | 250.0 | yes | Band of Earthen Might (21182, -3.95 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234032, -11.54 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -11.81 DPS) [vendor] |
+| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | sim-verified (207.0 DPS) | yes | Signet Ring of the Bronze Dragonflight (234032, -1.08 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -1.34 DPS) [vendor]; Band of Earthen Might (21182, -6.92 DPS, sim-verified) [quest] |
+| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (195.1 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -1.00 DPS) [world_drop] |
+| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (196.8 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, -1.39 DPS, sim-verified) [crafted]; Uther's Strength (11302, -2.00 DPS) [world_drop] |
+| main_hand | Ironbark Staff (20220) | The Defilers [rep] | sim-verified (196.8 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; The Lobotomizer (19324, -5.17 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Wand of Biting Cold (19108) | The Legend of Korrak [quest] | 512.4 | yes | Stormrager (16997, -0.14 DPS, sim-verified) [quest]; Brilliant Wand (249385, -3.19 DPS) [crafted]; Torch of Austen (13004, -7.21 DPS) [world_drop] |
+| ranged | Stormrager (16997) | The Scarlet Oracle, Demetria [quest] | sim-verified (202.2 DPS) | yes | Brilliant Wand (249385, -1.95 DPS) [crafted]; Wand of Biting Cold (19108, -2.07 DPS, sim-verified) [quest]; Torch of Austen (13004, -5.98 DPS) [world_drop] |
 
-**New at 60:** head: Frostfire Circlet; neck: Jewel of Kajaro; shoulder: Rugged Mantle of the Timbermaw; back: Earthweave Cloak; chest: Frostfire Robe; wrist: Rockfury Bracers; hands: Gloves of Spell Mastery; waist: Frostfire Belt; legs: Frostfire Leggings; feet: Enigma Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; main_hand: Ironbark Staff; ranged: Wand of Biting Cold
+**New at 60:** head: Frostfire Circlet; neck: Jewel of Kajaro; shoulder: Fireleaf Shoulderpads; back: Arcanoweave Cloak; chest: Fireleaf Robe; wrist: Fireleaf Bindings; hands: Fireleaf Gloves; waist: Fireleaf Belt; legs: Fireleaf Leggings; feet: Fireleaf Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket1: Serenity Field; trinket2: Weakness Analyzer; main_hand: Ironbark Staff; ranged: Stormrager
 
-No-known-source sample (15 of 1117, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat
+No-known-source sample (15 of 1087, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat
 

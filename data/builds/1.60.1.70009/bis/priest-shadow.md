@@ -38,7 +38,7 @@ No-known-source sample (15 of 202, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-443110501200000000)
 
-Set DPS (verified): 52.2. Weights run: 0.7s. Verify run: 0.7s. 405 eligible items had no known source.
+Set DPS (verified): 52.2. Weights run: 0.8s. Verify run: 0.7s. 405 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.550 ± 0.331, crit=0.803 ± 0.052, hit=3.822 ± 0.217, spell_haste=not significant (-0.760 ± 0.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -128,33 +128,33 @@ No-known-source sample (15 of 722, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 211.0. Weights run: 0.8s. Verify run: 0.8s. 1160 eligible items had no known source.
+Set DPS (verified): 244.6. Weights run: 0.7s. Verify run: 0.8s. 1133 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=12.470 ± 0.766, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Tiara of the Oracle (21348) | Tiara of the Oracle [quest] | sim-verified (211.0 DPS) | yes | Bloodvine Goggles (19999, -6.27 DPS, sim-verified) [crafted]; Virtuous Cowl (226957, -10.26 DPS) [vendor]; Virtuous Crown (22080, -12.06 DPS) [quest] |
-| neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | sim-verified (205.1 DPS) | yes | Blazefury Medallion (17111, -0.53 DPS, sim-verified) [world]; Beads of Ogre Might (22150, -4.64 DPS) [quest]; Medallion of the Dawn (22659, -14.33 DPS) [quest] |
-| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | 152.4 | yes | Rugged Mantle of the Timbermaw (227808, -2.32 DPS, sim-verified) [vendor]; Mantle of the Timbermaw (19050, -9.84 DPS) [crafted]; Shroud of the Nathrezim (18720, -10.74 DPS) [dungeon] |
-| back | Earthweave Cloak (21187) | Volunteer's Battlegear [quest] | 124.7 | yes | Chromatic Cloak (18509, -0.01 DPS, sim-verified) [crafted]; Hide of the Wild (18510, -11.89 DPS) [crafted]; Spritecaster Cape (11623, -12.22 DPS) [dungeon] |
-| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 285.8 | yes | Vestments of the Oracle (21351, +0.00 DPS, sim-verified) [quest]; Garb of Revelation (239565, -22.16 DPS) [vendor]; Earthpower Vest (21183, -23.51 DPS) [quest] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 151.7 | yes | Dryad's Wrist Bindings (19595, -1.68 DPS, sim-verified) [rep]; Dryad's Wrist Bindings (19596, -14.64 DPS) [rep]; Dryad's Wrist Bindings (19597, -15.10 DPS) [rep] |
-| hands | Dreadmist Wraps (16705) | Scholomance: Lorekeeper Polkelt [dungeon] | 131.2 | yes | Gloves of Spell Mastery (14146, -5.54 DPS, sim-verified) [crafted]; Hands of Revelation (239574, -8.61 DPS) [vendor]; Marshal's Satin Gloves (17608, -11.35 DPS) [vendor] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 165.6 | yes | Belt of the Archmage (18405, -6.68 DPS, sim-verified) [crafted]; Highlander's Cloth Girdle (20047, -12.29 DPS) [rep]; Highlander's Cloth Girdle (20097, -12.95 DPS) [rep] |
-| legs | Bloodvine Leggings (19683) | Tailoring [crafted] | 166.0 | yes | Magister's Leggings (16687, -4.30 DPS, sim-verified) [dungeon]; Sentinel's Silk Leggings (237815, -5.30 DPS) [vendor]; Knight's Dreadweave Leggings (220888, -12.07 DPS) [vendor] |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 155.3 | yes | First Sergeant's Dreadweave Boots (220909, -1.85 DPS) [vendor]; Argent Elite Boots (227816, -3.51 DPS) [vendor]; Sergeant Major's Dreadweave Boots (220891, -7.93 DPS, sim-verified) [vendor] |
+| head | Tiara of the Oracle (21348) | Tiara of the Oracle [quest] | sim-verified (220.2 DPS) | yes | Circlet of Revelation (239585, -4.52 DPS) [vendor]; Crown of Revelation (239575, -8.44 DPS) [vendor]; Bloodvine Goggles (19999, -10.10 DPS, sim-verified) [crafted] |
+| neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | sim-verified (210.0 DPS) | yes | Blazefury Medallion (17111, -0.54 DPS, sim-verified) [world]; Beads of Ogre Might (22150, -4.64 DPS) [quest]; Medallion of the Dawn (22659, -14.33 DPS) [quest] |
+| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | sim-verified (212.3 DPS) | yes | Shoulderpads of Revelation (239586, -0.08 DPS) [vendor]; Mantle of the Timbermaw (19050, -1.32 DPS) [crafted]; Virtuous Epaulets (226955, -2.14 DPS, sim-verified) [vendor] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 146.5 | yes | Howler's Furs (272414, -2.50 DPS) [vendor]; Stalwart Cloak (272415, -2.50 DPS) [vendor]; Earthweave Cloak (21187, -4.78 DPS, sim-verified) [quest] |
+| chest | Vestments of the Oracle (21351) | Vestments of the Oracle [quest] | sim-verified (217.0 DPS) | yes | Garb of Revelation (239565, -0.25 DPS) [vendor]; Earthpower Vest (21183, -1.60 DPS) [quest]; Bloodvine Vest (19682, -6.84 DPS, sim-verified) [crafted] |
+| wrist | Bindings of Revelation (239588) | Leonid Barthalomew the Revered [vendor] | sim-verified (214.0 DPS) | yes | Wrists of Revelation (239583, -2.02 DPS) [vendor]; Rockfury Bracers (21186, -3.84 DPS, sim-verified) [quest]; Dryad's Wrist Bindings (19595, -4.87 DPS) [rep] |
+| hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | sim-verified (214.9 DPS) | yes | Gloves of Spell Mastery (14146, -2.25 DPS) [crafted]; Dreadmist Wraps (16705, -4.76 DPS, sim-verified) [dungeon]; Hands of Revelation (239574, -6.93 DPS) [vendor] |
+| waist | Belt of Revelation (239590) | Leonid Barthalomew the Revered [vendor] | sim-verified (212.4 DPS) | yes | Belt of the Archmage (18405, -0.66 DPS) [crafted]; Highlander's Cloth Girdle (20047, -2.18 DPS) [rep]; Knowledge of the Timbermaw (228190, -2.29 DPS, sim-verified) [vendor] |
+| legs | Leggings of Revelation (239587) | Leonid Barthalomew the Revered [vendor] | sim-verified (216.6 DPS) | yes | Magister's Leggings (16687, -0.12 DPS) [dungeon]; Sentinel's Silk Leggings (237815, -1.29 DPS) [vendor]; Bloodvine Leggings (19683, -6.45 DPS, sim-verified) [crafted] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 155.3 | yes | First Sergeant's Dreadweave Boots (220909, -1.85 DPS) [vendor]; Argent Elite Boots (227816, -3.51 DPS) [vendor]; Sergeant Major's Dreadweave Boots (220891, -3.67 DPS, sim-verified) [vendor] |
 | finger1 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 166.0 | yes | Band of Earthen Might (21182, -0.11 DPS) [quest]; Signet Ring of the Bronze Dragonflight (234032, -0.78 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -1.10 DPS) [vendor] |
 | finger2 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Stormpike Guard [rep] | 165.1 | yes | Band of Earthen Might (21182, +0.00 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234032, -0.67 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -0.98 DPS) [vendor] |
-| trinket1 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-verified (205.1 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Ankh of Life (1713, -3.86 DPS, sim-verified) [dungeon] |
-| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (205.1 DPS) | yes | Guardian Talisman (1490, -0.69 DPS) [quest]; Ankh of Life (1713, -0.69 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -0.74 DPS, sim-verified) [crafted] |
-| main_hand | High Warlord's Battle Mace (234551) | Sergeant Thunderhorn [vendor] | sim-verified (205.1 DPS) | yes | Ebon Hand (19170, +0.00 DPS, sim-verified) [crafted]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
-| off_hand | Master Dragonslayer's Orb (19366) | The Lord of Blackrock [quest] | 38.1 | yes | High Warlord's Tome of Destruction (234563, -0.43 DPS) [vendor]; Grand Marshal's Tome of Power (234589, -0.43 DPS) [vendor]; Therazane's Touch (19315, -7.08 DPS, sim-verified) [rep] |
-| ranged | Wand of Biting Cold (19108) | Korrak the Bloodrager [quest] | 556.9 | yes | Brilliant Wand (249385, -2.80 DPS) [crafted]; Stormrager (16997, -3.93 DPS, sim-verified) [quest]; Torch of Austen (13004, -7.21 DPS) [world_drop] |
+| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (210.0 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.92 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -2.52 DPS, sim-verified) [quest] |
+| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (210.0 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Thunderbrew's Boot Flask (744, -1.58 DPS, sim-verified) [quest]; Uther's Strength (11302, -1.84 DPS) [world_drop] |
+| main_hand | High Warlord's Battle Mace (234551) | Sergeant Thunderhorn [vendor] | sim-verified (210.0 DPS) | yes | Ebon Hand (19170, +0.00 DPS, sim-verified) [crafted]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
+| off_hand | Master Dragonslayer's Orb (19366) | The Lord of Blackrock [quest] | 38.1 | yes | High Warlord's Tome of Destruction (234563, -0.43 DPS) [vendor]; Grand Marshal's Tome of Power (234589, -0.43 DPS) [vendor]; Therazane's Touch (19315, -3.21 DPS, sim-verified) [rep] |
+| ranged | Stormrager (16997) | Order Must Be Restored [quest] | sim-verified (212.7 DPS) | yes | Brilliant Wand (249385, -1.91 DPS) [crafted]; Wand of Biting Cold (19108, -2.60 DPS, sim-verified) [quest]; Torch of Austen (13004, -6.32 DPS) [world_drop] |
 
-**New at 60:** head: Tiara of the Oracle; neck: Onyxia Tooth Pendant; shoulder: Virtuous Epaulets; back: Earthweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Dreadmist Wraps; waist: Knowledge of the Timbermaw; legs: Bloodvine Leggings; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; trinket1: Thunderbrew's Boot Flask; main_hand: High Warlord's Battle Mace; off_hand: Master Dragonslayer's Orb; ranged: Wand of Biting Cold
+**New at 60:** head: Tiara of the Oracle; neck: Onyxia Tooth Pendant; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Vestments of the Oracle; wrist: Bindings of Revelation; hands: Gloves of Revelation; waist: Belt of Revelation; legs: Leggings of Revelation; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; trinket1: Serenity Field; trinket2: Weakness Analyzer; main_hand: High Warlord's Battle Mace; off_hand: Master Dragonslayer's Orb; ranged: Stormrager
 
-No-known-source sample (15 of 1160, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
+No-known-source sample (15 of 1133, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
 
 ## Horde
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 000000000000000000-00000000000000000-443110501200000000)
 
-Set DPS (verified): 47.0. Weights run: 0.7s. Verify run: 0.7s. 408 eligible items had no known source.
+Set DPS (verified): 47.0. Weights run: 0.8s. Verify run: 0.7s. 408 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.550 ± 0.331, crit=0.803 ± 0.052, hit=3.822 ± 0.217, spell_haste=not significant (-0.760 ± 0.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -280,31 +280,31 @@ No-known-source sample (15 of 725, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 204.3. Weights run: 0.8s. Verify run: 0.8s. 1165 eligible items had no known source.
+Set DPS (verified): 230.3. Weights run: 0.7s. Verify run: 0.8s. 1138 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=12.470 ± 0.766, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Tiara of the Oracle (21348) | Tiara of the Oracle [quest] | sim-verified (195.0 DPS) | yes | Bloodvine Goggles (19999, -9.82 DPS, sim-verified) [crafted]; Virtuous Cowl (226957, -10.26 DPS) [vendor]; Virtuous Crown (22080, -12.06 DPS) [quest] |
-| neck | Onyxia Tooth Pendant (18404) | For All To See [quest] | sim-verified (185.0 DPS) | yes | Blazefury Medallion (17111, -0.43 DPS, sim-verified) [world]; Beads of Ogre Might (22150, -4.64 DPS) [quest]; Medallion of the Dawn (22659, -14.33 DPS) [quest] |
-| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | 152.4 | yes | Rugged Mantle of the Timbermaw (227808, +0.00 DPS, sim-verified) [vendor]; Mantle of the Timbermaw (19050, -9.84 DPS) [crafted]; Shroud of the Nathrezim (18720, -10.74 DPS) [dungeon] |
-| back | Earthweave Cloak (21187) | Volunteer's Battlegear [quest] | 124.7 | yes | Chromatic Cloak (18509, -0.01 DPS, sim-verified) [crafted]; Hide of the Wild (18510, -11.89 DPS) [crafted]; Deep Woodlands Cloak (19121, -12.20 DPS) [quest] |
-| chest | Vestments of the Oracle (21351) | Vestments of the Oracle [quest] | sim-verified (191.3 DPS) | yes | Garb of Revelation (239565, -0.25 DPS) [vendor]; Earthpower Vest (21183, -1.60 DPS) [quest]; Bloodvine Vest (19682, -6.04 DPS, sim-verified) [crafted] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 151.7 | yes | Dryad's Wrist Bindings (19595, +0.00 DPS, sim-verified) [rep]; Dryad's Wrist Bindings (19596, -14.64 DPS) [rep]; Dryad's Wrist Bindings (19597, -15.10 DPS) [rep] |
-| hands | Dreadmist Wraps (16705) | Scholomance: Lorekeeper Polkelt [dungeon] | 131.2 | yes | Gloves of Spell Mastery (14146, -0.82 DPS, sim-verified) [crafted]; Hands of Revelation (239574, -8.61 DPS) [vendor]; Marshal's Satin Gloves (17608, -11.35 DPS) [vendor] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 165.6 | yes | Belt of the Archmage (18405, -1.98 DPS, sim-verified) [crafted]; Defiler's Cloth Girdle (20163, -12.29 DPS) [rep]; Defiler's Cloth Girdle (20165, -12.95 DPS) [rep] |
-| legs | Bloodvine Leggings (19683) | Tailoring [crafted] | 166.0 | yes | Magister's Leggings (16687, +0.00 DPS, sim-verified) [dungeon]; Sentinel's Silk Leggings (237815, -5.30 DPS) [vendor]; Knight's Dreadweave Leggings (220888, -12.07 DPS) [vendor] |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 155.3 | yes | First Sergeant's Dreadweave Boots (220909, -1.85 DPS) [vendor]; Sergeant Major's Dreadweave Boots (220891, -3.04 DPS, sim-verified) [vendor]; Argent Elite Boots (227816, -3.51 DPS) [vendor] |
+| head | Tiara of the Oracle (21348) | Tiara of the Oracle [quest] | sim-verified (202.9 DPS) | yes | Circlet of Revelation (239585, -4.52 DPS) [vendor]; Crown of Revelation (239575, -8.44 DPS) [vendor]; Bloodvine Goggles (19999, -11.53 DPS, sim-verified) [crafted] |
+| neck | Onyxia Tooth Pendant (18404) | For All To See [quest] | sim-verified (191.1 DPS) | yes | Blazefury Medallion (17111, -0.57 DPS, sim-verified) [world]; Beads of Ogre Might (22150, -4.64 DPS) [quest]; Medallion of the Dawn (22659, -14.33 DPS) [quest] |
+| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | 152.4 | yes | Rugged Mantle of the Timbermaw (227808, +0.00 DPS, sim-verified) [vendor]; Shoulderpads of Revelation (239586, -8.61 DPS) [vendor]; Mantle of the Timbermaw (19050, -9.84 DPS) [crafted] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 146.5 | yes | Earthweave Cloak (21187, -2.38 DPS, sim-verified) [quest]; Howler's Furs (272414, -2.50 DPS) [vendor]; Stalwart Cloak (272415, -2.50 DPS) [vendor] |
+| chest | Vestments of the Oracle (21351) | Vestments of the Oracle [quest] | sim-verified (198.9 DPS) | yes | Garb of Revelation (239565, -0.25 DPS) [vendor]; Earthpower Vest (21183, -1.60 DPS) [quest]; Bloodvine Vest (19682, -7.49 DPS, sim-verified) [crafted] |
+| wrist | Bindings of Revelation (239588) | Leonid Barthalomew the Revered [vendor] | sim-verified (196.7 DPS) | yes | Wrists of Revelation (239583, -2.02 DPS) [vendor]; Dryad's Wrist Bindings (19595, -4.87 DPS) [rep]; Rockfury Bracers (21186, -5.34 DPS, sim-verified) [quest] |
+| hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | sim-verified (196.6 DPS) | yes | Gloves of Spell Mastery (14146, -2.25 DPS) [crafted]; Dreadmist Wraps (16705, -5.16 DPS, sim-verified) [dungeon]; Hands of Revelation (239574, -6.93 DPS) [vendor] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 165.6 | yes | Belt of Revelation (239590, +0.00 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -10.77 DPS) [crafted]; Defiler's Cloth Girdle (20163, -12.29 DPS) [rep] |
+| legs | Leggings of Revelation (239587) | Leonid Barthalomew the Revered [vendor] | sim-verified (199.3 DPS) | yes | Magister's Leggings (16687, -0.12 DPS) [dungeon]; Sentinel's Silk Leggings (237815, -1.29 DPS) [vendor]; Bloodvine Leggings (19683, -7.85 DPS, sim-verified) [crafted] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 155.3 | yes | Sergeant Major's Dreadweave Boots (220891, -1.40 DPS, sim-verified) [vendor]; First Sergeant's Dreadweave Boots (220909, -1.85 DPS) [vendor]; Argent Elite Boots (227816, -3.51 DPS) [vendor] |
 | finger1 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 166.0 | yes | Band of Earthen Might (21182, -0.11 DPS) [quest]; Signet Ring of the Bronze Dragonflight (234032, -0.78 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -1.10 DPS) [vendor] |
 | finger2 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Frostwolf Clan [rep] | 165.1 | yes | Band of Earthen Might (21182, +0.00 DPS, sim-verified) [quest]; Signet Ring of the Bronze Dragonflight (234032, -0.67 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234028, -0.98 DPS) [vendor] |
-| trinket1 | Ankh of Life (1713) | Maraudon: Theradrim Shardling [dungeon] | sim-verified (184.5 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (185.0 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, -0.46 DPS, sim-verified) [crafted]; Guardian Talisman (1490, -0.69 DPS) [quest] |
-| main_hand | High Warlord's Battle Mace (234551) | Sergeant Thunderhorn [vendor] | sim-verified (185.0 DPS) | yes | Ebon Hand (19170, +0.00 DPS, sim-verified) [crafted]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
-| off_hand | Master Dragonslayer's Orb (19366) | The Lord of Blackrock [quest] | 38.1 | yes | High Warlord's Tome of Destruction (234563, -0.43 DPS) [vendor]; Grand Marshal's Tome of Power (234589, -0.43 DPS) [vendor]; Therazane's Touch (19315, -2.82 DPS, sim-verified) [rep] |
-| ranged | Wand of Biting Cold (19108) | The Legend of Korrak [quest] | 556.9 | yes | Stormrager (16997, -1.87 DPS, sim-verified) [quest]; Brilliant Wand (249385, -2.80 DPS) [crafted]; Torch of Austen (13004, -7.21 DPS) [world_drop] |
+| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (188.2 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.92 DPS) [world_drop] |
+| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (191.1 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -2.13 DPS, sim-verified) [world_drop] |
+| main_hand | High Warlord's Battle Mace (234551) | Sergeant Thunderhorn [vendor] | sim-verified (191.1 DPS) | yes | Ebon Hand (19170, +0.00 DPS, sim-verified) [crafted]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
+| off_hand | Master Dragonslayer's Orb (19366) | The Lord of Blackrock [quest] | 38.1 | yes | High Warlord's Tome of Destruction (234563, -0.43 DPS) [vendor]; Grand Marshal's Tome of Power (234589, -0.43 DPS) [vendor]; Therazane's Touch (19315, -1.70 DPS, sim-verified) [rep] |
+| ranged | Wand of Biting Cold (19108) | The Legend of Korrak [quest] | 556.9 | yes | Stormrager (16997, +0.00 DPS, sim-verified) [quest]; Brilliant Wand (249385, -2.80 DPS) [crafted]; Torch of Austen (13004, -7.21 DPS) [world_drop] |
 
-**New at 60:** head: Tiara of the Oracle; neck: Onyxia Tooth Pendant; shoulder: Virtuous Epaulets; back: Earthweave Cloak; chest: Vestments of the Oracle; wrist: Rockfury Bracers; hands: Dreadmist Wraps; waist: Knowledge of the Timbermaw; legs: Bloodvine Leggings; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; trinket1: Ankh of Life; trinket2: Uther's Strength; main_hand: High Warlord's Battle Mace; off_hand: Master Dragonslayer's Orb; ranged: Wand of Biting Cold
+**New at 60:** head: Tiara of the Oracle; neck: Onyxia Tooth Pendant; shoulder: Virtuous Epaulets; back: Arcanoweave Cloak; chest: Vestments of the Oracle; wrist: Bindings of Revelation; hands: Gloves of Revelation; waist: Knowledge of the Timbermaw; legs: Leggings of Revelation; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; trinket1: Serenity Field; trinket2: Weakness Analyzer; main_hand: High Warlord's Battle Mace; off_hand: Master Dragonslayer's Orb; ranged: Wand of Biting Cold
 
-No-known-source sample (15 of 1165, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1138, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 

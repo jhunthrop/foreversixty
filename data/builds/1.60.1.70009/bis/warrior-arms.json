@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T04:03:49Z",
+  "generated_at": "2026-09-30T04:40:55Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -574,8 +574,8 @@
         "main_hand: Forsaken Greataxe",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.510884093,
-      "verify_run_seconds": 1.172915363,
+      "weights_run_seconds": 1.5258942960000001,
+      "verify_run_seconds": 1.160281261,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1230,8 +1230,8 @@
         "main_hand: Forsaken Greataxe",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.510884093,
-      "verify_run_seconds": 1.2254177450000001,
+      "weights_run_seconds": 1.5258942960000001,
+      "verify_run_seconds": 1.228031134,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1893,8 +1893,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.614000535,
-      "verify_run_seconds": 1.562983466,
+      "weights_run_seconds": 1.647269117,
+      "verify_run_seconds": 1.5995450070000001,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2562,8 +2562,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.614000535,
-      "verify_run_seconds": 1.505385064,
+      "weights_run_seconds": 1.647269117,
+      "verify_run_seconds": 1.5539135160000002,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3215,8 +3215,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 2.046806874,
-      "verify_run_seconds": 1.828720218,
+      "weights_run_seconds": 2.081888337,
+      "verify_run_seconds": 1.8684314720000001,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -3873,8 +3873,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 2.046806874,
-      "verify_run_seconds": 1.7975657790000001,
+      "weights_run_seconds": 2.081888337,
+      "verify_run_seconds": 1.816208812,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4571,8 +4571,8 @@
         "main_hand: Blight",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.193654993,
-      "verify_run_seconds": 1.925675969,
+      "weights_run_seconds": 2.217622657,
+      "verify_run_seconds": 1.933650656,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5298,8 +5298,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.193654993,
-      "verify_run_seconds": 1.9205343780000002,
+      "weights_run_seconds": 2.217622657,
+      "verify_run_seconds": 1.9131005540000001,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -5511,13 +5511,13 @@
               "dps_delta": -2.5759325850441694
             },
             {
-              "item_id": 220795,
-              "item_name": "Knight-Lieutenant's Plate Pauldrons",
+              "item_id": 272108,
+              "item_name": "Darkspear Spaulders",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -8.86829883868964,
+              "source": "Creeg Bothunk",
+              "dps_delta": -8.773041168390932,
               "verified": true,
-              "sim_dps": 229.3024187904254
+              "sim_dps": 229.3976764607241
             }
           ]
         },
@@ -5664,7 +5664,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 433.3588539283518,
+          "score": 433.35885392835183,
           "verified": true,
           "alternatives": [
             {
@@ -5672,14 +5672,14 @@
               "item_name": "Zandalar Vindicator's Belt",
               "source_kind": "quest",
               "source": "Paragons of Power: The Vindicator's Belt",
-              "dps_delta": -1.6758145350785028
+              "dps_delta": -1.6758145350785045
             },
             {
               "item_id": 20041,
               "item_name": "Highlander's Plate Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -2.671187053901137
+              "dps_delta": -2.671187053901139
             },
             {
               "item_id": 227814,
@@ -5913,7 +5913,7 @@
         }
       ],
       "set_dps": 243.97210134055078,
-      "no_source_count": 2522,
+      "no_source_count": 2500,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5945,16 +5945,16 @@
         "finger1: Signet of Unyielding Strength",
         "finger2: Band of Earthen Might",
         "trinket1: Onyxia Blood Talisman",
-        "trinket2: Talisman of Arathor",
+        "trinket2: Weakness Analyzer",
         "main_hand: High Warlord's Pig Poker",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.197998807,
-      "verify_run_seconds": 1.819314754,
+      "weights_run_seconds": 2.170743944,
+      "verify_run_seconds": 1.8456889909999998,
       "coverage": {
         "back": {
           "eligible": 370,
-          "sourced": 210
+          "sourced": 214
         },
         "chest": {
           "eligible": 718,
@@ -5966,15 +5966,15 @@
         },
         "finger1": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "finger2": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "hands": {
           "eligible": 623,
-          "sourced": 420
+          "sourced": 424
         },
         "head": {
           "eligible": 451,
@@ -6002,19 +6002,19 @@
         },
         "shoulder": {
           "eligible": 470,
-          "sourced": 279
+          "sourced": 285
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 571,
-          "sourced": 382
+          "sourced": 383
         },
         "wrist": {
           "eligible": 478,
@@ -6162,13 +6162,13 @@
               "dps_delta": -2.5759325850441694
             },
             {
-              "item_id": 220795,
-              "item_name": "Knight-Lieutenant's Plate Pauldrons",
+              "item_id": 272108,
+              "item_name": "Darkspear Spaulders",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -10.452000958917893,
+              "source": "Creeg Bothunk",
+              "dps_delta": -9.513038711720867,
               "verified": true,
-              "sim_dps": 234.7841000948353
+              "sim_dps": 235.72306234203234
             }
           ]
         },
@@ -6316,7 +6316,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 433.35885392835183,
+          "score": 433.3588539283518,
           "verified": true,
           "alternatives": [
             {
@@ -6324,14 +6324,14 @@
               "item_name": "Zandalar Vindicator's Belt",
               "source_kind": "quest",
               "source": "Paragons of Power: The Vindicator's Belt",
-              "dps_delta": -1.6758145350785045
+              "dps_delta": -1.6758145350785028
             },
             {
               "item_id": 20204,
               "item_name": "Defiler's Plate Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -2.671187053901139
+              "dps_delta": -2.671187053901137
             },
             {
               "item_id": 227814,
@@ -6593,7 +6593,7 @@
         }
       ],
       "set_dps": 253.3690603457512,
-      "no_source_count": 2528,
+      "no_source_count": 2506,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6628,12 +6628,12 @@
         "main_hand: High Warlord's Pig Poker",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.197998807,
-      "verify_run_seconds": 1.85593496,
+      "weights_run_seconds": 2.170743944,
+      "verify_run_seconds": 1.8157058209999999,
       "coverage": {
         "back": {
           "eligible": 375,
-          "sourced": 213
+          "sourced": 217
         },
         "chest": {
           "eligible": 713,
@@ -6645,15 +6645,15 @@
         },
         "finger1": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "finger2": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "hands": {
           "eligible": 623,
-          "sourced": 416
+          "sourced": 420
         },
         "head": {
           "eligible": 451,
@@ -6681,19 +6681,19 @@
         },
         "shoulder": {
           "eligible": 467,
-          "sourced": 276
+          "sourced": 282
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 571,
-          "sourced": 382
+          "sourced": 383
         },
         "wrist": {
           "eligible": 483,

@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T03:56:23Z",
+  "generated_at": "2026-09-30T04:33:26Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -612,8 +612,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.526472417,
-      "verify_run_seconds": 1.698528385,
+      "weights_run_seconds": 1.529294409,
+      "verify_run_seconds": 1.706849209,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1301,8 +1301,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.526472417,
-      "verify_run_seconds": 1.6787285440000002,
+      "weights_run_seconds": 1.529294409,
+      "verify_run_seconds": 1.6746515770000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2034,8 +2034,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.634690075,
-      "verify_run_seconds": 2.117975751,
+      "weights_run_seconds": 1.665270011,
+      "verify_run_seconds": 2.15664165,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2775,8 +2775,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.634690075,
-      "verify_run_seconds": 2.088025718,
+      "weights_run_seconds": 1.665270011,
+      "verify_run_seconds": 2.105246895,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3489,8 +3489,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.789779671,
-      "verify_run_seconds": 2.343207886,
+      "weights_run_seconds": 1.781465657,
+      "verify_run_seconds": 2.348818198,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4203,8 +4203,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.789779671,
-      "verify_run_seconds": 2.276679807,
+      "weights_run_seconds": 1.781465657,
+      "verify_run_seconds": 2.351500034,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4959,8 +4959,8 @@
         "off_hand: Inventor's Focal Sword",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.816930341,
-      "verify_run_seconds": 2.342243408,
+      "weights_run_seconds": 1.837768485,
+      "verify_run_seconds": 2.350483511,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5716,8 +5716,8 @@
         "off_hand: Inventor's Focal Sword",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.816930341,
-      "verify_run_seconds": 2.24460505,
+      "weights_run_seconds": 1.837768485,
+      "verify_run_seconds": 2.29003012,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -5917,6 +5917,13 @@
               "dps_delta": -2.7417039261503193
             },
             {
+              "item_id": 272105,
+              "item_name": "Darkspear Pauldrons",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -2.9810354740502976
+            },
+            {
               "item_id": 239542,
               "item_name": "Dawnstalker Spaulders",
               "source_kind": "vendor",
@@ -5924,13 +5931,6 @@
               "dps_delta": -3.2702902065660737,
               "verified": true,
               "sim_dps": 200.51566773256116
-            },
-            {
-              "item_id": 23252,
-              "item_name": "Champion's Chain Shoulders",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -4.058027439600186
             }
           ]
         },
@@ -6336,13 +6336,13 @@
               "dps_delta": 0
             },
             {
-              "item_id": 18406,
-              "item_name": "Onyxia Blood Talisman",
-              "source_kind": "quest",
-              "source": "Celebrating Good Times",
-              "dps_delta": -1.1415749838529905,
+              "item_id": 272439,
+              "item_name": "Serenity Field",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -0.8474932852710708,
               "verified": true,
-              "sim_dps": 199.37409274870816
+              "sim_dps": 199.66817444729008
             }
           ]
         },
@@ -6452,7 +6452,7 @@
         }
       ],
       "set_dps": 215.69564735362874,
-      "no_source_count": 2088,
+      "no_source_count": 2069,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6489,12 +6489,12 @@
         "off_hand: Grand Marshal's Hacker",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.786365365,
-      "verify_run_seconds": 2.3504393820000002,
+      "weights_run_seconds": 1.805895049,
+      "verify_run_seconds": 2.398407187,
       "coverage": {
         "back": {
           "eligible": 370,
-          "sourced": 210
+          "sourced": 214
         },
         "chest": {
           "eligible": 645,
@@ -6506,15 +6506,15 @@
         },
         "finger1": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "finger2": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "hands": {
           "eligible": 541,
-          "sourced": 372
+          "sourced": 375
         },
         "head": {
           "eligible": 388,
@@ -6542,19 +6542,19 @@
         },
         "shoulder": {
           "eligible": 400,
-          "sourced": 243
+          "sourced": 247
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 495,
-          "sourced": 337
+          "sourced": 338
         },
         "wrist": {
           "eligible": 412,
@@ -6690,6 +6690,13 @@
               "dps_delta": -2.7417039261503193
             },
             {
+              "item_id": 272105,
+              "item_name": "Darkspear Pauldrons",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -2.9810354740502976
+            },
+            {
               "item_id": 239542,
               "item_name": "Dawnstalker Spaulders",
               "source_kind": "vendor",
@@ -6697,13 +6704,6 @@
               "dps_delta": -3.489177665172747,
               "verified": true,
               "sim_dps": 207.816652261566
-            },
-            {
-              "item_id": 23252,
-              "item_name": "Champion's Chain Shoulders",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -4.058027439600186
             }
           ]
         },
@@ -7108,13 +7108,13 @@
               "dps_delta": 0
             },
             {
-              "item_id": 18406,
-              "item_name": "Onyxia Blood Talisman",
-              "source_kind": "quest",
-              "source": "For All To See",
-              "dps_delta": -0.9955327264470952,
+              "item_id": 272439,
+              "item_name": "Serenity Field",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -0.7758920827640736,
               "verified": true,
-              "sim_dps": 206.8211195351189
+              "sim_dps": 207.04076017880192
             }
           ]
         },
@@ -7224,7 +7224,7 @@
         }
       ],
       "set_dps": 222.868639647098,
-      "no_source_count": 2095,
+      "no_source_count": 2076,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7260,12 +7260,12 @@
         "off_hand: Grand Marshal's Hacker",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.786365365,
-      "verify_run_seconds": 2.282692131,
+      "weights_run_seconds": 1.805895049,
+      "verify_run_seconds": 2.330197667,
       "coverage": {
         "back": {
           "eligible": 375,
-          "sourced": 213
+          "sourced": 217
         },
         "chest": {
           "eligible": 641,
@@ -7277,15 +7277,15 @@
         },
         "finger1": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "finger2": {
           "eligible": 297,
-          "sourced": 158
+          "sourced": 162
         },
         "hands": {
           "eligible": 545,
-          "sourced": 372
+          "sourced": 375
         },
         "head": {
           "eligible": 390,
@@ -7313,19 +7313,19 @@
         },
         "shoulder": {
           "eligible": 400,
-          "sourced": 243
+          "sourced": 247
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 500,
-          "sourced": 342
+          "sourced": 343
         },
         "wrist": {
           "eligible": 418,

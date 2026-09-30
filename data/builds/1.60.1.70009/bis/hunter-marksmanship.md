@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-35300000000000000-000000000000000000)
 
-Set DPS (verified): 73.7. Weights run: 1.5s. Verify run: 1.7s. 309 eligible items had no known source.
+Set DPS (verified): 73.7. Weights run: 1.6s. Verify run: 1.7s. 309 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.185 ± 0.045, crit=6.678 ± 0.268, hit=not significant (0.000 ± 0.000), melee_haste=3.462 ± 0.795
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 639, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 104.3. Weights run: 1.6s. Verify run: 2.1s. 1144 eligible items had no known source.
+Set DPS (verified): 104.3. Weights run: 1.6s. Verify run: 2.2s. 1144 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.222 ± 0.063, crit=11.681 ± 0.473, hit=not significant (0.000 ± 0.000), melee_haste=not significant (3.437 ± 0.971)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 1144, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (dwarf, 5500000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 130.0. Weights run: 1.6s. Verify run: 2.1s. 1478 eligible items had no known source.
+Set DPS (verified): 130.0. Weights run: 1.6s. Verify run: 2.2s. 1478 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.307 ± 0.077, crit=13.494 ± 0.534, hit=not significant (0.000 ± 0.000), melee_haste=13.786 ± 1.194
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 1478, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 207.3. Weights run: 1.6s. Verify run: 2.2s. 2088 eligible items had no known source.
+Set DPS (verified): 207.3. Weights run: 1.7s. Verify run: 2.2s. 2069 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.339 ± 0.094, crit=20.135 ± 0.769, hit=not significant (0.000 ± 0.000), melee_haste=10.525 ± 1.657
 
@@ -136,7 +136,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 |---|---|---|---|---|---|
 | head | Dawnstalker Headpiece (239540) | Leonid Barthalomew the Revered [vendor] | 678.4 | yes | Cryptstalker Headpiece (22438, -0.65 DPS, sim-verified) [quest]; Champion's Chain Greathelm (227080, -3.68 DPS) [vendor]; Lieutenant Commander's Chain Greathelm (227086, -3.68 DPS) [vendor] |
 | neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (189.9 DPS) | yes | Onyxia Tooth Pendant (18404, -0.43 DPS) [quest]; Blazefury Medallion (17111, -0.83 DPS, sim-verified) [world]; Amulet of the Darkmoon (19491, -14.84 DPS) [quest] |
-| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | sim-verified (192.1 DPS) | yes | Cryptstalker Spaulders (22439, -2.93 DPS) [quest]; Dawnstalker Spaulders (239542, -2.99 DPS, sim-verified) [vendor]; Champion's Chain Shoulders (23252, -4.39 DPS) [vendor] |
+| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | sim-verified (192.1 DPS) | yes | Cryptstalker Spaulders (22439, -2.93 DPS) [quest]; Dawnstalker Spaulders (239542, -2.99 DPS, sim-verified) [vendor]; Darkspear Pauldrons (272105, -3.20 DPS) [vendor] |
 | back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | sim-verified (192.6 DPS) | yes | Cape of the Black Baron (13340, -0.32 DPS) [dungeon]; Cloak of the Honor Guard (20073, -0.86 DPS) [rep]; Chromatic Cloak (18509, -3.45 DPS, sim-verified) [crafted] |
 | chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (191.7 DPS) | yes | Dawnstalker Tunic (239543, -2.55 DPS, sim-verified) [vendor]; Legionnaire's Chain Armor (227083, -6.88 DPS) [vendor]; Knight-Captain's Chain Armor (227089, -6.88 DPS) [vendor] |
 | wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | 361.4 | yes | Dawnstalker Wristguards (239544, -0.93 DPS, sim-verified) [vendor]; Cryptstalker Wristguards (22443, -17.06 DPS) [quest]; Marshal's Chain Bracers (16461, -17.86 DPS) [pvp] |
@@ -147,20 +147,20 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | 297.9 | yes | Ring of Entropy (18543, -0.91 DPS) [world]; Mindtear Band (20632, -0.91 DPS) [world]; Band of the Penitent (13217, -2.65 DPS, sim-verified) [quest] |
 | finger2 | Dragonslayer's Signet (18403) | Celebrating Good Times [quest] | sim-verified (191.9 DPS) | yes | Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world]; Band of the Penitent (13217, -2.69 DPS, sim-verified) [quest] |
 | trinket1 | Ankh of Life (1713) | Maraudon: Theradrim Shardling [dungeon] | sim-verified (188.9 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [dungeon]; Smotts' Compass (4130, +0.00 DPS) [quest] |
-| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-verified (189.9 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [dungeon]; Onyxia Blood Talisman (18406, -1.01 DPS, sim-verified) [quest] |
+| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-verified (189.9 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [dungeon]; Serenity Field (272439, -0.69 DPS, sim-verified) [vendor] |
 | main_hand | High Warlord's Hacker (235476) | Sergeant Thunderhorn [vendor] | sim-verified (189.9 DPS) | yes | High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Electrified Dagger (19100, -1.72 DPS, sim-verified) [rep] |
 | off_hand | Grand Marshal's Hacker (235481) | Captain O'Neal [vendor] | 1401.2 | yes | High Warlord's Shiv (235478, +0.00 DPS, sim-verified) [vendor]; High Warlord's Left Claw (234558, -0.22 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.22 DPS) [vendor] |
 | ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (189.9 DPS) | yes | High Warlord's Recurve (234559, -4.60 DPS) [vendor]; High Warlord's Crossbow (234560, -4.60 DPS) [vendor]; Dark Iron Rifle (16004, -7.46 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Dawnstalker Headpiece; neck: Medallion of the Dawn; shoulder: Dawnstalker Pauldrons; back: Cloak of the Fallen God; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Legguards; feet: Dawnstalker Greaves; finger1: Don Julio's Band; finger2: Dragonslayer's Signet; trinket1: Ankh of Life; trinket2: Thunderbrew's Boot Flask; main_hand: High Warlord's Hacker; off_hand: Grand Marshal's Hacker; ranged: The Purifier
 
-No-known-source sample (15 of 2088, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 2069, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ## Horde
 
 ### Band 20 (troll, 0000000000000000-35300000000000000-000000000000000000)
 
-Set DPS (verified): 73.5. Weights run: 1.5s. Verify run: 1.7s. 315 eligible items had no known source.
+Set DPS (verified): 73.5. Weights run: 1.6s. Verify run: 1.7s. 315 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.185 ± 0.045, crit=6.678 ± 0.268, hit=not significant (0.000 ± 0.000), melee_haste=3.462 ± 0.795
 
@@ -280,31 +280,31 @@ No-known-source sample (15 of 1485, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (troll, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 212.9. Weights run: 1.6s. Verify run: 2.1s. 2095 eligible items had no known source.
+Set DPS (verified): 211.4. Weights run: 1.7s. Verify run: 2.2s. 2076 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.339 ± 0.094, crit=20.135 ± 0.769, hit=not significant (0.000 ± 0.000), melee_haste=10.525 ± 1.657
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Dawnstalker Headpiece (239540) | Leonid Barthalomew the Revered [vendor] | 678.4 | yes | Cryptstalker Headpiece (22438, -1.29 DPS, sim-verified) [quest]; Champion's Chain Greathelm (227080, -3.68 DPS) [vendor]; Lieutenant Commander's Chain Greathelm (227086, -3.68 DPS) [vendor] |
-| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (196.7 DPS) | yes | Onyxia Tooth Pendant (18404, -0.43 DPS) [quest]; Blazefury Medallion (17111, -0.98 DPS, sim-verified) [world]; Amulet of the Darkmoon (19491, -14.84 DPS) [quest] |
-| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | sim-verified (201.1 DPS) | yes | Cryptstalker Spaulders (22439, -2.93 DPS) [quest]; Dawnstalker Spaulders (239542, -3.55 DPS, sim-verified) [vendor]; Champion's Chain Shoulders (23252, -4.39 DPS) [vendor] |
-| back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | sim-verified (200.9 DPS) | yes | Cape of the Black Baron (13340, -0.32 DPS) [dungeon]; Deathguard's Cloak (20068, -0.86 DPS) [rep]; Chromatic Cloak (18509, -3.34 DPS, sim-verified) [crafted] |
-| chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (200.0 DPS) | yes | Dawnstalker Tunic (239543, -2.45 DPS, sim-verified) [vendor]; Legionnaire's Chain Armor (227083, -6.88 DPS) [vendor]; Knight-Captain's Chain Armor (227089, -6.88 DPS) [vendor] |
-| wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | 361.4 | yes | Dawnstalker Wristguards (239544, -0.91 DPS, sim-verified) [vendor]; Cryptstalker Wristguards (22443, -17.06 DPS) [quest]; General's Chain Wristguards (16570, -17.86 DPS) [pvp] |
-| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (200.1 DPS) | yes | Dawnstalker Handguards (239539, -2.55 DPS, sim-verified) [vendor]; Cryptstalker Handguards (22441, -3.94 DPS) [quest]; Marshal's Chain Grips (16463, -4.34 DPS) [vendor] |
-| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 384.1 | yes | Dawnstalker Girdle (239538, -1.44 DPS, sim-verified) [vendor]; Cryptstalker Girdle (22442, -2.75 DPS) [quest]; Defiler's Chain Girdle (20150, -3.87 DPS) [rep] |
-| legs | Dawnstalker Legguards (239541) | Leonid Barthalomew the Revered [vendor] | 673.7 | yes | Sentinel's Chain Leggings (237819, -0.56 DPS, sim-verified) [vendor]; Sentinel's Leather Pants (237818, -2.65 DPS) [vendor]; Legionnaire's Chain Legplates (227079, -3.78 DPS) [vendor] |
-| feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | sim-verified (201.9 DPS) | yes | Dawnstalker Boots (239537, -4.37 DPS, sim-verified) [vendor]; Cryptstalker Boots (22440, -19.24 DPS) [quest]; Striker's Footguards (21365, -19.50 DPS) [quest] |
+| head | Dawnstalker Headpiece (239540) | Leonid Barthalomew the Revered [vendor] | 678.4 | yes | Cryptstalker Headpiece (22438, -1.12 DPS, sim-verified) [quest]; Champion's Chain Greathelm (227080, -3.68 DPS) [vendor]; Lieutenant Commander's Chain Greathelm (227086, -3.68 DPS) [vendor] |
+| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (196.8 DPS) | yes | Onyxia Tooth Pendant (18404, -0.43 DPS) [quest]; Blazefury Medallion (17111, -0.97 DPS, sim-verified) [world]; Amulet of the Darkmoon (19491, -14.84 DPS) [quest] |
+| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | sim-verified (200.0 DPS) | yes | Cryptstalker Spaulders (22439, -2.93 DPS) [quest]; Darkspear Pauldrons (272105, -3.20 DPS) [vendor]; Dawnstalker Spaulders (239542, -3.21 DPS, sim-verified) [vendor] |
+| back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | sim-verified (200.0 DPS) | yes | Cape of the Black Baron (13340, -0.32 DPS) [dungeon]; Deathguard's Cloak (20068, -0.86 DPS) [rep]; Chromatic Cloak (18509, -3.25 DPS, sim-verified) [crafted] |
+| chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (199.3 DPS) | yes | Dawnstalker Tunic (239543, -2.50 DPS, sim-verified) [vendor]; Legionnaire's Chain Armor (227083, -6.88 DPS) [vendor]; Knight-Captain's Chain Armor (227089, -6.88 DPS) [vendor] |
+| wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | 361.4 | yes | Dawnstalker Wristguards (239544, -0.90 DPS, sim-verified) [vendor]; Cryptstalker Wristguards (22443, -17.06 DPS) [quest]; General's Chain Wristguards (16570, -17.86 DPS) [pvp] |
+| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (199.2 DPS) | yes | Dawnstalker Handguards (239539, -2.39 DPS, sim-verified) [vendor]; Cryptstalker Handguards (22441, -3.94 DPS) [quest]; Marshal's Chain Grips (16463, -4.34 DPS) [vendor] |
+| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 384.1 | yes | Dawnstalker Girdle (239538, -1.43 DPS, sim-verified) [vendor]; Cryptstalker Girdle (22442, -2.75 DPS) [quest]; Defiler's Chain Girdle (20150, -3.87 DPS) [rep] |
+| legs | Dawnstalker Legguards (239541) | Leonid Barthalomew the Revered [vendor] | 673.7 | yes | Sentinel's Chain Leggings (237819, -0.92 DPS, sim-verified) [vendor]; Sentinel's Leather Pants (237818, -2.65 DPS) [vendor]; Legionnaire's Chain Legplates (227079, -3.78 DPS) [vendor] |
+| feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | sim-verified (201.1 DPS) | yes | Dawnstalker Boots (239537, -4.35 DPS, sim-verified) [vendor]; Cryptstalker Boots (22440, -19.24 DPS) [quest]; Striker's Footguards (21365, -19.50 DPS) [quest] |
 | finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 297.9 | yes | Dragonslayer's Signet (18403, -0.91 DPS) [quest]; Ring of Entropy (18543, -0.91 DPS) [world]; Mindtear Band (20632, -0.91 DPS) [world] |
 | finger2 | Band of the Penitent (13217) (or Dragonslayer's Signet (18403), Ring of Entropy (18543), Mindtear Band (20632), Band of Earthen Wrath (21179), Band of Earthen Might (21182), Don Rodrigo's Band (21563), Ritssyn's Ring of Chaos (21836), Ring of the Eternal Flame (23237)) | Houses of the Holy [quest] | 281.9 | yes | Dragonslayer's Signet (18403, +0.00 DPS, sim-verified) [quest]; Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (196.5 DPS) | yes | Guardian Talisman (1490, -4.77 DPS) [quest]; Blazing Emblem (2802, -4.77 DPS) [dungeon]; Smotts' Compass (4130, -4.77 DPS) [quest] |
-| trinket2 | Ankh of Life (1713) | Maraudon: Theradrim Shardling [dungeon] | sim-verified (196.7 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [dungeon]; Onyxia Blood Talisman (18406, -1.10 DPS, sim-verified) [quest] |
-| main_hand | High Warlord's Hacker (235476) | Sergeant Thunderhorn [vendor] | sim-verified (196.7 DPS) | yes | High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Glacial Blade (19099, -1.81 DPS, sim-verified) [rep] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (196.5 DPS) | yes | Guardian Talisman (1490, -4.77 DPS) [quest]; Ankh of Life (1713, -4.77 DPS) [dungeon]; Blazing Emblem (2802, -4.77 DPS) [dungeon] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (196.8 DPS) | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, -0.07 DPS, sim-verified) [vendor] |
+| main_hand | High Warlord's Hacker (235476) | Sergeant Thunderhorn [vendor] | sim-verified (196.8 DPS) | yes | High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Glacial Blade (19099, -1.79 DPS, sim-verified) [rep] |
 | off_hand | Grand Marshal's Hacker (235481) | Captain O'Neal [vendor] | 1401.2 | yes | High Warlord's Shiv (235478, +0.00 DPS, sim-verified) [vendor]; High Warlord's Left Claw (234558, -0.22 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, -0.22 DPS) [vendor] |
-| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (196.7 DPS) | yes | High Warlord's Recurve (234559, -4.60 DPS) [vendor]; High Warlord's Crossbow (234560, -4.60 DPS) [vendor]; Dark Iron Rifle (16004, -8.66 DPS, sim-verified) [crafted] |
+| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (196.8 DPS) | yes | High Warlord's Recurve (234559, -4.60 DPS) [vendor]; High Warlord's Crossbow (234560, -4.60 DPS) [vendor]; Dark Iron Rifle (16004, -9.41 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Dawnstalker Headpiece; neck: Medallion of the Dawn; shoulder: Dawnstalker Pauldrons; back: Cloak of the Fallen God; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Legguards; feet: Dawnstalker Greaves; finger1: Don Julio's Band; finger2: Band of the Penitent; main_hand: High Warlord's Hacker; off_hand: Grand Marshal's Hacker; ranged: The Purifier
+**New at 60:** head: Dawnstalker Headpiece; neck: Medallion of the Dawn; shoulder: Dawnstalker Pauldrons; back: Cloak of the Fallen God; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Legguards; feet: Dawnstalker Greaves; finger1: Don Julio's Band; finger2: Band of the Penitent; trinket2: Serenity Field; main_hand: High Warlord's Hacker; off_hand: Grand Marshal's Hacker; ranged: The Purifier
 
-No-known-source sample (15 of 2095, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2076, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 

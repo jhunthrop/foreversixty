@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T04:00:16Z",
+  "generated_at": "2026-09-30T04:37:21Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -624,8 +624,8 @@
         "off_hand: Cruel Barb",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.076439604,
-      "verify_run_seconds": 1.224444394,
+      "weights_run_seconds": 1.10422737,
+      "verify_run_seconds": 1.233105617,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1325,8 +1325,8 @@
         "off_hand: Cruel Barb",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.076439604,
-      "verify_run_seconds": 1.183655963,
+      "weights_run_seconds": 1.10422737,
+      "verify_run_seconds": 1.216495521,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2006,8 +2006,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.096679697,
-      "verify_run_seconds": 1.5517846739999999,
+      "weights_run_seconds": 1.11010002,
+      "verify_run_seconds": 1.5664346770000002,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2693,8 +2693,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.096679697,
-      "verify_run_seconds": 1.557701797,
+      "weights_run_seconds": 1.11010002,
+      "verify_run_seconds": 1.587916796,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3366,8 +3366,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.142239804,
-      "verify_run_seconds": 1.499535179,
+      "weights_run_seconds": 1.162875174,
+      "verify_run_seconds": 1.494092257,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4046,8 +4046,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.142239804,
-      "verify_run_seconds": 1.498621002,
+      "weights_run_seconds": 1.162875174,
+      "verify_run_seconds": 1.4954904789999999,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4765,8 +4765,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.161329878,
-      "verify_run_seconds": 1.463703838,
+      "weights_run_seconds": 1.1991652720000001,
+      "verify_run_seconds": 1.483124094,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5513,8 +5513,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.161329878,
-      "verify_run_seconds": 1.406953939,
+      "weights_run_seconds": 1.1991652720000001,
+      "verify_run_seconds": 1.405090953,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -5643,14 +5643,14 @@
               "item_name": "Ragefury Eyepatch",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Guzzler",
-              "dps_delta": -2.2092901364084563
+              "dps_delta": -2.209290136408453
             },
             {
               "item_id": 19998,
               "item_name": "Bloodvine Lens",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -2.2092901364084563
+              "dps_delta": -2.209290136408453
             },
             {
               "item_id": 22478,
@@ -5707,14 +5707,14 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23258,
-              "item_name": "Champion's Leather Shoulders",
+              "item_id": 23313,
+              "item_name": "Lieutenant Commander's Leather Shoulders",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "dps_delta": -0.46717204689441993
             },
             {
-              "item_id": 23313,
+              "item_id": 227054,
               "item_name": "Lieutenant Commander's Leather Shoulders",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
@@ -5733,34 +5733,34 @@
         },
         {
           "slot": "back",
-          "item_id": 21406,
-          "item_name": "Cloak of Veiled Shadows",
-          "source": "Cloak of Veiled Shadows",
-          "source_kind": "quest",
-          "sim_dps": 272.3759726730703,
+          "item_id": 272414,
+          "item_name": "Howler's Furs",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 272.0272840509184,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 272.4 vs 269.2 set DPS",
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 272.0 vs 269.2 set DPS",
           "alternatives": [
+            {
+              "item_id": 21406,
+              "item_name": "Cloak of Veiled Shadows",
+              "source_kind": "quest",
+              "source": "Cloak of Veiled Shadows",
+              "dps_delta": -0.15316920281396262
+            },
             {
               "item_id": 21187,
               "item_name": "Earthweave Cloak",
               "source_kind": "quest",
               "source": "Volunteer's Battlegear",
-              "dps_delta": -0.22432554238569635
-            },
-            {
-              "item_id": 20073,
-              "item_name": "Cloak of the Honor Guard",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -1.506071596996984
+              "dps_delta": -0.377494745199659
             },
             {
               "item_id": 18509,
               "item_name": "Chromatic Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.2193524817182606,
+              "dps_delta": -2.8706638595663776,
               "verified": true,
               "sim_dps": 269.15662019135203
             }
@@ -5912,17 +5912,17 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 16456,
-              "item_name": "Marshal's Leather Leggings",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -1.719829158290335
-            },
-            {
               "item_id": 16564,
               "item_name": "General's Leather Legguards",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
+              "dps_delta": -1.7198291582903333
+            },
+            {
+              "item_id": 16456,
+              "item_name": "Marshal's Leather Leggings",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
               "dps_delta": -1.719829158290335
             },
             {
@@ -6182,8 +6182,8 @@
           ]
         }
       ],
-      "set_dps": 290.52560884457716,
-      "no_source_count": 1603,
+      "set_dps": 290.002680099791,
+      "no_source_count": 1586,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6205,7 +6205,7 @@
         "head: Duskwraith Helmet",
         "neck: Onyxia Tooth Pendant",
         "shoulder: Bonescythe Pauldrons",
-        "back: Cloak of Veiled Shadows",
+        "back: Howler's Furs",
         "chest: Bonescythe Breastplate",
         "wrist: Bonescythe Bracers",
         "hands: Bonescythe Gauntlets",
@@ -6219,12 +6219,12 @@
         "off_hand: High Warlord's Shiv",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.167197308,
-      "verify_run_seconds": 1.716885121,
+      "weights_run_seconds": 1.182428443,
+      "verify_run_seconds": 1.695265849,
       "coverage": {
         "back": {
           "eligible": 370,
-          "sourced": 210
+          "sourced": 214
         },
         "chest": {
           "eligible": 477,
@@ -6236,15 +6236,15 @@
         },
         "finger1": {
           "eligible": 299,
-          "sourced": 160
+          "sourced": 164
         },
         "finger2": {
           "eligible": 299,
-          "sourced": 160
+          "sourced": 164
         },
         "hands": {
           "eligible": 380,
-          "sourced": 262
+          "sourced": 264
         },
         "head": {
           "eligible": 287,
@@ -6272,19 +6272,19 @@
         },
         "shoulder": {
           "eligible": 278,
-          "sourced": 176
+          "sourced": 179
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 349,
-          "sourced": 242
+          "sourced": 243
         },
         "wrist": {
           "eligible": 283,
@@ -6413,17 +6413,17 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23258,
-              "item_name": "Champion's Leather Shoulders",
+              "item_id": 23313,
+              "item_name": "Lieutenant Commander's Leather Shoulders",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "dps_delta": -0.46717204689441993
             },
             {
-              "item_id": 227056,
-              "item_name": "Champion's Leather Shoulders",
+              "item_id": 227054,
+              "item_name": "Lieutenant Commander's Leather Shoulders",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "dps_delta": -0.46717204689441993
             },
             {
@@ -6439,36 +6439,35 @@
         },
         {
           "slot": "back",
-          "item_id": 21406,
-          "item_name": "Cloak of Veiled Shadows",
-          "source": "Cloak of Veiled Shadows",
-          "source_kind": "quest",
-          "sim_dps": 276.6777411389404,
+          "item_id": 18509,
+          "item_name": "Chromatic Cloak",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 115.11763319178014,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 276.7 vs 273.8 set DPS",
           "alternatives": [
+            {
+              "item_id": 272414,
+              "item_name": "Howler's Furs",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 276.22264753550843
+            },
+            {
+              "item_id": 21406,
+              "item_name": "Cloak of Veiled Shadows",
+              "source_kind": "quest",
+              "source": "Cloak of Veiled Shadows",
+              "dps_delta": -2.463097698558298
+            },
             {
               "item_id": 21187,
               "item_name": "Earthweave Cloak",
               "source_kind": "quest",
               "source": "Volunteer's Battlegear",
-              "dps_delta": -0.22432554238569635
-            },
-            {
-              "item_id": 20068,
-              "item_name": "Deathguard's Cloak",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -1.506071596996984
-            },
-            {
-              "item_id": 18509,
-              "item_name": "Chromatic Cloak",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -2.852911926581328,
-              "verified": true,
-              "sim_dps": 273.8248292123591
+              "dps_delta": -2.6874232409439944
             }
           ]
         },
@@ -6478,7 +6477,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Bonescythe Breastplate",
           "source_kind": "quest",
-          "score": 354.2089939035218,
+          "score": 354.20899390352173,
           "verified": true,
           "alternatives": [
             {
@@ -6486,14 +6485,14 @@
               "item_name": "Stormshroud Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -6.637564250680672
+              "dps_delta": -6.6375642506806685
             },
             {
               "item_id": 239562,
               "item_name": "Duskwraith Breastplate",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -6.782631344586782
+              "dps_delta": -6.782631344586779
             },
             {
               "item_id": 19834,
@@ -6580,7 +6579,7 @@
           "item_name": "Duskwraith Waistguard",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 205.1798351564204,
+          "score": 205.17983515642044,
           "verified": true,
           "alternatives": [
             {
@@ -6588,14 +6587,14 @@
               "item_name": "Bonescythe Waistguard",
               "source_kind": "quest",
               "source": "Bonescythe Waistguard",
-              "dps_delta": -3.02733385747165
+              "dps_delta": -3.0273338574716515
             },
             {
               "item_id": 20193,
               "item_name": "Defiler's Leather Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -3.7511364414656883
+              "dps_delta": -3.75113644146569
             },
             {
               "item_id": 20190,
@@ -6622,7 +6621,7 @@
               "item_name": "Marshal's Leather Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.7198291582903333
+              "dps_delta": -1.719829158290335
             },
             {
               "item_id": 16564,
@@ -6648,7 +6647,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Bonescythe Sabatons",
           "source_kind": "quest",
-          "score": 223.09136071174163,
+          "score": 223.0913607117416,
           "verified": true,
           "alternatives": [
             {
@@ -6665,14 +6664,14 @@
               "item_name": "Deathdealer's Boots",
               "source_kind": "quest",
               "source": "Deathdealer's Boots",
-              "dps_delta": -7.645819098803894
+              "dps_delta": -7.645819098803891
             },
             {
               "item_id": 239553,
               "item_name": "Duskwraith Treads",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -8.169245364370516
+              "dps_delta": -8.169245364370514
             }
           ]
         },
@@ -6682,7 +6681,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "score": 175.09136071174163,
+          "score": 175.0913607117416,
           "verified": true,
           "swap_note": "confirmed by the sim against Band of Earthen Might (id 21182): kept the pick, 273.8 vs 265.4 set DPS",
           "alternatives": [
@@ -6691,21 +6690,21 @@
               "item_name": "Band of the Penitent",
               "source_kind": "quest",
               "source": "Houses of the Holy",
-              "dps_delta": -3.2109986343877868
+              "dps_delta": -3.210998634387785
             },
             {
               "item_id": 18403,
               "item_name": "Dragonslayer's Signet",
               "source_kind": "quest",
               "source": "For All To See",
-              "dps_delta": -3.2109986343877868
+              "dps_delta": -3.210998634387785
             },
             {
               "item_id": 18543,
               "item_name": "Ring of Entropy",
               "source_kind": "world",
               "source": "Lord Kazzak",
-              "dps_delta": -3.2109986343877868
+              "dps_delta": -3.210998634387785
             }
           ]
         },
@@ -6918,8 +6917,8 @@
           ]
         }
       ],
-      "set_dps": 292.7338236182432,
-      "no_source_count": 1616,
+      "set_dps": 290.04583070346587,
+      "no_source_count": 1599,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6941,7 +6940,7 @@
         "head: Duskwraith Helmet",
         "neck: Onyxia Tooth Pendant",
         "shoulder: Bonescythe Pauldrons",
-        "back: Cloak of Veiled Shadows",
+        "back: Chromatic Cloak",
         "chest: Bonescythe Breastplate",
         "wrist: Bonescythe Bracers",
         "hands: Bonescythe Gauntlets",
@@ -6954,12 +6953,12 @@
         "off_hand: High Warlord's Shiv",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.167197308,
-      "verify_run_seconds": 1.7416822779999999,
+      "weights_run_seconds": 1.182428443,
+      "verify_run_seconds": 1.730729761,
       "coverage": {
         "back": {
           "eligible": 375,
-          "sourced": 213
+          "sourced": 217
         },
         "chest": {
           "eligible": 474,
@@ -6971,15 +6970,15 @@
         },
         "finger1": {
           "eligible": 299,
-          "sourced": 160
+          "sourced": 164
         },
         "finger2": {
           "eligible": 299,
-          "sourced": 160
+          "sourced": 164
         },
         "hands": {
           "eligible": 380,
-          "sourced": 259
+          "sourced": 261
         },
         "head": {
           "eligible": 288,
@@ -7007,19 +7006,19 @@
         },
         "shoulder": {
           "eligible": 274,
-          "sourced": 172
+          "sourced": 175
         },
         "trinket1": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "trinket2": {
           "eligible": 76,
-          "sourced": 42
+          "sourced": 45
         },
         "waist": {
           "eligible": 352,
-          "sourced": 244
+          "sourced": 245
         },
         "wrist": {
           "eligible": 286,
