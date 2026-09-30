@@ -183,32 +183,38 @@ func TestPickTwoHandedMainHandLeavesOffHandEmpty(t *testing.T) {
 // pick.go): score() converts a weapon's raw DPS to attack power per
 // slot with no term for the off hand a two-hander forfeits, so a
 // two-hander can outscore a SINGLE one-hander even though a real
-// dual-wielder loses an entire second weapon (and, for shaman-
-// enhancement, its off-hand imbue) by wearing one - comparing against
-// the full pair's combined score (main + its own off-hand partner)
-// closes that gap. This is the bug behind shaman-enhancement's level-20
-// list picking Smite's Mighty Hammer (item 7230, two-hand, scored
-// higher than the axe ALONE but lower than the axe+dagger pair) for
-// main hand and leaving off_hand permanently empty.
+// dual-wielder loses an entire second weapon by wearing one -
+// comparing against the full pair's combined score (main + its own
+// off-hand partner) closes that gap. rogue-combat is the dual-wielder
+// here; shaman-enhancement is NOT one (owner rule, 2026-09-30) and, like
+// elemental, simply takes the higher-scoring two-hander, leaving the
+// real one-hand-plus-shield question to verify.go's sim swap pass.
 func TestPickExcludesTwoHandFromADualWieldersMainHand(t *testing.T) {
 	hammer := scored{candidate: candidate{ID: 7230, Name: "Smite's Mighty Hammer", Slots: []string{"main_hand"}, TwoHand: true, ClassID: itemClassWeapon}, Score: 30}
 	axe := scored{candidate: candidate{ID: 2, Name: "One-Hand Axe", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 20}
 	dagger := scored{candidate: candidate{ID: 3, Name: "One-Hand Dagger", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 15}
 	bySlot := candidatesBySlot([]scored{hammer, axe, dagger})
 
-	result := pick("shaman-enhancement", bySlot)
+	result := pick("rogue-combat", bySlot)
 	if result["main_hand"].Item == nil || result["main_hand"].Item.ID != 2 {
-		t.Fatalf("shaman-enhancement main_hand = %+v, want the one-hand axe (2): the hammer (30) beats the axe alone (20) but loses to the axe+dagger pair (35)", result["main_hand"].Item)
+		t.Fatalf("rogue-combat main_hand = %+v, want the one-hand axe (2): the hammer (30) beats the axe alone (20) but loses to the axe+dagger pair (35)", result["main_hand"].Item)
 	}
 	if result["off_hand"].Item == nil || result["off_hand"].Item.ID != 3 {
-		t.Fatalf("shaman-enhancement off_hand = %+v, want the one-hand dagger (3), the next best one-hander", result["off_hand"].Item)
+		t.Fatalf("rogue-combat off_hand = %+v, want the one-hand dagger (3), the next best one-hander", result["off_hand"].Item)
 	}
 
 	// A spec that is not a dual-wielder still takes the higher-scoring
-	// two-hander: this rule is specific to DualWieldSpecs.
-	notDualWield := pick("shaman-elemental", candidatesBySlot([]scored{hammer, axe, dagger}))
-	if notDualWield["main_hand"].Item == nil || notDualWield["main_hand"].Item.ID != 7230 {
-		t.Fatalf("shaman-elemental main_hand = %+v, want the two-hand hammer (elemental is not a dual-wielder)", notDualWield["main_hand"].Item)
+	// two-hander: this rule is specific to DualWieldSpecs. Enhancement
+	// left that set (shamans cannot dual wield in Forever), so it behaves
+	// exactly like elemental here.
+	for _, spec := range []string{"shaman-elemental", "shaman-enhancement"} {
+		notDualWield := pick(spec, candidatesBySlot([]scored{hammer, axe, dagger}))
+		if notDualWield["main_hand"].Item == nil || notDualWield["main_hand"].Item.ID != 7230 {
+			t.Fatalf("%s main_hand = %+v, want the two-hand hammer (not a dual-wielder)", spec, notDualWield["main_hand"].Item)
+		}
+		if notDualWield["off_hand"].Item != nil {
+			t.Fatalf("%s off_hand = %+v, want empty behind a two-hander", spec, notDualWield["off_hand"].Item)
+		}
 	}
 }
 

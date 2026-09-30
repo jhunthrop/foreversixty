@@ -258,26 +258,17 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 			// settled by the real sim in verify.go's own swap pass,
 			// same as every other pick() decision.
 			//
-			// shaman-enhancement is handled separately, unconditionally
-			// excluding two-handers rather than joining the
-			// twoHandBeatsPair branch above: it left DualWieldSpecs
-			// (owner rule, 2026-09-30 - shamans cannot dual wield in
-			// Forever), so its off hand is a shield, not a second
-			// weapon, and twoHandBeatsPair's whole comparison (a
-			// two-hander against the best one-hand-weapon PAIR) has no
-			// pair to compare against for this spec anymore. The spec's
-			// build is always one imbued main-hand weapon plus a
-			// shield (this lane's brief, item 1) - a two-hander
-			// forfeiting that shield is not a trade-off score-level
-			// heuristics need to weigh, so it is excluded the same
-			// unconditional way a dagger-only rotation excludes every
-			// non-dagger (restrictToDaggers, weapon_requirements.go).
-			switch {
-			case leveling.DualWieldSpecs[spec]:
-				if !twoHandBeatsPair(bySlot) {
-					list = excludeTwoHand(list)
-				}
-			case spec == "shaman-enhancement":
+			// shaman-enhancement is not a DualWieldSpecs member (owner
+			// rule, 2026-09-30: shamans cannot dual wield in Forever), so
+			// it takes neither branch: its main hand may be a one-hander
+			// (with a shield or held item in off_hand) or a two-hander,
+			// and the real sim decides between them in verify.go's swap
+			// pass -- iteration 24 (2026-09-30) published two-handers
+			// from band 30 (Manual Crowd Pummeler, Fiery War Axe,
+			// Gravestone War Axe), the classic Windfury build, through
+			// that pass even while a score-level exclusion sat here, so
+			// the exclusion was dead and contradicted the page.
+			if leveling.DualWieldSpecs[spec] && !twoHandBeatsPair(bySlot) {
 				list = excludeTwoHand(list)
 			}
 		case "off_hand":
