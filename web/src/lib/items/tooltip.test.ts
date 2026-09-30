@@ -323,3 +323,41 @@ describe('statLines sign', () => {
     expect(model.stats).toContain('-15 Parry');
   });
 });
+
+describe('world-drop sources', () => {
+  it('names only the world-drop pool that lists the item, never every pool in the file', () => {
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'world_drop:5-15',
+          kind: 'world_drop',
+          name: 'World drop',
+          items: [7],
+          level_min: 5,
+          level_max: 15,
+        },
+        {
+          id: 'world_drop:19-29',
+          kind: 'world_drop',
+          name: 'World drop',
+          items: [1],
+          level_min: 19,
+          level_max: 29,
+        },
+        {
+          id: 'world_drop:40-50',
+          kind: 'world_drop',
+          name: 'World drop',
+          items: [8],
+          level_min: 40,
+          level_max: 50,
+        },
+        { id: 'world:somemob', kind: 'world', name: 'Some Mob', items: [9] },
+      ],
+      quests: {},
+    };
+    const model = itemTooltipModel(item({ id: 1 }), { loot, sets: [] });
+    expect(model.sourceLines).toEqual(['World drop (BoE) · levels 19-29']);
+    expect(itemTooltipModel(item({ id: 2 }), { loot, sets: [] }).sourceLines).toEqual([]);
+  });
+});

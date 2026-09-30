@@ -188,6 +188,11 @@ function sourceLinesFor(itemId: number, loot: LootFile): string[] {
 
   for (const source of loot.sources) {
     if (WORLD_DROP_KINDS.has(source.kind)) {
+      // Only a world source that actually lists the item (owner report 2026-09-30:
+      // every tooltip read "World drop + 48 others" because all 48 level-banded
+      // world_drop pools were pushed for every item once their lines carried
+      // distinct level ranges and stopped deduping into one).
+      if (!(source.items ?? []).includes(itemId)) continue;
       lines.push({ text: worldDropLine(source), priority: 1, chance: undefined, order: order++ });
       continue;
     }
