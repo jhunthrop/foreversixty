@@ -31,7 +31,11 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 from pipeline.classic_quest_levels import item_level_proxy
-from pipeline.classic_sources import ClassicDbSourceRecord, quest_factions_from_classic_sources
+from pipeline.classic_sources import (
+    ClassicDbSourceRecord,
+    quest_factions_from_classic_sources,
+    quest_turn_in_items_from_classic_sources,
+)
 from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
 from pipeline.item_sources import ItemSourceEntry
@@ -544,6 +548,87 @@ def source_item_ids(source: LootSource) -> set[int]:
         + (source.trash or [])
         + [item for boss in (source.bosses or []) for item in boss.items]
     )
+
+
+#: Bound on `apply_quest_opens_gate`'s own fixed-point loop -- a quest
+#: gated only through ANOTHER quest's own gate (item-level recursion,
+#: not the `PrevQuestId` chain `pipeline.classic_sources` already
+#: resolves) needs at most a couple of passes in practice; this is
+#: headroom, the same role every other bounded-recursion constant in
+#: this pipeline plays.
+_MAX_QUEST_GATE_PASSES = 5
+
+
+def apply_quest_opens_gate(
+    document: LootFile, classic_sources: dict[int, list[ClassicDbSourceRecord]]
+) -> LootFile:
+    """Sets `QuestSource.opens` for every quest in `document.quests`
+    whose classic-db turn-in item(s) (`quest_turn_in_items_from_
+    classic_sources`, already resolved through the quest's own
+    `PrevQuestId` chain) are THEMSELVES only obtainable from a source
+    `opens` is already set on: a raid boss drop directly (Onyxia's
+    Lair's "Head of Onyxia" gates "For All To See"/"Celebrating Good
+    Times"; Ruins of Ahn'Qiraj's "Head of Ossirian" gates "The Fall of
+    Ossirian"), or another such quest, recursively (the fixed-point loop
+    below -- an item that is itself a reward of an already-gated quest).
+
+    Must run AFTER `apply_overlays`: a raid's own `LootSource.opens` is
+    itself an overlay fact (`curated/loot/forever-raid-phases.json`) --
+    nothing upstream of the overlay ever sets it, so calling this any
+    earlier would find every raid source ungated and gate nothing.
+
+    A turn-in item this build's `document` names NO source for at all
+    is left alone -- never invented into either a gate or a guarantee of
+    none (tenet 8). A turn-in item with even ONE un-gated way to get it
+    (a vendor, a farmed drop, an alternate quest with no raid gate of
+    its own) leaves the quest open, same as today: `SrcItemId`/
+    `ReqItemId` on the overwhelming majority of quests names an ordinary
+    farmed/vendored item, and this function must never gate one of
+    those.
+    """
+    quest_turn_ins = quest_turn_in_items_from_classic_sources(classic_sources)
+    if not quest_turn_ins:
+        return document
+    # Every NON-"quest"-kind source's own opens, per item id it names --
+    # the flat "quest" LootSource carries no per-quest opens of its own
+    # (LootSource.opens is never set on it), so it is excluded here the
+    # same way sim/cmd/leveling-bis/data.go's loadLootIndex already
+    # skips that kind in favour of the per-quest detail below.
+    non_quest_ways: dict[int, list[str]] = defaultdict(list)
+    for source in document.sources:
+        if source.kind == "quest":
+            continue
+        opens = source.opens or ""
+        for item_id in source_item_ids(source):
+            non_quest_ways[item_id].append(opens)
+
+    quests: dict[str, list[QuestSource]] = {
+        item_id: list(entries) for item_id, entries in document.quests.items()
+    }
+
+    def item_gate(item_id: int) -> str | None:
+        ways = [*non_quest_ways.get(item_id, [])]
+        ways += [entry.opens or "" for entry in quests.get(str(item_id), [])]
+        if not ways or any(not way for way in ways):
+            # No known source at all, or at least one un-gated way --
+            # either way, this item never gates a quest that needs it.
+            return None
+        return sorted(set(ways))[0]
+
+    for _ in range(_MAX_QUEST_GATE_PASSES):
+        changed = False
+        for entries in quests.values():
+            for i, entry in enumerate(entries):
+                if entry.opens:
+                    continue
+                required = quest_turn_ins.get(entry.quest_id) or []
+                gate = next((g for g in (item_gate(item_id) for item_id in required) if g), None)
+                if gate:
+                    entries[i] = entry.model_copy(update={"opens": gate})
+                    changed = True
+        if not changed:
+            break
+    return document.model_copy(update={"quests": quests})
 
 
 def _resolve_or_drop_unnamed_bosses(

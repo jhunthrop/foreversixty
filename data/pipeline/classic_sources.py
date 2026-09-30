@@ -228,6 +228,27 @@ class ClassicDbQuestInfo(BaseModel):
     min_level: int
     level: int
     faction: Literal["alliance", "horde", "both"]
+    #: `quest_template.SrcItemId` (the item that starts the quest) and
+    #: every non-zero `ReqItemId1-4` (turn-in items) this quest needs --
+    #: NOT the reward it hands out -- unioned across the quest's own
+    #: `PrevQuestId` chain (`_quest_chain_turn_in_items`, resolved once
+    #: here at parse time, bounded and cycle-safe the same way
+    #: `reference_loot_template`'s own recursion elsewhere in this file
+    #: is). Quest-gates lane, 2026-09-29: a chain's REWARD-granting quest
+    #: often turns in nothing itself -- "For All To See"/"Celebrating
+    #: Good Times" (Onyxia Tooth Pendant/Blood Talisman) both carry
+    #: SrcItemId/ReqItemId 0, but their own `PrevQuestId` is "Victory for
+    #: the Horde"/"for the Alliance", which turns in Head of Onyxia (an
+    #: Onyxia's Lair boss drop) -- so this field is the fully resolved
+    #: set the whole chain needs, not just this row's own columns.
+    #: `pipeline.loot.sources.apply_quest_opens_gate` reads it to gate a
+    #: `QuestSource.opens` the same way a raid boss drop already gates
+    #: `LootSource.opens`. Empty for the overwhelming majority of quests,
+    #: which need no item at all or one this pipeline has no reason to
+    #: treat specially (a plain farmed/vendored turn-in item is never
+    #: "only obtainable from a source with opens set", so it never gates
+    #: anything).
+    turn_in_item_ids: list[int] = []
 
 
 class ClassicDbSourceRecord(BaseModel):
@@ -672,8 +693,59 @@ def _parse_vendors(
             )
 
 
+#: Bound on `_quest_chain_turn_in_items`' own `PrevQuestId` walk -- no
+#: real Vanilla quest chain runs anywhere near this deep; it exists only
+#: to make a dump data error (a chain that cycles back on itself) safe
+#: rather than an infinite loop, the same role `_MAX_REFERENCE_DEPTH`
+#: (elsewhere in this file) plays for `reference_loot_template`.
+_MAX_QUEST_CHAIN_DEPTH = 20
+
+
+def _quest_chain_turn_in_items(
+    entry: int, own_turn_ins: dict[int, list[int]], prev_quest: dict[int, int]
+) -> list[int]:
+    """`entry`'s own turn-in items plus every ancestor's, walking
+    `PrevQuestId` backward -- see `ClassicDbQuestInfo.turn_in_item_ids`'s
+    own doc for why a chain's reward-granting quest often needs its
+    ANCESTOR's turn-in item, not one of its own. A negative `PrevQuestId`
+    is cmangos' own "any quest in this ExclusiveGroup" marker, not a
+    literal quest id -- not followed, so a chain that uses it is simply
+    not resolved past that point rather than mis-chasing an unrelated id.
+    """
+    seen: set[int] = set()
+    ids: set[int] = set()
+    current = entry
+    for _ in range(_MAX_QUEST_CHAIN_DEPTH):
+        if current <= 0 or current in seen:
+            break
+        seen.add(current)
+        ids.update(own_turn_ins.get(current, ()))
+        current = prev_quest.get(current, 0)
+    return sorted(ids)
+
+
 def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceRecord]]) -> None:
-    for row in iter_table_records(sql_text, "quest_template"):
+    rows = list(iter_table_records(sql_text, "quest_template"))
+    # Two passes: the chain walk below needs EVERY quest's own turn-in
+    # items and PrevQuestId up front, including a quest with no reward
+    # item of its own (Head of Onyxia's own "Victory for the Horde" 7490
+    # hands out nothing -- it exists purely to gate the next quest in
+    # its chain), so this cannot be built incrementally inside the same
+    # loop that only ever visits a REWARD-bearing row's own record.
+    own_turn_ins: dict[int, list[int]] = {}
+    prev_quest: dict[int, int] = {}
+    for row in rows:
+        entry = int(row["entry"])
+        # `.get(..., "0")`, never `row[...]`: same reasoning as
+        # `creature_template.MinLevel`/`MaxLevel` above -- a fixture (or
+        # a real dump predating this lane) whose own `CREATE TABLE
+        # quest_template` declares fewer columns than the real table
+        # simply has no turn-in item or chain predecessor, rather than a
+        # KeyError.
+        req_item_ids = (int(row.get(f"ReqItemId{n}", "0")) for n in range(1, 5))
+        own_turn_ins[entry] = sorted({int(row.get("SrcItemId", "0")), *req_item_ids} - {0})
+        prev_quest[entry] = int(row.get("PrevQuestId", "0"))
+    for row in rows:
         entry = int(row["entry"])
         title = unquote(row["Title"]) or ""
         quest = ClassicDbQuestInfo(
@@ -681,6 +753,7 @@ def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceReco
             min_level=int(row["MinLevel"]),
             level=int(row["QuestLevel"]),
             faction=_faction_from_required_races(int(row["RequiredRaces"])),
+            turn_in_item_ids=_quest_chain_turn_in_items(entry, own_turn_ins, prev_quest),
         )
         reward_ids = {
             int(row[f"RewChoiceItemId{n}"]) for n in range(1, 7)
@@ -721,6 +794,33 @@ def quest_factions_from_classic_sources(
             if record.kind == "quest_reward" and record.quest is not None:
                 factions[record.quest.quest_id] = record.quest.faction
     return factions
+
+
+def quest_turn_in_items_from_classic_sources(
+    items: dict[int, list[ClassicDbSourceRecord]],
+) -> dict[int, list[int]]:
+    """Quest id -> `ClassicDbQuestInfo.turn_in_item_ids` (already
+    resolved through the quest's own `PrevQuestId` chain -- see that
+    field's own doc), recovered from the `quest_reward` records
+    `parse_classic_db_sources`/`load_classic_sources` already carry, the
+    same technique `quest_factions_from_classic_sources` (above) uses for
+    faction rather than re-reading `quest_template` a second time.
+
+    Quest-gates lane, 2026-09-29: `pipeline.loot.sources.
+    apply_quest_opens_gate` reads this to gate a `QuestSource.opens`
+    whenever every one of a quest's turn-in items is itself only
+    obtainable from an `opens`-gated source. A quest id absent from this
+    dict (a Forever-new quest, or one classic-db itself covers with no
+    turn-in item at all) is simply never gated by it -- the same
+    "unverifiable stays unlabelled-as-fact, never invented" rule this
+    module follows everywhere else.
+    """
+    turn_ins: dict[int, list[int]] = {}
+    for records in items.values():
+        for record in records:
+            if record.kind == "quest_reward" and record.quest is not None:
+                turn_ins[record.quest.quest_id] = record.quest.turn_in_item_ids
+    return turn_ins
 
 
 def _parse_fishing(

@@ -1,7 +1,8 @@
+import logging
 from pathlib import Path
 
 from pipeline.csvio import read_csv
-from pipeline.spelltext import effect_amount, load_spell_text
+from pipeline.spelltext import ExtraRows, effect_amount, load_spell_text
 
 HERE = Path(__file__).parent
 
@@ -12,6 +13,7 @@ def fixture_text():
         read_csv(HERE / "fixtures/SpellMisc.csv"),
         read_csv(HERE / "fixtures/SpellEffect.csv"),
         read_csv(HERE / "fixtures/SpellDuration.csv"),
+        ExtraRows(names=read_csv(HERE / "fixtures/SpellName.csv")),
     )
 
 
@@ -46,6 +48,56 @@ def test_unresolvable_tokens_stay_verbatim():
     assert text.describe(21838) == (
         "Gives you a $h% chance to generate an additional Rage point."
     )
+
+
+def test_at_spellicon_is_dropped():
+    """Idol of the Huntress' own real effect_text shape: `$@spellicon<id>`
+    carries no text of its own -- the client shows that spell's icon
+    graphically -- so this text-only pipeline simply removes it."""
+    text = fixture_text()
+    assert text.describe(439510) == (
+        "Engrave your cloak with the Improved Swipe rune:\n\n\nIncreases your Strength by 2%."
+    )
+
+
+def test_at_spellname_resolves_from_spell_name_csv():
+    text = fixture_text()
+    assert text.describe(439511) == "Grants: Improved Heroic Strike"
+
+
+def test_at_spelldesc_resolves_the_other_spells_own_tokens_recursively():
+    """`$@spelldesc12282` becomes spell 12282's OWN fully-resolved
+    description ("Increases your Strength by $s1%." -> "...2%.", its own
+    `$s1` read off ITS OWN effect, base_points 1 + die_sides 1) --
+    already covered by `test_at_spellicon_is_dropped` above (439510 uses
+    both tokens together, the real item's own shape); this test isolates
+    spelldesc alone via `describe(12282)` matching independently."""
+    text = fixture_text()
+    assert text.describe(12282) == "Increases your Strength by 2%."
+
+
+def test_at_spellname_and_spelldesc_unresolvable_ids_stay_raw_and_warn(caplog):
+    """999998 is in neither Spell.csv nor SpellName.csv -- both tokens
+    must be left exactly as the client wrote them (tenet 8: an ability
+    this pipeline cannot verify is never invented), each with its own
+    logged warning, while the SAME string's `$@spellicon999998` still
+    drops with no warning at all (an icon needs no table to resolve)."""
+    text = fixture_text()
+    with caplog.at_level(logging.WARNING, logger="pipeline.spelltext"):
+        result = text.describe(439512)
+    assert result == "Unlocks $@spellname999998 and $@spelldesc999998 and ."
+    assert sum("999998" in message for message in caplog.messages) == 2
+
+
+def test_at_spelldesc_self_cycle_does_not_recurse_forever(caplog):
+    """A spell whose own description names itself (however unlikely in
+    real data) must not blow the stack -- left raw, warned, same as any
+    other unresolvable `$@` token."""
+    text = fixture_text()
+    with caplog.at_level(logging.WARNING, logger="pipeline.spelltext"):
+        result = text.describe(439513)
+    assert result == "$@spelldesc439513"
+    assert any("439513" in message for message in caplog.messages)
 
 
 def test_icon_file_id_comes_from_spell_misc():

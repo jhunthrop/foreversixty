@@ -290,6 +290,82 @@ func TestLoadLootIndexNoLongerHandGatesAtieshsQuest(t *testing.T) {
 	}
 }
 
+// TestLoadLootIndexCarriesPerQuestOpensThrough is the quest-gates lane's
+// own regression, 2026-09-29: loot.json's `quests` map now states its
+// OWN `opens` per entry (data/pipeline/loot/sources.py's
+// apply_quest_opens_gate), computed for a quest whose classic-db
+// turn-in item is itself a raid boss drop - "For All To See"/
+// "Celebrating Good Times" (Onyxia Tooth Pendant/Blood Talisman, gated
+// via the "Victory for the Horde/Alliance" predecessor's own Head of
+// Onyxia turn-in) is the real shape this pins. An entry with no
+// `opens` at all (ordinary, non-raid-gated quest) stays open.
+func TestLoadLootIndexCarriesPerQuestOpensThrough(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [],
+		"quests": {
+			"18404": [
+				{"quest_id": 7491, "name": "For All To See", "faction": "horde", "min_level": 60, "level": 60, "opens": "raids-1"},
+				{"quest_id": 7496, "name": "Celebrating Good Times", "faction": "alliance", "min_level": 60, "level": 60, "opens": "raids-1"}
+			],
+			"9001": [
+				{"quest_id": 100, "name": "An Ordinary Quest", "faction": "both", "min_level": 10, "level": 10}
+			]
+		}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	gated, ok := idx[18404]
+	if !ok || len(gated) != 2 || gated[0].Opens != "raids-1" || gated[1].Opens != "raids-1" {
+		t.Fatalf("idx[18404] = %+v, want two sources both with Opens \"raids-1\"", gated)
+	}
+	if _, ok := sourceFor(18404, 60, "horde", "", idx); ok {
+		t.Fatal("sourceFor(18404, level 60, horde) = ok, want ok=false: every source is Opens-gated")
+	}
+	open, ok := idx[9001]
+	if !ok || len(open) != 1 || open[0].Opens != "" {
+		t.Fatalf("idx[9001] = %+v, want one source with Opens empty (an ordinary quest)", open)
+	}
+}
+
+// TestLoadLootIndexComputedOpensWinsOverTheHandList pins
+// firstNonEmpty's own priority in loadLootIndex: a quest id
+// raidLockedQuestOpens ALSO names must still show whatever the
+// pipeline's own computed `opens` states, not silently be overridden by
+// the hand list - the hand list is a fallback for ids the computation
+// cannot see (the Ahn'Qiraj war-effort three), never a ceiling on one it
+// can.
+func TestLoadLootIndexComputedOpensWinsOverTheHandList(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [],
+		"quests": {
+			"21504": [
+				{"quest_id": 8756, "name": "The Qiraji Conqueror", "faction": "both", "min_level": 60, "level": 60, "opens": "raids-1"}
+			]
+		}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	src, ok := idx[21504]
+	if !ok || len(src) != 1 || src[0].Opens != "raids-1" {
+		t.Fatalf(
+			"idx[21504] = %+v, want Opens \"raids-1\" (the computed value, not raidLockedQuestOpens's \"later\")",
+			src,
+		)
+	}
+}
+
 func TestLoadLootIndexMissingFile(t *testing.T) {
 	if _, _, err := loadLootIndex(t.TempDir(), nil); err == nil {
 		t.Fatal("loadLootIndex on an empty dir: want an error, got nil")

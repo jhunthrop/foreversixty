@@ -211,6 +211,7 @@ def normalize_build(
             aura_options=optional("SpellAuraOptions"),
             radius=optional("SpellRadius"),
             range=optional("SpellRange"),
+            names=t("SpellName"),
         ),
     )
     icons = icon_names(t("ManifestInterfaceData"))

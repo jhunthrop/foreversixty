@@ -19,12 +19,26 @@ runtime. We resolve only the tokens whose value is in the tables we fetch:
   ${<arithmetic>}      worked out, once every token inside it is a number;
                        a trailing `.N` is the client's "N decimals"
   $l<one>:<many>;      the word that agrees with the number before it
+  $@spellicon<id>      dropped -- the client shows this spell's own icon
+                       graphically; this text-only pipeline has nothing to
+                       put in its place
+  $@spellname<id>      that spell's own name (SpellName.csv)
+  $@spelldesc<id>      that spell's own description, fully resolved --
+                       recursively, the same way `describe` resolves any
+                       other spell (quest-gates lane, 2026-09-29: an item's
+                       relic/rune "engrave" effect text names the ability
+                       it grants this way, e.g. Idol of the Huntress's
+                       "$@spellicon439510\n$@spelldesc439510")
 
 Everything else stays in the string exactly as the client stored it:
 `$?x[..][..]` (conditionals), a token whose table has no row or a zero for
 this spell, and any `${..}` that still holds a token with no value here
 (`$rap`, `$<mult>`). The planner shows the raw token rather than a number
-nobody can source.
+nobody can source. A `$@spellname`/`$@spelldesc` naming a spell this
+build's own tables have no row for is the one exception logged rather
+than silently left raw (`_substitute_at`'s own doc) -- tenet 8's
+"nothing we cannot verify is shown as fact" applies to a whole missing
+ability the same way it applies to a missing number.
 """
 
 from __future__ import annotations
@@ -69,6 +83,12 @@ PLURAL = re.compile(
     r"(?P<number>\d+(?:\.\d+)?)(?P<between>[^$\d]*)"
     r"\$[lL](?P<one>[^:;]+):(?P<many>[^;]+);"
 )
+#: `$@spellicon439510`, `$@spellname439510`, `$@spelldesc439510` -- a
+#: whole other spell referenced by id, never one of this spell's own
+#: effects (`TOKEN`, above, never matches `@`: it is a different
+#: vocabulary, resolved in its own pass -- `SpellText.describe`'s own
+#: doc for the ordering this requires).
+AT_TOKEN = re.compile(r"\$@(?P<kind>spellicon|spellname|spelldesc)(?P<id>\d+)")
 
 _BINARY: dict[type[ast.operator], Callable[[float, float], float]] = {
     ast.Add: operator.add,
@@ -200,10 +220,20 @@ _EFFECT_FACTS: dict[str, Callable[[Effect], float | None]] = {
 
 
 class SpellText:
-    def __init__(self, spells: dict[int, SpellRow]) -> None:
+    def __init__(self, spells: dict[int, SpellRow], names: Mapping[int, str] | None = None) -> None:
         self._spells = spells
+        #: SpellName.csv's own id -> Name_lang, for `$@spellname<id>`
+        #: only -- `_SPELL_FACTS`/`_EFFECT_FACTS` never need a name, only
+        #: a spell's own numbers, so nothing else reads this.
+        self._names = names or {}
 
-    def describe(self, spell_id: int, overrides: Mapping[int, int] | None = None) -> str:
+    def describe(
+        self,
+        spell_id: int,
+        overrides: Mapping[int, int] | None = None,
+        *,
+        _chain: frozenset[int] = frozenset(),
+    ) -> str:
         """The spell's description with its `$`-tokens resolved.
 
         `overrides` maps a 0-based effect index to the value that effect
@@ -212,6 +242,16 @@ class SpellText:
         the per-rank numbers on a curve (see `pipeline/curves.py`). Only the
         described spell's own effects are overridden -- a `$<id>s1` token
         still reads the referenced spell as the client stores it.
+
+        `$@spelldesc<id>` (a WHOLE OTHER spell, not one of this spell's own
+        effects) is resolved LAST, after every other token pass -- its own
+        replacement text is itself a fully-resolved `describe` call, and
+        must never be re-scanned by `TOKEN`/`BRACES` in THIS spell's own
+        context (a bare `$s1` inside it means the REFERENCED spell's first
+        effect, not this one's). `_chain` is this call's own private
+        cycle guard (a `$@spelldesc` loop, however unlikely, must not
+        recurse forever) and is never passed by a caller outside this
+        module.
         """
         row = self._spells.get(spell_id)
         if row is None:
@@ -219,11 +259,51 @@ class SpellText:
         if overrides:
             row = replace(row, effects={**row.effects, **_overridden(row.effects, overrides)})
         resolved = TOKEN.sub(lambda match: self._substitute(row, match), row.description)
-        return PLURAL.sub(_agree, BRACES.sub(_work_out, resolved))
+        resolved = PLURAL.sub(_agree, BRACES.sub(_work_out, resolved))
+        chain = _chain | {spell_id}
+        return AT_TOKEN.sub(lambda match: self._substitute_at(match, chain), resolved)
 
     def icon_file_id(self, spell_id: int) -> int:
         row = self._spells.get(spell_id)
         return row.icon_file_id if row else 0
+
+    def _substitute_at(self, match: re.Match[str], chain: frozenset[int]) -> str:
+        """One `$@spellicon`/`$@spellname`/`$@spelldesc<id>` token --
+        `describe`'s own doc for why this runs after every other
+        substitution, never before."""
+        kind = match["kind"]
+        spell_id = int(match["id"])
+        if kind == "spellicon":
+            # The client renders this spell's own icon graphically; this
+            # text-only description has no image to put in its place, so
+            # the token is simply dropped (module doc).
+            return ""
+        if kind == "spellname":
+            name = self._names.get(spell_id)
+            if not name:
+                logger.warning(
+                    "spelltext: $@spellname%d names a spell SpellName.csv has no row "
+                    "for; leaving the raw token",
+                    spell_id,
+                )
+                return match[0]
+            return name
+        # spelldesc.
+        if spell_id in chain:
+            logger.warning(
+                "spelltext: $@spelldesc%d cycles back to a spell already being "
+                "described (%s); leaving the raw token",
+                spell_id, sorted(chain),
+            )
+            return match[0]
+        if spell_id not in self._spells:
+            logger.warning(
+                "spelltext: $@spelldesc%d names a spell this build has no row for; "
+                "leaving the raw token",
+                spell_id,
+            )
+            return match[0]
+        return self.describe(spell_id, _chain=chain)
 
     def _substitute(self, row: SpellRow, match: re.Match[str]) -> str:
         target = row
@@ -337,15 +417,19 @@ def effect_amount(row: dict[str, str]) -> int:
 
 @dataclass(frozen=True)
 class ExtraRows:
-    """The tables behind the proc, radius and range tokens.
+    """The tables behind the proc, radius, range and `$@spellname` tokens.
 
     Optional as a group: a build fetched before they were on the list normalizes exactly as
-    it did, with those tokens left raw.
+    it did, with those tokens left raw (`$@spellname`/`$@spelldesc` warn and stay raw too --
+    `SpellText._substitute_at`'s own doc -- `$@spelldesc` needs no table here at all, since
+    it reads straight off the same `spells` dict `load_spell_text` already builds).
     """
 
     aura_options: list[dict[str, str]] = field(default_factory=list)
     radius: list[dict[str, str]] = field(default_factory=list)
     range: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellName.csv`'s own `ID, Name_lang` rows, for `$@spellname<id>`.
+    names: list[dict[str, str]] = field(default_factory=list)
 
 
 def _base_difficulty(rows: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -411,4 +495,5 @@ def load_spell_text(
             range_max=range_max,
             **aura_options.get(spell_id, {}),
         )
-    return SpellText(spells)
+    names = {int(r["ID"]): r["Name_lang"] for r in extra.names}
+    return SpellText(spells, names)

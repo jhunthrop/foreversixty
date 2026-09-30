@@ -293,7 +293,6 @@ def test_quest_reward_horde_only_faction_and_rew_item_id_slot():
     assert record.quest.quest_id == 8
     assert record.quest.faction == "horde"  # RequiredRaces 178 = Orc|Undead|Tauren|Troll
 
-
 def test_excluded_reference_ids_catches_a_generic_pool_by_high_fan_out_even_without_the_marker():
     """id 60446 (the real dump's own "16 Slot Bag - NPC Levels: 48+",
     shared by 777 creatures with no "World Drop" in its comment at all)
@@ -411,6 +410,144 @@ CREATE TABLE `quest_template` (
   `RewItemId4` mediumint
 ) ENGINE=MyISAM;
 """
+
+
+# quest-gates lane, 2026-09-29: a synthetic dump mirroring the pinned
+# dump's own Onyxia/Ossirian reward quests exactly (see this lane's own
+# report) -- three real-shaped rows plus two edge cases
+# (`_quest_chain_turn_in_items`'s own doc: a negative PrevQuestId is
+# cmangos' "any quest in this ExclusiveGroup" marker, not a literal id,
+# and a chain must not infinite-loop on a row that points at itself).
+_QUEST_CHAIN_SQL = f"""
+CREATE TABLE `creature_template` (
+  `Entry` mediumint,
+  `Name` char(100),
+  `VendorTemplateId` mediumint
+) ENGINE=MyISAM;
+CREATE TABLE `creature` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+CREATE TABLE `creature_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `reference_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `gameobject_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `skinning_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `pickpocketing_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `fishing_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `gameobject_template` (
+  `entry` mediumint,
+  `name` varchar(100)
+) ENGINE=MyISAM;
+CREATE TABLE `gameobject` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+CREATE TABLE `npc_vendor` (
+  `entry` mediumint,
+  `item` mediumint,
+  `maxcount` tinyint,
+  `incrtime` int,
+  `slot` tinyint,
+  `condition_id` mediumint,
+  `comments` text
+) ENGINE=MyISAM;
+CREATE TABLE `npc_vendor_template` (
+  `entry` mediumint,
+  `item` mediumint,
+  `maxcount` tinyint,
+  `incrtime` int,
+  `slot` tinyint,
+  `condition_id` mediumint,
+  `comments` text
+) ENGINE=MyISAM;
+CREATE TABLE `conditions` (
+  `condition_entry` mediumint,
+  `type` tinyint,
+  `value1` mediumint,
+  `value2` mediumint,
+  `value3` mediumint,
+  `value4` mediumint,
+  `flags` tinyint,
+  `comments` varchar(500)
+) ENGINE=MyISAM;
+CREATE TABLE `quest_template` (
+  `entry` mediumint,
+  `MinLevel` tinyint,
+  `QuestLevel` smallint,
+  `RequiredRaces` smallint,
+  `SrcItemId` mediumint,
+  `ReqItemId1` mediumint,
+  `ReqItemId2` mediumint,
+  `ReqItemId3` mediumint,
+  `ReqItemId4` mediumint,
+  `PrevQuestId` mediumint,
+  `Title` text,
+  `RewChoiceItemId1` mediumint,
+  `RewChoiceItemId2` mediumint,
+  `RewChoiceItemId3` mediumint,
+  `RewChoiceItemId4` mediumint,
+  `RewChoiceItemId5` mediumint,
+  `RewChoiceItemId6` mediumint,
+  `RewItemId1` mediumint,
+  `RewItemId2` mediumint,
+  `RewItemId3` mediumint,
+  `RewItemId4` mediumint
+) ENGINE=MyISAM;
+INSERT INTO `quest_template` VALUES
+  (7490,60,60,0,18422,18422,0,0,0,0,'Victory for the Horde',0,0,0,0,0,0,0,0,0,0),
+  (7491,60,60,178,0,0,0,0,0,7490,'For All To See',18406,18403,18404,0,0,0,0,0,0,0),
+  (8791,60,60,0,21220,21220,0,0,0,0,'The Fall of Ossirian',21504,0,0,0,0,0,0,0,0,0),
+  (9000,60,60,0,0,0,0,0,0,-5,'Exclusive Group Quest',777,0,0,0,0,0,0,0,0,0),
+  (100,60,60,0,555,0,0,0,0,100,'Self Loop',666,0,0,0,0,0,0,0,0,0);
+"""
+
+
+def test_a_chain_quest_with_no_turn_in_of_its_own_inherits_its_predecessors():
+    """"For All To See" (7491) itself states SrcItemId/ReqItemId all
+    zero -- its own PrevQuestId (7490, "Victory for the Horde") is what
+    actually turns in Head of Onyxia (18422), an Onyxia's Lair boss drop.
+    Mirrors the pinned dump's own shape exactly (this lane's report)."""
+    items = cs.parse_classic_db_sources(_QUEST_CHAIN_SQL)
+    record = next(r for r in items[18406] if r.kind == "quest_reward")
+    assert record.quest.quest_id == 7491
+    assert record.quest.turn_in_item_ids == [18422]
+
+
+def test_a_quest_with_its_own_turn_in_item_needs_no_chain_walk():
+    """"The Fall of Ossirian" turns in Head of Ossirian (21220) directly
+    -- SrcItemId and ReqItemId1 both name it on the SAME row that hands
+    out the reward, no PrevQuestId chain involved."""
+    items = cs.parse_classic_db_sources(_QUEST_CHAIN_SQL)
+    record = next(r for r in items[21504] if r.kind == "quest_reward")
+    assert record.quest.quest_id == 8791
+    assert record.quest.turn_in_item_ids == [21220]
+
+
+def test_a_negative_prev_quest_id_is_an_exclusive_group_marker_not_a_literal_id():
+    """cmangos' own convention: a negative PrevQuestId means "any quest
+    in this ExclusiveGroup", not a literal quest id to chase -- chasing
+    it as one would misattribute an unrelated quest's own turn-in item."""
+    items = cs.parse_classic_db_sources(_QUEST_CHAIN_SQL)
+    record = next(r for r in items[777] if r.kind == "quest_reward")
+    assert record.quest.turn_in_item_ids == []
+
+
+def test_a_self_referencing_prev_quest_id_does_not_infinite_loop():
+    items = cs.parse_classic_db_sources(_QUEST_CHAIN_SQL)
+    record = next(r for r in items[666] if r.kind == "quest_reward")
+    assert record.quest.turn_in_item_ids == [555]
+
+
+def test_quest_turn_in_items_from_classic_sources_extracts_every_quest():
+    items = cs.parse_classic_db_sources(_QUEST_CHAIN_SQL)
+    turn_ins = cs.quest_turn_in_items_from_classic_sources(items)
+    assert turn_ins[7491] == [18422]
+    assert turn_ins[8791] == [21220]
+    assert turn_ins[9000] == []
+
+
 
 
 def _world_drop_pool_sql(*creature_rows: tuple[int, int], comment: str, ref_id: int = 700) -> str:

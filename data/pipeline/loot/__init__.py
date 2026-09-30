@@ -60,7 +60,7 @@ from pipeline.loot.gear import (
 )
 from pipeline.loot.overlay import apply_overlays, load_overlays
 from pipeline.loot.reitemise import apply_reitemisation
-from pipeline.loot.sources import build_loot, instance_types, pvp_ranks
+from pipeline.loot.sources import apply_quest_opens_gate, build_loot, instance_types, pvp_ranks
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.normalize import write_document, write_records
@@ -172,6 +172,12 @@ def write_loot_files(
     # override an inherited one same as any other).
     document, reitemised = apply_reitemisation(document, item_rows)
     document = apply_overlays(document, load_overlays(overlay_dir))
+    # Quest-gates lane, 2026-09-29: AFTER the overlay, which is what
+    # actually sets a raid's own LootSource.opens
+    # (curated/loot/forever-raid-phases.json) -- see apply_quest_opens_
+    # gate's own doc for why any earlier placement finds nothing to gate
+    # a quest's turn-in item on.
+    document = apply_quest_opens_gate(document, classic_sources)
 
     enchants = build_enchants(fork)
     suffixes = build_suffixes(fork)
@@ -346,6 +352,7 @@ def merge_loot_files(
     )
     document, reitemised = apply_reitemisation(document, item_rows)
     document = apply_overlays(document, load_overlays(overlay_dir))
+    document = apply_quest_opens_gate(document, classic_sources)
     write_document(document, build_dir / LOOT)
     logger.info(
         "loot-merge: %d sources naming %d items (%d from classic-db, %d from wowhead, %d "
