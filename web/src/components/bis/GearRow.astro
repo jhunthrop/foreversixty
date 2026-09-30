@@ -454,18 +454,26 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
     grid-row: 2;
     display: flex;
     min-width: 0;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.25rem;
     font-size: 12px;
   }
   .gear-row-alt-source-icon {
     flex-shrink: 0;
+    /* Lines up with the wrapped text's own first line, not centred across both (this icon
+       sits beside a source line that can now wrap to two lines -- see
+       .gear-row-alt-source-text's own note). */
+    margin-top: 2px;
   }
+  /* Wraps at its own " · "/word boundaries rather than a single-line ellipsis (wow-player
+     review round 3): a level requirement is real, load-bearing information ("Level 22"),
+     never something an ellipsis is allowed to hide, unlike the item NAME above it
+     (.gear-row-alt-name), which stays a deliberate single-line truncation with the full
+     text in its own `title`. The "Level N"/"ilvl N" tokens this can still wrap AROUND stay
+     unbreakable via `copy.ts`'s own non-breaking space between the word and its number
+     (round 2's fix) -- this rule only removes the OUTER line's own single-line cap. */
   .gear-row-alt-source-text {
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .gear-row-alt-gap {
     grid-column: 3;
