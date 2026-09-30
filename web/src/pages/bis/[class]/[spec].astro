@@ -23,9 +23,14 @@
 // (`GearRow.astro`), each a real mention (icon, quality-coloured name, one-line source, the
 // DPS gap from the pick) rather than a bare chip -- every alternative id rides into the same
 // shared tooltip model map a main pick's id already did. The runner-up `<details>` fallback
-// (a single swapped-in alternative parsed out of `swap_note`) is gone entirely: `swap_note`
-// stays in the data contract (`lib/bis/types.ts`) but nothing here reads it any more --
-// `alternatives` is the one way a pick shows what else was close.
+// (a single swapped-in alternative parsed out of `swap_note`) is gone entirely: `alternatives`
+// is the one way a pick shows what else was close.
+//
+// `swap_note` itself is read again as of the fourth wow-player sweep (day 3, item 1): a
+// verified pick with no visible evidence anywhere on the page (the sweep's own top-3
+// finding) now gets one more muted line under its source line, `GearRow.astro`'s own
+// evidence line, built by `lib/bis/panel-view.ts`'s `evidenceLineFor`/`parseSwapNote` from
+// the ranker's own sentence rather than the raw pipeline text.
 //
 // The coverage line ("Sources known for N of M items") is gone from the page (tenet 7:
 // pipeline counters stay out of the player's view) -- `band.coverage` itself is untouched,

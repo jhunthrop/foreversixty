@@ -141,6 +141,28 @@ export const bisCopy = {
    *  `noKnownSourceForSlot`, which would read as a data gap rather than the game rule it
    *  actually is (wow-player fix 4). */
   twoHanderEquippedLabel: 'Two-hander equipped',
+
+  // --- evidence, flags and empty reasons (fourth wow-player sweep, day 3) -----------------
+  /** The row's own evidence line, one muted line under the source line, in player words
+   *  rather than the ranker's own `swap_note` sentence -- `panel-view.ts`'s `parseSwapNote`
+   *  supplies the item name and the two DPS numbers, this row's own pick first. */
+  evidenceLine: (itemName: string, pickDps: number, altDps: number): string =>
+    `Sim-checked against ${itemName}: ${pickDps.toFixed(1)} vs ${altDps.toFixed(1)} DPS`,
+  /** The verified glyph's own title when a pick carries `sim_dps` but no `swap_note` --
+   *  still a real sim result (a trinket/proc/weapon-pair tournament winner), just not one
+   *  phrased as a swap against a named runner-up. */
+  simDpsVerifiedTitle: (dps: number): string =>
+    `Confirmed by a full sim: ${dps.toFixed(1)} DPS with this item`,
+  effectUnmodelledTag: 'effect not simulated',
+  effectUnmodelledTitle:
+    "This item's proc or use effect is not modelled yet; it was ranked on its stats alone",
+  lowValueTag: 'best available',
+  lowValueTitle: 'No sourced weapon at this level adds DPS; this is the best by item level',
+  /** `empty_reason` copy, one line per value the ranker publishes -- `no_sourced_item` and
+   *  any value this page does not recognise both fall back to `noKnownSourceForSlot`'s own
+   *  text (spec's "unknown -> the last"), never a fabricated reason. */
+  emptyReasonNoDpsValue: 'Nothing sourced at this level helps your DPS',
+  emptyReasonEffectNotModelled: "Relic effects aren't simulated yet",
 } as const;
 
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner

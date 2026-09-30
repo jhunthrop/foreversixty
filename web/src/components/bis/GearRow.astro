@@ -92,10 +92,24 @@ function hasRealIcon(icon: string | undefined): icon is string {
                 </span>
               )}
               {row.verified ? (
-                <VerifiedGlyph />
+                <VerifiedGlyph title={row.verifiedGlyphTitle} />
               ) : (
                 <span class="text-muted text-[11px]" title={bisCopy.unverifiedGlyphTitle}>
                   {bisCopy.unverified}
+                </span>
+              )}
+              {row.effectUnmodelled && (
+                <span
+                  class="flag-tag"
+                  data-testid="bis-row-effect-unmodelled"
+                  title={bisCopy.effectUnmodelledTitle}
+                >
+                  {bisCopy.effectUnmodelledTag}
+                </span>
+              )}
+              {row.lowValue && (
+                <span class="flag-tag" data-testid="bis-row-low-value" title={bisCopy.lowValueTitle}>
+                  {bisCopy.lowValueTag}
                 </span>
               )}
             </span>
@@ -104,6 +118,12 @@ function hasRealIcon(icon: string | undefined): icon is string {
               <SourceKindIcon kind={row.sourceKind ?? 'unknown'} />
               {row.sourceDetail}
             </span>
+            {row.evidenceLine && (
+              <span class="gear-row-evidence text-muted" data-testid="bis-row-evidence">
+                <VerifiedGlyph size={11} decorative />
+                {row.evidenceLine}
+              </span>
+            )}
           </span>
         </span>
         {row.alternatives && row.alternatives.length > 0 && (
@@ -140,8 +160,19 @@ function hasRealIcon(icon: string | undefined): icon is string {
                       <SlotIcon slot={row.slot as Slot} size={12} />
                     </span>
                   )}
-                  <span class:list={['gear-row-alt-name', rarityClassFor(alt.model?.quality ?? 1)]}>
-                    {alt.itemName}
+                  <span class="gear-row-alt-name-line">
+                    <span class:list={['gear-row-alt-name', rarityClassFor(alt.model?.quality ?? 1)]}>
+                      {alt.itemName}
+                    </span>
+                    {alt.effectUnmodelled && (
+                      <span
+                        class="flag-tag flag-tag-tiny"
+                        data-testid="bis-alt-effect-unmodelled"
+                        title={bisCopy.effectUnmodelledTitle}
+                      >
+                        {bisCopy.effectUnmodelledTag}
+                      </span>
+                    )}
                   </span>
                   <span class="gear-row-alt-source text-muted" title={alt.sourceDetail}>
                     <SourceKindIcon kind={alt.sourceKind} class="gear-row-alt-source-icon" />
@@ -293,6 +324,36 @@ function hasRealIcon(icon: string | undefined): icon is string {
     font-weight: 700;
     text-transform: uppercase;
   }
+  /* Muted sibling of `.new-pill` for a pick or alternative's own flags (`effect_unmodelled`,
+     `low_value`, fourth wow-player sweep day 3): same shape, no gold -- these mark a
+     limitation of the pick, not an achievement of it, so they never borrow the "new" pill's
+     celebratory colour. */
+  .flag-tag {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-soft, #333);
+    color: var(--color-muted, #999);
+    padding: 0 0.4rem;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .flag-tag-tiny {
+    padding: 0 0.3rem;
+    font-size: 9px;
+  }
+  /* The evidence line (spec item 1): one more muted line under the source line, prefixed by
+     the same verified glyph the name line uses, this time decorative -- the line's own text
+     already states the fact. */
+  .gear-row-evidence {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 11px;
+  }
   /* --- alternatives row (ruling 2): a compact row under the pick, not a bare chip. Each
      alternative is its own CSS grid (fix round 1, UX-designer review 2026-09-29): icon |
      name (row 1) / source (row 2, ellipsis-truncated, full text in its own `title`) | delta
@@ -330,9 +391,15 @@ function hasRealIcon(icon: string | undefined): icon is string {
     height: 20px;
     object-fit: cover;
   }
-  .gear-row-alt-name {
+  .gear-row-alt-name-line {
     grid-column: 2;
     grid-row: 1;
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .gear-row-alt-name {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;

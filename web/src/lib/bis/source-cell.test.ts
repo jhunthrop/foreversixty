@@ -98,6 +98,18 @@ const LOOT: LootFile & LootQuestsFile = {
       items: [100],
     },
     { id: 'pvp:rank-9', kind: 'pvp', name: 'Rank 9', items: [101] },
+    // A rank-16-18 set sold by a real, single-faction capital-city NPC that loot.json still
+    // classifies as plain `vendor` (fourth wow-player sweep, day 3, top finding) -- carries
+    // `rank`/`faction` the way a `pvp`-kind source does, which is the one signal that tells
+    // `resolveSourceCell` to render it as a PvP reward, not a plain vendor line.
+    {
+      id: 'vendor:sergeant-thunderhorn',
+      kind: 'vendor',
+      name: 'Sergeant Thunderhorn',
+      rank: 18,
+      faction: 'horde',
+      items: [110],
+    },
   ],
   quests: {
     '70': [
@@ -226,6 +238,17 @@ describe('resolveSourceCell', () => {
   it('falls back for a pvp source missing rank or faction (should not happen on real data)', () => {
     const cell = resolveSourceCell(slot({ item_id: 101, source_kind: 'pvp' }), 'alliance', LOOT, 'fallback');
     expect(cell).toEqual({ kind: 'unknown', label: 'fallback' });
+  });
+
+  it('resolves a vendor-kind rank reward (rank + faction present) as a pvp cell, never the bare npc name', () => {
+    const cell = resolveSourceCell(slot({ item_id: 110, source_kind: 'vendor' }), 'horde', LOOT, 'fallback');
+    expect(cell).toEqual({ kind: 'pvp', rank: 18, faction: 'horde' });
+    expect(describeSourceCell(cell)).toBe('PvP rank 18 · High Warlord · Horde');
+  });
+
+  it('still resolves an ordinary vendor (no rank/faction on the source) to the plain npc line', () => {
+    const cell = resolveSourceCell(slot({ item_id: 40, source_kind: 'vendor' }), 'horde', LOOT, 'fallback');
+    expect(cell).toEqual({ kind: 'vendor', npc: 'Gorn One Eye' });
   });
 
   it('falls back for a kind this resolver does not special-case', () => {

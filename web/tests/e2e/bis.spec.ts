@@ -16,20 +16,25 @@
 // (including a tie), `hunter/marksmanship` band 60 for the weight rail's DPS-per-point line
 // and its "No effect" row, and `druid/balance` (which never equips a ranged weapon) for the
 // ordinary empty-slot case. No fixture is committed for this page any more.
+//
+// `empty_reason` copy (fourth wow-player sweep, day 3, item 3): an empty slot's line is now
+// one of several honest reasons rather than one generic sentence -- `ANY_EMPTY_COPY` below
+// names every one `panel-view.ts`'s `emptyReasonLabel` can produce, so a sweep over
+// whichever empty slots the real data happens to carry this build still asserts a real,
+// known copy rather than pinning to whichever reason happened to be present when the test
+// was written.
 import { test, expect } from '@playwright/test';
 
-/** hunter-marksmanship's real data always empties off-hand together with a two-handed
- *  main hand (bands 20 and 40) -- never any other slot -- so a filled-vs-empty sweep over a
- *  band's rows can assert the right copy for either shape without hardcoding which band. */
-async function expectEmptyRowCopy(
-  row: import('@playwright/test').Locator,
-  slotTestId: string,
-): Promise<void> {
-  if (slotTestId.endsWith('-off_hand')) {
-    await expect(row).toContainText(/Two-hander equipped|No sourced item at this level yet/);
-  } else {
-    await expect(row).toContainText('No sourced item at this level yet');
-  }
+const ANY_EMPTY_COPY =
+  /Two-hander equipped|No sourced item at this level yet|Nothing sourced at this level helps your DPS|Relic effects aren't simulated yet/;
+
+/** hunter-marksmanship's real data empties several slots across its bands for several
+ *  different reasons (a two-handed main hand's own off-hand, a thin trinket pool, an
+ *  unmodelled relic effect) -- a filled-vs-empty sweep over a band's rows asserts one of
+ *  `ANY_EMPTY_COPY`'s known reasons for every one, without hardcoding which reason belongs
+ *  to which slot or band. */
+async function expectEmptyRowCopy(row: import('@playwright/test').Locator): Promise<void> {
+  await expect(row).toContainText(ANY_EMPTY_COPY);
 }
 
 test('Leveling BiS: index links to a spec, faction and band pills switch panels with no reload', async ({
@@ -71,9 +76,8 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
   expect(slotCount).toBe(17);
   for (let i = 0; i < slotCount; i += 1) {
     const row = slotRows.nth(i);
-    const slotTestId = (await row.getAttribute('data-testid'))!;
     const filled = (await row.locator('[data-testid^="item-hover-"]').count()) > 0;
-    if (!filled) await expectEmptyRowCopy(row, slotTestId);
+    if (!filled) await expectEmptyRowCopy(row);
   }
 
   // Toggle to Horde -- a label click on a hidden radio, no navigation.
@@ -191,6 +195,6 @@ test('Leveling BiS: an ordinary empty slot (not a two-hander gap) reads the plai
   const count = await emptyRows.count();
   test.skip(count === 0, 'no empty slot on this band with the current data');
   for (let i = 0; i < count; i += 1) {
-    await expect(emptyRows.nth(i)).toContainText(/Two-hander equipped|No sourced item at this level yet/);
+    await expect(emptyRows.nth(i)).toContainText(ANY_EMPTY_COPY);
   }
 });

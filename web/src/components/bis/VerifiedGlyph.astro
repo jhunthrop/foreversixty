@@ -12,12 +12,25 @@ interface Props {
   /** Square size in px -- 13 by default (the main pick's own name-line glyph); the alt
    *  row's own delta passes a smaller size to match its 11px text. */
   size?: number;
+  /** Overrides the default "confirmed by a Top Gear pass" title -- the main pick's own
+   *  glyph passes a sim-DPS-specific title (`panel-view.ts`'s `verifiedGlyphTitleFor`) when
+   *  the row has real sim evidence but no swap narrative to name. */
+  title?: string;
+  /** True for a purely decorative reuse -- the evidence line's own prefix icon, where the
+   *  adjacent text already states the fact this glyph means, so it carries no accessible
+   *  name of its own rather than making a screen reader announce the same sentence twice. */
+  decorative?: boolean;
 }
 
-const { size = 13 } = Astro.props;
+const { size = 13, title = bisCopy.verifiedGlyphTitle, decorative = false } = Astro.props;
 ---
 
-<span class="verified-glyph" title={bisCopy.verifiedGlyphTitle} aria-label={bisCopy.verifiedGlyphTitle}>
+<span
+  class="verified-glyph"
+  title={decorative ? undefined : title}
+  aria-hidden={decorative ? 'true' : undefined}
+  aria-label={decorative ? undefined : title}
+>
   <svg
     width={size}
     height={size}
