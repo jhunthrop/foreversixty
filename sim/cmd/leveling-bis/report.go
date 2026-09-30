@@ -914,7 +914,14 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				row.SimDPS = pk.Item.MeasuredDPS
 				row.Score = 0
 			}
-			row.EffectUnmodelled = pk.Item.EffectText != "" && !hasImplementedEffect(pk.Item.candidate)
+			// effectVerifiedInSim (rank.go), not the bare "does the
+			// engine's source claim this id" hasImplementedEffect: a
+			// picked item whose effect the engine truly implements but
+			// this build's own simdb silently stripped before every sim
+			// ran (Hand of Justice 11815 - rank.go's own doc) never had
+			// its effect exercised either, so it earns the same honest
+			// label an unimplemented effect already gets here.
+			row.EffectUnmodelled = pk.Item.EffectText != "" && !effectVerifiedInSim(pk.Item.candidate)
 			for _, tie := range pk.Ties {
 				row.Ties = append(row.Ties, tieAlternative{ItemID: tie.ID, ItemName: tie.Name})
 			}

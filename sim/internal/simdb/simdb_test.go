@@ -198,3 +198,63 @@ func TestAttachUnequipsAnItemTheDatabaseLacks(t *testing.T) {
 		t.Errorf("nil player: %v, %v", removed, err)
 	}
 }
+
+// TestKnownAgreesWithUnequipUnknown locks Known's own contract to
+// UnequipUnknown's real behaviour: an id Known reports true for must
+// survive Attach on a character wearing it, and one it reports false
+// for must be exactly the id UnequipUnknown strips. A ranker that
+// asks Known before trusting a real sim's measurement of an item's
+// effect (rank.go's effectVerifiedInSim) is only honest if Known and
+// UnequipUnknown can never disagree.
+func TestKnownAgreesWithUnequipUnknown(t *testing.T) {
+	db, err := load()
+	if err != nil {
+		t.Skip("embedded database unavailable:", err)
+	}
+	known := db.Items[0].Id
+	if !Known(known) {
+		t.Errorf("Known(%d) = false, want true (this id has its own simdb row)", known)
+	}
+
+	const unknownID int32 = 264908
+	if Known(unknownID) {
+		t.Fatalf("Known(%d) = true, want false (test fixture assumes this id has no simdb row)", unknownID)
+	}
+	removed, err := UnequipUnknown(&proto.Player{Equipment: &proto.EquipmentSpec{Items: []*proto.ItemSpec{{Id: unknownID}}}})
+	if err != nil || len(removed) != 1 || removed[0] != unknownID {
+		t.Fatalf("UnequipUnknown = %v, %v; want [%d], confirming Known(%d) = false was right", removed, err, unknownID, unknownID)
+	}
+}
+
+// TestKnownHandOfJusticeRegression documents the defect this lane
+// found and fixed (bis-ranker-integrity-8's own follow-on, effect-procs
+// lane, 2026-09-30): Hand of Justice (item 11815, sim/common's own
+// HandOfJustice constant in the wowsims-forever fork, which DOES
+// register a real on-hit proc for it) has no row in this build's
+// embedded simdb.bin, because its ItemSparse row is absent from this
+// build's client export (data/builds/<build>/raw/ItemSparse.csv) even
+// though its Item.csv row and items.json's own classic-db-fallback
+// entry both exist - data/pipeline/simdb/items.py's simdb_item_rows
+// only keeps a row present in BOTH client tables. Before this lane,
+// nothing asked Known before trusting a real sim's measured DPS with
+// Hand of Justice equipped, so simdb.Attach's own UnequipUnknown
+// silently stripped it from every tournament character and the
+// resulting measurement (bit-identical to no trinket at all) read as
+// "the engine modelled this effect and it is worth exactly zero" -
+// this lane's brief calls that a tenet-8 violation.
+//
+// This test intentionally names the real item id rather than a
+// synthetic one: it is the regression itself, not just a property of
+// Known in the abstract, and a future data-pipeline fix that adds
+// Hand of Justice's row back to simdb.bin should make this test fail
+// loudly (a reminder to update or remove it) rather than pass by
+// accident.
+func TestKnownHandOfJusticeRegression(t *testing.T) {
+	if _, err := load(); err != nil {
+		t.Skip("embedded database unavailable:", err)
+	}
+	const handOfJustice int32 = 11815
+	if Known(handOfJustice) {
+		t.Fatalf("Known(%d) = true; Hand of Justice now has a simdb row - rank.go's effectVerifiedInSim doc and this lane's report are stale, and known-good fixtures for the affected specs need a re-measure", handOfJustice)
+	}
+}

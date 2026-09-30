@@ -57,6 +57,36 @@ var itemIDs = sync.OnceValues(func() (map[int32]struct{}, error) {
 	return ids, nil
 })
 
+// Known reports whether id carries a row in the embedded item database
+// -- the same table UnequipUnknown checks a worn item against. A
+// ranker that equips id and trusts the engine to model its effect
+// (effectids_generated.go's own claim) has to ask this first: an id
+// this returns false for is silently stripped from every character's
+// equipment by UnequipUnknown before the engine ever builds it, so its
+// effect (registered in the engine by item id, sim/core/item_effects.go)
+// never has a chance to apply -- a real sim of it still runs and still
+// reports a real number, but that number is the set's DPS with the
+// item simply not worn, not a measurement of its effect. A caller that
+// ignores this and reads a resulting zero DPS delta as "this effect is
+// real and worth nothing" publishes exactly the false tie this lane's
+// brief calls the tenet-8 violation (Hand of Justice 11815, missing
+// from this build's simdb.bin because its ItemSparse row is absent
+// from the client export -- see data/pipeline/simdb/items.py's own
+// "present in both tables" filter -- while its Item.csv row and
+// items.json's own classic-db-fallback entry both still exist).
+// Returns false (not an error) on a load failure: the caller already
+// has its own path for a load failure (Attach/AttachWeights return an
+// error first), so by the time Known is asked, id is either in the
+// loaded table or it is not.
+func Known(id int32) bool {
+	ids, err := itemIDs()
+	if err != nil {
+		return false
+	}
+	_, ok := ids[id]
+	return ok
+}
+
 // Attach puts the database on every player of a built request, which is
 // what makes an item id resolve. It is called once per request rather
 // than once per process because the engine offers no other way in.

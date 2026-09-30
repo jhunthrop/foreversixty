@@ -516,10 +516,18 @@ func TestRankTrinketSlotLeavesGainUnmeasuredWhenTheBaselineSimFails(t *testing.T
 }
 
 // modelledEffectItemID is a real engine-implemented-effect id
-// (effectids_generated.go) - any id in that map makes hasImplementedEffect
-// true once EffectText is also set, so trinketEffectUnmodelled reads it
-// as "modelled" the same way a real proc trinket would be.
-const modelledEffectItemID = 647
+// (effectids_generated.go) that is ALSO known to the real embedded
+// simdb (rank_test.go's own 754, "the real Shortsword of Vengeance
+// id" - the same item rank_test.go already uses for exactly this
+// reason). trinketEffectUnmodelled now asks effectVerifiedInSim
+// (rank.go), which requires both: an id in effectids_generated.go's
+// map but absent from simdb (Hand of Justice 11815's own defect,
+// this lane's brief) reads as unmodelled precisely because a real
+// sim of it never actually wears the item - picking a ONLY-in-map id
+// for this constant (the previous 647) would fail that second check
+// and read as unmodelled here too, which is not what these tests are
+// about.
+const modelledEffectItemID = 754
 
 // Hybrid sweep, bis-ranker-integrity-4 lane, item 4: Serenity Field (an
 // unmodelled Spirit self-buff) beat a real combat trinket at band 60

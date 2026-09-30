@@ -29,6 +29,41 @@ func TestHasImplementedEffect(t *testing.T) {
 	}
 }
 
+// TestEffectVerifiedInSimCatchesAnItemSimdbSilentlyStrips is the
+// regression for this lane's own defect: Hand of Justice (11815) is a
+// real entry in effectids_generated.go - the engine genuinely
+// registers a proc for it (sim/common's HandOfJustice, wowsims-forever)
+// - but this build's embedded simdb has no row for it at all (its
+// ItemSparse row is missing from this build's client export; see
+// sim/internal/simdb's own TestKnownHandOfJusticeRegression). Before
+// this lane, hasImplementedEffect alone decided "was this verified",
+// so a real sim of Hand of Justice - which simdb.Attach's own
+// UnequipUnknown silently strips before the sim ever runs - measured
+// bit-identical to no trinket at all and read as a genuine,
+// zero-value verification instead of what it actually was: an item
+// the sim never wore. effectVerifiedInSim is the fix: it additionally
+// requires the id survive simdb.Known, so this exact case reports
+// false, the same "not actually verified" answer report.go and
+// trinkets.go's own tie-break logic now both ask for.
+func TestEffectVerifiedInSimCatchesAnItemSimdbSilentlyStrips(t *testing.T) {
+	handOfJustice := effectItem(11815, "Hand of Justice", "Equip: Chance on hit to gain an extra attack.")
+	implemented := effectItem(3854, "Frost Tiger Blade", "Launches a bolt of frost.")
+
+	if effectVerifiedInSim(handOfJustice.candidate) {
+		t.Error("Hand of Justice (11815) has no simdb row in this build; effectVerifiedInSim = true, want false")
+	}
+	if !effectVerifiedInSim(implemented.candidate) {
+		t.Error("Frost Tiger Blade (3854) is both engine-implemented and known to simdb; effectVerifiedInSim = false, want true")
+	}
+	// hasImplementedEffect's own, looser question is unaffected: Hand
+	// of Justice still gates a real sim (trinketShortlist,
+	// slotsNeedingEffectVerification) even though that sim cannot be
+	// trusted to have verified its effect.
+	if !hasImplementedEffect(handOfJustice.candidate) {
+		t.Error("Hand of Justice (11815) is a real effectids_generated.go entry; hasImplementedEffect = false, want true")
+	}
+}
+
 func TestSlotsNeedingEffectVerificationSkipsTrinketsAndPlainSlots(t *testing.T) {
 	bySlot := map[string][]scored{
 		"trinket1": {effectItem(3854, "Frost Tiger Blade", "text", "trinket1")}, // implemented, but trinket - always excluded
