@@ -6,13 +6,12 @@
 // the art lane delivers the per-class tree art, never a placeholder texture invented here.
 // New (design/DESIGN-SYSTEM.md's "Class page header": `ArtPanel` + `ClassHeader`, neither
 // exists in web/src/components/ today -- confirmed by search).
-interface Props {
-  /** Selects the per-class tree art once the art lane delivers it -- unused today, kept so
-   *  a future fill-in changes only this component's own background, never its callers. */
+// Callers pass classSlug for the per-class tree art; it is read once the art lane delivers
+// it, so it is declared here as an accepted prop without being destructured (an unused
+// binding fails lint).
+export interface Props {
   classSlug: string;
 }
-
-const { classSlug: _classSlug } = Astro.props;
 ---
 
 <div class="art-panel">

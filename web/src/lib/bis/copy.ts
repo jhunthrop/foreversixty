@@ -63,9 +63,9 @@ export const bisCopy = {
   // wow-player review round 2, 390px capture). Never a `white-space: nowrap` on the line's
   // own outer element instead: several of these lines (`alternativeMetaLabel` below) join
   // two such tokens with " · ", which must still be free to wrap between them.
-  questLevelLabel: (level: number): string => `Level ${level}`,
+  questLevelLabel: (level: number): string => `Level\u00a0${level}`,
   /** The row's small item-level figure, labelled so a bare number never has to be guessed at. */
-  itemLevelShort: (level: number): string => `ilvl ${level}`,
+  itemLevelShort: (level: number): string => `ilvl\u00a0${level}`,
   dungeonSourceLabel: (instance: string, boss?: string): string =>
     boss === undefined ? instance : `${instance} · ${boss}`,
   /** "Crafted: Blacksmithing" when the source's own name already IS the profession --
@@ -156,7 +156,7 @@ export const bisCopy = {
    *  band's own level is already implied by the row being shown here at all, so naming it
    *  every time would be noise, not information. */
   alternativeMetaLabel: (itemLevel: number, requiredLevel: number, band: number): string =>
-    requiredLevel > band ? `ilvl ${itemLevel} · needs ${requiredLevel}` : `ilvl ${itemLevel}`,
+    requiredLevel > band ? `ilvl\u00a0${itemLevel} · needs\u00a0${requiredLevel}` : `ilvl\u00a0${itemLevel}`,
   /** A rating-family row's native `title` hover (spec addendum 2, §C(2)): the client's own
    *  rating-per-percent conversion, so "Crit rating" doesn't leave a player guessing what
    *  "rating" means -- `14 Crit rating = 1% Crit`. */
