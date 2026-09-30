@@ -129,7 +129,7 @@ export const bisCopy = {
    *  computed off the same `rows` array the paperdoll renders), so the number named here
    *  always matches a row a player can go find and read for themselves. */
   setDpsPartialNote: (count: number): string =>
-    `Doesn't include ${count} pick${count === 1 ? '' : 's'} marked "not sim-checked"`,
+    `Set DPS leaves out ${count} pick${count === 1 ? '' : 's'} marked not sim-checked`,
   raceTalentsLine: (race: string, points: number): string =>
     `${capitalise(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
 
