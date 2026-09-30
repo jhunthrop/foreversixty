@@ -606,6 +606,8 @@ _OPTIONAL_SOURCE_KEYS = {
     "faction_id",
     "standing",
     "rank",
+    # bis-ranker-integrity-4, 2026-09-30: a split pvp source names its rank title.
+    "title",
     "npc_id",
     "bosses",
     "trash",
