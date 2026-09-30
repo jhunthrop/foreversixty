@@ -1,6 +1,14 @@
 // web/src/lib/bis/copy.ts
 // Every string the /bis pages show, in one module (the site's own pattern -- see
-// lib/planner/copy.ts and lib/sim/copy.ts).
+// lib/planner/copy.ts and lib/sim/copy.ts). `craftedSourceLabel`/`pvpSourceLabel` (and
+// `pvpRankTitle`, re-exported below for existing importers) live in
+// `lib/items/source-labels.ts`, not here, and are only re-attached to this object -- see
+// that file's own header for why (the item tooltip needs those two functions but must
+// never pay for the rest of this much larger, /bis-page-only object).
+import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from '../items/source-labels';
+
+export { pvpRankTitle };
+
 export const bisCopy = {
   navLabel: 'Leveling BiS',
   indexTitle: 'Leveling BiS',
@@ -67,11 +75,9 @@ export const bisCopy = {
    *  polish, 2026-09-30). "Crafted: <Profession> · <name>" only when they genuinely differ,
    *  for a future crafted source named by something other than its own profession (a
    *  specific recipe, say). Shared by the panel's source cell (`source-cell.ts`) and the
-   *  item tooltip (`items/tooltip.ts`) so both say the same thing for the same source. */
-  craftedSourceLabel: (name: string, profession?: string): string =>
-    profession === undefined || profession.toLowerCase() === name.toLowerCase()
-      ? `Crafted: ${name}`
-      : `Crafted: ${capitalise(profession)} · ${name}`,
+   *  item tooltip (`items/tooltip.ts`) so both say the same thing for the same source --
+   *  its own implementation lives in `items/source-labels.ts`, this file's own import. */
+  craftedSourceLabel,
   vendorSourceLabel: (npc: string): string => `Vendor: ${npc}`,
   repSourceLabel: (factionName: string, standing?: string): string =>
     standing === undefined ? factionName : `${factionName} (${standing})`,
@@ -82,13 +88,7 @@ export const bisCopy = {
    *  faction, not a pipeline id. Falls back to naming just the rank and faction when the
    *  rank falls outside the known ladder (`pvpRankTitle` returning `undefined` -- should
    *  not happen on real data, but never worse than an incomplete-but-true line). */
-  pvpSourceLabel: (rank: number, faction: 'alliance' | 'horde'): string => {
-    const title = pvpRankTitle(faction, rank);
-    const factionLabel = faction === 'alliance' ? 'Alliance' : 'Horde';
-    return title === undefined
-      ? `PvP rank ${rank} · ${factionLabel}`
-      : `PvP rank ${rank} · ${title} · ${factionLabel}`;
-  },
+  pvpSourceLabel,
   /** "40% from Lord Serpentis", "6% from Deadmines trash" -- classic-db's own drop
    *  chance (src-classicdb lane, 2026-09-29), shown in front of the place a source cell
    *  would otherwise just name plainly. */
@@ -398,52 +398,4 @@ export function joinWithAnd(parts: readonly string[]): string {
   if (parts.length === 0) return '';
   if (parts.length === 1) return parts[0]!;
   return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
-}
-
-// --- pvp rank titles (third wow-player sweep defect, 2026-09-29) --------------------------
-// Vanilla's own Alliance/Horde PvP rank ladders, ranks 1-14 in order -- mirrors
-// data/pipeline/loot/pvp_faction.py's ALLIANCE_TITLES/HORDE_TITLES, the primary source for
-// both. Blizzard's own client `RequiredPVPRank` column (loot.json's `LootSource.rank`) is
-// these ranks + 4, which `pvpRankTitle` undoes.
-const ALLIANCE_PVP_TITLES = [
-  'Private',
-  'Corporal',
-  'Sergeant',
-  'Master Sergeant',
-  'Sergeant Major',
-  'Knight',
-  'Knight-Lieutenant',
-  'Knight-Captain',
-  'Knight-Champion',
-  'Lieutenant Commander',
-  'Commander',
-  'Marshal',
-  'Field Marshal',
-  'Grand Marshal',
-] as const;
-
-const HORDE_PVP_TITLES = [
-  'Scout',
-  'Grunt',
-  'Sergeant',
-  'Senior Sergeant',
-  'First Sergeant',
-  'Stone Guard',
-  'Blood Guard',
-  'Legionnaire',
-  'Centurion',
-  'Champion',
-  'Lieutenant General',
-  'General',
-  'Warlord',
-  'High Warlord',
-] as const;
-
-/** loot.json's own pvp source `rank` (Blizzard's client RequiredPVPRank, 5-18) -> the
- *  in-game rank title for `faction` ("Knight-Lieutenant" for alliance rank 11). `undefined`
- *  for a rank outside the ladder -- should not happen; loot.json only ever writes 5-18, but
- *  a caller sees a title-less line rather than an out-of-bounds crash if it ever did. */
-export function pvpRankTitle(faction: 'alliance' | 'horde', rank: number): string | undefined {
-  const titles = faction === 'alliance' ? ALLIANCE_PVP_TITLES : HORDE_PVP_TITLES;
-  return titles[rank - 5];
 }
