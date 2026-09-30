@@ -475,10 +475,11 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			out.NoDPSWeapon = append(out.NoDPSWeapon, c)
 		}
 		out.Scored = append(out.Scored, scored{
-			candidate: c,
-			Score:     score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot),
-			Source:    src,
-			HasSource: true,
+			candidate:     c,
+			Score:         score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot),
+			Source:        src,
+			HasSource:     true,
+			DeadStatCount: deadStatCount(c, weights),
 		})
 	}
 	sort.Slice(out.NoSource, func(i, j int) bool { return out.NoSource[i].ID < out.NoSource[j].ID })

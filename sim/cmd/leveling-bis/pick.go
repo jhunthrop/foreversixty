@@ -65,6 +65,17 @@ type scored struct {
 	// any other class) both used to win zero-delta ties against this
 	// noise alone.
 	MeasuredGainStdErr float64
+	// DeadStatCount is how many of this candidate's own positive-amount
+	// stats this spec's weights do not value at all (score.go's own
+	// deadStatCount) - this lane's brief (bis-ranker-integrity-12),
+	// item 5: candidatesBySlot's own exact-score tie-break reads this
+	// BEFORE item level, so a candidate whose stats are all real for
+	// this spec beats one that reaches the identical score by padding
+	// it with a stat the spec never weighs (rogue band 20 hands: Gloves
+	// of the Fang's +4 Strength, weighted once bis-ranker-integrity-12
+	// added it to rogue's own weight_stats, versus Serpent Gloves' +7
+	// Spell Power, dead for every rogue spec).
+	DeadStatCount int
 }
 
 // slotOrder is the order sim/api.GearSlots and the engine's own
@@ -120,14 +131,28 @@ type slotPick struct {
 // implemented-effect tournament, already keep the higher-SCORE
 // candidate whenever a real sim cannot clear its own noise floor, "the
 // weights already encode the spec's stat preferences" being exactly
-// why that default is correct and needed no change here), the higher
-// ITEM LEVEL is the principled break: a higher-ilvl item is the better
-// real-world upgrade path (an easier or later, but not undertuned
-// substitute) even when this build's own weights happen to value its
-// particular stat mix identically to a lower-ilvl item's different
-// mix. Item id remains the final, purely-for-determinism fallback when
-// even item level ties (never observed in this build's data, but
-// needed for a stable sort regardless).
+// why that default is correct and needed no change here):
+//
+// bis-ranker-integrity-12 lane, item 5: fewer DEAD stats (scored.
+// DeadStatCount, score.go's own deadStatCount - a positive-amount stat
+// this spec's weights do not value at all) breaks the tie FIRST, ahead
+// of item level - rogue band 20's own repro, all three rogue specs:
+// Serpent Gloves (+6 Agility, +7 Spell Power - dead for every rogue)
+// and Gloves of the Fang (+6 Agility, +4 Strength) scored identically
+// at item level 23 vs 19 before Strength was ever weighted for a rogue
+// at all (this lane's own second fix, data/curated/specs.json), so the
+// item-level break alone published the item with the LARGER dead stat
+// as though a bigger irrelevant number were a real tiebreak. A
+// candidate whose whole stat block the spec's weights actually use is
+// the more defensible real-world upgrade whatever either item's raw
+// ilvl says; the higher ITEM LEVEL remains the break once dead-stat
+// counts also tie - a higher-ilvl item is the better real-world upgrade
+// path (an easier or later, but not undertuned substitute) even when
+// this build's own weights happen to value its particular stat mix
+// identically to a lower-ilvl item's different mix. Item id remains
+// the final, purely-for-determinism fallback when even item level ties
+// (never observed in this build's data, but needed for a stable sort
+// regardless).
 func candidatesBySlot(pool []scored) map[string][]scored {
 	out := map[string][]scored{}
 	for _, s := range pool {
@@ -139,6 +164,9 @@ func candidatesBySlot(pool []scored) map[string][]scored {
 		sort.SliceStable(list, func(i, j int) bool {
 			if list[i].Score != list[j].Score {
 				return list[i].Score > list[j].Score
+			}
+			if list[i].DeadStatCount != list[j].DeadStatCount {
+				return list[i].DeadStatCount < list[j].DeadStatCount
 			}
 			if list[i].ItemLevel != list[j].ItemLevel {
 				return list[i].ItemLevel > list[j].ItemLevel

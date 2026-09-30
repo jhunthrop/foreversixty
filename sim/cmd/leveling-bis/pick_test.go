@@ -44,6 +44,33 @@ func TestCandidatesBySlotBreaksAnExactScoreTieByHigherItemLevel(t *testing.T) {
 	}
 }
 
+// TestCandidatesBySlotBreaksAnExactScoreTieByFewerDeadStatsBeforeItemLevel
+// is this lane's brief (bis-ranker-integrity-12), item 5: rogue band
+// 20's own repro, all three rogue specs - Serpent Gloves (+6 Agility,
+// +7 Spell Power, item level 23) and Gloves of the Fang (+6 Agility,
+// +4 Strength, item level 19) scored identically before Strength was
+// ever weighted for a rogue (data/curated/specs.json, this lane's own
+// second fix) - Spell Power is dead for every rogue spec, and the OLD
+// tie-break (item level alone) published the item padded with the
+// bigger dead stat, item level 23, as though a higher irrelevant
+// number were a real reason to prefer it. Fewer dead stats must win
+// the tie even against a LOWER item level.
+func TestCandidatesBySlotBreaksAnExactScoreTieByFewerDeadStatsBeforeItemLevel(t *testing.T) {
+	moreDeadStats := item(1, "Padded With A Dead Stat", 10, "hands")
+	moreDeadStats.ItemLevel = 23
+	moreDeadStats.DeadStatCount = 1
+	fewerDeadStats := item(2, "All Real Stats", 10, "hands")
+	fewerDeadStats.ItemLevel = 19
+	fewerDeadStats.DeadStatCount = 0
+	bySlot := candidatesBySlot([]scored{moreDeadStats, fewerDeadStats})
+	if bySlot["hands"][0].ID != 2 {
+		t.Fatalf("hands[0] = %+v, want item 2 (0 dead stats beats item 1's 1 dead stat, despite item 1's higher item level)", bySlot["hands"][0])
+	}
+	if bySlot["hands"][1].ID != 1 {
+		t.Fatalf("hands[1] = %+v, want item 1 second", bySlot["hands"][1])
+	}
+}
+
 // The tie-break's own final fallback: when item level ALSO ties, id
 // ascending still decides, purely for a stable, deterministic sort -
 // never observed in this build's real data (this lane's brief), but

@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -398,8 +399,36 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	// MeasuredDPS, not Score, to decide what this row publishes.
 	best.MeasuredDPS = results[winner].dps
 	if baselineErr == nil {
-		best.MeasuredGainDPS = results[winner].dps - baselineDPS
-		best.MeasuredGainStdErr = gainStdErr(results[winner].stdErr)
+		gainDPS := results[winner].dps - baselineDPS
+		stdErr := gainStdErr(results[winner].stdErr)
+		// This lane's brief (bis-ranker-integrity-12), item 1: the
+		// ordering pass above only ever runs at trinketRankIterations
+		// (100) - enough to ORDER the shortlist, but the WINNER's own
+		// gain vs baseline is what trinketGainSignificant (weights.go)
+		// gates the whole slot on, and a gain sitting close to that bar
+		// can swing across it purely from noise: two otherwise-identical
+		// reruns of this exact command against the live engine (this
+		// lane's own repro, paladin-retribution band 60) measured
+		// Second Wind's own set DPS at 186.96 and 188.28 with nothing
+		// else different, and the committed nightly's own Alliance/Horde
+		// pair for the same band+slot picked two DIFFERENT trinkets
+		// (Second Wind / Burst of Knowledge) for exactly this reason. A
+		// specifically high-variance spec can fail EVERY trinket in a
+		// band this way at the flat iteration count (controller-flagged:
+		// mage-fire band 60, both factions, both trinket slots -
+		// Ignite's own variance keeps the gain inside 2x its own error
+		// for every shortlisted candidate). trinketAdaptiveGain re-measures
+		// only this ONE winning candidate, at escalating iteration
+		// counts, until its own error is comfortably below its own gain
+		// or a ceiling is reached - see its own doc for why only the
+		// winner, not the whole shortlist.
+		if refinedGain, refinedStdErr, err := trinketAdaptiveGain(runner, spec, race, classSlug, level, talents, picks, slot, best.ID, gainDPS, stdErr); err == nil {
+			gainDPS, stdErr = refinedGain, refinedStdErr
+		} else {
+			notes = append(notes, slot+": adaptive gain re-measurement for "+best.Name+" failed, keeping the "+strconv.Itoa(trinketRankIterations)+"-iteration measurement: "+err.Error())
+		}
+		best.MeasuredGainDPS = gainDPS
+		best.MeasuredGainStdErr = stdErr
 		best.GainMeasured = true
 	}
 	sp := slotPick{Item: &best}
@@ -419,4 +448,77 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 
 func formatTrinketRankError(slot string, c scored, err error) string {
 	return slot + ": ranking candidate " + c.Name + " failed: " + err.Error()
+}
+
+// trinketGainAdaptivePrecisionDivisor is trinketAdaptiveGain's own
+// target: keep escalating the winning candidate's own gain measurement
+// until its combined standard error sits under gain/4 - this lane's
+// brief (bis-ranker-integrity-12), item 1, verbatim ("stderr <
+// gain/4"). Comfortably inside trinketGainSignificanceMultiplier's own
+// 2x significance bar (weights.go), so the escalation loop is
+// confirming the gain, not merely chasing the same bar it started
+// short of.
+const trinketGainAdaptivePrecisionDivisor = 4.0
+
+// trinketGainAdaptiveIterationCeiling bounds how far trinketAdaptiveGain
+// will escalate a single winning candidate's own gain measurement -
+// weights.go's own trinketGainSignificanceMultiplier doc already found
+// that even a 20x rerun (100 to 2000 iterations) of a genuinely
+// zero-relevance trinket does not shrink its gain toward zero (an
+// engine-side question, not this loop's), so this loop only ever
+// existing to shrink the ERROR, not chase a gain that is not really
+// there, a 2000-iteration ceiling matches that same finding rather
+// than inventing a new number.
+const trinketGainAdaptiveIterationCeiling = 2000
+
+// trinketAdaptiveGain re-measures winnerID's own gain over the
+// no-trinket baseline (rankTrinketSlot's own call site: the ordering
+// pass's WINNER only, never every shortlist candidate, so the added
+// cost is one slot's one item per band per faction, not the whole
+// tournament) at increasing iteration counts - doubling each round,
+// capped at trinketGainAdaptiveIterationCeiling - until the gain's own
+// combined standard error clears trinketGainAdaptivePrecisionDivisor,
+// or a re-run errors (the caller already has a valid measurement from
+// the ordering pass to fall back on in that case, so the error is
+// returned rather than panicking a whole band).
+//
+// This is this lane's brief, item 1's actual mechanism finding: a gain
+// sitting close to trinketGainSignificant's own bar can swing across
+// it purely from sampling noise (Fire Ruby: 0.77 DPS gain against a
+// 0.71 combined stdErr at the flat 100-iteration pass, hunter-beast-
+// mastery band 50 - ranker-11's own repro) or from which faction
+// happened to be simmed at all (this lane's own repro: two otherwise-
+// identical reruns of paladin-retribution band 60 measured Second
+// Wind's own set DPS at 186.96 and 188.28 with nothing else different,
+// and the committed nightly's Alliance/Horde pair picked two different
+// trinkets for exactly this reason) - and a specifically high-variance
+// spec can fail EVERY trinket in a band this way at the flat iteration
+// count (controller-flagged: mage-fire band 60, both factions, both
+// trinket slots - Ignite's own variance). Escalating only the winner's
+// own gain, rather than raising trinketRankIterations for the whole
+// shortlist, keeps this fix's added cost to the one candidate that
+// actually decides the slot.
+func trinketAdaptiveGain(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, slot string, winnerID int, gainDPS, stdErr float64) (float64, float64, error) {
+	iterations := trinketRankIterations
+	for gainDPS > 0 && stdErr >= gainDPS/trinketGainAdaptivePrecisionDivisor && iterations < trinketGainAdaptiveIterationCeiling {
+		iterations *= 2
+		if iterations > trinketGainAdaptiveIterationCeiling {
+			iterations = trinketGainAdaptiveIterationCeiling
+		}
+		gear := swapSlot(picks, slot, winnerID, false)
+		req := plainRequest(spec, bandCharacter("trinket-rank-adaptive", race, classSlug, spec.Spec, level, talents, gear), iterations, verifySeed)
+		candDPS, candStdErr, err := runner.RunPlainDPSWithError(req)
+		if err != nil {
+			return gainDPS, stdErr, err
+		}
+		baselineGear := swapSlot(picks, slot, 0, false)
+		baseReq := plainRequest(spec, bandCharacter("trinket-rank-adaptive-baseline", race, classSlug, spec.Spec, level, talents, baselineGear), iterations, verifySeed)
+		baseDPS, baseStdErr, err := runner.RunPlainDPSWithError(baseReq)
+		if err != nil {
+			return gainDPS, stdErr, err
+		}
+		gainDPS = candDPS - baseDPS
+		stdErr = math.Sqrt(candStdErr*candStdErr + baseStdErr*baseStdErr)
+	}
+	return gainDPS, stdErr, nil
 }

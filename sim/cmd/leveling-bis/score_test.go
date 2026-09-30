@@ -15,6 +15,32 @@ func TestScoreStatsOnly(t *testing.T) {
 	}
 }
 
+// TestDeadStatCount is this lane's brief (bis-ranker-integrity-12),
+// item 5: a positive-amount stat this spec's weights do not value at
+// all (Spell Power for a rogue, Strength for a caster) counts as
+// dead; an unweighted stat with a ZERO or negative amount does not
+// (nothing real is being wasted), and a weighted stat never counts
+// regardless of its own weight's size.
+func TestDeadStatCount(t *testing.T) {
+	weights := map[string]float64{"agility": 1.0}
+	cases := []struct {
+		name  string
+		stats map[string]float64
+		want  int
+	}{
+		{"all weighted", map[string]float64{"agility": 6}, 0},
+		{"one dead stat", map[string]float64{"agility": 6, "spell_power": 7}, 1},
+		{"two dead stats", map[string]float64{"spell_power": 7, "intellect": 4}, 2},
+		{"zero-amount unweighted stat is not dead", map[string]float64{"agility": 6, "spell_power": 0}, 0},
+		{"no stats at all", map[string]float64{}, 0},
+	}
+	for _, c := range cases {
+		if got := deadStatCount(candidate{Stats: c.stats}, weights); got != c.want {
+			t.Errorf("%s: deadStatCount = %d, want %d", c.name, got, c.want)
+		}
+	}
+}
+
 func TestScoreWeaponDPSConvertsThroughAttackPowerPerDPS(t *testing.T) {
 	c := candidate{DPS: 20, Stats: map[string]float64{"agility": 4}}
 	weights := map[string]float64{"ranged_attack_power": 0.5, "agility": 2.0}

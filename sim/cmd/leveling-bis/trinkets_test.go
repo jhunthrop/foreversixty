@@ -817,3 +817,218 @@ func TestRankTrinketSlotComputesMeasuredGainStdErrInQuadrature(t *testing.T) {
 		t.Errorf("MeasuredGainStdErr = %v, want %v (sqrt(0.6^2+0.5^2), combined in quadrature)", item.MeasuredGainStdErr, want)
 	}
 }
+
+// This lane's brief (bis-ranker-integrity-12), item 1: trinketAdaptiveGain
+// is the mechanism fix - a gain sitting close to trinketGainSignificant's
+// own bar can swing across it purely from noise, so the winning
+// candidate's own gain gets re-measured at escalating iteration counts
+// until its error is comfortably below it. TestTrinketAdaptiveGain*
+// below exercise the function directly (no rankTrinketSlot/shortlist
+// scaffolding needed); TestRankTrinketSlotAdaptiveGain* below that
+// confirm the real call site wires it in.
+func TestTrinketAdaptiveGainSkipsWhenAlreadyPrecise(t *testing.T) {
+	fake := &fakeEngine{}
+	picks := map[string]slotPick{}
+	gain, stdErr, err := trinketAdaptiveGain(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, "trinket1", 2, 10, 2)
+	if err != nil {
+		t.Fatalf("err = %v, want nil", err)
+	}
+	if gain != 10 || stdErr != 2 {
+		t.Fatalf("trinketAdaptiveGain = (%v, %v), want unchanged (10, 2): already comfortably below gain/4 (2.5)", gain, stdErr)
+	}
+	if len(fake.Calls) != 0 {
+		t.Fatalf("Calls = %v, want none - an already-precise gain must never re-sim at all", fake.Calls)
+	}
+}
+
+func TestTrinketAdaptiveGainSkipsWhenGainIsNotPositive(t *testing.T) {
+	fake := &fakeEngine{}
+	picks := map[string]slotPick{}
+	gain, stdErr, err := trinketAdaptiveGain(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, "trinket1", 2, -3, 5)
+	if err != nil {
+		t.Fatalf("err = %v, want nil", err)
+	}
+	if gain != -3 || stdErr != 5 {
+		t.Fatalf("trinketAdaptiveGain = (%v, %v), want unchanged (-3, 5): a non-positive gain is never a noise-near-the-bar case", gain, stdErr)
+	}
+	if len(fake.Calls) != 0 {
+		t.Fatalf("Calls = %v, want none", fake.Calls)
+	}
+}
+
+// TestTrinketAdaptiveGainEscalatesUntilPrecise is this lane's own
+// repro shape: the flat trinketRankIterations (100) pass leaves the
+// gain's error too close to the gain itself, so the loop doubles the
+// iteration count (100 -> 200 -> 400) until the combined error clears
+// gain/4, re-measuring both the candidate and the no-trinket baseline
+// each round (gainStdErr's own quadrature rule).
+func TestTrinketAdaptiveGainEscalatesUntilPrecise(t *testing.T) {
+	winnerGear := gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}})
+	baselineGear := gearKey(nil)
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			winnerGear:   210,
+			baselineGear: 200,
+		},
+		StdErrFunc: func(req api.SimRequest) float64 {
+			switch req.Iterations {
+			case 200:
+				return 2.0
+			case 400:
+				return 0.4
+			default:
+				t.Fatalf("unexpected iteration count %d requested", req.Iterations)
+				return 0
+			}
+		},
+	}
+	picks := map[string]slotPick{}
+	// Entry point: the 100-iteration ordering pass's own measurement -
+	// gain 10, stdErr 3.5 (>= 10/4 = 2.5, so escalation must start).
+	gain, stdErr, err := trinketAdaptiveGain(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, "trinket1", 2, 10, 3.5)
+	if err != nil {
+		t.Fatalf("err = %v, want nil", err)
+	}
+	if gain != 10 {
+		t.Errorf("gain = %v, want 10 (210-200, unchanged across rounds)", gain)
+	}
+	wantStdErr := math.Sqrt(0.4*0.4 + 0.4*0.4)
+	if diff := stdErr - wantStdErr; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("stdErr = %v, want %v (sqrt(0.4^2+0.4^2) at the 400-iteration round, where it first clears gain/4)", stdErr, wantStdErr)
+	}
+	if len(fake.Calls) != 4 {
+		t.Fatalf("Calls = %v, want exactly 4 (candidate+baseline at 200, then again at 400 - the 200 round did not clear gain/4)", fake.Calls)
+	}
+}
+
+// TestTrinketAdaptiveGainStopsAtCeiling is a trinket whose own error
+// never shrinks enough (weights.go's trinketGainSignificanceMultiplier
+// doc: a genuinely zero-relevance trinket's gain does not shrink
+// toward zero as iterations rise either) - the loop must still
+// terminate at trinketGainAdaptiveIterationCeiling rather than escalate
+// forever, and return its last measurement (not significant, but not
+// this function's job to force significance) without an error.
+func TestTrinketAdaptiveGainStopsAtCeiling(t *testing.T) {
+	var maxIterationsSeen int
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}}): 205,
+			gearKey(nil): 200,
+		},
+		StdErrFunc: func(req api.SimRequest) float64 {
+			if req.Iterations > maxIterationsSeen {
+				maxIterationsSeen = req.Iterations
+			}
+			return 4.0 // never shrinks below gain/4 (5/4 = 1.25)
+		},
+	}
+	picks := map[string]slotPick{}
+	gain, stdErr, err := trinketAdaptiveGain(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, "trinket1", 2, 5, 4.0)
+	if err != nil {
+		t.Fatalf("err = %v, want nil (a ceiling is not a failure)", err)
+	}
+	if gain != 5 {
+		t.Errorf("gain = %v, want 5 (205-200)", gain)
+	}
+	wantStdErr := math.Sqrt(4.0*4.0 + 4.0*4.0)
+	if diff := stdErr - wantStdErr; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("stdErr = %v, want %v (last measurement at the ceiling)", stdErr, wantStdErr)
+	}
+	if maxIterationsSeen != trinketGainAdaptiveIterationCeiling {
+		t.Errorf("max iterations requested = %d, want exactly the ceiling (%d), never beyond it", maxIterationsSeen, trinketGainAdaptiveIterationCeiling)
+	}
+}
+
+// TestTrinketAdaptiveGainReturnsOriginalMeasurementOnRerunFailure: a
+// re-run that fails (an engine-side error, not a scoring one) must not
+// discard the ordering pass's own valid measurement - the caller
+// (rankTrinketSlot) falls back to it and logs a note instead.
+func TestTrinketAdaptiveGainReturnsOriginalMeasurementOnRerunFailure(t *testing.T) {
+	fake := &fakeEngine{
+		FailGear: gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}}),
+	}
+	picks := map[string]slotPick{}
+	gain, stdErr, err := trinketAdaptiveGain(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, "trinket1", 2, 10, 3.5)
+	if err == nil {
+		t.Fatal("err = nil, want the forced engine failure")
+	}
+	if gain != 10 || stdErr != 3.5 {
+		t.Errorf("(gain, stdErr) = (%v, %v), want the original (10, 3.5) unchanged on a failed re-run", gain, stdErr)
+	}
+}
+
+// TestRankTrinketSlotAdaptiveGainRefinesTheWinnersOwnGain is the real
+// call site (rankTrinketSlot's own tail): the ordering pass measures a
+// noisy near-the-bar gain at trinketRankIterations, and the adaptive
+// refinement above narrows it before report.go's trinketGainSignificant
+// ever sees it.
+func TestRankTrinketSlotAdaptiveGainRefinesTheWinnersOwnGain(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "Placeholder"}}},
+	}
+	bySlot := map[string][]scored{
+		"trinket1": {trinket(2, "Only Candidate", 20)},
+	}
+	winnerGear := gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}})
+	baselineGear := gearKey(nil)
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{winnerGear: 210, baselineGear: 200},
+		StdErrFunc: func(req api.SimRequest) float64 {
+			if req.Iterations <= trinketRankIterations {
+				return 3.5 // the ordering pass's own noisy measurement
+			}
+			return 0.1 // any escalated round is precise
+		},
+	}
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none", notes)
+	}
+	item := out["trinket1"].Item
+	if item == nil || item.ID != 2 {
+		t.Fatalf("trinket1 pick = %+v, want item 2", item)
+	}
+	wantStdErr := math.Sqrt(0.1*0.1 + 0.1*0.1)
+	if diff := item.MeasuredGainStdErr - wantStdErr; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("MeasuredGainStdErr = %v, want %v - the ordering pass's own noisy 3.5 must not survive into the published gain", item.MeasuredGainStdErr, wantStdErr)
+	}
+	if !trinketGainSignificant(item.MeasuredGainDPS, item.MeasuredGainStdErr) {
+		t.Errorf("trinketGainSignificant(%v, %v) = false, want true once adaptively refined", item.MeasuredGainDPS, item.MeasuredGainStdErr)
+	}
+}
+
+// TestRankTrinketSlotAdaptiveGainFailureKeepsOriginalMeasurementAndNotes
+// confirms the graceful fallback: an adaptive re-run failure never
+// costs the slot its ordering-pass measurement, only adds a note.
+func TestRankTrinketSlotAdaptiveGainFailureKeepsOriginalMeasurementAndNotes(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "Placeholder"}}},
+	}
+	bySlot := map[string][]scored{
+		"trinket1": {trinket(2, "Only Candidate", 20)},
+	}
+	winnerGear := gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}})
+	baselineGear := gearKey(nil)
+	fake := &fakeEngine{
+		DPSByGear:    map[string]float64{winnerGear: 210, baselineGear: 200},
+		StdErrByGear: map[string]float64{winnerGear: 3.5, baselineGear: 0},
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			key := gearKey(req.Character.Gear)
+			if req.Iterations > trinketRankIterations {
+				return 0, errors.New("fakeEngine: forced adaptive-round failure")
+			}
+			if key == winnerGear {
+				return 210, nil
+			}
+			return 200, nil
+		},
+	}
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
+	if len(notes) != 1 || !strings.Contains(notes[0], "adaptive gain re-measurement") {
+		t.Fatalf("notes = %v, want exactly one naming the failed adaptive re-measurement", notes)
+	}
+	item := out["trinket1"].Item
+	if !item.GainMeasured || item.MeasuredGainDPS != 10 || item.MeasuredGainStdErr != 3.5 {
+		t.Fatalf("item gain = (measured=%v dps=%v stdErr=%v), want the ordering pass's own (true, 10, 3.5) kept on a failed re-run", item.GainMeasured, item.MeasuredGainDPS, item.MeasuredGainStdErr)
+	}
+}

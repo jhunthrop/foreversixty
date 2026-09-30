@@ -937,6 +937,35 @@ func TestLoadSpecUnknown(t *testing.T) {
 	}
 }
 
+// TestRogueSpecsWeighStrength is this lane's brief
+// (bis-ranker-integrity-12), item 5's second half: rogue band 20's own
+// tie repro (Serpent Gloves vs Gloves of the Fang) traced to
+// data/curated/specs.json never listing "strength" among rogue's
+// weight_stats at all - not a noisy near-zero measurement (item 1's
+// retry/carry shape), a stat this build's own weights sweep never
+// measured for a rogue in the first place, even though Strength
+// converts to Attack Power for a rogue in Classic. Reads the REAL
+// curated file (publishedRepoRoot, published_test.go's own constant),
+// not a test fixture, since the fixture pre-dates this fix and a
+// regression here would only ever show up against the real file.
+func TestRogueSpecsWeighStrength(t *testing.T) {
+	for _, spec := range []string{"rogue-assassination", "rogue-combat", "rogue-subtlety"} {
+		s, err := loadSpec(publishedRepoRoot, spec)
+		if err != nil {
+			t.Fatalf("loadSpec(%s): %v", spec, err)
+		}
+		found := false
+		for _, stat := range s.WeightStats {
+			if stat == "strength" {
+				found = true
+			}
+		}
+		if !found {
+			t.Errorf("%s weight_stats = %v, want \"strength\" included (a rogue converts it to attack power 1:1)", spec, s.WeightStats)
+		}
+	}
+}
+
 func TestLoadAPLState(t *testing.T) {
 	state, err := loadAPLState(repoRootFixture, "hunter-marksmanship")
 	if err != nil {
