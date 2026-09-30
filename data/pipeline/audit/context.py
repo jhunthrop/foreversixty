@@ -115,6 +115,21 @@ class AuditContext:
         return _read_json(self.build_dir / "addon-data.json")
 
     @functools.cached_property
+    def simitems(self) -> set[int] | None:
+        """The engine's own `SimDatabase` item universe -- `simitems.json`'s
+        `items` list (`pipeline.simdb.write_sim_items`) as a plain id set.
+        `simitems.json` is committed like `bis/*.json`, so `None` only for a
+        build this audit was pointed at that never had `python -m pipeline
+        simdb` run for it at all (a hand-built or partial build directory):
+        a check reading this then records `CategoryResult.skipped` rather
+        than treating an absent file as "nothing is known" or, worse,
+        "everything is missing"."""
+        doc = _read_json(self.build_dir / "simitems.json")
+        if doc is None:
+            return None
+        return {int(item_id) for item_id in doc.get("items", [])}
+
+    @functools.cached_property
     def item_sources(self) -> dict[int, dict]:
         doc = _read_json(self.build_dir / "raw" / "items" / "item-sources.json")
         if doc is None:
