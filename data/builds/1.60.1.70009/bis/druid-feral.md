@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 62.9. Weights run: 1.3s. Verify run: 1.2s. 189 eligible items had no known source.
+Set DPS (verified): 62.9. Weights run: 1.4s. Verify run: 1.1s. 189 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=0.640 ± 0.016 per rating point (14 rating = 1%, 8.959 per %), hit=0.174 ± 0.007 per rating point (10 rating = 1%, 1.745 per %), melee_haste=5.281 ± 0.416
 
@@ -16,7 +16,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Defender's Leather Hood (252447) | Leatherworking [crafted] | 18.6 attack_power points (1.03 DPS) | yes | Brawler's Leather Hood (252504, -0.37 DPS, sim-verified) [crafted] |
 | neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 8.6 attack_power points (0.48 DPS) | yes | Erudite's Amulet (277204, -0.17 DPS, sim-verified) [quest] |
-| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 7.2 attack_power points (0.40 DPS) | yes | Forest Leather Mantle (4709, -0.45 DPS, sim-verified) [world_drop] |
+| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 7.2 attack_power points (0.40 DPS) | yes | Slime-encrusted Pads (6461, -0.45 DPS, sim-verified) [dungeon] |
 | back | Grave Shroud (279865) | Abominable Creatures [quest] | 9.8 attack_power points (0.55 DPS) | yes | Lambent Scale Cloak (4706, +0.00 DPS, sim-verified) [world_drop]; Dark Leather Cloak (2316, -0.05 DPS) [crafted]; Glowing Lizardscale Cloak (6449, -0.07 DPS) [dungeon] |
 | chest | Brawler's Leather Armor (252490) | Leatherworking [crafted] | 21.7 attack_power points (1.20 DPS) | yes | Defender's Leather Armor (252434, -0.10 DPS, sim-verified) [crafted]; Totemic Leather Armor (252435, -0.30 DPS) [crafted]; Murloc Scale Breastplate (5781, -0.32 DPS) [crafted] |
 | wrist | Bravo's Armbands (270015) | Underground Assault [quest] | 10.4 attack_power points (0.58 DPS) | yes | Bristlebark Bindings (14569, -0.09 DPS, sim-verified) [world_drop]; Forest Leather Bracers (3202, -0.18 DPS) [world_drop]; Wolf Bracers (4794, -0.26 DPS) [vendor] |
@@ -55,7 +55,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 29.7 attack_power points (1.55 DPS) | yes | Trapper's Leather Pants (252501, -0.12 DPS) [crafted]; Defender's Leather Pants (252445, -0.15 DPS) [crafted]; Brawler's Leather Pants (252500, -0.17 DPS, sim-verified) [crafted] |
 | feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 19.1 attack_power points (1.00 DPS) | yes | Feet of the Lynx (1121, +0.00 DPS, sim-verified) [world_drop]; Disjointed Shoes (277226, -0.37 DPS) [quest]; Insignia Boots (4055, -0.37 DPS) [world_drop] |
 | finger1 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.0 attack_power points (1.20 DPS) | yes | Ironspine's Eye (7686, -0.02 DPS) [dungeon]; Tiger Band (6749, -0.48 DPS) [quest]; Silverlaine's Family Seal (6321, -0.60 DPS) [dungeon] |
-| finger2 | Protector's Band (19517) | Silverwing Sentinels [rep] | 22.9 attack_power points (1.20 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Protector's Band (20439, -0.40 DPS) [rep]; Tiger Band (6749, -0.47 DPS) [quest] |
+| finger2 | Protector's Band (19517) | Silverwing Sentinels [rep] | 22.9 attack_power points (1.20 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Tiger Band (6749, -0.47 DPS) [quest]; Silverlaine's Family Seal (6321, -0.59 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (102.6 DPS) | yes | Cobalt Crusher (7730, -2.40 DPS) [dungeon]; Wind Spirit Staff (6689, -4.03 DPS) [dungeon]; Viscous Hammer (13045, -22.22 DPS, sim-verified) [world_drop] |
@@ -84,8 +84,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Ogron's Sash (13117) | World drop [world_drop] | 34.7 attack_power points (1.92 DPS) | yes | Prowler's Leather Belt (252459, -0.26 DPS, sim-verified) [crafted]; Highlander's Leather Girdle (20116, -0.26 DPS) [rep]; Skulker's Leather Belt (252520, -0.39 DPS) [crafted] |
 | legs | Triprunner Dungarees (9624) | The Grand Betrayal [quest] | 34.6 attack_power points (1.91 DPS) | yes | Basilisk Hide Pants (1718, -0.12 DPS, sim-verified) [world_drop]; Brawler's Leather Legguards (252516, -0.25 DPS) [crafted]; Brawler's Leather Pants (252500, -0.38 DPS) [crafted] |
 | feet | Prowler's Leather Shoes (252465) | Leatherworking [crafted] | 36.3 attack_power points (2.01 DPS) | yes | Skulker's Leather Shoes (252531, -0.34 DPS, sim-verified) [crafted]; Excelsior Boots (4109, -0.34 DPS) [quest]; Imperial Leather Boots (6431, -0.43 DPS) [dungeon] |
-| finger1 | Protector's Band (19515) | Silverwing Sentinels [rep] | 30.8 attack_power points (1.71 DPS) | yes | Protector's Band (19517, -0.43 DPS) [rep]; Ironspine's Eye (7686, -0.43 DPS) [dungeon]; Falcon's Hook (7552, -0.56 DPS) [dungeon] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.2 attack_power points (1.28 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Falcon's Hook (7552, -0.13 DPS) [dungeon]; Assault Band (13095, -0.18 DPS) [world_drop] |
+| finger1 | Protector's Band (19515) | Silverwing Sentinels [rep] | 30.8 attack_power points (1.71 DPS) | yes | Ironspine's Eye (7686, -0.43 DPS) [dungeon]; Falcon's Hook (7552, -0.56 DPS) [dungeon]; Mark of Kern (2262, -0.60 DPS) [dungeon] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.2 attack_power points (1.28 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Falcon's Hook (7552, -0.13 DPS) [dungeon]; Mark of Kern (2262, -0.18 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (133.7 DPS) | yes | Staff of Jordan (873, +0.00 DPS) [world_drop]; Mograine's Might (7723, +0.00 DPS) [dungeon]; Thornstone Sledgehammer (1722, -27.72 DPS, sim-verified) [world_drop] |
@@ -114,7 +114,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 51.6 attack_power points (2.86 DPS) | yes | Skulker's Leather Waistguard (252474, -0.08 DPS, sim-verified) [crafted]; Girdle of Beastial Fury (11686, -0.17 DPS) [dungeon]; Ogron's Sash (13117, -0.91 DPS) [world_drop] |
 | legs | Gryphon Rider's Leggings (9652) | Saving Sharpbeak [quest] | 58.8 attack_power points (3.26 DPS) | yes | Serpentskin Leggings (8262, -0.17 DPS, sim-verified) [world_drop]; Triprunner Dungarees (9624, -1.28 DPS) [quest]; Dragonflight Leggings (10742, -1.33 DPS) [quest] |
 | feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 47.7 attack_power points (2.64 DPS) | yes | Skulker's Leather Boots (252469, -0.08 DPS, sim-verified) [crafted]; Sandstalker Ankleguards (12470, -0.37 DPS) [dungeon]; Shadefiend Boots (11675, -0.39 DPS) [dungeon] |
-| finger1 | Protector's Band (19516) | Silverwing Sentinels [rep] | 37.6 attack_power points (2.08 DPS) | yes | Protector's Band (19515, -0.37 DPS, sim-verified) [rep]; Thunderbrow Ring (13097, -0.79 DPS) [world_drop] |
+| finger1 | Protector's Band (19516) | Silverwing Sentinels [rep] | 37.6 attack_power points (2.08 DPS) | yes | Thunderbrow Ring (13097, -0.79 DPS) [world_drop]; Blackstone Ring (17713, -0.83 DPS) [dungeon]; Masons Fraternity Ring (9533, -0.84 DPS) [quest] |
 | finger2 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 23.7 attack_power points (1.31 DPS) | yes | Blackstone Ring (17713, -0.06 DPS) [dungeon]; Masons Fraternity Ring (9533, -0.07 DPS) [quest]; Thunderbrow Ring (13097, -0.11 DPS, sim-verified) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
@@ -144,8 +144,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Waywatcher Sash (240061) | Leonid Barthalomew the Revered [vendor] | 108.2 attack_power points (5.87 DPS) | yes | Ferocity of the Timbermaw (227805, -1.60 DPS, sim-verified) [vendor]; Shifter's Belt (272396, -1.82 DPS) [vendor]; Might of the Timbermaw (19044, -1.89 DPS) [crafted] |
 | legs | Waywatcher Trousers (240063) | Leonid Barthalomew the Revered [vendor] | 142.4 attack_power points (7.73 DPS) | yes | Warbear Woolies (15065, -2.48 DPS) [crafted]; Marshal's Dragonhide Leggings (231691, -2.87 DPS) [vendor]; Marshal's Dragonhide Legguards (16450, -2.94 DPS, sim-verified) [vendor] |
 | feet | Waywatcher Stompers (240066) | Leonid Barthalomew the Revered [vendor] | 112.4 attack_power points (6.10 DPS) | yes | Marshal's Dragonhide Boots (16459, -2.78 DPS) [vendor]; Drudge Boots (21532, -2.84 DPS) [quest]; Marshal's Dragonhide Treads (231692, -3.11 DPS, sim-verified) [vendor] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (221.6 DPS) | yes | Signet Ring of the Bronze Dragonflight (234030, -0.25 DPS) [vendor]; Naglering (11669, -5.82 DPS, sim-verified) [dungeon] |
-| finger2 | Protector's Band (19514) | Silverwing Sentinels [rep] | sim-verified (221.6 DPS) | yes | Protector's Band (19516, -0.44 DPS) [rep]; Myrmidon's Signet (2246, -0.63 DPS) [world_drop]; Naglering (11669, -3.24 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (221.6 DPS) | yes | Myrmidon's Signet (2246, -1.26 DPS) [world_drop]; Don Julio's Band (19325, -1.41 DPS) [rep]; Naglering (11669, -5.82 DPS, sim-verified) [dungeon] |
+| finger2 | Protector's Band (19514) | Silverwing Sentinels [rep] | sim-verified (221.6 DPS) | yes | Myrmidon's Signet (2246, -0.63 DPS) [world_drop]; Don Julio's Band (19325, -0.78 DPS) [rep]; Naglering (11669, -3.24 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (221.6 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
 | trinket2 | Blackhand's Breadth (13965) | General Drakkisath's Demise [quest] | sim-verified (221.6 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Eye of the Beast (13968, +0.00 DPS, sim-verified) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon] |
 | main_hand | The Unstoppable Force (19323) | Stormpike Guard [rep] | sim-verified (221.6 DPS) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Demolisher (234568, +0.00 DPS) [pvp]; Felstriker (12590, -4.90 DPS, sim-verified) [dungeon] |
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1386, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 61.5. Weights run: 1.3s. Verify run: 1.2s. 185 eligible items had no known source.
+Set DPS (verified): 61.5. Weights run: 1.4s. Verify run: 1.2s. 185 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=0.640 ± 0.016 per rating point (14 rating = 1%, 8.959 per %), hit=0.174 ± 0.007 per rating point (10 rating = 1%, 1.745 per %), melee_haste=5.281 ± 0.416
 
@@ -168,7 +168,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Defender's Leather Hood (252447) | Leatherworking [crafted] | 18.6 attack_power points (1.03 DPS) | yes | Brawler's Leather Hood (252504, -0.34 DPS, sim-verified) [crafted] |
 | neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 8.6 attack_power points (0.48 DPS) | yes | Erudite's Amulet (277204, -0.17 DPS, sim-verified) [quest] |
-| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 7.2 attack_power points (0.40 DPS) | yes | Forest Leather Mantle (4709, -0.43 DPS, sim-verified) [world_drop] |
+| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 7.2 attack_power points (0.40 DPS) | yes | Slime-encrusted Pads (6461, -0.43 DPS, sim-verified) [dungeon] |
 | back | Grave Shroud (279865) | Unending Torment [quest] | 9.8 attack_power points (0.55 DPS) | yes | Lambent Scale Cloak (4706, +0.00 DPS, sim-verified) [world_drop]; Dark Leather Cloak (2316, -0.05 DPS) [crafted]; Glowing Lizardscale Cloak (6449, -0.07 DPS) [dungeon] |
 | chest | Brawler's Leather Armor (252490) | Leatherworking [crafted] | 21.7 attack_power points (1.20 DPS) | yes | Defender's Leather Armor (252434, -0.09 DPS, sim-verified) [crafted]; Totemic Leather Armor (252435, -0.30 DPS) [crafted]; Murloc Scale Breastplate (5781, -0.32 DPS) [crafted] |
 | wrist | Bristlebark Bindings (14569) | World drop [world_drop] | 8.9 attack_power points (0.50 DPS) | yes | Forest Leather Bracers (3202, -0.08 DPS, sim-verified) [world_drop]; Wolf Bracers (4794, -0.18 DPS) [vendor]; Ratchet Wristwraps (274742, -0.26 DPS) [vendor] |
@@ -207,7 +207,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 29.7 attack_power points (1.55 DPS) | yes | Trapper's Leather Pants (252501, -0.12 DPS) [crafted]; Defender's Leather Pants (252445, -0.15 DPS) [crafted]; Brawler's Leather Pants (252500, -0.16 DPS, sim-verified) [crafted] |
 | feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 19.1 attack_power points (1.00 DPS) | yes | Feet of the Lynx (1121, +0.00 DPS, sim-verified) [world_drop]; Stomping Boots (3741, -0.20 DPS) [quest]; Insignia Boots (4055, -0.37 DPS) [world_drop] |
 | finger1 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.0 attack_power points (1.20 DPS) | yes | Ironspine's Eye (7686, -0.02 DPS) [dungeon]; Band of the Fist (17694, -0.41 DPS) [quest]; Tiger Band (6749, -0.48 DPS) [quest] |
-| finger2 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 22.9 attack_power points (1.20 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Band of the Fist (17694, -0.40 DPS) [quest]; Legionnaire's Band (20429, -0.40 DPS) [rep] |
+| finger2 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 22.9 attack_power points (1.20 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Band of the Fist (17694, -0.40 DPS) [quest]; Tiger Band (6749, -0.47 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (101.2 DPS) | yes | Cobalt Crusher (7730, -2.40 DPS) [dungeon]; Wind Spirit Staff (6689, -4.03 DPS) [dungeon]; Viscous Hammer (13045, -21.73 DPS, sim-verified) [world_drop] |
@@ -236,8 +236,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Ogron's Sash (13117) | World drop [world_drop] | 34.7 attack_power points (1.92 DPS) | yes | Prowler's Leather Belt (252459, -0.25 DPS) [crafted]; Defiler's Leather Girdle (20192, -0.26 DPS) [rep]; Tharg's Shoelace (9705, -0.54 DPS, sim-verified) [quest] |
 | legs | Triprunner Dungarees (9624) | Rig Wars [quest] | 34.6 attack_power points (1.91 DPS) | yes | Basilisk Hide Pants (1718, -0.12 DPS, sim-verified) [world_drop]; Brawler's Leather Legguards (252516, -0.25 DPS) [crafted]; Brawler's Leather Pants (252500, -0.38 DPS) [crafted] |
 | feet | Prowler's Leather Shoes (252465) | Leatherworking [crafted] | 36.3 attack_power points (2.01 DPS) | yes | Excelsior Boots (4109, -0.34 DPS) [quest]; Skulker's Leather Shoes (252531, -0.35 DPS, sim-verified) [crafted]; Imperial Leather Boots (6431, -0.43 DPS) [dungeon] |
-| finger1 | Legionnaire's Band (19512) | Warsong Outriders [rep] | 30.8 attack_power points (1.71 DPS) | yes | Legionnaire's Band (19513, -0.43 DPS) [rep]; Ironspine's Eye (7686, -0.43 DPS) [dungeon]; Falcon's Hook (7552, -0.56 DPS) [dungeon] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.2 attack_power points (1.28 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Falcon's Hook (7552, -0.13 DPS) [dungeon]; Assault Band (13095, -0.18 DPS) [world_drop] |
+| finger1 | Legionnaire's Band (19512) | Warsong Outriders [rep] | 30.8 attack_power points (1.71 DPS) | yes | Ironspine's Eye (7686, -0.43 DPS) [dungeon]; Falcon's Hook (7552, -0.56 DPS) [dungeon]; Mark of Kern (2262, -0.60 DPS) [dungeon] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.2 attack_power points (1.28 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Falcon's Hook (7552, -0.13 DPS) [dungeon]; Mark of Kern (2262, -0.18 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (132.1 DPS) | yes | Staff of Jordan (873, +0.00 DPS) [world_drop]; Mograine's Might (7723, +0.00 DPS) [dungeon]; Thornstone Sledgehammer (1722, -27.29 DPS, sim-verified) [world_drop] |
@@ -266,15 +266,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 51.6 attack_power points (2.86 DPS) | yes | Skulker's Leather Waistguard (252474, -0.07 DPS, sim-verified) [crafted]; Girdle of Beastial Fury (11686, -0.17 DPS) [dungeon]; Ogron's Sash (13117, -0.91 DPS) [world_drop] |
 | legs | Serpentskin Leggings (8262) | World drop [world_drop] | 55.7 attack_power points (3.09 DPS) | yes | Dragonflight Leggings (10742, -1.17 DPS) [quest]; Triprunner Dungarees (9624, -1.17 DPS, sim-verified) [quest]; Basilisk Hide Pants (1718, -1.23 DPS) [world_drop] |
 | feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 47.7 attack_power points (2.64 DPS) | yes | Skulker's Leather Boots (252469, -0.07 DPS, sim-verified) [crafted]; Sandstalker Ankleguards (12470, -0.37 DPS) [dungeon]; Shadefiend Boots (11675, -0.39 DPS) [dungeon] |
-| finger1 | Legionnaire's Band (19511) | Warsong Outriders [rep] | 37.6 attack_power points (2.08 DPS) | yes | Legionnaire's Band (19512, -0.37 DPS, sim-verified) [rep]; Ironspine's Eye (7686, -0.77 DPS) [dungeon] |
+| finger1 | Legionnaire's Band (19511) | Warsong Outriders [rep] | 37.6 attack_power points (2.08 DPS) | yes | Ironspine's Eye (7686, -0.77 DPS) [dungeon]; Thunderbrow Ring (13097, -0.79 DPS) [world_drop]; Blackstone Ring (17713, -0.83 DPS) [dungeon] |
 | finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 attack_power points (1.33 DPS) | yes | Ironspine's Eye (7686, +0.00 DPS, sim-verified) [dungeon]; Thunderbrow Ring (13097, -0.04 DPS) [world_drop]; Blackstone Ring (17713, -0.08 DPS) [dungeon] |
 | trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (136.6 DPS) | yes | - |
-| trinket2 | - | - |  |  |  |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 0.0 attack_power points (0.00 DPS) | yes | - |
 | main_hand | Ragehammer (10626) | Sunken Temple: Atal'ai Warrior [dungeon] | sim-verified (136.6 DPS) | yes | Glowing Brightwood Staff (812, +0.00 DPS) [world_drop]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; The Jackhammer (9423, -0.07 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Embrace of the Lycan; neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulder; back: Blackveil Cape; chest: Grizzled Pelt; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Prowler's Leather Waistguard; legs: Serpentskin Leggings; feet: Prowler's Leather Boots; finger1: Legionnaire's Band; finger2: White Bone Band; trinket1: Rune of the Guard Captain; main_hand: Ragehammer
+**New at 50:** head: Embrace of the Lycan; neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulder; back: Blackveil Cape; chest: Grizzled Pelt; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Prowler's Leather Waistguard; legs: Serpentskin Leggings; feet: Prowler's Leather Boots; finger1: Legionnaire's Band; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Ragehammer
 
 No-known-source sample (15 of 574, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
@@ -296,8 +296,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Waywatcher Sash (240061) | Leonid Barthalomew the Revered [vendor] | 108.2 attack_power points (5.87 DPS) | yes | Ferocity of the Timbermaw (227805, -1.72 DPS, sim-verified) [vendor]; Shifter's Belt (272396, -1.82 DPS) [vendor]; Might of the Timbermaw (19044, -1.89 DPS) [crafted] |
 | legs | Waywatcher Trousers (240063) | Leonid Barthalomew the Revered [vendor] | 142.4 attack_power points (7.73 DPS) | yes | Warbear Woolies (15065, -2.48 DPS) [crafted]; General's Dragonhide Leggings (231685, -2.87 DPS) [pvp] |
 | feet | Waywatcher Stompers (240066) | Leonid Barthalomew the Revered [vendor] | 112.4 attack_power points (6.10 DPS) | yes | General's Dragonhide Boots (16554, -2.78 DPS) [vendor]; Drudge Boots (21532, -2.84 DPS) [quest]; General's Dragonhide Treads (231683, -3.05 DPS, sim-verified) [vendor] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (221.8 DPS) | yes | Signet Ring of the Bronze Dragonflight (234030, -0.25 DPS) [vendor]; Naglering (11669, -4.96 DPS, sim-verified) [dungeon] |
-| finger2 | Legionnaire's Band (19510) | Warsong Outriders [rep] | sim-verified (221.8 DPS) | yes | Legionnaire's Band (19511, -0.44 DPS) [rep]; Myrmidon's Signet (2246, -0.63 DPS) [world_drop]; Naglering (11669, -3.35 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (221.8 DPS) | yes | Myrmidon's Signet (2246, -1.26 DPS) [world_drop]; Don Julio's Band (19325, -1.41 DPS) [rep]; Naglering (11669, -4.96 DPS, sim-verified) [dungeon] |
+| finger2 | Legionnaire's Band (19510) | Warsong Outriders [rep] | sim-verified (221.8 DPS) | yes | Myrmidon's Signet (2246, -0.63 DPS) [world_drop]; Don Julio's Band (19325, -0.78 DPS) [rep]; Naglering (11669, -3.35 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (221.8 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
 | trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (221.8 DPS) | yes | Blackhand's Breadth (13965, -1.11 DPS, sim-verified) [quest]; Counterattack Lodestone (18537, -1.20 DPS) [dungeon]; Hand of Justice (11815, -1.31 DPS) [dungeon] |
 | main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-verified (221.8 DPS) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's Destroyer (234546, +0.00 DPS) [pvp]; Felstriker (12590, -3.80 DPS, sim-verified) [dungeon] |

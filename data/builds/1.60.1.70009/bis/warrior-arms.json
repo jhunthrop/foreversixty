@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:14:10Z",
+  "generated_at": "2026-09-30T16:30:48Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -86,22 +86,22 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 3481,
-          "item_name": "Silvered Bronze Shoulders",
+          "item_id": 3480,
+          "item_name": "Rough Bronze Shoulders",
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 6.253307276219038,
           "verified": true,
           "ties": [
             {
-              "item_id": 3480,
-              "item_name": "Rough Bronze Shoulders"
+              "item_id": 3481,
+              "item_name": "Silvered Bronze Shoulders"
             }
           ],
           "alternatives": [
             {
-              "item_id": 3480,
-              "item_name": "Rough Bronze Shoulders",
+              "item_id": 3481,
+              "item_name": "Silvered Bronze Shoulders",
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "dps_delta": 0,
@@ -194,17 +194,17 @@
               "verified": true
             },
             {
+              "item_id": 2854,
+              "item_name": "Runed Copper Bracers",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -0.26281052451391773
+            },
+            {
               "item_id": 14569,
               "item_name": "Bristlebark Bindings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.26281052451391773
-            },
-            {
-              "item_id": 270015,
-              "item_name": "Bravo's Armbands",
-              "source_kind": "quest",
-              "source": "Underground Assault",
               "dps_delta": -0.26281052451391773
             }
           ]
@@ -267,10 +267,10 @@
               "dps_delta": -0.23087295203311892
             },
             {
-              "item_id": 5750,
-              "item_name": "Warchief's Girdle",
-              "source_kind": "world",
-              "source": "Ma'ruk Wyrmscale",
+              "item_id": 14746,
+              "item_name": "Hulking Belt",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.31847646020442477
             }
           ]
@@ -310,13 +310,17 @@
         },
         {
           "slot": "feet",
-          "item_id": 250503,
-          "item_name": "Veteran's Boots",
-          "source": "Blacksmithing",
+          "item_id": 252441,
+          "item_name": "Defender's Leather Boots",
+          "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 10.422178793698398,
           "verified": true,
           "ties": [
+            {
+              "item_id": 250503,
+              "item_name": "Veteran's Boots"
+            },
             {
               "item_id": 250504,
               "item_name": "Guard's Boots"
@@ -326,18 +330,14 @@
               "item_name": "Brawler's Leather Boots"
             },
             {
-              "item_id": 252441,
-              "item_name": "Defender's Leather Boots"
-            },
-            {
               "item_id": 252442,
               "item_name": "Totemic Leather Boots"
             }
           ],
           "alternatives": [
             {
-              "item_id": 250504,
-              "item_name": "Guard's Boots",
+              "item_id": 250503,
+              "item_name": "Veteran's Boots",
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "dps_delta": 0,
@@ -345,15 +345,15 @@
               "sim_dps": 30.444100321273822
             },
             {
-              "item_id": 252439,
-              "item_name": "Brawler's Leather Boots",
+              "item_id": 250504,
+              "item_name": "Guard's Boots",
               "source_kind": "crafted",
-              "source": "Leatherworking",
+              "source": "Blacksmithing",
               "dps_delta": 0
             },
             {
-              "item_id": 252441,
-              "item_name": "Defender's Leather Boots",
+              "item_id": 252439,
+              "item_name": "Brawler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": 0
@@ -529,21 +529,21 @@
       ],
       "new_at_band": [
         "head: Veteran's Silvered Chain Helm",
-        "shoulder: Silvered Bronze Shoulders",
+        "shoulder: Rough Bronze Shoulders",
         "back: Lambent Scale Cloak",
         "chest: Mutant Scale Breastplate",
         "wrist: Patterned Bronze Bracers",
         "hands: Thorbia's Gauntlets",
         "waist: Blackened Defias Belt",
         "legs: Chausses of Westfall",
-        "feet: Veteran's Boots",
+        "feet: Defender's Leather Boots",
         "finger1: Demon Band",
         "finger2: Protector's Band",
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.168284729,
-      "verify_run_seconds": 0.976795222,
+      "weights_run_seconds": 1.1613620789999999,
+      "verify_run_seconds": 0.936972487,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -699,22 +699,22 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 3481,
-          "item_name": "Silvered Bronze Shoulders",
+          "item_id": 3480,
+          "item_name": "Rough Bronze Shoulders",
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 6.253307276219038,
           "verified": true,
           "ties": [
             {
-              "item_id": 3480,
-              "item_name": "Rough Bronze Shoulders"
+              "item_id": 3481,
+              "item_name": "Silvered Bronze Shoulders"
             }
           ],
           "alternatives": [
             {
-              "item_id": 3480,
-              "item_name": "Rough Bronze Shoulders",
+              "item_id": 3481,
+              "item_name": "Silvered Bronze Shoulders",
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "dps_delta": 0,
@@ -733,10 +733,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 14149,
-              "item_name": "Subterranean Cape",
-              "source_kind": "dungeon",
-              "source": "Ragefire Chasm: Taragaman the Hungerer",
+              "item_id": 279865,
+              "item_name": "Grave Shroud",
+              "source_kind": "quest",
+              "source": "Unending Torment",
               "dps_delta": -0.08760350817130592
             },
             {
@@ -747,10 +747,10 @@
               "dps_delta": -0.09824936566490551
             },
             {
-              "item_id": 279865,
-              "item_name": "Grave Shroud",
-              "source_kind": "quest",
-              "source": "Unending Torment",
+              "item_id": 14149,
+              "item_name": "Subterranean Cape",
+              "source_kind": "dungeon",
+              "source": "Ragefire Chasm: Taragaman the Hungerer",
               "dps_delta": -0.11911191430579748,
               "verified": true
             }
@@ -847,10 +847,10 @@
               "dps_delta": -0.17520701634261185
             },
             {
-              "item_id": 6481,
-              "item_name": "Dagmire Gauntlets",
-              "source_kind": "quest",
-              "source": "Deviate Eradication",
+              "item_id": 2167,
+              "item_name": "Foreman's Gloves",
+              "source_kind": "world",
+              "source": "Foreman Thistlenettle",
               "dps_delta": -0.2628105245139177
             }
           ]
@@ -880,10 +880,10 @@
               "dps_delta": -0.23087295203311892
             },
             {
-              "item_id": 5750,
-              "item_name": "Warchief's Girdle",
-              "source_kind": "world",
-              "source": "Ma'ruk Wyrmscale",
+              "item_id": 14746,
+              "item_name": "Hulking Belt",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.31847646020442477
             }
           ]
@@ -934,13 +934,17 @@
         },
         {
           "slot": "feet",
-          "item_id": 250503,
-          "item_name": "Veteran's Boots",
-          "source": "Blacksmithing",
+          "item_id": 252441,
+          "item_name": "Defender's Leather Boots",
+          "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 10.422178793698398,
           "verified": true,
           "ties": [
+            {
+              "item_id": 250503,
+              "item_name": "Veteran's Boots"
+            },
             {
               "item_id": 250504,
               "item_name": "Guard's Boots"
@@ -950,18 +954,14 @@
               "item_name": "Brawler's Leather Boots"
             },
             {
-              "item_id": 252441,
-              "item_name": "Defender's Leather Boots"
-            },
-            {
               "item_id": 252442,
               "item_name": "Totemic Leather Boots"
             }
           ],
           "alternatives": [
             {
-              "item_id": 250504,
-              "item_name": "Guard's Boots",
+              "item_id": 250503,
+              "item_name": "Veteran's Boots",
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "dps_delta": 0,
@@ -969,15 +969,15 @@
               "sim_dps": 33.51925793836903
             },
             {
-              "item_id": 252439,
-              "item_name": "Brawler's Leather Boots",
+              "item_id": 250504,
+              "item_name": "Guard's Boots",
               "source_kind": "crafted",
-              "source": "Leatherworking",
+              "source": "Blacksmithing",
               "dps_delta": 0
             },
             {
-              "item_id": 252441,
-              "item_name": "Defender's Leather Boots",
+              "item_id": 252439,
+              "item_name": "Brawler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": 0
@@ -1161,21 +1161,21 @@
       ],
       "new_at_band": [
         "head: Veteran's Silvered Chain Helm",
-        "shoulder: Silvered Bronze Shoulders",
+        "shoulder: Rough Bronze Shoulders",
         "back: Lambent Scale Cloak",
         "chest: Mutant Scale Breastplate",
         "wrist: Patterned Bronze Bracers",
         "hands: Thorbia's Gauntlets",
         "waist: Blackened Defias Belt",
         "legs: Veteran's Chain Leggings",
-        "feet: Veteran's Boots",
+        "feet: Defender's Leather Boots",
         "finger1: Demon Band",
         "finger2: Legionnaire's Band",
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.168284729,
-      "verify_run_seconds": 0.945356879,
+      "weights_run_seconds": 1.1613620789999999,
+      "verify_run_seconds": 0.917841218,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1600,10 +1600,10 @@
               "dps_delta": -0.19997405972007956
             },
             {
-              "item_id": 14757,
-              "item_name": "Slayer's Pants",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 6087,
+              "item_name": "Chausses of Westfall",
+              "source_kind": "quest",
+              "source": "The Defias Brotherhood",
               "dps_delta": -0.19997405972007956
             },
             {
@@ -1834,8 +1834,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.280735468,
-      "verify_run_seconds": 1.09866148,
+      "weights_run_seconds": 1.262293289,
+      "verify_run_seconds": 1.124575753,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2501,8 +2501,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.280735468,
-      "verify_run_seconds": 1.122471678,
+      "weights_run_seconds": 1.262293289,
+      "verify_run_seconds": 1.126863635,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2634,24 +2634,24 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 10763,
-          "item_name": "Icemetal Barbute",
-          "source": "Razorfen Downs: Amnennar the Coldbringer",
-          "source_kind": "dungeon",
+          "item_id": 250537,
+          "item_name": "Hard Gold Coif",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "score": 34.63483687927854,
           "verified": true,
           "ties": [
             {
-              "item_id": 250537,
-              "item_name": "Hard Gold Coif"
+              "item_id": 10763,
+              "item_name": "Icemetal Barbute"
             }
           ],
           "alternatives": [
             {
-              "item_id": 250537,
-              "item_name": "Hard Gold Coif",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "item_id": 10763,
+              "item_name": "Icemetal Barbute",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 90.29911447740749
@@ -2689,10 +2689,10 @@
               "dps_delta": -0.41632702866432747
             },
             {
-              "item_id": 13088,
-              "item_name": "Gazlowe's Charm",
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Witch Doctor's Chest",
+              "item_id": 13087,
+              "item_name": "River Pride Choker",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.41736728622366487
             },
             {
@@ -2755,11 +2755,11 @@
               "dps_delta": -0.20333385811714202
             },
             {
-              "item_id": 16315,
-              "item_name": "Sergeant Major's Cape",
-              "source_kind": "pvp",
-              "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -0.20489424445614815
+              "item_id": 14752,
+              "item_name": "Slayer's Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.2059345020154856
             },
             {
               "item_id": 6314,
@@ -2909,10 +2909,10 @@
               "dps_delta": -0.2936325912086603
             },
             {
-              "item_id": 20107,
-              "item_name": "Highlander's Lamellar Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
+              "item_id": 10329,
+              "item_name": "Scarlet Belt",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Scarlet Myrmidon",
               "dps_delta": -0.3065611735147193
             }
           ]
@@ -2985,18 +2985,18 @@
         },
         {
           "slot": "finger1",
-          "item_id": 13095,
-          "item_name": "Assault Band",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "item_id": 2262,
+          "item_name": "Mark of Kern",
+          "source": "Scarlet Monastery: Houndmaster Loksey",
+          "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +1.5 DPS (90.3 vs 88.8 set DPS)",
+          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.5 DPS (90.3 vs 88.8 set DPS)",
           "dps_delta": 1.514503017952336,
           "ties": [
             {
-              "item_id": 2262,
-              "item_name": "Mark of Kern"
+              "item_id": 13095,
+              "item_name": "Assault Band"
             }
           ],
           "alternatives": [
@@ -3025,10 +3025,10 @@
         },
         {
           "slot": "finger2",
-          "item_id": 2262,
-          "item_name": "Mark of Kern",
-          "source": "Scarlet Monastery: Houndmaster Loksey",
-          "source_kind": "dungeon",
+          "item_id": 13095,
+          "item_name": "Assault Band",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 20,
           "verified": true,
           "alternatives": [
@@ -3158,7 +3158,7 @@
         "4111 Master Hunter's Rifle"
       ],
       "new_at_band": [
-        "head: Icemetal Barbute",
+        "head: Hard Gold Coif",
         "neck: Zealous Shadowshard Pendant",
         "shoulder: Hard Gold Pauldrons",
         "back: Sergeant Major's Cape",
@@ -3168,13 +3168,13 @@
         "waist: Highlander's Plate Girdle",
         "legs: Scarlet Leggings",
         "feet: Officer's Boots",
-        "finger1: Assault Band",
-        "finger2: Mark of Kern",
+        "finger1: Mark of Kern",
+        "finger2: Assault Band",
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.599465821,
-      "verify_run_seconds": 1.212236355,
+      "weights_run_seconds": 1.593941623,
+      "verify_run_seconds": 1.183912445,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3306,24 +3306,24 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 10763,
-          "item_name": "Icemetal Barbute",
-          "source": "Razorfen Downs: Amnennar the Coldbringer",
-          "source_kind": "dungeon",
+          "item_id": 250537,
+          "item_name": "Hard Gold Coif",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "score": 34.63483687927854,
           "verified": true,
           "ties": [
             {
-              "item_id": 250537,
-              "item_name": "Hard Gold Coif"
+              "item_id": 10763,
+              "item_name": "Icemetal Barbute"
             }
           ],
           "alternatives": [
             {
-              "item_id": 250537,
-              "item_name": "Hard Gold Coif",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "item_id": 10763,
+              "item_name": "Icemetal Barbute",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 88.9574898154359
@@ -3442,8 +3442,8 @@
               "dps_delta": -0.0017088835370094085
             },
             {
-              "item_id": 14781,
-              "item_name": "Khan's Cloak",
+              "item_id": 14752,
+              "item_name": "Slayer's Cape",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.004309527435352982
@@ -3664,18 +3664,18 @@
         },
         {
           "slot": "finger1",
-          "item_id": 13095,
-          "item_name": "Assault Band",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "item_id": 2262,
+          "item_name": "Mark of Kern",
+          "source": "Scarlet Monastery: Houndmaster Loksey",
+          "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +1.3 DPS (89.0 vs 87.6 set DPS)",
+          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.3 DPS (89.0 vs 87.6 set DPS)",
           "dps_delta": 1.3187971157201588,
           "ties": [
             {
-              "item_id": 2262,
-              "item_name": "Mark of Kern"
+              "item_id": 13095,
+              "item_name": "Assault Band"
             }
           ],
           "alternatives": [
@@ -3704,10 +3704,10 @@
         },
         {
           "slot": "finger2",
-          "item_id": 2262,
-          "item_name": "Mark of Kern",
-          "source": "Scarlet Monastery: Houndmaster Loksey",
-          "source_kind": "dungeon",
+          "item_id": 13095,
+          "item_name": "Assault Band",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 20,
           "verified": true,
           "alternatives": [
@@ -3837,7 +3837,7 @@
         "4110 Master Hunter's Bow"
       ],
       "new_at_band": [
-        "head: Icemetal Barbute",
+        "head: Hard Gold Coif",
         "neck: Zealous Shadowshard Pendant",
         "shoulder: Hard Gold Pauldrons",
         "chest: Jouster's Chestplate",
@@ -3846,13 +3846,13 @@
         "waist: Defiler's Plate Girdle",
         "legs: Scarlet Leggings",
         "feet: Officer's Boots",
-        "finger1: Assault Band",
-        "finger2: Mark of Kern",
+        "finger1: Mark of Kern",
+        "finger2: Assault Band",
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.599465821,
-      "verify_run_seconds": 1.195499005,
+      "weights_run_seconds": 1.593941623,
+      "verify_run_seconds": 1.204525065,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4149,24 +4149,24 @@
         },
         {
           "slot": "wrist",
-          "item_id": 17714,
-          "item_name": "Bracers of the Stone Princess",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
+          "item_id": 18711,
+          "item_name": "Arena Bands",
+          "source": "Arena Treasure Chest",
+          "source_kind": "world",
           "score": 28,
           "verified": true,
           "ties": [
             {
-              "item_id": 18711,
-              "item_name": "Arena Bands"
+              "item_id": 17714,
+              "item_name": "Bracers of the Stone Princess"
             }
           ],
           "alternatives": [
             {
-              "item_id": 18711,
-              "item_name": "Arena Bands",
-              "source_kind": "world",
-              "source": "Arena Treasure Chest",
+              "item_id": 17714,
+              "item_name": "Bracers of the Stone Princess",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 129.5040093207497
@@ -4327,14 +4327,14 @@
           "source_kind": "dungeon",
           "score": 20.978192955277656,
           "verified": true,
-          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +3.8 DPS (129.5 vs 125.7 set DPS)",
+          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +3.8 DPS (129.5 vs 125.7 set DPS)",
           "dps_delta": 3.792383095839199,
           "alternatives": [
             {
-              "item_id": 2262,
-              "item_name": "Mark of Kern",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "item_id": 13095,
+              "item_name": "Assault Band",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.07581145454959394
             },
             {
@@ -4355,24 +4355,24 @@
         },
         {
           "slot": "finger2",
-          "item_id": 13095,
-          "item_name": "Assault Band",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "item_id": 2262,
+          "item_name": "Mark of Kern",
+          "source": "Scarlet Monastery: Houndmaster Loksey",
+          "source_kind": "dungeon",
           "score": 20,
           "verified": true,
           "ties": [
             {
-              "item_id": 2262,
-              "item_name": "Mark of Kern"
+              "item_id": 13095,
+              "item_name": "Assault Band"
             }
           ],
           "alternatives": [
             {
-              "item_id": 2262,
-              "item_name": "Mark of Kern",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "item_id": 13095,
+              "item_name": "Assault Band",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 129.5040093207497
@@ -4406,8 +4406,12 @@
         },
         {
           "slot": "trinket2",
-          "verified": false,
-          "empty_reason": "no_dps_value"
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4505,18 +4509,19 @@
         "shoulder: Knight-Lieutenant's Plate Pauldrons",
         "back: Bloodlust Cape",
         "chest: Warforged Chestplate",
-        "wrist: Bracers of the Stone Princess",
+        "wrist: Arena Bands",
         "hands: Raider Gauntlets",
         "waist: Girdle of Beastial Fury",
         "legs: Golem Shard Leggings",
         "feet: Battlechaser's Greaves",
         "finger1: Blackstone Ring",
-        "finger2: Assault Band",
+        "finger2: Mark of Kern",
         "trinket1: Diamond Flask",
+        "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.652250742,
-      "verify_run_seconds": 1.363814068,
+      "weights_run_seconds": 1.623439126,
+      "verify_run_seconds": 1.3152120219999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4813,24 +4818,24 @@
         },
         {
           "slot": "wrist",
-          "item_id": 17714,
-          "item_name": "Bracers of the Stone Princess",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
+          "item_id": 18711,
+          "item_name": "Arena Bands",
+          "source": "Arena Treasure Chest",
+          "source_kind": "world",
           "score": 28,
           "verified": true,
           "ties": [
             {
-              "item_id": 18711,
-              "item_name": "Arena Bands"
+              "item_id": 17714,
+              "item_name": "Bracers of the Stone Princess"
             }
           ],
           "alternatives": [
             {
-              "item_id": 18711,
-              "item_name": "Arena Bands",
-              "source_kind": "world",
-              "source": "Arena Treasure Chest",
+              "item_id": 17714,
+              "item_name": "Bracers of the Stone Princess",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 130.55655163518887
@@ -5028,10 +5033,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 2262,
-              "item_name": "Mark of Kern",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "item_id": 13095,
+              "item_name": "Assault Band",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.07581145454959394
             },
             {
@@ -5042,10 +5047,10 @@
               "dps_delta": -0.20781205409032552
             },
             {
-              "item_id": 13095,
-              "item_name": "Assault Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Houndmaster Loksey",
               "dps_delta": -1.1205019404734173,
               "verified": true
             }
@@ -5186,7 +5191,7 @@
         "shoulder: Blood Guard's Plate Pauldrons",
         "back: Bloodlust Cape",
         "chest: Warforged Chestplate",
-        "wrist: Bracers of the Stone Princess",
+        "wrist: Arena Bands",
         "hands: Raider Gauntlets",
         "waist: Girdle of Beastial Fury",
         "legs: Golem Shard Leggings",
@@ -5197,8 +5202,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.652250742,
-      "verify_run_seconds": 1.413321133,
+      "weights_run_seconds": 1.623439126,
+      "verify_run_seconds": 1.4114062330000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5649,11 +5654,18 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 234030,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.24884312970565903
+              "item_id": 18522,
+              "item_name": "Band of the Ogre King",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: King Gordok",
+              "dps_delta": -1.3414432222289125
+            },
+            {
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.6241053564520636
             },
             {
               "item_id": 11669,
@@ -5682,11 +5694,11 @@
               "dps_delta": -0.08905192416146011
             },
             {
-              "item_id": 19516,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.3102785940451349
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.371714058384611
             },
             {
               "item_id": 11669,
@@ -5733,8 +5745,36 @@
         },
         {
           "slot": "trinket2",
-          "verified": false,
-          "empty_reason": "no_dps_value"
+          "item_id": 19289,
+          "item_name": "Darkmoon Card: Maelstrom",
+          "source": "Darkmoon Elementals Deck",
+          "source_kind": "quest",
+          "sim_dps": 245.29529588623691,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 18537,
+              "item_name": "Counterattack Lodestone",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Tribute",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": -0.19640928921629097,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -5841,11 +5881,12 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Protector's Band",
         "trinket1: Hand of Justice",
+        "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.677820653,
-      "verify_run_seconds": 1.404952402,
+      "weights_run_seconds": 1.690859339,
+      "verify_run_seconds": 1.38654098,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6198,7 +6239,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 169.77262092861724,
+          "score": 169.77262092861727,
           "verified": true,
           "alternatives": [
             {
@@ -6206,14 +6247,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.6783524697370982
+              "dps_delta": -1.678352469737099
             },
             {
               "item_id": 16547,
               "item_name": "General's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.9563626954386177
+              "dps_delta": -1.9563626954386188
             },
             {
               "item_id": 227814,
@@ -6239,14 +6280,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.071645739611836
+              "dps_delta": -3.071645739611837
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.2503144177496996
+              "dps_delta": -3.2503144177497005
             },
             {
               "item_id": 14554,
@@ -6296,11 +6337,18 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 234030,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.24884312970565903
+              "item_id": 18522,
+              "item_name": "Band of the Ogre King",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: King Gordok",
+              "dps_delta": -1.3414432222289125
+            },
+            {
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.6241053564520636
             },
             {
               "item_id": 11669,
@@ -6329,11 +6377,11 @@
               "dps_delta": -0.08905192416146011
             },
             {
-              "item_id": 19511,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.3102785940451349
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.371714058384611
             },
             {
               "item_id": 11669,
@@ -6521,8 +6569,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.677820653,
-      "verify_run_seconds": 1.379558453,
+      "weights_run_seconds": 1.690859339,
+      "verify_run_seconds": 1.336081457,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:07:58Z",
+  "generated_at": "2026-09-30T16:24:00Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -115,10 +115,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 4709,
-              "item_name": "Forest Leather Mantle",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 6461,
+              "item_name": "Slime-encrusted Pads",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Mutanus the Devourer",
               "dps_delta": -0.45182444465095273,
               "verified": true
             }
@@ -519,8 +519,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.33479996,
-      "verify_run_seconds": 1.173504556,
+      "weights_run_seconds": 1.391941921,
+      "verify_run_seconds": 1.1481712370000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -705,10 +705,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 4709,
-              "item_name": "Forest Leather Mantle",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 6461,
+              "item_name": "Slime-encrusted Pads",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Mutanus the Devourer",
               "dps_delta": -0.4323490771967258,
               "verified": true
             }
@@ -1109,8 +1109,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.33479996,
-      "verify_run_seconds": 1.158239075,
+      "weights_run_seconds": 1.391941921,
+      "verify_run_seconds": 1.153277276,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1629,18 +1629,18 @@
               "verified": true
             },
             {
-              "item_id": 20439,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.3985889753106451
-            },
-            {
               "item_id": 6749,
               "item_name": "Tiger Band",
               "source_kind": "quest",
               "source": "Willix the Importer",
               "dps_delta": -0.46842193293306356
+            },
+            {
+              "item_id": 6321,
+              "item_name": "Silverlaine's Family Seal",
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Baron Silverlaine",
+              "dps_delta": -0.5896460984328755
             }
           ]
         },
@@ -1732,8 +1732,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6403630009999999,
-      "verify_run_seconds": 1.441061948,
+      "weights_run_seconds": 1.633160247,
+      "verify_run_seconds": 1.4357873589999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2259,11 +2259,11 @@
               "dps_delta": -0.3985889753106451
             },
             {
-              "item_id": 20429,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.3985889753106451
+              "item_id": 6749,
+              "item_name": "Tiger Band",
+              "source_kind": "quest",
+              "source": "Willix the Importer",
+              "dps_delta": -0.46842193293306356
             }
           ]
         },
@@ -2355,8 +2355,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6403630009999999,
-      "verify_run_seconds": 1.437154897,
+      "weights_run_seconds": 1.633160247,
+      "verify_run_seconds": 1.42867676,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2835,13 +2835,6 @@
           "dps_delta": 2.5041311212634128,
           "alternatives": [
             {
-              "item_id": 19517,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.42685805525862863
-            },
-            {
               "item_id": 7686,
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
@@ -2854,6 +2847,13 @@
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5573722483659008
+            },
+            {
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "dps_delta": -0.5999591233403032
             }
           ]
         },
@@ -2882,10 +2882,10 @@
               "dps_delta": -0.13256150688200846
             },
             {
-              "item_id": 13095,
-              "item_name": "Assault Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Houndmaster Loksey",
               "dps_delta": -0.17514838185641085
             }
           ]
@@ -2978,8 +2978,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.730517843,
-      "verify_run_seconds": 1.490901102,
+      "weights_run_seconds": 1.721237142,
+      "verify_run_seconds": 1.513399996,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3459,13 +3459,6 @@
           "dps_delta": 2.5192474909552516,
           "alternatives": [
             {
-              "item_id": 19513,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.42685805525862863
-            },
-            {
               "item_id": 7686,
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
@@ -3478,6 +3471,13 @@
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5573722483659008
+            },
+            {
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "dps_delta": -0.5999591233403032
             }
           ]
         },
@@ -3506,10 +3506,10 @@
               "dps_delta": -0.13256150688200846
             },
             {
-              "item_id": 13095,
-              "item_name": "Assault Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Houndmaster Loksey",
               "dps_delta": -0.17514838185641085
             }
           ]
@@ -3602,8 +3602,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.730517843,
-      "verify_run_seconds": 1.486176256,
+      "weights_run_seconds": 1.721237142,
+      "verify_run_seconds": 1.5091400579999998,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4071,21 +4071,29 @@
           "source_kind": "rep",
           "score": 37.574037773116714,
           "verified": true,
+          "swap_note": "confirmed by the sim against Protector's Band (id 19515): kept the pick, +0.4 DPS (134.3 vs 133.9 set DPS)",
+          "dps_delta": 0.37344421139817996,
           "alternatives": [
-            {
-              "item_id": 19515,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.37344421139817996,
-              "verified": true
-            },
             {
               "item_id": 13097,
               "item_name": "Thunderbrow Ring",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.7881531950074139
+            },
+            {
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.8321872261125888
+            },
+            {
+              "item_id": 9533,
+              "item_name": "Masons Fraternity Ring",
+              "source_kind": "quest",
+              "source": "Divino-matic Rod",
+              "dps_delta": -0.8431101923066239
             }
           ]
         },
@@ -4211,8 +4219,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.7162516110000001,
-      "verify_run_seconds": 1.393853217,
+      "weights_run_seconds": 1.737298209,
+      "verify_run_seconds": 1.393461963,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4687,21 +4695,29 @@
           "source_kind": "rep",
           "score": 37.574037773116714,
           "verified": true,
+          "swap_note": "confirmed by the sim against Legionnaire's Band (id 19512): kept the pick, +0.4 DPS (136.6 vs 136.2 set DPS)",
+          "dps_delta": 0.3705893956950206,
           "alternatives": [
-            {
-              "item_id": 19512,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.3705893956950206,
-              "verified": true
-            },
             {
               "item_id": 7686,
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
               "dps_delta": -0.7713794681894409
+            },
+            {
+              "item_id": 13097,
+              "item_name": "Thunderbrow Ring",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.7881531950074139
+            },
+            {
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.8321872261125888
             }
           ]
         },
@@ -4751,8 +4767,12 @@
         },
         {
           "slot": "trinket2",
-          "verified": false,
-          "empty_reason": "no_dps_value"
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4832,10 +4852,11 @@
         "finger1: Legionnaire's Band",
         "finger2: White Bone Band",
         "trinket1: Rune of the Guard Captain",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.7162516110000001,
-      "verify_run_seconds": 1.49210452,
+      "weights_run_seconds": 1.737298209,
+      "verify_run_seconds": 1.492963519,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5306,11 +5327,18 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 234030,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.25171067053026736
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.2592892985235342
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": -1.408255419523898
             },
             {
               "item_id": 11669,
@@ -5332,18 +5360,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19516,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.4426730975236519
-            },
-            {
               "item_id": 2246,
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.6336355245170361
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": -0.7826016455174001
             },
             {
               "item_id": 11669,
@@ -5590,8 +5618,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.713440423,
-      "verify_run_seconds": 1.589282942,
+      "weights_run_seconds": 1.70703081,
+      "verify_run_seconds": 1.584870032,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5742,7 +5770,7 @@
               "item_name": "Warlord's Dragonhide Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.9861693925497224
+              "dps_delta": -3.9861693925497215
             },
             {
               "item_id": 226792,
@@ -6056,11 +6084,18 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 234030,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.25171067053026736
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.2592892985235342
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -1.408255419523898
             },
             {
               "item_id": 11669,
@@ -6082,18 +6117,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19511,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.4426730975236519
-            },
-            {
               "item_id": 2246,
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.6336355245170361
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -0.7826016455174001
             },
             {
               "item_id": 11669,
@@ -6339,8 +6374,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.713440423,
-      "verify_run_seconds": 1.5772016469999999,
+      "weights_run_seconds": 1.70703081,
+      "verify_run_seconds": 1.568304603,
       "coverage": {
         "back": {
           "eligible": 451,
