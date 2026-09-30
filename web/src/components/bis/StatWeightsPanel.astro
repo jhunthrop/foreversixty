@@ -25,13 +25,18 @@ interface Props {
   scaleRows: ScaleRow[];
   scaleNoteLine: string;
   hasteCaptionLine: string | undefined;
+  /** `bis-weights-<faction>-<band>` -- assembled by the caller, which alone knows the
+   *  faction and band this panel belongs to (one instance per band/faction pair renders on
+   *  the page, so the generic `bis-stat-weights` class name alone is not unique -- same
+   *  pattern as `GearRow`'s own caller-assembled `slotTestId`). */
+  testId: string;
 }
 
-const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine } = Astro.props;
+const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, testId } = Astro.props;
 const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLine} ${hasteCaptionLine}`;
 ---
 
-<div class="panel-box stat-weights-panel" data-testid="bis-stat-weights">
+<div class="panel-box stat-weights-panel" data-testid={testId}>
   <span class="label">{bisCopy.statWeightsAtBand(bandLabel)}</span>
   <p class="stat-weights-caption text-muted">{caption}</p>
   <div class="stat-weights-header" role="row">
