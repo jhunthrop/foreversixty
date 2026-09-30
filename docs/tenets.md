@@ -13,4 +13,5 @@
 11. **Hierarchy over density.** One primary element per region, one level of emphasis, deliberate whitespace. A wall of equal-weight rows is a defect even when every row has an icon.
 12. **Compare to the reference before calling it done.** Side by side with the best-in-class for that surface (the in-game panel, Wowhead, Details!, ElvUI), and the report says why ours is as good or better. If the author cannot say it, it is not done.
 13. **Polish is measurable and part of done.** Lighthouse budgets, no layout shift on hydration, no missing-icon flash, no font swap. They are not a gate to relax in order to ship.
+14. **We help a player play their class better; we are not a reference site.** Every surface leads with the player's class or character and the next thing that makes it better (the BiS gap, the talent build, the sim, the log), never with a slogan or a feature list. The front door is "pick your class" or "your character", and the line above it is "Play your class better." Reference facts (dates, sources, changelog) stay, one level down, in service of that.
 

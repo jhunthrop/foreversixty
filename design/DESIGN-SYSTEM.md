@@ -4,7 +4,8 @@ Derived from the approved "Cinematic" direction and the live-game homepage mocku
 
 ## Principles
 
-1. **Reference, not pitch.** No hero slogans, no calls to action in marketing voice. The front door is a search box and the current state of the game.
+1. **Helper, not pitch.** The site exists to make one character play better. Every page leads with the player's class or character and the next thing that improves it; no marketing hero, no feature-list pitch. The front door is "pick your class" (the nine crests) or "your character", under the one line the site is allowed to say about itself: "Play your class better." Reference facts (dates, sources, the changelog) stay, one level down.
+7. **The game's own icons, high definition.** Class crests, spec icons and item icons are the client's own art, upscaled 4x, bezel cropped, framed by us (rounded square with a 1px line, or the extended-edge circle crest with a class ring). Never redrawn, never restyled; the Forever Sixty design system artifact carries the sets and the rules.
 2. **Second screen first.** Dark by default, high contrast, 44px minimum hit targets, pages that paint before the player alt-tabs back.
 3. **Every fact is dated and sourced.** Source pills (Blizzard, Datamined, Community, This site) and "updated" stamps are part of the UI, not an afterthought. Single-source claims say so.
 4. **The game's own colors do the wayfinding.** WoW class colors and item-rarity colors are used consistently and never repurposed.
