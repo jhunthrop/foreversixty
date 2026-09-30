@@ -75,7 +75,7 @@ Rare and epic are too dark to read as small text on `--color-raised` `#0d111a`: 
 
 | Role | Face | Fallback | Notes |
 |---|---|---|---|
-| Display | Cinzel 600–800 | Trajan Pro, Georgia, serif | Wordmark 20px, section titles 18px uppercase with 0.10em tracking, card titles 15–17px. Never above 22px on content pages. |
+| Display | Cinzel 600–800 | Trajan Pro, Georgia, serif | Wordmark 20px, section titles 18px uppercase with 0.10em tracking, card titles 15–17px, stat figures 22px. Never above 22px on content pages. The home hero is the one exception: its h1 ("Play your class better." signed out, the character's name in class colour signed in) is 34px 700. |
 | Body | Barlow 400–700 | Helvetica Neue, Arial, sans-serif | 14–15px body, 13px secondary, 17px search placeholder |
 | Numbers | JetBrains Mono 500 | SF Mono, Menlo, monospace | Dates, timers, counts, keyboard hints; `font-variant-numeric: tabular-nums` |
 | Labels | Barlow 700 | | 11px, uppercase, 0.14em tracking, muted or gold |
@@ -102,6 +102,9 @@ Self-host all three faces (Google Fonts license permits it) so no third-party re
 - **Class tile**: 84px tall, 2px inset class-color top stroke, class name in class color.
 - **Progress bar**: 6px, `--border-soft` track, filled with the relevant accent.
 - **Secondary button**: 36px, warm border, uppercase 12px 700 with 0.06em tracking. There is no primary marketing button.
+- **Account button**: the one filled gold button (44px, `#f0cc6c` → `#c99a3a`, dark text, 1px `--gold-deep` inset ring, soft gold glow). Used only for "Sign in with Battle.net" on the signed-out home; never for a tool or a link.
+- **Character row**: class crest (36px circle with class ring), name in class colour (Cinzel 14px), muted descriptor, and on the right either a mono stat ("2 upgrades") or a progress bar. The signed-in home's "Switch character" panel uses the stat form.
+- **Upgrade row**: slot label, the worn item, an arrow, the best-in-slot item, and a mono gain in green; every item is icon (36px, 1px quality border), name in quality colour, and one source line under it. The table carries a label header row (Slot / You wear / Best in slot / Gain).
 
 ## Icons
 
