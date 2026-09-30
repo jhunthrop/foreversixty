@@ -144,6 +144,49 @@ class ClassicDbDump:
         }
 
     @functools.cached_property
+    def spell_effects(self) -> dict[int, dict]:
+        """spell id -> `{proc_chance, effects: [{effect, aura, base_points,
+        die_sides, misc_value, trigger_spell}, ...]}`, classic-db's own
+        `spell_template` (1.12) columns, narrowed to the three effect slots
+        that table carries (`Effect1..3`/`EffectApplyAuraName1..3`/
+        `EffectBasePoints1..3`/`EffectDieSides1..3`/`EffectMiscValue1..3`/
+        `EffectTriggerSpell1..3`).
+
+        `pipeline.classicdb_items` is the one caller (classicdb-fidelity
+        lane, 2026-09-30): a classic-db item's effect text and structured
+        `stats` come from THIS table first, not the Forever client's own
+        `Spell.csv` -- 1.12 spell ids are not stable across clients (see
+        that module's `effect_text`/`equip_effects` own docs for the
+        Devilsaur Eye/Hand of Justice defects this closes). Every effect's
+        die-sides convention matches `pipeline.spelltext.effect_amount`'s
+        own doc for Classic Era: the base amount is `EffectBasePoints + 1`
+        when `EffectDieSides` is 1 (verified against Blackhand's Breadth's
+        real +2% crit: EffectBasePoints1 1, EffectDieSides1 1).
+        """
+        out: dict[int, dict] = {}
+        for row in iter_table_records(self._text, "spell_template"):
+            effects = []
+            for n in (1, 2, 3):
+                effect = int(row[f"Effect{n}"])
+                if effect == 0:
+                    continue
+                effects.append(
+                    {
+                        "effect": effect,
+                        "aura": int(row[f"EffectApplyAuraName{n}"]),
+                        "base_points": int(row[f"EffectBasePoints{n}"]),
+                        "die_sides": int(row[f"EffectDieSides{n}"]),
+                        "misc_value": int(row[f"EffectMiscValue{n}"]),
+                        "trigger_spell": int(row[f"EffectTriggerSpell{n}"]),
+                    }
+                )
+            out[int(row["Id"])] = {
+                "proc_chance": int(row["ProcChance"]),
+                "effects": effects,
+            }
+        return out
+
+    @functools.cached_property
     def created_item_to_spells(self) -> dict[int, list[int]]:
         """The item a crafting spell's own `SPELL_EFFECT_CREATE_ITEM`
         effect produces -> every spell id that creates it (almost always

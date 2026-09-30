@@ -14,10 +14,12 @@ returns a new list/records rather than mutating its input, and why a soft gap
 from __future__ import annotations
 
 import logging
+from collections import Counter
 from pathlib import Path
 
 from pipeline.classicdb_items import (
     ClassicDbItem,
+    ClassicDbSpell,
     class_allowed,
     load_extract,
     supplement,
@@ -31,14 +33,20 @@ from pipeline.spelltext import SpellText
 logger = logging.getLogger(__name__)
 
 
-def load_classicdb_supplement(build_dir: Path, known_ids: set[int]) -> list[ClassicDbItem] | None:
+def load_classicdb_supplement(
+    build_dir: Path, known_ids: set[int]
+) -> tuple[list[ClassicDbItem], dict[int, ClassicDbSpell]] | None:
     """The classic-db items neither the client nor wowhead's own supplement
-    already cover, or `None` when the build carries no committed extract --
-    the caller then leaves every output unchanged."""
-    records = load_extract(build_dir)
-    if records is None:
+    already cover, plus every spell those items' `spellid_<n>` reference
+    (classicdb-fidelity lane, 2026-09-30: `merge_class_items` needs the
+    structured spell data, not only the item rows) -- or `None` when the
+    build carries no committed extract, the caller then leaves every output
+    unchanged."""
+    extract = load_extract(build_dir)
+    if extract is None:
         return None
-    return supplement(records, known_ids)
+    records, spells = extract
+    return supplement(records, known_ids), spells
 
 
 def merge_items(items: list[Item], picked: list[ClassicDbItem]) -> list[Item]:
@@ -68,12 +76,23 @@ def merge_class_items(
     spell_text: SpellText,
     fork_icons: dict[int, str],
     wowhead_icons: dict[int, str],
+    spells: dict[int, ClassicDbSpell] | None = None,
+    client_spell_names: dict[int, str] | None = None,
 ) -> list[ClassItems]:
     """Each class's `items/<class-slug>.json` plus the classic-db supplement
     gear that class may equip (classic-db's own `AllowableClass` mask and the
-    client's own proficiency table)."""
+    client's own proficiency table).
+
+    `spells`/`client_spell_names` feed `to_gear_item`'s structured
+    `stats`/`effect_text` resolution (classicdb-fidelity lane, 2026-09-30);
+    pass `None` (the default) for a caller with neither and every supplement
+    row falls all the way back to its bare classic-db spell name, exactly as
+    before that lane existed.
+    """
+    spells = spells or {}
     class_id_by_slug = {slugify(row["Name_lang"]): int(row["ID"]) for row in class_rows}
     placed = 0
+    icon_origins: Counter[str] = Counter()
     merged: list[ClassItems] = []
     for record in records:
         class_id = class_id_by_slug.get(record.class_slug)
@@ -83,16 +102,28 @@ def merge_class_items(
             else []
         )
         placed += len(allowed)
-        items = [
-            *record.items,
-            *(to_gear_item(item, spell_text, fork_icons, wowhead_icons) for item in allowed),
+        new_items = [
+            to_gear_item(item, spell_text, spells, fork_icons, wowhead_icons, client_spell_names)
+            for item in allowed
         ]
+        for gear_item in new_items:
+            if gear_item.icon_source:
+                icon_origins[gear_item.icon_source] += 1
+        items = [*record.items, *new_items]
         merged.append(
             record.model_copy(
                 update={"items": sorted(items, key=lambda i: (i.required_level, i.name, i.id))}
             )
         )
     logger.info("classic-db items: merged %d supplement item placements into items/*.json", placed)
+    if icon_origins:
+        logger.info(
+            "classic-db items icon origins: %d from the fork db, %d from wowhead's "
+            "gear-planner payload, %d still on the placeholder",
+            icon_origins["fork"],
+            icon_origins["wowhead"],
+            placed - icon_origins["fork"] - icon_origins["wowhead"],
+        )
     return merged
 
 

@@ -76,8 +76,8 @@ def test_load_classicdb_supplement_excludes_known_ids() -> None:
 
     with tempfile.TemporaryDirectory() as tmp:
         build_dir = Path(tmp) / "1.60.1.70009"
-        write_extract(build_dir, build_dir_records, source_commit="deadbeef")
-        picked = load_classicdb_supplement(build_dir, known_ids={647})
+        write_extract(build_dir, build_dir_records, {}, source_commit="deadbeef")
+        picked, _spells = load_classicdb_supplement(build_dir, known_ids={647})
     assert [item.id for item in picked] == [11815]
 
 
@@ -175,6 +175,7 @@ def _write_item_template_extract(root: Path) -> None:
             _item(id=11815, allowable_class=-1),
             _item(id=271218, name="Vileblood Scimitar", allowable_class=-1),
         ],
+        {},
         source_commit="deadbeef",
     )
 

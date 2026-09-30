@@ -215,7 +215,10 @@ def normalize_build(
     known_ids = client_equippable_ids | (
         {item.id for item in wowhead_supplement} if wowhead_supplement is not None else set()
     )
-    classicdb_supplement = load_classicdb_supplement(build_dir, known_ids)
+    classicdb_extract = load_classicdb_supplement(build_dir, known_ids)
+    classicdb_supplement, classicdb_spells = (
+        classicdb_extract if classicdb_extract is not None else (None, {})
+    )
     items = (
         merge_classicdb_items(items, classicdb_supplement)
         if classicdb_supplement is not None
@@ -366,6 +369,8 @@ def normalize_build(
                 spell_text,
                 fork_icons,
                 wowhead_icons,
+                classicdb_spells,
+                spell_names,
             )
         # Every class is checked against its own previous count before any of
         # them is written -- one class failing the gate must not leave a

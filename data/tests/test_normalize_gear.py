@@ -979,6 +979,7 @@ def test_an_item_with_no_client_icon_falls_back_to_the_wowhead_planner_icon():
     )
     helm = {i.id: i for r in records for i in r.items}[16866]
     assert helm.icon == "inv_helmet_23"
+    assert helm.icon_source == "wowhead"
 
 
 def test_the_fork_db_icon_is_tried_before_the_wowhead_planner_icon():
@@ -995,6 +996,13 @@ def test_the_fork_db_icon_is_tried_before_the_wowhead_planner_icon():
     )
     helm = {i.id: i for r in records for i in r.items}[16866]
     assert helm.icon == "inv_helmet_fork"
+    assert helm.icon_source == "fork"
+
+
+def test_icon_source_is_client_when_the_client_states_a_real_icon():
+    records = build_all()
+    helm = {i.id: i for r in records for i in r.items}[16866]
+    assert helm.icon_source == "client"
 
 
 def test_an_item_neither_fallback_names_still_gets_the_placeholder():
@@ -1014,6 +1022,56 @@ def test_an_item_neither_fallback_names_still_gets_the_placeholder():
 def test_every_emitted_item_icon_is_a_usable_file_name():
     """No item may carry an empty icon: the site builds icons/<icon>.webp from it."""
     assert all(i.icon for record in build_all() for i in record.items)
+
+
+# --- weapon_type: contract 4 (classicdb-fidelity lane, 2026-09-30) ----------
+
+
+def test_weapon_type_for_maps_every_ranged_and_melee_subclass():
+    from pipeline.normalize.gear import RANGED_WEAPON_TYPES, weapon_type_for
+
+    # Ranged: bow (15), thrown (25), ranged-right/wand-gun-crossbow (26).
+    assert weapon_type_for(WEAPON, 2, 15) == "bow"
+    assert weapon_type_for(WEAPON, 16, 25) == "thrown"
+    assert weapon_type_for(WEAPON, 3, 26) == "gun"
+    assert weapon_type_for(WEAPON, 18, 26) == "crossbow"
+    assert weapon_type_for(WEAPON, 19, 26) == "wand"
+    assert RANGED_WEAPON_TYPES == {"wand", "bow", "gun", "crossbow", "thrown"}
+    # Melee: one/two-hand pairs collapse to one type (main-hand 13, two-hand 17).
+    assert weapon_type_for(WEAPON, 0, 13) == weapon_type_for(WEAPON, 1, 17) == "axe"
+    assert weapon_type_for(WEAPON, 4, 13) == weapon_type_for(WEAPON, 5, 17) == "mace"
+    assert weapon_type_for(WEAPON, 7, 13) == weapon_type_for(WEAPON, 8, 17) == "sword"
+    assert weapon_type_for(WEAPON, 6, 17) == "polearm"
+    assert weapon_type_for(WEAPON, 10, 17) == "staff"
+    assert weapon_type_for(WEAPON, 13, 13) == "fist"
+    assert weapon_type_for(WEAPON, 15, 13) == "dagger"
+    # Not a weapon row at all: None regardless of subclass.
+    assert weapon_type_for(4, 19, 26) is None  # armour, not a weapon
+    assert weapon_type_for(WEAPON, 19, 23) is None  # HOLDABLE off-hand, not a weapon slot
+
+
+def test_every_ranged_row_carries_one_of_the_five_ranged_types():
+    from pipeline.normalize.gear import RANGED_WEAPON_TYPES
+
+    ranged = [i for record in build_all() for i in record.items if i.slot == "ranged"]
+    assert ranged, "fixture has no ranged rows to check"
+    assert all(i.weapon_type in RANGED_WEAPON_TYPES for i in ranged)
+
+
+def test_every_main_or_off_hand_weapon_carries_a_melee_type():
+    """A weapon is identified by its own nonzero `speed` (`NOT_A_WEAPON`'s own
+    doc: only a real weapon row ever gets one) -- a non-weapon main_hand/
+    off_hand item (a shield, a tome) is exempt, matching `weapon_type_for`'s
+    own None-for-non-weapons contract."""
+    melee_types = {"axe", "mace", "polearm", "sword", "staff", "fist", "dagger"}
+    weapons = [
+        i
+        for record in build_all()
+        for i in record.items
+        if i.slot in ("main_hand", "off_hand") and i.speed > 0
+    ]
+    assert weapons, "fixture has no main/off-hand weapon rows to check"
+    assert all(i.weapon_type in melee_types for i in weapons)
 
 
 def build_with_sparse(rows: list[dict[str, str]]):

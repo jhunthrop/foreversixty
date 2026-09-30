@@ -22,7 +22,9 @@
       "stats_source": null,
       "set_id": null,
       "unique": false,
-      "client_unconfirmed": false
+      "client_unconfirmed": false,
+      "icon_source": "client",
+      "weapon_type": "bow"
     },
     {
       "id": 13315,
@@ -46,7 +48,9 @@
       "stats_source": null,
       "set_id": null,
       "unique": false,
-      "client_unconfirmed": false
+      "client_unconfirmed": false,
+      "icon_source": "client",
+      "weapon_type": null
     },
     {
       "id": 12798,
@@ -68,7 +72,9 @@
       "stats_source": null,
       "set_id": null,
       "unique": false,
-      "client_unconfirmed": false
+      "client_unconfirmed": false,
+      "icon_source": "client",
+      "weapon_type": "axe"
     },
     {
       "id": 19325,
@@ -92,7 +98,9 @@
       "stats_source": null,
       "set_id": null,
       "unique": true,
-      "client_unconfirmed": false
+      "client_unconfirmed": false,
+      "icon_source": "client",
+      "weapon_type": null
     },
     {
       "id": 17066,
@@ -116,7 +124,9 @@
       "stats_source": null,
       "set_id": null,
       "unique": false,
-      "client_unconfirmed": false
+      "client_unconfirmed": false,
+      "icon_source": "client",
+      "weapon_type": null
     },
     {
       "id": 16866,
@@ -142,7 +152,9 @@
       "stats_source": null,
       "set_id": 209,
       "unique": false,
-      "client_unconfirmed": false
+      "client_unconfirmed": false,
+      "icon_source": "client",
+      "weapon_type": null
     },
     {
       "id": 19019,
@@ -166,7 +178,9 @@
       "stats_source": null,
       "set_id": null,
       "unique": true,
-      "client_unconfirmed": false
+      "client_unconfirmed": false,
+      "icon_source": "client",
+      "weapon_type": "sword"
     }
   ]
 }

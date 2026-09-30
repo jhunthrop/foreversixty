@@ -1037,13 +1037,15 @@ def fetch_and_write_classic_sources(
         len(items),
         path,
     )
-    item_template_records = extract_records(sql_text)
+    item_template_records, referenced_spells = extract_records(sql_text)
     item_template_path = write_item_template_extract(
-        build_dir, item_template_records, source_commit=_source_commit()
+        build_dir, item_template_records, referenced_spells, source_commit=_source_commit()
     )
     logger.info(
-        "classic-sources: extracted %d equippable item_template rows; wrote %s",
+        "classic-sources: extracted %d equippable item_template rows and %d referenced "
+        "spell_template rows; wrote %s",
         len(item_template_records),
+        len(referenced_spells),
         item_template_path,
     )
     return path
