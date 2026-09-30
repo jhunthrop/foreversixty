@@ -731,8 +731,13 @@ def test_quests_map_carries_id_name_and_faction_per_item():
             assert -1 <= entry["level"] <= 61
             counts[entry["faction"]] += 1
     assert set(counts) == set(QUEST_FACTION_COUNTS)
-    for faction, measured in QUEST_FACTION_COUNTS.items():
-        assert counts[faction] >= measured, faction
+    # Floors for the one-sided counts only: every quest classic-db newly
+    # settles moves OUT of "both" into alliance or horde (quest-faction lane,
+    # 2026-09-29), so "both" legitimately shrinks night by night while the
+    # total of all three never does.
+    for faction in ("alliance", "horde"):
+        assert counts[faction] >= QUEST_FACTION_COUNTS[faction], faction
+    assert sum(counts.values()) >= sum(QUEST_FACTION_COUNTS.values())
 
 
 def test_quests_map_level_source_is_almost_entirely_classic_db_2026_09_28():
