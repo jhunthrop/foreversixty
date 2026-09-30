@@ -219,3 +219,15 @@ def test_a_pvp_picks_source_is_the_rankers_rank_title_faction_label(tmp_path):
     assert not any(
         "does not list the item" in f.message for f in result.findings if f.subject == "400"
     )
+
+
+def test_quest_floor_counts_an_unknown_faction_quest_like_both(tmp_path):
+    root = tmp_path / "builds"
+    build_dir = _write_build(root, "testbuild")
+    loot = json.loads((build_dir / "loot.json").read_text())
+    loot["quests"]["300"][1]["faction"] = "unknown"
+    (build_dir / "loot.json").write_text(json.dumps(loot))
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_bis.check(ctx)
+    star = [f for f in result.findings if f.subject == "300"]
+    assert star[0].theirs == "21"

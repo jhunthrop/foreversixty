@@ -113,7 +113,10 @@ def _quest_floor(loot: dict, item_id: int, faction: str) -> int | None:
         return None
     floors = []
     for q in quests:
-        if q.get("faction", "both") not in ("both", faction):
+        # data-followups-3, 2026-09-30: a Forever quest whose side no primary
+        # source states publishes "unknown"; the ranker reads that as both,
+        # so the audit's floor does too.
+        if q.get("faction", "both") not in ("both", "unknown", faction):
             continue
         min_level = int(q.get("min_level") or 0)
         level = int(q.get("level") or 0)
