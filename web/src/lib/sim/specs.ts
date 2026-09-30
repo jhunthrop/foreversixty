@@ -216,7 +216,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'attack_power',
-    weight_stats: ['attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'rogue-combat',
@@ -226,7 +226,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'attack_power',
-    weight_stats: ['attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'rogue-subtlety',
@@ -236,7 +236,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'attack_power',
-    weight_stats: ['attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'shaman-elemental',
