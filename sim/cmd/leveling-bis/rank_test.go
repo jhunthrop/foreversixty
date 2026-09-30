@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -49,8 +50,21 @@ func TestEffectVerifiedInSimCatchesAnItemSimdbSilentlyStrips(t *testing.T) {
 	handOfJustice := effectItem(11815, "Hand of Justice", "Equip: Chance on hit to gain an extra attack.")
 	implemented := effectItem(3854, "Frost Tiger Blade", "Launches a bolt of frost.")
 
-	if effectVerifiedInSim(handOfJustice.candidate) {
-		t.Error("Hand of Justice (11815) has no simdb row in this build; effectVerifiedInSim = true, want false")
+	// Any engine-implemented id this build's simdb does not carry must read
+	// as unverified; which ids those are moves with the catalogue (Hand of
+	// Justice itself is Known since the classic-db supplement), so find one.
+	var absent int
+	for id := range engineImplementedEffectItemIDs {
+		if !simdb.Known(int32(id)) {
+			absent = id
+			break
+		}
+	}
+	if absent != 0 {
+		stripped := effectItem(absent, "absent from simdb", "Equip: some effect.")
+		if effectVerifiedInSim(stripped.candidate) {
+			t.Errorf("item %d has no simdb row in this build; effectVerifiedInSim = true, want false", absent)
+		}
 	}
 	if !effectVerifiedInSim(implemented.candidate) {
 		t.Error("Frost Tiger Blade (3854) is both engine-implemented and known to simdb; effectVerifiedInSim = false, want true")

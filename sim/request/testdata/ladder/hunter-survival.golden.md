@@ -92,11 +92,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-00000000000000000-100000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 36.7 | 3 | other:attack/2=129.9, other:attack/1=46.5, spell:14260/3=24.0, spell:14260=23.7, spell:14260/1=23.7 | - |
 | 20 | 0000000000000000-00000000000000000-500230100000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 51.5 | 5 | other:attack/2=121.3, other:attack/1=61.6, spell:1495=30.8, spell:14261=6.0, spell:14261/1=6.0 | - |
-| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:6692 off_hand:23168 ranged:274748 | 64.4 | 6 | other:attack/1=70.1, spell:14269=29.2, spell:14262=6.0, spell:14262/1=6.0, spell:14262/3=6.0 | {SpellID: 1317257} |
-| 38 | 0000000000000000-00000000000000000-500230131051120140 | main_hand:869 off_hand:6829 ranged:2825 | 85.5 | 7 | other:attack/1=75.0, spell:14269=29.2, spell:1317257=22.7, spell:14263=8.0, spell:14263/1=8.0 | - |
-| 40 | 0000000000000000-00000000000000000-500230131051120151 | main_hand:2164 off_hand:9465 ranged:2825 | 48.4 | 7 | other:attack/1=174.1, spell:14269=29.5, spell:1317257=22.7, spell:14264=8.0, spell:14264/1=8.0 | - |
-| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:2163 off_hand:6660 ranged:2824 | 91.9 | 7 | other:attack/1=132.2, spell:14270=27.9, spell:1317257=22.7, spell:14265=8.0, spell:14265/1=8.0 | - |
-| 60 | 0000000000000000-32005500005000000-500230131051120151 | main_hand:23054 off_hand:22802 ranged:22811 | 68.7 | 7 | other:attack/1=174.1, spell:14271=25.8, spell:1317257=22.7, spell:14266=8.0, spell:14266/1=8.0 | - |
+| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:6692 off_hand:23168 ranged:274748 | 69.5 | 6 | other:attack/2=129.9, other:attack/1=70.0, spell:14269=29.3, spell:14262=6.0, spell:14262/1=6.0 | {SpellID: 1317257} |
+| 38 | 0000000000000000-00000000000000000-500230131051120140 | main_hand:869 off_hand:6829 ranged:2825 | 91.9 | 7 | other:attack/1=99.2, other:attack/2=82.9, spell:14269=29.2, spell:1317257=22.7, spell:14263=8.0 | - |
+| 40 | 0000000000000000-00000000000000000-500230131051120151 | main_hand:2164 off_hand:9465 ranged:2825 | 92.4 | 8 | other:attack/2=101.2, other:attack/1=93.3, spell:14269=28.8, spell:1317257=22.7, spell:14264=8.0 | - |
+| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:2163 off_hand:6660 ranged:2824 | 104.7 | 7 | other:attack/2=140.0, other:attack/1=122.1, spell:14270=28.2, spell:1317257=22.7, spell:14265=8.0 | - |
+| 60 | 0000000000000000-32005500005000000-500230131051120151 | main_hand:23054 off_hand:22802 ranged:22811 | 197.4 | 7 | other:attack/2=101.2, other:attack/1=60.6, spell:14271=26.9, spell:1317257=22.7, spell:14266=7.0 | - |
 
 ## Learned but unused (informational)
 
@@ -281,5 +281,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-survival level=40 kind=dps_regression dps=48.4 prev_dps=85.5
-- hunter-survival level=60 kind=dps_regression dps=68.7 prev_dps=91.9
+None.

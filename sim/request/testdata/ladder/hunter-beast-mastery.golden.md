@@ -92,11 +92,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-00000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 52.0 | 3 | other:shoot=83.8, spell:3044=17.5, spell:13549=17.2, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 20904} |
 | 20 | 5420000000000000-00000000000000000-000000000000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 63.9 | 5 | other:shoot=77.6, spell:2643=13.5, spell:19434=7.4, spell:13550=3.1, spell:14282=1.9 | {SpellID: 19574} |
-| 30 | 5420001504000000-00000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 83.6 | 6 | other:shoot=77.1, spell:2643=8.6, spell:20900=7.8, spell:13551=2.2, spell:14283=1.9 | {SpellID: 19574} |
-| 38 | 5420001505001240-00000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 49.4 | 5 | spell:13552=1.1, other:move=1.0, spell:14320=1.0, spell:20901=1.0, spell:3045=1.0 | {SpellID: 19574} |
-| 40 | 5420001505001251-00000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 59.0 | 6 | spell:19574=2.0, spell:13552=1.1, other:move=1.0, spell:14320=1.0, spell:20901=1.0 | - |
-| 50 | 5420001505001251-35200000000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 63.0 | 6 | spell:19574=2.0, spell:13554=1.1, other:move=1.0, spell:14321=1.0, spell:20902=1.0 | - |
-| 60 | 5420001505001251-35510000000000000-510000000000000000 | main_hand:23054 off_hand:22802 ranged:22811 | 65.2 | 6 | spell:19574=2.0, spell:25295=1.1, other:move=1.0, spell:20904=1.0, spell:25296=1.0 | - |
+| 30 | 5420001504000000-00000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 83.7 | 6 | other:shoot=77.1, spell:2643=8.6, spell:20900=7.8, spell:13551=2.2, spell:14283=1.9 | {SpellID: 19574} |
+| 38 | 5420001505001240-00000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 103.5 | 6 | other:shoot=79.6, spell:20901=7.9, spell:2643=7.0, spell:13552=2.2, spell:14284=1.9 | {SpellID: 19574} |
+| 40 | 5420001505001251-00000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 113.3 | 7 | other:shoot=80.0, spell:20901=7.6, spell:2643=6.0, spell:13552=2.1, spell:19574=2.0 | - |
+| 50 | 5420001505001251-35200000000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 119.4 | 6 | other:shoot=135.3, spell:2643=12.9, spell:19574=2.0, spell:13554=1.1, other:move=1.0 | - |
+| 60 | 5420001505001251-35510000000000000-510000000000000000 | main_hand:23054 off_hand:22802 ranged:22811 | 158.9 | 7 | other:shoot=74.9, spell:2643=9.9, spell:19574=2.0, spell:20904=2.0, spell:25295=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -217,6 +217,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
+- Arcane Shot (spell 14285)
 - Bite (spell 17260)
 - Claw (spell 3010)
 - Counterattack (spell 20909)
@@ -278,8 +279,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-beast-mastery level=38 kind=dps_regression dps=49.4 prev_dps=83.6
-- hunter-beast-mastery level=38 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
-- hunter-beast-mastery level=40 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
-- hunter-beast-mastery level=50 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
-- hunter-beast-mastery level=60 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
+- hunter-beast-mastery level=50 kind=zero_casts spell="Arcane Shot" id=14285 authored=14287

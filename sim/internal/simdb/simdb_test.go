@@ -253,8 +253,12 @@ func TestKnownHandOfJusticeRegression(t *testing.T) {
 	if _, err := load(); err != nil {
 		t.Skip("embedded database unavailable:", err)
 	}
+	// simdb-supplement (2026-09-30) builds the database from the whole
+	// catalogue, so Hand of Justice (a classic-db row) must stay Known;
+	// its disappearance would silently strip it from every tournament
+	// again (the effect-procs finding this test was born from).
 	const handOfJustice int32 = 11815
-	if Known(handOfJustice) {
-		t.Fatalf("Known(%d) = true; Hand of Justice now has a simdb row - rank.go's effectVerifiedInSim doc and this lane's report are stale, and known-good fixtures for the affected specs need a re-measure", handOfJustice)
+	if !Known(handOfJustice) {
+		t.Fatalf("Known(%d) = false; Hand of Justice lost its simdb row - the classic-db supplement (pipeline/simdb) is not feeding the database", handOfJustice)
 	}
 }

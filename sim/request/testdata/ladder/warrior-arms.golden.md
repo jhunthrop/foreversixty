@@ -94,9 +94,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 35300000000000000-000000000000000000-000000000000000000 | main_hand:6631 | 19.1 | 6 | other:attack/1=50.2, other:rage_gain=38.1, spell:6547=14.2, spell:285/1=13.2, spell:285=12.9 | - |
 | 30 | 35325210000000000-000000000000000000-000000000000000000 | main_hand:13045 | 38.8 | 7 | other:rage_gain=98.1, other:attack/1=47.5, spell:1608/1=15.9, spell:1608=15.6, spell:6548=11.7 | - |
 | 38 | 35325213032000000-000000000000000000-000000000000000000 | main_hand:873 | 43.8 | 7 | other:rage_gain=98.1, other:attack/1=36.9, spell:11564/1=12.9, spell:11564=12.6, spell:6548=11.8 | - |
-| 40 | 35325213032010001-000000000000000000-000000000000000000 | main_hand:1982 | 21.9 | 8 | other:attack/1=182.1, other:rage_gain=98.1, spell:7887=11.3, spell:11572=9.4, spell:2687=3.5 | - |
-| 50 | 35325213032010001-050500000000000000-000000000000000000 | main_hand:812 | 34.5 | 8 | other:rage_gain=191.6, other:attack/1=182.0, spell:11584=11.6, spell:11573=9.5, spell:21551=5.0 | - |
-| 60 | 35325213032010001-050500000000000000-500500000000000000 | main_hand:22798 | 45.7 | 8 | other:rage_gain=191.7, other:attack/1=181.9, spell:11585=11.9, spell:11574=9.7, spell:21553=5.4 | - |
+| 40 | 35325213032010001-000000000000000000-000000000000000000 | main_hand:1982 | 67.9 | 8 | other:rage_gain=98.1, other:attack/1=65.1, spell:11572=9.8, spell:12294=9.5, spell:20660=6.0 | - |
+| 50 | 35325213032010001-050500000000000000-000000000000000000 | main_hand:812 | 83.7 | 8 | other:rage_gain=128.5, other:attack/1=58.6, spell:21551=10.9, spell:11573=10.0, spell:20661=6.5 | - |
+| 60 | 35325213032010001-050500000000000000-500500000000000000 | main_hand:22798 | 148.1 | 8 | other:rage_gain=123.2, other:attack/1=45.7, spell:21553=13.6, spell:11574=10.1, spell:20662=7.4 | - |
 
 ## Learned but unused (informational)
 
@@ -171,4 +171,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warrior-arms level=40 kind=dps_regression dps=21.9 prev_dps=43.8
+None.
