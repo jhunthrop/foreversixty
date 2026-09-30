@@ -2,6 +2,7 @@ import pytest
 from traits_fixture import TRAITS, trait_rows
 
 from pipeline.csvio import read_csv
+from pipeline.icons import PLACEHOLDER_ICON, icon_names
 from pipeline.normalize.traits import (
     COLUMN_ORIGINS,
     TraitDataError,
@@ -51,6 +52,25 @@ def test_the_tree_is_split_into_the_three_tabs_in_the_games_order():
         (164, "Fury", 1, "WarriorFury"),
         (163, "Protection", 2, "WarriorProtection"),
     ]
+
+
+def test_a_tabs_own_icon_resolves_through_the_manifest():
+    """day3 data-followups-11 lane: `TalentTab.SpellIconID` -- despite the
+    stale legacy column name, the client's own dump already stores a
+    file data id there, resolved through `ManifestInterfaceData` exactly
+    like a talent's or an item's icon."""
+    icons = icon_names(read_csv(TRAITS / "ManifestInterfaceData.csv"))
+    (warrior,) = read_trait_trees(trait_rows(), icons)
+    assert [(t.tab_id, t.icon) for t in warrior.tabs] == [
+        (161, "ability_rogue_eviscerate"),
+        (164, "ability_warrior_rampage"),
+        (163, "inv_shield_06"),
+    ]
+
+
+def test_a_tabs_icon_is_the_placeholder_without_an_icons_table():
+    (warrior,) = read_trait_trees(trait_rows())
+    assert all(t.icon == PLACEHOLDER_ICON for t in warrior.tabs)
 
 
 def test_every_talent_lands_on_its_own_cell_with_its_spell_and_rank_cap():

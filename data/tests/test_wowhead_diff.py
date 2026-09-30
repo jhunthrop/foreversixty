@@ -27,7 +27,12 @@ def records(talents):
             class_slug="warrior",
             trees=[
                 TalentTree(
-                    id=161, name="Arms", position=0, talents=talents, background="warriorarms"
+                    id=161,
+                    name="Arms",
+                    position=0,
+                    talents=talents,
+                    background="warriorarms",
+                    icon="icon",
                 )
             ],
         )

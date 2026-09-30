@@ -89,6 +89,16 @@ def test_icon_is_the_first_rank_spell_icon():
     assert talents[124].icon == "ability_golemthunderclap"
 
 
+def test_each_tree_carries_its_own_tab_icon():
+    """day3 data-followups-11 lane: `TalentTab.SpellIconID`, resolved the
+    same way a talent's own icon already is."""
+    trees = build_warrior()[0].trees
+    assert [(t.id, t.icon) for t in trees] == [
+        (161, "ability_rogue_eviscerate"),
+        (164, "ability_warrior_rampage"),
+    ]
+
+
 def test_output_is_deterministic(tmp_path: Path):
     first, second = tmp_path / "a.json", tmp_path / "b.json"
     write_model(build_warrior()[0], first)

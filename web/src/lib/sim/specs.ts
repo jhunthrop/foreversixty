@@ -13,6 +13,8 @@ export interface Spec {
   reference_stat: string;
   /** The closed list of stats /sim/weights offers; reference_stat is always one of them. */
   weight_stats: readonly string[];
+  /** The spec's own talent-tab icon (tenet 3): a lowercase file name, no extension. */
+  icon: string;
 }
 
 /** Every spec, ordered by class slug then talent tree position. */
@@ -35,6 +37,7 @@ export const SPECS: readonly Spec[] = [
       'nature_power',
       'arcane_power',
     ],
+    icon: 'spell_nature_starfall',
   },
   {
     spec: 'druid-feral',
@@ -45,6 +48,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'feral_attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_racial_bearform',
   },
   {
     spec: 'druid-restoration',
@@ -55,6 +59,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 2,
     reference_stat: 'spell_power',
     weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
+    icon: 'spell_nature_healingtouch',
   },
   {
     spec: 'hunter-beast-mastery',
@@ -65,6 +70,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 0,
     reference_stat: 'ranged_attack_power',
     weight_stats: ['ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_hunter_beasttaming',
   },
   {
     spec: 'hunter-marksmanship',
@@ -75,6 +81,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'ranged_attack_power',
     weight_stats: ['ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_marksmanship',
   },
   {
     spec: 'hunter-survival',
@@ -85,6 +92,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 2,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'agility', 'strength', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_hunter_swiftstrike',
   },
   {
     spec: 'mage-arcane',
@@ -103,6 +111,7 @@ export const SPECS: readonly Spec[] = [
       'spell_penetration',
       'arcane_power',
     ],
+    icon: 'spell_holy_magicalsentry',
   },
   {
     spec: 'mage-fire',
@@ -121,6 +130,7 @@ export const SPECS: readonly Spec[] = [
       'spell_penetration',
       'fire_power',
     ],
+    icon: 'spell_fire_firebolt02',
   },
   {
     spec: 'mage-frost',
@@ -139,6 +149,7 @@ export const SPECS: readonly Spec[] = [
       'spell_penetration',
       'frost_power',
     ],
+    icon: 'spell_frost_frostbolt02',
   },
   {
     spec: 'paladin-holy',
@@ -149,6 +160,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 0,
     reference_stat: 'spell_power',
     weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
+    icon: 'spell_holy_holybolt',
   },
   {
     spec: 'paladin-protection',
@@ -159,6 +171,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'spell_holy_devotionaura',
   },
   {
     spec: 'paladin-retribution',
@@ -169,6 +182,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 2,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'spell_holy_auraoflight',
   },
   {
     spec: 'priest-discipline',
@@ -179,6 +193,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 0,
     reference_stat: 'spell_power',
     weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
+    icon: 'spell_holy_wordfortitude',
   },
   {
     spec: 'priest-holy',
@@ -189,6 +204,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'spell_power',
     weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
+    icon: 'spell_holy_guardianspirit',
   },
   {
     spec: 'priest-shadow',
@@ -207,6 +223,7 @@ export const SPECS: readonly Spec[] = [
       'spell_penetration',
       'shadow_power',
     ],
+    icon: 'spell_shadow_shadowwordpain',
   },
   {
     spec: 'rogue-assassination',
@@ -217,6 +234,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 0,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_rogue_eviscerate',
   },
   {
     spec: 'rogue-combat',
@@ -227,6 +245,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_backstab',
   },
   {
     spec: 'rogue-subtlety',
@@ -237,6 +256,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 2,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_stealth',
   },
   {
     spec: 'shaman-elemental',
@@ -255,6 +275,7 @@ export const SPECS: readonly Spec[] = [
       'spell_penetration',
       'nature_power',
     ],
+    icon: 'spell_nature_lightning',
   },
   {
     spec: 'shaman-enhancement',
@@ -265,6 +286,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'spell_nature_lightningshield',
   },
   {
     spec: 'shaman-restoration',
@@ -275,6 +297,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 2,
     reference_stat: 'spell_power',
     weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
+    icon: 'spell_nature_magicimmunity',
   },
   {
     spec: 'warlock-affliction',
@@ -293,6 +316,7 @@ export const SPECS: readonly Spec[] = [
       'spell_penetration',
       'shadow_power',
     ],
+    icon: 'spell_shadow_deathcoil',
   },
   {
     spec: 'warlock-demonology',
@@ -312,6 +336,7 @@ export const SPECS: readonly Spec[] = [
       'shadow_power',
       'fire_power',
     ],
+    icon: 'spell_shadow_metamorphosis',
   },
   {
     spec: 'warlock-destruction',
@@ -331,6 +356,7 @@ export const SPECS: readonly Spec[] = [
       'shadow_power',
       'fire_power',
     ],
+    icon: 'spell_shadow_rainoffire',
   },
   {
     spec: 'warrior-arms',
@@ -341,6 +367,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 0,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_rogue_eviscerate',
   },
   {
     spec: 'warrior-fury',
@@ -351,6 +378,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'ability_warrior_innerrage',
   },
   {
     spec: 'warrior-protection',
@@ -361,6 +389,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 2,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    icon: 'inv_shield_06',
   },
 ];
 

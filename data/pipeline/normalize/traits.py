@@ -30,6 +30,7 @@ from collections import Counter
 from collections.abc import Iterable
 from dataclasses import dataclass, replace
 
+from pipeline.icons import resolve_icon
 from pipeline.normalize.talents import class_id_from_mask
 
 logger = logging.getLogger(__name__)
@@ -81,6 +82,15 @@ class TraitTab:
     name: str
     position: int
     background: str
+    #: The tab's own icon name, resolved off `TalentTab.SpellIconID`
+    #: through `ManifestInterfaceData` (day3 data-followups-11 lane) --
+    #: `read_trait_trees`'s own doc has the join. The client's dump
+    #: stores this column as an already-resolved file data id, not a
+    #: legacy `SpellIcon.dbc` row (the "SpellIconID" name is stale, kept
+    #: because it is the raw CSV's own header), the same way `Spell`'s
+    #: own `SpellIconFileDataID` is -- `resolve_icon` is the one place
+    #: that join happens.
+    icon: str
     talents: tuple[TraitTalent, ...]
 
 
@@ -412,6 +422,7 @@ def _with_prerequisites(tree: TraitClassTree, edge_rows: list[dict[str, str]]) -
                 name=tab.name,
                 position=tab.position,
                 background=tab.background,
+                icon=tab.icon,
                 talents=tuple(
                     replace(
                         talent,
@@ -428,8 +439,22 @@ def _with_prerequisites(tree: TraitClassTree, edge_rows: list[dict[str, str]]) -
     )
 
 
-def read_trait_trees(rows: TraitRows) -> list[TraitClassTree]:
-    """One `TraitClassTree` per class, tabs left to right, sorted by class id."""
+def read_trait_trees(
+    rows: TraitRows, icons: dict[int, str] | None = None
+) -> list[TraitClassTree]:
+    """One `TraitClassTree` per class, tabs left to right, sorted by class id.
+
+    `icons` (file data id -> icon name, `pipeline.icons.icon_names`' own
+    result) resolves each tab's OWN icon off `TalentTab.SpellIconID`
+    (day3 data-followups-11 lane) -- despite the stale "SpellIconID"
+    column name, the client's own dump already stores a file data id
+    there, not a legacy `SpellIcon.dbc` row, the same shape `Spell`'s own
+    `SpellIconFileDataID` is (verified against this build's own
+    `ManifestInterfaceData.csv`: `TalentTab` row 161's `SpellIconID`
+    132292 names `Ability_Rogue_Eviscerate.blp` there directly). `None`
+    (every caller before this field existed) resolves every tab to the
+    placeholder rather than failing.
+    """
     class_of_tree = _class_of_tree(rows)
     node_rows = {int(n["ID"]): n for n in rows.node}
     entries = {int(e["ID"]): e for e in rows.node_entry}
@@ -482,6 +507,11 @@ def read_trait_trees(rows: TraitRows) -> list[TraitClassTree]:
                 name=tab_row["Name_lang"],
                 position=index,
                 background=tab_row["BackgroundFile"],
+                icon=resolve_icon(
+                    int(tab_row["SpellIconID"]),
+                    icons or {},
+                    f"tab {tab_row['ID']} ({tab_row['Name_lang']})",
+                ),
                 talents=_talents_for_tab(
                     node_sets[index], index, tab_row["Name_lang"], node_rows, entry_of
                 ),

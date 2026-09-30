@@ -14,6 +14,8 @@ from pipeline.icons import (
     icon_names,
     icons_for_build,
     resolve_icon_name,
+    rotation_icon_names,
+    spec_icon_names,
     wanted_icons,
 )
 
@@ -172,6 +174,7 @@ def test_wanted_icons_reads_the_emitted_json(tmp_path: Path):
                         "id": 161,
                         "name": "Arms",
                         "position": 0,
+                        "icon": "inv_shield_09",
                         "talents": [
                             {
                                 "id": 124,
@@ -202,7 +205,11 @@ def test_wanted_icons_reads_the_emitted_json(tmp_path: Path):
     )
     names = icon_names(read_csv(HERE / "fixtures/ManifestInterfaceData.csv"))
     wanted = wanted_icons(tmp_path, names)
-    assert wanted == {132154: "ability_golemthunderclap", 135274: "inv_sword_04"}
+    assert wanted == {
+        132154: "ability_golemthunderclap",
+        132544: "inv_shield_09",
+        135274: "inv_sword_04",
+    }
 
 
 def test_class_icon_names_reads_every_class_slug(tmp_path: Path):
@@ -245,6 +252,7 @@ def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monk
                         "id": 161,
                         "name": "Arms",
                         "position": 0,
+                        "icon": "inv_shield_09",
                         "talents": [
                             {
                                 "id": 124,
@@ -263,12 +271,24 @@ def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monk
             }
         )
     )
+    # rotation_icon_names (icons_for_build's own addition, day3 data-
+    # followups-11 lane) needs a spellranks.json to read even when this
+    # synthetic build names no curated spec at all; an empty-but-well-
+    # formed one, with curated_dir pointing at a directory with no apl/
+    # folder, resolves to "no rotation icons" rather than a missing-file
+    # refusal.
+    (build_dir / "spellranks.json").write_text(json.dumps({"build": "1.0.0.1", "classes": {}}))
     client = httpx.Client(transport=blp_transport([]), base_url="https://wago.tools")
     written = icons_for_build(
-        "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", client=client
+        "1.0.0.1",
+        root=tmp_path / "builds",
+        cache_dir=tmp_path / "cache",
+        client=client,
+        curated_dir=tmp_path / "curated",
     )
-    assert written == 1
+    assert written == 2
     assert (build_dir / "icons" / "ability_golemthunderclap.webp").exists()
+    assert (build_dir / "icons" / "inv_shield_09.webp").exists()
 
 
 def test_download_icons_warns_on_a_name_collision_and_keeps_the_lower_id(tmp_path: Path, caplog):
@@ -328,6 +348,7 @@ def test_wanted_icons_skips_an_icon_name_absent_from_the_manifest(tmp_path: Path
                         "id": 161,
                         "name": "Arms",
                         "position": 0,
+                        "icon": "inv_shield_09",
                         "talents": [
                             {
                                 "id": 124,
@@ -355,6 +376,75 @@ def test_wanted_icons_skips_an_icon_name_absent_from_the_manifest(tmp_path: Path
         wanted = wanted_icons(tmp_path, names)
     assert "whatever" not in wanted.values()
     assert any("whatever" in record.getMessage() for record in caplog.records)
+
+
+def test_rotation_icon_names_reads_every_rotation_lines_icon(tmp_path: Path):
+    """day3 data-followups-11 lane: a rotation line's icon is not sitting in
+    an already-emitted file at the point `icons_for_build` runs, so
+    `rotation_icon_names` recomputes it the same way `build_addon_data`
+    itself will."""
+    build_dir = tmp_path / "builds" / "1.0.0.1"
+    build_dir.mkdir(parents=True)
+    raw = build_dir / "raw"
+    for name in ("Spell", "SpellMisc", "SpellEffect", "SpellDuration"):
+        (raw / f"{name}.csv").parent.mkdir(parents=True, exist_ok=True)
+    (raw / "Spell.csv").write_text(
+        "ID,Description_lang\n2687,Bloodrage: raises rage.\n", encoding="utf-8"
+    )
+    (raw / "SpellMisc.csv").write_text(
+        "SpellID,DifficultyID,DurationIndex,SpellIconFileDataID,RangeIndex\n2687,0,0,132154,0\n",
+        encoding="utf-8",
+    )
+    (raw / "SpellEffect.csv").write_text(
+        "SpellID,EffectIndex,DifficultyID,EffectAuraPeriod\n", encoding="utf-8"
+    )
+    (raw / "SpellDuration.csv").write_text("ID,Duration\n", encoding="utf-8")
+    import shutil
+
+    shutil.copy(HERE / "fixtures/ManifestInterfaceData.csv", raw / "ManifestInterfaceData.csv")
+    (build_dir / "spellranks.json").write_text(
+        json.dumps(
+            {
+                "build": "1.0.0.1",
+                "classes": {"warrior": {"Bloodrage": [{"id": 2687, "level": 1, "rank": 0}]}},
+            }
+        ),
+        encoding="utf-8",
+    )
+    curated_dir = tmp_path / "curated"
+    (curated_dir / "apl").mkdir(parents=True)
+    cast = {"castSpell": {"spellId": {"spellId": 2687}}}
+    (curated_dir / "apl" / "warrior-fury.json").write_text(
+        json.dumps(
+            {
+                "spec": "warrior-fury",
+                "rotation": {
+                    "priorityList": [{"notes": "Bloodrage.", "action": cast}],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert rotation_icon_names(build_dir, curated_dir) == {"ability_golemthunderclap"}
+
+
+def test_spec_icon_names_reads_every_curated_specs_own_icon(tmp_path: Path):
+    curated_dir = tmp_path / "curated"
+    curated_dir.mkdir()
+    (curated_dir / "specs.json").write_text(
+        json.dumps(
+            [
+                {"spec": "warrior-fury", "icon": "ability_warrior_rampage"},
+                {"spec": "warrior-arms", "icon": "ability_rogue_eviscerate"},
+            ]
+        ),
+        encoding="utf-8",
+    )
+    assert spec_icon_names(curated_dir) == {"ability_warrior_rampage", "ability_rogue_eviscerate"}
+
+
+def test_spec_icon_names_is_empty_without_a_curated_specs_file(tmp_path: Path):
+    assert spec_icon_names(tmp_path / "curated") == set()
 
 
 def write_items(tmp_path: Path, icons: list[str]) -> None:

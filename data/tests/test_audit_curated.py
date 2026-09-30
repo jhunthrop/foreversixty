@@ -35,6 +35,7 @@ def test_unknown_stat_id_is_a_blocker(tmp_path):
                     "spec": "warrior-fury", "class_slug": "warrior", "spec_slug": "fury",
                     "name": "Fury", "role": "dps", "tree_index": 2,
                     "reference_stat": "not_a_real_stat", "weight_stats": ["not_a_real_stat"],
+                    "icon": "icon",
                 }
             ]
         )
@@ -56,6 +57,7 @@ def test_missing_apl_file_is_major(tmp_path):
                     "spec": "warrior-fury", "class_slug": "warrior", "spec_slug": "fury",
                     "name": "Fury", "role": "dps", "tree_index": 2,
                     "reference_stat": "attack_power", "weight_stats": ["attack_power"],
+                    "icon": "icon",
                 }
             ]
         )

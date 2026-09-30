@@ -76,7 +76,8 @@
           "spell_id": 12294
         }
       ],
-      "background": "warriorarms"
+      "background": "warriorarms",
+      "icon": "ability_rogue_eviscerate"
     },
     {
       "id": 164,
@@ -101,7 +102,8 @@
           "spell_id": 21179
         }
       ],
-      "background": "warriorfury"
+      "background": "warriorfury",
+      "icon": "ability_warrior_rampage"
     }
   ]
 }

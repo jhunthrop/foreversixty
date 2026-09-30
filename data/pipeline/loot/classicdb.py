@@ -38,7 +38,11 @@ from pipeline.quest_levels import QuestLevelEntry
 _CREATURE_KINDS = CREATURE_DROP_KINDS
 
 
-def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[int, int]:
+def instance_zone_by_map(
+    zone_rows: list[dict],
+    types: dict[int, int],
+    preferred: frozenset[int] = frozenset(),
+) -> dict[int, int]:
     """map id -> the zone id `types` marks as dungeon/raid for that map.
 
     classic-db's own spawn tables (`creature`/`gameobject`) give only a
@@ -62,6 +66,32 @@ def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[i
     regenerating loot.json for 1.60.1.70009: 1,381 "bosses" and 48,047
     items landed on `raid:onyxias-lair` alone, Teldrassil deer and boars
     included, before this guard existed.
+
+    day3 data-followups-11 lane, 2026-09-30: one map can carry MORE than
+    one zone row `types` marks an instance, when the client's own
+    AreaTable has a stale duplicate row for it -- The Deadmines' map id
+    36 has six: `1581` "The Deadmines" (the real one) and five others
+    including `206`, whose own `Name_lang` is, verbatim, "Westfall" (the
+    OPEN-WORLD zone's name, zone id 40, a completely different map). The
+    old first-by-iteration-order `setdefault` below is blind to which
+    duplicate is the real one and happened to pick 206 first (it sorts
+    before 1581), producing a SECOND `dungeon:westfall` `LootSource`
+    alongside the correctly-named `dungeon:the-deadmines` one, with
+    Captain Greenskin and the rest of the Deadmines' own boss list under
+    a zone-shaped name a player would never recognize as the dungeon --
+    `_boss_item_source_origins`'s union-merge in `sources.py` cannot fold
+    the two back together because they land under different `LootSource`
+    ids (`dungeon:westfall` vs `dungeon:the-deadmines`).
+
+    `preferred` (`build_loot`'s own `drops` -- the fork's AtlasLoot-
+    derived sources, built and named FIRST, before classic-db's own map-
+    keyed drops ever need to resolve a zone id at all) is the fix: the
+    fork's own zone id for an instance is definitionally the real one --
+    it is what already produced the correctly-named, real dungeon/raid
+    `LootSource` -- so a candidate row in `preferred` always wins over
+    one that is not, whichever order `zone_rows` lists them in. A map
+    the fork has no drops for at all (nothing in `preferred` names it)
+    falls back to the previous first-wins behaviour unchanged.
     """
     by_map: dict[int, int] = {}
     for row in zone_rows:
@@ -69,7 +99,8 @@ def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[i
         map_id = int(row["map_id"])
         if zone_id not in types or map_id in (0, 1):
             continue
-        by_map.setdefault(map_id, zone_id)
+        if map_id not in by_map or (zone_id in preferred and by_map[map_id] not in preferred):
+            by_map[map_id] = zone_id
     return by_map
 
 
@@ -236,12 +267,18 @@ def classicdb_additions(
     quest_levels: dict[int, QuestLevelEntry],
     item_factions: dict[int, str],
     fork_instance_npcs: dict[int, int] | None = None,
+    preferred_instance_zone_ids: frozenset[int] = frozenset(),
 ) -> tuple[list[LootSource], list[int], dict[int, list[QuestSource]]]:
     """Extra sources `pipeline.classic_sources` names for an item, in the
     same `(LootSource list, quest item ids, quest detail)` shape
     `pipeline.loot.wowhead.wowhead_additions` returns, so `build_loot`
     folds both in the same way. Every `LootSource` here carries
     `source_origin="classic-db"`.
+
+    `preferred_instance_zone_ids` (`build_loot`'s own fork-drops zone ids)
+    is threaded straight into `instance_zone_by_map` -- see that
+    function's own doc (the Westfall/Deadmines finding) for why a
+    preferred id must win over `zone_rows`' iteration order.
 
     An open-world creature/object's own map (cmangos' `map` column) is
     almost always a bare continent id (0 Eastern Kingdoms, 1 Kalimdor),
@@ -318,7 +355,7 @@ def classicdb_additions(
     `elif record.kind == "world_drop":` branch below, over this SAME
     item's own separate `world_drop` record, already lists it.
     """
-    zone_by_map = instance_zone_by_map(zone_rows, types)
+    zone_by_map = instance_zone_by_map(zone_rows, types, preferred_instance_zone_ids)
     fork_instance_npcs = fork_instance_npcs or {}
     direct_world_drop_items = direct_row_world_drop_items(classic_sources) & build_items
 
