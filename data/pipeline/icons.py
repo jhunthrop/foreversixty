@@ -306,7 +306,7 @@ def class_icon_names(build_dir: Path) -> set[str]:
     return {f"classicon_{klass['slug']}" for klass in payload}
 
 
-def _referenced_names(build_dir: Path) -> set[str]:
+def _referenced_names(build_dir: Path, extra: frozenset[str] = frozenset()) -> set[str]:
     """Every icon name the already-emitted JSON under build_dir refers to.
 
     The normalizers already resolved each talent's and each item's icon (and
@@ -314,12 +314,20 @@ def _referenced_names(build_dir: Path) -> set[str]:
     emitted `icon` is the single source of truth for what has to be
     downloaded there. Class icons are the exception: nothing in talents or
     items references them, so they are added separately from classes.json
-    (see class_icon_names).
+    (see class_icon_names). Each talent TREE's own icon (the talent tab's
+    icon, day3 data-followups-11 lane) is read here too, alongside its
+    talents -- it lives on the same `talents/<class>.json` row.
+
+    `extra` folds in an icon set this function cannot derive from the
+    already-emitted JSON alone -- a rotation line's icon
+    (`rotation_icon_names`) and a curated spec's own tab icon
+    (`spec_icon_names`), both day3 data-followups-11 lane additions.
     """
     names: set[str] = set()
     for path in sorted((build_dir / "talents").glob("*.json")):
         payload = json.loads(path.read_text(encoding="utf-8"))
         for tree in payload["trees"]:
+            names.add(tree["icon"])
             for talent in tree["talents"]:
                 names.add(talent["icon"])
     for path in sorted((build_dir / "items").glob("*.json")):
@@ -327,12 +335,50 @@ def _referenced_names(build_dir: Path) -> set[str]:
         for item in payload["items"]:
             names.add(item["icon"])
     names |= class_icon_names(build_dir)
+    names |= extra
     return names
 
 
-def wanted_icons(build_dir: Path, names: dict[int, str]) -> dict[int, str]:
-    """File id -> icon name for every icon the emitted JSON under build_dir refers to."""
-    referenced = _referenced_names(build_dir)
+def rotation_icon_names(build_dir: Path, curated_dir: Path = Path("curated")) -> set[str]:
+    """Every icon name `pipeline.addonrotation.build_rotations` resolves for
+    this build's rotation lines.
+
+    Unlike a talent's or an item's icon, a rotation line's icon is not sitting
+    in an already-emitted file under build_dir at the point `icons_for_build`
+    runs -- `addon-data.json` (the file that would carry it) is written by a
+    LATER pipeline step (`.github/workflows/data.yml` runs `icons` before
+    `addon-data`, so this step's own output cannot be a dependency of this
+    one), so it is recomputed here the same way `build_addon_data` itself
+    will, rather than read back off a file.
+    """
+    from pipeline.addonrotation import build_rotations
+
+    rotations = build_rotations(build_dir.parent, build_dir.name, curated_dir=curated_dir)
+    return {line.icon for bands in rotations.values() for band in bands for line in band.lines}
+
+
+def spec_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
+    """Every icon name `curated/specs.json` itself names (day3 data-
+    followups-11 lane): each spec's own talent-tab icon, hand-curated
+    there from the same client `TalentTab.SpellIconID` a build's own
+    `talents/<class>.json` tree icon resolves (see specs.json's own
+    comment) -- named again here, rather than only relying on it already
+    being `_referenced_names`' talent-tree set, so a future curated value
+    that drifts from the build still gets its icon downloaded rather than
+    silently 404ing on the site.
+    """
+    path = curated_dir / "specs.json"
+    if not path.exists():
+        return set()
+    return {entry["icon"] for entry in json.loads(path.read_text(encoding="utf-8"))}
+
+
+def wanted_icons(
+    build_dir: Path, names: dict[int, str], extra: frozenset[str] = frozenset()
+) -> dict[int, str]:
+    """File id -> icon name for every icon the emitted JSON under build_dir
+    refers to, plus `extra` (see `_referenced_names`)."""
+    referenced = _referenced_names(build_dir, extra)
     candidates = {file_id: name for file_id, name in names.items() if name in referenced}
     _warn_about_name_collisions(candidates)
     by_name: dict[str, list[int]] = {}
@@ -375,6 +421,7 @@ def icons_for_build(
     root: Path = Path("builds"),
     cache_dir: Path = CACHE_DIR,
     client: httpx.Client | None = None,
+    curated_dir: Path = Path("curated"),
 ) -> int:
     from pipeline.csvio import read_csv
 
@@ -384,7 +431,8 @@ def icons_for_build(
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     manifest_rows = read_csv(raw / "ManifestInterfaceData.csv")
     names = icon_names(manifest_rows)
-    wanted = wanted_icons(build_dir, names)
+    extra = rotation_icon_names(build_dir, curated_dir) | spec_icon_names(curated_dir)
+    wanted = wanted_icons(build_dir, names, frozenset(extra))
 
     # A supplement icon the client happens to carry (under whatever item it
     # was originally shipped for) goes through the same CASC path as every

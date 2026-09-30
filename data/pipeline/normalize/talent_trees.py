@@ -63,6 +63,15 @@ def build_talent_trees(
             "position": int(row["OrderIndex"]),
             "class_mask": int(row["ClassMask"]),
             "background": row["BackgroundFile"].lower(),
+            # day3 data-followups-11 lane: the tab's own icon, off the
+            # same `TalentTab.SpellIconID` -> `ManifestInterfaceData`
+            # join `pipeline.normalize.trait_trees` uses for the modern
+            # trait-table path (`pipeline.normalize.traits.read_trait_
+            # trees`'s own doc has the "already a file data id, not a
+            # legacy SpellIcon.dbc row" note).
+            "icon": resolve_icon(
+                int(row["SpellIconID"]), icons, f"tab {row['ID']} ({row['Name_lang']})"
+            ),
         }
         for row in tab_rows
     ]
@@ -109,6 +118,7 @@ def build_talent_trees(
                 position=tab["position"],
                 talents=sorted(by_tab.get(tab["id"], []), key=lambda t: (t.tier, t.column, t.id)),
                 background=tab["background"],
+                icon=tab["icon"],
             )
             for tab in sorted(tabs, key=lambda t: (t["position"], t["id"]))
             if tab["class_mask"] & class_mask

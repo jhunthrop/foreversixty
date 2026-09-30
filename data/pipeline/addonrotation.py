@@ -5,7 +5,7 @@ section 2 item 3): the addon's rotation card and its level-up rotation
 toast both want the same thing -- "the abilities you actually cast, in
 priority order, at your level" -- read off data/curated/apl/<spec>.json
 rather than duplicated by hand. This module turns one spec's priority list
-into a per-level-band table of {spellId, name, condition}.
+into a per-level-band table of {spellId, name, condition, icon}.
 
 Two decisions are load-bearing:
 
@@ -32,7 +32,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from pipeline.csvio import read_csv
+from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
 from pipeline.models import AddonRotationBand, AddonRotationLine
+from pipeline.spelltext import SpellText, load_spell_text
 
 #: sim/request/ladder.go's own `ladderLevels`. See the module docstring.
 LEVEL_BANDS = [10, 20, 30, 38, 40, 50, 60]
@@ -174,7 +177,33 @@ def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int,
     return family, learned[-1][1]
 
 
-def build_rotation(spec: str, curated_dir: Path, spellranks: dict) -> list[AddonRotationBand]:
+def _resolve_icon(
+    spell_id: int, spell_text: SpellText | None, icons: dict[int, str] | None
+) -> str:
+    """The resolved rank's icon, off the same client tables a talent's icon
+    already joins through (`pipeline.icons.resolve_icon`,
+    `SpellMisc.SpellIconFileDataID` -> `ManifestInterfaceData`).
+
+    `spell_text`/`icons` are `None` when `build_rotation` is called with
+    no client tables at all (every existing caller before this field
+    existed, and a merge-only run that has no `raw/` -- see
+    `_load_spell_icons`): the placeholder is what every other icon-
+    bearing field in this pipeline emits for "the client gave us
+    nothing to resolve" (`pipeline.icons.resolve_icon`'s own doc), never
+    an empty string, which would put `icons/.webp` in the output.
+    """
+    if spell_text is None or icons is None:
+        return PLACEHOLDER_ICON
+    return resolve_icon(spell_text.icon_file_id(spell_id), icons, f"rotation spell {spell_id}")
+
+
+def build_rotation(
+    spec: str,
+    curated_dir: Path,
+    spellranks: dict,
+    spell_text: SpellText | None = None,
+    icons: dict[int, str] | None = None,
+) -> list[AddonRotationBand]:
     """One spec's rotation table, one band per LEVEL_BANDS entry."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
     if not apl_path.exists():
@@ -194,9 +223,46 @@ def build_rotation(spec: str, curated_dir: Path, spellranks: dict) -> list[Addon
                 continue
             name, resolved_id = resolved
             condition = _one_line(cast["notes"])
-            lines.append(AddonRotationLine(spell_id=resolved_id, name=name, condition=condition))
+            icon = _resolve_icon(resolved_id, spell_text, icons)
+            lines.append(
+                AddonRotationLine(
+                    spell_id=resolved_id, name=name, condition=condition, icon=icon
+                )
+            )
         bands.append(AddonRotationBand(level=level, lines=lines))
     return bands
+
+
+#: The client tables a rotation line's icon needs, straight off `raw/` --
+#: the same five `pipeline.normalize.__init__` already reads to build a
+#: talent's own icon (`load_spell_text` for `SpellMisc.SpellIconFileDataID`,
+#: `icon_names` for `ManifestInterfaceData`).
+_ICON_RAW_TABLES = (
+    "Spell.csv",
+    "SpellMisc.csv",
+    "SpellEffect.csv",
+    "SpellDuration.csv",
+    "ManifestInterfaceData.csv",
+)
+
+
+def _load_spell_icons(raw: Path) -> tuple[SpellText | None, dict[int, str] | None]:
+    """`(spell_text, icon_names)` off `build/raw/`, or `(None, None)` when
+    this build has no `raw/` at all (or is missing one of the five
+    tables) -- `pipeline.loot.merge_loot_files`' own situation, a re-derive
+    with no fresh client tables available. `build_rotation` already treats
+    that as "resolve nothing, use the placeholder" rather than refusing;
+    this is what lets `build_rotations` keep working then too."""
+    if not raw.exists() or not all((raw / name).exists() for name in _ICON_RAW_TABLES):
+        return None, None
+    spell_text = load_spell_text(
+        read_csv(raw / "Spell.csv"),
+        read_csv(raw / "SpellMisc.csv"),
+        read_csv(raw / "SpellEffect.csv"),
+        read_csv(raw / "SpellDuration.csv"),
+    )
+    icons = icon_names(read_csv(raw / "ManifestInterfaceData.csv"))
+    return spell_text, icons
 
 
 def build_rotations(
@@ -207,6 +273,9 @@ def build_rotations(
     if not spellranks_path.exists():
         raise AddonRotationError(f"missing {spellranks_path}")
     spellranks = json.loads(spellranks_path.read_text(encoding="utf-8"))
+    spell_text, icons = _load_spell_icons(root / build / "raw")
     apl_dir = curated_dir / "apl"
     specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
-    return {spec: build_rotation(spec, curated_dir, spellranks) for spec in specs}
+    return {
+        spec: build_rotation(spec, curated_dir, spellranks, spell_text, icons) for spec in specs
+    }

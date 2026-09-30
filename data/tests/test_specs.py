@@ -91,6 +91,7 @@ def test_a_duplicate_spec_key_is_rejected(tmp_path: Path):
         "tree_index": 1,
         "reference_stat": "attack_power",
         "weight_stats": ["attack_power"],
+        "icon": "icon",
     }
     (tmp_path / "specs.json").write_text(json.dumps([entry, entry]))
     with pytest.raises(SpecError, match="warrior-fury"):
@@ -110,6 +111,7 @@ def test_a_key_that_is_not_its_two_slugs_is_rejected(tmp_path: Path):
                     "tree_index": 1,
                     "reference_stat": "attack_power",
                     "weight_stats": ["attack_power"],
+                    "icon": "icon",
                 }
             ]
         )
@@ -131,6 +133,7 @@ def test_an_unknown_role_is_rejected(tmp_path: Path):
                     "tree_index": 1,
                     "reference_stat": "attack_power",
                     "weight_stats": ["attack_power"],
+                    "icon": "icon",
                 }
             ]
         )
@@ -248,6 +251,7 @@ def test_a_reference_stat_the_engine_has_no_stat_for_is_refused(tmp_path):
             "tree_index": 0,
             "reference_stat": "swagger",
             "weight_stats": ["swagger"],
+            "icon": "icon",
         }
     ]
     (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
@@ -334,6 +338,7 @@ def test_an_empty_weight_stats_is_rejected(tmp_path: Path):
             "tree_index": 0,
             "reference_stat": "attack_power",
             "weight_stats": [],
+            "icon": "icon",
         }
     ]
     (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
@@ -352,6 +357,7 @@ def test_an_unknown_weight_stat_is_rejected(tmp_path: Path):
             "tree_index": 0,
             "reference_stat": "attack_power",
             "weight_stats": ["attack_power", "swagger"],
+            "icon": "icon",
         }
     ]
     (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
@@ -370,6 +376,7 @@ def test_a_duplicate_weight_stat_is_rejected(tmp_path: Path):
             "tree_index": 0,
             "reference_stat": "attack_power",
             "weight_stats": ["attack_power", "attack_power"],
+            "icon": "icon",
         }
     ]
     (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
@@ -388,6 +395,7 @@ def test_a_reference_stat_missing_from_weight_stats_is_rejected(tmp_path: Path):
             "tree_index": 0,
             "reference_stat": "attack_power",
             "weight_stats": ["strength", "agility"],
+            "icon": "icon",
         }
     ]
     (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
@@ -404,3 +412,55 @@ def test_both_generated_files_carry_the_weight_stats():
     # SPECS equals data/curated/specs.json keeps the data lane the only author.
     assert "weight_stats: readonly string[];" in ts
     assert "weight_stats: ['attack_power'" in ts
+
+
+#: day3 data-followups-11 lane: every spec gets its own talent-tab icon
+#: (tenet 3, "an ability is never just a name" -- the same rule for a
+#: spec's own tab).
+
+
+def test_every_spec_has_a_nonempty_icon():
+    for record in specs():
+        assert record.icon, record.spec
+
+
+def test_an_empty_icon_is_rejected(tmp_path: Path):
+    rows = [
+        {
+            "spec": "warrior-arms",
+            "class_slug": "warrior",
+            "spec_slug": "arms",
+            "name": "Arms",
+            "role": "dps",
+            "tree_index": 0,
+            "reference_stat": "attack_power",
+            "weight_stats": ["attack_power"],
+            "icon": "",
+        }
+    ]
+    (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(SpecError, match="icon"):
+        load_specs(tmp_path)
+
+
+def test_both_generated_files_carry_the_icon():
+    records = specs()
+    go, ts = render_go(records), render_ts(records)
+    assert 'Icon string `json:"icon"`' in go
+    warrior_fury = next(r for r in records if r.spec == "warrior-fury")
+    assert f'Icon: "{warrior_fury.icon}"' in go
+    assert "icon: string;" in ts
+    assert f"icon: '{warrior_fury.icon}'," in ts
+
+
+def test_every_specs_icon_matches_its_own_builds_tree_icon():
+    """The curated icon is hand-duplicated from the build's own talent
+    tree (SpecRecord.icon's own doc) precisely so the site never has to
+    join specs.json against a build to draw a spec picker -- this test
+    is what keeps the duplicate honest."""
+    for record in specs():
+        trees = json.loads(
+            (BUILD_DIR / "talents" / f"{record.class_slug}.json").read_text()
+        )["trees"]
+        by_position = {tree["position"]: tree["icon"] for tree in trees}
+        assert by_position[record.tree_index] == record.icon, record.spec

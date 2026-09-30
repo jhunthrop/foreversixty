@@ -44,6 +44,19 @@ def test_the_three_trees_carry_the_games_order_and_their_background():
     ]
 
 
+def test_each_tree_carries_its_own_tab_icon():
+    """day3 data-followups-11 lane: `TalentTab.SpellIconID` (161's is
+    132292, 164's 132347, 163's 134952 -- `tests/fixtures/traits/
+    TalentTab.csv`) resolved through `ManifestInterfaceData`, the same
+    join a talent's own icon already goes through."""
+    (warrior,) = fixture_records()
+    assert [(t.id, t.icon) for t in warrior.trees] == [
+        (161, "ability_rogue_eviscerate"),
+        (164, "ability_warrior_rampage"),
+        (163, "inv_shield_06"),
+    ]
+
+
 def test_a_talent_is_its_node_with_the_clients_spell_name_and_icon():
     (warrior,) = fixture_records()
     arms = {t.id: t for t in warrior.trees[0].talents}

@@ -38,7 +38,7 @@ def build_trait_talent_trees(
 ) -> list[ClassTalents]:
     slugs = {int(row["ID"]): slugify(row["Name_lang"]) for row in class_rows}
     records: list[ClassTalents] = []
-    for tree in read_trait_trees(rows):
+    for tree in read_trait_trees(rows, icons):
         slug = slugs.get(tree.class_id)
         if slug is None:
             raise TraitDataError(
@@ -55,6 +55,7 @@ def build_trait_talent_trees(
                         name=tab.name,
                         position=tab.position,
                         background=tab.background.lower(),
+                        icon=tab.icon,
                         talents=sorted(
                             (
                                 _entry(talent, spell_names, spell_text, rank_points, icons)

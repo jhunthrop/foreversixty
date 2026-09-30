@@ -152,6 +152,13 @@ class TalentTree(BaseModel):
     #: The tab's `BackgroundFile`, lowercased. The site fetches the processed
     #: image at `/data/<build>/trees/<background>.webp`.
     background: str
+    #: The tab's own icon (tenet 3's spec-icon counterpart, day3
+    #: data-followups-11 lane): the client's `TalentTab.SpellIconID`,
+    #: resolved through `ManifestInterfaceData` the same way a talent's
+    #: or an item's `icon` already is (`pipeline.icons.resolve_icon`).
+    #: Appended last, like `TalentEntry.spell_id`: the emitted key order
+    #: is this schema's only compatibility surface.
+    icon: str
 
 
 class ClassTalents(BaseModel):
@@ -643,6 +650,18 @@ class SpecRecord(BaseModel):
     #: which is what actually documents which stats belong to which
     #: kind of spec.
     weight_stats: list[str]
+    #: The spec's own talent-tab icon (tenet 3, day3 data-followups-11
+    #: lane): a lowercase file name with no extension, hand-curated here
+    #: from the client's `TalentTab.SpellIconID` for this build
+    #: (resolved through `ManifestInterfaceData` the same way a talent's
+    #: icon is -- `pipeline.icons.resolve_icon`), the same value this
+    #: spec's own tree carries at `builds/<build>/talents/<class_slug>
+    #: .json`'s `trees[tree_index].icon`. Curated rather than read off a
+    #: build at `specs` command time because this list is build-
+    #: agnostic (the generated Go/TS files carry no build), unlike that
+    #: per-build file -- see this file's own module doc for why the
+    #: pipeline never joins the two at generation time.
+    icon: str
 
 
 class StatWeights(BaseModel):
@@ -695,6 +714,15 @@ class AddonRotationLine(BaseModel):
     spell_id: int
     name: str
     condition: str
+    #: The resolved rank's own icon (tenet 3: "an ability is never just a
+    #: name"), the same convention as an item's or a talent's `icon` --
+    #: a lowercase file name with no extension, resolved off the
+    #: client's own `SpellMisc.SpellIconFileDataID` through
+    #: `ManifestInterfaceData` (`pipeline.icons.resolve_icon`, the same
+    #: join a talent's icon already goes through). Appended last, like
+    #: `TalentEntry.spell_id`: the emitted key order is this schema's
+    #: only compatibility surface, so new fields go on the end.
+    icon: str
 
 
 class AddonRotationBand(BaseModel):

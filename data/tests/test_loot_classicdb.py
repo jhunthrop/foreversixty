@@ -74,6 +74,52 @@ def test_a_zone_types_does_not_mark_as_an_instance_is_ignored():
     assert 99 not in by_map
 
 
+# --- `preferred` -- the Westfall/Deadmines duplicate-AreaTable-row finding
+# (day3 data-followups-11 lane, 2026-09-30): The Deadmines' own map id 36
+# carries a second `types`-marked zone row, 206, whose `Name_lang` is
+# verbatim "Westfall" (the OPEN-WORLD zone's own name, a different map
+# entirely) -- see `instance_zone_by_map`'s own doc for the measured
+# regression this closes (a second `dungeon:westfall` LootSource with
+# Captain Greenskin's own boss list duplicated under a zone-shaped name).
+
+_DEADMINES_DUPLICATE_ROWS = [
+    {"id": 206, "name": "Westfall", "map_id": 36},
+    {"id": 1581, "name": "The Deadmines", "map_id": 36},
+]
+_DEADMINES_DUPLICATE_TYPES = {206: 1, 1581: 1}
+
+
+def test_a_duplicate_zone_named_row_wins_without_a_preferred_id():
+    """Pins the OLD, wrong default: with no `preferred` id, whichever row
+    sorts first in `zone_rows` wins -- 206 ("Westfall") before 1581 ("The
+    Deadmines") here, the same order this build's own `zones.json` lists
+    them in."""
+    by_map = instance_zone_by_map(_DEADMINES_DUPLICATE_ROWS, _DEADMINES_DUPLICATE_TYPES)
+    assert by_map[36] == 206
+
+
+def test_a_preferred_id_wins_over_a_zone_named_duplicate():
+    by_map = instance_zone_by_map(
+        _DEADMINES_DUPLICATE_ROWS, _DEADMINES_DUPLICATE_TYPES, frozenset({1581})
+    )
+    assert by_map[36] == 1581
+
+
+def test_a_preferred_id_wins_regardless_of_which_row_comes_first():
+    reversed_rows = list(reversed(_DEADMINES_DUPLICATE_ROWS))
+    by_map = instance_zone_by_map(
+        reversed_rows, _DEADMINES_DUPLICATE_TYPES, frozenset({1581})
+    )
+    assert by_map[36] == 1581
+
+
+def test_a_preferred_id_that_names_no_row_for_this_map_changes_nothing():
+    by_map = instance_zone_by_map(
+        _DEADMINES_DUPLICATE_ROWS, _DEADMINES_DUPLICATE_TYPES, frozenset({99999})
+    )
+    assert by_map[36] == 206
+
+
 def test_fork_instance_npc_zones_names_every_npc_a_dungeon_or_raid_drop_places():
     fork = _fork(
         [
