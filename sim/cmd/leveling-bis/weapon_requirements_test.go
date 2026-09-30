@@ -203,6 +203,31 @@ func TestRestrictRangedByProficiencySkillClassesGrandfatherUnknownType(t *testin
 	}
 }
 
+// data-followups-10 lane, 2026-09-30, item 6: a hunter/warrior/rogue's
+// own ranged candidate pool must never keep a NAMED melee weapon type
+// (mace/sword/axe/dagger/polearm/staff/fist) - only the five real
+// ranged-slot types (bow/gun/crossbow/thrown/wand) and the empty-string
+// grandfather case above. The player-sweep repro this pins ("Cracked
+// Blacksmith Hammer" showing as a hunter's ranged alternative) turned
+// out, verified against the client's own items.json row (id 285279:
+// class_id 2, subclass_id 16 ITEM_SUBCLASS_WEAPON_THROWN, inventory_type
+// 25 INVTYPE_THROWN), to be a real thrown weapon correctly itemised for
+// the ranged slot despite its "Hammer" name - not a filter defect. This
+// test exists so a FUTURE candidate whose own WeaponType really is a
+// melee type never slips into the ranged pool the same way, whatever
+// its name.
+func TestRestrictRangedByProficiencySkillClassesExcludeNamedMeleeTypes(t *testing.T) {
+	for _, weaponType := range []string{"mace", "sword", "axe", "dagger", "polearm", "staff", "fist"} {
+		melee := scored{candidate: candidate{ID: 8, Name: "A Melee-Typed Ranged-Slot Candidate", ClassID: itemClassWeapon, WeaponType: weaponType}}
+		for _, classSlug := range []string{"hunter", "warrior", "rogue"} {
+			got := restrictRangedByProficiency([]scored{melee}, classSlug)
+			if containsID(got, 8) {
+				t.Fatalf("%s: restrictRangedByProficiency kept a %q-typed candidate in the ranged pool: %+v", classSlug, weaponType, got)
+			}
+		}
+	}
+}
+
 // A weapon-class ranged candidate for a relic-only class (paladin/
 // shaman/druid) is a data anomaly this gate excludes outright - their
 // own per-class item file was never going to hand it one for real

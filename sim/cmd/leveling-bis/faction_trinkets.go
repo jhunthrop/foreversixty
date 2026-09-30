@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // trinketSlots is the fixed pair of planner slots
 // reconcileFactionTrinkets ever touches - every loop below names the
@@ -89,6 +92,22 @@ func gainAlreadyMeasuredOnTarget(target slotPick, itemID int) (absoluteDPS, gain
 		return target.RunnerUp.MeasuredDPS, target.RunnerUp.MeasuredGainDPS, target.RunnerUp.MeasuredGainStdErr, true
 	}
 	return 0, 0, 0, false
+}
+
+// gainsIndistinguishable reports whether two independently measured
+// trinket gains differ by no more than their own combined standard
+// error (the same combination-in-quadrature rule trinkets.go's own
+// gainStdErr uses for a candidate-vs-baseline difference, here applied
+// to two DIFFERENT items' own gains) - reconcileTrinketDirection's own
+// "keep the numerically higher one" step needs this to tell a genuine,
+// reproducible edge apart from the same near-tie this file's own doc
+// already names as a live repro (Second Wind/Burst of Knowledge):
+// a small, same-magnitude gap here is not evidence either faction's
+// own pick is actually better, only that its own tournament's noise
+// happened to land it a little ahead.
+func gainsIndistinguishable(gainA, stdErrA, gainB, stdErrB float64) bool {
+	combined := math.Sqrt(stdErrA*stdErrA + stdErrB*stdErrB)
+	return math.Abs(gainA-gainB) <= combined
 }
 
 // candidateForFaction is the scored record reconcileTrinketDirection
@@ -276,8 +295,48 @@ func reconcileTrinketDirection(runner engineRunner, spec specInfo, classSlug str
 	// weaker one, whether or not either number clears significance -
 	// significance decides what PUBLISHES, not which of two real
 	// measurements is the better one to keep.
-	if targetPick.Item != nil && targetPick.Item.ID != srcItem.ID && targetPick.Item.GainMeasured && gainOnTarget <= targetPick.Item.MeasuredGainDPS {
-		return targetPicks
+	//
+	// data-followups-10 lane, 2026-09-30: that rule alone let two
+	// DIFFERENT faction-neutral items stand as each faction's own pick
+	// with NO record of the comparison at all whenever each one's own
+	// gain happened to sit fractionally above the other's, purely from
+	// two independent noisy measurements - the exact shape this file's
+	// own doc above already names as a live repro (Second Wind/Burst of
+	// Knowledge, 186.96 vs 188.28 DPS with nothing else different,
+	// paladin-retribution band 60): each side's own bare `<=` compare
+	// went the "keep, say nothing" way in BOTH directions, so the two
+	// factions published two different trinkets for an identical slot
+	// with no FactionNote explaining why, unlike negativeBeyondError's
+	// own branch above (a REAL, reproducible loss) or the swap branch
+	// below (a REAL, reproducible win) - both of which always leave a
+	// note. gainsIndistinguishable asks the same "is this difference
+	// bigger than the two measurements' own combined noise" question
+	// negativeBeyondError already asks for the zero-vs-gain case, here
+	// applied to two nonzero gains: when the gap is not real, this is
+	// a genuine cross-faction tie (tenet 8: unverifiable is labelled,
+	// never left as an unexplained fact), so target keeps its own pick
+	// WITH a note recording the comparison, same shape as the racial
+	// branch above, rather than silently diverging.
+	if targetPick.Item != nil && targetPick.Item.ID != srcItem.ID && targetPick.Item.GainMeasured {
+		if gainsIndistinguishable(gainOnTarget, stdErrOnTarget, targetPick.Item.MeasuredGainDPS, targetPick.Item.MeasuredGainStdErr) {
+			out := clonePicksMap(targetPicks)
+			row := out[slot]
+			row.FactionNote = fmt.Sprintf(
+				"%s (from %s) and %s's own pick %s measure statistically indistinguishable on %s (%.2f ± %.2f vs %.2f ± %.2f DPS gain) -- each faction's own tournament winner kept",
+				srcItem.Name, source.Faction, target.Faction, targetPick.Item.Name, target.Race,
+				gainOnTarget, stdErrOnTarget, targetPick.Item.MeasuredGainDPS, targetPick.Item.MeasuredGainStdErr,
+			)
+			out[slot] = row
+			*notes = append(*notes, fmt.Sprintf(
+				"%s: kept %s's own verdict over %s (id %d) from %s - gains are statistically indistinguishable on %s (%.2f ± %.2f vs %.2f ± %.2f DPS), a cross-faction tie rather than a real difference",
+				slot, target.Faction, srcItem.Name, srcItem.ID, source.Faction, target.Race,
+				gainOnTarget, stdErrOnTarget, targetPick.Item.MeasuredGainDPS, targetPick.Item.MeasuredGainStdErr,
+			))
+			return out
+		}
+		if gainOnTarget <= targetPick.Item.MeasuredGainDPS {
+			return targetPicks
+		}
 	}
 
 	newItem := candidateForFaction(target.BySlot[slot], srcItem.ID, *srcItem, level, target.Faction, idx)

@@ -682,32 +682,49 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 				Source:     pk.RunnerUp.Source.Label,
 			})
 		}
-		measured := swapMeasuredDelta(*sw)
-		for i := range out {
-			if out[i].ItemID == pk.RunnerUp.ID {
-				out[i].DPSDelta = measured
-				out[i].Verified = true
-				// This lane's brief, item 7: the one row a real sim
-				// actually measured publishes that measurement (SimDPS),
-				// not score()'s stat estimate - the two units are not
-				// comparable (score() is gone from this row entirely as
-				// of bis-ranker-integrity-3, see alternativeRow's own
-				// doc).
-				//
-				// bis-ranker-integrity-7 lane, item 2: this absolute
-				// number is exactly as vulnerable to the shared-baseline
-				// staleness this file's own finishedSetEpsilon guard
-				// exists for (slotRow.SimDPS's own doc) - sw.BaselineDPS/
-				// sw.SwapDPS describe THIS one single-slot trial, which
-				// stops describing the finished set the moment some
-				// OTHER slot also promoted this band. Withheld under the
-				// same bar; DPSDelta above (a relative measurement,
-				// always true of that one trial regardless of anything
-				// else) still publishes.
-				if simDPS := swapAlternativeMeasuredDPS(*sw); math.Abs(simDPS-setDPS) <= finishedSetEpsilon {
-					out[i].SimDPS = simDPS
+		// data-followups-10 lane, 2026-09-30, item 7: only publish the
+		// real sim measurement as confirmed evidence when it clears the
+		// two runs' own combined standard error (sw.Significant,
+		// verify.go's own doc) - a live repro (hunter-marksmanship band
+		// 20, Serpent Gloves/Gloves of the Fang: both +6 Agility, the
+		// other +4 Strength vs +7 Spell Power, NEITHER a stat this
+		// spec's own weight_stats measures at all) kept publishing a
+		// small, same-fixed-verifySeed "real" negative DPSDelta for the
+		// runner-up for three regen sweeps running, purely from this
+		// one trial's own sampling noise, with nothing checking whether
+		// that gap was bigger than the trial's own error bar. An
+		// insignificant swap leaves this row exactly as the tie/list
+		// loop above already built it (score()'s own, already-capped-
+		// at-0 estimate, Verified false) rather than overwriting a
+		// noise-sized number with false confidence.
+		if sw.Significant() {
+			measured := swapMeasuredDelta(*sw)
+			for i := range out {
+				if out[i].ItemID == pk.RunnerUp.ID {
+					out[i].DPSDelta = measured
+					out[i].Verified = true
+					// This lane's brief, item 7: the one row a real sim
+					// actually measured publishes that measurement (SimDPS),
+					// not score()'s stat estimate - the two units are not
+					// comparable (score() is gone from this row entirely as
+					// of bis-ranker-integrity-3, see alternativeRow's own
+					// doc).
+					//
+					// bis-ranker-integrity-7 lane, item 2: this absolute
+					// number is exactly as vulnerable to the shared-baseline
+					// staleness this file's own finishedSetEpsilon guard
+					// exists for (slotRow.SimDPS's own doc) - sw.BaselineDPS/
+					// sw.SwapDPS describe THIS one single-slot trial, which
+					// stops describing the finished set the moment some
+					// OTHER slot also promoted this band. Withheld under the
+					// same bar; DPSDelta above (a relative measurement,
+					// always true of that one trial regardless of anything
+					// else) still publishes.
+					if simDPS := swapAlternativeMeasuredDPS(*sw); math.Abs(simDPS-setDPS) <= finishedSetEpsilon {
+						out[i].SimDPS = simDPS
+					}
+					break
 				}
-				break
 			}
 		}
 	}
@@ -1270,7 +1287,19 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 					} else if simDecided {
 						row.SimDPS = 0
 					}
-					if pk.RunnerUp != nil && !alternativeCarriesRealEvidence(row.Alternatives) {
+					// data-followups-10 lane, 2026-09-30, item 7: also
+					// require sw.Significant (verify.go's own doc) -
+					// this "kept the pick" branch is exactly the shape
+					// that kept publishing a false-precision "confirmed"
+					// DPSDelta for a pure sampling-noise gap (Serpent
+					// Gloves/Gloves of the Fang, hunter-marksmanship band
+					// 20, three sweeps running) with nothing checking
+					// whether the measured gap cleared the trial's own
+					// error bar. An insignificant swap leaves DPSDelta/
+					// SwapNote unset here - the row stays Verified (a
+					// real sim genuinely ran) without a false-confidence
+					// number attached to it.
+					if pk.RunnerUp != nil && !alternativeCarriesRealEvidence(row.Alternatives) && sw.Significant() {
 						// bis-ranker-integrity-3, 2026-09-29, this lane's brief
 						// item 3: a real sim DID run for this slot (verifyBand's
 						// own swap pass) even though nothing was promoted - the

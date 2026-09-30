@@ -255,6 +255,21 @@ class ClassicDbItem(BaseModel):
     quality: int
     item_level: int
     required_level: int
+    #: `requiredhonorrank` -- the item's OWN PvP-rank floor (Blizzard's
+    #: 1.12 vendor-purchase gate for the honor-rank armor/weapon sets;
+    #: 0 for every item that needs none). Data-followups-10 lane,
+    #: 2026-09-30: `pipeline.loot.sources.pvp_ranks()` only ever reads
+    #: the CLIENT's `ItemSparse.RequiredPVPRank`, which this build's own
+    #: hotfix table populates for Forever-new PvP items only -- the
+    #: original Classic honor-rank sets (Lady Palanseer's, Captain
+    #: Dirgehammer's, ...) are untouched client rows with no hotfix, so
+    #: `ItemSparse.csv` names no rank for them at all and they fell
+    #: through to their bare `vendor:<npc_id>` source with no gate.
+    #: `pipeline.classicdb_items.classic_honor_ranks` is this field's
+    #: one reader, merged into the client's own ranks before either
+    #: `write_loot_files` or `merge_loot_files` builds `pvp:rank-N`
+    #: sources.
+    required_honor_rank: int = 0
     class_id: int
     subclass_id: int
     inventory_type: int
@@ -323,6 +338,14 @@ def _item_from_row(row: dict[str, str], spell_names: dict[int, str]) -> ClassicD
         quality=int(row["Quality"]),
         item_level=int(row["ItemLevel"]),
         required_level=int(row["RequiredLevel"]),
+        # `.get(..., "0")`, not a bare index: data-followups-10 lane,
+        # 2026-09-30 -- this column is new to `_item_from_row` and a
+        # handful of this module's own small, hand-written SQL test
+        # fixtures predate it (the real pinned dump always carries it,
+        # confirmed against the scratchpad's own classicdb.sql); a
+        # fixture that never named it means "no rank requirement",
+        # matching the field's own zero-value default on ClassicDbItem.
+        required_honor_rank=int(row.get("requiredhonorrank", "0") or 0),
         class_id=int(row["class"]),
         subclass_id=int(row["subclass"]),
         inventory_type=int(row["InventoryType"]),
@@ -463,6 +486,22 @@ def load_extract(build_dir: Path) -> tuple[list[ClassicDbItem], dict[int, Classi
         raise ClassicDbPayloadError(f"{path} has a 'spells' entry that is not a list")
     spells = {spell.id: spell for spell in (ClassicDbSpell(**record) for record in spell_records)}
     return [ClassicDbItem(**record) for record in items], spells
+
+
+def classic_honor_ranks(items: list[ClassicDbItem]) -> dict[int, int]:
+    """Item id -> `required_honor_rank`, for every item the committed
+    extract names a nonzero one for -- the classic-db-sourced twin of
+    `pipeline.loot.sources.pvp_ranks()` (which reads only the client's
+    own `ItemSparse.RequiredPVPRank`, populated for Forever-new PvP
+    items only). `pipeline.loot.__init__` merges this into that
+    function's own dict, client wins on an id both name (none measured
+    on build 1.60.1.70009 -- the two tables cover disjoint item sets),
+    before either `write_loot_files` or `merge_loot_files` builds
+    `pvp:rank-N` sources -- data-followups-10 lane, 2026-09-30 (the
+    original Classic honor-rank sets had fallen through to their bare
+    `vendor:<npc_id>` source with no rank gate at all, see
+    `ClassicDbItem.required_honor_rank`'s own doc)."""
+    return {item.id: item.required_honor_rank for item in items if item.required_honor_rank}
 
 
 def is_planner_gear(item: ClassicDbItem) -> bool:

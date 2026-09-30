@@ -200,6 +200,39 @@ func TestVerifyBandRunnerUpLosesToThePick(t *testing.T) {
 	}
 }
 
+// data-followups-10 lane, 2026-09-30, item 7: a runner-up that
+// numerically beats the pick's baseline by more than swapMargin (1%)
+// must still NOT be marked Beat when that gap sits inside the two
+// runs' own combined standard error - the live repro this pins
+// (hunter-marksmanship band 20, Serpent Gloves vs Gloves of the Fang)
+// kept reporting a same-fixed-seed "beat by 1.5%" verdict for three
+// regen sweeps running, purely from sampling noise neither run's own
+// error bar was ever checked against.
+func TestVerifyBandRunnerUpNumericallyAheadButWithinNoiseIsNotBeat(t *testing.T) {
+	picks := map[string]slotPick{
+		"hands": {Item: p(1, false), RunnerUp: p(2, false)},
+	}
+	fake := &fakeEngine{
+		DefaultDPS:    100,
+		DefaultStdErr: 1.0,
+		DPSByGear:     map[string]float64{gearKey([]api.GearSlot{{Slot: "hands", ItemID: 2}}): 101.2},
+		StdErrByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "hands", ItemID: 2}}): 1.0},
+	}
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
+	if err != nil {
+		t.Fatalf("verifyBand: %v", err)
+	}
+	if len(swaps) != 1 {
+		t.Fatalf("swaps = %+v, want exactly one", swaps)
+	}
+	if swaps[0].Significant() {
+		t.Fatalf("swaps[0].Significant() = true, want false: 1.5 DPS sits inside the combined error bar (sqrt(1^2+1^2) ~ 1.41)")
+	}
+	if swaps[0].Beat {
+		t.Fatalf("swaps = %+v, want Beat false: a numeric edge inside the combined error bar is not a real win", swaps)
+	}
+}
+
 func TestVerifyBandBaselineFailurePropagates(t *testing.T) {
 	picks := map[string]slotPick{"head": {Item: p(1, false)}}
 	fake := &fakeEngine{FailGear: gearKey(buildGear(picks))}

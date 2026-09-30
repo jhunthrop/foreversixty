@@ -29,6 +29,7 @@ from pipeline.classicdb_items import (
     ClassicDbSpellEffect,
     ItemSpellSlot,
     class_allowed,
+    classic_honor_ranks,
     effect_text,
     equip_stats,
     extract_records,
@@ -91,6 +92,7 @@ ITEM_TEMPLATE_COLUMNS = [
     "spellid_5",
     "spelltrigger_5",
     "itemset",
+    "requiredhonorrank",
 ]
 
 _SCHEMA = (
@@ -595,3 +597,46 @@ def test_to_item_carries_the_same_provenance_columns_the_per_class_row_gets():
     assert flat.required_level_source == "classic-db"
     assert flat.stats_source == "classic-db"
     assert flat.client_unconfirmed is True
+
+
+def test_item_from_row_reads_required_honor_rank():
+    """data-followups-10 lane, 2026-09-30, item 1: the original Classic
+    honor-rank PvP sets (Lady Palanseer's, Captain Dirgehammer's, ...)
+    carry no ItemSparse.RequiredPVPRank at all in this build (that
+    hotfix table only ever covers Forever-new PvP items) -- classic-db's
+    own `requiredhonorrank` column, verified against the pinned dump
+    directly (entry 16465 "Field Marshal's Chain Helm": requiredhonorrank
+    17), is this fact's one other primary source."""
+    row = _row_sql(
+        entry=16465,
+        name="Field Marshal Chain Helm",
+        **{"class": 4, "subclass": 4},
+        Quality=4,
+        InventoryType=1,
+        AllowableClass=-1,
+        AllowableRace=-1,
+        ItemLevel=71,
+        RequiredLevel=60,
+        requiredhonorrank=17,
+    )
+    records, _ = extract_records(_sql([row]))
+    assert [r.id for r in records] == [16465]
+    assert records[0].required_honor_rank == 17
+
+
+def test_item_defaults_required_honor_rank_to_zero():
+    """Every OTHER fixture in this file builds a `ClassicDbItem` via
+    `_item(...)` without naming this field at all - the model's own
+    default (matching `_item_from_row`'s `.get(..., "0")` fallback for a
+    hand-written SQL fixture that predates this column) must be 0, "no
+    rank requirement", not a validation error."""
+    assert _item(id=1).required_honor_rank == 0
+
+
+def test_classic_honor_ranks_keeps_only_items_with_a_real_rank():
+    items = [
+        _item(id=16465, required_honor_rank=17),
+        _item(id=16437, required_honor_rank=16),
+        _item(id=9999, required_honor_rank=0),
+    ]
+    assert classic_honor_ranks(items) == {16465: 17, 16437: 16}
