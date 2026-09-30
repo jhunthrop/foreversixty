@@ -204,6 +204,17 @@ ClassicDbSourceKind = Literal[
     "fishing", "world_drop",
 ]  # fmt: skip
 
+#: Every `ClassicDbSourceKind` that names a creature (a spawn table's own
+#: npc entry) as the drop's origin -- skinning/pickpocketing loot comes
+#: off the SAME creature a normal drop would, so `pipeline.loot.
+#: classicdb.classicdb_additions` and `direct_row_world_drop_items`
+#: both bucket the three identically. Public (not a `classicdb`-private
+#: `_CREATURE_KINDS`, which this replaces) so the one definition is
+#: shared rather than kept as two copies that could drift apart --
+#: `classic_sources` is the lower module here (`classicdb` imports FROM
+#: it), so the shared constant has to live on this side.
+CREATURE_DROP_KINDS: frozenset[str] = frozenset({"creature_drop", "skinning", "pickpocketing"})
+
 
 class ClassicDbCondition(BaseModel):
     """A rep-gated vendor slot's own condition row (`conditions` type 5)."""
@@ -241,7 +252,7 @@ class ClassicDbSourceRecord(BaseModel):
     chance: float | None = None
     condition: ClassicDbCondition | None = None
     quest: ClassicDbQuestInfo | None = None
-    #: `world_drop` only -- the pool's own level range (`WorldDropPool`),
+    #: For `world_drop` -- the pool's own level range (`WorldDropPool`),
     #: merged across every reference id that names this exact item (a
     #: green-quality world drop is typically split across several
     #: narrow-banded reference ids on the pinned dump -- 11 of them for
@@ -250,6 +261,19 @@ class ClassicDbSourceRecord(BaseModel):
     #: player actually sees rather than one near-duplicate source per
     #: narrow band). `None` on either side when no contributing pool
     #: states a level at all.
+    #:
+    #: For `creature_drop`/`skinning`/`pickpocketing` -- the creature's
+    #: OWN `creature_template.MinLevel`/`MaxLevel`, drop-sources-2 lane
+    #: 2026-09-29's addition: `pipeline.loot.classicdb.classicdb_
+    #: additions` reads this when a direct-row world-drop pattern
+    #: (`direct_row_world_drop_items`) folds several creatures' rows for
+    #: one item into a single synthetic `world_drop` source, the same
+    #: "level range from the creatures that actually drop it, never
+    #: invented" rule this file's `world_drop` case already follows.
+    #: `None` on either side when the dump states no MinLevel/MaxLevel
+    #: for that npc entry (a fixture/dump predating this lane, or a
+    #: creature_template row this pinned dump itself omits the columns
+    #: for).
     level_min: int | None = None
     level_max: int | None = None
 
@@ -422,6 +446,70 @@ def _world_drop_records(
     }  # fmt: skip
 
 
+def direct_row_world_drop_items(
+    items: dict[int, list[ClassicDbSourceRecord]],
+) -> set[int]:
+    """Every item id whose OWN `creature_drop`/`skinning`/
+    `pickpocketing` records (`CREATURE_DROP_KINDS`) read as a generic
+    world-drop pattern by themselves -- drop-sources-2 lane, 2026-09-29:
+    the gap `_world_drop_pools` cannot close, since that classifier only
+    ever catches a NEGATIVE `mincountOrRef` row pointing at a SHARED
+    `reference_loot_template` id, never a POSITIVE row naming the item
+    directly on each of many creatures' own entries. Items 7909
+    (Aquamarine), 7910 (Star Ruby) and 4306 (Silk Cloth) on build
+    1.60.1.70009's audit measured ~900-1,500 such direct per-creature
+    rows each -- every one individually true (that creature CAN drop the
+    gem/cloth) but together not a source a player recognises (tenet 7).
+
+    `pipeline.loot.constants.is_world_drop_pattern`, over each item's own
+    `(npc_id, map_id, chance)` triples -- `map_id`, not a resolved
+    dungeon/raid zone id, matching this module's own "no zone data here,
+    that is `pipeline.loot.classicdb`'s job" boundary (this file's own
+    top-of-module doc) and the brief's own "across >= 2 maps" wording.
+    `record.chance or None` (not `record.chance` itself) is what is
+    passed for a row's own chance -- cmangos' own `0` "no chance
+    recorded" sentinel (this file's own doc, `ClassicDbSourceRecord.
+    chance`) must read as unknown here too, exactly like every other
+    `record.chance` truthy check in this pipeline, or a SINGLE zero-
+    chance row would trivially satisfy `is_world_drop_pattern`'s own
+    "every known chance is low" signal on its own (one row's chance is
+    vacuously "every" chance) and misclassify a real, single-boss kill
+    as a world drop.
+
+    An item classic-db already classifies as a REFERENCE-pool world drop
+    (`_world_drop_records`' own `kind="world_drop"`) never reaches this
+    check with any creature-kind rows at all: `_expand_loot_template`
+    already dropped its reference's rows into that pool upstream, so the
+    two mechanisms are naturally disjoint, never double-classifying one
+    item.
+
+    `pipeline.loot.classicdb.classicdb_additions` is the caller: it has
+    the zone/instance-type data (`types`, `zone_by_map`) this module
+    deliberately does not, so it -- not this function -- decides which
+    of a flagged item's OWN rows still keep their own attribution
+    (`pipeline.loot.constants.is_confirmed_boss_drop`) versus fold into
+    the item's synthetic `world_drop` pool.
+
+    Imports `pipeline.loot.constants` locally, not at module level:
+    `pipeline.loot.__init__` itself imports `load_classic_sources` from
+    THIS module at package-import time, so a module-level import the
+    other way round (this module reaching into `pipeline.loot.*`) would
+    be a real cycle -- `import pipeline.classic_sources` would never
+    finish initializing before `pipeline.loot`'s own import of it ran.
+    """
+    from pipeline.loot.constants import is_world_drop_pattern
+
+    return {
+        item_id
+        for item_id, records in items.items()
+        if is_world_drop_pattern(
+            (record.npc_id, record.map_id, record.chance or None)
+            for record in records
+            if record.kind in CREATURE_DROP_KINDS
+        )
+    }
+
+
 def _expand_loot_template(
     entry: int,
     rows_by_entry: dict[int, list[dict[str, str]]],
@@ -494,20 +582,24 @@ def _parse_creature_drops(
     *,
     kind: ClassicDbSourceKind,
     table: str,
+    creature_levels: dict[int, tuple[int, int]] | None = None,
 ) -> None:
+    creature_levels = creature_levels or {}
     rows_by_entry = _rows_by_entry(list(iter_table_records(sql_text, table)))
     reference_rows = _rows_by_entry(list(iter_table_records(sql_text, "reference_loot_template")))
     for npc_id in rows_by_entry:
         name = creature_names.get(npc_id, "")
         map_id = npc_map.get(npc_id)
+        level_min, level_max = creature_levels.get(npc_id, (None, None))
         for item_id, chance in _expand_loot_template(
             npc_id, rows_by_entry, reference_rows, excluded_refs
         ):
             into[item_id].append(
                 ClassicDbSourceRecord(
-                    kind=kind, npc_id=npc_id, name=name, map_id=map_id, chance=chance
+                    kind=kind, npc_id=npc_id, name=name, map_id=map_id, chance=chance,
+                    level_min=level_min, level_max=level_max,
                 )
-            )
+            )  # fmt: skip
 
 
 def _parse_object_drops(
@@ -656,10 +748,20 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
     `write_classic_sources` is the writer.
     """
     creature_names: dict[int, str] = {}
+    # `.get` (not `row[...]`), never raising, for a dump/fixture whose own
+    # `creature_template` CREATE TABLE declares fewer columns than the
+    # real table (every `tests/test_classic_sources.py` fixture predating
+    # this lane, and this pipeline's own no-fabrication rule): a
+    # creature_template row missing MinLevel/MaxLevel entirely leaves
+    # that npc's own level range honestly unknown rather than a KeyError.
+    creature_levels: dict[int, tuple[int, int]] = {}
     vendor_template_id: dict[int, int] = {}
     for row in iter_table_records(sql_text, "creature_template"):
         entry = int(row["Entry"])
         creature_names[entry] = unquote(row["Name"]) or ""
+        min_level, max_level = row.get("MinLevel"), row.get("MaxLevel")
+        if min_level is not None and max_level is not None:
+            creature_levels[entry] = (int(min_level), int(max_level))
         template_id = int(row["VendorTemplateId"])
         if template_id:
             vendor_template_id[entry] = template_id
@@ -688,15 +790,15 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
     into: dict[int, list[ClassicDbSourceRecord]] = defaultdict(list)
     _parse_creature_drops(
         sql_text, creature_names, npc_map, into, excluded_refs,
-        kind="creature_drop", table="creature_loot_template",
+        kind="creature_drop", table="creature_loot_template", creature_levels=creature_levels,
     )
     _parse_creature_drops(
         sql_text, creature_names, npc_map, into, excluded_refs,
-        kind="skinning", table="skinning_loot_template",
+        kind="skinning", table="skinning_loot_template", creature_levels=creature_levels,
     )
     _parse_creature_drops(
         sql_text, creature_names, npc_map, into, excluded_refs,
-        kind="pickpocketing", table="pickpocketing_loot_template",
+        kind="pickpocketing", table="pickpocketing_loot_template", creature_levels=creature_levels,
     )
     _parse_object_drops(sql_text, object_names, object_map, into, excluded_refs)
     conditions = _parse_conditions(sql_text)

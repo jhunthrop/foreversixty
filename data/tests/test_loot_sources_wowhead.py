@@ -105,6 +105,34 @@ def test_a_wowhead_drop_in_an_existing_zone_unions_into_the_fork_source_and_stay
     assert stats.wowhead_items == 1
 
 
+def test_a_wowhead_boss_item_joining_an_existing_fork_boss_is_labelled_wowhead_not_fork():
+    """drop-sources-2 lane, 2026-09-29: the fixture's own fork-only
+    Deadmines boss (npc 902, item 103, no classic_sources passed here at
+    all) is labelled `"fork"` in `LootBoss.item_source_origin` --
+    classic-db corroborates neither item, and 103 is the fork's OWN,
+    unmixed drop. A wowhead `dropped-by` row for the SAME npc (a wholly
+    different item, 110) unions into that SAME boss (`merge_wowhead_
+    sources`) and is labelled `"wowhead"` instead -- tenet 8's own
+    labelling requirement for a fact this pipeline cannot verify against
+    classic-db, and `pipeline.audit.check_drops`'s own signal for
+    treating it as already-flagged-unverified rather than a silent gap.
+    """
+    item_sources = {
+        UNSOURCED_ITEM: ItemSourceEntry(
+            dropped_by=[
+                NpcSource(npc_id=902, name="A Deadmines Boss", zone_ids=[1581], chance=8.0)
+            ],
+            source="wowhead",
+            fetched_at="x",
+        )
+    }
+    document, _ = built(item_sources)
+    dungeon = source(document, "dungeon:the-deadmines")
+    boss = next(b for b in dungeon.bosses if b.npc_id == 902)
+    assert boss.items == [103, UNSOURCED_ITEM]
+    assert boss.item_source_origin == {"103": "fork", str(UNSOURCED_ITEM): "wowhead"}
+
+
 def test_a_wowhead_crafted_addition_unions_into_the_existing_profession_bucket():
     item_sources = {
         UNSOURCED_ITEM: ItemSourceEntry(

@@ -15,9 +15,13 @@ from __future__ import annotations
 
 from collections import defaultdict
 
-from pipeline.classic_sources import ClassicDbSourceRecord
+from pipeline.classic_sources import (
+    CREATURE_DROP_KINDS,
+    ClassicDbSourceRecord,
+    direct_row_world_drop_items,
+)
 from pipeline.forkdb import ForkDatabase
-from pipeline.loot.constants import INSTANCE_KIND, world_drop_id
+from pipeline.loot.constants import INSTANCE_KIND, is_confirmed_boss_drop, world_drop_id
 from pipeline.loot.wowhead import merge_wowhead_sources as merge_classicdb_sources  # noqa: F401
 from pipeline.models import LootBoss, LootSource, QuestSource
 from pipeline.normalize.classes import slugify
@@ -28,7 +32,10 @@ from pipeline.quest_levels import QuestLevelEntry
 #: loot comes off the SAME creature a normal drop would, so it is bucketed
 #: identically (this lane's own brief: "classify as world" is what
 #: distinguishes them from a `creature_drop`, not a separate bucket kind).
-_CREATURE_KINDS = frozenset({"creature_drop", "skinning", "pickpocketing"})
+#: `pipeline.classic_sources.CREATURE_DROP_KINDS` (drop-sources-2 lane,
+#: 2026-09-29) is the same set, shared so `direct_row_world_drop_items`
+#: and this module never drift apart on what counts as a creature drop.
+_CREATURE_KINDS = CREATURE_DROP_KINDS
 
 
 def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[int, int]:
@@ -180,9 +187,26 @@ def classicdb_additions(
     invariant (`test_the_quests_map_faction_matches_the_items_own_
     restriction`) is that every origin agrees on the one fact the ITEM
     states.
+
+    drop-sources-2 lane, 2026-09-29: an item in `direct_world_drop_items`
+    (`pipeline.classic_sources.direct_row_world_drop_items`' own result,
+    intersected with `build_items`) reads as a generic world-drop pattern
+    from its OWN direct `creature_loot_template` rows alone -- items
+    7909/7910/4306, ~900-1,500 per-creature rows each, measured on build
+    1.60.1.70009's audit. Every one of that item's creature-kind records
+    that `is_confirmed_boss_drop` does not exempt (a dungeon/raid zone
+    AND a stated chance >= `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`) folds
+    into ONE synthetic `world_drop` source for the item instead of its
+    own boss/world bucket entry, its level range the min/max of every
+    folded row's own creature level (`ClassicDbSourceRecord.level_min`/
+    `level_max`, from `creature_template.MinLevel`/`MaxLevel`) and its
+    chance the highest of theirs -- the same "never invented, never
+    averaged" merge `pipeline.classic_sources._world_drop_records`
+    already uses for a reference-pool world drop.
     """
     zone_by_map = instance_zone_by_map(zone_rows, types)
     fork_instance_npcs = fork_instance_npcs or {}
+    direct_world_drop_items = direct_row_world_drop_items(classic_sources) & build_items
 
     bosses: dict[tuple[int, int], set[int]] = defaultdict(set)
     boss_names: dict[int, str] = {}
@@ -213,12 +237,39 @@ def classicdb_additions(
     for item_id, records in classic_sources.items():
         if item_id not in build_items:
             continue
+        # `is_direct_world_drop`'s own item: every creature-kind record
+        # `is_confirmed_boss_drop` does not exempt folds into this one
+        # `(level_min, level_max)` pool instead of its own boss/world
+        # entry below -- `direct_pool_level`'s own `is not None` (not its
+        # contents, which may honestly be `(None, None)`) is the "did
+        # anything fold at all" flag; an item every one of whose own rows
+        # IS exempted gets no synthetic source at all (`classicdb_
+        # additions`'s own doc, above).
+        is_direct_world_drop = item_id in direct_world_drop_items
+        direct_pool_level: tuple[int | None, int | None] | None = None
+        direct_pool_chance: float | None = None
         for record in records:
             if record.kind in _CREATURE_KINDS:
                 zone_id = zone_by_map.get(record.map_id) if record.map_id else None
                 npc_id = record.npc_id or 0
                 if zone_id is None and npc_id:
                     zone_id = fork_instance_npcs.get(npc_id)
+                if is_direct_world_drop and not is_confirmed_boss_drop(
+                    zone_id is not None, record.chance
+                ):
+                    lo, hi = direct_pool_level or (None, None)
+                    if record.level_min is not None:
+                        lo = record.level_min if lo is None else min(lo, record.level_min)
+                    if record.level_max is not None:
+                        hi = record.level_max if hi is None else max(hi, record.level_max)
+                    direct_pool_level = (lo, hi)
+                    if record.chance:
+                        direct_pool_chance = (
+                            record.chance
+                            if direct_pool_chance is None
+                            else max(direct_pool_chance, record.chance)
+                        )
+                    continue
                 if zone_id is not None and npc_id:
                     bosses[(zone_id, npc_id)].add(item_id)
                     boss_names[npc_id] = record.name
@@ -305,6 +356,10 @@ def classicdb_additions(
                         level_source="classic-db",
                     )
                 )
+        if direct_pool_level is not None:
+            world_drop[direct_pool_level].add(item_id)
+            if direct_pool_chance:
+                world_drop_chances[direct_pool_level][item_id] = direct_pool_chance
 
     out: list[LootSource] = []
     # Only zones whose Map.csv instance type is a dungeon or raid get a source

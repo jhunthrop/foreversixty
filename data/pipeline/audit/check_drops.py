@@ -67,6 +67,41 @@ def _boss_existence_and_map(
         )
 
 
+#: drop-sources-2 lane, 2026-09-29: a boss item classic-db has no row for
+#: at all is never DELETED (tenet 8: "unverifiable is labelled or left
+#: out, never shown as fact" -- this pipeline labels it, via `LootBoss.
+#: item_source_origin`, rather than dropping a real fork/wowhead
+#: attribution on no more evidence than "classic-db doesn't say so
+#: either"). Three reasons this finding is `minor` rather than `major` --
+#: any ONE is enough, matching `_boss_item_reason`'s own order:
+#:
+#: * A Forever-new item id (`FOREVER_NEW_ID_THRESHOLD`) -- classic-db can
+#:   never corroborate an id it predates, pre-existing rule.
+#: * The instance is raid-gated (`LootSource.opens` is set, "opens
+#:   later") -- nobody can verify it against the live game yet either.
+#: * The attribution's own origin is `"wowhead"` (`LootBoss.item_source_
+#:   origin`) -- already labelled unverified right on the data, so this
+#:   finding is confirming a label already there, not surfacing a silent
+#:   gap.
+#:
+#: `major` is left for the one case worth a person's judgment: a
+#: `"fork"`-origin (or unlabelled -- the fork's OWN sources predate this
+#: lane's `item_source_origin` tagging) attribution, in a LAUNCH
+#: (non-raid-gated) instance, that neither classic-db NOR wowhead
+#: corroborates.
+def _boss_item_reason(
+    item_id: int, source: dict, item_source_origin: dict[str, str]
+) -> tuple[str, str] | None:
+    if item_id >= FOREVER_NEW_ID_THRESHOLD:
+        return "minor", " (Forever-new item id)"
+    if source.get("opens") is not None:
+        return "minor", " (raid-gated instance, opens later -- unverifiable yet)"
+    origin = item_source_origin.get(str(item_id))
+    if origin == "wowhead":
+        return "minor", " (wowhead-only attribution, already labelled unverified)"
+    return "major", ""
+
+
 def _boss_items(
     ctx: AuditContext,
     source: dict,
@@ -75,6 +110,7 @@ def _boss_items(
 ) -> None:
     npc_id = boss["npc_id"]
     item_chances = boss.get("item_chances") or {}
+    item_source_origin = boss.get("item_source_origin") or {}
     classic_sources = ctx.classic_sources_by_item
     for item_id in boss.get("items", []):
         result.checked += 1
@@ -84,13 +120,13 @@ def _boss_items(
             if r.kind == "creature_drop" and r.npc_id == npc_id
         ]
         if not records:
-            severity = "minor" if item_id >= FOREVER_NEW_ID_THRESHOLD else "major"
+            severity, reason = _boss_item_reason(item_id, source, item_source_origin)
             result.add(
                 severity,
                 item_id,
                 f"item {item_id} is on boss {boss.get('name') or npc_id!r}'s list but classic-db's "
                 "creature_loot_template (direct or reference) names no such drop for that npc"
-                + (" (Forever-new item id)" if severity == "minor" else ""),
+                + reason,
             )
         else:
             chances = [r.chance for r in records if r.chance is not None]
