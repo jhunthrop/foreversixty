@@ -92,10 +92,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-00000000000000000-100000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 36.7 | 3 | other:attack/2=129.9, other:attack/1=46.5, spell:14260/3=24.0, spell:14260=23.7, spell:14260/1=23.7 | - |
 | 20 | 0000000000000000-00000000000000000-500230100000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 51.5 | 5 | other:attack/2=121.3, other:attack/1=61.6, spell:1495=30.8, spell:14261=6.0, spell:14261/1=6.0 | - |
-| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:6692 off_hand:7683 ranged:274748 | 70.3 | 6 | other:attack/2=113.8, other:attack/1=70.0, spell:14269=29.3, spell:14262=6.0, spell:14262/1=6.0 | {SpellID: 1317257} |
+| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:6692 off_hand:13033 ranged:274748 | 72.0 | 6 | other:attack/1=69.0, other:attack/2=65.2, spell:14269=29.8, spell:14262=7.0, spell:14262/1=7.0 | {SpellID: 1317257} |
 | 38 | 0000000000000000-00000000000000000-500230131051120140 | main_hand:6829 off_hand:6831 ranged:19560 | 92.3 | 7 | other:attack/2=121.3, other:attack/1=74.7, spell:14269=28.6, spell:1317257=22.7, spell:14263=8.2 | - |
 | 40 | 0000000000000000-00000000000000000-500230131051120151 | main_hand:274753 off_hand:10823 ranged:19560 | 94.3 | 7 | other:attack/1=89.0, other:attack/2=82.9, spell:14269=29.1, spell:1317257=22.7, spell:14264=7.0 | - |
-| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:6660 off_hand:250614 ranged:16004 | 101.1 | 7 | other:attack/1=132.0, other:attack/2=76.1, spell:14270=28.0, spell:1317257=22.7, spell:14265=8.0 | - |
+| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:6660 off_hand:250614 ranged:13022 | 101.9 | 7 | other:attack/1=132.0, other:attack/2=76.1, spell:14270=28.0, spell:1317257=22.7, spell:14265=8.0 | - |
 | 60 | 0000000000000000-32005500005000000-500230131051120151 | main_hand:23577 off_hand:21126 ranged:23557 | 164.3 | 7 | other:attack/1=113.4, other:attack/2=101.3, spell:14271=26.3, spell:1317257=22.7, spell:14266=8.0 | - |
 
 ## Learned but unused (informational)

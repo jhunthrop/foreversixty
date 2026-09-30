@@ -90,9 +90,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-000000000000000000-000000000000000000 | main_hand:1933 | 9.8 | 5 | other:attack/1=49.0, other:rage_gain=38.1, spell:6546=17.6, spell:284/1=12.2, spell:284=12.0 | - |
+| 10 | 10000000000000000-000000000000000000-000000000000000000 | main_hand:263407 | 12.8 | 5 | other:attack/1=44.1, other:rage_gain=38.1, spell:284/1=17.2, spell:6546=17.2, spell:284=16.9 | - |
 | 20 | 35300000000000000-000000000000000000-000000000000000000 | main_hand:6631 | 19.1 | 6 | other:attack/1=50.2, other:rage_gain=38.1, spell:6547=14.2, spell:285/1=13.2, spell:285=12.9 | - |
-| 30 | 35325210000000000-000000000000000000-000000000000000000 | main_hand:7689 | 41.0 | 7 | other:rage_gain=98.1, other:attack/1=46.6, spell:1608/1=16.8, spell:1608=16.5, spell:6548=11.3 | - |
+| 30 | 35325210000000000-000000000000000000-000000000000000000 | main_hand:13045 | 38.8 | 7 | other:rage_gain=98.1, other:attack/1=47.5, spell:1608/1=15.9, spell:1608=15.6, spell:6548=11.7 | - |
 | 38 | 35325213032000000-000000000000000000-000000000000000000 | main_hand:873 | 43.8 | 7 | other:rage_gain=98.1, other:attack/1=36.9, spell:11564/1=12.9, spell:11564=12.6, spell:6548=11.8 | - |
 | 40 | 35325213032010001-000000000000000000-000000000000000000 | main_hand:873 | 48.0 | 8 | other:rage_gain=98.1, other:attack/1=49.5, spell:11572=9.7, spell:12294=6.9, spell:20660=4.7 | - |
 | 50 | 35325213032010001-050500000000000000-000000000000000000 | main_hand:11608 | 80.1 | 8 | other:rage_gain=123.8, other:attack/1=49.0, spell:21551=10.2, spell:11573=10.0, spell:20661=6.1 | - |

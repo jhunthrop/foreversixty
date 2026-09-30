@@ -92,10 +92,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-00000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 52.0 | 3 | other:shoot=83.8, spell:3044=17.5, spell:13549=17.2, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 20904} |
 | 20 | 5420000000000000-00000000000000000-000000000000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 63.9 | 5 | other:shoot=77.6, spell:2643=13.5, spell:19434=7.4, spell:13550=3.1, spell:14282=1.9 | {SpellID: 19574} |
-| 30 | 5420001504000000-00000000000000000-000000000000000000 | main_hand:6692 off_hand:7683 ranged:274748 | 84.2 | 6 | other:shoot=77.1, spell:2643=8.6, spell:20900=7.8, spell:13551=2.2, spell:14283=1.9 | {SpellID: 19574} |
+| 30 | 5420001504000000-00000000000000000-000000000000000000 | main_hand:6692 off_hand:13033 ranged:274748 | 84.1 | 6 | other:shoot=77.0, spell:2643=9.3, spell:20900=8.1, spell:13551=2.2, spell:14283=1.9 | {SpellID: 19574} |
 | 38 | 5420001505001240-00000000000000000-000000000000000000 | main_hand:6829 off_hand:6831 ranged:19560 | 99.8 | 6 | other:shoot=89.6, spell:20901=8.0, spell:2643=6.7, spell:13552=2.2, spell:14284=1.9 | {SpellID: 19574} |
 | 40 | 5420001505001251-00000000000000000-000000000000000000 | main_hand:274753 off_hand:6829 ranged:19560 | 109.9 | 7 | other:shoot=89.1, spell:20901=9.5, spell:2643=3.7, spell:13552=2.2, spell:19574=2.0 | - |
-| 50 | 5420001505001251-35200000000000000-000000000000000000 | main_hand:6660 off_hand:250614 ranged:16004 | 123.6 | 7 | other:shoot=80.1, spell:2643=6.2, spell:20902=5.6, spell:13554=2.1, spell:19574=2.0 | - |
+| 50 | 5420001505001251-35200000000000000-000000000000000000 | main_hand:6660 off_hand:250614 ranged:13022 | 124.1 | 7 | other:shoot=80.2, spell:2643=6.2, spell:20902=5.6, spell:13554=2.1, spell:19574=2.0 | - |
 | 60 | 5420001505001251-35510000000000000-510000000000000000 | main_hand:23577 off_hand:21126 ranged:23557 | 147.2 | 7 | other:shoot=72.5, spell:2643=9.8, spell:19574=2.0, spell:20904=2.0, spell:25295=2.0 | - |
 
 ## Learned but unused (informational)

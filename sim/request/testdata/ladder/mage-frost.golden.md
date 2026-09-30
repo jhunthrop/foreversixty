@@ -90,10 +90,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:286750 | 9.8 | 2 | spell:5019=59.2, spell:205=44.5 | - |
+| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:263430 | 10.0 | 2 | spell:5019=61.1, spell:205=46.1 | - |
 | 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 21.4 | 2 | spell:5019=63.3, spell:7322=34.8 | - |
 | 30 | 000000000000000000-00000000000000000-2535111300000000000 | main_hand:249392 ranged:5213 | 31.8 | 2 | spell:5019=76.5, spell:8406=32.5, item:5514=1.0, other:mana_gain=1.0 | - |
-| 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:7757 ranged:249144 | 49.8 | 3 | spell:5019=72.7, spell:8408=28.7, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
+| 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:7757 ranged:13064 | 51.5 | 3 | spell:5019=66.9, spell:8408=29.5, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
 | 40 | 000000000000000000-00000000000000000-2535111300000301051 | main_hand:7757 ranged:5216 | 50.4 | 3 | spell:5019=71.3, spell:8408=29.5, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
 | 50 | 000000000000000000-23500000000000000-2535111300000301051 | main_hand:9527 ranged:249232 | 70.1 | 3 | spell:5019=56.9, spell:10180=26.7, other:mana_gain=2.0, item:5514=1.0, item:8007=1.0 | - |
 | 60 | 000000000000000000-23552300000000000-2535111300000301051 | main_hand:22589 ranged:19108 | 118.0 | 3 | spell:5019=77.5, spell:25304=25.8, other:mana_gain=2.0, item:5514=1.0, item:8008=1.0 | - |
@@ -213,4 +213,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- mage-frost level=40 kind=dps_regression dps=50.4 prev_dps=51.5
