@@ -779,7 +779,7 @@ func TestBuildAlternativesSortsByDPSDeltaDescendingTiesIncluded(t *testing.T) {
 	// (TestBuildAlternativesConvertsScoreDeltaToRealDPS) is where a
 	// non-trivial referenceDPSPerPoint is exercised; this test is about
 	// ordering and exclusion, not arithmetic.
-	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 1.0, nil)
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 1.0, nil, 0)
 	want := []alternativeRow{
 		// Tied Greataxe (id 5) and Hammerbone (id 6) both read DPSDelta 0
 		// (an unverified positive estimate is capped, not published),
@@ -818,7 +818,7 @@ func TestBuildAlternativesConvertsScoreDeltaToRealDPS(t *testing.T) {
 		{candidate: candidate{ID: 1, Name: "Pick"}, Score: 302.91},
 		{candidate: candidate{ID: 2, Name: "Five Points Back"}, Score: 302.91 - 5},
 	}
-	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, referenceDPSPerPoint, nil)
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, referenceDPSPerPoint, nil, 0)
 	if len(got) != 1 {
 		t.Fatalf("buildAlternatives = %+v, want exactly 1 alternative", got)
 	}
@@ -856,7 +856,10 @@ func TestBuildAlternativesSwapBeatOverridesTheDemotedRunnerUpsDelta(t *testing.T
 	// then-current pick) measured 29.9 - the owner's own numbers.
 	sw := &swapResult{Slot: "main_hand", SwapDPS: 32.2, BaselineDPS: 29.9, Beat: true}
 
-	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0.0444, sw)
+	// setDPS matches sw.BaselineDPS (29.9, Hammerbone's own measured
+	// value as the demoted former pick) - bis-ranker-integrity-7
+	// lane, item 2's own hygiene guard on alternativeRow.SimDPS.
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0.0444, sw, 29.9)
 
 	var hammerbone, smite *alternativeRow
 	for i := range got {
@@ -914,7 +917,9 @@ func TestBuildAlternativesSwapNotBeatOverridesTheRunnerUpsDelta(t *testing.T) {
 		{candidate: candidate{ID: 2, Name: "Runner Up"}, Score: 95, Source: itemSource{Kind: "quest", Label: "Quests"}},
 	}
 	sw := &swapResult{Slot: "head", SwapDPS: 40, BaselineDPS: 50, Beat: false}
-	got := buildAlternatives(pk, "head", list, map[string]slotPick{"head": pk}, 0.05, sw)
+	// setDPS matches sw.SwapDPS (40) - bis-ranker-integrity-7 lane, item
+	// 2's own hygiene guard.
+	got := buildAlternatives(pk, "head", list, map[string]slotPick{"head": pk}, 0.05, sw, 40)
 	if len(got) != 1 || got[0].ItemID != 2 {
 		t.Fatalf("buildAlternatives = %+v, want exactly the runner-up", got)
 	}
@@ -1008,7 +1013,7 @@ func TestBuildAlternativesNeverPublishesAPositiveVerifiedDeltaWhenNotBeat(t *tes
 		{candidate: candidate{ID: 2, Name: "Stormshroud Pants"}, Score: 105, Source: itemSource{Kind: "crafted", Label: "Tailoring"}},
 	}
 	sw := &swapResult{Slot: "legs", SwapDPS: 100.4, BaselineDPS: 100, Beat: false}
-	got := buildAlternatives(pk, "legs", list, map[string]slotPick{"legs": pk}, 0.05, sw)
+	got := buildAlternatives(pk, "legs", list, map[string]slotPick{"legs": pk}, 0.05, sw, 0)
 	if len(got) != 1 || got[0].ItemID != 2 {
 		t.Fatalf("buildAlternatives = %+v, want exactly the runner-up", got)
 	}
@@ -1035,7 +1040,7 @@ func TestBuildAlternativesExcludesThePairMate(t *testing.T) {
 		{candidate: candidate{ID: 2, Name: "Ring B"}, Score: 9}, // finger2's own pick - must not appear
 		{candidate: candidate{ID: 3, Name: "Ring C"}, Score: 8},
 	}
-	got := buildAlternatives(picks["finger1"], "finger1", list, picks, 1.0, nil)
+	got := buildAlternatives(picks["finger1"], "finger1", list, picks, 1.0, nil, 0)
 	if len(got) != 1 || got[0].ItemID != 3 {
 		t.Fatalf("finger1 alternatives = %+v, want only Ring C (finger2's own pick excluded)", got)
 	}
@@ -1055,7 +1060,7 @@ func TestBuildAlternativesExcludesAZeroScoreNeverSimmedCandidate(t *testing.T) {
 		{candidate: candidate{ID: 1, Name: "Real hunter weapon"}, Score: 50},
 		{candidate: candidate{ID: 2, Name: "Caster Staff of Nothing For You"}, Score: 0, Source: itemSource{Kind: "quest", Label: "Quests"}},
 	}
-	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 1.0, nil)
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 1.0, nil, 0)
 	if len(got) != 0 {
 		t.Fatalf("buildAlternatives = %+v, want none - the only other candidate scores 0 and was never simmed", got)
 	}
@@ -1076,7 +1081,10 @@ func TestBuildAlternativesForceIncludesAZeroScoreButSwapTestedRunnerUp(t *testin
 		{candidate: candidate{ID: 2, Name: "Zero Score But Tested"}, Score: 0},
 	}
 	sw := &swapResult{Slot: "main_hand", SwapDPS: 38.0, BaselineDPS: 45.8, Beat: false}
-	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0, sw)
+	// setDPS matches sw.SwapDPS (38.0, the tested runner-up's own
+	// measured value here, since !sw.Beat) - bis-ranker-integrity-7
+	// lane, item 2's own hygiene guard.
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0, sw, 38.0)
 	var found *alternativeRow
 	for i := range got {
 		if got[i].ItemID == 2 {
@@ -1097,7 +1105,7 @@ func TestBuildAlternativesForceIncludesAZeroScoreButSwapTestedRunnerUp(t *testin
 // fallbacks for.
 func TestBuildAlternativesNilForAnUnfilledSlot(t *testing.T) {
 	list := []scored{{candidate: candidate{ID: 1, Name: "Anything"}, Score: 5}}
-	got := buildAlternatives(slotPick{}, "off_hand", list, map[string]slotPick{}, 1.0, nil)
+	got := buildAlternatives(slotPick{}, "off_hand", list, map[string]slotPick{}, 1.0, nil, 0)
 	if got != nil {
 		t.Fatalf("buildAlternatives on an unfilled slot = %+v, want nil", got)
 	}
@@ -1114,7 +1122,7 @@ func TestBuildAlternativesMainHandMixesOneAndTwoHanders(t *testing.T) {
 		{candidate: candidate{ID: 1, Name: "Greataxe", TwoHand: true}, Score: 20},
 		{candidate: candidate{ID: 2, Name: "Rusty Sword", TwoHand: false}, Score: 15},
 	}
-	got := buildAlternatives(slotPick{Item: pick}, "main_hand", list, map[string]slotPick{"main_hand": {Item: pick}}, 1.0, nil)
+	got := buildAlternatives(slotPick{Item: pick}, "main_hand", list, map[string]slotPick{"main_hand": {Item: pick}}, 1.0, nil, 0)
 	if len(got) != 1 || got[0].ItemID != 2 {
 		t.Fatalf("main_hand alternatives = %+v, want the one-hander Rusty Sword offered alongside the two-handed pick", got)
 	}
@@ -1196,7 +1204,13 @@ func TestBuildReportSimDecidedPickPublishesSimDPSNotScore(t *testing.T) {
 	picks := map[string]slotPick{
 		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Real Trinket"}, Score: 42, MeasuredDPS: 301.5}},
 	}
-	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	// setDPS matches this pick's own MeasuredDPS (bis-ranker-integrity-7
+	// lane, item 2: a sim-decided SimDPS is only trustworthy when it
+	// still equals the band's finished set_dps - see buildReport's own
+	// new hygiene guard) - this test is about the simDecided/Score
+	// convention, not about that guard, so setDPS is set to describe
+	// the same finished set this pick's own MeasuredDPS does.
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 301.5, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
 	var row slotRow
 	for _, s := range r.Slots {
 		if s.Slot == "trinket1" {
@@ -1245,7 +1259,12 @@ func TestBuildReportSwapPromotedPickPublishesSimDPS(t *testing.T) {
 		"main_hand": {Item: promoted, RunnerUp: demoted},
 	}
 	swaps := []swapResult{{Slot: "main_hand", SwapDPS: 32.2, BaselineDPS: 29.9, Beat: true}}
-	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	// setDPS matches this slot's own SwapDPS: this band's promotion was
+	// the only one, so applySwaps' own final re-measurement is exactly
+	// this trial's own number (bis-ranker-integrity-7 lane, item 2's own
+	// hygiene guard - see TestBuildReportSwapPromotedPickOmitsSimDPSWhenAnotherSlotAlsoPromoted
+	// for the mismatched case).
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 32.2, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
 	var row slotRow
 	for _, s := range r.Slots {
 		if s.Slot == "main_hand" {
@@ -1260,6 +1279,44 @@ func TestBuildReportSwapPromotedPickPublishesSimDPS(t *testing.T) {
 	}
 	if row.SwapNote == "" {
 		t.Error("SwapNote is empty, want the existing promotion note still present")
+	}
+}
+
+// bis-ranker-integrity-7 lane, item 2: the seventh wow-player sweep's
+// hybrids report still found a promoted row's own sim_dps NOT matching
+// its band's set_dps - this is the exact code path. applySwaps
+// promotes every winning swap independently against the ONE shared
+// pre-swap baseline (its own doc): main_hand's own SwapDPS (32.2) was
+// measured with ONLY main_hand swapped, but off_hand ALSO promoted this
+// same band, so the band's real finished-set total (40.0, applySwaps'
+// own final re-measurement with BOTH promotions applied) is not 32.2 at
+// all. main_hand's own row must omit sim_dps - its SwapNote/DPSDelta
+// (both true of that one single-slot trial regardless) stay published.
+func TestBuildReportSwapPromotedPickOmitsSimDPSWhenAnotherSlotAlsoPromoted(t *testing.T) {
+	promoted := &scored{candidate: candidate{ID: 1, Name: "The Winner"}, Score: 302.91, MeasuredDPS: 32.2}
+	demoted := &scored{candidate: candidate{ID: 2, Name: "The Loser"}, Score: 306.05}
+	picks := map[string]slotPick{
+		"main_hand": {Item: promoted, RunnerUp: demoted},
+	}
+	swaps := []swapResult{{Slot: "main_hand", SwapDPS: 32.2, BaselineDPS: 29.9, Beat: true}}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 40.0, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "main_hand" {
+			row = s
+		}
+	}
+	if row.SimDPS != 0 {
+		t.Errorf("SimDPS = %v, want 0 (omitted): 32.2 (this slot's own single-swap trial) does not match set_dps 40.0 (another slot also promoted)", row.SimDPS)
+	}
+	if row.SwapNote == "" {
+		t.Error("SwapNote is empty, want the promotion note still present even though sim_dps is withheld")
+	}
+	if row.DPSDelta == nil {
+		t.Fatal("DPSDelta is nil, want 2.3 (32.2 - 29.9, this row's own real measured gain, true regardless of what else promoted)")
+	}
+	if diff := *row.DPSDelta - 2.3; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("DPSDelta = %v, want 2.3 (32.2 - 29.9, this row's own real measured gain, true regardless of what else promoted)", *row.DPSDelta)
 	}
 }
 
@@ -1388,7 +1445,9 @@ func TestBuildReportKeepsATrinketWithMeasuredGainAboveThreshold(t *testing.T) {
 	picks := map[string]slotPick{
 		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Real Trinket"}, MeasuredDPS: 250, MeasuredGainDPS: 12.5, GainMeasured: true}},
 	}
-	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	// setDPS matches (bis-ranker-integrity-7 lane, item 2's own hygiene
+	// guard, same reasoning as TestBuildReportSimDecidedPickPublishesSimDPSNotScore).
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 250, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
 	var row slotRow
 	for _, s := range r.Slots {
 		if s.Slot == "trinket1" {
@@ -1543,7 +1602,9 @@ func TestBuildAlternativesForceIncludesALowScoringButActuallyTestedRunnerUp(t *t
 		{candidate: candidate{ID: 2, Name: "Weak But Tested"}, Score: 100},
 	}
 	sw := &swapResult{Slot: "main_hand", SwapDPS: 38.0, BaselineDPS: 45.8, Beat: false}
-	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0, sw)
+	// setDPS matches sw.SwapDPS (38.0) - bis-ranker-integrity-7 lane,
+	// item 2's own hygiene guard.
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0, sw, 38.0)
 	if len(got) > alternativesLimit {
 		t.Fatalf("buildAlternatives = %+v, want at most %d entries", got, alternativesLimit)
 	}
@@ -1787,5 +1848,80 @@ func TestWriteMarkdownShowsDPSDeltaWhenSimDPSWasWithheldForStaleness(t *testing.
 	}
 	if !strings.Contains(content, "+10.0 DPS vs the runner-up") {
 		t.Errorf("markdown missing the withheld row's own dps_delta:\n%s", content)
+	}
+}
+
+// bis-ranker-integrity-7 lane, item 2: the contract this whole file's
+// scattered sim_dps-hygiene tests each pin one slice of - "every
+// published sim_dps equals its band's own set_dps, within
+// finishedSetEpsilon" - checked over one whole report covering every
+// way a row can reach buildReport with a nonzero MeasuredDPS:
+//   - trinket1: sim-decided (rankTrinketSlot/trySetCompletion's own
+//     shape - no RunnerUp at all, so verifyBand never tries it and
+//     neither swap switch case in buildReport ever sees it) whose own
+//     MeasuredDPS happens to still match the finished set.
+//   - trinket2: the identical shape, but stale - this is exactly the
+//     path that used to publish unconditionally before this lane's fix
+//     (trySetCompletion/rankTrinketSlot/rankSlotWithEffects measure a
+//     slot's own DPS against whatever the OTHER slots were at that
+//     moment in greedy fill, not the finished set).
+//   - main_hand: a swap promotion (verify.go's applySwaps) whose own
+//     single-slot SwapDPS happens to equal the finished set (the only
+//     promotion this band).
+//   - off_hand: a swap promotion whose own SwapDPS does NOT match -
+//     the shape a second promotion in the same band produces
+//     (applySwaps promotes every winning swap independently against
+//     one shared pre-swap baseline, so no individual trial's own
+//     SwapDPS reflects two promotions at once).
+//   - head: an ordinary score()-decided pick (never simDecided at all).
+func TestBuildReportContractEverySimDPSMatchesSetDPS(t *testing.T) {
+	const finishedSetDPS = 500.0
+	picks := map[string]slotPick{
+		"head":     {Item: &scored{candidate: candidate{ID: 1, Name: "Plain Helm"}, Score: 42}},
+		"trinket1": {Item: &scored{candidate: candidate{ID: 2, Name: "Fresh Trinket"}, MeasuredDPS: finishedSetDPS}},
+		"trinket2": {Item: &scored{candidate: candidate{ID: 3, Name: "Stale Trinket"}, MeasuredDPS: 480.0}},
+		"main_hand": {
+			Item:     &scored{candidate: candidate{ID: 4, Name: "Sole Promotion"}, MeasuredDPS: finishedSetDPS},
+			RunnerUp: &scored{candidate: candidate{ID: 5, Name: "Demoted"}},
+		},
+		"off_hand": {
+			Item:     &scored{candidate: candidate{ID: 6, Name: "Co-Promoted"}, MeasuredDPS: 470.0},
+			RunnerUp: &scored{candidate: candidate{ID: 7, Name: "Also Demoted"}},
+		},
+	}
+	swaps := []swapResult{
+		{Slot: "main_hand", SwapDPS: finishedSetDPS, BaselineDPS: 450.0, Beat: true},
+		{Slot: "off_hand", SwapDPS: 470.0, BaselineDPS: 450.0, Beat: true},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, finishedSetDPS, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+		// The contract itself: whatever published this row's sim_dps,
+		// it is only ever trustworthy when it still equals the band's
+		// finished set_dps.
+		if s.SimDPS != 0 && math.Abs(s.SimDPS-r.SetDPS) > finishedSetEpsilon {
+			t.Errorf("slot %s: sim_dps %v does not match set_dps %v (epsilon %v) - a stale measurement was published as fact", s.Slot, s.SimDPS, r.SetDPS, finishedSetEpsilon)
+		}
+	}
+	if byslot["trinket1"].SimDPS != finishedSetDPS {
+		t.Errorf("trinket1 sim_dps = %v, want %v (a fresh, matching measurement must still publish)", byslot["trinket1"].SimDPS, finishedSetDPS)
+	}
+	if byslot["trinket2"].SimDPS != 0 {
+		t.Errorf("trinket2 sim_dps = %v, want 0 (omitted): 480.0 is stale against set_dps %v", byslot["trinket2"].SimDPS, finishedSetDPS)
+	}
+	if byslot["main_hand"].SimDPS != finishedSetDPS {
+		t.Errorf("main_hand sim_dps = %v, want %v (the sole promotion's own SwapDPS matches)", byslot["main_hand"].SimDPS, finishedSetDPS)
+	}
+	if byslot["off_hand"].SimDPS != 0 {
+		t.Errorf("off_hand sim_dps = %v, want 0 (omitted): a second promotion (main_hand) in the same band left this slot's own single-swap SwapDPS (470.0) stale against set_dps %v", byslot["off_hand"].SimDPS, finishedSetDPS)
+	}
+	// Both withheld rows must still carry their own real, independently-
+	// true evidence (SwapNote/DPSDelta) - sim_dps hygiene withholds the
+	// one absolute number that no longer describes the finished set, not
+	// the whole row's evidence.
+	if byslot["off_hand"].SwapNote == "" {
+		t.Error("off_hand SwapNote is empty, want the promotion note still present despite the withheld sim_dps")
 	}
 }

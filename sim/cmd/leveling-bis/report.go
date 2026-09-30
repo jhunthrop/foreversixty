@@ -406,7 +406,7 @@ type alternativeRow struct {
 // very likely now negative, so it must fall behind everything that
 // still outranks it - including a tie at 0.
 
-func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string]slotPick, referenceDPSPerPoint float64, sw *swapResult) []alternativeRow {
+func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string]slotPick, referenceDPSPerPoint float64, sw *swapResult, setDPS float64) []alternativeRow {
 	if pk.Item == nil {
 		return nil
 	}
@@ -540,7 +540,20 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 				// comparable (score() is gone from this row entirely as
 				// of bis-ranker-integrity-3, see alternativeRow's own
 				// doc).
-				out[i].SimDPS = swapAlternativeMeasuredDPS(*sw)
+				//
+				// bis-ranker-integrity-7 lane, item 2: this absolute
+				// number is exactly as vulnerable to the shared-baseline
+				// staleness this file's own finishedSetEpsilon guard
+				// exists for (slotRow.SimDPS's own doc) - sw.BaselineDPS/
+				// sw.SwapDPS describe THIS one single-slot trial, which
+				// stops describing the finished set the moment some
+				// OTHER slot also promoted this band. Withheld under the
+				// same bar; DPSDelta above (a relative measurement,
+				// always true of that one trial regardless of anything
+				// else) still publishes.
+				if simDPS := swapAlternativeMeasuredDPS(*sw); math.Abs(simDPS-setDPS) <= finishedSetEpsilon {
+					out[i].SimDPS = simDPS
+				}
 				break
 			}
 		}
@@ -796,7 +809,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			if s, ok := swapBySlot[slot]; ok {
 				swForSlot = &s
 			}
-			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks, referenceDPSPerPoint, swForSlot)
+			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks, referenceDPSPerPoint, swForSlot, setDPS)
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
@@ -872,6 +885,39 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 						row.SwapNote = fmt.Sprintf("confirmed by the sim against %s (id %d): kept the pick, %s", pk.RunnerUp.Name, pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.BaselineDPS, sw.SwapDPS, setDPS))
 					}
 				}
+			}
+			// bis-ranker-integrity-7 lane, item 2: the "case ok" branch
+			// above (bis-ranker-integrity-6) only ever re-checked
+			// sw.BaselineDPS against setDPS for a slot verifyBand tried
+			// and did NOT promote. Two other paths publish an absolute
+			// SimDPS that never goes through that check at all, and the
+			// seventh wow-player sweep's hybrids report still finds both:
+			//   - "case ok && sw.Beat" (just above): a promoted swap's own
+			//     SwapDPS is measured with ONLY this slot swapped against
+			//     the pre-swap baseline (verifyBand's own doc); applySwaps
+			//     promotes every winning swap independently off that same
+			//     shared baseline (its own doc), so the moment a SECOND
+			//     slot promotes in the same band, this slot's own SwapDPS
+			//     stops describing the finished set the same way a stale
+			//     shared baseline did for bis-ranker-integrity-6.
+			//   - a row simDecided (line ~788, above) but never entered
+			//     swapBySlot at all: trySetCompletion (sets.go) sets
+			//     MeasuredDPS directly and never sets RunnerUp, so
+			//     verifyBand never tries it (its own "only a slot with a
+			//     RunnerUp" doc) and neither switch case above ever sees
+			//     it - a set-completion pick measured before some OTHER
+			//     slot's own later swap promotion changed the total is
+			//     exactly the same staleness, just never caught.
+			// One shared rule closes both: whatever set row.SimDPS to a
+			// nonzero number, above, it is only trustworthy when it still
+			// equals THIS band's own finished set_dps (finishedSetEpsilon,
+			// the same bar every other SimDPS check in this function
+			// already holds itself to) - otherwise the row keeps its
+			// SwapNote/DPSDelta (both independently true of the one sim
+			// run that produced them) and omits sim_dps rather than print
+			// a number that no longer describes the finished set.
+			if row.SimDPS != 0 && math.Abs(row.SimDPS-setDPS) > finishedSetEpsilon {
+				row.SimDPS = 0
 			}
 			// This lane's brief, item 2 (original), narrowed by
 			// bis-ranker-integrity-2's own items 1 and 4: a slot score()

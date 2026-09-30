@@ -24,6 +24,41 @@ func TestCandidatesBySlotExpandsAliasesAndSortsByScoreDesc(t *testing.T) {
 	}
 }
 
+// bis-ranker-integrity-7 lane, item 1: candidatesBySlot's own doc -
+// an exact score() tie breaks on item level (descending) before item
+// id, the mage-arcane band 60 neck repro's own shape (Medallion of the
+// Dawn, item level 60, versus Jewel of Kajaro, item level 65, tied by
+// this build's own weighted score) rebuilt with plain fixtures so the
+// rule itself is pinned independent of any one band's real numbers.
+func TestCandidatesBySlotBreaksAnExactScoreTieByHigherItemLevel(t *testing.T) {
+	lowerIlvl := item(1, "Lower Ilvl But Lower Id", 10, "neck")
+	lowerIlvl.ItemLevel = 60
+	higherIlvl := item(2, "Higher Ilvl But Higher Id", 10, "neck")
+	higherIlvl.ItemLevel = 65
+	bySlot := candidatesBySlot([]scored{lowerIlvl, higherIlvl})
+	if bySlot["neck"][0].ID != 2 {
+		t.Fatalf("neck[0] = %+v, want item 2 (item level 65 beats item level 60 on an exact score tie, not the lower id)", bySlot["neck"][0])
+	}
+	if bySlot["neck"][1].ID != 1 {
+		t.Fatalf("neck[1] = %+v, want item 1 (the lower-ilvl tied candidate) second", bySlot["neck"][1])
+	}
+}
+
+// The tie-break's own final fallback: when item level ALSO ties, id
+// ascending still decides, purely for a stable, deterministic sort -
+// never observed in this build's real data (this lane's brief), but
+// candidatesBySlot must not panic or reorder nondeterministically.
+func TestCandidatesBySlotBreaksAFullTieByLowerID(t *testing.T) {
+	a := item(2, "B", 10, "neck")
+	a.ItemLevel = 60
+	b := item(1, "A", 10, "neck")
+	b.ItemLevel = 60
+	bySlot := candidatesBySlot([]scored{a, b})
+	if bySlot["neck"][0].ID != 1 {
+		t.Fatalf("neck[0] = %+v, want item 1 (lower id, the final fallback when score AND item level both tie)", bySlot["neck"][0])
+	}
+}
+
 func TestPickChoosesBestPerSlot(t *testing.T) {
 	bySlot := candidatesBySlot([]scored{
 		item(1, "Bad Helm", 5, "head"),
