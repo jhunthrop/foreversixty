@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:54:37Z",
+  "generated_at": "2026-09-30T14:55:53Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -560,8 +560,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.111728766,
-      "verify_run_seconds": 1.25574237,
+      "weights_run_seconds": 0.844305699,
+      "verify_run_seconds": 0.995661232,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -906,8 +906,8 @@
             {
               "item_id": 3429,
               "item_name": "Guardsman Belt",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Jailor Eston",
               "dps_delta": -0.6591104234861357
             },
             {
@@ -1198,8 +1198,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.111728766,
-      "verify_run_seconds": 1.221879521,
+      "weights_run_seconds": 0.844305699,
+      "verify_run_seconds": 0.991921144,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1867,8 +1867,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.128106239,
-      "verify_run_seconds": 1.32093817,
+      "weights_run_seconds": 0.868957151,
+      "verify_run_seconds": 1.044614913,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2560,8 +2560,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.128106239,
-      "verify_run_seconds": 1.334267216,
+      "weights_run_seconds": 0.868957151,
+      "verify_run_seconds": 1.038081189,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2796,8 +2796,8 @@
             {
               "item_id": 6432,
               "item_name": "Imperial Cloak",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.10173141451297972
             },
             {
@@ -2862,8 +2862,8 @@
             {
               "item_id": 4061,
               "item_name": "Imperial Leather Bracers",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5853956935329089
             },
             {
@@ -2994,8 +2994,8 @@
             {
               "item_id": 6431,
               "item_name": "Imperial Leather Boots",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.10173141451297972
             },
             {
@@ -3049,8 +3049,8 @@
             {
               "item_id": 7552,
               "item_name": "Falcon's Hook",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5345299862764191
             }
           ]
@@ -3083,8 +3083,8 @@
             {
               "item_id": 7552,
               "item_name": "Falcon's Hook",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5345299862764191
             }
           ]
@@ -3194,7 +3194,7 @@
         }
       ],
       "set_dps": 97.61422914156626,
-      "no_source_count": 457,
+      "no_source_count": 456,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3228,8 +3228,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.173416762,
-      "verify_run_seconds": 1.3650086830000001,
+      "weights_run_seconds": 0.900042027,
+      "verify_run_seconds": 1.0629414,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3285,11 +3285,11 @@
         },
         "trinket1": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "trinket2": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "waist": {
           "eligible": 205,
@@ -3530,8 +3530,8 @@
             {
               "item_id": 4061,
               "item_name": "Imperial Leather Bracers",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5853956935329089
             },
             {
@@ -3670,8 +3670,8 @@
             {
               "item_id": 6431,
               "item_name": "Imperial Leather Boots",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.10173141451297972
             },
             {
@@ -3717,8 +3717,8 @@
             {
               "item_id": 7552,
               "item_name": "Falcon's Hook",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5345299862764191
             }
           ]
@@ -3751,8 +3751,8 @@
             {
               "item_id": 7552,
               "item_name": "Falcon's Hook",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.5345299862764191
             }
           ]
@@ -3862,7 +3862,7 @@
         }
       ],
       "set_dps": 96.20284873974305,
-      "no_source_count": 457,
+      "no_source_count": 456,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3896,8 +3896,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.173416762,
-      "verify_run_seconds": 1.386756433,
+      "weights_run_seconds": 0.900042027,
+      "verify_run_seconds": 1.086512342,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3953,11 +3953,11 @@
         },
         "trinket1": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "trinket2": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "waist": {
           "eligible": 209,
@@ -4575,7 +4575,7 @@
         }
       ],
       "set_dps": 151.65545424605693,
-      "no_source_count": 585,
+      "no_source_count": 582,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4608,8 +4608,8 @@
         "off_hand: Shadowblade",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.211112027,
-      "verify_run_seconds": 1.786338181,
+      "weights_run_seconds": 0.93707845,
+      "verify_run_seconds": 1.372731131,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4665,11 +4665,11 @@
         },
         "trinket1": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "trinket2": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "waist": {
           "eligible": 267,
@@ -4677,7 +4677,7 @@
         },
         "wrist": {
           "eligible": 219,
-          "sourced": 178
+          "sourced": 180
         }
       },
       "reference_dps_per_point": 0.053453305045952124,
@@ -5289,7 +5289,7 @@
         }
       ],
       "set_dps": 154.95413653482439,
-      "no_source_count": 586,
+      "no_source_count": 583,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5322,8 +5322,8 @@
         "off_hand: Shadowblade",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.211112027,
-      "verify_run_seconds": 1.789049983,
+      "weights_run_seconds": 0.93707845,
+      "verify_run_seconds": 1.348323594,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5379,11 +5379,11 @@
         },
         "trinket1": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "trinket2": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "waist": {
           "eligible": 271,
@@ -5391,7 +5391,7 @@
         },
         "wrist": {
           "eligible": 223,
-          "sourced": 184
+          "sourced": 186
         }
       },
       "reference_dps_per_point": 0.053453305045952124,
@@ -5458,23 +5458,23 @@
             {
               "item_id": 231545,
               "item_name": "Field Marshal's Leather Mask",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
               "dps_delta": -1.6932473929124576
-            },
-            {
-              "item_id": 227055,
-              "item_name": "Lieutenant Commander's Leather Helm",
-              "source_kind": "vendor",
-              "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.7847341152189709
             },
             {
               "item_id": 239550,
               "item_name": "Duskwraith Mask",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -9.801048614131673,
+              "dps_delta": -1.759614930592515
+            },
+            {
+              "item_id": 16455,
+              "item_name": "Field Marshal's Leather Mask",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -10.037103945714193,
               "verified": true
             }
           ]
@@ -5917,7 +5917,7 @@
             {
               "item_id": 234579,
               "item_name": "Grand Marshal's Swiftblade",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
               "dps_delta": 0
             },
@@ -5948,17 +5948,9 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18805,
-              "item_name": "Core Hound Tooth",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
               "item_id": 234584,
               "item_name": "Grand Marshal's Left Hand Blade",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
               "dps_delta": 0
             },
@@ -5968,6 +5960,14 @@
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
               "dps_delta": -12.658460671896542
+            },
+            {
+              "item_id": 279261,
+              "item_name": "Greenhammer",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -14.005557094849848,
+              "verified": true
             }
           ]
         },
@@ -5984,7 +5984,7 @@
               "item_id": 22318,
               "item_name": "Malgen's Long Bow",
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Theldren",
+              "source": "Blackrock Depths: Arena Spoils",
               "dps_delta": -0.10708017550915264
             },
             {
@@ -6006,7 +6006,7 @@
         }
       ],
       "set_dps": 290.5339614070607,
-      "no_source_count": 1310,
+      "no_source_count": 1335,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6043,44 +6043,44 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.207349712,
-      "verify_run_seconds": 1.68016885,
+      "weights_run_seconds": 0.917900659,
+      "verify_run_seconds": 1.311411483,
       "coverage": {
         "back": {
           "eligible": 445,
-          "sourced": 344
+          "sourced": 342
         },
         "chest": {
-          "eligible": 520,
+          "eligible": 524,
           "sourced": 437
         },
         "feet": {
-          "eligible": 406,
-          "sourced": 338
+          "eligible": 410,
+          "sourced": 340
         },
         "finger1": {
           "eligible": 368,
-          "sourced": 205
+          "sourced": 204
         },
         "finger2": {
           "eligible": 368,
-          "sourced": 205
+          "sourced": 204
         },
         "hands": {
-          "eligible": 423,
-          "sourced": 349
+          "eligible": 427,
+          "sourced": 348
         },
         "head": {
-          "eligible": 324,
-          "sourced": 254
+          "eligible": 328,
+          "sourced": 256
         },
         "legs": {
-          "eligible": 421,
-          "sourced": 342
+          "eligible": 424,
+          "sourced": 341
         },
         "main_hand": {
           "eligible": 625,
-          "sourced": 420
+          "sourced": 419
         },
         "neck": {
           "eligible": 193,
@@ -6095,20 +6095,20 @@
           "sourced": 142
         },
         "shoulder": {
-          "eligible": 306,
+          "eligible": 310,
           "sourced": 250
         },
         "trinket1": {
           "eligible": 184,
-          "sourced": 108
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 184,
-          "sourced": 108
+          "sourced": 109
         },
         "waist": {
           "eligible": 387,
-          "sourced": 327
+          "sourced": 326
         },
         "wrist": {
           "eligible": 315,
@@ -6179,23 +6179,23 @@
             {
               "item_id": 231553,
               "item_name": "Warlord's Leather Helm",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
               "dps_delta": -1.6932473929124576
-            },
-            {
-              "item_id": 227057,
-              "item_name": "Champion's Leather Helm",
-              "source_kind": "vendor",
-              "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.7847341152189709
             },
             {
               "item_id": 239550,
               "item_name": "Duskwraith Mask",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -9.653384865483133,
+              "dps_delta": -1.759614930592515
+            },
+            {
+              "item_id": 16561,
+              "item_name": "Warlord's Leather Helm",
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "dps_delta": -9.872573320180152,
               "verified": true
             }
           ]
@@ -6638,7 +6638,7 @@
             {
               "item_id": 234553,
               "item_name": "High Warlord's Quickblade",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
               "dps_delta": 0
             },
@@ -6669,17 +6669,9 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18805,
-              "item_name": "Core Hound Tooth",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
               "item_id": 234558,
               "item_name": "High Warlord's Left Claw",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
               "dps_delta": 0
             },
@@ -6689,6 +6681,14 @@
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
               "dps_delta": -12.658460671896542
+            },
+            {
+              "item_id": 279261,
+              "item_name": "Greenhammer",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -16.172848188045407,
+              "verified": true
             }
           ]
         },
@@ -6705,7 +6705,7 @@
               "item_id": 22318,
               "item_name": "Malgen's Long Bow",
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Theldren",
+              "source": "Blackrock Depths: Arena Spoils",
               "dps_delta": -0.10708017550915264
             },
             {
@@ -6727,7 +6727,7 @@
         }
       ],
       "set_dps": 290.35813601647124,
-      "no_source_count": 1312,
+      "no_source_count": 1336,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6764,44 +6764,44 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.207349712,
-      "verify_run_seconds": 1.649744463,
+      "weights_run_seconds": 0.917900659,
+      "verify_run_seconds": 1.304066365,
       "coverage": {
         "back": {
           "eligible": 451,
-          "sourced": 351
+          "sourced": 349
         },
         "chest": {
-          "eligible": 518,
+          "eligible": 522,
           "sourced": 433
         },
         "feet": {
-          "eligible": 411,
-          "sourced": 338
+          "eligible": 415,
+          "sourced": 340
         },
         "finger1": {
           "eligible": 371,
-          "sourced": 210
+          "sourced": 209
         },
         "finger2": {
           "eligible": 371,
-          "sourced": 210
+          "sourced": 209
         },
         "hands": {
-          "eligible": 423,
-          "sourced": 347
+          "eligible": 427,
+          "sourced": 346
         },
         "head": {
-          "eligible": 325,
-          "sourced": 255
+          "eligible": 329,
+          "sourced": 257
         },
         "legs": {
-          "eligible": 416,
+          "eligible": 419,
           "sourced": 335
         },
         "main_hand": {
           "eligible": 626,
-          "sourced": 430
+          "sourced": 429
         },
         "neck": {
           "eligible": 197,
@@ -6816,20 +6816,20 @@
           "sourced": 141
         },
         "shoulder": {
-          "eligible": 304,
+          "eligible": 308,
           "sourced": 248
         },
         "trinket1": {
           "eligible": 183,
-          "sourced": 107
+          "sourced": 108
         },
         "trinket2": {
           "eligible": 183,
-          "sourced": 107
+          "sourced": 108
         },
         "waist": {
           "eligible": 390,
-          "sourced": 327
+          "sourced": 326
         },
         "wrist": {
           "eligible": 318,
