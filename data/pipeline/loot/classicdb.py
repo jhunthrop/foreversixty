@@ -126,6 +126,12 @@ def classic_db_npc_names(classic_sources: dict[int, list[ClassicDbSourceRecord]]
     return names
 
 
+def instanced_zones(zone_ids: set[int], types: dict[int, int]) -> set[int]:
+    """The subset of `zone_ids` whose Map.csv instance type names a dungeon or
+    raid kind; a battleground (type 3) or arena zone gets no loot source."""
+    return {zone_id for zone_id in zone_ids if INSTANCE_KIND.get(types.get(zone_id, 0)) is not None}
+
+
 def classicdb_additions(
     classic_sources: dict[int, list[ClassicDbSourceRecord]],
     build_items: set[int],
@@ -301,8 +307,12 @@ def classicdb_additions(
                 )
 
     out: list[LootSource] = []
+    # Only zones whose Map.csv instance type is a dungeon or raid get a source
+    # here; a fresh export also lists battlegrounds (type 3) and arenas, which
+    # data.yml's 2026-09-30 rebuild hit as KeyError 3 through the trash set.
+    instanced = instanced_zones({zone_id for zone_id, _ in bosses} | set(trash), types)
     for zone_id in sorted(
-        {zone_id for zone_id, _ in bosses} | set(trash),
+        instanced,
         key=lambda z: (INSTANCE_KIND[types[z]], slugify(zone_names.get(z, str(z)))),
     ):
         kind = INSTANCE_KIND[types[zone_id]]

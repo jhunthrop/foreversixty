@@ -14,6 +14,7 @@ from pipeline.classic_sources import ClassicDbCondition, ClassicDbQuestInfo, Cla
 from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.item_sources import ItemSourceEntry
+from pipeline.loot.classicdb import instanced_zones
 from pipeline.loot.sources import build_loot, instance_types, pvp_ranks, source_item_ids
 from pipeline.wowhead_item_sources import NpcSource
 
@@ -321,3 +322,14 @@ def test_a_chance_of_exactly_zero_is_omitted_never_published_as_a_real_zero():
     world = source(document, "world:zero-chance-mob")
     assert world.items == [104]
     assert world.item_chances is None
+
+
+def test_a_battleground_zone_never_becomes_a_loot_source():
+    """A fresh Map.csv lists battlegrounds as instance type 3 and arenas as 4;
+    only dungeon (1) and raid (2) zones bucket classic-db drops (data.yml's
+    2026-09-30 rebuild raised KeyError 3 on Warsong Gulch trash)."""
+    assert instanced_zones({1581, 3277, 3428, 559}, {1581: 1, 3277: 3, 3428: 2, 559: 4}) == {
+        1581,
+        3428,
+    }
+
