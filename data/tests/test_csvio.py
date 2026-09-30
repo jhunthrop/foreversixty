@@ -1,3 +1,4 @@
+import json
 import logging
 from pathlib import Path
 
@@ -16,39 +17,45 @@ def test_read_csv_returns_rows_keyed_by_header():
     ]
 
 
-def _write_item_tables(raw: Path, *, item_rows: int, sparse_rows: int) -> None:
-    raw.mkdir(parents=True, exist_ok=True)
-    (raw / "Item.csv").write_text(
-        "ID,ClassID\n" + "".join(f"{i},4\n" for i in range(item_rows)), encoding="utf-8"
-    )
-    (raw / "ItemSparse.csv").write_text(
-        "ID,Display_lang\n" + "".join(f"{i},Item {i}\n" for i in range(sparse_rows)),
-        encoding="utf-8",
+def _commit_items(build_dir: Path, count: int) -> None:
+    build_dir.mkdir(parents=True, exist_ok=True)
+    (build_dir / "items.json").write_text(
+        json.dumps([{"id": i} for i in range(count)]), encoding="utf-8"
     )
 
 
-def test_check_item_sparse_completeness_passes_when_the_ratio_is_met(tmp_path: Path):
-    _write_item_tables(tmp_path, item_rows=100, sparse_rows=90)
-    check_item_sparse_completeness(tmp_path)  # 90/100 == the 0.9 floor; no raise
+def test_check_item_sparse_completeness_passes_when_the_count_holds(tmp_path: Path):
+    _commit_items(tmp_path, 100)
+    check_item_sparse_completeness(tmp_path, 100)  # no shrink; no raise
+    check_item_sparse_completeness(tmp_path, 150)  # a growth; no raise
 
 
-def test_check_item_sparse_completeness_raises_on_a_truncated_export(tmp_path: Path):
-    # The real incident: wago.tools served 19,226 of Item.csv's 31,819 rows (60%).
-    _write_item_tables(tmp_path, item_rows=100, sparse_rows=60)
-    with pytest.raises(SystemExit, match="ItemSparse.csv has only 60 rows"):
-        check_item_sparse_completeness(tmp_path)
+def test_check_item_sparse_completeness_raises_on_a_shrink(tmp_path: Path):
+    _commit_items(tmp_path, 100)
+    with pytest.raises(SystemExit, match="would shrink from 100 to 60"):
+        check_item_sparse_completeness(tmp_path, 60)
 
 
 def test_check_item_sparse_completeness_allow_shrink_skips_and_logs_loudly(
     tmp_path: Path, caplog
 ):
     caplog.set_level(logging.WARNING)
-    _write_item_tables(tmp_path, item_rows=100, sparse_rows=60)
-    check_item_sparse_completeness(tmp_path, allow_shrink=True)  # does not raise
+    _commit_items(tmp_path, 100)
+    check_item_sparse_completeness(tmp_path, 60, allow_shrink=True)  # does not raise
     assert "ItemSparse completeness gate skipped (--allow-shrink)" in caplog.text
 
 
-def test_check_item_sparse_completeness_does_not_divide_by_zero(tmp_path: Path):
-    """An empty Item.csv is some other check's problem, not this one's."""
-    _write_item_tables(tmp_path, item_rows=0, sparse_rows=0)
-    check_item_sparse_completeness(tmp_path)
+def test_check_item_sparse_completeness_first_ever_run_has_nothing_to_shrink_against(
+    tmp_path: Path,
+):
+    """No committed `items.json` yet (a new build, or the first build ever
+    normalized) is never a shrink -- same rule as
+    `normalize._check_class_items_not_shrunk`'s `previous_count == 0`."""
+    check_item_sparse_completeness(tmp_path, 0)
+
+
+def test_check_item_sparse_completeness_an_empty_committed_file_is_also_never_a_shrink(
+    tmp_path: Path,
+):
+    _commit_items(tmp_path, 0)
+    check_item_sparse_completeness(tmp_path, 0)

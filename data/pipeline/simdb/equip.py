@@ -144,6 +144,14 @@ STAT_AURAS: dict[int, str] = {
 #: Auras reviewed and known not to be stats: procs, immunities, spell-specific
 #: modifiers, percentage modifiers, pet and shapeshift behaviour, and the
 #: per-school hit and ranged haste values the engine models as pseudo-stats.
+#: 232 was added for build 1.60.1.70009 once the hotfix cache is merged
+#: (normalize-levels lane, 2026-09-29): item 2280 "Kam's Walking Stick"
+#: carries spell 1292546 "Reduce Mechanic Duration - Snare/Root 10" as its
+#: equip effect, which wowdev.wiki/TrinityCore's SpellAuraNames enum names
+#: SPELL_AURA_MECHANIC_DURATION_MOD (value 232) and wowhead's Forever
+#: corroboration (https://www.wowhead.com/forever/spell=1292546) states as
+#: two "Mod Mechanic Duration % (Snared/Rooted)" effects -- a percentage
+#: duration modifier, not a Stat.
 #: Seven were added for build 1.60.1.69893 and each is named after its evidence:
 #: 155 water breathing, 272 percentage block ("Shield Specialization"), 319
 #: percentage melee speed ("Rapid Fire"), 342 percentage haste ("Gyroscopic
@@ -173,7 +181,7 @@ IGNORED_AURAS = frozenset(
         3, 4, 8, 10, 14, 15, 17, 19, 23, 31, 33, 34, 35, 42, 43, 56, 57, 58,
         59, 64, 69, 77, 79, 80, 82, 87, 89, 98, 102, 107, 108, 109, 112, 117,
         122, 129, 130, 131, 134, 139, 140, 142, 144, 154, 155, 161, 168, 180,
-        187, 194, 197, 213, 226, 234, 262, 272, 275, 290, 319, 328, 332, 342,
+        187, 194, 197, 213, 226, 232, 234, 262, 272, 275, 290, 319, 328, 332, 342,
         395, 436, 466, 470, 561, 576, 593, 598, 601, 608,
     }
 )

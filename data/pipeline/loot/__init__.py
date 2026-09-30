@@ -39,7 +39,7 @@ import logging
 from pathlib import Path
 
 from pipeline.classic_sources import load_classic_sources
-from pipeline.csvio import check_item_sparse_completeness, read_csv
+from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.item_sources import load_item_sources
 from pipeline.loot.buffs import (
@@ -95,10 +95,19 @@ def write_loot_files(
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     for name in ("zones.json", "items.json", "spells.json"):
         _require(build_dir / name, "normalize")
-    check_item_sparse_completeness(raw, allow_shrink=allow_shrink)
+    # `check_item_sparse_completeness` (pipeline/csvio.py) now guards the item
+    # catalog itself -- comparing a NEW items.json against the build's last
+    # committed one -- which is entirely `normalize`'s write, not this
+    # command's (normalize-levels lane, 2026-09-29). The `_require` above
+    # already refuses to run without a committed items.json, so whatever
+    # normalize most recently wrote already passed that gate; there is
+    # nothing of the same shape left for `loot` to check on its own raw
+    # ItemSparse.csv read below. `allow_shrink` is kept on the signature and
+    # CLI for a caller scripting both commands with one flag; it does
+    # nothing here now.
+    sparse_rows = read_csv(raw / "ItemSparse.csv")
 
     fork = load_fork_database(engine_dir)
-    sparse_rows = read_csv(raw / "ItemSparse.csv")
     # The same guard normalize runs. A build reaching this command with a
     # socketed item would otherwise get a loot table for gear the rest of
     # the repository cannot model.

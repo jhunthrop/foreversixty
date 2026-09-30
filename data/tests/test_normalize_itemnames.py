@@ -31,6 +31,7 @@ def _gear(id_: int, name: str) -> GearItem:
         slot="finger",
         quality=3,
         required_level=0,
+        required_level_source="none",
         item_level=1,
         armor=0,
         stats={},

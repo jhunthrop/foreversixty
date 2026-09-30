@@ -18,6 +18,7 @@ from pathlib import Path
 
 from pipeline import classic_sources
 from pipeline.csvio import read_csv
+from pipeline.hotfix_merge import merge_hotfix_table
 
 logger = logging.getLogger(__name__)
 
@@ -148,13 +149,25 @@ class AuditContext:
             return None
         return read_csv(path)
 
+    def _read_raw_csv_with_hotfixes(self, name: str) -> list[dict[str, str]] | None:
+        """`_read_raw_csv(name)`, merged with `raw/hotfixes/<name>.csv` when
+        present -- `pipeline.hotfix_merge.merge_hotfix_table` is the same
+        merge `normalize` itself applies, so an item this build only carries
+        as a hotfix (normalize-levels lane, 2026-09-29) is "in the client's
+        raw table" here too, not a false "not in raw" finding. `None`, not a
+        merge over nothing, when the shipped table itself is absent -- the
+        existing `raw_tables_available`/`skipped` handling stays unchanged."""
+        if not (self.raw_dir / name).exists():
+            return None
+        return merge_hotfix_table(self.raw_dir, name.removesuffix(".csv"))
+
     @functools.cached_property
     def raw_item_sparse(self) -> list[dict[str, str]] | None:
-        return self._read_raw_csv("ItemSparse.csv")
+        return self._read_raw_csv_with_hotfixes("ItemSparse.csv")
 
     @functools.cached_property
     def raw_item(self) -> list[dict[str, str]] | None:
-        return self._read_raw_csv("Item.csv")
+        return self._read_raw_csv_with_hotfixes("Item.csv")
 
     @functools.cached_property
     def raw_tables_available(self) -> bool:

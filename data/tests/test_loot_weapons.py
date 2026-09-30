@@ -39,6 +39,7 @@ def gear_item(item_id: int, **overrides) -> GearItem:
         slot="main_hand",
         quality=3,
         required_level=40,
+        required_level_source="client",
         item_level=50,
         armor=0,
         stats={},

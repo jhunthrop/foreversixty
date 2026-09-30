@@ -44,6 +44,22 @@ def load_supplement(build_dir: Path, client_ids: set[int]) -> list[WowheadItem] 
     return supplement(load_items(path), client_ids)
 
 
+def load_required_levels(build_dir: Path) -> dict[int, int]:
+    """Item id -> wowhead's own `required_level`, from the build's committed
+    gear-planner payload, or `{}` when the build has none.
+
+    Unlike `load_supplement`, every id the payload names is wanted here, not
+    only the ones the client's `ItemSparse` lacks entirely -- a client row
+    that states `RequiredLevel` 0 IS in `ItemSparse`, it just has no gate of
+    its own, which is exactly the row `resolve_required_level`'s `"wowhead"`
+    branch needs this lookup for (normalize-levels lane, 2026-09-29; same
+    reasoning as `pipeline.icons_fix.load_wowhead_icons`)."""
+    path = raw_path(build_dir)
+    if not path.exists():
+        return {}
+    return {item.id: item.required_level for item in load_items(path)}
+
+
 def merge_items(items: list[Item], picked: list[WowheadItem]) -> list[Item]:
     """items.json plus a flat `Item` for every picked supplement item."""
     logger.info("wowhead: merged %d supplement items into items.json", len(picked))
