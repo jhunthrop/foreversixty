@@ -422,7 +422,8 @@
           "spell_id": 1310703
         }
       ],
-      "background": "rogueassassination"
+      "background": "rogueassassination",
+      "icon": "ability_rogue_eviscerate"
     },
     {
       "id": 181,
@@ -827,7 +828,8 @@
           "spell_id": 13750
         }
       ],
-      "background": "roguecombat"
+      "background": "roguecombat",
+      "icon": "ability_backstab"
     },
     {
       "id": 183,
@@ -1270,7 +1272,8 @@
           "spell_id": 1310721
         }
       ],
-      "background": "roguesubtlety"
+      "background": "roguesubtlety",
+      "icon": "ability_stealth"
     }
   ]
 }

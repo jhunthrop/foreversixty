@@ -414,7 +414,8 @@
           "spell_id": 1310911
         }
       ],
-      "background": "paladinholy"
+      "background": "paladinholy",
+      "icon": "spell_holy_holybolt"
     },
     {
       "id": 383,
@@ -822,7 +823,8 @@
           "spell_id": 20925
         }
       ],
-      "background": "paladinprotection"
+      "background": "paladinprotection",
+      "icon": "spell_holy_devotionaura"
     },
     {
       "id": 381,
@@ -1227,7 +1229,8 @@
           "spell_id": 1310735
         }
       ],
-      "background": "paladincombat"
+      "background": "paladincombat",
+      "icon": "spell_holy_auraoflight"
     }
   ]
 }

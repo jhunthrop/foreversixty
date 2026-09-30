@@ -418,7 +418,8 @@
           "spell_id": 12294
         }
       ],
-      "background": "warriorarms"
+      "background": "warriorarms",
+      "icon": "ability_rogue_eviscerate"
     },
     {
       "id": 164,
@@ -888,7 +889,8 @@
           "spell_id": 23881
         }
       ],
-      "background": "warriorfury"
+      "background": "warriorfury",
+      "icon": "ability_warrior_innerrage"
     },
     {
       "id": 163,
@@ -1330,7 +1332,8 @@
           "spell_id": 23922
         }
       ],
-      "background": "warriorprotection"
+      "background": "warriorprotection",
+      "icon": "inv_shield_06"
     }
   ]
 }
