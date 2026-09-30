@@ -59,6 +59,16 @@ class Item(BaseModel):
     #: doc): True for a `stats_source == "classic-db"` row, real 1.12
     #: itemization the Forever client has not (yet) shipped as a hotfix.
     client_unconfirmed: bool = False
+    #: data-followups-4 lane, 2026-09-30: the flat catalogue's own copy of
+    #: `GearItem.superseded_by` (same doc) -- the Forever-new item id that
+    #: replaces this one as an actual reward, for a legacy client row
+    #: `pipeline.loot.supersede.superseded_pairs` found co-listed with its
+    #: own re-itemised copy in the same loot source. `None` for every
+    #: other row. The row stays in this file either way -- `items.json`'s
+    #: no-shrink gate (`pipeline.csvio.check_item_sparse_completeness`)
+    #: counts it as present, since a legacy id can still be equipped by
+    #: whoever already has one and needs its tooltip.
+    superseded_by: int | None = None
 
 
 class Spell(BaseModel):
@@ -255,6 +265,16 @@ class GearItem(BaseModel):
     #: caster's/hunter's ranged slot by this field, treating `None` the same
     #: as "unknown, exclude it" rather than guessing a type.
     weapon_type: str | None = None
+    #: data-followups-4 lane, 2026-09-30 (`pipeline.loot.supersede`'s own
+    #: doc): the Forever-new item id that actually replaces this row as a
+    #: reward, for a legacy client row this build's own loot data still
+    #: lists side by side with its re-itemised copy in the same source
+    #: (the ninth wow-player sweep's Grand Marshal's Stave/High Warlord's
+    #: War Staff finding). `None` for every other row, including the
+    #: replacement itself. `sim/cmd/leveling-bis` (Go) is meant to treat a
+    #: row with this set as never a pick candidate -- not yet wired there,
+    #: see the lane report.
+    superseded_by: int | None = None
 
 
 class ClassItems(BaseModel):
