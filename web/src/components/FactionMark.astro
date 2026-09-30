@@ -1,0 +1,35 @@
+---
+// web/src/components/FactionMark.astro
+// The game's own faction emblem (design/DESIGN-SYSTEM.md's Faction section, commit
+// fdbf63d6): the client's UI-PVP-Alliance lion shield / UI-PVP-Horde red disc from the unit
+// frame, upscaled 4x, transparency kept, "never boxed or framed" -- a plain <img>, no ring,
+// no background, unlike ClassCrest. Three sizes, the design system's own documented set:
+// "20px before the word, 16px in a row descriptor, 36px in a header." The upscaled PNGs
+// themselves live at web/public/icons/hd/faction/<faction>.png (scratchpad/faction/final,
+// copied in verbatim -- 256px, already transparent, never re-encoded here).
+import { factionMarkSrc, type Faction } from '../lib/faction-mark';
+
+export type FactionMarkSize = 16 | 20 | 36;
+
+interface Props {
+  faction: Faction;
+  size: FactionMarkSize;
+  class?: string;
+}
+
+const { faction, size, class: cls = '' } = Astro.props;
+const label = faction === 'alliance' ? 'Alliance' : 'Horde';
+---
+
+<img
+  src={factionMarkSrc(faction)}
+  alt=""
+  width={size}
+  height={size}
+  loading="lazy"
+  decoding="async"
+  class={`inline-block shrink-0 object-contain ${cls}`}
+  style={`width: ${size}px; height: ${size}px;`}
+  data-testid={`faction-mark-${faction}`}
+  data-faction-name={label}
+/>
