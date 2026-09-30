@@ -4,10 +4,16 @@ into its alliance/horde copies -- see `pipeline.loot.pvp_faction`'s own
 doc for the two-tier (classic-db vendor, then title) resolution this
 closes the third wow-player sweep's cross-wired-faction defect with."""
 
+import re
+from pathlib import Path
+
 from pipeline.classic_sources import ClassicDbSourceRecord
 from pipeline.loot.pvp_faction import (
+    ALLIANCE_TITLES,
+    HORDE_TITLES,
     TITLE_FACTION,
     PvpFactionStats,
+    rank_title,
     split_pvp_sources_by_faction,
     title_faction,
     vendor_npc_factions,
@@ -183,3 +189,150 @@ def test_split_pvp_sources_by_faction_leaves_every_other_kind_untouched():
     quest = next(s for s in result.sources if s.id == "quest")
     assert quest.items == [900]
     assert quest.faction is None
+
+
+def test_rank_title_reads_the_right_ladder_position():
+    # Blizzard's client RequiredPVPRank is the ladder position + 4:
+    # ladder 1 (Private/Scout) is rank 5, ladder 14 (Grand Marshal/High
+    # Warlord) is rank 18.
+    assert rank_title("alliance", 5) == "Private"
+    assert rank_title("alliance", 18) == "Grand Marshal"
+    assert rank_title("horde", 5) == "Scout"
+    assert rank_title("horde", 18) == "High Warlord"
+    assert rank_title("alliance", 8) == "Master Sergeant"
+
+
+def test_rank_title_is_none_outside_the_known_ladder():
+    assert rank_title("alliance", 4) is None
+    assert rank_title("horde", 19) is None
+
+
+def test_split_pvp_sources_by_faction_writes_the_rank_title_onto_each_split_source():
+    document = _pvp_document([16338, 16391], rank=11)
+    item_names = {16338: "Knight-Lieutenant's Pauldrons", 16391: "Blood Guard's Pauldrons"}
+    result, _ = split_pvp_sources_by_faction(
+        document, item_names, classic_sources=None, zone_rows=None
+    )
+    by_id = {s.id: s for s in result.sources}
+    assert by_id["pvp:rank-11:alliance"].title == "Knight-Lieutenant"
+    assert by_id["pvp:rank-11:horde"].title == "Blood Guard"
+
+
+def test_split_pvp_sources_by_faction_exposes_faction_on_a_matching_vendor_row():
+    """The fourth wow-player sweep's own item 1: Captain O'Neal's vendor
+    row sells the exact same rank-18 items pvp:rank-18 does -- once his
+    own npc_id resolves via the classic-db barracks map, his row must
+    carry that same faction so sim/cmd/leveling-bis's
+    vendorInheritsPvpRankGate can tell which of (possibly several) pvp
+    sources for a shared item id is really his own side's."""
+    document = LootFile(
+        sources=[
+            LootSource(id="pvp:rank-18", kind="pvp", name="Rank 18", rank=18, items=[18873]),
+            LootSource(
+                id="vendor:12782", kind="vendor", name="Captain O'Neal", npc_id=12782, items=[18873]
+            ),
+            LootSource(id="vendor:1", kind="vendor", name="Ordinary Vendor", npc_id=1, items=[2]),
+        ]
+    )
+    item_names = {18873: "Grand Marshal's Stave"}
+    classic_sources = {
+        18873: [
+            ClassicDbSourceRecord(kind="vendor", npc_id=12782, name="Captain O'Neal", map_id=449)
+        ]
+    }
+    result, _ = split_pvp_sources_by_faction(document, item_names, classic_sources, ZONE_ROWS)
+    by_id = {s.id: s for s in result.sources}
+    assert by_id["vendor:12782"].faction == "alliance"
+    # An ordinary vendor never resolved as a rank quartermaster keeps no
+    # faction at all -- this must not blanket-tag every vendor row.
+    assert by_id["vendor:1"].faction is None
+
+
+_WEB_COPY_PATH = (
+    Path(__file__).resolve().parents[2] / "web" / "src" / "lib" / "bis" / "copy.ts"
+)
+
+
+def _read_web_title_tuple(name: str) -> tuple[str, ...]:
+    text = _WEB_COPY_PATH.read_text()
+    match = re.search(rf"{name}[^=]*=\s*\[(.*?)\]", text, re.DOTALL)
+    assert match is not None, f"{name} not found in {_WEB_COPY_PATH}"
+    titles = re.findall(r"'([^']+)'", match.group(1))
+    return tuple(titles)
+
+
+def test_split_pvp_sources_by_faction_backfills_a_vendor_item_missing_from_the_pvp_source():
+    """The fourth wow-player sweep's own regen-check finding: Captain
+    O'Neal sells Grand Marshal's Polearm (a Forever-exclusive rank-18
+    weapon type vanilla Classic's own pvp:rank-18 item list never
+    carried), which left it with no pvp source at all for Go's
+    vendorInheritsPvpRankGate to inherit from -- an Alliance-only weapon
+    an Alliance vendor was already correctly gated to, but with no Rank
+    to cap it out of the default pick and no Side reaching Go at all.
+    The backfill must add it to pvp:rank-18:alliance using the SAME
+    unanimous-rank rule vendor_npc_factions already uses for faction."""
+    document = LootFile(
+        sources=[
+            LootSource(id="pvp:rank-18", kind="pvp", name="Rank 18", rank=18, items=[18873]),
+            LootSource(
+                id="vendor:12782",
+                kind="vendor",
+                name="Captain O'Neal",
+                npc_id=12782,
+                items=[18873, 234570],
+            ),
+        ]
+    )
+    item_names = {18873: "Grand Marshal's Stave"}
+    classic_sources = {
+        18873: [
+            ClassicDbSourceRecord(kind="vendor", npc_id=12782, name="Captain O'Neal", map_id=449)
+        ]
+    }
+    result, stats = split_pvp_sources_by_faction(document, item_names, classic_sources, ZONE_ROWS)
+    by_id = {s.id: s for s in result.sources}
+    assert sorted(by_id["pvp:rank-18:alliance"].items) == [18873, 234570]
+    assert by_id["vendor:12782"].faction == "alliance"
+    assert stats.backfilled_from_vendor == 1
+
+
+def test_split_pvp_sources_by_faction_never_backfills_when_the_vendors_own_items_span_ranks():
+    """A vendor whose OWN classic items resolve to more than one rank
+    (a fixture error, or an npc sharing an id across two real
+    quartermasters) settles nothing for its unresolved item, same
+    "left out, never guessed at" rule as everywhere else in this
+    module."""
+    document = LootFile(
+        sources=[
+            LootSource(id="pvp:rank-18", kind="pvp", name="Rank 18", rank=18, items=[18873]),
+            LootSource(id="pvp:rank-11", kind="pvp", name="Rank 11", rank=11, items=[16338]),
+            LootSource(
+                id="vendor:12782",
+                kind="vendor",
+                name="Confused Quartermaster",
+                npc_id=12782,
+                items=[18873, 16338, 999999],
+            ),
+        ]
+    )
+    item_names = {18873: "Grand Marshal's Stave", 16338: "Knight-Lieutenant's Pauldrons"}
+    confused_vendor_record = ClassicDbSourceRecord(
+        kind="vendor", npc_id=12782, name="Confused Quartermaster", map_id=449
+    )
+    classic_sources = {18873: [confused_vendor_record], 16338: [confused_vendor_record]}
+    result, stats = split_pvp_sources_by_faction(document, item_names, classic_sources, ZONE_ROWS)
+    assert stats.backfilled_from_vendor == 0
+    for source in result.sources:
+        if source.kind == "pvp":
+            assert 999999 not in (source.items or [])
+
+
+def test_rank_title_tables_stay_in_sync_with_the_web_copy():
+    """`pipeline.loot.pvp_faction`'s own `ALLIANCE_TITLES`/`HORDE_TITLES`
+    is the primary source (this module's doc); `web/src/lib/bis/copy.ts`
+    mirrors it for the sources this pipeline has not reached yet
+    (module doc, "keep both in sync with a test that compares them").
+    A change to one ladder without the other fails here instead of
+    silently drifting the two apart."""
+    assert _read_web_title_tuple("ALLIANCE_PVP_TITLES") == ALLIANCE_TITLES
+    assert _read_web_title_tuple("HORDE_PVP_TITLES") == HORDE_TITLES
