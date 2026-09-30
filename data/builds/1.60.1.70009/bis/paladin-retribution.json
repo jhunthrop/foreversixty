@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T15:44:10Z",
+  "generated_at": "2026-09-30T16:10:27Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -532,8 +532,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.36411139,
-      "verify_run_seconds": 1.123272376,
+      "weights_run_seconds": 1.054305725,
+      "verify_run_seconds": 0.838046186,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1134,8 +1134,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.36411139,
-      "verify_run_seconds": 1.056235528,
+      "weights_run_seconds": 1.054305725,
+      "verify_run_seconds": 0.81435349,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1764,8 +1764,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.391900858,
-      "verify_run_seconds": 1.403045865,
+      "weights_run_seconds": 1.054366217,
+      "verify_run_seconds": 1.037790649,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2400,8 +2400,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.391900858,
-      "verify_run_seconds": 1.412117103,
+      "weights_run_seconds": 1.054366217,
+      "verify_run_seconds": 1.081900086,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2572,7 +2572,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 7731,
@@ -2919,7 +2918,6 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 19515,
@@ -3033,8 +3031,8 @@
         "finger1: Assault Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.429547029,
-      "verify_run_seconds": 1.292899295,
+      "weights_run_seconds": 1.07081231,
+      "verify_run_seconds": 1.007855498,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3205,7 +3203,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 4430,
@@ -3552,7 +3549,6 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 19512,
@@ -3666,8 +3662,8 @@
         "finger1: Assault Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.429547029,
-      "verify_run_seconds": 1.31286482,
+      "weights_run_seconds": 1.07081231,
+      "verify_run_seconds": 1.037828027,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3799,36 +3795,33 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 20521,
-          "item_name": "Fury Visor",
-          "source": "Voodoo Feathers",
-          "source_kind": "quest",
-          "sim_dps": 104.33553226747908,
+          "item_id": 9479,
+          "item_name": "Embrace of the Lycan",
+          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+          "source_kind": "dungeon",
+          "score": 47.99999999999353,
           "verified": true,
-          "swap_note": "beat the scored pick Embrace of the Lycan (id 9479) in the sim: +1.3 DPS (104.3 vs 103.0 set DPS)",
-          "dps_delta": 1.316846346500725,
-          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 19984,
-              "item_name": "Ebon Mask",
-              "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": -0.01673471596751527
+              "item_id": 220804,
+              "item_name": "Knight-Lieutenant's Plate Helm",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -0.5400335857792204
+            },
+            {
+              "item_id": 14849,
+              "item_name": "Sunscale Helmet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.6278893308713404
             },
             {
               "item_id": 17767,
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.033728399939940854
-            },
-            {
-              "item_id": 9479,
-              "item_name": "Embrace of the Lycan",
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -1.316846346500725,
+              "dps_delta": -0.8874048063859021,
               "verified": true
             }
           ]
@@ -3841,7 +3834,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 13089,
@@ -3855,7 +3847,7 @@
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.35995051080217877,
+              "dps_delta": -0.3640071844936017,
               "verified": true
             },
             {
@@ -3961,7 +3953,7 @@
               "item_name": "Valorous Chestguard",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.1214376942799618,
+              "dps_delta": -1.029777160176451,
               "verified": true
             }
           ]
@@ -4000,7 +3992,7 @@
               "item_name": "Arena Bands",
               "source_kind": "world",
               "source": "Arena Treasure Chest",
-              "dps_delta": -0.9595294906799978,
+              "dps_delta": -0.7418311186189186,
               "verified": true
             }
           ]
@@ -4033,7 +4025,7 @@
               "item_name": "Officer's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.7508106292034995,
+              "dps_delta": -0.7798342475141027,
               "verified": true
             }
           ]
@@ -4046,7 +4038,6 @@
           "source_kind": "dungeon",
           "score": 45.99999999999353,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 13134,
@@ -4060,7 +4051,7 @@
               "item_name": "Atal'alarion's Tusk Ring",
               "source_kind": "dungeon",
               "source": "The Temple of Atal'Hakkar: Atal'alarion",
-              "dps_delta": -0.5999175180035792,
+              "dps_delta": -0.6066786408226932,
               "verified": true
             },
             {
@@ -4086,7 +4077,7 @@
               "item_name": "Scarlet Leggings",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.11998350360073573,
+              "dps_delta": -0.12133572816453864,
               "verified": true
             },
             {
@@ -4133,7 +4124,7 @@
               "item_name": "Prowler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.19306217896897238,
+              "dps_delta": -0.22181772082235796,
               "verified": true
             }
           ]
@@ -4146,8 +4137,8 @@
           "source_kind": "dungeon",
           "score": 23.894707944740873,
           "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +1.9 DPS over it",
-          "dps_delta": 1.9475353344240318,
+          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +2.2 DPS (101.3 vs 99.0 set DPS)",
+          "dps_delta": 2.2493456285809685,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4200,28 +4191,15 @@
               "item_name": "Assault Band",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6672837095271831,
+              "dps_delta": -0.6059585683299957,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 20130,
-          "item_name": "Diamond Flask",
-          "source": "Voodoo Feathers",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -1.7564088904619979,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
@@ -4234,6 +4212,7 @@
           "item_name": "Nightblade",
           "source": "World drop",
           "source_kind": "world_drop",
+          "sim_dps": 101.26227703051636,
           "verified": true,
           "alternatives": [
             {
@@ -4255,7 +4234,7 @@
               "item_name": "Thorium Greatmace",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -4.040171320667227,
+              "dps_delta": -3.5346503588414606,
               "verified": true
             }
           ]
@@ -4272,8 +4251,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 104.33553226747908,
-      "no_source_count": 713,
+      "set_dps": 101.26227703051636,
+      "no_source_count": 711,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -4292,7 +4271,7 @@
         "4798 Heavy Runed Cloak"
       ],
       "new_at_band": [
-        "head: Fury Visor",
+        "head: Embrace of the Lycan",
         "shoulder: Officer's Pauldrons",
         "back: Bloodlust Cape",
         "chest: Warforged Chestplate",
@@ -4303,51 +4282,50 @@
         "feet: Battlechaser's Greaves",
         "finger1: Blackstone Ring",
         "finger2: Protector's Band",
-        "trinket1: Diamond Flask",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.492246299,
-      "verify_run_seconds": 1.520205094,
+      "weights_run_seconds": 1.160078377,
+      "verify_run_seconds": 1.000130379,
       "coverage": {
         "back": {
-          "eligible": 314,
-          "sourced": 268
+          "eligible": 313,
+          "sourced": 267
         },
         "chest": {
-          "eligible": 551,
-          "sourced": 491
+          "eligible": 549,
+          "sourced": 489
         },
         "feet": {
-          "eligible": 458,
-          "sourced": 397
+          "eligible": 457,
+          "sourced": 396
         },
         "finger1": {
-          "eligible": 152,
-          "sourced": 99
+          "eligible": 151,
+          "sourced": 98
         },
         "finger2": {
-          "eligible": 152,
-          "sourced": 99
+          "eligible": 151,
+          "sourced": 98
         },
         "hands": {
-          "eligible": 463,
+          "eligible": 462,
           "sourced": 420
         },
         "head": {
-          "eligible": 318,
-          "sourced": 283
+          "eligible": 316,
+          "sourced": 281
         },
         "legs": {
           "eligible": 432,
           "sourced": 377
         },
         "main_hand": {
-          "eligible": 440,
-          "sourced": 339
+          "eligible": 439,
+          "sourced": 338
         },
         "neck": {
-          "eligible": 77,
-          "sourced": 45
+          "eligible": 76,
+          "sourced": 44
         },
         "off_hand": {
           "eligible": 279,
@@ -4358,16 +4336,16 @@
           "sourced": 6
         },
         "shoulder": {
-          "eligible": 309,
-          "sourced": 273
+          "eligible": 308,
+          "sourced": 272
         },
         "trinket1": {
-          "eligible": 79,
-          "sourced": 50
+          "eligible": 73,
+          "sourced": 45
         },
         "trinket2": {
-          "eligible": 79,
-          "sourced": 50
+          "eligible": 73,
+          "sourced": 45
         },
         "waist": {
           "eligible": 428,
@@ -4439,37 +4417,34 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 20521,
-          "item_name": "Fury Visor",
-          "source": "Voodoo Feathers",
-          "source_kind": "quest",
-          "sim_dps": 102.59921084754933,
+          "item_id": 9479,
+          "item_name": "Embrace of the Lycan",
+          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+          "source_kind": "dungeon",
+          "score": 47.99999999999353,
           "verified": true,
-          "swap_note": "beat the scored pick Embrace of the Lycan (id 9479) in the sim: +2.0 DPS (102.6 vs 100.6 set DPS)",
-          "dps_delta": 2.026107086521634,
-          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 19984,
-              "item_name": "Ebon Mask",
-              "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": -0.01673471596751527
-            },
             {
               "item_id": 17767,
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.033728399939940854
+              "dps_delta": -0.359276190149572,
+              "verified": true
             },
             {
-              "item_id": 9479,
-              "item_name": "Embrace of the Lycan",
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -2.026107086521634,
-              "verified": true
+              "item_id": 220803,
+              "item_name": "Blood Guard's Plate Helm",
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "dps_delta": -0.5400335857792204
+            },
+            {
+              "item_id": 14849,
+              "item_name": "Sunscale Helmet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.6278893308713404
             }
           ]
         },
@@ -4481,7 +4456,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 19159,
@@ -4587,7 +4561,7 @@
               "item_name": "Valorous Chestguard",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.05819328104942656,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -4640,7 +4614,7 @@
               "item_name": "Arena Bands",
               "source_kind": "world",
               "source": "Arena Treasure Chest",
-              "dps_delta": -0.6418126696287487,
+              "dps_delta": -0.6606213438076054,
               "verified": true
             }
           ]
@@ -4673,7 +4647,7 @@
               "item_name": "Officer's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.7089650392955207,
+              "dps_delta": -0.6902176328160436,
               "verified": true
             }
           ]
@@ -4686,7 +4660,6 @@
           "source_kind": "dungeon",
           "score": 45.99999999999353,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 13134,
@@ -4700,7 +4673,7 @@
               "item_name": "Atal'alarion's Tusk Ring",
               "source_kind": "dungeon",
               "source": "The Temple of Atal'Hakkar: Atal'alarion",
-              "dps_delta": -0.5313870061452945,
+              "dps_delta": -0.537612483372385,
               "verified": true
             },
             {
@@ -4726,7 +4699,7 @@
               "item_name": "Scarlet Leggings",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.10627740122905038,
+              "dps_delta": -0.10752249667446279,
               "verified": true
             },
             {
@@ -4773,7 +4746,7 @@
               "item_name": "Prowler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.2121603994469723,
+              "dps_delta": -0.1833936341778184,
               "verified": true
             }
           ]
@@ -4786,8 +4759,8 @@
           "source_kind": "quest",
           "score": 24,
           "verified": true,
-          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +1.3 DPS over it",
-          "dps_delta": 1.275328814748704,
+          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +1.3 DPS (99.1 vs 97.8 set DPS)",
+          "dps_delta": 1.2902699600936955,
           "alternatives": [
             {
               "item_id": 19511,
@@ -4840,7 +4813,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.6599183212890694,
+              "dps_delta": -0.7723017537152543,
               "verified": true
             }
           ]
@@ -4851,36 +4824,15 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
+          "sim_dps": 99.07979218501958,
           "verified": true,
-          "swap_note": "confirmed by the sim against Diamond Flask (id 20130): kept the pick, +3.4 DPS over it",
-          "dps_delta": 3.399775755636483,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -1.7711795446603287
-            }
-          ]
+          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +3.1 DPS (99.1 vs 96.0 set DPS)",
+          "dps_delta": 3.100081748863559
         },
         {
           "slot": "trinket2",
-          "item_id": 20130,
-          "item_name": "Diamond Flask",
-          "source": "Voodoo Feathers",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -1.4933115760081108,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4888,6 +4840,7 @@
           "item_name": "Thorium Greatmace",
           "source": "Blacksmithing",
           "source_kind": "crafted",
+          "sim_dps": 99.07979218501958,
           "verified": true,
           "alternatives": [
             {
@@ -4902,7 +4855,7 @@
               "item_name": "Blight",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.1268256811990796,
+              "dps_delta": -1.244175437978143,
               "verified": true
             },
             {
@@ -4926,7 +4879,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 102.59921084754933,
+      "set_dps": 99.07979218501958,
       "no_source_count": 715,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -4946,7 +4899,7 @@
         "4988 Burning Obsidian Band"
       ],
       "new_at_band": [
-        "head: Fury Visor",
+        "head: Embrace of the Lycan",
         "shoulder: Officer's Pauldrons",
         "back: Bloodlust Cape",
         "chest: Warforged Chestplate",
@@ -4958,51 +4911,50 @@
         "finger1: White Bone Band",
         "finger2: Blackstone Ring",
         "trinket1: Rune of the Guard Captain",
-        "trinket2: Diamond Flask",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.492246299,
-      "verify_run_seconds": 1.4605782760000001,
+      "weights_run_seconds": 1.160078377,
+      "verify_run_seconds": 0.973059265,
       "coverage": {
         "back": {
-          "eligible": 319,
-          "sourced": 275
+          "eligible": 318,
+          "sourced": 274
         },
         "chest": {
-          "eligible": 544,
-          "sourced": 479
+          "eligible": 542,
+          "sourced": 477
         },
         "feet": {
-          "eligible": 459,
-          "sourced": 392
+          "eligible": 458,
+          "sourced": 391
         },
         "finger1": {
-          "eligible": 153,
-          "sourced": 101
+          "eligible": 152,
+          "sourced": 100
         },
         "finger2": {
-          "eligible": 153,
-          "sourced": 101
+          "eligible": 152,
+          "sourced": 100
         },
         "hands": {
-          "eligible": 462,
-          "sourced": 415
+          "eligible": 461,
+          "sourced": 414
         },
         "head": {
-          "eligible": 317,
-          "sourced": 280
+          "eligible": 315,
+          "sourced": 278
         },
         "legs": {
           "eligible": 427,
           "sourced": 372
         },
         "main_hand": {
-          "eligible": 435,
-          "sourced": 341
+          "eligible": 434,
+          "sourced": 340
         },
         "neck": {
-          "eligible": 80,
-          "sourced": 48
+          "eligible": 79,
+          "sourced": 47
         },
         "off_hand": {
           "eligible": 275,
@@ -5013,16 +4965,16 @@
           "sourced": 6
         },
         "shoulder": {
-          "eligible": 308,
-          "sourced": 271
+          "eligible": 307,
+          "sourced": 270
         },
         "trinket1": {
-          "eligible": 79,
-          "sourced": 48
+          "eligible": 73,
+          "sourced": 42
         },
         "trinket2": {
-          "eligible": 79,
-          "sourced": 48
+          "eligible": 73,
+          "sourced": 42
         },
         "waist": {
           "eligible": 429,
@@ -5133,7 +5085,6 @@
           "source_kind": "dungeon",
           "score": 32,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 22659,
@@ -5246,7 +5197,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.6291266404312212
+              "dps_delta": -1.629126640431222
             },
             {
               "item_id": 23087,
@@ -5595,7 +5546,7 @@
         }
       ],
       "set_dps": 188.27910365856155,
-      "no_source_count": 1604,
+      "no_source_count": 1594,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5630,76 +5581,76 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.5299017689999999,
-      "verify_run_seconds": 1.423210379,
+      "weights_run_seconds": 1.124395862,
+      "verify_run_seconds": 1.055387502,
       "coverage": {
         "back": {
-          "eligible": 445,
-          "sourced": 342
+          "eligible": 444,
+          "sourced": 341
         },
         "chest": {
-          "eligible": 794,
-          "sourced": 668
+          "eligible": 785,
+          "sourced": 666
         },
         "feet": {
-          "eligible": 699,
-          "sourced": 586
+          "eligible": 683,
+          "sourced": 577
         },
         "finger1": {
-          "eligible": 366,
-          "sourced": 202
+          "eligible": 365,
+          "sourced": 201
         },
         "finger2": {
-          "eligible": 366,
-          "sourced": 202
+          "eligible": 365,
+          "sourced": 201
         },
         "hands": {
-          "eligible": 711,
-          "sourced": 590
+          "eligible": 695,
+          "sourced": 582
         },
         "head": {
-          "eligible": 518,
-          "sourced": 424
+          "eligible": 508,
+          "sourced": 421
         },
         "legs": {
-          "eligible": 699,
-          "sourced": 568
+          "eligible": 686,
+          "sourced": 562
         },
         "main_hand": {
-          "eligible": 685,
-          "sourced": 476
+          "eligible": 684,
+          "sourced": 475
         },
         "neck": {
-          "eligible": 193,
-          "sourced": 98
+          "eligible": 192,
+          "sourced": 97
         },
         "off_hand": {
-          "eligible": 420,
-          "sourced": 313
+          "eligible": 419,
+          "sourced": 312
         },
         "ranged": {
           "eligible": 17,
           "sourced": 13
         },
         "shoulder": {
-          "eligible": 536,
-          "sourced": 434
+          "eligible": 528,
+          "sourced": 433
         },
         "trinket1": {
-          "eligible": 183,
-          "sourced": 110
+          "eligible": 177,
+          "sourced": 105
         },
         "trinket2": {
-          "eligible": 183,
-          "sourced": 110
+          "eligible": 177,
+          "sourced": 105
         },
         "waist": {
-          "eligible": 638,
-          "sourced": 536
+          "eligible": 630,
+          "sourced": 535
         },
         "wrist": {
-          "eligible": 537,
-          "sourced": 429
+          "eligible": 529,
+          "sourced": 428
         }
       },
       "reference_dps_per_point": 0.04371480512540426,
@@ -5802,7 +5753,6 @@
           "source_kind": "dungeon",
           "score": 32,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 22659,
@@ -5915,7 +5865,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.6291266404312212
+              "dps_delta": -1.629126640431222
             },
             {
               "item_id": 23087,
@@ -6265,7 +6215,7 @@
         }
       ],
       "set_dps": 183.49693361061247,
-      "no_source_count": 1643,
+      "no_source_count": 1635,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6300,76 +6250,76 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.5299017689999999,
-      "verify_run_seconds": 1.397217373,
+      "weights_run_seconds": 1.124395862,
+      "verify_run_seconds": 1.050463743,
       "coverage": {
         "back": {
-          "eligible": 450,
-          "sourced": 349
+          "eligible": 449,
+          "sourced": 348
         },
         "chest": {
-          "eligible": 789,
-          "sourced": 651
+          "eligible": 779,
+          "sourced": 649
         },
         "feet": {
-          "eligible": 696,
-          "sourced": 571
+          "eligible": 678,
+          "sourced": 561
         },
         "finger1": {
-          "eligible": 368,
-          "sourced": 207
+          "eligible": 367,
+          "sourced": 206
         },
         "finger2": {
-          "eligible": 368,
-          "sourced": 207
+          "eligible": 367,
+          "sourced": 206
         },
         "hands": {
-          "eligible": 712,
-          "sourced": 579
+          "eligible": 694,
+          "sourced": 569
         },
         "head": {
-          "eligible": 517,
-          "sourced": 414
+          "eligible": 505,
+          "sourced": 410
         },
         "legs": {
-          "eligible": 692,
-          "sourced": 554
+          "eligible": 677,
+          "sourced": 547
         },
         "main_hand": {
-          "eligible": 680,
-          "sourced": 479
+          "eligible": 679,
+          "sourced": 478
         },
         "neck": {
-          "eligible": 193,
-          "sourced": 98
+          "eligible": 192,
+          "sourced": 97
         },
         "off_hand": {
-          "eligible": 418,
-          "sourced": 315
+          "eligible": 417,
+          "sourced": 314
         },
         "ranged": {
           "eligible": 17,
           "sourced": 13
         },
         "shoulder": {
-          "eligible": 534,
-          "sourced": 424
+          "eligible": 525,
+          "sourced": 423
         },
         "trinket1": {
-          "eligible": 181,
-          "sourced": 106
+          "eligible": 175,
+          "sourced": 100
         },
         "trinket2": {
-          "eligible": 181,
-          "sourced": 106
+          "eligible": 175,
+          "sourced": 100
         },
         "waist": {
-          "eligible": 638,
-          "sourced": 532
+          "eligible": 629,
+          "sourced": 531
         },
         "wrist": {
-          "eligible": 541,
-          "sourced": 435
+          "eligible": 532,
+          "sourced": 434
         }
       },
       "reference_dps_per_point": 0.04371480512540426,
