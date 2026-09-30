@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T06:09:09Z",
+  "engine_version": "24405233d",
+  "generated_at": "2026-09-30T07:08:40Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -32,8 +32,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.4673434590524397,
-          "error": 0.06941503105022163,
+          "weight": 1.3190714584798402,
+          "error": 0.012877203911948505,
           "insignificant": false
         },
         {
@@ -981,7 +981,7 @@
         }
       ],
       "set_dps": 35.935055653720404,
-      "no_source_count": 128,
+      "no_source_count": 126,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -989,7 +989,6 @@
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
         "6478 Rat Stompers",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14145 Cursed Felblade",
         "14148 Crystalline Cuffs",
@@ -997,7 +996,8 @@
         "14150 Robe of Evocation",
         "14151 Chanting Blade",
         "14389 Durability Shoulderpads",
-        "18852 Insignia of the Horde"
+        "18852 Insignia of the Horde",
+        "20434 Lorekeeper's Staff"
       ],
       "new_at_band": [
         "head: Pristine Circlet",
@@ -1018,8 +1018,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.802864967,
-      "verify_run_seconds": 0.79832268,
+      "weights_run_seconds": 1.472797313,
+      "verify_run_seconds": 1.293117725,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1051,7 +1051,7 @@
         },
         "legs": {
           "eligible": 51,
-          "sourced": 45
+          "sourced": 46
         },
         "main_hand": {
           "eligible": 142,
@@ -1075,11 +1075,11 @@
         },
         "trinket1": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "trinket2": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "waist": {
           "eligible": 39,
@@ -1121,8 +1121,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.4673434590524397,
-          "error": 0.06941503105022163,
+          "weight": 1.3190714584798402,
+          "error": 0.012877203911948505,
           "insignificant": false
         },
         {
@@ -2085,13 +2085,12 @@
         }
       ],
       "set_dps": 35.09352077425246,
-      "no_source_count": 124,
+      "no_source_count": 122,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
         "3738 Brewing Rod",
         "6478 Rat Stompers",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14389 Durability Shoulderpads",
         "15401 Welldrip Gloves",
@@ -2100,8 +2099,9 @@
         "20430 Legionnaire's Sword",
         "20441 Scout's Blade",
         "209615 Insignia of the Alliance",
-        "209620 Insignia of the Horde",
-        "241089 Scarlet Dagger"
+        "241089 Scarlet Dagger",
+        "254779 A'sharahm, the Roiling Tempest",
+        "263007 Skyseer's Vest"
       ],
       "new_at_band": [
         "head: Pristine Circlet",
@@ -2122,8 +2122,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.802864967,
-      "verify_run_seconds": 0.780834494,
+      "weights_run_seconds": 1.472797313,
+      "verify_run_seconds": 1.320694324,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2155,7 +2155,7 @@
         },
         "legs": {
           "eligible": 51,
-          "sourced": 45
+          "sourced": 46
         },
         "main_hand": {
           "eligible": 145,
@@ -2179,11 +2179,11 @@
         },
         "trinket1": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "trinket2": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "waist": {
           "eligible": 39,
@@ -2225,8 +2225,8 @@
         },
         {
           "stat": "hit",
-          "weight": 2.738356577008971,
-          "error": 0.1652980604664333,
+          "weight": 2.62532831576602,
+          "error": 0.026864791100973378,
           "insignificant": false
         },
         {
@@ -2778,7 +2778,7 @@
         }
       ],
       "set_dps": 54.690721495498565,
-      "no_source_count": 218,
+      "no_source_count": 216,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2790,11 +2790,11 @@
         "5971 Feathered Cape",
         "6478 Rat Stompers",
         "9362 Brilliant Gold Ring",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14145 Cursed Felblade",
         "14148 Crystalline Cuffs",
-        "14149 Subterranean Cape"
+        "14149 Subterranean Cape",
+        "14150 Robe of Evocation"
       ],
       "new_at_band": [
         "head: Holy Shroud",
@@ -2813,8 +2813,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.85990466,
-      "verify_run_seconds": 0.74836895,
+      "weights_run_seconds": 1.430080472,
+      "verify_run_seconds": 1.236600819,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2846,7 +2846,7 @@
         },
         "legs": {
           "eligible": 81,
-          "sourced": 74
+          "sourced": 75
         },
         "main_hand": {
           "eligible": 225,
@@ -2870,11 +2870,11 @@
         },
         "trinket1": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "trinket2": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "waist": {
           "eligible": 66,
@@ -2916,8 +2916,8 @@
         },
         {
           "stat": "hit",
-          "weight": 2.738356577008971,
-          "error": 0.1652980604664333,
+          "weight": 2.62532831576602,
+          "error": 0.026864791100973378,
           "insignificant": false
         },
         {
@@ -3444,7 +3444,7 @@
         }
       ],
       "set_dps": 52.777595854781374,
-      "no_source_count": 214,
+      "no_source_count": 212,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3455,12 +3455,12 @@
         "5971 Feathered Cape",
         "6478 Rat Stompers",
         "9362 Brilliant Gold Ring",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14389 Durability Shoulderpads",
         "15401 Welldrip Gloves",
         "16315 Sergeant Major's Cape",
-        "18440 Sergeant's Cape"
+        "18440 Sergeant's Cape",
+        "18442 Master Sergeant's Insignia"
       ],
       "new_at_band": [
         "head: Holy Shroud",
@@ -3479,8 +3479,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.85990466,
-      "verify_run_seconds": 0.702567399,
+      "weights_run_seconds": 1.430080472,
+      "verify_run_seconds": 1.2044233,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3512,7 +3512,7 @@
         },
         "legs": {
           "eligible": 79,
-          "sourced": 72
+          "sourced": 73
         },
         "main_hand": {
           "eligible": 225,
@@ -3536,11 +3536,11 @@
         },
         "trinket1": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "trinket2": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "waist": {
           "eligible": 68,
@@ -3582,8 +3582,8 @@
         },
         {
           "stat": "hit",
-          "weight": 3.1380821331637425,
-          "error": 0.2193247092876308,
+          "weight": 2.891939847345539,
+          "error": 0.03136678705577739,
           "insignificant": false
         },
         {
@@ -4048,7 +4048,7 @@
           "item_name": "Staff of Dar'Orahil",
           "source": "The Completed Orb of Dar'Orahil",
           "source_kind": "quest",
-          "score": 38.72119299350516,
+          "score": 36.25977013532313,
           "verified": true,
           "alternatives": [
             {
@@ -4065,14 +4065,14 @@
               "item_name": "Staff of Noh'Orahil",
               "source_kind": "quest",
               "source": "The Completed Orb of Noh'Orahil",
-              "dps_delta": -2.652373632925683
+              "dps_delta": -2.3842962325970642
             },
             {
               "item_id": 7757,
               "item_name": "Windweaver Staff",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -3.127024596536896
+              "dps_delta": -2.8589471962082773
             }
           ]
         },
@@ -4117,7 +4117,7 @@
         }
       ],
       "set_dps": 105.00241304303782,
-      "no_source_count": 295,
+      "no_source_count": 293,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4152,8 +4152,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.794446172,
-      "verify_run_seconds": 0.747479648,
+      "weights_run_seconds": 1.210164234,
+      "verify_run_seconds": 1.082825544,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4185,7 +4185,7 @@
         },
         "legs": {
           "eligible": 106,
-          "sourced": 95
+          "sourced": 96
         },
         "main_hand": {
           "eligible": 283,
@@ -4209,11 +4209,11 @@
         },
         "trinket1": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "trinket2": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "waist": {
           "eligible": 98,
@@ -4255,8 +4255,8 @@
         },
         {
           "stat": "hit",
-          "weight": 3.1380821331637425,
-          "error": 0.2193247092876308,
+          "weight": 2.891939847345539,
+          "error": 0.03136678705577739,
           "insignificant": false
         },
         {
@@ -4716,7 +4716,7 @@
           "item_name": "Staff of Dar'Orahil",
           "source": "The Completed Orb of Dar'Orahil",
           "source_kind": "quest",
-          "score": 38.72119299350516,
+          "score": 36.25977013532313,
           "verified": true,
           "alternatives": [
             {
@@ -4733,14 +4733,14 @@
               "item_name": "Staff of Noh'Orahil",
               "source_kind": "quest",
               "source": "The Completed Orb of Noh'Orahil",
-              "dps_delta": -2.652373632925683
+              "dps_delta": -2.3842962325970642
             },
             {
               "item_id": 7757,
               "item_name": "Windweaver Staff",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -3.127024596536896
+              "dps_delta": -2.8589471962082773
             }
           ]
         },
@@ -4785,7 +4785,7 @@
         }
       ],
       "set_dps": 102.6452975618906,
-      "no_source_count": 291,
+      "no_source_count": 289,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4800,8 +4800,8 @@
         "6478 Rat Stompers",
         "9362 Brilliant Gold Ring",
         "9718 Reforged Blade of Heroes",
-        "10047 Simple Kilt",
-        "10049 Diabolist's Blade"
+        "10049 Diabolist's Blade",
+        "14389 Durability Shoulderpads"
       ],
       "new_at_band": [
         "head: Spellpower Goggles Xtreme",
@@ -4819,8 +4819,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.794446172,
-      "verify_run_seconds": 0.71559977,
+      "weights_run_seconds": 1.210164234,
+      "verify_run_seconds": 1.097460321,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4852,7 +4852,7 @@
         },
         "legs": {
           "eligible": 105,
-          "sourced": 94
+          "sourced": 95
         },
         "main_hand": {
           "eligible": 284,
@@ -4876,11 +4876,11 @@
         },
         "trinket1": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "trinket2": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "waist": {
           "eligible": 99,
@@ -4922,8 +4922,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.7026914953886576,
-          "error": 0.1336280559441154,
+          "weight": 1.4932545461334994,
+          "error": 0.020884951111752818,
           "insignificant": false
         },
         {
@@ -4980,9 +4980,9 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.2130649456570666,
+              "dps_delta": -2.697248886923063,
               "verified": true,
-              "sim_dps": 128.46627347909265
+              "sim_dps": 132.02293641393672
             }
           ]
         },
@@ -5000,9 +5000,9 @@
               "item_name": "Mindburst Medallion",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.6000498656296713,
+              "dps_delta": -0.35245733211004904,
               "verified": true,
-              "sim_dps": 131.07928855912004
+              "sim_dps": 134.36772796874973
             },
             {
               "item_id": 1714,
@@ -5036,7 +5036,7 @@
               "source": "Maraudon: Rotgrip",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 132.489923329024
+              "sim_dps": 135.7191237639143
             },
             {
               "item_id": 10027,
@@ -5075,9 +5075,9 @@
               "item_name": "Nightfall Drape",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Morphaz",
-              "dps_delta": -1.9104157168399354,
+              "dps_delta": -1.6124834342520273,
               "verified": true,
-              "sim_dps": 129.76892270790978
+              "sim_dps": 133.10770186660775
             },
             {
               "item_id": 4327,
@@ -5102,9 +5102,9 @@
               "item_name": "Elemental Raiment",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.13800138017245445,
+              "dps_delta": -0.6784115985414019,
               "verified": true,
-              "sim_dps": 131.54133704457726
+              "sim_dps": 134.04177370231838
             },
             {
               "item_id": 220886,
@@ -5142,9 +5142,9 @@
               "item_name": "Spidertank Oilrag",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Electrocutioner 6000",
-              "dps_delta": -0.14656123281844202,
+              "dps_delta": -0.5351613619674254,
               "verified": true,
-              "sim_dps": 131.53277719193127
+              "sim_dps": 134.18502393889236
             },
             {
               "item_id": 15864,
@@ -5176,9 +5176,9 @@
               "item_name": "Black Mageweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.7610031565268116,
+              "dps_delta": -1.3491742168188239,
               "verified": true,
-              "sim_dps": 130.9183352682229
+              "sim_dps": 133.37101108404096
             },
             {
               "item_id": 14101,
@@ -5212,7 +5212,7 @@
               "source": "Maraudon: Lord Vyletongue",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 132.40563744389416
+              "sim_dps": 135.85073154356223
             },
             {
               "item_id": 20098,
@@ -5232,35 +5232,36 @@
         },
         {
           "slot": "legs",
-          "item_id": 220888,
-          "item_name": "Knight's Dreadweave Leggings",
-          "source": "Captain Dirgehammer",
-          "source_kind": "vendor",
-          "score": 19.485157548232714,
+          "item_id": 14132,
+          "item_name": "Wizardweave Leggings",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "sim_dps": 136.1214925528007,
           "verified": true,
+          "swap_note": "beat the scored pick Knight's Dreadweave Leggings (id 220888) in the sim: 136.1 vs 134.7 set DPS",
           "alternatives": [
-            {
-              "item_id": 14132,
-              "item_name": "Wizardweave Leggings",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 132.83044483093144
-            },
             {
               "item_id": 10009,
               "item_name": "Red Mageweave Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.5372491532179042
+              "dps_delta": -1.4012807651379102
+            },
+            {
+              "item_id": 220888,
+              "item_name": "Knight's Dreadweave Leggings",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -1.4013072519409207,
+              "verified": true,
+              "sim_dps": 134.72018530085978
             },
             {
               "item_id": 6903,
               "item_name": "Gaze Dreamer Pants",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Twilight Lord Kelris",
-              "dps_delta": -2.0977614592730682
+              "dps_delta": -1.9617930711930744
             }
           ]
         },
@@ -5270,9 +5271,8 @@
           "item_name": "Earthen Silk Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 134.72018530085978,
+          "score": 24,
           "verified": true,
-          "swap_note": "beat the scored pick Sergeant Major's Dreadweave Boots (id 220891) in the sim: 134.7 vs 131.7 set DPS",
           "alternatives": [
             {
               "item_id": 220891,
@@ -5305,30 +5305,30 @@
           "item_name": "Blackstone Ring",
           "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "score": 17.026914953886575,
+          "score": 14.932545461334994,
           "verified": true,
-          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, 131.7 vs 131.0 set DPS",
+          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, 134.7 vs 133.6 set DPS",
           "alternatives": [
             {
               "item_id": 19523,
               "item_name": "Lorekeeper's Ring",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.4088238465730765
+              "dps_delta": -0.8218639095722414
             },
             {
               "item_id": 281635,
               "item_name": "Philanthropist's Ring",
               "source_kind": "quest",
               "source": "Greater Friend of the Library",
-              "dps_delta": -1.9693361526282407
+              "dps_delta": -1.3823762156274055
             },
             {
               "item_id": 19524,
               "item_name": "Lorekeeper's Ring",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -2.2495923056558227
+              "dps_delta": -1.6626323686549875
             }
           ]
         },
@@ -5346,9 +5346,9 @@
               "item_name": "Lorekeeper's Ring",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -0.30830613197090884,
+              "dps_delta": -0.4090318052882367,
               "verified": true,
-              "sim_dps": 131.3710322927788
+              "sim_dps": 134.31115349557155
             },
             {
               "item_id": 281635,
@@ -5377,7 +5377,7 @@
           "item_name": "Abyss Shard",
           "source": "Trolls of a Feather",
           "source_kind": "quest",
-          "sim_dps": 131.30100515849693,
+          "sim_dps": 133.86511938289152,
           "verified": true,
           "alternatives": [
             {
@@ -5392,9 +5392,9 @@
               "item_name": "Uther's Strength",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.3193315764172837,
+              "dps_delta": -1.7175126972387602,
               "verified": true,
-              "sim_dps": 129.36000684833243
+              "sim_dps": 133.00267260362102
             },
             {
               "item_id": 744,
@@ -5411,7 +5411,7 @@
           "item_name": "Staff of Dar'Orahil",
           "source": "The Completed Orb of Dar'Orahil",
           "source_kind": "quest",
-          "sim_dps": 131.30100515849693,
+          "sim_dps": 133.86511938289152,
           "verified": true,
           "alternatives": [
             {
@@ -5426,16 +5426,16 @@
               "item_name": "Shortsword of Vengeance",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.5440450908118635,
+              "dps_delta": -1.3483466733589466,
               "verified": true,
-              "sim_dps": 130.13529333393785
+              "sim_dps": 133.37183862750084
             },
             {
               "item_id": 7713,
               "item_name": "Illusionary Rod",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -2.6741362236309927
+              "dps_delta": -2.087176286630158
             }
           ]
         },
@@ -5450,18 +5450,18 @@
           "item_name": "Noxious Shooter",
           "source": "Maraudon: Noxxion",
           "source_kind": "dungeon",
-          "sim_dps": 133.3507522100075,
+          "sim_dps": 136.28704620213242,
           "verified": true,
-          "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: 133.4 vs 131.7 set DPS",
+          "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: 136.3 vs 134.7 set DPS",
           "alternatives": [
             {
               "item_id": 11748,
               "item_name": "Pyric Caduceus",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -1.6714137852577835,
+              "dps_delta": -1.5668609012726336,
               "verified": true,
-              "sim_dps": 131.67933842474972
+              "sim_dps": 134.72018530085978
             },
             {
               "item_id": 13065,
@@ -5480,8 +5480,8 @@
           ]
         }
       ],
-      "set_dps": 136.28704620213242,
-      "no_source_count": 376,
+      "set_dps": 137.83837067555143,
+      "no_source_count": 373,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5504,15 +5504,15 @@
         "shoulder: Knight-Lieutenant's Dreadweave Mantle",
         "back: Spritecaster Cape",
         "waist: Highlander's Cloth Girdle",
-        "legs: Knight's Dreadweave Leggings",
+        "legs: Wizardweave Leggings",
         "finger1: Blackstone Ring",
         "finger2: Band of the Unicorn",
         "trinket1: Guardian Talisman",
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.763738945,
-      "verify_run_seconds": 0.687122416,
+      "weights_run_seconds": 1.240931526,
+      "verify_run_seconds": 1.043606501,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5544,7 +5544,7 @@
         },
         "legs": {
           "eligible": 129,
-          "sourced": 116
+          "sourced": 117
         },
         "main_hand": {
           "eligible": 335,
@@ -5568,11 +5568,11 @@
         },
         "trinket1": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "trinket2": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "waist": {
           "eligible": 128,
@@ -5614,8 +5614,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.7026914953886576,
-          "error": 0.1336280559441154,
+          "weight": 1.4932545461334994,
+          "error": 0.020884951111752818,
           "insignificant": false
         },
         {
@@ -5672,9 +5672,9 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.737611234529197,
+              "dps_delta": -2.3939366476429313,
               "verified": true,
-              "sim_dps": 127.39992849162178
+              "sim_dps": 130.28757340029694
             }
           ]
         },
@@ -5692,9 +5692,9 @@
               "item_name": "Mindburst Medallion",
               "source_kind": "quest",
               "source": "Broken Alliances",
-              "dps_delta": -0.345464846928337,
+              "dps_delta": -0.29879721533163206,
               "verified": true,
-              "sim_dps": 129.79207487922264
+              "sim_dps": 132.38271283260823
             },
             {
               "item_id": 1714,
@@ -5718,9 +5718,9 @@
           "item_name": "Rotgrip Mantle",
           "source": "Maraudon: Rotgrip",
           "source_kind": "dungeon",
-          "sim_dps": 131.62387053682974,
+          "sim_dps": 135.04072982227066,
           "verified": true,
-          "swap_note": "beat the scored pick Blood Guard's Dreadweave Mantle (id 220905) in the sim: 131.6 vs 130.1 set DPS",
+          "swap_note": "beat the scored pick Blood Guard's Dreadweave Mantle (id 220905) in the sim: 135.0 vs 132.7 set DPS",
           "alternatives": [
             {
               "item_id": 10027,
@@ -5741,9 +5741,9 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.4863308106787656,
+              "dps_delta": -2.3592197743307963,
               "verified": true,
-              "sim_dps": 130.13753972615098
+              "sim_dps": 132.68151004793987
             }
           ]
         },
@@ -5763,7 +5763,7 @@
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 130.5051904485107
+              "sim_dps": 133.24467972549937
             },
             {
               "item_id": 12465,
@@ -5795,9 +5795,9 @@
               "item_name": "Elemental Raiment",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6555463626671667,
+              "dps_delta": -0.05247230426880378,
               "verified": true,
-              "sim_dps": 129.4819933634838
+              "sim_dps": 132.62903774367106
             },
             {
               "item_id": 220904,
@@ -5825,20 +5825,20 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 15864,
+              "item_name": "Condor Bracers",
+              "source_kind": "quest",
+              "source": "Ghost-o-plasm Round Up",
+              "dps_delta": -0.49758737913560935,
+              "verified": true,
+              "sim_dps": 132.18392266880426
+            },
+            {
               "item_id": 254061,
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -0.5605123060551641
-            },
-            {
-              "item_id": 15864,
-              "item_name": "Condor Bracers",
-              "source_kind": "quest",
-              "source": "Ghost-o-plasm Round Up",
-              "dps_delta": -0.9463151223602893,
-              "verified": true,
-              "sim_dps": 129.1912246037907
             },
             {
               "item_id": 11469,
@@ -5863,9 +5863,9 @@
               "item_name": "Black Mageweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.9761568389887145,
+              "dps_delta": -0.5345029345585885,
               "verified": true,
-              "sim_dps": 129.16138288716226
+              "sim_dps": 132.14700711338128
             },
             {
               "item_id": 14101,
@@ -5889,9 +5889,9 @@
           "item_name": "Satyrmane Sash",
           "source": "Maraudon: Lord Vyletongue",
           "source_kind": "dungeon",
-          "sim_dps": 131.53752433770768,
+          "sim_dps": 134.74175188792645,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20165) in the sim: 131.5 vs 130.1 set DPS",
+          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20165) in the sim: 134.7 vs 132.7 set DPS",
           "alternatives": [
             {
               "item_id": 20166,
@@ -5912,43 +5912,44 @@
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -1.3999846115567038,
+              "dps_delta": -2.0602418399865883,
               "verified": true,
-              "sim_dps": 130.13753972615098
+              "sim_dps": 132.68151004793987
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 220906,
-          "item_name": "Stone Guard's Dreadweave Leggings",
-          "source": "Lady Palanseer",
-          "source_kind": "vendor",
-          "score": 19.485157548232714,
+          "item_id": 14132,
+          "item_name": "Wizardweave Leggings",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "sim_dps": 134.06237156048633,
           "verified": true,
+          "swap_note": "beat the scored pick Stone Guard's Dreadweave Leggings (id 220906) in the sim: 134.1 vs 132.7 set DPS",
           "alternatives": [
             {
-              "item_id": 14132,
-              "item_name": "Wizardweave Leggings",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": 0,
+              "item_id": 220906,
+              "item_name": "Stone Guard's Dreadweave Leggings",
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "dps_delta": -1.3808615125464598,
               "verified": true,
-              "sim_dps": 130.90037779741596
+              "sim_dps": 132.68151004793987
             },
             {
               "item_id": 10009,
               "item_name": "Red Mageweave Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.5372491532179042
+              "dps_delta": -1.4012807651379102
             },
             {
               "item_id": 6903,
               "item_name": "Gaze Dreamer Pants",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Twilight Lord Kelris",
-              "dps_delta": -2.0977614592730682
+              "dps_delta": -1.9617930711930744
             }
           ]
         },
@@ -5958,9 +5959,8 @@
           "item_name": "Earthen Silk Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 132.68151004793987,
+          "score": 24,
           "verified": true,
-          "swap_note": "beat the scored pick First Sergeant's Dreadweave Boots (id 220909) in the sim: 132.7 vs 130.1 set DPS",
           "alternatives": [
             {
               "item_id": 220909,
@@ -5993,30 +5993,30 @@
           "item_name": "Blackstone Ring",
           "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "score": 17.026914953886575,
+          "score": 14.932545461334994,
           "verified": true,
-          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, 130.1 vs 129.7 set DPS",
+          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, 132.7 vs 131.7 set DPS",
           "alternatives": [
             {
               "item_id": 19519,
               "item_name": "Advisor's Ring",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.4088238465730765
+              "dps_delta": -0.8218639095722414
             },
             {
               "item_id": 281635,
               "item_name": "Philanthropist's Ring",
               "source_kind": "quest",
               "source": "Greater Friend of the Library",
-              "dps_delta": -1.9693361526282407
+              "dps_delta": -1.3823762156274055
             },
             {
               "item_id": 19520,
               "item_name": "Advisor's Ring",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.2495923056558227
+              "dps_delta": -1.6626323686549875
             }
           ]
         },
@@ -6034,9 +6034,9 @@
               "item_name": "Advisor's Ring",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.38329483602211667,
+              "dps_delta": 0,
               "verified": true,
-              "sim_dps": 129.75424489012886
+              "sim_dps": 133.57572977782615
             },
             {
               "item_id": 281635,
@@ -6060,7 +6060,7 @@
           "item_name": "Uther's Strength",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 130.9892552817675,
+          "sim_dps": 132.82423058211327,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6076,9 +6076,9 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -0.6346620762432167,
+              "dps_delta": -0.967309282374174,
               "verified": true,
-              "sim_dps": 129.50287764990776
+              "sim_dps": 131.7142007655657
             },
             {
               "item_id": 1404,
@@ -6095,7 +6095,7 @@
           "item_name": "Abyss Shard",
           "source": "Trolls of a Feather",
           "source_kind": "quest",
-          "sim_dps": 130.9892552817675,
+          "sim_dps": 132.82423058211327,
           "verified": true,
           "alternatives": [
             {
@@ -6103,16 +6103,16 @@
               "item_name": "Rune of the Guard Captain",
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village",
-              "dps_delta": -0.022745458298141667
+              "dps_delta": -0.43361741419872657
             },
             {
               "item_id": 249469,
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -2.6617388697258093,
+              "dps_delta": -2.43376260564429,
               "verified": true,
-              "sim_dps": 127.47580085642517
+              "sim_dps": 130.24774744229558
             },
             {
               "item_id": 1404,
@@ -6129,7 +6129,7 @@
           "item_name": "Staff of Dar'Orahil",
           "source": "The Completed Orb of Dar'Orahil",
           "source_kind": "quest",
-          "sim_dps": 130.9892552817675,
+          "sim_dps": 132.82423058211327,
           "verified": true,
           "alternatives": [
             {
@@ -6144,16 +6144,16 @@
               "item_name": "Shortsword of Vengeance",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.5345913939575553,
+              "dps_delta": -1.0985511974964197,
               "verified": true,
-              "sim_dps": 128.60294833219342
+              "sim_dps": 131.58295885044345
             },
             {
               "item_id": 7713,
               "item_name": "Illusionary Rod",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -2.6741362236309927
+              "dps_delta": -2.087176286630158
             }
           ]
         },
@@ -6164,41 +6164,42 @@
         },
         {
           "slot": "ranged",
-          "item_id": 11748,
-          "item_name": "Pyric Caduceus",
-          "source": "Blackrock Depths: Pyromancer Loregrain",
+          "item_id": 17745,
+          "item_name": "Noxious Shooter",
+          "source": "Maraudon: Noxxion",
           "source_kind": "dungeon",
-          "score": 187.32862573344855,
+          "sim_dps": 135.91203695684783,
           "verified": true,
+          "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: 135.9 vs 132.7 set DPS",
           "alternatives": [
-            {
-              "item_id": 17745,
-              "item_name": "Noxious Shooter",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Noxxion",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 131.3929393620778
-            },
             {
               "item_id": 13065,
               "item_name": "Wand of Allistarj",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.080000000000001
+              "dps_delta": -2.98128076513791
+            },
+            {
+              "item_id": 11748,
+              "item_name": "Pyric Caduceus",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Pyromancer Loregrain",
+              "dps_delta": -3.2305269089079616,
+              "verified": true,
+              "sim_dps": 132.68151004793987
             },
             {
               "item_id": 249232,
               "item_name": "Lesser Eternal Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -4.507950775779345
+              "dps_delta": -3.409231540917254
             }
           ]
         }
       ],
-      "set_dps": 136.28895106025627,
-      "no_source_count": 372,
+      "set_dps": 139.35797974612905,
+      "no_source_count": 369,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6221,15 +6222,15 @@
         "shoulder: Rotgrip Mantle",
         "back: Spritecaster Cape",
         "waist: Satyrmane Sash",
-        "legs: Stone Guard's Dreadweave Leggings",
+        "legs: Wizardweave Leggings",
         "finger1: Blackstone Ring",
         "finger2: Band of the Unicorn",
         "trinket1: Uther's Strength",
         "trinket2: Abyss Shard",
-        "ranged: Pyric Caduceus"
+        "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.763738945,
-      "verify_run_seconds": 0.681503343,
+      "weights_run_seconds": 1.240931526,
+      "verify_run_seconds": 1.12689024,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6261,7 +6262,7 @@
         },
         "legs": {
           "eligible": 128,
-          "sourced": 115
+          "sourced": 116
         },
         "main_hand": {
           "eligible": 336,
@@ -6285,11 +6286,11 @@
         },
         "trinket1": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "trinket2": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "waist": {
           "eligible": 129,
@@ -6315,31 +6316,31 @@
           "stat": "spell_power",
           "weight": 1,
           "error": -0.6199033936015775,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "intellect",
           "weight": 4.547462621561327,
           "error": -0.7426478390488367,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "crit",
           "weight": -1.7740637585170613,
           "error": -0.09812329178045524,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "hit",
-          "weight": -5.571677168268828,
-          "error": -0.33178533597901705,
-          "insignificant": false
+          "weight": -4.558246593967127,
+          "error": -0.05430771700603086,
+          "insignificant": true
         },
         {
           "stat": "spell_haste",
           "weight": -2.2420465094913453,
           "error": -0.7297269594776727,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
@@ -6351,434 +6352,202 @@
           "stat": "shadow_power",
           "weight": 1.082623807914773,
           "error": -0.619986601258881,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "fire_power",
           "weight": -0.08172364683057338,
           "error": -0.0009610542583421015,
-          "insignificant": false
+          "insignificant": true
         }
       ],
       "slots": [
         {
           "slot": "head",
-          "item_id": 16686,
-          "item_name": "Magister's Crown",
-          "source": "Scholomance: Darkmaster Gandling",
-          "source_kind": "dungeon",
-          "score": 147.42387864683982,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17578,
-              "item_name": "Field Marshal's Coronal",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 231584,
-              "item_name": "Field Marshal's Coronal",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21517,
-              "item_name": "Gnomish Turban of Psychic Might",
-              "source_kind": "quest",
-              "source": "The Only Prescription",
-              "dps_delta": -3.1247824314995114,
-              "verified": true,
-              "sim_dps": 272.2117608162613
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "neck",
-          "item_id": 22657,
-          "item_name": "Amulet of the Dawn",
-          "source": "Epic Armaments of Battle - Friend of the Dawn",
-          "source_kind": "quest",
-          "sim_dps": 274.8124304651237,
+          "item_id": 17111,
+          "item_name": "Blazefury Medallion",
+          "source": "Lord Kazzak",
+          "source_kind": "world",
+          "sim_dps": 158.16796413510835,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13085,
-              "item_name": "Horizon Choker",
+              "item_id": 4614,
+              "item_name": "Pendant of Myzrael",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Splinterbone Captain",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 4743,
+              "item_name": "Pulsating Crystalline Shard",
+              "source_kind": "quest",
+              "source": "Summoning the Princess",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 1714,
+              "item_name": "Necklace of Calisea",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 17111,
-              "item_name": "Blazefury Medallion",
-              "source_kind": "world",
-              "source": "Lord Kazzak",
-              "dps_delta": -5.427070035315182,
+              "dps_delta": -0.13403639292130265,
               "verified": true,
-              "sim_dps": 269.9094732124456
+              "sim_dps": 157.95588465470627
             }
           ]
         },
         {
           "slot": "shoulder",
-          "item_id": 272103,
-          "item_name": "Darkspear Shoulderpads",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 134.78149078215583,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17580,
-              "item_name": "Field Marshal's Dreadweave Shoulders",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 231583,
-              "item_name": "Field Marshal's Dreadweave Shoulders",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 16689,
-              "item_name": "Magister's Mantle",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -1.828468585640394,
-              "verified": true,
-              "sim_dps": 273.5080746621204
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "back",
-          "item_id": 272063,
-          "item_name": "Darkspear Raider's Cloak",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 72.75940194498124,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 18510,
-              "item_name": "Hide of the Wild",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272411,
-              "item_name": "Arcanoweave Cloak",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272076,
-              "item_name": "Darkspear Raider's Cloak",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -0.5084062946564245,
-              "verified": true,
-              "sim_dps": 274.8281369531044
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "chest",
-          "item_id": 240138,
-          "item_name": "Heretic Robe",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 142.30686456654257,
+          "item_id": 1486,
+          "item_name": "Tree Bark Jacket",
+          "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+          "source_kind": "dungeon",
+          "sim_dps": 160.77512146553235,
           "verified": true,
+          "swap_note": "beat the scored pick Robes of the Shadowcaster (id 1297) in the sim: 160.8 vs 158.1 set DPS",
           "alternatives": [
             {
-              "item_id": 17581,
-              "item_name": "Field Marshal's Dreadweave Robe",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "item_id": 1561,
+              "item_name": "Harvester's Robe",
+              "source_kind": "quest",
+              "source": "The Killing Fields",
               "dps_delta": 0
             },
             {
-              "item_id": 231582,
-              "item_name": "Field Marshal's Dreadweave Robe",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "item_id": 1716,
+              "item_name": "Robe of the Magi",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": 0
             },
             {
-              "item_id": 16688,
-              "item_name": "Magister's Robes",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -15.836435040293907,
+              "item_id": 1297,
+              "item_name": "Robes of the Shadowcaster",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.685200417904781,
               "verified": true,
-              "sim_dps": 259.5001082074669
+              "sim_dps": 158.08992104762757
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 240145,
-          "item_name": "Heretic Bindings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 85.11701408029725,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 22071,
-              "item_name": "Deathmist Bracers",
-              "source_kind": "quest",
-              "source": "An Earnest Proposition",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 17582,
-              "item_name": "Marshal's Dreadweave Cuffs",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.24324441708008282
-            },
-            {
-              "item_id": 13107,
-              "item_name": "Magiskull Cuffs",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -11.546220892424117,
-              "verified": true,
-              "sim_dps": 263.7903223553367
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "hands",
-          "item_id": 272097,
-          "item_name": "Raider Handwraps",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 130.78149078215583,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 18409,
-              "item_name": "Mooncloth Gloves",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 240140,
-              "item_name": "Heretic Gloves",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272098,
-              "item_name": "Raider Handwraps",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1.3093341084901908,
-              "verified": true,
-              "sim_dps": 274.0272091392706
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "waist",
-          "item_id": 228190,
-          "item_name": "Knowledge of the Timbermaw",
-          "source": "Meilosh",
-          "source_kind": "vendor",
-          "score": 125.0441776743492,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17585,
-              "item_name": "Marshal's Dreadweave Sash",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 240144,
-              "item_name": "Heretic Belt",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 16685,
-              "item_name": "Magister's Belt",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Smolderthorn Mystic",
-              "dps_delta": -8.356302198673234,
-              "verified": true,
-              "sim_dps": 266.98024104908757
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "legs",
-          "item_id": 240142,
-          "item_name": "Heretic Leggings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 132.30686456654257,
+          "item_id": 1929,
+          "item_name": "Silk-threaded Trousers",
+          "source": "Westfall: Defias Evoker",
+          "source_kind": "dungeon",
+          "sim_dps": 160.56891855518236,
           "verified": true,
+          "swap_note": "beat the scored pick Lucky Trousers (id 1832) in the sim: 160.6 vs 158.1 set DPS",
           "alternatives": [
             {
-              "item_id": 17579,
-              "item_name": "Marshal's Dreadweave Leggings",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · Marshal · Alliance",
+              "item_id": 2277,
+              "item_name": "Necromancer Leggings",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": 0
             },
             {
-              "item_id": 231587,
-              "item_name": "Marshal's Dreadweave Leggings",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · Marshal · Alliance",
+              "item_id": 2954,
+              "item_name": "Night Watch Pantaloons",
+              "source_kind": "quest",
+              "source": "Morbent Fel",
               "dps_delta": 0
             },
             {
-              "item_id": 22752,
-              "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -10.337646878486225,
+              "item_id": 1832,
+              "item_name": "Lucky Trousers",
+              "source_kind": "quest",
+              "source": "In Defense of the King's Lands",
+              "dps_delta": -2.4789975075547943,
               "verified": true,
-              "sim_dps": 264.9988963692746
+              "sim_dps": 158.08992104762757
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 240139,
-          "item_name": "Heretic Sandals",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 99.66447670185858,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17562,
-              "item_name": "Knight-Lieutenant's Dreadweave Boots",
-              "source_kind": "pvp",
-              "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 17583,
-              "item_name": "Marshal's Dreadweave Boots",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19684,
-              "item_name": "Bloodvine Boots",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -7.287992218330828,
-              "verified": true,
-              "sim_dps": 268.04855102943
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "finger1",
-          "item_id": 20682,
-          "item_name": "Elemental Focus Band",
-          "source": "Prince Skaldrenox",
-          "source_kind": "world",
-          "sim_dps": 274.8124304651237,
+          "item_id": 21190,
+          "item_name": "Wrath of Cenarius",
+          "source": "Champion's Battlegear",
+          "source_kind": "quest",
+          "sim_dps": 157.66706711448202,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19140,
-              "item_name": "Cauterizing Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272406,
-              "item_name": "Channeler's Ring",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21190,
-              "item_name": "Wrath of Cenarius",
+              "item_id": 1116,
+              "item_name": "Ring of Pure Silver",
               "source_kind": "quest",
-              "source": "Champion's Battlegear",
-              "dps_delta": -3.5227076248472144,
+              "source": "Raene's Cleansing",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "Westfall: Gilnid",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 1076,
+              "item_name": "Defias Renegade Ring",
+              "source_kind": "dungeon",
+              "source": "The Stockade: Defias Insurgent",
+              "dps_delta": -3.285927635827676,
               "verified": true,
-              "sim_dps": 271.8138356229136
+              "sim_dps": 154.8039934117999
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 234436,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "sim_dps": 274.8124304651237,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 19140,
-              "item_name": "Cauterizing Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21210,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Grand Invoker",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21190,
-              "item_name": "Wrath of Cenarius",
-              "source_kind": "quest",
-              "source": "Champion's Battlegear",
-              "dps_delta": -5.5003565751555925,
-              "verified": true,
-              "sim_dps": 269.8361866726052
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket1",
-          "item_id": 272438,
-          "item_name": "Weakness Analyzer",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "sim_dps": 274.8124304651237,
+          "item_id": 19288,
+          "item_name": "Darkmoon Card: Blue Dragon",
+          "source": "Darkmoon Beast Deck",
+          "source_kind": "quest",
+          "sim_dps": 155.83971738134724,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 744,
@@ -6788,134 +6557,396 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 1404,
+              "item_name": "Tidal Charm",
+              "source_kind": "vendor",
+              "source": "Barebones",
               "dps_delta": 0
             },
             {
-              "item_id": 20534,
-              "item_name": "Abyss Shard",
-              "source_kind": "quest",
-              "source": "Trolls of a Feather",
-              "dps_delta": -3.2563240506294733,
+              "item_id": 21891,
+              "item_name": "Shard of the Fallen Star",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
               "verified": true,
-              "sim_dps": 272.0802191971313
+              "sim_dps": 158.29000630039567
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 272439,
-          "item_name": "Serenity Field",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "sim_dps": 274.8124304651237,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 744,
-              "item_name": "Thunderbrew's Boot Flask",
-              "source_kind": "quest",
-              "source": "Sweet Amber",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 20534,
-              "item_name": "Abyss Shard",
-              "source_kind": "quest",
-              "source": "Trolls of a Feather",
-              "dps_delta": -5.5244012234604725,
-              "verified": true,
-              "sim_dps": 269.81214202430033
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
-          "item_id": 19102,
-          "item_name": "Crackling Staff",
-          "source": "Stormpike Guard",
-          "source_kind": "rep",
-          "sim_dps": 274.8124304651237,
+          "item_id": 21521,
+          "item_name": "Runesword of the Red",
+          "source": "Treasure of the Timeless One",
+          "source_kind": "quest",
+          "sim_dps": 157.66706711448202,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18873,
-              "item_name": "Grand Marshal's Stave",
-              "source_kind": "vendor",
-              "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": -6.987175420063114
-            },
-            {
-              "item_id": 234571,
-              "item_name": "Grand Marshal's Stave",
-              "source_kind": "vendor",
-              "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": -8.880458516247884
-            },
-            {
-              "item_id": 754,
-              "item_name": "Shortsword of Vengeance",
+              "item_id": 727,
+              "item_name": "Notched Shortsword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -10.110938937111143,
+              "dps_delta": 0
+            },
+            {
+              "item_id": 753,
+              "item_name": "Dragonmaw Shortsword",
+              "source_kind": "world",
+              "source": "Dragonmaw Centurion",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 19100,
+              "item_name": "Electrified Dagger",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": 0,
               "verified": true,
-              "sim_dps": 265.22560431064966
+              "sim_dps": 158.08992104762757
             }
           ]
         },
         {
           "slot": "off_hand",
-          "verified": false,
-          "empty_reason": "two_hand_equipped"
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Stormpike Guard",
+          "source_kind": "rep",
+          "sim_dps": 163.59173892634806,
+          "verified": true,
+          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: 163.6 vs 158.1 set DPS",
+          "alternatives": [
+            {
+              "item_id": 1131,
+              "item_name": "Totem of Infliction",
+              "source_kind": "quest",
+              "source": "The Totem of Infliction",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 1172,
+              "item_name": "Grayson's Torch",
+              "source_kind": "quest",
+              "source": "The Coastal Menace",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 19310,
+              "item_name": "Tome of the Ice Lord",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": -5.501817878720487,
+              "verified": true,
+              "sim_dps": 158.08992104762757
+            }
+          ]
         },
         {
           "slot": "ranged",
-          "item_id": 249385,
-          "item_name": "Brilliant Wand",
+          "item_id": 279246,
+          "item_name": "Torch of Light",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "score": 40.83223835092929,
           "verified": true,
-          "alternatives": [
+          "ties": [
+            {
+              "item_id": 16997,
+              "item_name": "Stormrager"
+            },
+            {
+              "item_id": 249237,
+              "item_name": "Greater Eternal Wand"
+            },
+            {
+              "item_id": 249385,
+              "item_name": "Brilliant Wand"
+            },
+            {
+              "item_id": 249232,
+              "item_name": "Lesser Eternal Wand"
+            },
+            {
+              "item_id": 17745,
+              "item_name": "Noxious Shooter"
+            },
             {
               "item_id": 9654,
-              "item_name": "Cairnstone Sliver",
-              "source_kind": "quest",
-              "source": "The Morrow Stone",
-              "dps_delta": 0
+              "item_name": "Cairnstone Sliver"
+            },
+            {
+              "item_id": 249234,
+              "item_name": "Dreambough Wand"
             },
             {
               "item_id": 11860,
-              "item_name": "Charged Lightning Rod",
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris",
-              "dps_delta": 0
+              "item_name": "Charged Lightning Rod"
             },
             {
               "item_id": 13064,
-              "item_name": "Jaina's Firestarter",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -8.36327932729688,
-              "verified": true,
-              "sim_dps": 266.9732639204639
+              "item_name": "Jaina's Firestarter"
+            },
+            {
+              "item_id": 249144,
+              "item_name": "Twisted Nether Wand"
+            },
+            {
+              "item_id": 4547,
+              "item_name": "Gnomish Zapper"
+            },
+            {
+              "item_id": 5249,
+              "item_name": "Burning Sliver"
+            },
+            {
+              "item_id": 5253,
+              "item_name": "Goblin Igniter"
+            },
+            {
+              "item_id": 6729,
+              "item_name": "Fizzle's Zippy Lighter"
+            },
+            {
+              "item_id": 15692,
+              "item_name": "Kodo Brander"
+            },
+            {
+              "item_id": 5248,
+              "item_name": "Flash Wand"
+            },
+            {
+              "item_id": 16789,
+              "item_name": "Captain Rackmore's Tiller"
+            },
+            {
+              "item_id": 7708,
+              "item_name": "Necrotic Wand"
+            },
+            {
+              "item_id": 217287,
+              "item_name": "Greater Mystic Wand"
+            },
+            {
+              "item_id": 13063,
+              "item_name": "Starfaller"
+            },
+            {
+              "item_id": 5214,
+              "item_name": "Wand of Eventide"
+            },
+            {
+              "item_id": 11289,
+              "item_name": "Lesser Mystic Wand"
+            },
+            {
+              "item_id": 5244,
+              "item_name": "Consecrated Wand"
+            },
+            {
+              "item_id": 5246,
+              "item_name": "Excavation Rod"
+            },
+            {
+              "item_id": 5818,
+              "item_name": "Moonbeam Wand"
+            },
+            {
+              "item_id": 13062,
+              "item_name": "Thunderwood"
+            },
+            {
+              "item_id": 6677,
+              "item_name": "Spellcrafter Wand"
+            },
+            {
+              "item_id": 8071,
+              "item_name": "Sizzle Stick"
+            },
+            {
+              "item_id": 11288,
+              "item_name": "Greater Magic Wand"
+            },
+            {
+              "item_id": 5198,
+              "item_name": "Cookie's Stirring Rod"
+            },
+            {
+              "item_id": 7607,
+              "item_name": "Sable Wand"
+            },
+            {
+              "item_id": 5240,
+              "item_name": "Torchlight Wand"
+            },
+            {
+              "item_id": 5326,
+              "item_name": "Flaring Baton"
+            },
+            {
+              "item_id": 15204,
+              "item_name": "Moonstone Wand"
+            },
+            {
+              "item_id": 12296,
+              "item_name": "Spark of the People's Militia"
+            },
+            {
+              "item_id": 11287,
+              "item_name": "Lesser Magic Wand"
+            },
+            {
+              "item_id": 5604,
+              "item_name": "Elven Wand"
+            },
+            {
+              "item_id": 263430,
+              "item_name": "Windbough Wand"
+            },
+            {
+              "item_id": 286750,
+              "item_name": "Wisesight Wand"
+            },
+            {
+              "item_id": 15283,
+              "item_name": "Lunar Wand"
+            },
+            {
+              "item_id": 19108,
+              "item_name": "Wand of Biting Cold"
+            },
+            {
+              "item_id": 15282,
+              "item_name": "Dragon Finger"
+            },
+            {
+              "item_id": 16993,
+              "item_name": "Smokey's Fireshooter"
+            },
+            {
+              "item_id": 13004,
+              "item_name": "Torch of Austen"
+            },
+            {
+              "item_id": 15281,
+              "item_name": "Glowstar Rod"
+            },
+            {
+              "item_id": 11748,
+              "item_name": "Pyric Caduceus"
+            },
+            {
+              "item_id": 15280,
+              "item_name": "Wizard's Hand"
+            },
+            {
+              "item_id": 15279,
+              "item_name": "Ivory Wand"
+            },
+            {
+              "item_id": 13065,
+              "item_name": "Wand of Allistarj"
+            },
+            {
+              "item_id": 5216,
+              "item_name": "Umbral Wand"
+            },
+            {
+              "item_id": 5215,
+              "item_name": "Ember Wand"
+            },
+            {
+              "item_id": 5247,
+              "item_name": "Rod of Sorrow"
+            },
+            {
+              "item_id": 5213,
+              "item_name": "Scorching Wand"
+            },
+            {
+              "item_id": 7001,
+              "item_name": "Gravestone Scepter"
+            },
+            {
+              "item_id": 8184,
+              "item_name": "Firestarter"
+            },
+            {
+              "item_id": 8186,
+              "item_name": "Dire Wand"
+            },
+            {
+              "item_id": 5243,
+              "item_name": "Firebelcher"
+            },
+            {
+              "item_id": 12984,
+              "item_name": "Skycaller"
+            },
+            {
+              "item_id": 5207,
+              "item_name": "Opaque Wand"
+            },
+            {
+              "item_id": 5241,
+              "item_name": "Dwarven Flamestick"
+            },
+            {
+              "item_id": 279896,
+              "item_name": "Deepblaze"
+            },
+            {
+              "item_id": 5212,
+              "item_name": "Blazing Wand"
+            },
+            {
+              "item_id": 5071,
+              "item_name": "Shadow Wand"
+            },
+            {
+              "item_id": 286743,
+              "item_name": "Riptear's Spare Arm"
+            },
+            {
+              "item_id": 5069,
+              "item_name": "Fire Wand"
             }
-          ]
+          ],
+          "alternatives": [
+            {
+              "item_id": 249237,
+              "item_name": "Greater Eternal Wand",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 249385,
+              "item_name": "Brilliant Wand",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 16997,
+              "item_name": "Stormrager",
+              "source_kind": "quest",
+              "source": "Order Must Be Restored",
+              "dps_delta": -4.048274076143741,
+              "verified": true,
+              "sim_dps": 154.04164697148383
+            }
+          ],
+          "low_value": true
         }
       ],
-      "set_dps": 275.3365432477608,
-      "no_source_count": 777,
+      "set_dps": 167.56437310100446,
+      "no_source_count": 769,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6934,37 +6965,38 @@
         "7749 Omega Orb"
       ],
       "new_at_band": [
-        "head: Magister's Crown",
-        "neck: Amulet of the Dawn",
-        "shoulder: Darkspear Shoulderpads",
-        "back: Darkspear Raider's Cloak",
-        "chest: Heretic Robe",
-        "wrist: Heretic Bindings",
-        "hands: Raider Handwraps",
-        "waist: Knowledge of the Timbermaw",
-        "legs: Heretic Leggings",
-        "feet: Heretic Sandals",
-        "finger1: Elemental Focus Band",
-        "finger2: Signet Ring of the Bronze Dragonflight",
-        "trinket1: Weakness Analyzer",
-        "trinket2: Serenity Field",
-        "main_hand: Crackling Staff",
-        "ranged: Brilliant Wand"
+        "head: Augural Shroud",
+        "neck: Blazefury Medallion",
+        "shoulder: Silk Mantle of Gamn",
+        "back: Overseer's Cloak",
+        "chest: Tree Bark Jacket",
+        "wrist: Mindthrust Bracers",
+        "hands: Gnoll Casting Gloves",
+        "waist: Lesser Belt of the Spire",
+        "legs: Silk-threaded Trousers",
+        "feet: Bluegill Sandals",
+        "finger1: Wrath of Cenarius",
+        "finger2: Defias Mage Ring",
+        "trinket1: Darkmoon Card: Blue Dragon",
+        "trinket2: Darkmoon Card: Heroism",
+        "main_hand: Runesword of the Red",
+        "off_hand: Lei of the Lifegiver",
+        "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.776043368,
-      "verify_run_seconds": 0.673444971,
+      "weights_run_seconds": 1.260844045,
+      "verify_run_seconds": 1.201014111,
       "coverage": {
         "back": {
           "eligible": 370,
-          "sourced": 304
+          "sourced": 305
         },
         "chest": {
           "eligible": 298,
-          "sourced": 254
+          "sourced": 255
         },
         "feet": {
           "eligible": 189,
-          "sourced": 161
+          "sourced": 162
         },
         "finger1": {
           "eligible": 309,
@@ -6984,11 +7016,11 @@
         },
         "legs": {
           "eligible": 192,
-          "sourced": 159
+          "sourced": 160
         },
         "main_hand": {
           "eligible": 454,
-          "sourced": 318
+          "sourced": 319
         },
         "neck": {
           "eligible": 142,
@@ -7008,23 +7040,23 @@
         },
         "trinket1": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "trinket2": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "waist": {
           "eligible": 177,
-          "sourced": 151
+          "sourced": 152
         },
         "wrist": {
           "eligible": 143,
           "sourced": 112
         }
       },
-      "reference_dps_per_point": -0.1893283096184771,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "weights_reason": "reference stat spell_power measured -0.1893 ± 0.1174 DPS per point at this band's gear - not positive beyond its own error, so no weight this band measured can be trusted"
     },
     {
       "spec": "warlock-demonology",
@@ -7038,31 +7070,31 @@
           "stat": "spell_power",
           "weight": 1,
           "error": -0.6199033936015775,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "intellect",
           "weight": 4.547462621561327,
           "error": -0.7426478390488367,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "crit",
           "weight": -1.7740637585170613,
           "error": -0.09812329178045524,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "hit",
-          "weight": -5.571677168268828,
-          "error": -0.33178533597901705,
-          "insignificant": false
+          "weight": -4.558246593967127,
+          "error": -0.05430771700603086,
+          "insignificant": true
         },
         {
           "stat": "spell_haste",
           "weight": -2.2420465094913453,
           "error": -0.7297269594776727,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
@@ -7074,71 +7106,42 @@
           "stat": "shadow_power",
           "weight": 1.082623807914773,
           "error": -0.619986601258881,
-          "insignificant": false
+          "insignificant": true
         },
         {
           "stat": "fire_power",
           "weight": -0.08172364683057338,
           "error": -0.0009610542583421015,
-          "insignificant": false
+          "insignificant": true
         }
       ],
       "slots": [
         {
           "slot": "head",
-          "item_id": 16686,
-          "item_name": "Magister's Crown",
-          "source": "Scholomance: Darkmaster Gandling",
-          "source_kind": "dungeon",
-          "score": 147.42387864683982,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17591,
-              "item_name": "Warlord's Dreadweave Hood",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 231590,
-              "item_name": "Warlord's Dreadweave Hood",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21517,
-              "item_name": "Gnomish Turban of Psychic Might",
-              "source_kind": "quest",
-              "source": "The Only Prescription",
-              "dps_delta": -1.8196545623262068,
-              "verified": true,
-              "sim_dps": 262.09753086337446
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "neck",
-          "item_id": 22657,
-          "item_name": "Amulet of the Dawn",
-          "source": "Epic Armaments of Battle - Friend of the Dawn",
-          "source_kind": "quest",
-          "sim_dps": 264.47552277841197,
+          "item_id": 1714,
+          "item_name": "Necklace of Calisea",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 155.32598869648393,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13085,
-              "item_name": "Horizon Choker",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 4112,
+              "item_name": "Choker of the High Shaman",
+              "source_kind": "quest",
+              "source": "Mok'thardin's Enchantment",
               "dps_delta": 0
             },
             {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
+              "item_id": 4430,
+              "item_name": "Ethereal Talisman",
               "source_kind": "quest",
-              "source": "Falrin's Vendetta",
+              "source": "The Crown of Will",
               "dps_delta": 0
             },
             {
@@ -7146,499 +7149,514 @@
               "item_name": "Blazefury Medallion",
               "source_kind": "world",
               "source": "Lord Kazzak",
-              "dps_delta": -4.258224070065978,
+              "dps_delta": -1.797560485502629,
               "verified": true,
-              "sim_dps": 259.6589613556347
+              "sim_dps": 154.20472354804755
             }
           ]
         },
         {
           "slot": "shoulder",
-          "item_id": 272103,
-          "item_name": "Darkspear Shoulderpads",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 134.78149078215583,
+          "item_id": 3748,
+          "item_name": "Feline Mantle",
+          "source": "Shadowfang Keep: Wolf Master Nandos",
+          "source_kind": "dungeon",
+          "sim_dps": 157.96863207191728,
           "verified": true,
+          "swap_note": "beat the scored pick Ghostly Mantle (id 3324) in the sim: 158.0 vs 156.0 set DPS",
+          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 17590,
-              "item_name": "Warlord's Dreadweave Mantle",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Warlord · Horde",
+              "item_id": 4197,
+              "item_name": "Berylline Pads",
+              "source_kind": "quest",
+              "source": "A Vengeful Fate",
               "dps_delta": 0
             },
             {
-              "item_id": 231592,
-              "item_name": "Warlord's Dreadweave Mantle",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Warlord · Horde",
+              "item_id": 4314,
+              "item_name": "Double-Stitched Woolen Shoulders",
+              "source_kind": "crafted",
+              "source": "Tailoring",
               "dps_delta": 0
             },
             {
-              "item_id": 16689,
-              "item_name": "Magister's Mantle",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -1.8506111857680025,
+              "item_id": 3324,
+              "item_name": "Ghostly Mantle",
+              "source_kind": "quest",
+              "source": "Deathstalkers in Shadowfang",
+              "dps_delta": -1.9663480383671015,
               "verified": true,
-              "sim_dps": 262.06657423993266
+              "sim_dps": 156.00228403355018
             }
           ]
         },
         {
           "slot": "back",
-          "item_id": 272063,
-          "item_name": "Darkspear Raider's Cloak",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 72.75940194498124,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 18510,
-              "item_name": "Hide of the Wild",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19121,
-              "item_name": "Deep Woodlands Cloak",
-              "source_kind": "quest",
-              "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272076,
-              "item_name": "Darkspear Raider's Cloak",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -0.6540245988430797,
-              "verified": true,
-              "sim_dps": 263.2631608268576
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "chest",
-          "item_id": 240138,
-          "item_name": "Heretic Robe",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 142.30686456654257,
+          "item_id": 1486,
+          "item_name": "Tree Bark Jacket",
+          "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+          "source_kind": "dungeon",
+          "sim_dps": 160.10096393454143,
           "verified": true,
+          "swap_note": "beat the scored pick Robes of the Shadowcaster (id 1297) in the sim: 160.1 vs 156.0 set DPS",
           "alternatives": [
             {
-              "item_id": 17592,
-              "item_name": "Warlord's Dreadweave Robe",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Warlord · Horde",
+              "item_id": 1716,
+              "item_name": "Robe of the Magi",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": 0
             },
             {
-              "item_id": 231591,
-              "item_name": "Warlord's Dreadweave Robe",
-              "source_kind": "vendor",
-              "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 16688,
-              "item_name": "Magister's Robes",
+              "item_id": 2034,
+              "item_name": "Scholarly Robes",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -17.787807772939544,
+              "source": "Blackfathom Deeps: Twilight Acolyte",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 1297,
+              "item_name": "Robes of the Shadowcaster",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.098679900991243,
               "verified": true,
-              "sim_dps": 246.12937765276112
+              "sim_dps": 156.00228403355018
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 240145,
-          "item_name": "Heretic Bindings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 85.11701408029725,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 22071,
-              "item_name": "Deathmist Bracers",
-              "source_kind": "quest",
-              "source": "An Earnest Proposition",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 17587,
-              "item_name": "General's Dreadweave Bracers",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.24324441708008282
-            },
-            {
-              "item_id": 13107,
-              "item_name": "Magiskull Cuffs",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -9.693322999475185,
-              "verified": true,
-              "sim_dps": 254.22386242622548
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "hands",
-          "item_id": 272097,
-          "item_name": "Raider Handwraps",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 130.78149078215583,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 18409,
-              "item_name": "Mooncloth Gloves",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 240140,
-              "item_name": "Heretic Gloves",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272098,
-              "item_name": "Raider Handwraps",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -0.3625166432915421,
-              "verified": true,
-              "sim_dps": 263.5546687824091
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "waist",
-          "item_id": 228190,
-          "item_name": "Knowledge of the Timbermaw",
-          "source": "Meilosh",
-          "source_kind": "vendor",
-          "score": 125.0441776743492,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17589,
-              "item_name": "General's Dreadweave Belt",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 240144,
-              "item_name": "Heretic Belt",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 16685,
-              "item_name": "Magister's Belt",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Smolderthorn Mystic",
-              "dps_delta": -8.732275974917371,
-              "verified": true,
-              "sim_dps": 255.1849094507833
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "legs",
-          "item_id": 240142,
-          "item_name": "Heretic Leggings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 132.30686456654257,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17593,
-              "item_name": "General's Dreadweave Pants",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 231588,
-              "item_name": "General's Dreadweave Pants",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 22747,
-              "item_name": "Outrider's Silk Leggings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -11.199685572152333,
-              "verified": true,
-              "sim_dps": 252.71749985354833
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "feet",
-          "item_id": 240139,
-          "item_name": "Heretic Sandals",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 99.66447670185858,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 17586,
-              "item_name": "General's Dreadweave Boots",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 231593,
-              "item_name": "General's Dreadweave Boots",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19684,
-              "item_name": "Bloodvine Boots",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -5.266788844255984,
-              "verified": true,
-              "sim_dps": 258.6503965814447
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "finger1",
-          "item_id": 20682,
-          "item_name": "Elemental Focus Band",
-          "source": "Prince Skaldrenox",
-          "source_kind": "world",
-          "sim_dps": 264.47552277841197,
+          "item_id": 21190,
+          "item_name": "Wrath of Cenarius",
+          "source": "Champion's Battlegear",
+          "source_kind": "quest",
+          "sim_dps": 155.32598869648393,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19140,
-              "item_name": "Cauterizing Band",
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "Westfall: Gilnid",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 1447,
+              "item_name": "Ring of Saviors",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": 0
             },
             {
-              "item_id": 272406,
-              "item_name": "Channeler's Ring",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21190,
-              "item_name": "Wrath of Cenarius",
-              "source_kind": "quest",
-              "source": "Champion's Battlegear",
-              "dps_delta": -3.2746014037707596,
+              "item_id": 1076,
+              "item_name": "Defias Renegade Ring",
+              "source_kind": "dungeon",
+              "source": "The Stockade: Defias Insurgent",
+              "dps_delta": -2.7075050001050442,
               "verified": true,
-              "sim_dps": 260.6425840219299
+              "sim_dps": 153.29477903344514
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 234436,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "sim_dps": 264.47552277841197,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 19140,
-              "item_name": "Cauterizing Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21210,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Grand Invoker",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21190,
-              "item_name": "Wrath of Cenarius",
-              "source_kind": "quest",
-              "source": "Champion's Battlegear",
-              "dps_delta": -5.760459369849741,
-              "verified": true,
-              "sim_dps": 258.1567260558509
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket1",
-          "item_id": 272438,
-          "item_name": "Weakness Analyzer",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "sim_dps": 264.47552277841197,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 1404,
-              "item_name": "Tidal Charm",
-              "source_kind": "vendor",
-              "source": "Barebones",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 20534,
-              "item_name": "Abyss Shard",
-              "source_kind": "quest",
-              "source": "Trolls of a Feather",
-              "dps_delta": -3.1142352492018404,
-              "verified": true,
-              "sim_dps": 260.8029501764988
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
-          "item_id": 272439,
-          "item_name": "Serenity Field",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "sim_dps": 264.47552277841197,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 1404,
-              "item_name": "Tidal Charm",
-              "source_kind": "vendor",
-              "source": "Barebones",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 20534,
-              "item_name": "Abyss Shard",
-              "source_kind": "quest",
-              "source": "Trolls of a Feather",
-              "dps_delta": -5.0661135985670285,
-              "verified": true,
-              "sim_dps": 258.85107182713364
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
-          "item_id": 13000,
-          "item_name": "Staff of Hale Magefire",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "sim_dps": 264.47552277841197,
+          "item_id": 21521,
+          "item_name": "Runesword of the Red",
+          "source": "Treasure of the Timeless One",
+          "source_kind": "quest",
+          "sim_dps": 155.32598869648393,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 9527,
-              "item_name": "Spellshifter Rod",
-              "source_kind": "quest",
-              "source": "Tiara of the Deep",
+              "item_id": 727,
+              "item_name": "Notched Shortsword",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": 0
             },
             {
-              "item_id": 754,
-              "item_name": "Shortsword of Vengeance",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -3.8513380222956357,
-              "verified": true,
-              "sim_dps": 260.06584740340503
+              "item_id": 753,
+              "item_name": "Dragonmaw Shortsword",
+              "source_kind": "world",
+              "source": "Dragonmaw Centurion",
+              "dps_delta": 0
             },
             {
-              "item_id": 234549,
-              "item_name": "High Warlord's War Staff",
-              "source_kind": "vendor",
-              "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": -13.613666256709813
+              "item_id": 19099,
+              "item_name": "Glacial Blade",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 156.00228403355018
             }
           ]
         },
         {
           "slot": "off_hand",
-          "verified": false,
-          "empty_reason": "two_hand_equipped"
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Frostwolf Clan",
+          "source_kind": "rep",
+          "sim_dps": 160.82529268253546,
+          "verified": true,
+          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: 160.8 vs 156.0 set DPS",
+          "alternatives": [
+            {
+              "item_id": 1172,
+              "item_name": "Grayson's Torch",
+              "source_kind": "quest",
+              "source": "The Coastal Menace",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 2565,
+              "item_name": "Rod of Molten Fire",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 19310,
+              "item_name": "Tome of the Ice Lord",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -4.8230086489852795,
+              "verified": true,
+              "sim_dps": 156.00228403355018
+            }
+          ]
         },
         {
           "slot": "ranged",
-          "item_id": 249385,
-          "item_name": "Brilliant Wand",
+          "item_id": 279246,
+          "item_name": "Torch of Light",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "score": 40.83223835092929,
           "verified": true,
-          "alternatives": [
+          "ties": [
             {
-              "item_id": 11860,
-              "item_name": "Charged Lightning Rod",
-              "source_kind": "quest",
-              "source": "Ledger from Tanaris",
-              "dps_delta": 0
+              "item_id": 16997,
+              "item_name": "Stormrager"
+            },
+            {
+              "item_id": 249237,
+              "item_name": "Greater Eternal Wand"
+            },
+            {
+              "item_id": 249385,
+              "item_name": "Brilliant Wand"
+            },
+            {
+              "item_id": 249232,
+              "item_name": "Lesser Eternal Wand"
+            },
+            {
+              "item_id": 17745,
+              "item_name": "Noxious Shooter"
             },
             {
               "item_id": 19118,
-              "item_name": "Nature's Breath",
-              "source_kind": "quest",
-              "source": "Dark Vessels",
-              "dps_delta": 0
+              "item_name": "Nature's Breath"
+            },
+            {
+              "item_id": 249234,
+              "item_name": "Dreambough Wand"
+            },
+            {
+              "item_id": 11860,
+              "item_name": "Charged Lightning Rod"
             },
             {
               "item_id": 13064,
-              "item_name": "Jaina's Firestarter",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -7.768279776439954,
-              "verified": true,
-              "sim_dps": 256.1489056492607
+              "item_name": "Jaina's Firestarter"
+            },
+            {
+              "item_id": 249144,
+              "item_name": "Twisted Nether Wand"
+            },
+            {
+              "item_id": 4547,
+              "item_name": "Gnomish Zapper"
+            },
+            {
+              "item_id": 5253,
+              "item_name": "Goblin Igniter"
+            },
+            {
+              "item_id": 6729,
+              "item_name": "Fizzle's Zippy Lighter"
+            },
+            {
+              "item_id": 15692,
+              "item_name": "Kodo Brander"
+            },
+            {
+              "item_id": 5248,
+              "item_name": "Flash Wand"
+            },
+            {
+              "item_id": 16789,
+              "item_name": "Captain Rackmore's Tiller"
+            },
+            {
+              "item_id": 7708,
+              "item_name": "Necrotic Wand"
+            },
+            {
+              "item_id": 217287,
+              "item_name": "Greater Mystic Wand"
+            },
+            {
+              "item_id": 13063,
+              "item_name": "Starfaller"
+            },
+            {
+              "item_id": 5214,
+              "item_name": "Wand of Eventide"
+            },
+            {
+              "item_id": 11289,
+              "item_name": "Lesser Mystic Wand"
+            },
+            {
+              "item_id": 5250,
+              "item_name": "Charred Wand"
+            },
+            {
+              "item_id": 15465,
+              "item_name": "Stingshot Wand"
+            },
+            {
+              "item_id": 5356,
+              "item_name": "Branding Rod"
+            },
+            {
+              "item_id": 13062,
+              "item_name": "Thunderwood"
+            },
+            {
+              "item_id": 8071,
+              "item_name": "Sizzle Stick"
+            },
+            {
+              "item_id": 11288,
+              "item_name": "Greater Magic Wand"
+            },
+            {
+              "item_id": 5198,
+              "item_name": "Cookie's Stirring Rod"
+            },
+            {
+              "item_id": 5240,
+              "item_name": "Torchlight Wand"
+            },
+            {
+              "item_id": 5252,
+              "item_name": "Wand of Decay"
+            },
+            {
+              "item_id": 5326,
+              "item_name": "Flaring Baton"
+            },
+            {
+              "item_id": 5242,
+              "item_name": "Cinder Wand"
+            },
+            {
+              "item_id": 11287,
+              "item_name": "Lesser Magic Wand"
+            },
+            {
+              "item_id": 263430,
+              "item_name": "Windbough Wand"
+            },
+            {
+              "item_id": 286750,
+              "item_name": "Wisesight Wand"
+            },
+            {
+              "item_id": 15283,
+              "item_name": "Lunar Wand"
+            },
+            {
+              "item_id": 19108,
+              "item_name": "Wand of Biting Cold"
+            },
+            {
+              "item_id": 15282,
+              "item_name": "Dragon Finger"
+            },
+            {
+              "item_id": 16993,
+              "item_name": "Smokey's Fireshooter"
+            },
+            {
+              "item_id": 13004,
+              "item_name": "Torch of Austen"
+            },
+            {
+              "item_id": 15281,
+              "item_name": "Glowstar Rod"
+            },
+            {
+              "item_id": 11748,
+              "item_name": "Pyric Caduceus"
+            },
+            {
+              "item_id": 15280,
+              "item_name": "Wizard's Hand"
+            },
+            {
+              "item_id": 15279,
+              "item_name": "Ivory Wand"
+            },
+            {
+              "item_id": 13065,
+              "item_name": "Wand of Allistarj"
+            },
+            {
+              "item_id": 10704,
+              "item_name": "Chillnail Splinter"
+            },
+            {
+              "item_id": 5216,
+              "item_name": "Umbral Wand"
+            },
+            {
+              "item_id": 5215,
+              "item_name": "Ember Wand"
+            },
+            {
+              "item_id": 6797,
+              "item_name": "Eyepoker"
+            },
+            {
+              "item_id": 5213,
+              "item_name": "Scorching Wand"
+            },
+            {
+              "item_id": 7001,
+              "item_name": "Gravestone Scepter"
+            },
+            {
+              "item_id": 8184,
+              "item_name": "Firestarter"
+            },
+            {
+              "item_id": 8186,
+              "item_name": "Dire Wand"
+            },
+            {
+              "item_id": 5243,
+              "item_name": "Firebelcher"
+            },
+            {
+              "item_id": 12984,
+              "item_name": "Skycaller"
+            },
+            {
+              "item_id": 5207,
+              "item_name": "Opaque Wand"
+            },
+            {
+              "item_id": 279896,
+              "item_name": "Deepblaze"
+            },
+            {
+              "item_id": 5212,
+              "item_name": "Blazing Wand"
+            },
+            {
+              "item_id": 5071,
+              "item_name": "Shadow Wand"
+            },
+            {
+              "item_id": 286743,
+              "item_name": "Riptear's Spare Arm"
+            },
+            {
+              "item_id": 5069,
+              "item_name": "Fire Wand"
             }
-          ]
+          ],
+          "alternatives": [
+            {
+              "item_id": 249237,
+              "item_name": "Greater Eternal Wand",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 249385,
+              "item_name": "Brilliant Wand",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 16997,
+              "item_name": "Stormrager",
+              "source_kind": "quest",
+              "source": "The Scarlet Oracle, Demetria",
+              "dps_delta": -2.384766567248448,
+              "verified": true,
+              "sim_dps": 153.61751746630173
+            }
+          ],
+          "low_value": true
         }
       ],
-      "set_dps": 263.91718542570067,
-      "no_source_count": 774,
+      "set_dps": 165.50145924298283,
+      "no_source_count": 766,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7657,37 +7675,38 @@
         "9380 Jang'thraze the Protector"
       ],
       "new_at_band": [
-        "head: Magister's Crown",
-        "neck: Amulet of the Dawn",
-        "shoulder: Darkspear Shoulderpads",
-        "back: Darkspear Raider's Cloak",
-        "chest: Heretic Robe",
-        "wrist: Heretic Bindings",
-        "hands: Raider Handwraps",
-        "waist: Knowledge of the Timbermaw",
-        "legs: Heretic Leggings",
-        "feet: Heretic Sandals",
-        "finger1: Elemental Focus Band",
-        "finger2: Signet Ring of the Bronze Dragonflight",
-        "trinket1: Weakness Analyzer",
-        "trinket2: Serenity Field",
-        "main_hand: Staff of Hale Magefire",
-        "ranged: Brilliant Wand"
+        "head: Augural Shroud",
+        "neck: Necklace of Calisea",
+        "shoulder: Feline Mantle",
+        "back: Overseer's Cloak",
+        "chest: Tree Bark Jacket",
+        "wrist: Mindthrust Bracers",
+        "hands: Gnoll Casting Gloves",
+        "waist: Lesser Belt of the Spire",
+        "legs: Silk-threaded Trousers",
+        "feet: Bluegill Sandals",
+        "finger1: Wrath of Cenarius",
+        "finger2: Defias Mage Ring",
+        "trinket1: Darkmoon Card: Heroism",
+        "trinket2: Darkmoon Card: Maelstrom",
+        "main_hand: Runesword of the Red",
+        "off_hand: Lei of the Lifegiver",
+        "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.776043368,
-      "verify_run_seconds": 0.650323286,
+      "weights_run_seconds": 1.260844045,
+      "verify_run_seconds": 1.207120191,
       "coverage": {
         "back": {
           "eligible": 375,
-          "sourced": 310
+          "sourced": 311
         },
         "chest": {
           "eligible": 295,
-          "sourced": 249
+          "sourced": 250
         },
         "feet": {
           "eligible": 189,
-          "sourced": 161
+          "sourced": 162
         },
         "finger1": {
           "eligible": 309,
@@ -7707,11 +7726,11 @@
         },
         "legs": {
           "eligible": 191,
-          "sourced": 158
+          "sourced": 159
         },
         "main_hand": {
           "eligible": 456,
-          "sourced": 325
+          "sourced": 326
         },
         "neck": {
           "eligible": 144,
@@ -7731,23 +7750,23 @@
         },
         "trinket1": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "trinket2": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "waist": {
           "eligible": 177,
-          "sourced": 150
+          "sourced": 151
         },
         "wrist": {
           "eligible": 144,
           "sourced": 115
         }
       },
-      "reference_dps_per_point": -0.1893283096184771,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "weights_reason": "reference stat spell_power measured -0.1893 ± 0.1174 DPS per point at this band's gear - not positive beyond its own error, so no weight this band measured can be trusted"
     }
   ]
 }

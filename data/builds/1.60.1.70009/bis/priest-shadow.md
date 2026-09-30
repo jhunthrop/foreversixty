@@ -8,9 +8,9 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-00000000000000000-443000000000000000)
 
-Set DPS (verified): 23.0. Weights run: 0.5s. Verify run: 0.7s. 126 eligible items had no known source.
+Set DPS (verified): 23.0. Weights run: 0.9s. Verify run: 1.1s. 124 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=-3.036 ± 0.220, crit=0.729 ± 0.038, hit=1.171 ± 0.150, spell_haste=not significant (-0.287 ± 0.238), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=-3.036 ± 0.220, crit=0.729 ± 0.038, hit=1.280 ± 0.028, spell_haste=not significant (-0.287 ± 0.238), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -34,13 +34,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 20:** head: Pristine Circlet; neck: Sentinel's Medallion; shoulder: Reinforced Woolen Shoulders; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Windsong Bangles; hands: Serpent Gloves; waist: Pristine Sash; legs: Silk-threaded Trousers; feet: Spidersilk Boots; finger1: Minor Channeling Ring; finger2: Lorekeeper's Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Evocator's Blade; off_hand: Dwarven Tome; ranged: Cookie's Stirring Rod
 
-No-known-source sample (15 of 126, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 6478 Rat Stompers; 10047 Simple Kilt; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads; 16606 Juju Hex Robes; 16607 Acolyte's Sacrificial Robes; 18851 Insignia of the Horde
+No-known-source sample (15 of 124, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 6478 Rat Stompers; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads; 16606 Juju Hex Robes; 16607 Acolyte's Sacrificial Robes; 18851 Insignia of the Horde; 20434 Lorekeeper's Staff
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-443110501200000000)
 
-Set DPS (verified): 51.5. Weights run: 0.5s. Verify run: 0.5s. 214 eligible items had no known source.
+Set DPS (verified): 51.5. Weights run: 0.7s. Verify run: 0.7s. 212 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.550 ± 0.331, crit=0.803 ± 0.052, hit=3.822 ± 0.217, spell_haste=not significant (-0.760 ± 0.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.550 ± 0.331, crit=0.803 ± 0.052, hit=2.876 ± 0.042, spell_haste=not significant (-0.760 ± 0.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -64,13 +64,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Death Speaker Mantle; back: Cloak of Rot; chest: Green Silk Armor; wrist: Glowing Magical Bracelets; hands: Town Clerk's Mittens; waist: Crimson Silk Belt; legs: Abomination Skin Leggings; feet: Gilded Slippers; finger1: Black Widow Band; finger2: Snake Hoop; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Glimmering Staff; ranged: Necrotic Wand
 
-No-known-source sample (15 of 214, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 10047 Simple Kilt; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade
+No-known-source sample (15 of 212, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads
 
 ### Band 40 (gnome, 000000000000000000-00000000000000000-443110501201300240)
 
-Set DPS (verified): 79.7. Weights run: 0.5s. Verify run: 0.5s. 293 eligible items had no known source.
+Set DPS (verified): 79.7. Weights run: 0.7s. Verify run: 0.8s. 291 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.254 ± 0.524), crit=1.076 ± 0.084, hit=5.292 ± 0.396, spell_haste=not significant (0.657 ± 0.448), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.254 ± 0.524), crit=1.076 ± 0.084, hit=4.022 ± 0.081, spell_haste=not significant (0.657 ± 0.448), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -94,13 +94,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 40:** head: Spellpower Goggles Xtreme; shoulder: Bloodmage Mantle; back: Icy Cloak; chest: Robe of the Magi; wrist: Spidertank Oilrag; hands: Dreamweave Gloves; waist: Highlander's Cloth Girdle; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Lorekeeper's Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Illusionary Rod; ranged: Jaina's Firestarter
 
-No-known-source sample (15 of 293, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 10047 Simple Kilt
+No-known-source sample (15 of 291, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14148 Crystalline Cuffs
 
 ### Band 50 (gnome, 521000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 123.8. Weights run: 0.5s. Verify run: 0.5s. 382 eligible items had no known source.
+Set DPS (verified): 123.8. Weights run: 0.7s. Verify run: 0.7s. 379 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.962 ± 0.656), crit=1.607 ± 0.120, hit=8.647 ± 0.553, spell_haste=not significant (-0.545 ± 0.921), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.962 ± 0.656), crit=1.607 ± 0.120, hit=6.384 ± 0.118, spell_haste=not significant (-0.545 ± 0.921), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -113,56 +113,56 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | 50.2 | yes | Virtuous Hands (226958, -0.27 DPS, sim-verified) [vendor]; Sergeant Major's Dreadweave Gloves (220890, -2.03 DPS) [vendor]; Red Mageweave Gloves (10018, -2.04 DPS) [crafted] |
 | waist | Dawnspire Cord (12466) | Sunken Temple: Morphaz [dungeon] | 43.3 | yes | Deathmage Sash (10771, -0.71 DPS) [dungeon]; Satyrmane Sash (17755, -1.01 DPS) [dungeon]; Highlander's Cloth Girdle (20097, -1.53 DPS, sim-verified) [rep] |
 | legs | Knight's Dreadweave Leggings (220888) | Captain Dirgehammer [vendor] | 58.0 | yes | Kilt of the Atal'ai Prophet (10807, +0.00 DPS, sim-verified) [dungeon]; Red Mageweave Pants (10009, -2.14 DPS) [crafted]; Crimson Silk Pantaloons (7062, -2.56 DPS) [crafted] |
-| feet | Sergeant Major's Dreadweave Boots (220891) | Captain Dirgehammer [vendor] | 112.1 | yes | Southsea Mojo Boots (20641, -0.85 DPS, sim-verified) [quest]; Gilded Sandals (254107, -8.70 DPS) [crafted]; Black Mageweave Boots (10026, -9.11 DPS) [crafted] |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 86.5 | yes | Ogremind Ring (1993, -7.58 DPS) [world_drop]; Voodoo Band (1996, -7.58 DPS) [world_drop]; Mindbender Loop (5009, -7.58 DPS) [world_drop] |
+| feet | Sergeant Major's Dreadweave Boots (220891) | Captain Dirgehammer [vendor] | 89.5 | yes | Southsea Mojo Boots (20641, -0.85 DPS, sim-verified) [quest]; Gilded Sandals (254107, -6.34 DPS) [crafted]; Black Mageweave Boots (10026, -6.75 DPS) [crafted] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 63.8 | yes | Ogremind Ring (1993, -5.22 DPS) [world_drop]; Voodoo Band (1996, -5.22 DPS) [world_drop]; Mindbender Loop (5009, -5.22 DPS) [world_drop] |
 | finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 21.8 | yes | Voodoo Band (1996, -0.84 DPS) [world_drop]; Mindbender Loop (5009, -0.84 DPS) [world_drop]; Ogremind Ring (1993, -1.12 DPS, sim-verified) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (123.5 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Ankh of Life (1713, -0.37 DPS, sim-verified) [world_drop]; Thunderbrew's Boot Flask (744, -0.63 DPS) [quest] |
-| main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | sim-verified (123.5 DPS) | yes | Spellshifter Rod (9527, -0.09 DPS) [quest]; Might of Hakkar (10838, -0.29 DPS) [world]; Hammer of the Northern Wind (810, -2.30 DPS, sim-verified) [world_drop] |
+| main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | sim-verified (123.5 DPS) | yes | Spellshifter Rod (9527, -0.09 DPS) [quest]; Radiant Staff (249453, -0.91 DPS) [crafted]; Hammer of the Northern Wind (810, -2.30 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 503.8 | yes | Noxious Shooter (17745, +0.00 DPS, sim-verified) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world_drop]; Lesser Eternal Wand (249232, -5.92 DPS) [crafted] |
 
 **New at 50:** head: Knight-Lieutenant's Dreadweave Hat; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Darkspear Raider's Cloak; chest: Acumen Robes; wrist: Forgotten Wraps; hands: Raider Handwraps; waist: Dawnspire Cord; legs: Knight's Dreadweave Leggings; feet: Sergeant Major's Dreadweave Boots; finger1: Blackstone Ring; finger2: Philanthropist's Ring; trinket1: Guardian Talisman; trinket2: Uther's Strength; main_hand: Kindling Stave; ranged: Pyric Caduceus
 
-No-known-source sample (15 of 382, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 8708 Hammer of Expertise
+No-known-source sample (15 of 379, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 8708 Hammer of Expertise
 
 ### Band 60 (gnome, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 226.5. Weights run: 0.5s. Verify run: 0.5s. 841 eligible items had no known source.
+Set DPS (verified): 226.5. Weights run: 0.8s. Verify run: 0.8s. 833 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=12.470 ± 0.766, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=10.382 ± 0.166, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Circlet of Revelation (239585) | Leonid Barthalomew the Revered [vendor] | sim-verified (217.0 DPS) | yes | Crown of Revelation (239575, -3.92 DPS) [vendor]; Bloodvine Goggles (19999, -4.59 DPS, sim-verified) [crafted]; Virtuous Cowl (226957, -5.73 DPS) [vendor] |
-| neck | Beads of Ogre Might (22150) | Falrin's Vendetta [quest] | sim-verified (212.5 DPS) | yes | Blazefury Medallion (17111, -0.64 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -9.69 DPS) [quest]; Amulet of the Dawn (22657, -11.52 DPS) [quest] |
-| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | 152.4 | yes | Rugged Mantle of the Timbermaw (227808, +0.00 DPS, sim-verified) [vendor]; Shoulderpads of Revelation (239586, -8.61 DPS) [vendor]; Mantle of the Timbermaw (19050, -9.84 DPS) [crafted] |
-| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 146.5 | yes | Howler's Furs (272414, -2.50 DPS) [vendor]; Stalwart Cloak (272415, -2.50 DPS) [vendor]; Earthweave Cloak (21187, -8.09 DPS, sim-verified) [quest] |
-| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 285.8 | yes | Garb of Revelation (239565, -3.89 DPS, sim-verified) [vendor]; Earthpower Vest (21183, -23.51 DPS) [quest]; Robe of Revelation (239591, -25.24 DPS) [vendor] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 151.7 | yes | Bindings of Revelation (239588, -0.87 DPS, sim-verified) [vendor]; Wrists of Revelation (239583, -11.38 DPS) [vendor]; Dryad's Wrist Bindings (19595, -14.24 DPS) [rep] |
-| hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | sim-verified (218.1 DPS) | yes | Gloves of Spell Mastery (14146, -2.25 DPS) [crafted]; Dreadmist Wraps (16705, -5.64 DPS, sim-verified) [dungeon]; Hands of Revelation (239574, -6.93 DPS) [vendor] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 165.6 | yes | Belt of Revelation (239590, +0.00 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -10.77 DPS) [crafted]; Highlander's Cloth Girdle (20047, -12.29 DPS) [rep] |
-| legs | Bloodvine Leggings (19683) | Tailoring [crafted] | 166.0 | yes | Leggings of Revelation (239587, +0.00 DPS, sim-verified) [vendor]; Magister's Leggings (16687, -4.13 DPS) [dungeon]; Sentinel's Silk Leggings (237815, -5.30 DPS) [vendor] |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 155.3 | yes | Argent Elite Boots (227816, -3.51 DPS) [vendor]; Sergeant Major's Dreadweave Boots (220891, -6.97 DPS, sim-verified) [vendor]; Sandals of Revelation (239589, -8.94 DPS) [vendor] |
-| finger1 | Wrath of Cenarius (21190) | Champion's Battlegear [quest] | sim-verified (212.5 DPS) | yes | Band of Earthen Might (21182, +0.00 DPS) [quest]; Channeler's Ring (272406, +0.00 DPS) [vendor]; Don Julio's Band (19325, -2.01 DPS, sim-verified) [rep] |
-| finger2 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (215.4 DPS) | yes | Don Julio's Band (19325, +0.00 DPS) [rep]; Signet Ring of the Bronze Dragonflight (234028, -0.31 DPS) [vendor]; Band of Earthen Might (21182, -2.94 DPS, sim-verified) [quest] |
-| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (210.2 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.92 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -4.07 DPS, sim-verified) [quest] |
-| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (210.2 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -1.84 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -3.15 DPS, sim-verified) [quest] |
-| main_hand | Persuader (22384) | Blacksmithing [crafted] | sim-verified (212.5 DPS) | yes | Hammer of the Northern Wind (810, +0.00 DPS, sim-verified) [world_drop]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; Swiftstrike Cudgel (11964, -4.64 DPS) [quest] |
-| off_hand | Therazane's Touch (19315) | Stormpike Guard [rep] | 31.0 | yes | Grand Marshal's Tome of Power (23452, +0.00 DPS) [vendor]; Grand Marshal's Tome of Power (234589, +0.00 DPS) [vendor]; Spirit of Aquementas (11904, -1.53 DPS, sim-verified) [quest] |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 674.0 | yes | Wand of Biting Cold (19108, -10.78 DPS, sim-verified) [quest]; Stormrager (16997, -14.34 DPS) [quest]; Brilliant Wand (249385, -16.25 DPS) [crafted] |
+| head | Circlet of Revelation (239585) | Leonid Barthalomew the Revered [vendor] | sim-verified (221.9 DPS) | yes | Bloodvine Goggles (19999, -3.83 DPS, sim-verified) [crafted]; Crown of Revelation (239575, -3.92 DPS) [vendor]; Virtuous Cowl (226957, -5.73 DPS) [vendor] |
+| neck | Beads of Ogre Might (22150) | Falrin's Vendetta [quest] | sim-verified (218.1 DPS) | yes | Blazefury Medallion (17111, -0.29 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -7.29 DPS) [quest]; Amulet of the Dawn (22657, -9.12 DPS) [quest] |
+| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | 131.5 | yes | Rugged Mantle of the Timbermaw (227808, -1.32 DPS, sim-verified) [vendor]; Shoulderpads of Revelation (239586, -6.21 DPS) [vendor]; Mantle of the Timbermaw (19050, -7.44 DPS) [crafted] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 125.6 | yes | Howler's Furs (272414, -2.50 DPS) [vendor]; Stalwart Cloak (272415, -2.50 DPS) [vendor]; Earthweave Cloak (21187, -4.33 DPS, sim-verified) [quest] |
+| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 244.1 | yes | Garb of Revelation (239565, -6.63 DPS, sim-verified) [vendor]; Earthpower Vest (21183, -18.71 DPS) [quest]; Robe of Revelation (239591, -20.44 DPS) [vendor] |
+| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 130.8 | yes | Bindings of Revelation (239588, -1.70 DPS, sim-verified) [vendor]; Wrists of Revelation (239583, -8.98 DPS) [vendor]; Dryad's Wrist Bindings (19595, -11.84 DPS) [rep] |
+| hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | 116.6 | yes | Gloves of Spell Mastery (14146, -2.25 DPS) [crafted]; Dreadmist Wraps (16705, -5.64 DPS, sim-verified) [dungeon]; Hands of Revelation (239574, -6.93 DPS) [vendor] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 144.7 | yes | Belt of Revelation (239590, -0.38 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -8.37 DPS) [crafted]; Highlander's Cloth Girdle (20047, -9.89 DPS) [rep] |
+| legs | Bloodvine Leggings (19683) | Tailoring [crafted] | 145.2 | yes | Leggings of Revelation (239587, +0.00 DPS, sim-verified) [vendor]; Sentinel's Silk Leggings (237815, -2.90 DPS) [vendor]; Magister's Leggings (16687, -3.89 DPS) [dungeon] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 134.4 | yes | Argent Elite Boots (227816, -3.51 DPS) [vendor]; Sergeant Major's Dreadweave Boots (220891, -3.80 DPS, sim-verified) [vendor]; Sandals of Revelation (239589, -6.54 DPS) [vendor] |
+| finger1 | Wrath of Cenarius (21190) | Champion's Battlegear [quest] | sim-verified (218.1 DPS) | yes | Band of Earthen Might (21182, +0.00 DPS) [quest]; Channeler's Ring (272406, +0.00 DPS) [vendor]; Don Julio's Band (19325, -1.92 DPS, sim-verified) [rep] |
+| finger2 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (220.9 DPS) | yes | Don Julio's Band (19325, +0.00 DPS) [rep]; Signet Ring of the Bronze Dragonflight (234028, -0.31 DPS) [vendor]; Band of Earthen Might (21182, -2.85 DPS, sim-verified) [quest] |
+| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (215.9 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Thunderbrew's Boot Flask (744, -1.61 DPS) [quest]; Uther's Strength (11302, -3.41 DPS, sim-verified) [world_drop] |
+| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (215.9 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -2.48 DPS, sim-verified) [world_drop]; Thunderbrew's Boot Flask (744, -2.53 DPS) [quest] |
+| main_hand | Persuader (22384) | Blacksmithing [crafted] | sim-verified (218.1 DPS) | yes | Hammer of the Northern Wind (810, +0.00 DPS, sim-verified) [world_drop]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; Swiftstrike Cudgel (11964, -4.64 DPS) [quest] |
+| off_hand | Therazane's Touch (19315) | Stormpike Guard [rep] | 31.0 | yes | Grand Marshal's Tome of Power (23452, +0.00 DPS) [vendor]; Grand Marshal's Tome of Power (234589, +0.00 DPS) [vendor]; Spirit of Aquementas (11904, -1.55 DPS, sim-verified) [quest] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 674.0 | yes | Wand of Biting Cold (19108, -11.24 DPS, sim-verified) [quest]; Stormrager (16997, -14.34 DPS) [quest]; Brilliant Wand (249385, -16.25 DPS) [crafted] |
 
 **New at 60:** head: Circlet of Revelation; neck: Beads of Ogre Might; shoulder: Virtuous Epaulets; back: Arcanoweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Gloves of Revelation; waist: Knowledge of the Timbermaw; legs: Bloodvine Leggings; feet: Bloodvine Boots; finger1: Wrath of Cenarius; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Serenity Field; trinket2: Weakness Analyzer; main_hand: Persuader; off_hand: Therazane's Touch; ranged: Torch of Light
 
-No-known-source sample (15 of 841, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 8708 Hammer of Expertise
+No-known-source sample (15 of 833, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 8708 Hammer of Expertise
 
 ## Horde
 
 ### Band 20 (undead, 000000000000000000-00000000000000000-443000000000000000)
 
-Set DPS (verified): 27.2. Weights run: 0.5s. Verify run: 0.6s. 124 eligible items had no known source.
+Set DPS (verified): 27.2. Weights run: 0.9s. Verify run: 1.0s. 122 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=-3.036 ± 0.220, crit=0.729 ± 0.038, hit=1.171 ± 0.150, spell_haste=not significant (-0.287 ± 0.238), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=-3.036 ± 0.220, crit=0.729 ± 0.038, hit=1.280 ± 0.028, spell_haste=not significant (-0.287 ± 0.238), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -186,13 +186,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 20:** head: Pristine Circlet; neck: Scout's Medallion; shoulder: Reinforced Woolen Shoulders; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Owlbeard Bracers; hands: Serpent Gloves; waist: Pristine Sash; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Advisor's Ring; finger2: Sludge-Stained Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Evocator's Blade; off_hand: Dwarven Tome; ranged: Cookie's Stirring Rod
 
-No-known-source sample (15 of 124, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 6478 Rat Stompers; 10047 Simple Kilt; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16604 Moon Robes of Elune; 16605 Friar's Robes of the Light; 18862 Insignia of the Alliance; 20425 Advisor's Gnarled Staff; 20441 Scout's Blade; 209613 Insignia of the Alliance; 209621 Insignia of the Horde; 241089 Scarlet Dagger
+No-known-source sample (15 of 122, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 6478 Rat Stompers; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16604 Moon Robes of Elune; 16605 Friar's Robes of the Light; 18862 Insignia of the Alliance; 20425 Advisor's Gnarled Staff; 20441 Scout's Blade; 209613 Insignia of the Alliance; 241089 Scarlet Dagger; 263007 Skyseer's Vest; 263432 Skulker's Shiv
 
 ### Band 30 (undead, 000000000000000000-00000000000000000-443110501200000000)
 
-Set DPS (verified): 47.3. Weights run: 0.5s. Verify run: 0.5s. 212 eligible items had no known source.
+Set DPS (verified): 47.3. Weights run: 0.7s. Verify run: 0.7s. 210 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.550 ± 0.331, crit=0.803 ± 0.052, hit=3.822 ± 0.217, spell_haste=not significant (-0.760 ± 0.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.550 ± 0.331, crit=0.803 ± 0.052, hit=2.876 ± 0.042, spell_haste=not significant (-0.760 ± 0.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -216,13 +216,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Death Speaker Mantle; back: Cloak of Rot; chest: Green Silk Armor; wrist: Glowing Magical Bracelets; hands: Jutebraid Gloves; waist: Crimson Silk Belt; legs: Pristine Leggings; feet: Gilded Slippers; finger1: Black Widow Band; finger2: Snake Hoop; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Glimmering Staff; ranged: Necrotic Wand
 
-No-known-source sample (15 of 212, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 10047 Simple Kilt; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 16604 Moon Robes of Elune; 16605 Friar's Robes of the Light; 18440 Sergeant's Cape
+No-known-source sample (15 of 210, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 16604 Moon Robes of Elune; 16605 Friar's Robes of the Light; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
 
 ### Band 40 (undead, 000000000000000000-00000000000000000-443110501201300240)
 
-Set DPS (verified): 71.9. Weights run: 0.5s. Verify run: 0.5s. 291 eligible items had no known source.
+Set DPS (verified): 71.9. Weights run: 0.7s. Verify run: 0.8s. 289 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.254 ± 0.524), crit=1.076 ± 0.084, hit=5.292 ± 0.396, spell_haste=not significant (0.657 ± 0.448), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.254 ± 0.524), crit=1.076 ± 0.084, hit=4.022 ± 0.081, spell_haste=not significant (0.657 ± 0.448), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -246,13 +246,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 40:** head: Spellpower Goggles Xtreme; shoulder: Bloodmage Mantle; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Spidertank Oilrag; hands: Dreamweave Gloves; waist: Defiler's Cloth Girdle; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Advisor's Ring; trinket1: Rune of Perfection; trinket2: Ankh of Life; main_hand: Illusionary Rod; ranged: Jaina's Firestarter
 
-No-known-source sample (15 of 291, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 10047 Simple Kilt; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape
+No-known-source sample (15 of 289, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 16336 Sergeant Major's Cape
 
 ### Band 50 (undead, 521000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 112.7. Weights run: 0.5s. Verify run: 0.5s. 380 eligible items had no known source.
+Set DPS (verified): 112.7. Weights run: 0.7s. Verify run: 0.7s. 377 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.962 ± 0.656), crit=1.607 ± 0.120, hit=8.647 ± 0.553, spell_haste=not significant (-0.545 ± 0.921), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.962 ± 0.656), crit=1.607 ± 0.120, hit=6.384 ± 0.118, spell_haste=not significant (-0.545 ± 0.921), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -265,46 +265,46 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | 50.2 | yes | Virtuous Hands (226958, -1.27 DPS, sim-verified) [vendor]; First Sergeant's Dreadweave Gloves (220908, -2.03 DPS) [vendor]; Red Mageweave Gloves (10018, -2.04 DPS) [crafted] |
 | waist | Dawnspire Cord (12466) | Sunken Temple: Morphaz [dungeon] | 43.3 | yes | Deathmage Sash (10771, -0.71 DPS) [dungeon]; Satyrmane Sash (17755, -1.01 DPS) [dungeon]; Defiler's Cloth Girdle (20165, -4.35 DPS, sim-verified) [rep] |
 | legs | Stone Guard's Dreadweave Leggings (220906) | Lady Palanseer [vendor] | 58.0 | yes | Kilt of the Atal'ai Prophet (10807, +0.00 DPS, sim-verified) [dungeon]; Red Mageweave Pants (10009, -2.14 DPS) [crafted]; Crimson Silk Pantaloons (7062, -2.56 DPS) [crafted] |
-| feet | First Sergeant's Dreadweave Boots (220909) | Lady Palanseer [vendor] | 112.1 | yes | Southsea Mojo Boots (20641, -0.99 DPS, sim-verified) [quest]; Gilded Sandals (254107, -8.70 DPS) [crafted]; Black Mageweave Boots (10026, -9.11 DPS) [crafted] |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 86.5 | yes | Ogremind Ring (1993, -7.58 DPS) [world_drop]; Voodoo Band (1996, -7.58 DPS) [world_drop]; Mindbender Loop (5009, -7.58 DPS) [world_drop] |
+| feet | First Sergeant's Dreadweave Boots (220909) | Lady Palanseer [vendor] | 89.5 | yes | Southsea Mojo Boots (20641, -0.99 DPS, sim-verified) [quest]; Gilded Sandals (254107, -6.34 DPS) [crafted]; Black Mageweave Boots (10026, -6.75 DPS) [crafted] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 63.8 | yes | Ogremind Ring (1993, -5.22 DPS) [world_drop]; Voodoo Band (1996, -5.22 DPS) [world_drop]; Mindbender Loop (5009, -5.22 DPS) [world_drop] |
 | finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 21.8 | yes | Voodoo Band (1996, -0.84 DPS) [world_drop]; Mindbender Loop (5009, -0.84 DPS) [world_drop]; Ogremind Ring (1993, -1.01 DPS, sim-verified) [world_drop] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (112.2 DPS) | yes | Uther's Strength (11302, -0.31 DPS, sim-verified) [world_drop]; Tidal Charm (1404, -8.11 DPS) [vendor]; Guardian Talisman (1490, -8.11 DPS) [quest] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (112.2 DPS) | yes | Uther's Strength (11302, -0.24 DPS, sim-verified) [world_drop]; Tidal Charm (1404, -6.31 DPS) [vendor]; Guardian Talisman (1490, -6.31 DPS) [quest] |
-| main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | sim-verified (112.2 DPS) | yes | Spellshifter Rod (9527, -0.09 DPS) [quest]; Might of Hakkar (10838, -0.29 DPS) [world]; Hammer of the Northern Wind (810, -3.43 DPS, sim-verified) [world_drop] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (112.2 DPS) | yes | Uther's Strength (11302, -0.31 DPS, sim-verified) [world_drop]; Tidal Charm (1404, -5.99 DPS) [vendor]; Guardian Talisman (1490, -5.99 DPS) [quest] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (112.2 DPS) | yes | Uther's Strength (11302, -0.24 DPS, sim-verified) [world_drop]; Tidal Charm (1404, -4.66 DPS) [vendor]; Guardian Talisman (1490, -4.66 DPS) [quest] |
+| main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | sim-verified (112.2 DPS) | yes | Spellshifter Rod (9527, -0.09 DPS) [quest]; Radiant Staff (249453, -0.91 DPS) [crafted]; Hammer of the Northern Wind (810, -3.43 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 503.8 | yes | Noxious Shooter (17745, +0.00 DPS, sim-verified) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world_drop]; Lesser Eternal Wand (249232, -5.92 DPS) [crafted] |
 
 **New at 50:** head: Blood Guard's Dreadweave Hat; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Forgotten Wraps; hands: Raider Handwraps; waist: Dawnspire Cord; legs: Stone Guard's Dreadweave Leggings; feet: First Sergeant's Dreadweave Boots; finger1: Blackstone Ring; finger2: Philanthropist's Ring; trinket1: Frozen Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Kindling Stave; ranged: Pyric Caduceus
 
-No-known-source sample (15 of 380, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 9653 Speedy Racer Goggles; 10047 Simple Kilt
+No-known-source sample (15 of 377, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 9653 Speedy Racer Goggles; 10782 Hakkari Shroud
 
 ### Band 60 (undead, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 208.7. Weights run: 0.5s. Verify run: 0.5s. 840 eligible items had no known source.
+Set DPS (verified): 215.7. Weights run: 0.8s. Verify run: 0.8s. 832 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=12.470 ± 0.766, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=10.382 ± 0.166, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Circlet of Revelation (239585) | Leonid Barthalomew the Revered [vendor] | sim-verified (196.9 DPS) | yes | Crown of Revelation (239575, -3.92 DPS) [vendor]; Bloodvine Goggles (19999, -5.19 DPS, sim-verified) [crafted]; Virtuous Cowl (226957, -5.73 DPS) [vendor] |
-| neck | Beads of Ogre Might (22150) | Falrin's Vendetta [quest] | sim-verified (191.5 DPS) | yes | Blazefury Medallion (17111, -0.27 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -9.69 DPS) [quest]; Amulet of the Dawn (22657, -11.52 DPS) [quest] |
-| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | 152.4 | yes | Rugged Mantle of the Timbermaw (227808, +0.00 DPS, sim-verified) [vendor]; Shoulderpads of Revelation (239586, -8.61 DPS) [vendor]; Mantle of the Timbermaw (19050, -9.84 DPS) [crafted] |
-| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 146.5 | yes | Howler's Furs (272414, -2.50 DPS) [vendor]; Stalwart Cloak (272415, -2.50 DPS) [vendor]; Earthweave Cloak (21187, -6.35 DPS, sim-verified) [quest] |
-| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 285.8 | yes | Garb of Revelation (239565, -3.61 DPS, sim-verified) [vendor]; Earthpower Vest (21183, -23.51 DPS) [quest]; Robe of Revelation (239591, -25.24 DPS) [vendor] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 151.7 | yes | Bindings of Revelation (239588, +0.00 DPS, sim-verified) [vendor]; Wrists of Revelation (239583, -11.38 DPS) [vendor]; Dryad's Wrist Bindings (19595, -14.24 DPS) [rep] |
-| hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | sim-verified (195.2 DPS) | yes | Gloves of Spell Mastery (14146, -2.25 DPS) [crafted]; Dreadmist Wraps (16705, -3.51 DPS, sim-verified) [dungeon]; Hands of Revelation (239574, -6.93 DPS) [vendor] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 165.6 | yes | Belt of Revelation (239590, +0.00 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -10.77 DPS) [crafted]; Defiler's Cloth Girdle (20163, -12.29 DPS) [rep] |
-| legs | Bloodvine Leggings (19683) | Tailoring [crafted] | 166.0 | yes | Leggings of Revelation (239587, +0.00 DPS, sim-verified) [vendor]; Magister's Leggings (16687, -4.13 DPS) [dungeon]; Sentinel's Silk Leggings (237815, -5.30 DPS) [vendor] |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 155.3 | yes | Argent Elite Boots (227816, -3.51 DPS) [vendor]; First Sergeant's Dreadweave Boots (220909, -5.70 DPS, sim-verified) [vendor]; Sandals of Revelation (239589, -8.94 DPS) [vendor] |
-| finger1 | Wrath of Cenarius (21190) | Champion's Battlegear [quest] | sim-verified (191.5 DPS) | yes | Band of Earthen Might (21182, +0.00 DPS) [quest]; Channeler's Ring (272406, +0.00 DPS) [vendor]; Don Julio's Band (19325, -1.51 DPS, sim-verified) [rep] |
-| finger2 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (195.3 DPS) | yes | Don Julio's Band (19325, +0.00 DPS) [rep]; Signet Ring of the Bronze Dragonflight (234028, -0.31 DPS) [vendor]; Band of Earthen Might (21182, -3.52 DPS, sim-verified) [quest] |
-| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (187.1 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.92 DPS) [world_drop] |
-| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (189.9 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -2.11 DPS, sim-verified) [world_drop] |
-| main_hand | Persuader (22384) | Blacksmithing [crafted] | sim-verified (191.5 DPS) | yes | Hammer of the Northern Wind (810, +0.00 DPS, sim-verified) [world_drop]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Swiftstrike Cudgel (11964, -4.64 DPS) [quest] |
+| head | Circlet of Revelation (239585) | Leonid Barthalomew the Revered [vendor] | sim-verified (200.7 DPS) | yes | Crown of Revelation (239575, -3.92 DPS) [vendor]; Bloodvine Goggles (19999, -5.40 DPS, sim-verified) [crafted]; Virtuous Cowl (226957, -5.73 DPS) [vendor] |
+| neck | Beads of Ogre Might (22150) | Falrin's Vendetta [quest] | sim-verified (194.8 DPS) | yes | Blazefury Medallion (17111, -0.34 DPS, sim-verified) [world]; Medallion of the Dawn (22659, -7.29 DPS) [quest]; Amulet of the Dawn (22657, -9.12 DPS) [quest] |
+| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | 131.5 | yes | Rugged Mantle of the Timbermaw (227808, +0.00 DPS, sim-verified) [vendor]; Shoulderpads of Revelation (239586, -6.21 DPS) [vendor]; Mantle of the Timbermaw (19050, -7.44 DPS) [crafted] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 125.6 | yes | Earthweave Cloak (21187, -2.42 DPS, sim-verified) [quest]; Howler's Furs (272414, -2.50 DPS) [vendor]; Stalwart Cloak (272415, -2.50 DPS) [vendor] |
+| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 244.1 | yes | Garb of Revelation (239565, -3.35 DPS, sim-verified) [vendor]; Earthpower Vest (21183, -18.71 DPS) [quest]; Robe of Revelation (239591, -20.44 DPS) [vendor] |
+| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 130.8 | yes | Bindings of Revelation (239588, +0.00 DPS, sim-verified) [vendor]; Wrists of Revelation (239583, -8.98 DPS) [vendor]; Dryad's Wrist Bindings (19595, -11.84 DPS) [rep] |
+| hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | 116.6 | yes | Gloves of Spell Mastery (14146, -2.25 DPS) [crafted]; Dreadmist Wraps (16705, -3.51 DPS, sim-verified) [dungeon]; Hands of Revelation (239574, -6.93 DPS) [vendor] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 144.7 | yes | Belt of Revelation (239590, +0.00 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -8.37 DPS) [crafted]; Defiler's Cloth Girdle (20163, -9.89 DPS) [rep] |
+| legs | Leggings of Revelation (239587) | Leonid Barthalomew the Revered [vendor] | sim-verified (201.0 DPS) | yes | Sentinel's Silk Leggings (237815, -1.29 DPS) [vendor]; Magister's Leggings (16687, -2.28 DPS) [dungeon]; Bloodvine Leggings (19683, -5.74 DPS, sim-verified) [crafted] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 134.4 | yes | First Sergeant's Dreadweave Boots (220909, -1.53 DPS, sim-verified) [vendor]; Argent Elite Boots (227816, -3.51 DPS) [vendor]; Sandals of Revelation (239589, -6.54 DPS) [vendor] |
+| finger1 | Wrath of Cenarius (21190) | Champion's Battlegear [quest] | sim-verified (194.8 DPS) | yes | Band of Earthen Might (21182, +0.00 DPS) [quest]; Channeler's Ring (272406, +0.00 DPS) [vendor]; Don Julio's Band (19325, -1.30 DPS, sim-verified) [rep] |
+| finger2 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (199.6 DPS) | yes | Don Julio's Band (19325, +0.00 DPS) [rep]; Signet Ring of the Bronze Dragonflight (234028, -0.31 DPS) [vendor]; Band of Earthen Might (21182, -4.36 DPS, sim-verified) [quest] |
+| trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (191.0 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.92 DPS) [world_drop] |
+| trinket2 | Weakness Analyzer (272438) | Pix Xizzix [vendor] | sim-verified (193.6 DPS) | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -2.11 DPS, sim-verified) [world_drop] |
+| main_hand | Persuader (22384) | Blacksmithing [crafted] | sim-verified (194.8 DPS) | yes | Hammer of the Northern Wind (810, +0.00 DPS, sim-verified) [world_drop]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Swiftstrike Cudgel (11964, -4.64 DPS) [quest] |
 | off_hand | Therazane's Touch (19315) | Frostwolf Clan [rep] | 31.0 | yes | High Warlord's Tome of Destruction (23468, +0.00 DPS) [vendor]; High Warlord's Tome of Destruction (234563, +0.00 DPS) [vendor]; Spirit of Aquementas (11904, -1.32 DPS, sim-verified) [quest] |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 674.0 | yes | Wand of Biting Cold (19108, -7.09 DPS, sim-verified) [quest]; Stormrager (16997, -14.34 DPS) [quest]; Brilliant Wand (249385, -16.25 DPS) [crafted] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 674.0 | yes | Wand of Biting Cold (19108, -5.73 DPS, sim-verified) [quest]; Stormrager (16997, -14.34 DPS) [quest]; Brilliant Wand (249385, -16.25 DPS) [crafted] |
 
-**New at 60:** head: Circlet of Revelation; neck: Beads of Ogre Might; shoulder: Virtuous Epaulets; back: Arcanoweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Gloves of Revelation; waist: Knowledge of the Timbermaw; legs: Bloodvine Leggings; feet: Bloodvine Boots; finger1: Wrath of Cenarius; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Serenity Field; trinket2: Weakness Analyzer; main_hand: Persuader; off_hand: Therazane's Touch; ranged: Torch of Light
+**New at 60:** head: Circlet of Revelation; neck: Beads of Ogre Might; shoulder: Virtuous Epaulets; back: Arcanoweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Gloves of Revelation; waist: Knowledge of the Timbermaw; legs: Leggings of Revelation; feet: Bloodvine Boots; finger1: Wrath of Cenarius; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Serenity Field; trinket2: Weakness Analyzer; main_hand: Persuader; off_hand: Therazane's Touch; ranged: Torch of Light
 
-No-known-source sample (15 of 840, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 9653 Speedy Racer Goggles; 10047 Simple Kilt
+No-known-source sample (15 of 832, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 9653 Speedy Racer Goggles; 10782 Hakkari Shroud
 

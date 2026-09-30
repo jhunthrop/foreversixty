@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T06:08:52Z",
+  "engine_version": "24405233d",
+  "generated_at": "2026-09-30T07:08:14Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -32,8 +32,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.2055744070575842,
-          "error": 0.06155231061363451,
+          "weight": 1.0959441572818378,
+          "error": 0.010825678116827914,
           "insignificant": false
         },
         {
@@ -975,7 +975,7 @@
         }
       ],
       "set_dps": 38.26278319792465,
-      "no_source_count": 128,
+      "no_source_count": 126,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -983,7 +983,6 @@
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
         "6478 Rat Stompers",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14145 Cursed Felblade",
         "14148 Crystalline Cuffs",
@@ -991,7 +990,8 @@
         "14150 Robe of Evocation",
         "14151 Chanting Blade",
         "14389 Durability Shoulderpads",
-        "18852 Insignia of the Horde"
+        "18852 Insignia of the Horde",
+        "20434 Lorekeeper's Staff"
       ],
       "new_at_band": [
         "head: Pristine Circlet",
@@ -1012,8 +1012,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.76550678,
-      "verify_run_seconds": 0.798123278,
+      "weights_run_seconds": 1.364361437,
+      "verify_run_seconds": 1.333762784,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1045,7 +1045,7 @@
         },
         "legs": {
           "eligible": 51,
-          "sourced": 45
+          "sourced": 46
         },
         "main_hand": {
           "eligible": 142,
@@ -1069,11 +1069,11 @@
         },
         "trinket1": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "trinket2": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "waist": {
           "eligible": 39,
@@ -1115,8 +1115,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.2055744070575842,
-          "error": 0.06155231061363451,
+          "weight": 1.0959441572818378,
+          "error": 0.010825678116827914,
           "insignificant": false
         },
         {
@@ -2078,13 +2078,12 @@
         }
       ],
       "set_dps": 36.564960714193646,
-      "no_source_count": 124,
+      "no_source_count": 122,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
         "3738 Brewing Rod",
         "6478 Rat Stompers",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14389 Durability Shoulderpads",
         "15401 Welldrip Gloves",
@@ -2093,8 +2092,9 @@
         "20430 Legionnaire's Sword",
         "20441 Scout's Blade",
         "209615 Insignia of the Alliance",
-        "209620 Insignia of the Horde",
-        "241089 Scarlet Dagger"
+        "241089 Scarlet Dagger",
+        "254779 A'sharahm, the Roiling Tempest",
+        "263007 Skyseer's Vest"
       ],
       "new_at_band": [
         "head: Pristine Circlet",
@@ -2115,8 +2115,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.76550678,
-      "verify_run_seconds": 0.821392797,
+      "weights_run_seconds": 1.364361437,
+      "verify_run_seconds": 1.384119413,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2148,7 +2148,7 @@
         },
         "legs": {
           "eligible": 51,
-          "sourced": 45
+          "sourced": 46
         },
         "main_hand": {
           "eligible": 145,
@@ -2172,11 +2172,11 @@
         },
         "trinket1": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "trinket2": {
           "eligible": 12,
-          "sourced": 4
+          "sourced": 5
         },
         "waist": {
           "eligible": 39,
@@ -2218,8 +2218,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.4473551735748547,
-          "error": 0.09324057853438661,
+          "weight": 1.1465638667660956,
+          "error": 0.012647298683106802,
           "insignificant": false
         },
         {
@@ -2771,7 +2771,7 @@
         }
       ],
       "set_dps": 57.33787879864004,
-      "no_source_count": 218,
+      "no_source_count": 216,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2783,11 +2783,11 @@
         "5971 Feathered Cape",
         "6478 Rat Stompers",
         "9362 Brilliant Gold Ring",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14145 Cursed Felblade",
         "14148 Crystalline Cuffs",
-        "14149 Subterranean Cape"
+        "14149 Subterranean Cape",
+        "14150 Robe of Evocation"
       ],
       "new_at_band": [
         "head: Enchanter's Cowl",
@@ -2807,8 +2807,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.774804232,
-      "verify_run_seconds": 0.787777174,
+      "weights_run_seconds": 1.371413435,
+      "verify_run_seconds": 1.311528861,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2840,7 +2840,7 @@
         },
         "legs": {
           "eligible": 81,
-          "sourced": 74
+          "sourced": 75
         },
         "main_hand": {
           "eligible": 225,
@@ -2864,11 +2864,11 @@
         },
         "trinket1": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "trinket2": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "waist": {
           "eligible": 66,
@@ -2910,8 +2910,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.4473551735748547,
-          "error": 0.09324057853438661,
+          "weight": 1.1465638667660956,
+          "error": 0.012647298683106802,
           "insignificant": false
         },
         {
@@ -3469,7 +3469,7 @@
         }
       ],
       "set_dps": 55.30769611340914,
-      "no_source_count": 214,
+      "no_source_count": 212,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3480,12 +3480,12 @@
         "5971 Feathered Cape",
         "6478 Rat Stompers",
         "9362 Brilliant Gold Ring",
-        "10047 Simple Kilt",
         "10049 Diabolist's Blade",
         "14389 Durability Shoulderpads",
         "15401 Welldrip Gloves",
         "16315 Sergeant Major's Cape",
-        "18440 Sergeant's Cape"
+        "18440 Sergeant's Cape",
+        "18442 Master Sergeant's Insignia"
       ],
       "new_at_band": [
         "head: Enchanter's Cowl",
@@ -3505,8 +3505,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.774804232,
-      "verify_run_seconds": 0.843083236,
+      "weights_run_seconds": 1.371413435,
+      "verify_run_seconds": 1.272909467,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3538,7 +3538,7 @@
         },
         "legs": {
           "eligible": 79,
-          "sourced": 72
+          "sourced": 73
         },
         "main_hand": {
           "eligible": 225,
@@ -3562,11 +3562,11 @@
         },
         "trinket1": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "trinket2": {
           "eligible": 21,
-          "sourced": 8
+          "sourced": 9
         },
         "waist": {
           "eligible": 68,
@@ -3608,8 +3608,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.103548859873373,
-          "error": 0.07816984670786367,
+          "weight": 1.0336607342099482,
+          "error": 0.012727562967553462,
           "insignificant": false
         },
         {
@@ -4068,7 +4068,7 @@
           "item_name": "Staff of Dar'Orahil",
           "source": "The Completed Orb of Dar'Orahil",
           "source_kind": "quest",
-          "score": 21.951927859903208,
+          "score": 21.25304660326896,
           "verified": true,
           "alternatives": [
             {
@@ -4085,14 +4085,14 @@
               "item_name": "Illusionary Rod",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -2.9637653469609546
+              "dps_delta": -2.768036075226945
             },
             {
               "item_id": 873,
               "item_name": "Staff of Jordan",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.0906082058364834
+              "dps_delta": -2.894878934102474
             }
           ]
         },
@@ -4138,7 +4138,7 @@
         }
       ],
       "set_dps": 110.0380924985674,
-      "no_source_count": 295,
+      "no_source_count": 293,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4173,8 +4173,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.679693647,
-      "verify_run_seconds": 0.719560368,
+      "weights_run_seconds": 1.071439776,
+      "verify_run_seconds": 1.046086967,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4206,7 +4206,7 @@
         },
         "legs": {
           "eligible": 106,
-          "sourced": 95
+          "sourced": 96
         },
         "main_hand": {
           "eligible": 283,
@@ -4230,11 +4230,11 @@
         },
         "trinket1": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "trinket2": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "waist": {
           "eligible": 98,
@@ -4276,8 +4276,8 @@
         },
         {
           "stat": "hit",
-          "weight": 1.103548859873373,
-          "error": 0.07816984670786367,
+          "weight": 1.0336607342099482,
+          "error": 0.012727562967553462,
           "insignificant": false
         },
         {
@@ -4731,7 +4731,7 @@
           "item_name": "Staff of Dar'Orahil",
           "source": "The Completed Orb of Dar'Orahil",
           "source_kind": "quest",
-          "score": 21.951927859903208,
+          "score": 21.25304660326896,
           "verified": true,
           "alternatives": [
             {
@@ -4748,14 +4748,14 @@
               "item_name": "Illusionary Rod",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -2.9637653469609546
+              "dps_delta": -2.768036075226945
             },
             {
               "item_id": 873,
               "item_name": "Staff of Jordan",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.0906082058364834
+              "dps_delta": -2.894878934102474
             }
           ]
         },
@@ -4801,7 +4801,7 @@
         }
       ],
       "set_dps": 107.84212145137161,
-      "no_source_count": 291,
+      "no_source_count": 289,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4816,8 +4816,8 @@
         "6478 Rat Stompers",
         "9362 Brilliant Gold Ring",
         "9718 Reforged Blade of Heroes",
-        "10047 Simple Kilt",
-        "10049 Diabolist's Blade"
+        "10049 Diabolist's Blade",
+        "14389 Durability Shoulderpads"
       ],
       "new_at_band": [
         "head: Spellpower Goggles Xtreme",
@@ -4835,8 +4835,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.679693647,
-      "verify_run_seconds": 0.713429368,
+      "weights_run_seconds": 1.071439776,
+      "verify_run_seconds": 1.131862311,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4868,7 +4868,7 @@
         },
         "legs": {
           "eligible": 105,
-          "sourced": 94
+          "sourced": 95
         },
         "main_hand": {
           "eligible": 284,
@@ -4892,11 +4892,11 @@
         },
         "trinket1": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "trinket2": {
           "eligible": 32,
-          "sourced": 15
+          "sourced": 16
         },
         "waist": {
           "eligible": 99,
@@ -4938,8 +4938,8 @@
         },
         {
           "stat": "hit",
-          "weight": 2.450061798891815,
-          "error": 0.1549513339999194,
+          "weight": 2.026575588129283,
+          "error": 0.02978492181591897,
           "insignificant": false
         },
         {
@@ -5316,7 +5316,7 @@
           "item_name": "Blackstone Ring",
           "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "score": 24.50061798891815,
+          "score": 20.26575588129283,
           "verified": true,
           "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, 175.9 vs 174.6 set DPS",
           "alternatives": [
@@ -5325,21 +5325,21 @@
               "item_name": "Lorekeeper's Ring",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -3.504577937048121
+              "dps_delta": -2.317324289109933
             },
             {
               "item_id": 281635,
               "item_name": "Philanthropist's Ring",
               "source_kind": "quest",
               "source": "Greater Friend of the Library",
-              "dps_delta": -3.731208879247639
+              "dps_delta": -2.5439552313094516
             },
             {
               "item_id": 19524,
               "item_name": "Lorekeeper's Ring",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -4.345635060821108
+              "dps_delta": -3.15838141288292
             }
           ]
         },
@@ -5476,7 +5476,7 @@
               "item_name": "Kindling Stave",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -5.299713333785466
+              "dps_delta": -4.112459685847278
             }
           ]
         },
@@ -5522,7 +5522,7 @@
         }
       ],
       "set_dps": 187.32754882992788,
-      "no_source_count": 376,
+      "no_source_count": 373,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5553,8 +5553,8 @@
         "main_hand: Soul Harvester",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.737361195,
-      "verify_run_seconds": 0.788154984,
+      "weights_run_seconds": 1.157116221,
+      "verify_run_seconds": 1.112498523,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5586,7 +5586,7 @@
         },
         "legs": {
           "eligible": 129,
-          "sourced": 116
+          "sourced": 117
         },
         "main_hand": {
           "eligible": 335,
@@ -5610,11 +5610,11 @@
         },
         "trinket1": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "trinket2": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "waist": {
           "eligible": 128,
@@ -5656,8 +5656,8 @@
         },
         {
           "stat": "hit",
-          "weight": 2.450061798891815,
-          "error": 0.1549513339999194,
+          "weight": 2.026575588129283,
+          "error": 0.02978492181591897,
           "insignificant": false
         },
         {
@@ -6029,7 +6029,7 @@
           "item_name": "Blackstone Ring",
           "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "score": 24.50061798891815,
+          "score": 20.26575588129283,
           "verified": true,
           "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, 172.5 vs 171.5 set DPS",
           "alternatives": [
@@ -6038,21 +6038,21 @@
               "item_name": "Advisor's Ring",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -3.504577937048121
+              "dps_delta": -2.317324289109933
             },
             {
               "item_id": 281635,
               "item_name": "Philanthropist's Ring",
               "source_kind": "quest",
               "source": "Greater Friend of the Library",
-              "dps_delta": -3.731208879247639
+              "dps_delta": -2.5439552313094516
             },
             {
               "item_id": 19520,
               "item_name": "Advisor's Ring",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -4.345635060821108
+              "dps_delta": -3.15838141288292
             }
           ]
         },
@@ -6154,7 +6154,7 @@
               "item_name": "Tidal Charm",
               "source_kind": "vendor",
               "source": "Barebones",
-              "dps_delta": -4.808164502498048
+              "dps_delta": -3.977086948941317
             }
           ]
         },
@@ -6188,7 +6188,7 @@
               "item_name": "Kindling Stave",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -5.299713333785466
+              "dps_delta": -4.112459685847278
             }
           ]
         },
@@ -6234,7 +6234,7 @@
         }
       ],
       "set_dps": 185.14716588658172,
-      "no_source_count": 372,
+      "no_source_count": 369,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6265,8 +6265,8 @@
         "main_hand: Soul Harvester",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.737361195,
-      "verify_run_seconds": 0.789433946,
+      "weights_run_seconds": 1.157116221,
+      "verify_run_seconds": 1.132926896,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6298,7 +6298,7 @@
         },
         "legs": {
           "eligible": 128,
-          "sourced": 115
+          "sourced": 116
         },
         "main_hand": {
           "eligible": 336,
@@ -6322,11 +6322,11 @@
         },
         "trinket1": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "trinket2": {
           "eligible": 70,
-          "sourced": 38
+          "sourced": 40
         },
         "waist": {
           "eligible": 129,
@@ -6368,8 +6368,8 @@
         },
         {
           "stat": "hit",
-          "weight": 6.400616659050839,
-          "error": 0.5160505366634736,
+          "weight": 6.179673039638021,
+          "error": 0.07921459853582372,
           "insignificant": false
         },
         {
@@ -6398,7 +6398,7 @@
           "item_name": "Heretic Cowl",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 217.9933925302879,
+          "score": 213.57452014203153,
           "verified": true,
           "alternatives": [
             {
@@ -6406,14 +6406,14 @@
               "item_name": "Deathmist Mask",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -19.72354211139322
+              "dps_delta": -19.403086219185944
             },
             {
               "item_id": 22074,
               "item_name": "Deathmist Mask",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -20.013621447523327
+              "dps_delta": -19.693165555316053
             },
             {
               "item_id": 19999,
@@ -6449,14 +6449,14 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -5.225069596277051
+              "dps_delta": -4.904613704069783
             },
             {
               "item_id": 19426,
               "item_name": "Orb of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Orb of the Darkmoon",
-              "dps_delta": -6.092560458972726
+              "dps_delta": -5.772104566765458
             }
           ]
         },
@@ -6466,7 +6466,7 @@
           "item_name": "Heretic Shoulderpads",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 131.9872259397795,
+          "score": 129.77778974565132,
           "verified": true,
           "alternatives": [
             {
@@ -6483,14 +6483,14 @@
               "item_name": "Heretic Mantle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -11.894147181574914
+              "dps_delta": -11.573691289367645
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -12.619345521900188
+              "dps_delta": -12.298889629692917
             }
           ]
         },
@@ -6500,7 +6500,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 80.00616659050839,
+          "score": 77.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -6543,7 +6543,7 @@
               "item_name": "Heretic Garb",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.4467551347154648
+              "dps_delta": -1.7672110269227328
             },
             {
               "item_id": 21183,
@@ -6569,7 +6569,7 @@
           "item_name": "Rockfury Bracers",
           "source": "Stalwart's Battlegear",
           "source_kind": "quest",
-          "score": 91.00616659050839,
+          "score": 88.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -6593,7 +6593,7 @@
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -10.008631496729203
+              "dps_delta": -9.688175604521936
             }
           ]
         },
@@ -6603,7 +6603,7 @@
           "item_name": "Heretic Gloves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.00616659050839,
+          "score": 98.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -6618,7 +6618,7 @@
               "item_name": "Gloves of Spell Mastery",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -5.227816741971704
+              "dps_delta": -4.907360849764436
             },
             {
               "item_id": 22077,
@@ -6637,7 +6637,7 @@
           "item_name": "Heretic Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 159.96828528905064,
+          "score": 157.75884909492245,
           "verified": true,
           "alternatives": [
             {
@@ -6654,14 +6654,14 @@
               "item_name": "Knowledge of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -10.29232214122958
+              "dps_delta": -10.292322141229578
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -16.242590077831906
+              "dps_delta": -15.922134185624634
             }
           ]
         },
@@ -6671,7 +6671,7 @@
           "item_name": "Heretic Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 174.96828528905064,
+          "score": 172.75884909492245,
           "verified": true,
           "alternatives": [
             {
@@ -6679,14 +6679,14 @@
               "item_name": "Bloodvine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -10.727441145424743
+              "dps_delta": -10.727441145424741
             },
             {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -12.61934552190019
+              "dps_delta": -12.298889629692919
             },
             {
               "item_id": 240149,
@@ -6705,7 +6705,7 @@
           "item_name": "Heretic Sandals",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 100.00616659050839,
+          "score": 97.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -6946,7 +6946,7 @@
         }
       ],
       "set_dps": 382.479320410048,
-      "no_source_count": 777,
+      "no_source_count": 769,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6982,20 +6982,20 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.754855846,
-      "verify_run_seconds": 0.762080996,
+      "weights_run_seconds": 1.190443782,
+      "verify_run_seconds": 1.17753648,
       "coverage": {
         "back": {
           "eligible": 370,
-          "sourced": 304
+          "sourced": 305
         },
         "chest": {
           "eligible": 298,
-          "sourced": 254
+          "sourced": 255
         },
         "feet": {
           "eligible": 189,
-          "sourced": 161
+          "sourced": 162
         },
         "finger1": {
           "eligible": 309,
@@ -7015,11 +7015,11 @@
         },
         "legs": {
           "eligible": 192,
-          "sourced": 159
+          "sourced": 160
         },
         "main_hand": {
           "eligible": 454,
-          "sourced": 318
+          "sourced": 319
         },
         "neck": {
           "eligible": 142,
@@ -7039,15 +7039,15 @@
         },
         "trinket1": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "trinket2": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "waist": {
           "eligible": 177,
-          "sourced": 151
+          "sourced": 152
         },
         "wrist": {
           "eligible": 143,
@@ -7085,8 +7085,8 @@
         },
         {
           "stat": "hit",
-          "weight": 6.400616659050839,
-          "error": 0.5160505366634736,
+          "weight": 6.179673039638021,
+          "error": 0.07921459853582372,
           "insignificant": false
         },
         {
@@ -7115,7 +7115,7 @@
           "item_name": "Heretic Cowl",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 217.9933925302879,
+          "score": 213.57452014203156,
           "verified": true,
           "alternatives": [
             {
@@ -7123,14 +7123,14 @@
               "item_name": "Deathmist Mask",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -19.72354211139322
+              "dps_delta": -19.403086219185948
             },
             {
               "item_id": 22074,
               "item_name": "Deathmist Mask",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -20.013621447523327
+              "dps_delta": -19.693165555316057
             },
             {
               "item_id": 19999,
@@ -7166,14 +7166,14 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -5.225069596277051
+              "dps_delta": -4.904613704069783
             },
             {
               "item_id": 19426,
               "item_name": "Orb of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Orb of the Darkmoon",
-              "dps_delta": -6.092560458972726
+              "dps_delta": -5.772104566765458
             }
           ]
         },
@@ -7183,7 +7183,7 @@
           "item_name": "Heretic Shoulderpads",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 131.9872259397795,
+          "score": 129.77778974565132,
           "verified": true,
           "alternatives": [
             {
@@ -7200,14 +7200,14 @@
               "item_name": "Heretic Mantle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -11.894147181574914
+              "dps_delta": -11.573691289367645
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -12.619345521900188
+              "dps_delta": -12.298889629692917
             }
           ]
         },
@@ -7217,7 +7217,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 80.00616659050839,
+          "score": 77.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -7260,7 +7260,7 @@
               "item_name": "Heretic Garb",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.4467551347154648
+              "dps_delta": -1.7672110269227328
             },
             {
               "item_id": 21183,
@@ -7286,7 +7286,7 @@
           "item_name": "Rockfury Bracers",
           "source": "Stalwart's Battlegear",
           "source_kind": "quest",
-          "score": 91.00616659050839,
+          "score": 88.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -7310,7 +7310,7 @@
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -10.008631496729203
+              "dps_delta": -9.688175604521936
             }
           ]
         },
@@ -7320,7 +7320,7 @@
           "item_name": "Heretic Gloves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.00616659050839,
+          "score": 98.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -7335,7 +7335,7 @@
               "item_name": "Gloves of Spell Mastery",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -5.227816741971704
+              "dps_delta": -4.907360849764436
             },
             {
               "item_id": 22077,
@@ -7354,7 +7354,7 @@
           "item_name": "Heretic Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 159.96828528905064,
+          "score": 157.75884909492245,
           "verified": true,
           "alternatives": [
             {
@@ -7371,14 +7371,14 @@
               "item_name": "Knowledge of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -10.29232214122958
+              "dps_delta": -10.292322141229578
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -16.242590077831906
+              "dps_delta": -15.922134185624634
             }
           ]
         },
@@ -7388,7 +7388,7 @@
           "item_name": "Heretic Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 174.96828528905064,
+          "score": 172.75884909492245,
           "verified": true,
           "alternatives": [
             {
@@ -7396,14 +7396,14 @@
               "item_name": "Bloodvine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -10.727441145424743
+              "dps_delta": -10.727441145424741
             },
             {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -12.61934552190019
+              "dps_delta": -12.298889629692919
             },
             {
               "item_id": 240149,
@@ -7422,7 +7422,7 @@
           "item_name": "Heretic Sandals",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 100.00616659050839,
+          "score": 97.79673039638021,
           "verified": true,
           "alternatives": [
             {
@@ -7662,7 +7662,7 @@
         }
       ],
       "set_dps": 369.3986666815805,
-      "no_source_count": 774,
+      "no_source_count": 766,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7698,20 +7698,20 @@
         "main_hand: Shortsword of Vengeance",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.754855846,
-      "verify_run_seconds": 0.737219117,
+      "weights_run_seconds": 1.190443782,
+      "verify_run_seconds": 1.198485708,
       "coverage": {
         "back": {
           "eligible": 375,
-          "sourced": 310
+          "sourced": 311
         },
         "chest": {
           "eligible": 295,
-          "sourced": 249
+          "sourced": 250
         },
         "feet": {
           "eligible": 189,
-          "sourced": 161
+          "sourced": 162
         },
         "finger1": {
           "eligible": 309,
@@ -7731,11 +7731,11 @@
         },
         "legs": {
           "eligible": 191,
-          "sourced": 158
+          "sourced": 159
         },
         "main_hand": {
           "eligible": 456,
-          "sourced": 325
+          "sourced": 326
         },
         "neck": {
           "eligible": 144,
@@ -7755,15 +7755,15 @@
         },
         "trinket1": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "trinket2": {
           "eligible": 142,
-          "sourced": 74
+          "sourced": 76
         },
         "waist": {
           "eligible": 177,
-          "sourced": 150
+          "sourced": 151
         },
         "wrist": {
           "eligible": 144,

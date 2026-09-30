@@ -8,9 +8,9 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 35300000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 29.6. Weights run: 0.9s. Verify run: 0.8s. 247 eligible items had no known source.
+Set DPS (verified): 29.6. Weights run: 1.6s. Verify run: 1.4s. 242 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.045, strength=2.084 ± 0.056, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=not significant (0.000 ± 0.000), melee_haste=1.835 ± 0.076
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.045, strength=2.084 ± 0.056, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=0.529 ± 0.020, melee_haste=1.835 ± 0.076
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -34,13 +34,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Sentinel's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Thorbia's Gauntlets; waist: Blackened Defias Belt; legs: Chausses of Westfall; feet: Veteran's Boots; finger1: Demon Band; finger2: Protector's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Forsaken Greataxe; ranged: Dwarven Fishing Pole
 
-No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6478 Rat Stompers; 7955 Copper Claymore; 7956 Bronze Warhammer; 9602 Brushwood Blade
+No-known-source sample (15 of 242, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6478 Rat Stompers; 9602 Brushwood Blade; 14145 Cursed Felblade; 14147 Cavedweller Bracers
 
 ### Band 30 (human, 35325210000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 70.5. Weights run: 1.0s. Verify run: 0.9s. 422 eligible items had no known source.
+Set DPS (verified): 70.5. Weights run: 1.7s. Verify run: 1.5s. 415 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.089, strength=1.991 ± 0.124, agility=not significant (0.008 ± 0.005), crit=0.171 ± 0.023, hit=not significant (0.000 ± 0.000), melee_haste=2.607 ± 0.360
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.089, strength=1.991 ± 0.124, agility=not significant (0.008 ± 0.005), crit=0.171 ± 0.023, hit=0.743 ± 0.031, melee_haste=2.607 ± 0.360
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -64,13 +64,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 30:** head: Tusken Helm; neck: Ghostshard Talisman; shoulder: Golden Scale Shoulders; back: Wolfmaster Cape; chest: Shining Silver Breastplate; wrist: Pugilist Bracers; hands: Gauntlets of Ogre Strength; waist: Highlander's Chain Girdle; legs: Ferine Leggings; feet: Trouncing Boots; finger1: Thunderbrow Ring; finger2: Protector's Band; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Manual Crowd Pummeler; ranged: Booty Bay Bruiser's Buckshot
 
-No-known-source sample (15 of 422, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 415, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 40 (human, 35325213032010001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 97.3. Weights run: 1.2s. Verify run: 1.1s. 596 eligible items had no known source.
+Set DPS (verified): 97.3. Weights run: 2.1s. Verify run: 1.8s. 588 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.304), strength=2.474 ± 0.448, agility=not significant (0.006 ± 0.006), crit=0.473 ± 0.059, hit=not significant (0.000 ± 0.000), melee_haste=3.320 ± 0.694
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.304), strength=2.474 ± 0.448, agility=not significant (0.006 ± 0.006), crit=0.473 ± 0.059, hit=1.140 ± 0.055, melee_haste=3.320 ± 0.694
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -94,75 +94,75 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; back: Sergeant Major's Cape; chest: Jouster's Chestplate; wrist: Branded Leather Bracers; hands: Truesilver Gauntlets; waist: Highlander's Plate Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Assault Band; finger2: Protector's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; ranged: The Silencer
 
-No-known-source sample (15 of 596, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5000 Coral Band
+No-known-source sample (15 of 588, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5000 Coral Band
 
 ### Band 50 (human, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 116.3. Weights run: 1.3s. Verify run: 1.1s. 775 eligible items had no known source.
+Set DPS (verified): 117.7. Weights run: 2.2s. Verify run: 1.9s. 766 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.275), strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=6.161 ± 0.515, hit=not significant (0.000 ± 0.000), melee_haste=3.257 ± 0.606
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.275), strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=6.161 ± 0.515, hit=0.978 ± 0.047, melee_haste=3.257 ± 0.606
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) (or Knight-Lieutenant's Plate Helm (220804)) | Scarlet Monastery: Herod [dungeon] | 106.7 | yes | Knight-Lieutenant's Plate Helm (220804, +0.00 DPS, sim-verified) [vendor]; Ornate Mithril Helm (7937, -0.37 DPS) [crafted]; Eye of Theradras (17715, -1.59 DPS) [dungeon] |
+| head | Knight-Lieutenant's Plate Helm (220804) | Captain Dirgehammer [vendor] | 116.5 | yes | Raging Berserker's Helm (7719, -0.47 DPS, sim-verified) [dungeon]; Ornate Mithril Helm (7937, -1.12 DPS) [crafted]; Eye of Theradras (17715, -2.34 DPS) [dungeon] |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes | Skibi's Pendant (13089, +0.00 DPS, sim-verified) [world_drop]; Kaleidoscope Chain (13084, -0.51 DPS) [world_drop]; River Pride Choker (13087, -0.60 DPS) [world_drop] |
-| shoulder | Knight-Lieutenant's Plate Pauldrons (220795) | Captain Dirgehammer [vendor] | 103.6 | yes | Officer's Pauldrons (250576, -0.54 DPS, sim-verified) [crafted]; Wyrmslayer Spaulders (13066, -6.39 DPS) [world_drop]; Earthslag Shoulders (11632, -6.44 DPS) [dungeon] |
-| back | Bloodlust Cape (14801) | World drop [world_drop] | 14.2 | yes | Sergeant Major's Cape (16336, -0.18 DPS, sim-verified) [pvp]; Wolfmaster Cape (6314, -0.32 DPS) [dungeon]; Sergeant Major's Cape (16315, -0.52 DPS) [pvp] |
-| chest | Knight's Plate Hauberk (220794) | Captain Dirgehammer [vendor] | 109.9 | yes | Ornate Mithril Breastplate (7935, -3.05 DPS, sim-verified) [crafted]; Warforged Chestplate (11195, -5.59 DPS) [quest]; Valorous Chestguard (8274, -6.08 DPS) [world_drop] |
-| wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes | Officer's Wristguards (250581, -0.70 DPS) [crafted]; Giantslayer Bracers (13076, -0.84 DPS) [world_drop]; Branded Leather Bracers (19508, -0.85 DPS, sim-verified) [dungeon] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | 106.3 | yes | Dragonscale Gauntlets (8347, -1.11 DPS, sim-verified) [crafted]; Fletcher's Gloves (7348, -1.55 DPS) [crafted]; Ornate Mithril Gloves (7927, -1.55 DPS) [crafted] |
+| shoulder | Knight-Lieutenant's Plate Pauldrons (220795) | Captain Dirgehammer [vendor] | 103.6 | yes | Officer's Pauldrons (250576, -0.13 DPS, sim-verified) [crafted]; Wyrmslayer Spaulders (13066, -6.39 DPS) [world_drop]; Earthslag Shoulders (11632, -6.44 DPS) [dungeon] |
+| back | Bloodlust Cape (14801) | World drop [world_drop] | 14.2 | yes | Sergeant Major's Cape (16336, +0.00 DPS, sim-verified) [pvp]; Wolfmaster Cape (6314, -0.32 DPS) [dungeon]; Sergeant Major's Cape (16315, -0.52 DPS) [pvp] |
+| chest | Knight's Plate Hauberk (220794) | Captain Dirgehammer [vendor] | 109.9 | yes | Ornate Mithril Breastplate (7935, -1.50 DPS, sim-verified) [crafted]; Warforged Chestplate (11195, -5.59 DPS) [quest]; Valorous Chestguard (8274, -6.08 DPS) [world_drop] |
+| wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes | Branded Leather Bracers (19508, +0.00 DPS, sim-verified) [dungeon]; Officer's Wristguards (250581, -0.70 DPS) [crafted]; Giantslayer Bracers (13076, -0.84 DPS) [world_drop] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | 106.3 | yes | Dragonscale Gauntlets (8347, -0.43 DPS, sim-verified) [crafted]; Fletcher's Gloves (7348, -1.55 DPS) [crafted]; Ornate Mithril Gloves (7927, -1.55 DPS) [crafted] |
 | waist | Highlander's Chain Girdle (20088) (or Highlander's Leather Girdle (20115)) | The League of Arathor [rep] | 106.3 | yes | Highlander's Leather Girdle (20115, +0.00 DPS, sim-verified) [rep]; Highlander's Lamellar Girdle (20106, -0.21 DPS) [rep]; Highlander's Plate Girdle (20124, -0.33 DPS) [rep] |
-| legs | Knight's Plate Leggings (220797) | Captain Dirgehammer [vendor] | sim-verified (116.3 DPS) | yes | Stormshroud Pants (15057, -1.26 DPS, sim-verified) [crafted]; Golem Shard Leggings (13074, -5.69 DPS) [world_drop]; Scarlet Leggings (10330, -5.81 DPS) [dungeon] |
-| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 23.6 | yes | Officer's Sabatons (250561, -0.06 DPS, sim-verified) [crafted]; Officer's Boots (250546, -0.09 DPS) [crafted]; Skulker's Leather Boots (252469, -0.20 DPS) [crafted] |
-| finger1 | Assault Band (13095) (or Blackstone Ring (17713)) | World drop [world_drop] | 20.0 | yes | Protector's Band (19516, -0.13 DPS) [rep]; Insurgent's Band (272065, -0.39 DPS) [vendor]; Protector's Band (19515, -0.40 DPS) [rep] |
-| finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 20.0 | yes | Insurgent's Band (272065, -0.39 DPS) [vendor]; Protector's Band (19515, -0.40 DPS) [rep]; Protector's Band (19516, -0.68 DPS, sim-verified) [rep] |
+| legs | Knight's Plate Leggings (220797) | Captain Dirgehammer [vendor] | sim-verified (117.7 DPS) | yes | Stormshroud Pants (15057, -2.16 DPS, sim-verified) [crafted]; Golem Shard Leggings (13074, -5.69 DPS) [world_drop]; Scarlet Leggings (10330, -5.81 DPS) [dungeon] |
+| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 23.6 | yes | Officer's Boots (250546, -0.09 DPS) [crafted]; Skulker's Leather Boots (252469, -0.20 DPS) [crafted]; Officer's Sabatons (250561, -0.29 DPS, sim-verified) [crafted] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 29.8 | yes | Protector's Band (19516, -0.89 DPS) [rep]; Insurgent's Band (272065, -1.15 DPS) [vendor]; Protector's Band (19515, -1.16 DPS) [rep] |
+| finger2 | Assault Band (13095) | World drop [world_drop] | 20.0 | yes | Protector's Band (19516, +0.00 DPS, sim-verified) [rep]; Insurgent's Band (272065, -0.39 DPS) [vendor]; Protector's Band (19515, -0.40 DPS) [rep] |
 | trinket1 | - | - |  |  |  |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (99.1 DPS) | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Smoking Heart of the Mountain (11811, -1.85 DPS, sim-verified) [crafted] |
-| main_hand | Blight (7959) | Blacksmithing [crafted] | sim-verified (114.2 DPS) | yes | Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Fiery War Axe (870, -7.69 DPS, sim-verified) [world_drop] |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (99.8 DPS) | yes | Smoking Heart of the Mountain (11811, -0.32 DPS, sim-verified) [crafted]; Thunderbrew's Boot Flask (744, -0.68 DPS) [quest]; Tidal Charm (1404, -0.68 DPS) [vendor] |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | sim-verified (115.2 DPS) | yes | Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Fiery War Axe (870, -6.64 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (114.2 DPS) | yes | Houndmaster's Bow (11628, -0.16 DPS) [dungeon]; The Silencer (13138, -0.37 DPS) [world_drop]; Dark Iron Rifle (16004, -1.63 DPS, sim-verified) [crafted] |
+| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (115.2 DPS) | yes | Houndmaster's Bow (11628, -0.16 DPS) [dungeon]; The Silencer (13138, -0.37 DPS) [world_drop]; Dark Iron Rifle (16004, -1.09 DPS, sim-verified) [crafted] |
 
-**New at 50:** shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; hands: Gloves of Holy Might; waist: Highlander's Chain Girdle; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger2: Blackstone Ring; trinket1: Guardian Talisman; trinket2: Frozen Heart of the Mountain; main_hand: Blight; ranged: Skull Splitting Crossbow
+**New at 50:** head: Knight-Lieutenant's Plate Helm; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; hands: Gloves of Holy Might; waist: Highlander's Chain Girdle; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger1: Blackstone Ring; finger2: Assault Band; trinket1: Guardian Talisman; trinket2: Frozen Heart of the Mountain; main_hand: Blight; ranged: Skull Splitting Crossbow
 
-No-known-source sample (15 of 775, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 766, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ### Band 60 (human, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 233.1. Weights run: 1.3s. Verify run: 1.1s. 1430 eligible items had no known source.
+Set DPS (verified): 233.1. Weights run: 2.2s. Verify run: 1.9s. 1406 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=not significant (0.000 ± 0.000), melee_haste=9.244 ± 1.838
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=3.037 ± 0.150, melee_haste=9.244 ± 1.838
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 637.7 | yes | Bloodvine Lens (19998, -2.24 DPS) [crafted]; Lightbreaker Greathelm (239517, -4.52 DPS) [vendor]; Ragefury Eyepatch (11735, -7.16 DPS, sim-verified) [dungeon] |
-| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (229.3 DPS) | yes | Rage of Mugamba (19577, -1.65 DPS, sim-verified) [quest]; Amulet of the Darkmoon (19491, -8.03 DPS) [quest]; Strength of Mugamba (19576, -8.62 DPS) [quest] |
-| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 430.4 | yes | Lieutenant Commander's Plate Shoulders (23315, -2.58 DPS) [vendor]; Lieutenant Commander's Plate Shoulders (227045, -2.58 DPS) [vendor]; Darkspear Spaulders (272108, -9.81 DPS, sim-verified) [vendor] |
-| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 283.9 | yes | Tattered Hakkari Cape (20219, -1.18 DPS, sim-verified) [quest]; Cloak of the Honor Guard (20073, -7.85 DPS) [rep]; Sergeant Major's Cape (16337, -7.85 DPS) [pvp] |
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 698.4 | yes | Bloodvine Lens (19998, -4.18 DPS) [crafted]; Lightbreaker Greathelm (239517, -5.49 DPS) [vendor]; Ragefury Eyepatch (11735, -7.16 DPS, sim-verified) [dungeon] |
+| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (229.3 DPS) | yes | Rage of Mugamba (19577, -1.65 DPS, sim-verified) [quest]; Amulet of the Darkmoon (19491, -8.03 DPS) [quest]; Beads of Ogre Might (22150, -8.12 DPS) [quest] |
+| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 460.8 | yes | Lieutenant Commander's Plate Shoulders (23315, -3.55 DPS) [vendor]; Lieutenant Commander's Plate Shoulders (227045, -3.55 DPS) [vendor]; Darkspear Spaulders (272108, -9.81 DPS, sim-verified) [vendor] |
+| back | Chromatic Cloak (18509) (or Fel Cape (279269)) | Leatherworking [crafted] | 283.9 | yes | Fel Cape (279269, +0.00 DPS, sim-verified) [crafted]; Howler's Furs (272414, -7.22 DPS) [vendor]; Earthweave Cloak (21187, -7.66 DPS) [quest] |
 | chest | Lightbreaker Cuirass (239519) | Leonid Barthalomew the Revered [vendor] | 769.7 | yes | Stormshroud Armor (15056, -6.47 DPS) [crafted]; Savage Gladiator Chain (11726, -8.59 DPS) [dungeon]; Bloodsoul Breastplate (19690, -11.77 DPS, sim-verified) [crafted] |
-| wrist | Lightbreaker Wrists (239512) | Leonid Barthalomew the Revered [vendor] | sim-verified (233.1 DPS) | yes | Deeprock Bracers (21184, -1.24 DPS) [quest]; Berserker Bracers (19578, -1.31 DPS) [rep]; Vambraces of the Sadist (13400, -3.28 DPS, sim-verified) [dungeon] |
+| wrist | Lightbreaker Wrists (239512) | Leonid Barthalomew the Revered [vendor] | sim-verified (233.1 DPS) | yes | Deeprock Bracers (21184, -2.22 DPS) [quest]; Berserker Bracers (19578, -2.28 DPS) [rep]; Vambraces of the Sadist (13400, -3.28 DPS, sim-verified) [dungeon] |
 | hands | Lightbreaker Grips (239514) | Leonid Barthalomew the Revered [vendor] | 427.6 | yes | Marshal's Plate Gauntlets (16484, -2.11 DPS) [vendor]; Marshal's Plate Gauntlets (231541, -2.11 DPS) [vendor]; Gauntlets of Heroism (21998, -5.38 DPS, sim-verified) [quest] |
 | waist | Lightbreaker Belt (239513) | Leonid Barthalomew the Revered [vendor] | 433.4 | yes | Highlander's Plate Girdle (20041, -2.67 DPS) [rep]; Highlander's Lamellar Girdle (20042, -2.92 DPS) [rep]; Radiant Girdle of the Dawn (227814, -3.40 DPS, sim-verified) [vendor] |
-| legs | Lightbreaker Tassets (239518) | Leonid Barthalomew the Revered [vendor] | 771.6 | yes | Marshal's Plate Legguards (16479, -4.04 DPS) [vendor]; Marshal's Plate Legguards (231540, -4.04 DPS) [vendor]; Sentinel's Plate Legguards (237825, -6.92 DPS, sim-verified) [vendor] |
-| feet | Lightbreaker Greaves (239515) | Leonid Barthalomew the Revered [vendor] | 429.5 | yes | Boots of Heroism (21995, -7.25 DPS, sim-verified) [quest]; Marshal's Plate Boots (16483, -11.14 DPS) [vendor]; Marshal's Plate Boots (231539, -11.14 DPS) [vendor] |
-| finger1 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | sim-verified (221.3 DPS) | yes | Band of the Penitent (13217, -0.75 DPS) [quest]; Ring of Entropy (18543, -0.75 DPS) [world]; Wrath of Cenarius (21190, -7.23 DPS, sim-verified) [quest] |
-| finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (221.3 DPS) | yes | Band of the Penitent (13217, -0.51 DPS) [quest]; Ring of Entropy (18543, -0.51 DPS) [world]; Wrath of Cenarius (21190, -7.08 DPS, sim-verified) [quest] |
-| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (221.3 DPS) | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Darkmoon Card: Heroism (19287, -6.55 DPS, sim-verified) [quest] |
+| legs | Lightbreaker Tassets (239518) | Leonid Barthalomew the Revered [vendor] | 771.6 | yes | Marshal's Plate Legguards (16479, -3.07 DPS) [vendor]; Marshal's Plate Legguards (231540, -3.07 DPS) [vendor]; Sentinel's Plate Legguards (237825, -6.92 DPS, sim-verified) [vendor] |
+| feet | Lightbreaker Greaves (239515) | Leonid Barthalomew the Revered [vendor] | 459.8 | yes | Boots of Heroism (21995, -7.25 DPS, sim-verified) [quest]; Marshal's Plate Boots (16483, -11.14 DPS) [vendor]; Marshal's Plate Boots (231539, -11.14 DPS) [vendor] |
+| finger1 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | sim-verified (221.3 DPS) | yes | Band of the Penitent (13217, -1.72 DPS) [quest]; Ring of Entropy (18543, -1.72 DPS) [world]; Wrath of Cenarius (21190, -7.23 DPS, sim-verified) [quest] |
+| finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (221.3 DPS) | yes | Band of the Penitent (13217, -1.48 DPS) [quest]; Ring of Entropy (18543, -1.48 DPS) [world]; Wrath of Cenarius (21190, -7.08 DPS, sim-verified) [quest] |
+| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (221.3 DPS) | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Frozen Heart of the Mountain (249469, -7.40 DPS, sim-verified) [crafted] |
 | trinket2 | - | - |  |  |  |
 | main_hand | Arcanite Champion (12790) | Blacksmithing [crafted] | sim-verified (229.3 DPS) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [vendor]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; The Unstoppable Force (19323, -10.62 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (229.3 DPS) | yes | Dark Iron Rifle (16004, -2.35 DPS, sim-verified) [crafted]; Bloodseeker (19107, -7.88 DPS) [quest]; Skull Splitting Crossbow (13039, -8.27 DPS) [world_drop] |
+| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (229.3 DPS) | yes | Dark Iron Rifle (16004, -2.35 DPS, sim-verified) [crafted]; Bloodseeker (19107, -7.88 DPS) [quest]; Core Marksman Rifle (18282, -8.12 DPS) [crafted] |
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Lightbreaker Shoulders; back: Chromatic Cloak; chest: Lightbreaker Cuirass; wrist: Lightbreaker Wrists; hands: Lightbreaker Grips; waist: Lightbreaker Belt; legs: Lightbreaker Tassets; feet: Lightbreaker Greaves; finger1: Band of Earthen Might; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Darkmoon Card: Blue Dragon; main_hand: Arcanite Champion; ranged: The Purifier
 
-No-known-source sample (15 of 1430, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1406, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ## Horde
 
 ### Band 20 (orc, 35300000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 32.5. Weights run: 0.9s. Verify run: 0.8s. 244 eligible items had no known source.
+Set DPS (verified): 32.5. Weights run: 1.6s. Verify run: 1.4s. 239 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.045, strength=2.084 ± 0.056, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=not significant (0.000 ± 0.000), melee_haste=1.835 ± 0.076
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.045, strength=2.084 ± 0.056, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=0.529 ± 0.020, melee_haste=1.835 ± 0.076
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -186,13 +186,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Scout's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Thorbia's Gauntlets; waist: Blackened Defias Belt; legs: Veteran's Chain Leggings; feet: Veteran's Boots; finger1: Demon Band; finger2: Legionnaire's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Forsaken Greataxe; ranged: Cracked Blacksmith Hammer
 
-No-known-source sample (15 of 244, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7955 Copper Claymore; 7956 Bronze Warhammer; 9602 Brushwood Blade; 10047 Simple Kilt; 10421 Rough Copper Vest; 14389 Durability Shoulderpads; 15401 Welldrip Gloves
+No-known-source sample (15 of 239, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets; 18854 Insignia of the Alliance; 20425 Advisor's Gnarled Staff; 20430 Legionnaire's Sword
 
 ### Band 30 (orc, 35325210000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 72.0. Weights run: 1.0s. Verify run: 0.9s. 418 eligible items had no known source.
+Set DPS (verified): 72.0. Weights run: 1.7s. Verify run: 1.6s. 411 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.089, strength=1.991 ± 0.124, agility=not significant (0.008 ± 0.005), crit=0.171 ± 0.023, hit=not significant (0.000 ± 0.000), melee_haste=2.607 ± 0.360
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.089, strength=1.991 ± 0.124, agility=not significant (0.008 ± 0.005), crit=0.171 ± 0.023, hit=0.743 ± 0.031, melee_haste=2.607 ± 0.360
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -216,13 +216,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 30:** head: Tusken Helm; neck: Ghostshard Talisman; shoulder: Golden Scale Shoulders; back: Wolfmaster Cape; chest: Shining Silver Breastplate; wrist: Pugilist Bracers; hands: Gauntlets of Ogre Strength; waist: Defiler's Chain Girdle; legs: Ferine Leggings; feet: Trouncing Boots; finger1: Thunderbrow Ring; finger2: Legionnaire's Band; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Manual Crowd Pummeler; ranged: Booty Bay Bruiser's Buckshot
 
-No-known-source sample (15 of 418, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7955 Copper Claymore; 7956 Bronze Warhammer; 7957 Bronze Greatsword
+No-known-source sample (15 of 411, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads
 
 ### Band 40 (orc, 35325213032010001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 98.2. Weights run: 1.2s. Verify run: 1.1s. 592 eligible items had no known source.
+Set DPS (verified): 98.2. Weights run: 2.1s. Verify run: 1.8s. 584 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.304), strength=2.474 ± 0.448, agility=not significant (0.006 ± 0.006), crit=0.473 ± 0.059, hit=not significant (0.000 ± 0.000), melee_haste=3.320 ± 0.694
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.304), strength=2.474 ± 0.448, agility=not significant (0.006 ± 0.006), crit=0.473 ± 0.059, hit=1.140 ± 0.055, melee_haste=3.320 ± 0.694
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -246,65 +246,65 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; chest: Jouster's Chestplate; wrist: Branded Leather Bracers; hands: Truesilver Gauntlets; waist: Defiler's Plate Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Assault Band; finger2: Legionnaire's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; ranged: The Silencer
 
-No-known-source sample (15 of 592, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 584, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 50 (orc, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 123.8. Weights run: 1.3s. Verify run: 1.0s. 771 eligible items had no known source.
+Set DPS (verified): 126.3. Weights run: 2.2s. Verify run: 1.8s. 762 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.275), strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=6.161 ± 0.515, hit=not significant (0.000 ± 0.000), melee_haste=3.257 ± 0.606
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.275), strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=6.161 ± 0.515, hit=0.978 ± 0.047, melee_haste=3.257 ± 0.606
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) (or Blood Guard's Plate Helm (220803)) | Scarlet Monastery: Herod [dungeon] | 106.7 | yes | Blood Guard's Plate Helm (220803, +0.00 DPS, sim-verified) [vendor]; Ornate Mithril Helm (7937, -0.37 DPS) [crafted]; Eye of Theradras (17715, -1.59 DPS) [dungeon] |
+| head | Blood Guard's Plate Helm (220803) | Lady Palanseer [vendor] | 116.5 | yes | Ornate Mithril Helm (7937, -1.12 DPS) [crafted]; Raging Berserker's Helm (7719, -1.64 DPS, sim-verified) [dungeon]; Eye of Theradras (17715, -2.34 DPS) [dungeon] |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes | Woven Ivy Necklace (19159, +0.00 DPS, sim-verified) [quest]; Skibi's Pendant (13089, -0.19 DPS) [world_drop]; Ethereal Talisman (4430, -0.39 DPS) [quest] |
-| shoulder | Blood Guard's Plate Pauldrons (220796) | Lady Palanseer [vendor] | 103.6 | yes | Officer's Pauldrons (250576, -0.77 DPS, sim-verified) [crafted]; Wyrmslayer Spaulders (13066, -6.39 DPS) [world_drop]; Earthslag Shoulders (11632, -6.44 DPS) [dungeon] |
-| back | Bloodlust Cape (14801) | World drop [world_drop] | 14.2 | yes | Battlehard Cape (11858, -0.32 DPS) [quest]; Wildhunter Cloak (16658, -0.32 DPS) [quest]; Wolfmaster Cape (6314, -0.48 DPS, sim-verified) [dungeon] |
-| chest | Stone Guard's Plate Armor (220801) | Lady Palanseer [vendor] | 109.9 | yes | Ornate Mithril Breastplate (7935, -3.23 DPS, sim-verified) [crafted]; Warforged Chestplate (11195, -5.59 DPS) [quest]; Valorous Chestguard (8274, -6.08 DPS) [world_drop] |
-| wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes | Branded Leather Bracers (19508, -0.55 DPS, sim-verified) [dungeon]; Officer's Wristguards (250581, -0.70 DPS) [crafted]; Giantslayer Bracers (13076, -0.84 DPS) [world_drop] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | 106.3 | yes | Dragonscale Gauntlets (8347, -0.79 DPS, sim-verified) [crafted]; Fletcher's Gloves (7348, -1.55 DPS) [crafted]; Ornate Mithril Gloves (7927, -1.55 DPS) [crafted] |
+| shoulder | Blood Guard's Plate Pauldrons (220796) | Lady Palanseer [vendor] | 103.6 | yes | Officer's Pauldrons (250576, -0.23 DPS, sim-verified) [crafted]; Wyrmslayer Spaulders (13066, -6.39 DPS) [world_drop]; Earthslag Shoulders (11632, -6.44 DPS) [dungeon] |
+| back | Bloodlust Cape (14801) | World drop [world_drop] | 14.2 | yes | Wolfmaster Cape (6314, -0.18 DPS, sim-verified) [dungeon]; Battlehard Cape (11858, -0.32 DPS) [quest]; Wildhunter Cloak (16658, -0.32 DPS) [quest] |
+| chest | Stone Guard's Plate Armor (220801) | Lady Palanseer [vendor] | 109.9 | yes | Ornate Mithril Breastplate (7935, -2.02 DPS, sim-verified) [crafted]; Warforged Chestplate (11195, -5.59 DPS) [quest]; Valorous Chestguard (8274, -6.08 DPS) [world_drop] |
+| wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes | Branded Leather Bracers (19508, -0.31 DPS, sim-verified) [dungeon]; Officer's Wristguards (250581, -0.70 DPS) [crafted]; Giantslayer Bracers (13076, -0.84 DPS) [world_drop] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | 106.3 | yes | Dragonscale Gauntlets (8347, -1.26 DPS, sim-verified) [crafted]; Fletcher's Gloves (7348, -1.55 DPS) [crafted]; Ornate Mithril Gloves (7927, -1.55 DPS) [crafted] |
 | waist | Defiler's Chain Girdle (20151) (or Defiler's Leather Girdle (20193)) | The Defilers [rep] | 106.3 | yes | Defiler's Leather Girdle (20193, +0.00 DPS, sim-verified) [rep]; Defiler's Plate Girdle (20205, -0.33 DPS) [rep]; Defiler's Chain Girdle (20153, -0.93 DPS) [rep] |
 | legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 172.5 | yes | Stone Guard's Plate Leggings (220798, +0.00 DPS, sim-verified) [vendor]; Golem Shard Leggings (13074, -10.69 DPS) [world_drop]; Scarlet Leggings (10330, -10.81 DPS) [dungeon] |
-| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 23.6 | yes | Officer's Boots (250546, -0.09 DPS) [crafted]; Officer's Sabatons (250561, -0.10 DPS, sim-verified) [crafted]; Skulker's Leather Boots (252469, -0.20 DPS) [crafted] |
-| finger1 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 | yes | Blackstone Ring (17713, -0.31 DPS) [dungeon]; Legionnaire's Band (19511, -0.44 DPS) [rep]; Insurgent's Band (272065, -0.70 DPS) [vendor] |
-| finger2 | Assault Band (13095) (or Blackstone Ring (17713)) | World drop [world_drop] | 20.0 | yes | Blackstone Ring (17713, +0.00 DPS, sim-verified) [dungeon]; Legionnaire's Band (19511, -0.13 DPS) [rep]; Insurgent's Band (272065, -0.39 DPS) [vendor] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (102.3 DPS) | yes | Tidal Charm (1404, -3.26 DPS) [vendor]; Guardian Talisman (1490, -3.26 DPS) [quest]; Smoking Heart of the Mountain (11811, -5.03 DPS, sim-verified) [crafted] |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (103.6 DPS) | yes | Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest]; Smoking Heart of the Mountain (11811, -1.57 DPS, sim-verified) [crafted] |
-| main_hand | Fiery War Axe (870) | World drop [world_drop] | sim-verified (124.3 DPS) | yes | Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Blight (7959, -4.43 DPS, sim-verified) [crafted] |
+| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 23.6 | yes | Officer's Boots (250546, -0.09 DPS) [crafted]; Officer's Sabatons (250561, -0.14 DPS, sim-verified) [crafted]; Skulker's Leather Boots (252469, -0.20 DPS) [crafted] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 29.8 | yes | Assault Band (13095, -0.76 DPS) [world_drop]; Legionnaire's Band (19511, -0.89 DPS) [rep]; Insurgent's Band (272065, -1.15 DPS) [vendor] |
+| finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 | yes | Assault Band (13095, -0.15 DPS, sim-verified) [world_drop]; Legionnaire's Band (19511, -0.44 DPS) [rep]; Insurgent's Band (272065, -0.70 DPS) [vendor] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (106.3 DPS) | yes | Tidal Charm (1404, -3.79 DPS) [vendor]; Guardian Talisman (1490, -3.79 DPS) [quest]; Smoking Heart of the Mountain (11811, -4.74 DPS, sim-verified) [crafted] |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (106.3 DPS) | yes | Tidal Charm (1404, -0.68 DPS) [vendor]; Guardian Talisman (1490, -0.68 DPS) [quest]; Smoking Heart of the Mountain (11811, -1.55 DPS, sim-verified) [crafted] |
+| main_hand | Fiery War Axe (870) | World drop [world_drop] | sim-verified (127.3 DPS) | yes | Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Blight (7959, -3.37 DPS, sim-verified) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (124.3 DPS) | yes | Houndmaster's Bow (11628, -0.16 DPS) [dungeon]; The Silencer (13138, -0.37 DPS) [world_drop]; Dark Iron Rifle (16004, -1.37 DPS, sim-verified) [crafted] |
+| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (127.3 DPS) | yes | Houndmaster's Bow (11628, -0.16 DPS) [dungeon]; The Silencer (13138, -0.37 DPS) [world_drop]; Dark Iron Rifle (16004, -1.47 DPS, sim-verified) [crafted] |
 
-**New at 50:** shoulder: Blood Guard's Plate Pauldrons; back: Bloodlust Cape; chest: Stone Guard's Plate Armor; wrist: Bracers of the Stone Princess; hands: Gloves of Holy Might; waist: Defiler's Chain Girdle; legs: Stormshroud Pants; feet: Prowler's Leather Boots; finger1: White Bone Band; finger2: Assault Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Fiery War Axe; ranged: Skull Splitting Crossbow
+**New at 50:** head: Blood Guard's Plate Helm; shoulder: Blood Guard's Plate Pauldrons; back: Bloodlust Cape; chest: Stone Guard's Plate Armor; wrist: Bracers of the Stone Princess; hands: Gloves of Holy Might; waist: Defiler's Chain Girdle; legs: Stormshroud Pants; feet: Prowler's Leather Boots; finger1: Blackstone Ring; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Fiery War Axe; ranged: Skull Splitting Crossbow
 
-No-known-source sample (15 of 771, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 762, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ### Band 60 (orc, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 248.9. Weights run: 1.3s. Verify run: 1.1s. 1427 eligible items had no known source.
+Set DPS (verified): 248.9. Weights run: 2.2s. Verify run: 1.9s. 1403 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=not significant (0.000 ± 0.000), melee_haste=9.244 ± 1.838
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=3.037 ± 0.150, melee_haste=9.244 ± 1.838
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 637.7 | yes | Bloodvine Lens (19998, -2.24 DPS) [crafted]; Lightbreaker Greathelm (239517, -4.52 DPS) [vendor]; Ragefury Eyepatch (11735, -7.76 DPS, sim-verified) [dungeon] |
-| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (245.2 DPS) | yes | Blazefury Medallion (17111, -3.92 DPS, sim-verified) [world]; Amulet of the Darkmoon (19491, -8.03 DPS) [quest]; Strength of Mugamba (19576, -8.62 DPS) [quest] |
-| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 430.4 | yes | Champion's Plate Shoulders (23243, -2.58 DPS) [vendor]; Champion's Plate Shoulders (227042, -2.58 DPS) [vendor]; Darkspear Spaulders (272108, -8.93 DPS, sim-verified) [vendor] |
-| back | Chromatic Cloak (18509) | Leatherworking [crafted] | 283.9 | yes | Tattered Hakkari Cape (20219, -1.49 DPS, sim-verified) [quest]; Deathguard's Cloak (20068, -7.85 DPS) [rep]; Bloodlust Cape (14801, -7.97 DPS) [world_drop] |
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 698.4 | yes | Bloodvine Lens (19998, -4.18 DPS) [crafted]; Lightbreaker Greathelm (239517, -5.49 DPS) [vendor]; Ragefury Eyepatch (11735, -7.76 DPS, sim-verified) [dungeon] |
+| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (245.2 DPS) | yes | Blazefury Medallion (17111, -3.92 DPS, sim-verified) [world]; Amulet of the Darkmoon (19491, -8.03 DPS) [quest]; Beads of Ogre Might (22150, -8.12 DPS) [quest] |
+| shoulder | Lightbreaker Shoulders (239516) | Leonid Barthalomew the Revered [vendor] | 460.8 | yes | Champion's Plate Shoulders (23243, -3.55 DPS) [vendor]; Champion's Plate Shoulders (227042, -3.55 DPS) [vendor]; Darkspear Spaulders (272108, -8.93 DPS, sim-verified) [vendor] |
+| back | Chromatic Cloak (18509) (or Fel Cape (279269)) | Leatherworking [crafted] | 283.9 | yes | Fel Cape (279269, +0.00 DPS, sim-verified) [crafted]; Howler's Furs (272414, -7.22 DPS) [vendor]; Earthweave Cloak (21187, -7.66 DPS) [quest] |
 | chest | Lightbreaker Cuirass (239519) | Leonid Barthalomew the Revered [vendor] | 769.7 | yes | Stormshroud Armor (15056, -6.47 DPS) [crafted]; Savage Gladiator Chain (11726, -8.59 DPS) [dungeon]; Bloodsoul Breastplate (19690, -13.67 DPS, sim-verified) [crafted] |
-| wrist | Lightbreaker Wrists (239512) | Leonid Barthalomew the Revered [vendor] | sim-verified (248.9 DPS) | yes | Deeprock Bracers (21184, -1.24 DPS) [quest]; Berserker Bracers (19578, -1.31 DPS) [rep]; Vambraces of the Sadist (13400, -2.85 DPS, sim-verified) [dungeon] |
+| wrist | Lightbreaker Wrists (239512) | Leonid Barthalomew the Revered [vendor] | sim-verified (248.9 DPS) | yes | Deeprock Bracers (21184, -2.22 DPS) [quest]; Berserker Bracers (19578, -2.28 DPS) [rep]; Vambraces of the Sadist (13400, -2.85 DPS, sim-verified) [dungeon] |
 | hands | Lightbreaker Grips (239514) | Leonid Barthalomew the Revered [vendor] | 427.6 | yes | General's Plate Gauntlets (16548, -2.11 DPS) [vendor]; General's Plate Gauntlets (231532, -2.11 DPS) [vendor]; Gauntlets of Heroism (21998, -7.07 DPS, sim-verified) [quest] |
 | waist | Lightbreaker Belt (239513) | Leonid Barthalomew the Revered [vendor] | 433.4 | yes | Defiler's Plate Girdle (20204, -2.67 DPS) [rep]; Radiant Girdle of the Dawn (227814, -3.37 DPS, sim-verified) [vendor]; Defiler's Plate Girdle (20205, -3.54 DPS) [rep] |
-| legs | Lightbreaker Tassets (239518) | Leonid Barthalomew the Revered [vendor] | 771.6 | yes | General's Plate Leggings (16543, -4.04 DPS) [vendor]; General's Plate Leggings (231533, -4.04 DPS) [vendor]; Sentinel's Plate Legguards (237825, -7.37 DPS, sim-verified) [vendor] |
-| feet | Lightbreaker Greaves (239515) | Leonid Barthalomew the Revered [vendor] | 429.5 | yes | Boots of Heroism (21995, -8.28 DPS, sim-verified) [quest]; General's Plate Boots (16545, -11.14 DPS) [vendor]; General's Plate Boots (231531, -11.14 DPS) [vendor] |
-| finger1 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | sim-verified (227.5 DPS) | yes | Band of the Penitent (13217, -0.75 DPS) [quest]; Ring of Entropy (18543, -0.75 DPS) [world]; Wrath of Cenarius (21190, -6.33 DPS, sim-verified) [quest] |
-| finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (227.5 DPS) | yes | Band of the Penitent (13217, -0.51 DPS) [quest]; Ring of Entropy (18543, -0.51 DPS) [world]; Wrath of Cenarius (21190, -6.19 DPS, sim-verified) [quest] |
-| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (224.1 DPS) | yes | Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (227.5 DPS) | yes | Tidal Charm (1404, -1.34 DPS) [vendor]; Guardian Talisman (1490, -1.34 DPS) [quest]; Shard of the Fallen Star (21891, -6.12 DPS, sim-verified) [world_drop] |
+| legs | Lightbreaker Tassets (239518) | Leonid Barthalomew the Revered [vendor] | 771.6 | yes | General's Plate Leggings (16543, -3.07 DPS) [vendor]; General's Plate Leggings (231533, -3.07 DPS) [vendor]; Sentinel's Plate Legguards (237825, -7.37 DPS, sim-verified) [vendor] |
+| feet | Lightbreaker Greaves (239515) | Leonid Barthalomew the Revered [vendor] | 459.8 | yes | Boots of Heroism (21995, -8.28 DPS, sim-verified) [quest]; General's Plate Boots (16545, -11.14 DPS) [vendor]; General's Plate Boots (231531, -11.14 DPS) [vendor] |
+| finger1 | Band of Earthen Might (21182) | Veteran's Battlegear [quest] | sim-verified (227.5 DPS) | yes | Band of the Penitent (13217, -1.72 DPS) [quest]; Ring of Entropy (18543, -1.72 DPS) [world]; Wrath of Cenarius (21190, -6.33 DPS, sim-verified) [quest] |
+| finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (227.5 DPS) | yes | Band of the Penitent (13217, -1.48 DPS) [quest]; Ring of Entropy (18543, -1.48 DPS) [world]; Wrath of Cenarius (21190, -6.19 DPS, sim-verified) [quest] |
+| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (224.4 DPS) | yes | Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (227.5 DPS) | yes | Tidal Charm (1404, -2.03 DPS) [vendor]; Guardian Talisman (1490, -2.03 DPS) [quest]; Frozen Heart of the Mountain (249469, -5.99 DPS, sim-verified) [crafted] |
 | main_hand | Nightfall (19169) | Blacksmithing [crafted] | sim-verified (245.2 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [vendor]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; The Unstoppable Force (19323, -19.31 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (245.2 DPS) | yes | Dark Iron Rifle (16004, -3.45 DPS, sim-verified) [crafted]; Bloodseeker (19107, -7.88 DPS) [quest]; Skull Splitting Crossbow (13039, -8.27 DPS) [world_drop] |
+| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (245.2 DPS) | yes | Dark Iron Rifle (16004, -3.45 DPS, sim-verified) [crafted]; Bloodseeker (19107, -7.88 DPS) [quest]; Core Marksman Rifle (18282, -8.12 DPS) [crafted] |
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Lightbreaker Shoulders; back: Chromatic Cloak; chest: Lightbreaker Cuirass; wrist: Lightbreaker Wrists; hands: Lightbreaker Grips; waist: Lightbreaker Belt; legs: Lightbreaker Tassets; feet: Lightbreaker Greaves; finger1: Band of Earthen Might; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: Nightfall; ranged: The Purifier
 
-No-known-source sample (15 of 1427, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1403, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
