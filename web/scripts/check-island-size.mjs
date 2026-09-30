@@ -30,7 +30,10 @@ const BUDGETS = [
   // "Requires Level" and a capped source block the way the client does (tooltip-polish
   // lane), and the BiS popover normalises the ranker's alternatives; the growth was
   // measured at 73,951 bytes gzipped against the earlier 72 KB line.
-  { file: 'dist/planner-island.js', limitBytes: 73 * 1024 },
+  // 75 KB since 2026-09-30: the tooltip's PvP source line names the rank title and
+  // faction (pvp-faction lane), measured at 75,793 bytes gzipped against the 73 KB line.
+  // Debt: the tooltip copy tables should split out of the planner's boot chunk.
+  { file: 'dist/planner-island.js', limitBytes: 75 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
