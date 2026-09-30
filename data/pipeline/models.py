@@ -232,6 +232,29 @@ class GearItem(BaseModel):
     #: next time `normalize` runs, the same way any other hotfix promotion
     #: works. False (the default) for every other row, client or wowhead alike.
     client_unconfirmed: bool = False
+    #: classicdb-fidelity lane, 2026-09-30: where `icon` actually came from --
+    #: `"client"` (the client's own `IconFileDataID`, resolved through
+    #: `ManifestInterfaceData`), `"fork"` (the engine fork's own
+    #: `assets/database/db.json`) or `"wowhead"` (wowhead's Forever
+    #: gear-planner payload) -- the same three-way fallback
+    #: `pipeline.icons.resolve_icon_name` already applies, now recorded per
+    #: row instead of only counted in the build log. `None` for a row built
+    #: before this field existed (never emitted by current code, kept
+    #: optional so an old committed build still validates).
+    icon_source: Literal["client", "fork", "wowhead"] | None = None
+    #: classicdb-fidelity lane, 2026-09-30: the planner's weapon-type
+    #: vocabulary for a weapon row (`pipeline.normalize.gear.
+    #: WEAPON_TYPE_BY_SUBCLASS`) -- one of the five ranged types (`wand`,
+    #: `bow`, `gun`, `crossbow`, `thrown`) for a `slot: "ranged"` row, or a
+    #: melee type (`axe`, `mace`, `polearm`, `sword`, `staff`, `fist`,
+    #: `dagger`) for a `main_hand`/`off_hand` row; `two_hand` above already
+    #: carries the one/two-handed distinction, so `axe`/`mace`/`sword` cover
+    #: both. `None` for a non-weapon row, or a weapon row whose SubclassID
+    #: this table does not (yet) map -- `sim/cmd/leveling-bis`'s
+    #: `weapon_requirements.go` (`bis-ranker-integrity-6` lane) gates a
+    #: caster's/hunter's ranged slot by this field, treating `None` the same
+    #: as "unknown, exclude it" rather than guessing a type.
+    weapon_type: str | None = None
 
 
 class ClassItems(BaseModel):

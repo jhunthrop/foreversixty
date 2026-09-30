@@ -434,6 +434,31 @@ older-schema build works if one is ever fetched again.
   itself, not a guess; the beta box's hotfix cache promotes it to ordinary client stats
   (`client_unconfirmed` clears) the next time the client sees the item and the hotfix
   cache is refreshed and re-merged.
+  - **Effect text and structured stats come from classic-db's own `spell_template`
+    first** (classicdb-fidelity lane, 2026-09-30), not the Forever client's `Spell.csv`:
+    1.12 spell ids are not stable across clients (Devilsaur Eye's own spell 24352,
+    "Devilsaur Fury", collides with an unrelated modern spell "Devilsaur Glare" that
+    Roots the target). `raw/classicdb/item_template.json` now also carries a `spells`
+    array — every `spell_template` row an item's `spellid_<n>` references (plus one
+    `EffectTriggerSpell` hop, for a "chance on hit" trinket's own nested grant, e.g.
+    Hand of Justice's extra-attack spell) — and `pipeline.classicdb_items.effect_text`/
+    `equip_stats` render a row's text and `stats` from those structured aura effects
+    directly; the client's own text is only used as a fallback when classic-db's aura
+    is not one this module classifies AND the client's spell shares classic-db's own
+    name. `GearItem.stats` only ever gains a stat from a `spelltrigger` 1 (on-equip)
+    spell — a "chance on hit"/"use" spell's aura (Destiny's own +200 Strength proc,
+    Devilsaur Eye's +150 Attack Power/+2% hit use effect) is described in
+    `effect_text` but never folded into the static `stats` a ranker scores.
+  - **`icon_source`** (`"client"`/`"fork"`/`"wowhead"`) now records, per row, which of
+    `pipeline.icons.resolve_icon_name`'s three routes actually supplied `icon` — the
+    same fallback chain a client row's placeholder icon already used, now recorded
+    instead of only counted in the build log.
+  - **`weapon_type`** (classicdb-fidelity lane, 2026-09-30) carries the planner's
+    weapon-type vocabulary (`wand`/`bow`/`gun`/`crossbow`/`thrown` for a `ranged` row;
+    `axe`/`mace`/`polearm`/`sword`/`staff`/`fist`/`dagger` for a `main_hand`/`off_hand`
+    one; `pipeline.normalize.gear.WEAPON_TYPE_BY_SUBCLASS`) on every weapon row, client
+    and classic-db alike, so a ranged weapon's real subclass — not just its slot — is
+    on the row. `null` for a non-weapon row.
 
 ## What the beta client changed about the talents
 

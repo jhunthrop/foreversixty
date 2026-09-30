@@ -266,6 +266,50 @@ TWO_HAND_INVENTORY_TYPES = frozenset({17})
 WEAPON_INVENTORY_TYPES = frozenset({13, 15, 17, 21, 22, 25, 26})
 
 
+#: Item.ClassID 2 (WEAPON) SubclassID -> the planner's `weapon_type` vocabulary
+#: (classicdb-fidelity lane, 2026-09-30). Melee subclasses collapse their
+#: one-hand/two-hand pair into one type -- `two_hand` (TWO_HAND_INVENTORY_TYPES)
+#: already carries that distinction, so a caller does not need it twice.
+#: Ranged subclasses stay one-to-one: `sim/cmd/leveling-bis`'s
+#: `weapon_requirements.go` (`bis-ranker-integrity-6` lane) gates a caster's
+#: wand slot and a hunter's/warrior's/rogue's bow-or-gun-or-crossbow-or-thrown
+#: slot by this exact vocabulary. Values and ids are `pipeline.proficiency`'s
+#: own WEAPON_SUBCLASSES table (its module doc has the citation for each);
+#: 14 (Miscellaneous, fishing poles among other unshipped rows) and 20
+#: (Fishing Pole) are deliberately absent, same as that module.
+WEAPON_TYPE_BY_SUBCLASS: dict[int, str] = {
+    0: "axe",
+    1: "axe",
+    4: "mace",
+    5: "mace",
+    6: "polearm",
+    7: "sword",
+    8: "sword",
+    10: "staff",
+    13: "fist",
+    15: "dagger",
+    2: "bow",
+    3: "gun",
+    16: "thrown",
+    18: "crossbow",
+    19: "wand",
+}
+
+#: The five ranged `weapon_type` values -- the contract test's own vocabulary
+#: ("every row with slot: ranged carries one of the five ranged types").
+RANGED_WEAPON_TYPES = frozenset({"wand", "bow", "gun", "crossbow", "thrown"})
+
+
+def weapon_type_for(item_class_id: int, subclass_id: int, inventory_type: int) -> str | None:
+    """The row's `weapon_type`, or None for a non-weapon row or a weapon
+    whose SubclassID `WEAPON_TYPE_BY_SUBCLASS` does not map (a fishing pole
+    or a misfiled row `is_weapon_row`'s own doc already excludes from dps
+    scoring) -- never guessed at, same policy as `STAT_BY_MODIFIER_ID`."""
+    if not is_weapon_row(item_class_id, inventory_type):
+        return None
+    return WEAPON_TYPE_BY_SUBCLASS.get(subclass_id)
+
+
 def is_weapon_row(item_class_id: int, inventory_type: int) -> bool:
     """True when a row is a real weapon: Item.ClassID 2 in a weapon-only
     InventoryType slot. `weapon_fields` is only meaningful for such a row --
@@ -646,15 +690,17 @@ def _icon_name(
     fork_icons: dict[int, str],
     wowhead_icons: dict[int, str],
     icon_origins: Counter[str],
-) -> str:
-    """The item's icon name, falling back past the client's placeholder art.
+) -> tuple[str, str]:
+    """The item's icon name and where it came from, falling back past the
+    client's placeholder art.
 
     Some client rows carry `IconFileDataID` 0, meaning the client itself ships
     no art for the item; see `pipeline.icons.resolve_icon` for what happens
     then, and `pipeline.icons.resolve_icon_name` for the fork-db/wowhead
     fallback chain applied on top of it here. `icon_origins` is mutated with
     a count per source ("client", "fork", "wowhead"), for `build_class_items`
-    to log a per-build summary.
+    to log a per-build summary; the same per-row origin is now also returned
+    for `GearItem.icon_source` (classicdb-fidelity lane, 2026-09-30).
     """
     base = resolve_icon(
         int_column(item_row, "IconFileDataID"),
@@ -663,7 +709,7 @@ def _icon_name(
     )
     icon, origin = resolve_icon_name(base, int_column(item_row, "ID"), fork_icons, wowhead_icons)
     icon_origins[origin] += 1
-    return icon
+    return icon, origin
 
 
 def resolve_item_values(
@@ -822,10 +868,13 @@ def build_class_items(
         required_level, required_level_source = resolve_required_level(
             client_required_level, item_level, wowhead_required_levels.get(item_id)
         )
+        icon, icon_source = _icon_name(
+            item_row, icons, display_name, fork_icons, wowhead_icons, icon_origins
+        )
         item = GearItem(
             id=item_id,
             name=display_name,
-            icon=_icon_name(item_row, icons, display_name, fork_icons, wowhead_icons, icon_origins),
+            icon=icon,
             slot=slot,
             quality=quality,
             required_level=required_level,
@@ -841,6 +890,8 @@ def build_class_items(
             effect_text=effect_text,
             set_id=int_column(row, "ItemSet") or None,
             unique=int_column(row, "MaxCount") == 1,
+            icon_source=icon_source,
+            weapon_type=weapon_type_for(item_class_id, subclass_id, inventory_type),
         )
         candidates.append(
             (

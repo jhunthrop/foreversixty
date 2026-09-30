@@ -59,14 +59,121 @@ from pipeline.normalize.gear import (
     TWO_HAND_INVENTORY_TYPES,
     is_junk_name,
     is_weapon_row,
+    weapon_type_for,
 )
 from pipeline.proficiency import ARMOR, can_equip
+from pipeline.simdb.equip import (
+    DEFENSE_SKILL_LINE,
+    MOD_STAT_ALL,
+    MOD_STAT_BY_INDEX,
+    SCHOOL_ALL_MAGIC,
+    SCHOOL_RESISTANCE,
+)
 from pipeline.spelltext import SpellText
 from pipeline.sqldump import unquote
 
 logger = logging.getLogger(__name__)
 
 FILE_NAME = "item_template.json"
+
+#: cmangos' own `ItemSpelltriggerType` (item_template's `spelltrigger_<n>`).
+#: Only these three appear on any equippable, planner-quality row in the
+#: pinned dump (measured, classicdb-fidelity lane 2026-09-30).
+TRIGGER_ON_USE = 0
+TRIGGER_ON_EQUIP = 1
+TRIGGER_CHANCE_ON_HIT = 2
+
+#: cmangos' own `spell_template.Effect<n>` enum (the effect's TYPE, distinct
+#: from `EffectApplyAuraName<n>`, the aura it applies when the type is
+#: APPLY_AURA). `SPELL_EFFECT_CREATE_ITEM` (24) is already used by
+#: `pipeline.audit.dumpdb`; these two are this module's own.
+EFFECT_APPLY_AURA = 6
+#: cmangos' own SPELL_EFFECT_ADD_EXTRA_ATTACKS -- verified against Hand of
+#: Justice's own nested spell 15601 (`EffectTriggerSpell1` off spell 15600),
+#: `Effect1` 19, `EffectBasePoints1` 0 (+1 real value: "gain 1 extra attack"),
+#: matching wowhead classic's real text ("chance on melee hit to gain 1
+#: extra attack") -- see `_extra_attacks`' own doc.
+EFFECT_ADD_EXTRA_ATTACKS = 19
+
+#: `EffectApplyAuraName<n>` ids verified against real Classic Wowhead
+#: tooltips for the six items the sixth wow-player sweep named (see
+#: `effect_text`'s own doc for the citation on each). classic-db's own 1.12
+#: aura numbering is NOT always the Forever client's modern `SpellEffect`
+#: numbering -- `pipeline.simdb.equip`'s own aura ids are calibrated
+#: against the CLIENT's table and must never be reused here blindly:
+#: `AURA_MOD_SPELL_CRIT_CHANCE` below is the clearest case (71 here, 552 on
+#: the client, confirmed by Eye of the Beast disagreeing with a same-number
+#: guess).
+AURA_MOD_STAT = 29
+#: Not a stat -- the equip aura a "chance on hit" trinket itself carries
+#: (Hand of Justice's spell 15600); the real effect is its own
+#: `EffectTriggerSpell1` (see `_extra_attacks`).
+AURA_PROC_TRIGGER_SPELL = 42
+AURA_MOD_RESISTANCE = 22
+#: SkillLine-indexed (misc_value); only `DEFENSE_SKILL_LINE` (95, reused
+#: from `pipeline.simdb.equip`, a SkillLine.dbc id and not aura-numbering at
+#: all) is a planner stat -- a weapon-skill line has no `GearItem.stats` key
+#: either, on a client row or here (verified: Legplates of Might's own
+#: "+7 Defense" equip line, alongside its separately-verified `parry`).
+AURA_MOD_SKILL = 30
+AURA_MOD_DAMAGE_DONE = 13
+#: Verified: Legplates of Might (+1% parry), Bloodfang Spaulders (+12
+#: dodge rating), and -- by the same 47/49/51 sequence, not independently
+#: cited -- block (Breastplate of Might's set-bonus text corroborates block
+#: exists on this gear tier but not this exact line).
+AURA_MOD_PARRY_PERCENT = 47
+AURA_MOD_DODGE_PERCENT = 49
+AURA_MOD_BLOCK_PERCENT = 51
+AURA_MOD_CRIT_PERCENT = 52
+AURA_MOD_HIT_CHANCE = 54
+#: Not independently verified against a classic-db item (no spell-hit-only
+#: trinket in this build's six named items); kept adjacent to the verified
+#: 54 (hit) and unified into the same `hit` key regardless, per the lane
+#: brief's own "Forever's unified hit/crit" instruction.
+AURA_MOD_SPELL_HIT_CHANCE = 55
+AURA_MOD_SPELL_CRIT_CHANCE = 71
+AURA_MOD_POWER_REGEN = 85
+AURA_MOD_HEALING_DONE = 135
+#: Verified: Hand of Justice / Devilsaur Eye's own use effect (both +20/+150
+#: Attack Power). `AURA_MOD_RANGED_ATTACK_POWER` mirrors it on the same
+#: spells (Blizzard grants both together so melee and ranged classes see the
+#: same tooltip number) but is dropped, never summed into `attack_power`,
+#: matching `pipeline.normalize.gear.STAT_BY_MODIFIER_ID`'s own id-39 (ranged
+#: attack power) precedent.
+AURA_MOD_ATTACK_POWER = 99
+AURA_MOD_RANGED_ATTACK_POWER = 124
+
+#: `EffectApplyAuraName<n>` -> the planner's stat key, for a "flat number,
+#: no school mask" aura -- `AURA_MOD_STAT`/`AURA_MOD_DAMAGE_DONE`/
+#: `AURA_MOD_RESISTANCE`/`AURA_MOD_SKILL`/`AURA_MOD_SPELL_CRIT_CHANCE` have
+#: their own branches in `_equip_stats` (an index or a school mask to
+#: decode first). `crit`/`hit` intentionally collect two aura ids each
+#: (melee 52 + spell-school-masked 71; physical 54 + spell 55): Forever's
+#: unified hit/crit system means both land on the one key
+#: (`pipeline.simdb.statmap`).
+SIMPLE_STAT_AURAS: dict[int, str] = {
+    AURA_MOD_PARRY_PERCENT: "parry",
+    AURA_MOD_DODGE_PERCENT: "dodge",
+    AURA_MOD_BLOCK_PERCENT: "block",
+    AURA_MOD_CRIT_PERCENT: "crit",
+    AURA_MOD_HIT_CHANCE: "hit",
+    AURA_MOD_SPELL_HIT_CHANCE: "hit",
+    AURA_MOD_POWER_REGEN: "mp5",
+    AURA_MOD_HEALING_DONE: "healing",
+}
+
+#: Auras seen on an on-equip classic-db spell in this build's 1,498-row
+#: supplement (classicdb-fidelity lane measurement, 2026-09-30) that are
+#: reviewed and known NOT to be a planner stat, by category -- the same
+#: "IGNORED_AURAS" shape `pipeline.simdb.equip` uses for the client's own
+#: SpellEffect table, at the same rigor (a reasoned bucket, not each one
+#: individually wowhead-cited; 144 IS individually cited: Duskbat Drape's
+#: own "reduces damage from falling", not a stat). 124 (ranged attack
+#: power, mirrors 99) is handled in its own branch, not this set, since it
+#: is deliberately dropped rather than ignored-as-a-category.
+IGNORED_STAT_AURAS: frozenset[int] = frozenset(
+    {8, 15, 19, 23, 31, 43, 77, 89, 102, 107, 109, 117, 123, 131, 139, 144, 154, 158, 161, 180}
+)
 
 #: classic-db's own resistance columns -> the planner's stat key. Holy
 #: resistance is dropped, same as `pipeline.normalize.gear.RESISTANCE_KEYS`
@@ -102,6 +209,42 @@ def is_gm_class_mask(allowable_class: int) -> bool:
     return allowable_class >= 0 and (allowable_class & ~ALLOWED_CLASS_MASK) != 0
 
 
+class ItemSpellSlot(BaseModel):
+    """One `spellid_<n>`/`spelltrigger_<n>` pair off an `item_template` row."""
+
+    spell_id: int
+    trigger: int
+    classic_db_name: str
+
+
+class ClassicDbSpellEffect(BaseModel):
+    """One `spell_template.Effect<n>` slot (n in 1..3, classic-db's own cap)."""
+
+    effect: int
+    aura: int
+    base_points: int
+    die_sides: int
+    misc_value: int
+    trigger_spell: int
+
+
+class ClassicDbSpell(BaseModel):
+    """One `spell_template` row, narrowed to what `_equip_stats`/`effect_text`
+    need -- the committed extract's own `spells` record shape."""
+
+    id: int
+    proc_chance: int
+    effects: list[ClassicDbSpellEffect]
+
+
+class ClassicDbPayloadError(ValueError):
+    """The committed extract is not the shape this module expects."""
+
+
+class EquipEffectError(ClassicDbPayloadError):
+    """An on-equip spell effect uses an aura `_equip_stats` will not guess at."""
+
+
 class ClassicDbItem(BaseModel):
     """One `item_template` row, narrowed to what `to_gear_item`/`to_item`
     need -- the committed extract's own record shape."""
@@ -134,15 +277,12 @@ class ClassicDbItem(BaseModel):
     delay: int
     set_id: int | None
     unique: bool
-    #: Every non-zero `spellid_<n>` (1-5) paired with classic-db's own
-    #: `spell_template.SpellName` for it, as a last-resort effect-text
-    #: fallback -- see `effect_text`'s own doc for why the client's own
-    #: description is always tried first.
-    spells: list[tuple[int, str]]
-
-
-class ClassicDbPayloadError(ValueError):
-    """The committed extract is not the shape this module expects."""
+    #: Every non-zero `spellid_<n>` (1-5), classic-db's own `spelltrigger_<n>`
+    #: for it (`TRIGGER_ON_USE`/`TRIGGER_ON_EQUIP`/`TRIGGER_CHANCE_ON_HIT`)
+    #: and classic-db's own `spell_template.SpellName` -- the last-resort
+    #: effect-text fallback and the name-match check `effect_text`'s own doc
+    #: describes.
+    spells: list[ItemSpellSlot]
 
 
 def _stats(row: dict[str, str]) -> dict[int, int]:
@@ -160,12 +300,18 @@ def _resistances(row: dict[str, str]) -> dict[str, int]:
     return {key: int(row[column]) for column, key in RESISTANCE_COLUMNS.items() if int(row[column])}
 
 
-def _spells(row: dict[str, str], spell_names: dict[int, str]) -> list[tuple[int, str]]:
-    out: list[tuple[int, str]] = []
+def _spells(row: dict[str, str], spell_names: dict[int, str]) -> list[ItemSpellSlot]:
+    out: list[ItemSpellSlot] = []
     for n in range(1, 6):
         spell_id = int(row[f"spellid_{n}"])
         if spell_id:
-            out.append((spell_id, spell_names.get(spell_id, "")))
+            out.append(
+                ItemSpellSlot(
+                    spell_id=spell_id,
+                    trigger=int(row[f"spelltrigger_{n}"]),
+                    classic_db_name=spell_names.get(spell_id, ""),
+                )
+            )
     return out
 
 
@@ -193,22 +339,48 @@ def _item_from_row(row: dict[str, str], spell_names: dict[int, str]) -> ClassicD
     )
 
 
-def extract_records(sql_text: str) -> list[ClassicDbItem]:
+def _spell_from_row(row: dict[str, str]) -> ClassicDbSpell:
+    effects = []
+    for n in (1, 2, 3):
+        effect = int(row[f"Effect{n}"])
+        if effect == 0:
+            continue
+        effects.append(
+            ClassicDbSpellEffect(
+                effect=effect,
+                aura=int(row[f"EffectApplyAuraName{n}"]),
+                base_points=int(row[f"EffectBasePoints{n}"]),
+                die_sides=int(row[f"EffectDieSides{n}"]),
+                misc_value=int(row[f"EffectMiscValue{n}"]),
+                trigger_spell=int(row[f"EffectTriggerSpell{n}"]),
+            )
+        )
+    return ClassicDbSpell(id=int(row["Id"]), proc_chance=int(row["ProcChance"]), effects=effects)
+
+
+def extract_records(sql_text: str) -> tuple[list[ClassicDbItem], dict[int, ClassicDbSpell]]:
     """Every equippable, planner-quality `item_template` row in a pinned
-    mysqldump's text, as the committed extract's own records.
+    mysqldump's text, as the committed extract's own records, plus every
+    `spell_template` row any of those items' `spellid_<n>` slots references
+    (classicdb-fidelity lane, 2026-09-30: `effect_text`/`_equip_stats` need
+    the referenced spell's own structured effects, not only its name --
+    see `effect_text`'s own doc for why).
 
     Narrowed to `PLANNER_QUALITIES` (uncommon/rare/epic/legendary) here, at
     extraction time, not left for `supplement` to filter at every normalize
     run: a poor/common/artifact row can never pass that gate (every other
     source's candidates are narrowed the same way before they reach the
     planner), so committing it would only inflate the extract for rows that
-    can never ship.
+    can never ship. The referenced-spell set is narrowed the same way: only
+    spells a kept item's own `spellid_<n>` names, plus (one level deep) any
+    `EffectTriggerSpell` those name -- Hand of Justice's own nested "extra
+    attack" grant (`_extra_attacks`'s own doc) needs that second hop.
     """
     from pipeline.audit.dumpdb import ClassicDbDump
 
     dump = ClassicDbDump.from_text(sql_text)
     spell_names = dump.spell_names
-    return sorted(
+    items = sorted(
         (
             _item_from_row(row, spell_names)
             for row in dump.equippable_item_template_rows
@@ -216,13 +388,38 @@ def extract_records(sql_text: str) -> list[ClassicDbItem]:
         ),
         key=lambda item: item.id,
     )
+    all_effects = dump.spell_effects
+    wanted: set[int] = set()
+    for item in items:
+        for slot in item.spells:
+            wanted.add(slot.spell_id)
+    for spell_id in list(wanted):
+        for effect in all_effects.get(spell_id, {}).get("effects", []):
+            if effect["trigger_spell"]:
+                wanted.add(effect["trigger_spell"])
+    spells = {
+        spell_id: ClassicDbSpell(
+            id=spell_id,
+            proc_chance=all_effects[spell_id]["proc_chance"],
+            effects=[ClassicDbSpellEffect(**effect) for effect in all_effects[spell_id]["effects"]],
+        )
+        for spell_id in wanted
+        if spell_id in all_effects
+    }
+    return items, spells
 
 
 def raw_path(build_dir: Path) -> Path:
     return build_dir / "raw" / "classicdb" / FILE_NAME
 
 
-def write_extract(build_dir: Path, records: list[ClassicDbItem], *, source_commit: str) -> Path:
+def write_extract(
+    build_dir: Path,
+    records: list[ClassicDbItem],
+    spells: dict[int, ClassicDbSpell],
+    *,
+    source_commit: str,
+) -> Path:
     path = raw_path(build_dir)
     path.parent.mkdir(parents=True, exist_ok=True)
     document = {
@@ -233,16 +430,21 @@ def write_extract(build_dir: Path, records: list[ClassicDbItem], *, source_commi
                 "commit": source_commit,
                 "license": "GPL-3.0",
                 "note": "item_template, narrowed to equippable (Item.ClassID 2/4, a real "
-                "InventoryType) and PLANNER_QUALITIES -- see pipeline.classicdb_items' own doc.",
+                "InventoryType) and PLANNER_QUALITIES, plus every spell_template row "
+                "referenced by one of those items' spellid_<n> (directly or through an "
+                "EffectTriggerSpell) -- see pipeline.classicdb_items' own doc.",
             },
         },
         "items": [record.model_dump() for record in records],
+        "spells": [
+            spell.model_dump() for spell in sorted(spells.values(), key=lambda spell: spell.id)
+        ],
     }
     path.write_text(json.dumps(document, indent=1) + "\n", encoding="utf-8")
     return path
 
 
-def load_extract(build_dir: Path) -> list[ClassicDbItem] | None:
+def load_extract(build_dir: Path) -> tuple[list[ClassicDbItem], dict[int, ClassicDbSpell]] | None:
     """The committed extract for one build, or `None` when
     `fetch-classic-sources` has not written one yet -- the caller then
     leaves every output unchanged, same contract as
@@ -255,7 +457,11 @@ def load_extract(build_dir: Path) -> list[ClassicDbItem] | None:
     items = document.get("items")
     if not isinstance(items, list):
         raise ClassicDbPayloadError(f"{path} has no 'items' list")
-    return [ClassicDbItem(**record) for record in items]
+    spell_records = document.get("spells", [])
+    if not isinstance(spell_records, list):
+        raise ClassicDbPayloadError(f"{path} has a 'spells' entry that is not a list")
+    spells = {spell.id: spell for spell in (ClassicDbSpell(**record) for record in spell_records)}
+    return [ClassicDbItem(**record) for record in items], spells
 
 
 def is_planner_gear(item: ClassicDbItem) -> bool:
@@ -303,33 +509,260 @@ def planner_stats(item: ClassicDbItem) -> dict[str, int]:
     return stats
 
 
-def effect_text(item: ClassicDbItem, spell_text: SpellText) -> str:
-    """The item's use/proc/equip descriptions, client text preferred.
-
-    Every non-zero `spellid_<n>` is tried against the Forever client's own
-    `SpellText` first (`spell_text.describe`) -- the client carries virtually
-    every Classic-era spell even when it lacks the ITEM that used to grant
-    it, so this is not a rare path (all 12 spell ids the lane's own 11
-    example items reference resolved this way against build 1.60.1.70009's
-    own `Spell.csv`). Only a spell id the client has genuinely never heard of
-    falls back to classic-db's own internal `spell_template.SpellName` label
-    (`item.spells`' own second element) -- not real tooltip text (compare
-    "Increase Spell Dam 29" to the client's resolved "Equip: Increases damage
-    and healing done by magical spells and effects by up to 29"), but better
-    than an empty effect line and the only thing classic-db itself states.
+def _mask_bits(mask: int) -> list[int]:
+    """Same convention as `pipeline.simdb.equip`'s own private helper --
+    duplicated (3 lines) rather than imported: that name is private to its
+    module, and school-bitmask decoding is schema-agnostic enough that a
+    tiny local copy costs less than coupling to another module's internals.
     """
-    parts = [
-        spell_text.describe(spell_id) or classic_db_name
-        for spell_id, classic_db_name in item.spells
-    ]
+    return [1 << shift for shift in range(8) if mask & (1 << shift)]
+
+
+def _equip_stats(spell: ClassicDbSpell, item_id: int, item_name: str) -> dict[str, int]:
+    """One on-equip spell's `APPLY_AURA` effects, in the planner's stat
+    vocabulary -- the classic-db-side twin of `pipeline.normalize.gear.
+    _apply_stat`/`pipeline.simdb.equip.spell_bonus`. Raises `EquipEffectError`
+    for an aura this build has never seen and verified (a classic-db row and
+    a client row must agree on a shared id's stats, so a silently-dropped
+    aura here is exactly the wrong-scoring defect this lane exists to
+    close); an aura reviewed and known NOT to be a stat (`IGNORED_STAT_AURAS`,
+    or a school/index this aura tracks that just isn't one of the planner's)
+    is dropped, not raised.
+    """
+    stats: dict[str, int] = {}
+    for effect in spell.effects:
+        if effect.effect != EFFECT_APPLY_AURA:
+            continue
+        aura = effect.aura
+        amount = effect.base_points + effect.die_sides
+        misc = effect.misc_value
+        if aura == AURA_MOD_STAT:
+            if misc == MOD_STAT_ALL:
+                for key in MOD_STAT_BY_INDEX.values():
+                    stats[key] = stats.get(key, 0) + amount
+            elif misc in MOD_STAT_BY_INDEX:
+                key = MOD_STAT_BY_INDEX[misc]
+                stats[key] = stats.get(key, 0) + amount
+            else:
+                raise EquipEffectError(
+                    f"item {item_id} ({item_name}) has an on-equip MOD_STAT aura naming "
+                    f"unknown stat index {misc}"
+                )
+        elif aura == AURA_MOD_DAMAGE_DONE:
+            if misc == SCHOOL_ALL_MAGIC:
+                stats["spell_power"] = stats.get("spell_power", 0) + amount
+            # A single-school or physical damage-done bonus has no planner
+            # stat key either on a client row (pipeline.simdb.equip's own
+            # per-school SCHOOL_POWER split is sim-only); dropped, not raised.
+        elif aura == AURA_MOD_RESISTANCE:
+            for bit in _mask_bits(misc):
+                key = SCHOOL_RESISTANCE.get(bit)
+                if key:
+                    stats[key] = stats.get(key, 0) + amount
+        elif aura == AURA_MOD_SKILL:
+            if misc == DEFENSE_SKILL_LINE:
+                stats["defense"] = stats.get("defense", 0) + amount
+            # A weapon-skill line has no planner stat key either on a client
+            # row (only the sim's separate weapon_skills tracks it); dropped.
+        elif aura == AURA_MOD_SPELL_CRIT_CHANCE:
+            if misc == SCHOOL_ALL_MAGIC:
+                stats["crit"] = stats.get("crit", 0) + amount
+            # A per-school spell-crit bonus is not verified for classic-db's
+            # own aura numbering; dropped rather than guessed.
+        elif aura == AURA_MOD_ATTACK_POWER:
+            stats["attack_power"] = stats.get("attack_power", 0) + amount
+        elif aura in SIMPLE_STAT_AURAS:
+            key = SIMPLE_STAT_AURAS[aura]
+            stats[key] = stats.get(key, 0) + amount
+        elif aura in (AURA_MOD_RANGED_ATTACK_POWER, AURA_PROC_TRIGGER_SPELL):
+            continue
+        elif aura in IGNORED_STAT_AURAS:
+            continue
+        else:
+            raise EquipEffectError(
+                f"item {item_id} ({item_name}) has an on-equip spell using aura {aura}, "
+                f"which pipeline/classicdb_items.py does not classify; add it to "
+                f"SIMPLE_STAT_AURAS or IGNORED_STAT_AURAS once verified against wowhead"
+            )
+    return stats
+
+
+def equip_stats(item: ClassicDbItem, spells: dict[int, ClassicDbSpell]) -> dict[str, int]:
+    """`_equip_stats`, summed over every `TRIGGER_ON_EQUIP` spell this item
+    carries -- a `TRIGGER_ON_USE`/`TRIGGER_CHANCE_ON_HIT` spell's aura is a
+    temporary effect, not an equipped stat (Destiny's own +200 Strength
+    proc, verified against wowhead classic, is never a flat +200 Strength
+    item -- see `effect_text`'s own doc), so only `TRIGGER_ON_EQUIP` feeds
+    the structured `stats` a ranker scores.
+    """
+    stats: dict[str, int] = {}
+    for slot in item.spells:
+        if slot.trigger != TRIGGER_ON_EQUIP:
+            continue
+        spell = spells.get(slot.spell_id)
+        if spell is None:
+            continue
+        for key, amount in _equip_stats(spell, item.id, item.name).items():
+            stats[key] = stats.get(key, 0) + amount
+    return stats
+
+
+#: `_STAT_PHRASE`'s values are a plain, honest label -- not a transcription
+#: of Wowhead's own copy-editing (this lane verified the NUMBERS against
+#: Wowhead classic for the six items its brief names, not the exact prose;
+#: see this module's own report for that distinction).
+_STAT_PHRASE: dict[str, str] = {
+    "strength": "Strength",
+    "agility": "Agility",
+    "stamina": "Stamina",
+    "intellect": "Intellect",
+    "spirit": "Spirit",
+    "attack_power": "Attack Power",
+    "spell_power": "Spell Damage",
+    "healing": "Healing",
+    "mp5": "Mana per 5 sec",
+    "defense": "Defense",
+    "parry": "Parry Rating",
+    "dodge": "Dodge Rating",
+    "block": "Block Rating",
+    "fire_res": "Fire Resistance",
+    "nature_res": "Nature Resistance",
+    "frost_res": "Frost Resistance",
+    "shadow_res": "Shadow Resistance",
+    "arcane_res": "Arcane Resistance",
+    "crit": "Critical Strike",
+    "hit": "Hit",
+}
+_PERCENT_STATS = frozenset({"crit", "hit"})
+
+_TRIGGER_PREFIX: dict[int, str] = {
+    TRIGGER_ON_EQUIP: "Equip: ",
+    TRIGGER_ON_USE: "Use: ",
+    TRIGGER_CHANCE_ON_HIT: "Chance on hit: ",
+}
+
+
+def _extra_attacks(spell: ClassicDbSpell, spells: dict[int, ClassicDbSpell]) -> int | None:
+    """The number of extra attacks a `AURA_PROC_TRIGGER_SPELL` effect grants,
+    or None when this spell does not grant any (or the nested spell is not
+    in the extract). Verified against Hand of Justice (spell 15600's own
+    `EffectTriggerSpell1` names 15601, whose `Effect1` is
+    `EFFECT_ADD_EXTRA_ATTACKS` with `EffectBasePoints1` 0 -- the real "gain 1
+    extra attack" wowhead classic states, `+1` for the same base-points
+    convention every other effect here uses)."""
+    for effect in spell.effects:
+        if effect.effect != EFFECT_APPLY_AURA or effect.aura != AURA_PROC_TRIGGER_SPELL:
+            continue
+        nested = spells.get(effect.trigger_spell)
+        if nested is None:
+            continue
+        for nested_effect in nested.effects:
+            if nested_effect.effect == EFFECT_ADD_EXTRA_ATTACKS:
+                return nested_effect.base_points + 1
+    return None
+
+
+def _render_spell_text(
+    spell: ClassicDbSpell,
+    trigger: int,
+    item_id: int,
+    item_name: str,
+    spells: dict[int, ClassicDbSpell],
+) -> str | None:
+    """One spell slot's text, built entirely from classic-db's own
+    structured fields -- `None` when this spell has an aura `_equip_stats`
+    does not classify (that spell falls back to the client/bare-name path
+    in `effect_text` instead of a half-built sentence)."""
+    try:
+        stats = _equip_stats(spell, item_id, item_name)
+    except EquipEffectError:
+        return None
+    pieces = []
+    for key, amount in stats.items():
+        label = _STAT_PHRASE.get(key, key)
+        pieces.append(f"+{amount}% {label}" if key in _PERCENT_STATS else f"+{amount} {label}")
+    sentence = _TRIGGER_PREFIX.get(trigger, "") + ", ".join(pieces) + "." if pieces else ""
+    extra = _extra_attacks(spell, spells)
+    if extra is not None:
+        chance = min(spell.proc_chance, 100)
+        plural = "s" if extra != 1 else ""
+        proc_line = f"Chance on hit ({chance}%): Gain {extra} extra attack{plural}."
+        sentence = f"{sentence} {proc_line}".strip() if sentence else proc_line
+    return sentence or None
+
+
+def effect_text(
+    item: ClassicDbItem,
+    spell_text: SpellText,
+    spells: dict[int, ClassicDbSpell],
+    client_spell_names: dict[int, str] | None = None,
+) -> str:
+    """The item's use/proc/equip description.
+
+    Rule (sixth wow-player sweep, 2026-09-30): classic-db's own
+    `spell_template` is tried FIRST, structurally -- every `APPLY_AURA`
+    effect this module classifies (`_equip_stats`) is rendered straight from
+    classic-db's own numbers, with no dependence on the Forever client's
+    modern `Spell.csv` at all. 1.12 spell ids are not stable across clients:
+    Devilsaur Eye (19991) references classic-db spell 24352 ("Devilsaur
+    Fury"), but the CLIENT's own spell 24352 is a different ability entirely
+    ("Devilsaur Glare", a Root effect) -- the client's own `SpellName.csv`
+    disagrees with classic-db's, the collision this rule exists to catch.
+    Verified against Wowhead Classic for all six items the sweep named:
+    Devilsaur Eye (https://www.wowhead.com/classic/item=19991/devilsaur-eye,
+    "Use: Increases attack power by 150 and your chance to hit by 2%"),
+    Hand of Justice (https://www.wowhead.com/classic/item=11815/hand-of-justice,
+    "2% chance on melee hit to gain 1 extra attack" plus "+20 Attack Power" --
+    classic-db's own ProcChance (2) also disagrees with the client's, which
+    states a $h/3 divisor that evaluates to 1%; the client's spell NAME
+    matches here ("Hand of Justice" both sides) yet its own text is still
+    wrong, so this module never trusts client text over a spell it can
+    itself fully classify), Blackhand's Breadth
+    (https://www.wowhead.com/classic/item=13965/blackhands-breadth, "+2%
+    critical strike with melee attacks"), Briarwood Reed
+    (https://www.wowhead.com/classic/item=12930/briarwood-reed, "+29 spell
+    damage and healing"), Eye of the Beast
+    (https://www.wowhead.com/classic/item=13968/eye-of-the-beast, "+2%
+    critical strike with spells" -- classic-db's own aura for this is 71,
+    NOT the client's own 552 for the same concept), and Destiny
+    (https://www.wowhead.com/classic/item=647/destiny, "Chance on hit:
+    Increases Strength by 200" -- item-level `spelltrigger` 2, so this
+    never reaches `equip_stats`, only this text).
+
+    A spell this module cannot fully classify (an aura outside
+    `_equip_stats`'s table) falls back to the Forever client's own
+    `SpellText` (`spell_text.describe`) when the client's spell NAME equals
+    classic-db's own (a real match found for most of the 1,498-row
+    supplement's less exotic spells, per data/README.md's own note on this
+    lane); a name mismatch, or a spell id the client has no row for at all,
+    falls back to classic-db's own internal `SpellName` label -- not real
+    tooltip text, but the only thing classic-db itself states, and never
+    worse than this field was before this lane.
+    """
+    client_spell_names = client_spell_names or {}
+    parts = []
+    for slot in item.spells:
+        spell = spells.get(slot.spell_id)
+        rendered = (
+            _render_spell_text(spell, slot.trigger, item.id, item.name, spells)
+            if spell
+            else None
+        )
+        if rendered is None:
+            client_name = client_spell_names.get(slot.spell_id)
+            if client_name is not None and client_name == slot.classic_db_name:
+                rendered = spell_text.describe(slot.spell_id)
+        parts.append(rendered or slot.classic_db_name)
     return " ".join(part for part in parts if part)
 
 
 def to_gear_item(
     item: ClassicDbItem,
     spell_text: SpellText,
+    spells: dict[int, ClassicDbSpell],
     fork_icons: dict[int, str],
     wowhead_icons: dict[int, str],
+    client_spell_names: dict[int, str] | None = None,
 ) -> GearItem:
     """classic-db states no icon at all (`item_template` has no such column);
     `icon` falls back through the same fork-db/wowhead chain a client row's
@@ -342,7 +775,10 @@ def to_gear_item(
         if is_weapon and speed > 0
         else 0.0
     )
-    icon, _origin = resolve_icon_name(PLACEHOLDER_ICON, item.id, fork_icons, wowhead_icons)
+    icon, icon_source = resolve_icon_name(PLACEHOLDER_ICON, item.id, fork_icons, wowhead_icons)
+    stats = planner_stats(item)
+    for key, amount in equip_stats(item, spells).items():
+        stats[key] = stats.get(key, 0) + amount
     return GearItem(
         id=item.id,
         name=item.name,
@@ -353,17 +789,19 @@ def to_gear_item(
         required_level_source="classic-db",
         item_level=item.item_level,
         armor=item.armor if item.class_id == ARMOR else 0,
-        stats=planner_stats(item),
+        stats=stats,
         damage_min=item.damage_min if is_weapon else 0,
         damage_max=item.damage_max if is_weapon else 0,
         speed=speed if is_weapon else 0.0,
         dps=dps,
         two_hand=is_weapon and item.inventory_type in TWO_HAND_INVENTORY_TYPES,
-        effect_text=effect_text(item, spell_text),
+        effect_text=effect_text(item, spell_text, spells, client_spell_names),
         stats_source="classic-db",
         client_unconfirmed=True,
         set_id=item.set_id,
         unique=item.unique,
+        icon_source=icon_source,
+        weapon_type=weapon_type_for(item.class_id, item.subclass_id, item.inventory_type),
     )
 
 
