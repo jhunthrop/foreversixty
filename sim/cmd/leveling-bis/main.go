@@ -272,6 +272,12 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return err
 	}
 	items = convertCandidateRatings(items, ratingFactorsForBuild)
+	// This lane's brief, item 1: markNotInSimDB (data.go) reads this
+	// build's own embedded item database once per spec, the same way
+	// ratingFactorsForBuild just did - every candidate report.go can
+	// ever publish as a final pick already carries the flag before any
+	// band's own eligible()/pick()/tournament pass runs.
+	items = markNotInSimDB(items)
 	// itemFactionRestriction: item id -> its own client-stated
 	// faction_restriction, for correctedRepSource's general check
 	// (data.go's own doc: a mined rep source's Side is wrong for a real
@@ -319,6 +325,14 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		{"horde", guide.HordeRace},
 	}
 	previous := map[string]map[string]slotPick{"alliance": nil, "horde": nil}
+	// notInSimWarned: this lane's brief, item 1's last sentence - "log
+	// every stripped id once per spec run at warning level so the
+	// nightly log names them". A single id can carry a SimStatus of
+	// notInSimReason on many bands/factions in this same spec run (the
+	// same relic is often BiS at several levels in a row); this map
+	// dedupes so the nightly log names each such id exactly once per
+	// spec, not once per band+faction it happened to win in.
+	notInSimWarned := make(map[int]bool)
 
 	var reports []bandReport
 	for _, band := range bands {
@@ -502,6 +516,20 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			report.Weights = publishWeightRatingUnits(report.Weights, ratingFactorsForBuild)
 			reports = append(reports, report)
 			previous[f.name] = picks
+
+			// This lane's brief, item 1's last sentence: name every id
+			// this band published with SimStatus "not_in_sim" once per
+			// spec run, at warning level, so the nightly log tells the
+			// Python data lane exactly which ids its own simdb.bin
+			// rebuild needs to carry a row for (report.go's own
+			// SimStatus/SetDPSPartial doc has the full reasoning).
+			for _, row := range report.Slots {
+				if row.SimStatus != notInSimReason || notInSimWarned[row.ItemID] {
+					continue
+				}
+				notInSimWarned[row.ItemID] = true
+				log.Printf("leveling-bis: %s: WARNING item %d (%s) is not in this build's simdb.bin (simdb.Known false) - stripped by simdb.Attach's UnequipUnknown before every sim, published score-decided with sim_status=not_in_sim", spec, row.ItemID, row.ItemName)
+			}
 
 			// This is the per-spec/band/faction breakdown the controller
 			// asked for after the memory incident: weights (once per

@@ -951,30 +951,30 @@ func TestSwapAlternativeMeasuredDPS(t *testing.T) {
 	}
 }
 
-// Controller direction, bis-ranker-integrity-8, 2026-09-30 (the eighth
-// wow-player sweep's caster finding): swapMargin (verify.go)
-// deliberately keeps the scored pick when a runner-up measures higher
-// but not enough to clear the noise margin (Beat == false) - but the
-// runner-up still genuinely measured a real, few-tenths-of-a-DPS
-// delta, which bis-ranker-integrity-2 (2026-09-29) used to force to
-// exactly 0 on the theory that "not promoted" meant "at best a tie".
-// That reused swapMargin's own RELATIVE 1% promotion bar to decide an
-// unrelated question (is this row's own number itself too small to
-// trust), which for a caster spec's several-thousand-DPS baseline
-// silently discarded real multi-DPS deltas as fake ties. The fix: this
-// function now only ever floors to 0 at swapDeltaNoiseFloorDPS, an
-// absolute bound on the row's own measurement - 0.3 clears it, so the
-// real, signed +0.3 now publishes.
-func TestSwapMeasuredDeltaPublishesARealSmallPositiveNotBeatDelta(t *testing.T) {
+// Controller direction, bis-ranker-integrity-9, 2026-09-30 (the ninth
+// wow-player sweep's caster finding, day3/player-review-24/casters.md
+// finding 1), SUPERSEDING bis-ranker-integrity-8's own direction below:
+// mage-arcane band 60's own Weakness Analyzer published dps_delta
+// +2.34 next to the KEPT pick Talisman of Ascendance - bis-ranker-
+// integrity-8 (2026-09-30) had just fixed swapMeasuredDelta to publish
+// exactly this kind of real, well-above-noise positive delta rather
+// than force it to 0, reasoning that a genuine few-tenths (or, it
+// turns out, several) DPS gap should not be hidden. But a player reads
+// ANY positive number next to an alternative as "the site chose the
+// worse item", which is never true once !sw.Beat kept the pick on
+// purpose (beatsByMargin already decided this candidate did not clear
+// swapMargin). The fix: every positive delta in the !sw.Beat branch is
+// now an honest tie (0), regardless of size - only a genuine loss
+// (delta <= 0) can ever publish a nonzero number from this branch.
+func TestSwapMeasuredDeltaNeverPublishesAPositiveNotBeatDelta(t *testing.T) {
 	// SwapDPS (100.3) is higher than BaselineDPS (100), but not by
-	// enough to clear swapMargin (1%) - Beat is correctly false, and
-	// the real measured delta (+0.3) clears swapDeltaNoiseFloorDPS
-	// (0.05), so it publishes as-is, not a fake tie.
+	// enough to clear swapMargin (1%) - Beat is correctly false. The
+	// real measured delta (+0.3) clears swapDeltaNoiseFloorDPS (0.05),
+	// but a positive delta in this branch is never published as
+	// anything other than a tie.
 	sw := swapResult{SwapDPS: 100.3, BaselineDPS: 100, Beat: false}
-	got := swapMeasuredDelta(sw)
-	want := 0.3
-	if diff := got - want; diff > 1e-9 || diff < -1e-9 {
-		t.Errorf("swapMeasuredDelta(%+v) = %v, want %v (the real measured delta, not force-tied to 0)", sw, got, want)
+	if got := swapMeasuredDelta(sw); got != 0 {
+		t.Errorf("swapMeasuredDelta(%+v) = %v, want exactly 0: a runner-up that did not clear swapMargin is a tie, never a positive number", sw, got)
 	}
 }
 
@@ -1040,14 +1040,17 @@ func TestSwapMeasuredDeltaNotBeatGenuineLossIsUnchanged(t *testing.T) {
 	}
 }
 
-// End-to-end pin through buildAlternatives, updated for the controller's
-// bis-ranker-integrity-8 direction (2026-09-30): a runner-up that
-// measured higher but did not clear swapMargin's own 1% promotion bar
-// (Beat == false) now publishes its REAL measured delta - here +0.4,
-// which clears swapDeltaNoiseFloorDPS - rather than the old forced-0
-// "at best a tie" reading. Verified stays true either way: this row
-// came from a real swap sim regardless of which way the sign points.
-func TestBuildAlternativesPublishesARealPositiveVerifiedDeltaWhenNotBeatButAboveTheNoiseFloor(t *testing.T) {
+// End-to-end pin through buildAlternatives, updated for the
+// controller's bis-ranker-integrity-9 direction (2026-09-30),
+// SUPERSEDING bis-ranker-integrity-8's own direction (see
+// TestSwapMeasuredDeltaNeverPublishesAPositiveNotBeatDelta's own doc
+// above for the full history): a runner-up that measured higher but
+// did not clear swapMargin's own 1% promotion bar (Beat == false)
+// publishes dps_delta 0 (a tie), never the real +0.4 - a positive
+// number here reads as "the site chose the worse item", which is
+// never true once the pick was kept. Verified stays true regardless:
+// this row still came from a real swap sim.
+func TestBuildAlternativesPublishesATieWhenNotBeatEvenAboveTheNoiseFloor(t *testing.T) {
 	pick := &scored{candidate: candidate{ID: 1, Name: "Knight's Leather Pants"}, Score: 100}
 	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Stormshroud Pants"}, Score: 105}
 	pk := slotPick{Item: pick, RunnerUp: runnerUp}
@@ -1060,9 +1063,8 @@ func TestBuildAlternativesPublishesARealPositiveVerifiedDeltaWhenNotBeatButAbove
 	if len(got) != 1 || got[0].ItemID != 2 {
 		t.Fatalf("buildAlternatives = %+v, want exactly the runner-up", got)
 	}
-	wantDelta := 0.4
-	if diff := got[0].DPSDelta - wantDelta; diff > 1e-9 || diff < -1e-9 {
-		t.Errorf("Stormshroud Pants DPSDelta = %v, want %v (the real measured delta; Beat was false, so it was not promoted, but the number is not a fake tie)", got[0].DPSDelta, wantDelta)
+	if got[0].DPSDelta != 0 {
+		t.Errorf("Stormshroud Pants DPSDelta = %v, want exactly 0: Beat was false (did not clear swapMargin), so this is a tie, never a positive number", got[0].DPSDelta)
 	}
 	if !got[0].Verified {
 		t.Error("Verified = false, want true: this row still came from a real swap sim")
@@ -1967,5 +1969,188 @@ func TestBuildReportContractEverySimDPSMatchesSetDPS(t *testing.T) {
 	// the whole row's evidence.
 	if byslot["off_hand"].SwapNote == "" {
 		t.Error("off_hand SwapNote is empty, want the promotion note still present despite the withheld sim_dps")
+	}
+}
+
+// TestBuildReportRefusesEvidenceForAnItemNotInSimDB is this lane's
+// brief (bis-ranker-integrity-9), item 1's own contract test (item
+// 2): a candidate carrying NotInSimDB (data.go's own doc - set from
+// this build's real simdb.Known off the client export the effect-
+// procs lane's own Hand of Justice 11815 regression names) must never
+// publish Verified/SimDPS/DPSDelta, whatever MeasuredDPS or a swap
+// promotion claims - simdb.Attach/AttachWeights' own UnequipUnknown
+// would have silently stripped it from every character before any sim
+// this command runs ever built one, so nothing here ever actually
+// measured it. The row's own SimStatus names why, and the pick itself
+// stays published, score-decided (Score is never zeroed to make room
+// for the bogus SimDPS) - never emptied, since "the pick stays
+// score-decided" (this lane's brief) is not "the pick is withheld". A
+// band whose final gear includes such an item publishes
+// SetDPSPartial, not a withheld set_dps (bandReport.SetDPSPartial's
+// own doc explains why omitting the number outright would throw away
+// a true measurement of every other slot). A second, ordinary
+// score()-decided row (head) proves the flag is scoped to the one
+// slot that actually carries it.
+func TestBuildReportRefusesEvidenceForAnItemNotInSimDB(t *testing.T) {
+	picks := map[string]slotPick{
+		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Known Helm"}, Score: 10}},
+		"neck": {
+			Item:     &scored{candidate: candidate{ID: 999999, Name: "Stripped Amulet", NotInSimDB: true}, Score: 3, MeasuredDPS: 250.0},
+			RunnerUp: &scored{candidate: candidate{ID: 998, Name: "Demoted Amulet"}},
+		},
+	}
+	swaps := []swapResult{
+		{Slot: "neck", SwapDPS: 250.0, BaselineDPS: 200.0, Beat: true},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 250.0, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+	}
+
+	neckRow := byslot["neck"]
+	if neckRow.SimStatus != notInSimReason {
+		t.Fatalf("neck row SimStatus = %q, want %q", neckRow.SimStatus, notInSimReason)
+	}
+	if neckRow.Verified {
+		t.Error("neck row Verified = true, want false: this item's own sim never actually ran")
+	}
+	if neckRow.SimDPS != 0 {
+		t.Errorf("neck row SimDPS = %v, want 0: MeasuredDPS must never publish for an item simdb.Known rejects", neckRow.SimDPS)
+	}
+	if neckRow.DPSDelta != nil {
+		t.Errorf("neck row DPSDelta = %v, want nil", *neckRow.DPSDelta)
+	}
+	if neckRow.ItemID != 999999 || neckRow.Score != 3 {
+		t.Errorf("neck row = %+v, want the pick published score-decided (item_id 999999, score 3 - never zeroed, never emptied)", neckRow)
+	}
+	if !r.SetDPSPartial {
+		t.Error("SetDPSPartial = false, want true: the band's final gear includes an item not in this build's simdb")
+	}
+
+	headRow := byslot["head"]
+	if headRow.SimStatus != "" || !headRow.Verified {
+		t.Errorf("head row = %+v, want an ordinary verified score-decided row, untouched by neck's own flag", headRow)
+	}
+}
+
+// TestBuildReportAlternativesAreUniqueByItemID is a whole-report
+// contract test - controller direction, 2026-09-30 (lane bis-ranker-
+// integrity-9's own addition, priest-shadow band 60 Alliance
+// main_hand's own repro on nightly 2cd94a6b): Grand Marshal's Stave
+// reached this slot's own candidate pool as two rows sharing the
+// identical item id, one Kind "pvp" (loot.json's own
+// "pvp:rank-18:alliance" source) and one Kind "vendor"
+// (vendorInheritsPvpRankGate, data.go's own doc - the quartermaster
+// row that inherited that same rank) - published twice with an
+// identical dps_delta of 0 before this fix. No slot in a whole report
+// may ever list the same item id twice in its own Alternatives, and
+// the surviving row must be the "pvp" one (betterAlternative's own
+// tie-break, report.go).
+func TestBuildReportAlternativesAreUniqueByItemID(t *testing.T) {
+	pvpVersion := scored{candidate: candidate{ID: 500, Name: "Grand Marshal's Stave"}, Score: 90, HasSource: true, Source: itemSource{Kind: "pvp", Label: "Alliance PvP Rank 18"}}
+	vendorVersion := scored{candidate: candidate{ID: 500, Name: "Grand Marshal's Stave"}, Score: 90, HasSource: true, Source: itemSource{Kind: "vendor", Label: "Quartermaster"}}
+	picks := map[string]slotPick{
+		"main_hand": {
+			Item: &scored{candidate: candidate{ID: 1, Name: "Butcher's Cleaver"}, Score: 200},
+			// vendorVersion listed FIRST deliberately: a tie-break that
+			// merely kept "whichever was seen first" (the old
+			// seen-map-only guard) would publish the vendor row here,
+			// the wrong survivor per the controller's own rule -
+			// betterAlternative (report.go) must actively prefer the
+			// "pvp" row regardless of which order the two reached this
+			// list.
+			Ties: []scored{vendorVersion, pvpVersion},
+		},
+	}
+	bySlot := map[string][]scored{
+		"main_hand": {*picks["main_hand"].Item, vendorVersion, pvpVersion},
+	}
+	r := buildReport(reportSpec(), 60, "alliance", "human", "", 0, nil, nil, picks, 500, nil, nil, nil, 0, 0, nil, nil, bySlot, 0.05, "")
+
+	for _, s := range r.Slots {
+		seen := map[int]bool{}
+		for _, a := range s.Alternatives {
+			if seen[a.ItemID] {
+				t.Fatalf("slot %s lists item id %d twice in its own alternatives: %+v", s.Slot, a.ItemID, s.Alternatives)
+			}
+			seen[a.ItemID] = true
+		}
+	}
+
+	var mainHand slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "main_hand" {
+			mainHand = s
+		}
+	}
+	var found bool
+	for _, a := range mainHand.Alternatives {
+		if a.ItemID != 500 {
+			continue
+		}
+		found = true
+		if a.SourceKind != "pvp" {
+			t.Errorf("Grand Marshal's Stave alternative source_kind = %q, want %q (the pvp row wins the tie)", a.SourceKind, "pvp")
+		}
+	}
+	if !found {
+		t.Fatal("Grand Marshal's Stave (id 500) missing from main_hand's alternatives entirely")
+	}
+}
+
+// TestBuildReportNeverPublishesAPositiveDPSDeltaOnAnAlternative is a
+// whole-report contract test - controller direction, 2026-09-30
+// (ninth wow-player sweep, day3/player-review-24/casters.md finding
+// 1): mage-arcane band 60's own Weakness Analyzer published dps_delta
+// +2.34 next to the KEPT pick Talisman of Ascendance (verified: true)
+// - a real, well-above-noise measured gain (verify.go's own swap sim)
+// that never cleared swapMargin, so the pick was kept on purpose, yet
+// the alternative row still showed a positive number a player reads as
+// "the site chose the worse item". Rule (swapMeasuredDelta, report.go):
+// a runner-up that measured higher but stayed inside the margin
+// publishes dps_delta 0 (a tie), Verified true; a runner-up that
+// measured higher BY MORE than the margin is never left as an
+// alternative at all - applySwaps (verify.go) already promotes it into
+// the pick before buildReport ever runs. No alternative in a whole
+// report may ever carry a positive dps_delta.
+func TestBuildReportNeverPublishesAPositiveDPSDeltaOnAnAlternative(t *testing.T) {
+	const baselineDPS = 300.0
+	// +2.34 DPS: real and well above swapDeltaNoiseFloorDPS (0.05), but
+	// under swapMargin's own 1% bar (baselineDPS*1.01 = 303.0), so
+	// beatsByMargin is false and verify.go kept the pick - the exact
+	// shape of the caster sweep's own repro.
+	const swapDPS = 302.34
+	picks := map[string]slotPick{
+		"trinket2": {
+			Item:     &scored{candidate: candidate{ID: 1, Name: "Talisman of Ascendance"}, Score: 50},
+			RunnerUp: &scored{candidate: candidate{ID: 2, Name: "Weakness Analyzer"}, Score: 10},
+		},
+	}
+	swaps := []swapResult{
+		{Slot: "trinket2", SwapDPS: swapDPS, BaselineDPS: baselineDPS, Beat: false},
+	}
+	r := buildReport(reportSpec(), 60, "alliance", "human", "", 0, nil, nil, picks, baselineDPS, swaps, nil, nil, 0, 0, nil, nil, nil, 0.05, "")
+
+	var found bool
+	for _, s := range r.Slots {
+		for _, a := range s.Alternatives {
+			if a.DPSDelta > 0 {
+				t.Errorf("slot %s alternative %q (id %d) published dps_delta %v, want <= 0: a runner-up that did not clear swapMargin is a tie, never a positive number", s.Slot, a.ItemName, a.ItemID, a.DPSDelta)
+			}
+			if a.ItemID == 2 {
+				found = true
+				if a.DPSDelta != 0 {
+					t.Errorf("Weakness Analyzer's own alternative row dps_delta = %v, want 0 (a tie: it measured higher but never cleared swapMargin)", a.DPSDelta)
+				}
+				if !a.Verified {
+					t.Error("Weakness Analyzer's own alternative row Verified = false, want true: a real sim did compare it to the pick")
+				}
+			}
+		}
+	}
+	if !found {
+		t.Fatal("Weakness Analyzer (id 2) missing from trinket2's own alternatives entirely")
 	}
 }
