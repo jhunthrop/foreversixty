@@ -77,7 +77,7 @@ const addonIconPath =
                 </a>
               </div>
             </div>
-            <HomeAccountPanel client:visible />
+            <HomeAccountPanel client:idle-after-load />
           </div>
           <!-- The right column is the visitor's guild once signed in (spec 2026-09-28: "use it
                instead of the scroll header"), and the five site dates while signed out -- a
@@ -142,7 +142,7 @@ const addonIconPath =
               </div>
             ))}
           </div>
-          <HomeNextSteps client:idle />
+          <HomeNextSteps client:idle-after-load />
         </div>
       </section>
 
@@ -190,7 +190,7 @@ const addonIconPath =
             </ToolCard>
           ))}
         </div>
-        <HomeGetSetUp client:idle />
+        <HomeGetSetUp client:idle-after-load />
       </section>
 
       <div class="grid grid-cols-12 gap-[22px] md:gap-8">

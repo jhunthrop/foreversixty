@@ -37,6 +37,23 @@ const duckdbRuntime = {
   },
 };
 
+// A `client:idle-after-load` directive alongside Astro's built-in `client:idle` (see
+// src/directives/idle-after-load.ts for why): it defers a component's fetch and hydration
+// until after the window `load` event, then idle, instead of idle alone. Registered as its
+// own directive rather than replacing `client:idle` everywhere, so only the components that
+// were actually racing the home page's own paint (day-3 home-lcp lane report) opt in.
+const idleAfterLoadDirective = {
+  name: 'idle-after-load-directive',
+  hooks: {
+    'astro:config:setup': ({ addClientDirective }) => {
+      addClientDirective({
+        name: 'idle-after-load',
+        entrypoint: './src/directives/idle-after-load.ts',
+      });
+    },
+  },
+};
+
 // CF_PAGES is set only inside a Cloudflare Pages build, so local and CI builds keep working
 // against the placeholder community links while a deploy fails fast and names the file.
 const placeholderGuard = {
@@ -110,6 +127,7 @@ export default defineConfig({
         return lastmod ? { ...item, lastmod } : item;
       },
     }),
+    idleAfterLoadDirective,
     placeholderGuard,
     duckdbRuntime,
   ],
