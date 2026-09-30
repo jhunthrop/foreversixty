@@ -59,7 +59,7 @@ Gold text is a gradient (`#fbe7a1` → `#e5b955` → `#a8762a`, top to bottom) c
 
 ### Faction
 
-Alliance `#6fb1ff` (text) / `#2f6fd6` (bars). Horde `#ff6b5c` (text) / `#c0392b` (bars). Wherever a faction is named it carries the game's own banner icon (the client's INV_BannerPVP_02 for Alliance, INV_BannerPVP_01 for Horde, upscaled and cropped like every icon): 16px before the word, 12px in a row descriptor, 32px in a header. Never a coloured dot alone.
+Alliance `#6fb1ff` (text) / `#2f6fd6` (bars). Horde `#ff6b5c` (text) / `#c0392b` (bars). Wherever a faction is named it carries the game's own emblem: the client's UI-PVP-Alliance lion shield and UI-PVP-Horde red disc from the unit frame, upscaled 4x with their transparency kept, never boxed or framed. 20px before the word, 16px in a row descriptor, 36px in a header. Never a coloured dot alone.
 
 ### Class colors (WoW standard)
 
