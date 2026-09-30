@@ -734,8 +734,9 @@ def test_enchants_and_suffixes_use_the_planners_stat_vocabulary_not_a7s():
 
 def test_items_json_carries_both_fork_columns_on_every_row():
     assert all("suffixes" in row and "faction_restriction" in row for row in items())
-    assert sum(1 for row in items() if row["suffixes"]) == ITEMS_WITH_SUFFIXES
-    assert sum(1 for row in items() if row["faction_restriction"]) == ITEMS_FACTION_RESTRICTED
+    # Floors since catalogue-universe (2026-09-30): classic-db rows keep adding both.
+    assert sum(1 for row in items() if row["suffixes"]) >= ITEMS_WITH_SUFFIXES
+    assert sum(1 for row in items() if row["faction_restriction"]) >= ITEMS_FACTION_RESTRICTED
     assert {row["faction_restriction"] for row in items()} == {
         "",
         "alliance_only",
@@ -832,12 +833,15 @@ def test_factions_map_covers_every_restricted_item_quest_or_not():
     not only the quest ones -- reads the same fork `factionRestriction`
     column `items.json`'s own column does, so the two counts match."""
     factions = loot()["factions"]
-    assert len(factions) == FACTION_MAP_ITEMS == ITEMS_FACTION_RESTRICTED
+    assert FACTION_MAP_ITEMS == ITEMS_FACTION_RESTRICTED
+    assert len(factions) >= FACTION_MAP_ITEMS
+    assert len(factions) == sum(1 for row in items() if row["faction_restriction"])
     assert set(factions.values()) <= FACTION_VALUES
     counts = {"alliance": 0, "horde": 0}
     for value in factions.values():
         counts[value] += 1
-    assert counts == FACTION_MAP_COUNTS
+    for side, floor in FACTION_MAP_COUNTS.items():
+        assert counts[side] >= floor, side
     restricted_by_id = {
         str(row["id"]): row["faction_restriction"] for row in items() if row["faction_restriction"]
     }

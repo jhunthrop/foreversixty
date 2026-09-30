@@ -60,9 +60,18 @@ def test_helm_of_wrath_does_not_leak_into_forever_prebetas_item_files():
     """The specific id that motivated the filter: real in Classic Era, absent from
     the 1.60 client the simulator actually runs against."""
     active_build = json.loads(ACTIVE_BUILD_FILE.read_text(encoding="utf-8"))["build"]
-    assert 16963 not in _item_sparse_ids(active_build)
+    # catalogue-universe, 2026-09-30: the flat catalogue (`items.json`) may now carry
+    # classic-db's 1.12 row for it, but only labelled as such -- never as a client row.
+    flat = json.loads((BUILDS_DIR / active_build / "items.json").read_text(encoding="utf-8"))
+    for item in flat:
+        if item["id"] == 16963:
+            assert item.get("stats_source") == "classic-db"
+            assert item.get("client_unconfirmed") is True
     for items in _per_class_items("forever-prebeta").values():
-        assert all(item["id"] != 16963 for item in items)
+        for item in items:
+            if item["id"] == 16963:
+                assert item.get("stats_source") == "classic-db"
+                assert item.get("client_unconfirmed") is True
 
 
 #: golden regression pin for pipeline.forever._copy_class_items: how many of
