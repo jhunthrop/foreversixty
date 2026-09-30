@@ -2,6 +2,7 @@
    Run `python3 scripts/hero-font.py` from web/ to regenerate.
    scripts/hero-font.py explains why this file exists and what it subsets. */
 /* Subset chars (21): ' ,.Yacdeghiklmnoprstu' -- 2896 bytes woff2. */
+/* subset-codepoints: 32,44,46,89,97,99,100,101,103,104,105,107,108,109,110,111,112,114,115,116,117 */
 @font-face {
   font-family: 'Cinzel Hero';
   font-style: normal;

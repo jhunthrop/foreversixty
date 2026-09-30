@@ -122,6 +122,9 @@ def render_css(font_bytes: bytes, chars: set[str]) -> str:
     return (
         f"{GENERATED_BANNER}\n"
         f"/* Subset chars ({len(chars)}): {char_list!r} -- {len(font_bytes)} bytes woff2. */\n"
+        # Machine-readable twin of the line above: src/styles/hero-font.check.test.ts reads
+        # these code points so CI can verify the subset without Python or fontTools.
+        f"/* subset-codepoints: {','.join(str(ord(c)) for c in sorted(chars))} */\n"
         "@font-face {\n"
         f"  font-family: '{FONT_FAMILY}';\n"
         "  font-style: normal;\n"
