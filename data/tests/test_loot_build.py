@@ -658,13 +658,29 @@ def test_every_item_list_is_sorted_and_free_of_duplicates():
             assert items_list == sorted(set(items_list))
 
 
+#: `world:` sources the six Era world bosses own (data-followups-2, 2026-09-30):
+#: raid-scale content, gated with the first raids.
+WORLD_BOSS_SOURCES = {
+    "world:lord-kazzak", "world:azuregos", "world:emeriss", "world:lethon", "world:taerar",
+    "world:ysondre",
+}
+
+
 def test_every_raid_is_gated_and_nothing_else_is():
+    """Raids open later (Onyxia with the first raid phase), the six world
+    bosses open with the raids, and a crafted item whose recipe or reagent
+    is raid-bound sits in a `crafted:<profession>:<phase>` sibling source
+    (data-followups-3). Nothing else carries `opens`."""
     for source in loot()["sources"]:
         opens = source.get("opens")
         if source["id"] == DATED_RAID:
             assert opens == "raids-1"
         elif source["kind"] == "raid":
             assert opens == OPENS_LATER, source["id"]
+        elif source["id"] in WORLD_BOSS_SOURCES:
+            assert opens == "raids-1", source["id"]
+        elif source["kind"] == "crafted" and source["id"].count(":") == 2:
+            assert opens in PHASES | {OPENS_LATER}, source["id"]
         else:
             assert opens is None, source["id"]
         assert opens is None or opens in PHASES | {OPENS_LATER}
