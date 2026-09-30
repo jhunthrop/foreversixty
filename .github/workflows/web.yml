@@ -3,8 +3,9 @@
 # Job graph (see the ci-web-fast lane's change, 2026-09-30):
 #
 #   build --+--> build-real (real-data build + its postbuild checks, off the critical path)
-#           +--> e2e (matrix: shard 1-4/4)  ----+
-#           +--> lhci (push: 7 budgeted URLs) --+--> deploy (main push/dispatch only)
+#           +--> e2e (matrix: shard 1-4/4)     ----+
+#           +--> lhci (matrix: shard 1-3/3, 2-3 of the 7 budgeted URLs each) --+--> deploy
+#                                                                    (main push/dispatch only)
 #
 # `build` runs once (install, check, lint, format, unit tests, the FOREVER_DATA=fixture
 # build) and uploads web/dist so `e2e` and `lhci` each start from the same bytes instead of
@@ -18,10 +19,12 @@
 # it stages under web/build/ live outside dist/ and are not in the web-dist artifact --
 # tests/e2e/support/duckdb-runtime.ts reads them straight off that path.
 # `lhci` audits only the URLs needed to exercise every distinct budget rule in
-# lighthouserc.json's assertMatrix on every push/PR; the full 16-URL list still runs, just
-# nightly, as `lhci-nightly` (schedule trigger only) -- same config, same assertions, just
-# less often. Nothing here drops a test, skips an assertion, or relaxes a budget: see
-# web/lighthouserc.push.cjs and web/README.md's FOREVER_DATA section for the detail.
+# lighthouserc.json's assertMatrix on every push/PR, sharded three ways (LHCI_PUSH_SHARD,
+# lighthouserc.push.cjs's PUSH_GROUPS) so they run in parallel instead of one job auditing
+# all 7; the full 16-URL list still runs, unchanged, in `lhci-nightly` (schedule trigger
+# only) -- same config, same assertions, just less often. Nothing here drops a test, skips
+# an assertion, or relaxes a budget: see web/lighthouserc.push.cjs and web/README.md's
+# FOREVER_DATA section for the detail.
 name: web
 on:
   push:
@@ -183,6 +186,10 @@ jobs:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -200,10 +207,14 @@ jobs:
       # lighthouserc.json's staticDistDir mode serves dist/ itself -- no build or preview
       # server needed here, same as before the job split. Push/PR audits the 7 URLs that
       # between them hit every distinct assertMatrix pattern (see lighthouserc.push.cjs's
-      # comment); the full 16-URL list still runs, unchanged, in `lhci-nightly` below.
+      # comment), 2-3 per shard so the three run in parallel instead of one job auditing all
+      # 7; LHCI_PUSH_SHARD picks which of lighthouserc.push.cjs's PUSH_GROUPS this shard
+      # gets, same numberOfRuns and assertions either way. The full 16-URL list still runs,
+      # unchanged, in `lhci-nightly` below.
       - run: npm run lhci:push
         env:
           FOREVER_DATA: fixture
+          LHCI_PUSH_SHARD: ${{ matrix.shard }}
   lhci-nightly:
     needs: build
     if: github.event_name == 'schedule'

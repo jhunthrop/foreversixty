@@ -120,16 +120,20 @@ particular Forever facts, so regenerating `data/builds/` cannot turn it red on i
 CI's verify job — run it before a deploy.
 
 `npm run build` (and CI's deploy job, which adds `CF_PAGES=1`) uses real data: `FOREVER_DATA` is unset
-there, and `real` is the default. CI's `build` job (`.github/workflows/web.yml`) runs `npm run build`
-for the real build first -- the only place a pull request exercises its `postbuild` checks before
-`deploy`'s own real build repeats them on `main` -- then builds again with `FOREVER_DATA=fixture` and
-uploads that `dist/` as an artifact. The `e2e` and `lhci` jobs both download it instead of rebuilding:
-`e2e` sets `E2E_SKIP_BUILD` so `playwright.config.ts`'s `webServer` runs `npm run preview` alone, and
-`lhci`'s `staticDistDir` mode never rebuilds at all. That fixture build is the one the Lighthouse
-budgets below were measured against. `e2e` shards the suite four ways (`--shard=N/4`, matrix job);
-`lhci` audits 7 of the 16 URLs on every push/PR -- one per distinct `assertMatrix` rule, see
-`lighthouserc.push.cjs`'s comment -- and the full 16-URL list runs nightly instead (`lhci-nightly`,
-schedule trigger), same budgets, same `numberOfRuns`.
+there, and `real` is the default. CI's `build` job (`.github/workflows/web.yml`) builds with
+`FOREVER_DATA=fixture` and uploads that `dist/` as the `web-dist` artifact; `build-real` runs the
+same real-data `npm run build` (and its `postbuild` checks) independently, in parallel, purely to
+gate `deploy` on a pull request before `deploy`'s own real build repeats them on `main`. The `e2e`
+and `lhci` jobs both download `web-dist` instead of rebuilding: `e2e` sets `E2E_SKIP_BUILD` so
+`playwright.config.ts`'s `webServer` runs `npm run preview` alone (and restores
+`web/build/duckdb-runtime/` with `npm run sync:duckdb`, a local copy out of `node_modules` the
+artifact does not carry), and `lhci`'s `staticDistDir` mode never rebuilds at all. That fixture build
+is the one the Lighthouse budgets below were measured against. `e2e` shards the suite four ways
+(`--shard=N/4`, matrix job); `lhci` audits 7 of the 16 URLs on every push/PR -- one per distinct
+`assertMatrix` rule, see `lighthouserc.push.cjs`'s comment -- sharded three ways in turn
+(`LHCI_PUSH_SHARD`, `PUSH_GROUPS`, matrix job) so 2-3 URLs run per shard instead of all 7 in one job;
+the full 16-URL list still runs nightly, unchanged (`lhci-nightly`, schedule trigger), same budgets,
+same `numberOfRuns`.
 
 ## The planner island
 
