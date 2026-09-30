@@ -262,12 +262,27 @@ type lootSource struct {
 	// file's own notes say plainly "Nothing raids at launch on 4
 	// November; the first tier opens on 9 December"). Empty for every
 	// source this build has NOT curated a phase for - a dungeon, quest,
-	// reputation, crafted, PvP or open-world source, every one of which
-	// this lane's brief (item 3) confirms IS open at launch. sourceObtainable
-	// (band.go) reads this to gate a leveling list on it directly, so a
-	// leveling character's OWN band-60 list stops naming raid gear no
-	// launch-day 60 could possibly have - see this lane's report for
-	// which band-60 picks moved once this landed.
+	// crafted, PvP or open-world source, and almost every reputation
+	// source, all of which a previous lane's own item 3 confirmed IS
+	// open at launch. sourceObtainable (band.go) reads this to gate a
+	// leveling list on it directly, so a leveling character's OWN
+	// band-60 list stops naming raid gear no launch-day 60 could
+	// possibly have - see that lane's report for which band-60 picks
+	// moved once this landed.
+	//
+	// bis-ranker-integrity-5 lane, item 4: that "every reputation
+	// source is open at launch" confirmation has one real exception
+	// loot.json itself never states - a rep-kind source's own faction
+	// can be locked behind the same raid-era content patch as a raid
+	// itself (Cenarion Circle, faction 609: introduced in Patch 1.9,
+	// Gates of Ahn'Qiraj, the same patch that opens the Ahn'Qiraj raid
+	// this build already gates "later" above and starts the AQ War
+	// Effort the reputation is earned through - Wowhead's own Cenarion
+	// Circle faction page dates its earliest quest to that event
+	// chain). loadLootIndex applies repFactionRaidPhaseOpens (below) on
+	// top of this field for exactly that case, since forever-raid-
+	// phases.json's own curated facts patch raid/dungeon sources by id,
+	// never a reputation faction.
 	Opens string `json:"opens,omitempty"`
 }
 
@@ -413,6 +428,29 @@ var raidLockedQuestOpens = map[int]string{
 	8756: "later", // The Qiraji Conqueror - Ahn'Qiraj War Effort reward
 	8789: "later", // Imperial Qiraji Armaments - Ahn'Qiraj War Effort reward
 	8790: "later", // Imperial Qiraji Regalia - Ahn'Qiraj War Effort reward
+}
+
+// repFactionRaidPhaseOpens is a reputation faction id -> the content
+// phase its OWN reputation track requires, for a faction loot.json's
+// "rep"-kind sources never carry an Opens value for at all
+// (lootSource.Opens' own doc above: forever-raid-phases.json's curated
+// facts patch a raid/dungeon source by id, never a reputation
+// faction) but whose reputation is not actually earnable until the
+// same content patch that opens a raid this build already gates
+// "later".
+//
+// bis-ranker-integrity-5 lane, 2026-09-30, this lane's brief item 4:
+// Earthstrike (21180, rep:cenarion-circle:exalted) and its two
+// standing-mates published as launch-day gear with no gate at all -
+// Cenarion Circle (faction 609) is Gates of Ahn'Qiraj (Patch 1.9)
+// content, the same patch this build's own raid:ahnqiraj source is
+// already gated "later" for, so its reputation cannot be earned any
+// earlier than the raid itself opens. A rep-kind source's Opens is
+// firstNonEmpty(src.Opens, this map[factionID]) in loadLootIndex - the
+// pipeline-curated fact wins when one exists; this hand-maintained
+// fallback only fires where loot.json is silent.
+var repFactionRaidPhaseOpens = map[int]string{
+	609: "later", // Cenarion Circle - Gates of Ahn'Qiraj (AQ War Effort)
 }
 
 // firstNonEmpty returns the first non-empty string, or "" when every one
@@ -571,6 +609,11 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				}
 				is.Side = repSide[factionID]
 				is.Standing = src.Standing
+				// This lane's brief, item 4: repFactionRaidPhaseOpens'
+				// own doc above - a reputation faction can be raid-era
+				// content even though loot.json's own rep sources never
+				// carry an opens value at all.
+				is.Opens = firstNonEmpty(src.Opens, repFactionRaidPhaseOpens[factionID])
 			}
 			idx[id] = append(idx[id], is)
 		}

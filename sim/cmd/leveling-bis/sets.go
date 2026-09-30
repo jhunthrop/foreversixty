@@ -123,7 +123,7 @@ func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string
 	}
 	sort.Ints(setIDs)
 
-	baselineReq := plainRequest(spec, bandCharacter("set-completion-baseline", race, classSlug, level, talents, buildGear(picks)), trinketRankIterations, verifySeed)
+	baselineReq := plainRequest(spec, bandCharacter("set-completion-baseline", race, classSlug, spec.Spec, level, talents, buildGear(picks)), trinketRankIterations, verifySeed)
 	baselineDPS, err := runner.RunPlainDPS(baselineReq)
 	if err != nil {
 		return picks, []string{fmt.Sprintf("set completion: baseline verify failed: %v", err)}
@@ -147,7 +147,7 @@ func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string
 			trial[c.slot] = slotPick{Item: &item}
 		}
 
-		req := plainRequest(spec, bandCharacter("set-completion", race, classSlug, level, talents, buildGear(trial)), trinketRankIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("set-completion", race, classSlug, spec.Spec, level, talents, buildGear(trial)), trinketRankIterations, verifySeed)
 		dps, err := runner.RunPlainDPS(req)
 		if err != nil {
 			notes = append(notes, fmt.Sprintf("set %d completion (%d pieces): verify failed: %v", setID, len(cands), err))

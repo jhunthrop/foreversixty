@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"sort"
@@ -13,6 +14,34 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
+
+// finishedSetEpsilon is how close a row's own measured DPS number must
+// be to this band's final, published SetDPS to trust it as "measured
+// on the finished set" rather than a stale greedy-fill snapshot - this
+// lane's brief, item 5. Both numbers come from the exact same fixed-
+// seed sim request (verifySeed) whenever they really do describe the
+// same gear, so they land bit-identical in practice; this only guards
+// against float summation order, not real DPS differences.
+const finishedSetEpsilon = 0.01
+
+// dpsComparisonPhrase is the shared "how much, and whether the two raw
+// numbers are trustworthy" clause both SwapNote branches in buildReport
+// use - this lane's brief, item 5: paladin-retribution 60 Alliance
+// published a header Set DPS of 182.9 while five different rows each
+// named a different "X vs Y set DPS" pair, none of them 182.9, because
+// each pair was measured before the OTHER four slots' own promotions
+// were known - a player reads that as five contradictions with the
+// header, not five honest partial snapshots. delta (always real - see
+// slotRow.DPSDelta's own doc) is published unconditionally; the two
+// raw numbers are added only when primaryDPS itself matches this
+// band's own final setDPS, i.e. this really was the last word on the
+// set's total, not a snapshot a later promotion superseded.
+func dpsComparisonPhrase(delta, primaryDPS, otherDPS, setDPS float64) string {
+	if math.Abs(primaryDPS-setDPS) <= finishedSetEpsilon {
+		return fmt.Sprintf("+%.1f DPS (%.1f vs %.1f set DPS)", delta, primaryDPS, otherDPS)
+	}
+	return fmt.Sprintf("+%.1f DPS over it", delta)
+}
 
 // slotRow is one slot's line in a band's report: the JSON and the
 // markdown table share this shape.
@@ -42,6 +71,26 @@ type slotRow struct {
 	SimDPS   float64 `json:"sim_dps,omitempty"`
 	Verified bool    `json:"verified"`
 	SwapNote string  `json:"swap_note,omitempty"`
+	// DPSDelta is this row's own pick's measured DPS advantage over the
+	// one comparator a real swap sim actually measured it against, in
+	// THAT SAME run - this lane's brief, item 5: SimDPS/SwapNote's own
+	// absolute numbers are each the full set's total AT THE MOMENT that
+	// slot was decided (greedy fill measures one slot at a time against
+	// whatever the OTHER slots already were, then keeps deciding more
+	// slots afterward) - paladin-retribution 60 Alliance published a
+	// header Set DPS of 182.9 while five different rows each named a
+	// different, lower "X vs Y set DPS" pair (180.8, 176.4, 178.4,
+	// 173.5, 174.2), none of them the header's own number, because five
+	// different slots each promoted against a baseline measured before
+	// the OTHER four promotions were known. The two raw numbers inside
+	// one swap comparison are always internally consistent (SwapNote's
+	// own doc), but comparing either one against the band's own final
+	// SetDPS is not - DPSDelta is the one number that stays true
+	// regardless: the gap SwapNote's own comparison measured, in that
+	// one run, independent of anything decided before or after. Omitted
+	// when this row was never compared to anything a sim actually
+	// measured (a plain score()-decided pick with no swap result).
+	DPSDelta *float64 `json:"dps_delta,omitempty"`
 	// EffectUnmodelled is true when the picked item carries an
 	// effect_text the engine does NOT implement (effectids_generated.go)
 	// -- this lane's brief, item 3: such a candidate is still scored on
@@ -407,12 +456,26 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		})
 	}
 
+	// This lane's brief, item 2: hunter-beast-mastery/marksmanship band
+	// 40/50 main_hand published caster-stat weapons (spell power/
+	// intellect staves) as alternatives next to a ranged spec's real
+	// pick - those staves score() exactly 0 for a hunter (none of
+	// score()'s weighted stats appear on them) and were never run
+	// through any tournament here, so nothing about them is a real
+	// alternative a player could act on. An alternative must carry at
+	// least one of the spec's positively weighted stats (Score != 0)
+	// or carry a real sim-measured delta from a tournament (the
+	// swap-override force-include below, which runs regardless of
+	// Score - that candidate WAS simmed, so it earns its place on real
+	// evidence instead).
+	realAlternative := func(c scored) bool { return c.Score != 0 }
+
 	out := make([]alternativeRow, 0, alternativesLimit)
 	for _, tie := range pk.Ties {
 		if len(out) >= alternativesLimit {
 			break
 		}
-		if excluded(tie) {
+		if excluded(tie) || !realAlternative(tie) {
 			continue
 		}
 		out = add(out, tie)
@@ -421,7 +484,7 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		if len(out) >= alternativesLimit {
 			break
 		}
-		if excluded(c) {
+		if excluded(c) || !realAlternative(c) {
 			continue
 		}
 		out = add(out, c)
@@ -750,30 +813,55 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 					// applySwaps already promoted the runner-up into pk.Item and
 					// demoted the scored pick to pk.RunnerUp: this row IS the
 					// measured winner, verified by that very run.
-					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %.1f vs %.1f set DPS", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.SwapDPS, sw.BaselineDPS)
+					delta := sw.SwapDPS - sw.BaselineDPS
+					row.DPSDelta = &delta
+					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %s", pk.RunnerUp.Name, pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.SwapDPS, sw.BaselineDPS, setDPS))
 					realSimPromotion = true
-				case ok && pk.RunnerUp != nil && !alternativeCarriesRealEvidence(row.Alternatives):
-					// bis-ranker-integrity-3, 2026-09-29, this lane's brief
-					// item 3: a real sim DID run for this slot (verifyBand's
-					// own swap pass) even though nothing was promoted - the
-					// row otherwise has NO trace anywhere that this pick was
-					// ever tested (never sim-decided, since nothing beat it
-					// - SimDPS above stays 0; and the one candidate that WAS
-					// tested is often not a visible Alternative at all,
-					// either crowded out of the top alternativesLimit rows
-					// by raw score() or - shaman-enhancement's own main_hand
-					// at bands 20/30/40, this lane's own dogfood - correctly
-					// excluded as the slot's own pair-mate's item: Diamond
-					// Hammer is main_hand's real, tested runner-up here, but
-					// it is ALSO off_hand's own pick, so buildAlternatives
-					// rightly never offers the same physical weapon back as
-					// a main_hand fallback). "Verified: true" published with
-					// nothing anywhere backing it up read exactly like
-					// "verified without a sim" to three sweeps of review in
-					// a row, even though a sim genuinely ran; naming the
-					// real numbers here, the same way a promoted swap's own
-					// SwapNote already does, is this fix.
-					row.SwapNote = fmt.Sprintf("confirmed by the sim against %s (id %d): kept the pick, %.1f vs %.1f set DPS", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.BaselineDPS, sw.SwapDPS)
+				case ok:
+					// This lane's brief, item 6: druid-feral band 50
+					// Alliance trinket2 published its own pick, Frozen
+					// Heart of the Mountain, at sim_dps 124.4 -
+					// rankTrinketSlot's own tournament number, measured
+					// before every other slot in the band had its final
+					// pick - while its OWN verified alternative, Smoking
+					// Heart of the Mountain, carried sim_dps 154.8: this
+					// exact slot's own LATER verifyBand swap pass (below),
+					// which measures against the band's actually-finished
+					// gear. A published pick's own SimDPS must never be
+					// staler than a verified alternative sitting on the
+					// same row - sw.BaselineDPS is this exact pick,
+					// re-measured at that later, closer-to-finished point,
+					// so it replaces whatever earlier tournament snapshot
+					// simDecided carried, whether or not this slot also
+					// needs a visible SwapNote below.
+					if simDecided {
+						row.SimDPS = sw.BaselineDPS
+					}
+					if pk.RunnerUp != nil && !alternativeCarriesRealEvidence(row.Alternatives) {
+						// bis-ranker-integrity-3, 2026-09-29, this lane's brief
+						// item 3: a real sim DID run for this slot (verifyBand's
+						// own swap pass) even though nothing was promoted - the
+						// row otherwise has NO trace anywhere that this pick was
+						// ever tested (never sim-decided, since nothing beat it
+						// - SimDPS above stays 0; and the one candidate that WAS
+						// tested is often not a visible Alternative at all,
+						// either crowded out of the top alternativesLimit rows
+						// by raw score() or - shaman-enhancement's own main_hand
+						// at bands 20/30/40, this lane's own dogfood - correctly
+						// excluded as the slot's own pair-mate's item: Diamond
+						// Hammer is main_hand's real, tested runner-up here, but
+						// it is ALSO off_hand's own pick, so buildAlternatives
+						// rightly never offers the same physical weapon back as
+						// a main_hand fallback). "Verified: true" published with
+						// nothing anywhere backing it up read exactly like
+						// "verified without a sim" to three sweeps of review in
+						// a row, even though a sim genuinely ran; naming the
+						// real numbers here, the same way a promoted swap's own
+						// SwapNote already does, is this fix.
+						delta := sw.BaselineDPS - sw.SwapDPS
+						row.DPSDelta = &delta
+						row.SwapNote = fmt.Sprintf("confirmed by the sim against %s (id %d): kept the pick, %s", pk.RunnerUp.Name, pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.BaselineDPS, sw.SwapDPS, setDPS))
+					}
 				}
 			}
 			// This lane's brief, item 2 (original), narrowed by
@@ -1083,7 +1171,15 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 			fmt.Fprintln(&b, strings.Join(parts, ", "))
 			b.WriteString("\n")
 
-			b.WriteString("| Slot | Item | Source | Score | Verified | Alternatives |\n")
+			// This lane's brief, item 3: a bare "Score" header, with
+			// numbers like "7.0" sitting next to "sim-verified (244.9
+			// DPS)" in the same column, reads as two unrelated units
+			// with neither one named (fifth wow-player sweep, casters
+			// finding 3/8). The column header now names its own unit -
+			// score() is a weighted sum in the spec's own reference
+			// stat (spec.ReferenceStat, data/curated/specs.json), not a
+			// DPS number at all.
+			fmt.Fprintf(&b, "| Slot | Item | Source | Score (%s points) | Verified | Alternatives |\n", spec.ReferenceStat)
 			b.WriteString("|---|---|---|---|---|---|\n")
 			for _, row := range r.Slots {
 				item := "-"
@@ -1115,8 +1211,22 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 					switch {
 					case row.SimDPS != 0:
 						score = fmt.Sprintf("sim-verified (%.1f DPS)", row.SimDPS)
+					case r.ReferenceDPSPerPoint != nil:
+						// This lane's brief, item 3: the DPS conversion
+						// beside the raw reference-stat-points number,
+						// using this band's own measured
+						// reference_dps_per_point (bandReport's own
+						// doc) - the same rate the page can use to turn
+						// "Strength 1.99" into "0.14 DPS per point"
+						// elsewhere. Never a bare, unitless number.
+						score = fmt.Sprintf("%.1f %s points (%.2f DPS)", row.Score, spec.ReferenceStat, row.Score*(*r.ReferenceDPSPerPoint))
 					default:
-						score = strconv.FormatFloat(row.Score, 'f', 1, 64)
+						// No trustworthy reference_dps_per_point this
+						// band (weights.go's referenceMeasurementReason
+						// fired - r.WeightsReason is set) - still label
+						// the unit even without a DPS conversion to
+						// show beside it.
+						score = fmt.Sprintf("%s %s points", strconv.FormatFloat(row.Score, 'f', 1, 64), spec.ReferenceStat)
 					}
 					verified = "yes"
 					if !row.Verified {

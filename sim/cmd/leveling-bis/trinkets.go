@@ -185,7 +185,7 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	var notes []string
 	for _, c := range candidates {
 		gear := swapSlot(picks, slot, c.ID, false)
-		req := plainRequest(spec, bandCharacter("trinket-rank", race, classSlug, level, talents, gear), trinketRankIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("trinket-rank", race, classSlug, spec.Spec, level, talents, gear), trinketRankIterations, verifySeed)
 		dps, err := runner.RunPlainDPS(req)
 		if err != nil {
 			notes = append(notes, formatTrinketRankError(slot, c, err))
@@ -269,7 +269,7 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	// results above, so a baseline failure costs the gain check, not
 	// the ranking itself.
 	baselineGear := swapSlot(picks, slot, 0, false)
-	baselineReq := plainRequest(spec, bandCharacter("trinket-rank-baseline", race, classSlug, level, talents, baselineGear), trinketRankIterations, verifySeed)
+	baselineReq := plainRequest(spec, bandCharacter("trinket-rank-baseline", race, classSlug, spec.Spec, level, talents, baselineGear), trinketRankIterations, verifySeed)
 	baselineDPS, baselineErr := runner.RunPlainDPS(baselineReq)
 	if baselineErr != nil {
 		notes = append(notes, slot+": measuring the no-trinket baseline failed: "+baselineErr.Error())

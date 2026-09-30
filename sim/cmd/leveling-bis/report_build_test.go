@@ -99,6 +99,150 @@ func TestBuildReportSwapBeatenRowIsTheWinnerVerifiedWithNote(t *testing.T) {
 	}
 }
 
+// This lane's brief, item 5: when this row's own SwapDPS really is the
+// band's own final SetDPS (the promotion was the last word - the
+// exact shape TestBuildReportSwapBeatenRowIsTheWinnerVerifiedWithNote
+// pins), DPSDelta is still published alongside the trustworthy "vs"
+// pair - a consumer that only reads DPSDelta gets the same real number
+// either way.
+func TestBuildReportSwapBeatPublishesDPSDelta(t *testing.T) {
+	winner := &scored{candidate: candidate{ID: 2, Name: "Better Helm"}}
+	beaten := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
+	picks := map[string]slotPick{"head": {Item: winner, RunnerUp: beaten}}
+	swaps := []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 200, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var headRow slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "head" {
+			headRow = s
+		}
+	}
+	if headRow.DPSDelta == nil || *headRow.DPSDelta != 50 {
+		t.Fatalf("head row DPSDelta = %v, want 50 (200 - 150)", headRow.DPSDelta)
+	}
+}
+
+// This lane's brief, item 5's own named example: paladin-retribution 60
+// Alliance published a header Set DPS of 182.9 while a promoted row's
+// own swap comparison read "180.8 vs 176.4" - a pair that does not
+// involve 182.9 at all, because this slot's promotion was measured
+// BEFORE some other slot's own promotion changed the band's real
+// final total. When the row's own SwapDPS does not match the band's
+// final SetDPS, SwapNote must publish the delta ALONE - never a "vs"
+// pair the header cannot corroborate.
+func TestBuildReportSwapBeatOmitsUncorroboratedAbsoluteNumbers(t *testing.T) {
+	winner := &scored{candidate: candidate{ID: 2, Name: "Better Helm"}}
+	beaten := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
+	picks := map[string]slotPick{"head": {Item: winner, RunnerUp: beaten}}
+	swaps := []swapResult{{Slot: "head", SwapDPS: 180.8, BaselineDPS: 176.4, Beat: true}}
+	// The band's own final SetDPS (182.9), measured AFTER other slots'
+	// own promotions this same run - it does not match this row's own
+	// 180.8, so that number is stale, not the finished set's own total.
+	r := buildReport(reportSpec(), 60, "alliance", "human", "", 0, nil, nil, picks, 182.9, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var headRow slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "head" {
+			headRow = s
+		}
+	}
+	if strings.Contains(headRow.SwapNote, "180.8") || strings.Contains(headRow.SwapNote, "176.4") {
+		t.Fatalf("head row SwapNote = %q, want no uncorroborated absolute numbers (180.8/176.4 do not match the band's own final SetDPS 182.9)", headRow.SwapNote)
+	}
+	if !strings.Contains(headRow.SwapNote, "+4.4 DPS") {
+		t.Fatalf("head row SwapNote = %q, want the real delta (+4.4 DPS, 180.8 - 176.4) published alone", headRow.SwapNote)
+	}
+	if headRow.DPSDelta == nil {
+		t.Fatal("head row DPSDelta is nil, want the real delta published even when the absolute numbers are suppressed")
+	}
+	if diff := *headRow.DPSDelta - 4.4; diff > 1e-9 || diff < -1e-9 {
+		t.Fatalf("head row DPSDelta = %v, want 4.4 (180.8 - 176.4)", *headRow.DPSDelta)
+	}
+}
+
+// The mirror image for a "kept the pick" (not promoted) row: its own
+// BaselineDPS must match the band's own final SetDPS before the raw
+// "vs" pair is trustworthy enough to publish.
+func TestBuildReportKeptPickOmitsUncorroboratedAbsoluteNumbers(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Butcher's Cleaver"}, Score: 236.9}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Diamond Hammer"}, Score: 232.8}
+	// off_hand already wears the runner-up's own item - buildAlternatives
+	// excludes it as main_hand's pair-mate (this lane's own doc,
+	// TestBuildReportAddsSwapNoteWhenVerifiedButNoVisibleEvidence),
+	// which is what keeps this row's Alternatives empty of real
+	// evidence and lets the "confirmed by the sim" fallback fire below.
+	offHandPick := &scored{candidate: candidate{ID: 2, Name: "Diamond Hammer"}, Score: 232.8}
+	picks := map[string]slotPick{
+		"main_hand": {Item: pick, RunnerUp: runnerUp},
+		"off_hand":  {Item: offHandPick},
+	}
+	bySlot := map[string][]scored{
+		"main_hand": {
+			{candidate: candidate{ID: 1, Name: "Butcher's Cleaver"}, Score: 236.9},
+			{candidate: candidate{ID: 2, Name: "Diamond Hammer"}, Score: 232.8},
+		},
+	}
+	swaps := []swapResult{{Slot: "main_hand", SwapDPS: 174.2, BaselineDPS: 178.4, Beat: false}}
+	// The band's final SetDPS (182.9) does not match this row's own
+	// pre-promotion baseline (178.4) - some OTHER slot's own promotion
+	// this band raised the real total past what this slot's own swap
+	// pass ever measured.
+	r := buildReport(reportSpec(), 60, "alliance", "human", "", 0, nil, nil, picks, 182.9, swaps, nil, nil, 0, 0, nil, nil, bySlot, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "main_hand" {
+			row = s
+		}
+	}
+	if strings.Contains(row.SwapNote, "178.4") || strings.Contains(row.SwapNote, "174.2") {
+		t.Fatalf("main_hand row SwapNote = %q, want no uncorroborated absolute numbers", row.SwapNote)
+	}
+	if !strings.Contains(row.SwapNote, "+4.2 DPS") {
+		t.Fatalf("main_hand row SwapNote = %q, want the real delta (+4.2 DPS, 178.4 - 174.2) published alone", row.SwapNote)
+	}
+}
+
+// This lane's brief, item 6: druid-feral band 50 Alliance trinket2
+// published its own pick, Frozen Heart of the Mountain, at sim_dps
+// 124.4 (rankTrinketSlot's own tournament number, measured before the
+// rest of the band's picks were final) while its own verified
+// alternative, Smoking Heart of the Mountain, carried sim_dps 154.8 -
+// a published pick must never look weaker than a verified alternative
+// sitting on its very own row. verifyBand's own later swap pass
+// (verify.go) re-measured this exact pick against the actually-
+// finished gear; buildReport must publish THAT number, not the
+// earlier tournament's stale one.
+func TestBuildReportRefreshesStaleSimDPSFromTheLaterSwapBaseline(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 249469, Name: "Frozen Heart of the Mountain"}, MeasuredDPS: 124.4}
+	runnerUp := &scored{candidate: candidate{ID: 11811, Name: "Smoking Heart of the Mountain"}, MeasuredDPS: 154.8}
+	picks := map[string]slotPick{"trinket2": {Item: pick, RunnerUp: runnerUp}}
+	bySlot := map[string][]scored{
+		"trinket2": {
+			{candidate: candidate{ID: 249469, Name: "Frozen Heart of the Mountain"}},
+			{candidate: candidate{ID: 11811, Name: "Smoking Heart of the Mountain"}},
+		},
+	}
+	// The later verifyBand swap pass re-measured this exact pick
+	// (BaselineDPS) against the finished gear; the runner-up did not
+	// beat it (Beat: false), matching the real druid-feral row's own
+	// dps_delta of -0.97 on the alternative.
+	swaps := []swapResult{{Slot: "trinket2", SwapDPS: 154.8, BaselineDPS: 155.8, Beat: false}}
+	r := buildReport(reportSpec(), 50, "alliance", "night_elf", "", 0, nil, nil, picks, 155.8, swaps, nil, nil, 0, 0, nil, nil, bySlot, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket2" {
+			row = s
+		}
+	}
+	if row.SimDPS != 155.8 {
+		t.Fatalf("trinket2 row.SimDPS = %v, want 155.8 (the later, closer-to-finished baseline), not the stale 124.4 tournament snapshot", row.SimDPS)
+	}
+	for _, a := range row.Alternatives {
+		if a.Verified && a.SimDPS > row.SimDPS {
+			t.Fatalf("verified alternative %+v carries sim_dps higher than its own pick's row.SimDPS %v - the exact contradiction this lane's brief item 6 fixes", a, row.SimDPS)
+		}
+	}
+}
+
 func TestBuildReportSwapLostKeepsSlotVerified(t *testing.T) {
 	pick := &scored{candidate: candidate{ID: 1, Name: "Helm"}, Score: 10}
 	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Worse Helm"}}
@@ -399,6 +543,46 @@ func TestBuildReportContractEveryRowHasAnItemOrAnEmptyReason(t *testing.T) {
 	for _, row := range r.Slots {
 		if row.ItemID == 0 && row.EmptyReason == "" {
 			t.Errorf("slot %s: no item and no EmptyReason - every empty slot must carry a reason", row.Slot)
+		}
+	}
+}
+
+// This lane's brief, item 6: a whole-report contract, not just the one
+// druid-feral repro - no row's own published pick may carry a lower
+// sim_dps than one of its own verified alternatives, whatever slot or
+// tournament decided it. Two slots here: one already fixed by the
+// stale-SimDPS refresh (trinket2, this lane's own dogfood number), one
+// a plain swap-promoted row (head) where the invariant already held
+// before this lane touched anything - both must hold at once.
+func TestBuildReportContractNoVerifiedAlternativeOutranksItsOwnPick(t *testing.T) {
+	trinketPick := &scored{candidate: candidate{ID: 249469, Name: "Frozen Heart of the Mountain"}, MeasuredDPS: 124.4}
+	trinketRunnerUp := &scored{candidate: candidate{ID: 11811, Name: "Smoking Heart of the Mountain"}, MeasuredDPS: 154.8}
+	// applySwaps always sets a promoted item's own MeasuredDPS to
+	// sw.SwapDPS before buildReport ever sees it (verify.go) - set here
+	// to match what the real pipeline hands buildReport.
+	headWinner := &scored{candidate: candidate{ID: 20, Name: "Better Helm"}, MeasuredDPS: 200}
+	headBeaten := &scored{candidate: candidate{ID: 21, Name: "Helm"}}
+	picks := map[string]slotPick{
+		"trinket2": {Item: trinketPick, RunnerUp: trinketRunnerUp},
+		"head":     {Item: headWinner, RunnerUp: headBeaten},
+	}
+	bySlot := map[string][]scored{
+		"trinket2": {
+			{candidate: candidate{ID: 249469, Name: "Frozen Heart of the Mountain"}},
+			{candidate: candidate{ID: 11811, Name: "Smoking Heart of the Mountain"}},
+		},
+	}
+	swaps := []swapResult{
+		{Slot: "trinket2", SwapDPS: 154.8, BaselineDPS: 155.8, Beat: false},
+		{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true},
+	}
+	r := buildReport(reportSpec(), 50, "alliance", "night_elf", "", 0, nil, nil, picks, 155.8, swaps, nil, nil, 0, 0, nil, nil, bySlot, 0, "")
+	for _, row := range r.Slots {
+		pickDPS := row.SimDPS
+		for _, a := range row.Alternatives {
+			if a.Verified && a.SimDPS > pickDPS {
+				t.Errorf("slot %s: verified alternative %+v carries sim_dps %v, higher than its own pick's row.SimDPS %v", row.Slot, a, a.SimDPS, pickDPS)
+			}
 		}
 	}
 }
@@ -775,6 +959,56 @@ func TestBuildAlternativesExcludesThePairMate(t *testing.T) {
 	got := buildAlternatives(picks["finger1"], "finger1", list, picks, 1.0, nil)
 	if len(got) != 1 || got[0].ItemID != 3 {
 		t.Fatalf("finger1 alternatives = %+v, want only Ring C (finger2's own pick excluded)", got)
+	}
+}
+
+// This lane's brief, item 2: hunter-beast-mastery/marksmanship band
+// 40/50 main_hand published caster-stat weapons (spell power/
+// intellect staves) as alternatives next to a ranged spec's real
+// pick - those staves score() exactly 0 for a hunter (none of the
+// spec's positively weighted stats appear on them) and were never run
+// through any tournament, so nothing about them is a real alternative
+// a player could act on. Score 0 and untested must be excluded.
+func TestBuildAlternativesExcludesAZeroScoreNeverSimmedCandidate(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Real hunter weapon"}, Score: 50}
+	pk := slotPick{Item: pick}
+	list := []scored{
+		{candidate: candidate{ID: 1, Name: "Real hunter weapon"}, Score: 50},
+		{candidate: candidate{ID: 2, Name: "Caster Staff of Nothing For You"}, Score: 0, Source: itemSource{Kind: "quest", Label: "Quests"}},
+	}
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 1.0, nil)
+	if len(got) != 0 {
+		t.Fatalf("buildAlternatives = %+v, want none - the only other candidate scores 0 and was never simmed", got)
+	}
+}
+
+// The same zero-score candidate must still be force-included when it
+// really is the one thing a tournament simmed (verify.go's own swap
+// pass) - "or a sim-measured delta from a tournament" is an OR, not an
+// AND, in this lane's brief item 2. This guards against a future fix
+// tightening realAlternative in a way that also blocks the
+// swap-tested runner-up's own force-include step.
+func TestBuildAlternativesForceIncludesAZeroScoreButSwapTestedRunnerUp(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Pick"}, Score: 50}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Zero Score But Tested"}, Score: 0}
+	pk := slotPick{Item: pick, RunnerUp: runnerUp}
+	list := []scored{
+		{candidate: candidate{ID: 1, Name: "Pick"}, Score: 50},
+		{candidate: candidate{ID: 2, Name: "Zero Score But Tested"}, Score: 0},
+	}
+	sw := &swapResult{Slot: "main_hand", SwapDPS: 38.0, BaselineDPS: 45.8, Beat: false}
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0, sw)
+	var found *alternativeRow
+	for i := range got {
+		if got[i].ItemID == 2 {
+			found = &got[i]
+		}
+	}
+	if found == nil {
+		t.Fatalf("buildAlternatives = %+v, want the swap-tested runner-up (id 2) force-included despite scoring 0", got)
+	}
+	if !found.Verified || found.SimDPS != 38.0 {
+		t.Errorf("swap-tested runner-up = %+v, want Verified true and SimDPS 38.0", found)
 	}
 }
 
@@ -1290,6 +1524,81 @@ func TestBuildReportSkipsFallbackSwapNoteWhenAlternativeAlreadyShowsIt(t *testin
 // does nothing" when the row actually carries a real measured number
 // (hybrids sweep, item 5: Dawn's Edge/Ebon Hand/Annihilator all showed
 // this). The real SimDPS is printed instead.
+// This lane's brief, item 3: the fifth wow-player sweep found the
+// published "Score" column mixing unlabeled bare numbers (e.g. "7.0")
+// with "sim-verified (N DPS)" in the very same column, with no unit
+// named anywhere on the bare rows - a player has no way to tell "7.0"
+// means "7 reference-stat points" rather than some kind of DPS. The
+// column header must name the band's own reference stat, and a
+// score()-decided row must show the real DPS conversion beside the
+// raw points number whenever this band's reference_dps_per_point is
+// trustworthy (bandReport.ReferenceDPSPerPoint non-nil).
+func TestWriteMarkdownLabelsTheScoreColumnAndConvertsToDPS(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "warlock-affliction.md")
+	spec := specInfo{Spec: "warlock-affliction", Name: "Affliction", ReferenceStat: "shadow_power"}
+	refDPSPerPoint := 0.0444
+	reports := []bandReport{
+		{
+			Band: 50, Faction: "horde", Race: "orc",
+			ReferenceDPSPerPoint: &refDPSPerPoint,
+			Slots: []slotRow{
+				{Slot: "head", ItemID: 1, ItemName: "Helm", Score: 10, Verified: true},
+			},
+		},
+	}
+	if err := writeMarkdown(path, spec, reports); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading written file: %v", err)
+	}
+	content := string(b)
+	if !strings.Contains(content, "Score (shadow_power points)") {
+		t.Errorf("markdown header does not name the score column's own unit:\n%s", content)
+	}
+	if !strings.Contains(content, "10.0 shadow_power points (0.44 DPS)") {
+		t.Errorf("markdown does not show the DPS conversion beside the raw points number:\n%s", content)
+	}
+	if strings.Contains(content, "| 10.0 |") {
+		t.Errorf("markdown still prints a bare, unitless score number:\n%s", content)
+	}
+}
+
+// The DPS conversion must not be printed when this band's own weights
+// sweep was not trustworthy (ReferenceDPSPerPoint nil, weights.go's
+// referenceMeasurementReason) - the raw points number still needs its
+// unit named, though, so it is never bare either.
+func TestWriteMarkdownLabelsTheScoreColumnWithNoDPSConversionWhenUntrustworthy(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "warlock-demonology.md")
+	spec := specInfo{Spec: "warlock-demonology", Name: "Demonology", ReferenceStat: "shadow_power"}
+	reports := []bandReport{
+		{
+			Band: 60, Faction: "alliance", Race: "human",
+			WeightsReason: "reference measurement was negative",
+			Slots: []slotRow{
+				{Slot: "head", ItemID: 1, ItemName: "Helm", Score: 10, Verified: true},
+			},
+		},
+	}
+	if err := writeMarkdown(path, spec, reports); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading written file: %v", err)
+	}
+	content := string(b)
+	if !strings.Contains(content, "10.0 shadow_power points") {
+		t.Errorf("markdown does not label the unlabeled points number:\n%s", content)
+	}
+	if strings.Contains(content, "DPS)") {
+		t.Errorf("markdown printed a DPS conversion with no trustworthy reference_dps_per_point:\n%s", content)
+	}
+}
+
 func TestWriteMarkdownPrintsSimVerifiedDPSNotZeroScore(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "shaman-enhancement.md")

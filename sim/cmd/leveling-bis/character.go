@@ -53,13 +53,63 @@ func ladderWeapon(items []candidate, level int) *candidate {
 // ladderCharacter is the bare-but-armed character the weights run
 // measures: no armor, the truncated talent build, and the best
 // ranged weapon this level and faction allow (see ladderWeapon).
+//
+// Deliberately NOT given noMeleeAutoAttackSpecs' own DistanceFromTarget
+// treatment (bandCharacter's own doc, this lane's brief item 7): this
+// lane's own brief scopes the fix to "the ranker's tournament
+// character" - the weights sweep this character measures is a
+// separate, much larger-blast-radius concern (every score() weight for
+// every item in the band reads it) this lane did not verify by hand.
+// specSlug "" is bandCharacter's own signal for "not applicable".
 func ladderCharacter(race, classSlug string, level int, talents string, weapon *candidate) api.CharacterSpec {
 	var gear []api.GearSlot
 	if weapon != nil {
 		gear = []api.GearSlot{{Slot: "ranged", ItemID: weapon.ID}}
 	}
-	return bandCharacter("ladder", race, classSlug, level, talents, gear)
+	return bandCharacter("ladder", race, classSlug, "", level, talents, gear)
 }
+
+// noMeleeAutoAttackSpecs is every spec whose real character never
+// auto-attacks in melee at all - this lane's brief (bis-ranker-
+// integrity-5, item 7, 2026-09-30, controller ruling pending owner
+// confirmation): a caster spec does not auto-attack in the leveling
+// tournaments. wowsims-forever's own engine gates a melee auto-swing
+// purely on distance (sim/core/attack.go: a swing only starts when
+// unit.DistanceFromTarget <= MaxMeleeAttackDistance, 5 yards -
+// sim/core/constants.go), never on class or spec - every registered
+// caster agent (sim/mage, sim/warlock, sim/priest/shadow,
+// sim/shaman/elemental, sim/druid/balance) unconditionally calls
+// EnableAutoAttacks with AutoSwingMelee: true regardless, so the only
+// lever that actually stops it is standing this character out of
+// melee range. Every request this site ever sent left
+// api.CharacterSpec.DistanceFromTarget at its zero value (melee range,
+// that field's own doc) before this lane, so every caster's
+// tournament character stood in melee range: Manual Crowd Pummeler (a
+// Strength/Agility, melee-only haste-proc weapon with zero caster
+// stats) won shaman-elemental and druid-balance's own level-60
+// Alliance main_hand tournament purely off free melee auto-attack DPS
+// its haste proc rode along on - DPS a real leveling caster could
+// never generate holding that weapon in the actual game.
+var noMeleeAutoAttackSpecs = map[string]bool{
+	"mage-arcane":         true,
+	"mage-fire":           true,
+	"mage-frost":          true,
+	"warlock-affliction":  true,
+	"warlock-demonology":  true,
+	"warlock-destruction": true,
+	"priest-shadow":       true,
+	"shaman-elemental":    true,
+	"druid-balance":       true,
+}
+
+// casterTournamentDistanceFromTarget clears MinRangedAttackDistance (12
+// yards, sim/core/constants.go) so a wand/Shoot-using character's own
+// ranged auto-attack still fires (sim/core/attack.go's own
+// AutoSwingRanged gate), while also clearing MaxMeleeAttackDistance (5)
+// so the melee auto-swing this lane's brief item 7 disables never
+// starts at all - the same distance sim/core/test_generators.go's own
+// ranged-preset fixtures use for exactly this reason.
+const casterTournamentDistanceFromTarget = 30
 
 // bandCharacter is the one constructor every plain-DPS site in this
 // band's rank/verify passes (trinkets.go, rank.go, sets.go, verify.go)
@@ -75,8 +125,17 @@ func ladderCharacter(race, classSlug string, level int, talents string, weapon *
 // all). One constructor used by every site closes the gap the same way
 // everywhere, and gives the guard in character_test.go one place to
 // assert Talents is always set from the band's own string.
-func bandCharacter(name, race, classSlug string, level int, talents string, gear []api.GearSlot) api.CharacterSpec {
-	return api.CharacterSpec{
+//
+// specSlug (this lane's brief, item 7) is the full spec key
+// (data/curated/specs.json's own "spec", e.g. "shaman-elemental") -
+// noMeleeAutoAttackSpecs' own doc explains why a caster spec's
+// tournament character stands out of melee range instead of at the
+// engine's own zero-value default. Every caller already carries a
+// specInfo with this exact value in scope (spec.Spec) at its own
+// bandCharacter call site; ladderCharacter (above) deliberately passes
+// "" instead - out of this lane's own scope.
+func bandCharacter(name, race, classSlug, specSlug string, level int, talents string, gear []api.GearSlot) api.CharacterSpec {
+	ch := api.CharacterSpec{
 		Name:    name,
 		Race:    race,
 		Class:   classSlug,
@@ -84,6 +143,10 @@ func bandCharacter(name, race, classSlug string, level int, talents string, gear
 		Talents: talents,
 		Gear:    gear,
 	}
+	if noMeleeAutoAttackSpecs[specSlug] {
+		ch.DistanceFromTarget = casterTournamentDistanceFromTarget
+	}
+	return ch
 }
 
 // weightsRequest builds the SimRequest runWeights takes: the spec's own
