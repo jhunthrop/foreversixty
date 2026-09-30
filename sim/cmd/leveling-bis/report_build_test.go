@@ -1012,6 +1012,43 @@ func TestBuildAlternativesSwapNotBeatOverridesTheRunnerUpsDelta(t *testing.T) {
 	}
 }
 
+// data-followups-10 lane, 2026-09-30, item 7: the live repro this
+// pins (hunter-marksmanship band 20, Serpent Gloves vs Gloves of the
+// Fang - both +6 Agility, the other +4 Strength vs +7 Spell Power,
+// NEITHER a stat this spec's own weight_stats measures) - a runner-up
+// whose measured delta sits WITHIN the two runs' own combined standard
+// error must never publish that delta as confirmed evidence. Same
+// shape as TestBuildAlternativesSwapNotBeatOverridesTheRunnerUpsDelta
+// above, but with real (nonzero) stderr on both runs making the
+// -0.25 DPS gap statistically indistinguishable from zero.
+func TestBuildAlternativesSwapWithinNoiseNeverOverridesTheRunnerUpsDelta(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Serpent Gloves"}, Score: 100}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Gloves of the Fang"}, Score: 100}
+	pk := slotPick{Item: pick, RunnerUp: runnerUp}
+	list := []scored{
+		{candidate: candidate{ID: 1, Name: "Serpent Gloves"}, Score: 100},
+		{candidate: candidate{ID: 2, Name: "Gloves of the Fang"}, Score: 100, Source: itemSource{Kind: "quest", Label: "Quests"}},
+	}
+	sw := &swapResult{Slot: "hands", SwapDPS: 78.45, BaselineDPS: 78.70, SwapStdErr: 0.6, BaselineStdErr: 0.6}
+	sw.Beat = beatsByMargin(sw.SwapDPS, sw.BaselineDPS) && sw.Significant()
+	if sw.Significant() {
+		t.Fatalf("test fixture is wrong: this delta (%v) should sit inside the combined error bar", sw.SwapDPS-sw.BaselineDPS)
+	}
+	got := buildAlternatives(pk, "hands", list, map[string]slotPick{"hands": pk}, 0.05, sw, 78.70)
+	if len(got) != 1 || got[0].ItemID != 2 {
+		t.Fatalf("buildAlternatives = %+v, want exactly the runner-up", got)
+	}
+	if got[0].Verified {
+		t.Error("Verified = true, want false: the measured gap never cleared its own combined error bar")
+	}
+	if got[0].DPSDelta != 0 {
+		t.Errorf("DPSDelta = %v, want 0: score() ties these two candidates exactly (neither Strength nor Spell Power is a weighed stat here)", got[0].DPSDelta)
+	}
+	if got[0].SimDPS != 0 {
+		t.Errorf("SimDPS = %v, want 0: an insignificant swap must not publish a false-precision absolute number either", got[0].SimDPS)
+	}
+}
+
 // TestSwapAlternativeMeasuredDPS pins swapAlternativeMeasuredDPS's own
 // two branches directly - this lane's brief, item 7.
 func TestSwapAlternativeMeasuredDPS(t *testing.T) {

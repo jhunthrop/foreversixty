@@ -28,7 +28,8 @@ from pathlib import Path
 
 import pytest
 
-from pipeline.loot import ENCHANTS, LOOT, SUFFIXES, write_loot_files
+from pipeline.classicdb_items import ClassicDbItem, write_extract
+from pipeline.loot import ENCHANTS, LOOT, SUFFIXES, _pvp_ranks_with_classic_db, write_loot_files
 from pipeline.loot.buffs import SIMBUFFS
 from pipeline.manifest import read_manifest, verify, write_manifest
 from pipeline.models import LootFile, LootSource
@@ -228,6 +229,68 @@ def test_items_json_gains_both_fork_columns(tmp_path: Path):
     assert by_id[110]["suffixes"] == [5, 6]
     assert by_id[100]["faction_restriction"] == "alliance_only"
     assert all("suffixes" in row and "faction_restriction" in row for row in rows)
+
+
+def _classic_db_item(item_id: int, required_honor_rank: int = 0) -> ClassicDbItem:
+    return ClassicDbItem(
+        id=item_id,
+        name=f"Test Item {item_id}",
+        quality=4,
+        item_level=70,
+        required_level=60,
+        required_honor_rank=required_honor_rank,
+        class_id=4,
+        subclass_id=1,
+        inventory_type=1,
+        allowable_class=-1,
+        allowable_race=-1,
+        armor=10,
+        raw_stats={},
+        resistances={},
+        damage_min=0,
+        damage_max=0,
+        delay=0,
+        set_id=None,
+        unique=False,
+        spells=[],
+    )
+
+
+def test_pvp_ranks_with_classic_db_merges_in_every_id_the_client_ranks_do_not_name(
+    tmp_path: Path,
+):
+    """data-followups-10 lane, 2026-09-30, item 1: the original Classic
+    honor-rank PvP sets (Lady Palanseer's, Captain Dirgehammer's, ...)
+    carry no client `ItemSparse.RequiredPVPRank` at all in this build -
+    `_pvp_ranks_with_classic_db` is what fills that gap from the
+    committed `raw/classicdb/item_template.json` extract, client
+    winning on an id both name."""
+    build_dir = tmp_path / "builds" / "1.60.1.70009"
+    write_extract(
+        build_dir,
+        [_classic_db_item(16465, required_honor_rank=17), _classic_db_item(9999, required_honor_rank=0)],
+        {},
+        source_commit="deadbeef",
+    )
+    client_ranks = {231580: 17}  # a Forever-new item the client's own ItemSparse already ranks
+    merged = _pvp_ranks_with_classic_db(build_dir, client_ranks)
+    assert merged == {16465: 17, 231580: 17}
+
+
+def test_pvp_ranks_with_classic_db_client_wins_on_a_conflicting_id(tmp_path: Path):
+    build_dir = tmp_path / "builds" / "1.60.1.70009"
+    write_extract(build_dir, [_classic_db_item(16465, required_honor_rank=17)], {}, source_commit="deadbeef")
+    client_ranks = {16465: 99}  # disagreement never measured on a real build; client must win
+    merged = _pvp_ranks_with_classic_db(build_dir, client_ranks)
+    assert merged == {16465: 99}
+
+
+def test_pvp_ranks_with_classic_db_returns_client_ranks_unchanged_without_an_extract(
+    tmp_path: Path,
+):
+    build_dir = tmp_path / "builds" / "1.60.1.70009"
+    client_ranks = {231580: 17}
+    assert _pvp_ranks_with_classic_db(build_dir, client_ranks) == client_ranks
 
 
 def test_write_document_drops_an_unset_key_entirely_not_as_null(tmp_path: Path):

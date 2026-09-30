@@ -160,6 +160,65 @@ func TestReconcileFactionTrinketsKeepsTargetWhenGainMeasuresNegativeBeyondError(
 	}
 }
 
+// (c2) data-followups-10 lane, 2026-09-30: two DIFFERENT faction-
+// neutral trinkets, each already its own faction's own tournament
+// winner, whose gains on EACH OTHER's race are within their own
+// combined standard error (a genuine cross-faction tie, the exact
+// shape of the live Second Wind/Burst of Knowledge repro) must keep
+// each faction's own verdict AND record a FactionNote explaining the
+// comparison - never silently diverge with no note at all.
+func TestReconcileFactionTrinketsNotesANearTieInsteadOfSilentlyDiverging(t *testing.T) {
+	idx := mergeLootIndex(neutralSource(701, "Blackrock Depths: Ambassador Flamelash"), neutralSource(702, "Blackrock Depths: Golem Lord Argelmach"))
+	allianceItem := measuredTrinket(701, "Burst of Knowledge", 5.7, 1.0, 150.0)
+	hordeItem := measuredTrinket(702, "Second Wind", 5.5, 1.0, 148.0)
+	alliancePicks := map[string]slotPick{"trinket1": {Item: &allianceItem}}
+	hordePicks := map[string]slotPick{"trinket1": {Item: &hordeItem}}
+
+	// Cross-measuring either item on the OTHER faction's race lands it
+	// close to, but not exactly at, its own side's number - well inside
+	// the two measurements' own combined error (sqrt(1.0^2+1.0^2) =
+	// 1.41), the same way independent sim noise separated the live
+	// repro's own two numbers by about 1.3 DPS.
+	engine := &fakeEngine{
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			switch {
+			case gearHasItem(req, "trinket1", 701):
+				return 141.0, nil
+			case gearHasItem(req, "trinket1", 702):
+				return 140.8, nil
+			default:
+				return 135.0, nil
+			}
+		},
+	}
+	alliance := factionTrinketInputs{Faction: "alliance", Race: "human"}
+	horde := factionTrinketInputs{Faction: "horde", Race: "orc"}
+
+	newAlliance, newHorde, notes := reconcileFactionTrinkets(engine, specInfo{ClassSlug: "paladin"}, "paladin", 60, "", idx, alliance, alliancePicks, horde, hordePicks)
+
+	if newAlliance["trinket1"].Item == nil || newAlliance["trinket1"].Item.ID != 701 {
+		t.Fatalf("Alliance trinket1 = %+v, want it to keep its own pick (id 701)", newAlliance["trinket1"])
+	}
+	if newHorde["trinket1"].Item == nil || newHorde["trinket1"].Item.ID != 702 {
+		t.Fatalf("Horde trinket1 = %+v, want it to keep its own pick (id 702)", newHorde["trinket1"])
+	}
+	if newAlliance["trinket1"].FactionNote == "" {
+		t.Fatalf("Alliance trinket1 carries no FactionNote explaining the cross-faction tie")
+	}
+	if newHorde["trinket1"].FactionNote == "" {
+		t.Fatalf("Horde trinket1 carries no FactionNote explaining the cross-faction tie")
+	}
+	if !strings.Contains(newAlliance["trinket1"].FactionNote, "indistinguishable") {
+		t.Fatalf("Alliance FactionNote = %q, want it to call out the tie as statistically indistinguishable", newAlliance["trinket1"].FactionNote)
+	}
+	if !strings.Contains(newHorde["trinket1"].FactionNote, "indistinguishable") {
+		t.Fatalf("Horde FactionNote = %q, want it to call out the tie as statistically indistinguishable", newHorde["trinket1"].FactionNote)
+	}
+	if len(notes) < 2 {
+		t.Fatalf("notes = %v, want at least one per direction describing the kept tie", notes)
+	}
+}
+
 // (d) a faction-restricted trinket never crosses: it is never even
 // offered as a candidate, so the other faction's own verdict (here,
 // empty) is left completely untouched and the engine is never called
