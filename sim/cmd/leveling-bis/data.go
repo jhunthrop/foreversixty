@@ -550,6 +550,18 @@ type lootQuestEntry struct {
 	// another such quest, recursively). Empty for the overwhelming
 	// majority of quests, which need no raid-exclusive item at all.
 	Opens string `json:"opens,omitempty"`
+	// Classes is which classes' own quest this is - a data-followups
+	// lane running in parallel (bis-ranker-integrity-12's brief, item
+	// 3) is adding this field for a genuinely class-restricted quest
+	// (quest 8253 "Destroy Morphaz" is a MAGE class quest, which is why
+	// Fire Ruby, its reward, can never be a hunter's or shaman's
+	// trinket - hunter-beast-mastery/shaman-elemental band 50's own
+	// repro, this lane's item 1). Read defensively: nil/absent (every
+	// quest in this build as of this lane) means "no class restriction
+	// at all", so loadLootIndex/classAllowed (band.go) already handle
+	// it correctly before the data lane ever lands the field, and start
+	// gating the moment it does, with no second code change needed.
+	Classes []string `json:"classes,omitempty"`
 }
 
 type lootFile struct {
@@ -599,6 +611,12 @@ type itemSource struct {
 	// "PvP rank 9 · Master Sergeant · Alliance" instead of the bare
 	// bucket name loot.json's own Label would otherwise be.
 	Title string
+	// Classes mirrors lootQuestEntry.Classes (this lane's brief, item
+	// 3) - nil for every source but a class-restricted quest reward,
+	// which is every source in this build today (the field does not
+	// exist in loot.json yet). classAllowed (band.go) is the one place
+	// this is read.
+	Classes []string
 }
 
 // repSide names the reputations only one side can earn, by the client's
@@ -937,6 +955,11 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				// EVENT itself, not a classic-db turn-in item the
 				// generic computation can see (that map's own doc).
 				Opens: firstNonEmpty(e.Opens, raidLockedQuestOpens[e.QuestID]),
+				// e.Classes (this lane's brief, item 3): nil for every
+				// quest in this build today, carried through unchanged
+				// so classAllowed (band.go) gates on it the moment the
+				// parallel data lane lands it.
+				Classes: e.Classes,
 			})
 		}
 		questFloors[id] = leveling.LowestFloor(levels)

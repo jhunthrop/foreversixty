@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 // sourceFor answers loot.json's own question for one item at one
@@ -143,6 +144,30 @@ func sourceObtainable(s itemSource, level int, faction, itemFactionRestriction s
 		return true
 	}
 	return level >= 60 || repStandingObtainable[s.Standing]
+}
+
+// classAllowed reports whether classSlug may use a source whose own
+// Classes list (itemSource.Classes, mirroring lootQuestEntry.Classes -
+// this lane's brief, item 3) restricts it to specific classes -
+// nil-safe: an empty/nil list (every source this build ships as of
+// this lane; loot.json's own quests map carries no "classes" field
+// yet) means unrestricted, so this reports true today and starts
+// gating a class-restricted quest reward (Fire Ruby, quest 8253
+// "Destroy Morphaz", MAGE-only) out for every other class the moment
+// the parallel data lane lands the field, with no second code change.
+// Applied in buildBandPool, not inside sourceObtainable/sourceFor
+// themselves, so their own signatures - and the 50+ existing tests
+// that already call them directly - stay unchanged.
+func classAllowed(classes []string, classSlug string) bool {
+	if len(classes) == 0 {
+		return true
+	}
+	for _, c := range classes {
+		if strings.EqualFold(c, classSlug) {
+			return true
+		}
+	}
+	return false
 }
 
 func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIndex) (itemSource, bool) {
@@ -459,6 +484,14 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			continue
 		}
 		src, ok := sourceFor(c.ID, level, faction, c.FactionRestriction, idx)
+		// This lane's brief, item 3: a class-restricted quest reward is
+		// never obtainable by a class the quest excludes, whatever
+		// loot.json's own faction/level gates already say - see
+		// classAllowed's own doc for why this lives here rather than
+		// inside sourceFor/sourceObtainable.
+		if ok && !classAllowed(src.Classes, classSlug) {
+			ok = false
+		}
 		addCoverage(out.Coverage, c.Slots, ok)
 		if crossClassSetItem(c, classSlug) {
 			out.CrossClassSet = append(out.CrossClassSet, c)

@@ -863,6 +863,99 @@ func TestLoadLootIndexPerQuestFactionSide(t *testing.T) {
 	}
 }
 
+// TestLoadLootIndexCarriesQuestClassesThrough is this lane's brief
+// (bis-ranker-integrity-12), item 3: loot.json's own quests map does
+// not carry a "classes" field yet (checked directly against this
+// build's own data/builds/1.60.1.70009/loot.json before writing this
+// fix), so this test builds the field synthetically - a data lane
+// running in parallel is expected to add it, the pinned example being
+// quest 8253 "Destroy Morphaz" (a MAGE class quest whose reward, Fire
+// Ruby, can never be a hunter's or shaman's trinket). loadLootIndex
+// must carry it through onto the quest's own itemSource unchanged, and
+// a quest with no "classes" at all (every quest in this build today)
+// must carry a nil Classes, not an empty-but-non-nil one that would
+// read differently to a future consumer.
+func TestLoadLootIndexCarriesQuestClassesThrough(t *testing.T) {
+	dir := t.TempDir()
+	loot := `{
+  "sources": [],
+  "quests": {
+    "20036": [
+      {"quest_id": 8253, "name": "Destroy Morphaz", "faction": "both", "min_level": 50, "level": 52, "classes": ["mage"]}
+    ],
+    "9001": [
+      {"quest_id": 100, "name": "An Ordinary Quest", "faction": "both", "min_level": 10, "level": 10}
+    ]
+  }
+}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), loot); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	restricted, ok := idx[20036]
+	if !ok || len(restricted) != 1 || len(restricted[0].Classes) != 1 || restricted[0].Classes[0] != "mage" {
+		t.Fatalf("idx[20036] = %+v, want one source with Classes [\"mage\"]", restricted)
+	}
+	unrestricted, ok := idx[9001]
+	if !ok || len(unrestricted) != 1 || unrestricted[0].Classes != nil {
+		t.Fatalf("idx[9001] = %+v, want one source with Classes nil (no restriction stated)", unrestricted)
+	}
+}
+
+// TestClassAllowed pins classAllowed's own nil-safe contract (band.go):
+// no restriction at all is always allowed; a restriction only ever
+// allows the classes it names, case-insensitively (loot.json's own
+// data lane doc gives no guarantee on casing).
+func TestClassAllowed(t *testing.T) {
+	if !classAllowed(nil, "rogue") {
+		t.Error("classAllowed(nil, rogue) = false, want true: no restriction stated")
+	}
+	if !classAllowed([]string{}, "rogue") {
+		t.Error("classAllowed([], rogue) = false, want true: an empty list is the same as no restriction")
+	}
+	if !classAllowed([]string{"mage"}, "mage") {
+		t.Error("classAllowed([mage], mage) = false, want true")
+	}
+	if !classAllowed([]string{"Mage"}, "mage") {
+		t.Error("classAllowed([Mage], mage) = false, want true: case-insensitive")
+	}
+	if classAllowed([]string{"mage"}, "hunter") {
+		t.Error("classAllowed([mage], hunter) = true, want false: hunter is not in the list")
+	}
+}
+
+// TestBuildBandPoolExcludesAClassRestrictedQuestRewardForTheWrongClass
+// is the real call site, end to end, with a synthetic quests map
+// (this lane's brief, item 3's own instruction: "add the reader
+// behind a nil-safe check with a test that uses a synthetic quests
+// map, so the nightly picks it up the moment the data lane lands").
+// Fire Ruby (quest 8253) must never reach a hunter's candidate pool,
+// but must still reach a mage's - the exact fix for hunter-beast-
+// mastery/shaman-elemental band 50's own repro (this lane's item 1).
+func TestBuildBandPoolExcludesAClassRestrictedQuestRewardForTheWrongClass(t *testing.T) {
+	items := []candidate{
+		{ID: 20036, Name: "Fire Ruby", RequiredLevel: 50, EffectiveRequiredLevel: 50, Slots: []string{"trinket1", "trinket2"}},
+	}
+	idx := lootIndex{
+		20036: {{Kind: "quest", Label: "Destroy Morphaz", Classes: []string{"mage"}}},
+	}
+	weights := map[string]float64{}
+	hunterPool := buildBandPool(items, idx, "hunter", 50, "alliance", weights, 0, false)
+	if len(hunterPool.Scored) != 0 {
+		t.Fatalf("hunter pool.Scored = %+v, want empty: Fire Ruby's own quest is mage-only", hunterPool.Scored)
+	}
+	if len(hunterPool.NoSource) != 1 || hunterPool.NoSource[0].ID != 20036 {
+		t.Fatalf("hunter pool.NoSource = %+v, want Fire Ruby (class-excluded, same bucket as no source at all)", hunterPool.NoSource)
+	}
+	magePool := buildBandPool(items, idx, "mage", 50, "alliance", weights, 0, false)
+	if len(magePool.Scored) != 1 || magePool.Scored[0].ID != 20036 {
+		t.Fatalf("mage pool.Scored = %+v, want Fire Ruby (the quest's own class)", magePool.Scored)
+	}
+}
+
 func TestApplyEffectiveRequiredLevelsRaisesAQuestRewardsGate(t *testing.T) {
 	idx, questFloors, err := loadLootIndex(buildDirFixture(), nil)
 	if err != nil {
