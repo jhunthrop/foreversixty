@@ -420,3 +420,108 @@ def test_a_boss_whose_npc_id_is_really_a_gameobject_chest_is_falsely_flagged_wit
     assert {f.subject for f in result.findings if "no such drop" in f.message} == {
         "8952", "35033",
     }  # fmt: skip
+
+
+def _write_world_drop_leak_build(
+    root: Path, build: str, *, item_in_boss_list: bool = False
+) -> Path:
+    """day3 data-followups-6 lane, 2026-09-30: a published BiS pick (item
+    90200) whose own classic-db drop row resolves to a known instance
+    zone (raid:test-raid, zone 5000, map 500), but `loot.json`'s own
+    published sources carry it under NOTHING but `world_drop:60-62` --
+    the Cache of the Firelord shape this lane's fix closes. `raid:
+    test-raid` itself names a DIFFERENT item (1) as its own boss's real
+    drop, so the instance zone is genuinely known without item 90200
+    needing to be correctly attributed there first."""
+    build_dir = root / build
+    build_dir.mkdir(parents=True)
+    write_classic_sources(
+        build_dir,
+        {
+            1: [ClassicDbSourceRecord(kind="creature_drop", npc_id=1, name="Boss", map_id=500)],
+            90200: [
+                ClassicDbSourceRecord(
+                    kind="object_drop", object_id=9001, name="Reward Chest", map_id=500,
+                )
+            ],
+        },
+    )  # fmt: skip
+    boss_source = {
+        "id": "raid:test-raid", "kind": "raid", "name": "Test Raid", "zone_id": 5000,
+        "bosses": [{"id": "raid:test-raid:1", "name": "Boss", "npc_id": 1, "items": [1]}],
+    }  # fmt: skip
+    if item_in_boss_list:
+        boss_source["bosses"][0]["items"].append(90200)
+    loot = {
+        "sources": [
+            boss_source,
+            {
+                "id": "world_drop:60-62", "kind": "world_drop", "name": "World drop",
+                "items": [90200], "level_min": 60, "level_max": 62,
+            },
+        ],
+        "quests": {}, "factions": {},
+    }  # fmt: skip
+    (build_dir / "loot.json").write_text(json.dumps(loot))
+    (build_dir / "zones.json").write_text(json.dumps([{"id": 5000, "map_id": 500}]))
+    (build_dir / "items").mkdir()
+    (build_dir / "items" / "warrior.json").write_text(
+        json.dumps(
+            {
+                "items": [
+                    {"id": 90200, "name": "Leaked Item", "required_level": 1, "slot": "trinket1"}
+                ]
+            }
+        )
+    )
+    (build_dir / "bis").mkdir()
+    (build_dir / "bis" / "warrior-arms.json").write_text(
+        json.dumps(
+            {
+                "spec": "warrior-arms",
+                "bands": [
+                    {
+                        "band": 60,
+                        "faction": "alliance",
+                        "slots": [
+                            {
+                                "slot": "trinket1",
+                                "item_id": 90200,
+                                "item_name": "Leaked Item",
+                                "source": "World drop",
+                                "source_kind": "world_drop",
+                            }
+                        ],
+                    }
+                ],
+            }
+        )
+    )
+    return build_dir
+
+
+def test_a_world_drop_only_bis_pick_is_flagged_when_classic_db_places_it_in_an_instance(
+    tmp_path,
+):
+    root = tmp_path / "builds"
+    _write_world_drop_leak_build(root, "testbuild")
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_drops.check(ctx)
+    leak_findings = [f for f in result.findings if f.subject == "90200"]
+    assert leak_findings
+    assert leak_findings[0].severity == "major"
+    assert "world/world_drop" in leak_findings[0].message
+
+
+def test_the_same_item_is_not_flagged_once_it_also_has_a_real_boss_listing(tmp_path):
+    """The same item, corroborated at all outside `world`/`world_drop` --
+    the leak this check exists for is specifically "ONLY a world bucket",
+    not "also has one". Filters by this check's own message text, not
+    subject alone: check C's own pre-existing `_boss_items` half may add
+    its own, unrelated "no such drop" finding for the same item id (no
+    `--classicdb-dump` given here), which is not this test's concern."""
+    root = tmp_path / "builds"
+    _write_world_drop_leak_build(root, "testbuild", item_in_boss_list=True)
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_drops.check(ctx)
+    assert not any("world/world_drop" in f.message for f in result.findings)

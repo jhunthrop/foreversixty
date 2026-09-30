@@ -362,6 +362,25 @@ class ClassicDbSourceRecord(BaseModel):
     #: for).
     level_min: int | None = None
     level_max: int | None = None
+    #: `object_drop` only -- whether `object_id` (already resolved to its
+    #: OWNING gameobject, `_parse_object_drops`' own doc) is a
+    #: `_GAMEOBJECT_TYPE_CHEST` row with its own curated loot, i.e. an
+    #: entry in `_chest_loot_ids`' domain (`gameobject_template.data1`
+    #: nonzero, whether it points at itself -- Dire Maul's "Four Horsemen
+    #: Chest" -- or elsewhere -- Cache of the Firelord, Father Flame).
+    #: day3 data-followups-6 lane, 2026-09-30's own signal for
+    #: `pipeline.loot.classicdb.classicdb_additions`'s "named reward chest
+    #: becomes a boss, not anonymous trash" rule: an ORDINARY instance
+    #: object (an ore vein, or a plain chest whose own entry IS its own
+    #: loot key because `data1` is unset) is `False` here even when
+    #: `name` is non-empty -- 130 type-3 `gameobject_template` rows on the
+    #: pinned dump have `data1` 0 (e.g. "Large Solid Chest", "Supply
+    #: Crate"), named but never a `data1`-redirected reward chest, and
+    #: must stay anonymous trash the way they always have. Carried on the
+    #: record (not recomputed from the raw dump, which `classicdb_
+    #: additions` never reads) so it survives the committed `sources.json`
+    #: cache the same way every other fact here does.
+    is_reward_chest: bool = False
 
 
 def _rows_by_entry(records: list[dict[str, str]]) -> dict[int, list[dict[str, str]]]:
@@ -692,29 +711,95 @@ def _parse_object_drops(
     sql_text: str,
     object_names: dict[int, str],
     object_map: dict[int, int],
+    chest_owner: dict[int, int],
+    reward_chest_ids: frozenset[int],
     into: dict[int, list[ClassicDbSourceRecord]],
     excluded_refs: frozenset[int],
 ) -> None:
+    """`gameobject_loot_template`'s own rows, one `ClassicDbSourceRecord`
+    per (loot-table entry, item) pair -- keyed by the OWNING gameobject,
+    not necessarily the loot table's own entry number.
+
+    day3 data-followups-6 lane, 2026-09-30, this lane's brief item (a): a
+    `_GAMEOBJECT_TYPE_CHEST` row's own `data1` (cmangos' chest `lootId`
+    column) is what `gameobject_loot_template` is really keyed by, NOT
+    every chest's own entry -- `gameobject_chest_loot`'s own doc has the
+    two measured cases (Dire Maul's "Tribute", Blackrock Depths' "Chest of
+    The Seven") this same defect already broke for the audit; Molten
+    Core's "Cache of the Firelord" (object entry 179703, `data1` 16719)
+    and Blackrock Spire's "Father Flame" (entry 175245, `data1` 13761) are
+    the SAME shape reaching `loot.json`'s own build, not just the audit --
+    every one of the Cache's 12 items came back `object_id 16719 name ''
+    map_id None` before this fix (16719 names no `gameobject` spawn row of
+    its own at all), which `classicdb_additions` could never place
+    anywhere honest.
+
+    `chest_owner` (`chest_owner_by_loot_id`'s own result, entry keyed
+    the other way: loot key -> owning entry) resolves this: a loot key
+    that IS itself a real object entry (`loot_key in object_names`) keeps
+    that direct ownership -- an entry that is both an object's own entry
+    and another chest's `data1` is read as its own -- and only a loot key
+    naming NO object of its own falls back to whichever chest's `data1`
+    points at it. `reward_chest_ids` (`chest_owner`'s own domain, every
+    entry with a nonzero `data1`) is threaded onto the record itself as
+    `is_reward_chest` -- `ClassicDbSourceRecord.is_reward_chest`'s own doc
+    for why `classicdb_additions` needs it kept, not recomputed.
+    """
     rows_by_entry = _rows_by_entry(list(iter_table_records(sql_text, "gameobject_loot_template")))
     reference_rows = _rows_by_entry(list(iter_table_records(sql_text, "reference_loot_template")))
-    for object_id in rows_by_entry:
+    for loot_key in rows_by_entry:
+        object_id = loot_key if loot_key in object_names else chest_owner.get(loot_key, loot_key)
         name = object_names.get(object_id, "")
         map_id = object_map.get(object_id)
+        is_reward_chest = object_id in reward_chest_ids
         for item_id, chance in _expand_loot_template(
-            object_id, rows_by_entry, reference_rows, excluded_refs
+            loot_key, rows_by_entry, reference_rows, excluded_refs
         ):
             into[item_id].append(
                 ClassicDbSourceRecord(
                     kind="object_drop", object_id=object_id, name=name, map_id=map_id,
-                    chance=chance,
+                    chance=chance, is_reward_chest=is_reward_chest,
                 )
-            )
+            )  # fmt: skip
 
 
 #: cmangos' own `gameobject_template.type` for a lootable chest --
 #: `gameobject_chest_loot`'s own doc for why this is the ONE type this
 #: reads `data1` for.
 _GAMEOBJECT_TYPE_CHEST = 3
+
+
+def _chest_loot_ids(sql_text: str) -> dict[int, int]:
+    """gameobject entry -> `data1` (cmangos' own chest `lootId` column),
+    for every `_GAMEOBJECT_TYPE_CHEST` row with a nonzero one -- the one
+    scan both `gameobject_chest_loot` (entry-keyed, the audit's own use)
+    and `chest_owner_by_loot_id` (inverted, `_parse_object_drops`'s own
+    use) build on, so the `type == 3 and data1` rule lives in exactly one
+    place rather than two copies that could drift apart."""
+    chest_loot_ids: dict[int, int] = {}
+    for row in iter_table_records(sql_text, "gameobject_template"):
+        if int(row.get("type", "0")) != _GAMEOBJECT_TYPE_CHEST:
+            continue
+        data1 = int(row.get("data1", "0"))
+        if data1:
+            chest_loot_ids[int(row["entry"])] = data1
+    return chest_loot_ids
+
+
+def chest_owner_by_loot_id(sql_text: str) -> dict[int, int]:
+    """`_chest_loot_ids`'s own result, inverted: `data1` (the real
+    `gameobject_loot_template` key a chest's loot lives under) -> the
+    OWNING gameobject's own entry -- `_parse_object_drops`'s own doc for
+    why this is needed at all (a chest whose `data1` differs from its own
+    entry, e.g. Cache of the Firelord's 16719 -> 179703). `setdefault`
+    when more than one chest shares the exact same `data1` (not observed
+    on the pinned dump, but the dump has no rule against it): the first
+    one `_chest_loot_ids`' own dict-ordering yields keeps ownership,
+    rather than this function silently picking whichever iterated last."""
+    owner: dict[int, int] = {}
+    for entry, data1 in _chest_loot_ids(sql_text).items():
+        owner.setdefault(data1, entry)
+    return owner
 
 
 def gameobject_chest_loot(sql_text: str) -> dict[int, dict[int, float]]:
@@ -732,25 +817,20 @@ def gameobject_chest_loot(sql_text: str) -> dict[int, dict[int, float]]:
     lootId 16577) and Blackrock Depths' "Chest of The Seven" (object
     entry 169243, chest lootId 12260) -- stores its real loot under a
     DIFFERENT numeric id than its own entry. `_parse_object_drops` above
-    never needed this: it only ever reads `gameobject_loot_template`
-    keyed by an object's OWN entry, which is right for the overwhelming
-    majority of lootable objects (an ore vein, a generic loot chest) but
-    silently empty for one of these named reward chests -- measured on
-    the pinned dump, 8 of 8 "Chest of The Seven" items and 20 of 39
-    "Tribute" items resolve correctly once `data1` is followed instead of
-    the object's own entry. This lives here, callable straight from the
-    raw dump text, rather than duplicating `_expand_loot_template`'s own
-    recursion in `pipeline.audit.dumpdb` (which has no reason to reach
-    into this module's private helpers for its own sake).
+    used to have this same gap (fixed, day3 data-followups-6 lane,
+    2026-09-30, via `chest_owner_by_loot_id`) -- this function stays a
+    separate, simpler entry-keyed view for the audit's own zone/map-scoped
+    search (`pipeline.audit.check_drops._resolve_chest_loot`), which wants
+    "every chest's own loot, keyed by the chest" rather than
+    `_parse_object_drops`'s "every item, keyed by which chest owns it".
+    Measured on the pinned dump, 8 of 8 "Chest of The Seven" items and 20
+    of 39 "Tribute" items resolve correctly once `data1` is followed
+    instead of the object's own entry. This lives here, callable straight
+    from the raw dump text, rather than duplicating `_expand_loot_
+    template`'s own recursion in `pipeline.audit.dumpdb` (which has no
+    reason to reach into this module's private helpers for its own sake).
     """
-    chest_loot_ids: dict[int, int] = {}
-    for row in iter_table_records(sql_text, "gameobject_template"):
-        if int(row.get("type", "0")) != _GAMEOBJECT_TYPE_CHEST:
-            continue
-        data1 = int(row.get("data1", "0"))
-        if data1:
-            chest_loot_ids[int(row["entry"])] = data1
-
+    chest_loot_ids = _chest_loot_ids(sql_text)
     rows_by_entry = _rows_by_entry(list(iter_table_records(sql_text, "gameobject_loot_template")))
     reference_rows = _rows_by_entry(list(iter_table_records(sql_text, "reference_loot_template")))
     # No `_excluded_reference_ids`/`_world_drop_pools` exclusion here,
@@ -1040,7 +1120,11 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
         sql_text, creature_names, npc_map, into, excluded_refs,
         kind="pickpocketing", table="pickpocketing_loot_template", creature_levels=creature_levels,
     )
-    _parse_object_drops(sql_text, object_names, object_map, into, excluded_refs)
+    chest_owner = chest_owner_by_loot_id(sql_text)
+    reward_chest_ids = frozenset(_chest_loot_ids(sql_text))
+    _parse_object_drops(
+        sql_text, object_names, object_map, chest_owner, reward_chest_ids, into, excluded_refs
+    )
     conditions = _parse_conditions(sql_text)
     _parse_vendors(sql_text, creature_names, vendor_template_id, conditions, npc_map, into)
     _parse_quest_rewards(sql_text, into)
