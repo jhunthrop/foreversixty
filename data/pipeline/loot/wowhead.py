@@ -197,10 +197,14 @@ def unsourced_real_item_ids(item_rows: list[dict], named: set[int]) -> list[int]
 #: classic-db's own direct `creature_loot_template` rows, and the two
 #: origins must stay identical rather than drift apart as two
 #: near-copies. raid-loot-regression lane, 2026-09-29:
-#: `is_confirmed_boss_drop` exempts a dungeon/raid row from the pool
-#: whatever its chance -- the world-pool rule applies to open-world
-#: creatures only, so the retired `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`
-#: floor is gone from both origins together.
+#: `is_confirmed_boss_drop` exempts a dungeon/raid row from the pool on
+#: the strength of its OWN chance alone -- the world-pool rule applies to
+#: open-world creatures only, so the retired `WORLD_DROP_BOSS_MIN_CHANCE_
+#: PERCENT` floor is gone from both origins together. pooled-boss-greens
+#: lane, 2026-09-29: that exemption itself still yields when the item is
+#: ALSO a known world-drop pool member by another route and this row's
+#: own chance is unknown or low -- see `is_confirmed_boss_drop`'s own doc
+#: and `_split_world_drop_rows` below.
 
 #: `pipeline.classic_sources._world_drop_records`' own doc: when neither
 #: origin states a per-creature level for a world-drop pool, the item's
@@ -229,15 +233,31 @@ def _split_world_drop_rows(
     """`(boss_rows, pool_rows)` for a `dropped-by` list already
     classified a world-drop pattern -- `pipeline.loot.constants.
     is_confirmed_boss_drop`'s own doc: a row resolving to a dungeon/raid
-    zone is a real boss/instance kill and stays its own source, whatever
-    its chance; every other row (an open-world zone, or none at all)
-    folds into the pool."""
+    zone is a real boss/instance kill and stays its own source UNLESS
+    this row's own chance is unknown or below `WORLD_DROP_MAX_CHANCE_
+    PERCENT`; every other row (an open-world zone, or none at all) always
+    folds into the pool.
+
+    pooled-boss-greens lane, 2026-09-29: `rows` arriving here already
+    means the WHOLE item read as a world-drop pattern
+    (`_is_world_drop_pattern(page.dropped_by)`, this function's only
+    caller), so `has_world_drop_record` is unconditionally `True` for
+    every row -- a `world_drop` `LootSource` for this item exists (or
+    will, once `pool_rows` gains this fold) the same way a classic-db
+    item's own separate `world_drop` `ClassicDbSourceRecord` does. Measured
+    on this build: `pipeline.loot.classicdb`'s identical fix folds
+    Anvilrage Overseer/Warden/Guardsman's own pooled greens; wowhead's
+    `dropped-by` page for the same items independently lists the SAME
+    bosses among dozens of other creatures, so this origin needed the
+    same chance check, not just classic-db's -- see the lane report for
+    which of the two origins' own attribution actually named these
+    bosses before the fix."""
     boss_rows: list[NpcSource] = []
     pool_rows: list[NpcSource] = []
     for row in rows:
         zone_id = row.zone_ids[0] if row.zone_ids else 0
         kind = INSTANCE_KIND.get(types.get(zone_id, 0)) if zone_id else None
-        if is_confirmed_boss_drop(kind is not None):
+        if is_confirmed_boss_drop(kind is not None, True, row.chance):
             boss_rows.append(row)
         else:
             pool_rows.append(row)
