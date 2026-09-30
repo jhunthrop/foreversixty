@@ -2,14 +2,21 @@
 #
 # Job graph (see the ci-web-fast lane's change, 2026-09-30):
 #
-#   build --+--> e2e (matrix: shard 1-4/4)  --+
-#           +--> lhci (push: 7 budgeted URLs) +--> deploy (main push/dispatch only)
+#   build --+--> build-real (real-data build + its postbuild checks, off the critical path)
+#           +--> e2e (matrix: shard 1-4/4)  ----+
+#           +--> lhci (push: 7 budgeted URLs) --+--> deploy (main push/dispatch only)
 #
-# `build` runs once (install, check, lint, format, unit tests, the real-data build and its
-# postbuild checks, then a FOREVER_DATA=fixture build) and uploads web/dist so `e2e` and
-# `lhci` each start from the same bytes instead of rebuilding. `e2e` shards the Playwright
-# suite four ways (1216 tests as of 2026-09-30: `npx playwright test --list`) so it runs in
-# parallel instead of one long serial pass.
+# `build` runs once (install, check, lint, format, unit tests, the FOREVER_DATA=fixture
+# build) and uploads web/dist so `e2e` and `lhci` each start from the same bytes instead of
+# rebuilding. `build-real` repeats the pre-split real-data `npm run build` and its postbuild
+# checks (check-island-size.mjs, check-no-removed-routes.mjs, check-sim-engine-artifact.mjs)
+# in its own job: it still gates `deploy` the same as before, but no longer sits in front of
+# `e2e`/`lhci` on the critical path, since neither needs anything it produces. `e2e` shards
+# the Playwright suite four ways (1216 tests as of 2026-09-30: `npx playwright test --list`)
+# so it runs in parallel instead of one long serial pass; it also re-runs `sync:duckdb` (a
+# local file copy out of node_modules, not a rebuild) because the two DuckDB engine modules
+# it stages under web/build/ live outside dist/ and are not in the web-dist artifact --
+# tests/e2e/support/duckdb-runtime.ts reads them straight off that path.
 # `lhci` audits only the URLs needed to exercise every distinct budget rule in
 # lighthouserc.json's assertMatrix on every push/PR; the full 16-URL list still runs, just
 # nightly, as `lhci-nightly` (schedule trigger only) -- same config, same assertions, just
@@ -67,13 +74,6 @@ jobs:
       # `pretest` sets FOREVER_DATA=fixture, so the unit tests see the checked-in fixture
       # rather than whatever the data pipeline last emitted.
       - run: npm test
-      # The real-data build (FOREVER_DATA unset, `real` is the default): this is the only
-      # place a PR exercises the real build's `postbuild` checks (check-island-size.mjs,
-      # check-no-removed-routes.mjs, check-sim-engine-artifact.mjs, which no-ops here since
-      # PUBLIC_SIM_ENGINE is unset) before `deploy`'s own real build runs them again on main
-      # after merge. Kept exactly as before the job split so a PR that would blow a budget
-      # on real data still fails here, not just at deploy time.
-      - run: npm run build
       # The fixture build: this is the dist/ that both `e2e` and `lhci` need. Previously
       # Playwright's own webServer (`playwright.config.ts`) rebuilt this implicitly, on the
       # fixture, right before the e2e suite ran, and lhci then audited whatever that left
@@ -88,6 +88,28 @@ jobs:
           name: web-dist
           path: web/dist
           retention-days: 1
+  build-real:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          {
+            node-version-file: web/.node-version,
+            cache: npm,
+            cache-dependency-path: web/package-lock.json,
+          }
+      - run: npm ci
+      # The real-data build (FOREVER_DATA unset, `real` is the default): this is the only
+      # place a PR exercises the real build's `postbuild` checks (check-island-size.mjs,
+      # check-no-removed-routes.mjs, check-sim-engine-artifact.mjs, which no-ops here since
+      # PUBLIC_SIM_ENGINE is unset) before `deploy`'s own real build runs them again on main
+      # after merge. `needs: build` so a broken `check`/`lint`/`test` fails fast without
+      # wasting this build's time; otherwise independent of `build`'s own output, which is
+      # why it runs beside `e2e`/`lhci` instead of blocking them the way it did pre-split.
+      - run: npm run build
   e2e:
     needs: build
     if: github.event_name != 'schedule'
@@ -122,6 +144,14 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
       - run: npx playwright install --with-deps chromium
+      # web/build/duckdb-runtime/<version>/*.wasm lives outside dist/ (too large for a
+      # Cloudflare static asset -- see scripts/sync-duckdb.mjs) and is not part of the
+      # web-dist artifact. tests/e2e/support/duckdb-runtime.ts reads the two engine modules
+      # straight off that path to stub the route `astro preview` cannot serve itself. This
+      # is a local copy out of node_modules (0.3s; confirmed no network access), not a
+      # rebuild: it does not touch dist/, so it does not race or duplicate the `build` job's
+      # own fixture build.
+      - run: npm run sync:duckdb
       - uses: actions/download-artifact@v4
         with:
           name: web-dist
@@ -199,7 +229,7 @@ jobs:
         env:
           FOREVER_DATA: fixture
   deploy:
-    needs: [build, e2e, lhci]
+    needs: [build, build-real, e2e, lhci]
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
@@ -258,10 +288,9 @@ jobs:
       # CF_PAGES makes the build fail if src/data/links.json still holds a PLACEHOLDER link.
       # FOREVER_DATA is unset here on purpose: a real build prerenders no fixture report,
       # rankings, character or guild page and publishes no public/logs-data/.
-      # PUBLIC_SIM_ENGINE=wasm is set ONLY here, for the production build: `build` above (the
-      # unit tests, Lighthouse and e2e's fixture) keeps building and auditing the checked-in
-      # fake engine, unchanged, because none of the fixture pages those jobs even reach
-      # exercise the real wasm.
+      # PUBLIC_SIM_ENGINE=wasm is set ONLY here, for the production build: `build`, `build-real`,
+      # `e2e` and `lhci` all keep building and auditing the checked-in fake engine, unchanged,
+      # because none of the fixture pages those jobs even reach exercise the real wasm.
       - run: CF_PAGES=1 npm run build
         env:
           PUBLIC_SIM_ENGINE: wasm
