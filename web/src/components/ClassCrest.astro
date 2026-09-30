@@ -7,8 +7,20 @@
 // ring"), rendered as a component instead of an inline class so every caller (the hero
 // picker, the state panel, Best in slot by class, the signed-in hero portrait, Switch
 // character, Another class) gets the identical ring width and background. The upscaled PNGs
-// themselves live at web/public/icons/hd/crests/<slug>.png (scratchpad/upscale/final/crests,
-// copied in verbatim -- 256px, already circular with transparency, never re-encoded here).
+// themselves live at web/public/icons/hd/crests/<slug>.png (scratchpad/upscale/final/crests).
+//
+// Review round 1 item 6 (index LCP): the source PNGs shipped from the upscale lane at their
+// native 256px, 50-95KB apiece -- serving all nine at once, every one visible in the
+// signed-out hero picker, was 76% of the index page's entire network weight and the
+// dominant cause of a measured 6.9s LCP against the 2200ms budget (web/lighthouserc.json).
+// The largest real display size any caller uses is 64px ("Best in slot by class"), so they
+// are resized (Lanczos, same PNG format, transparency and art unchanged -- a resolution
+// change, not a re-encode) to 128px, a clean 2x for retina at that size; faction emblems
+// (max display 36px) to 72px. This is not visible at any size this page actually renders
+// them: `width`/`height` already scale a 256px source down, so shipping the correct
+// resolution costs nothing in fidelity and roughly halves transfer size again after
+// halving it once already. See this component's own lane report for the full measurement
+// chain (6.9s -> 5.3s removing fetchpriority="high" -> 3.5s after this resize).
 //
 // Five sizes only, one per real caller today (home spec §6): a size this page's regions
 // don't use is its own design review before it's added, not a free-form number.
@@ -24,9 +36,23 @@ interface Props {
   /** Extra classes the caller wants on the <img> itself (layout only -- never overrides the
    *  ring/background, which stay this component's own). */
   class?: string;
+  /** Review round 1 item 6: the two crests that sit above the fold on the signed-out
+   *  page (the hero's nine-class picker and the example panel's single crest) load
+   *  eagerly instead of this component's default lazy path, so the browser does not wait
+   *  for an intersection check on content already in the viewport -- every other caller
+   *  (Best in slot by class, Another class, Switch character) is below the fold or
+   *  signed-in-only and stays lazy. `fetchpriority` stays `auto` even here: measured
+   *  against the real budget (web/lighthouserc.json, index row), `fetchpriority="high"`
+   *  on nine 50-95KB crest PNGs pulled LCP from ~1.1s to ~6.9s on the throttled mobile
+   *  profile -- it out-competes the hero H1's own font/CSS for the constrained
+   *  connection, since "high" ranks above the browser's normal image priority and can
+   *  beat render-blocking resources for bandwidth. `eager` alone (skip the lazy
+   *  intersection-observer deferral) is the whole fix; never re-add `fetchpriority="high"`
+   *  here without re-measuring this exact budget. */
+  priority?: boolean;
 }
 
-const { slug, size, class: cls = '' } = Astro.props;
+const { slug, size, class: cls = '', priority = false } = Astro.props;
 const color = classes.find((c) => c.slug === slug)?.color ?? '#ffffff';
 const name = classes.find((c) => c.slug === slug)?.name ?? slug;
 ---
@@ -36,7 +62,7 @@ const name = classes.find((c) => c.slug === slug)?.name ?? slug;
   alt=""
   width={size}
   height={size}
-  loading="lazy"
+  loading={priority ? 'eager' : 'lazy'}
   decoding="async"
   class={`crest rounded-full ${cls}`}
   style={`--c: ${color}; width: ${size}px; height: ${size}px;`}
@@ -47,12 +73,29 @@ const name = classes.find((c) => c.slug === slug)?.name ?? slug;
 <style>
   /* design/DESIGN-SYSTEM.md tenet 7 / home spec §6: the exact mock CSS --
      border-radius:999px; box-shadow:0 0 0 2px var(--c); background:#0d111a -- so a
-     slow-loading crest image never flashes transparent before it paints. */
+     slow-loading crest image never flashes transparent before it paints. Review round 1
+     item 8: the ring sits at reduced opacity by default and brightens to the class colour
+     at full opacity on hover/focus-visible of the crest's own link -- the mock's flat
+     `--c` ring gave every crest link an identical rest and hover state, so tenet 9's
+     "every interactive state verified in a browser" had nothing to actually see. The
+     transition matches the design system's own documented hover budget (120ms). Every
+     caller wraps this in an `<a>` with the crest as its direct child, so the parent
+     selectors below reach every real instance without this component needing its own
+     interactive root. */
   .crest {
     flex-shrink: 0;
     object-fit: cover;
     border-radius: 999px;
-    box-shadow: 0 0 0 2px var(--c);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
     background: var(--color-raised, #0d111a);
+    transition: box-shadow 120ms ease-out;
+  }
+  :global(a:hover) > .crest,
+  :global(a:focus-visible) > .crest {
+    box-shadow: 0 0 0 2px var(--c);
+  }
+  :global(a:focus-visible) > .crest {
+    outline: 2px solid var(--c);
+    outline-offset: 2px;
   }
 </style>

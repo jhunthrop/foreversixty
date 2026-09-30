@@ -27,9 +27,19 @@ describe('ClassCrest', () => {
     }
   });
 
-  it('is lazy-loaded (home spec: crests lazy below the fold)', async () => {
+  it('is lazy-loaded by default (home spec: crests lazy below the fold)', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(ClassCrest, { props: { slug: 'druid', size: 64 } });
     expect(html).toContain('loading="lazy"');
+  });
+
+  it('loads eagerly, but never at fetchpriority=high, when the caller marks it above the fold (review round 1 item 6)', async () => {
+    // fetchpriority="high" measurably regressed the index page's LCP from ~1.1s to ~6.9s
+    // against web/lighthouserc.json's own throttled mobile profile (see ClassCrest.astro's
+    // own doc) -- eager alone is the fix; this pins fetchpriority never coming back.
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(ClassCrest, { props: { slug: 'druid', size: 56, priority: true } });
+    expect(html).toContain('loading="eager"');
+    expect(html).not.toContain('fetchpriority');
   });
 });
