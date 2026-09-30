@@ -1,12 +1,14 @@
 import { expect, test } from '@playwright/test';
 import { collectPageErrors } from './support/console';
 
-test('homepage states the product and stops, not a marketing slogan', async ({ page }) => {
+test('homepage states the one fixed sentence (tenet 14) and stops, not a marketing slogan', async ({
+  page,
+}) => {
   const errors = collectPageErrors(page);
-  // Top guilds (spec §2.4, "Around the site") reads GET /v1/rankings/guilds live; stub it
-  // so the ready state is deterministic instead of depending on the real API answering
-  // (the way rankings.spec.ts, rankings-phone.spec.ts and rankings-encounter-picker.spec.ts
-  // already stub this same endpoint).
+  // Top guilds (spec §2.4/§3.A.6, "Around the site") reads GET /v1/rankings/guilds live;
+  // stub it so the ready state is deterministic instead of depending on the real API
+  // answering (the way rankings.spec.ts, rankings-phone.spec.ts and
+  // rankings-encounter-picker.spec.ts already stub this same endpoint).
   await page.route('**/v1/rankings/guilds?**', (route) =>
     route.fulfill({
       status: 200,
@@ -33,58 +35,41 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   const h1 = page.locator('h1');
   await expect(h1).toHaveCount(1);
   const heading = (await h1.innerText()).trim();
-  // A reference heading, not a slogan: short, and it never ends with "!" or "?" -- a
-  // trailing "." is fine (spec 2026-09-23 §2's own headline sentence, reference voice
-  // "state the thing and stop").
+  // Home rebuild spec §1 / tenet 14: the one fixed sentence, never a slogan -- short, and
+  // it never ends with "!" or "?".
   expect(heading.length).toBeLessThanOrEqual(90);
   expect(heading).not.toMatch(/[!?]$/);
-  expect(heading).toBe('Your character, planned, simmed, logged and ranked.');
+  expect(heading).toBe('Play your class better.');
   await expect(page.getByTestId('home-timeline')).toBeVisible();
-  await expect(page.getByTestId('home-next-planner-signed-out')).toBeVisible();
-  await expect(page.getByTestId('home-next-simulator-signed-out')).toBeVisible();
-  await expect(page.getByTestId('home-next-logs-signed-out')).toBeVisible();
-  await expect(page.getByTestId('home-next-rankings-signed-out')).toBeVisible();
-  // Spec §2.4 "Around the site": Recent reports and Top guilds, mounted nested inside
-  // the old HomeProductPanel grid before this branch deleted that grid. RecentReports'
-  // own wrapping section carries this testid in every load state (loading/failed/empty/
-  // ready), so this alone proves the component is mounted at all -- the exact thing an
-  // earlier task silently dropped. Top guilds' ready-state <ul> only renders once its
-  // client:visible island hydrates and the stubbed fetch above resolves, so it needs a
-  // scroll into view first (the same reason logs-recent-reports.spec.ts scrolls to
-  // recent-reports before asserting on it).
+  // The nine-class picker (§3.A.1) and the larger "Best in slot by class" row (§3.A.4).
+  await expect(page.getByTestId('home-class-picker').getByTestId(/^home-class-picker-/)).toHaveCount(9);
+  await expect(
+    page.getByTestId('home-class-picker-large').getByRole('heading', { name: 'Best in slot by class' }),
+  ).toBeVisible();
+  // Five doors (§3.A.5): unchanged copy, now with a visible "Open the X" line per card.
+  await expect(page.getByTestId('home-five-doors-planner')).toContainText('Open the planner');
+  await expect(page.getByTestId('home-five-doors-simulator')).toContainText('Open the simulator');
+  await expect(page.getByTestId('home-five-doors-logs')).toContainText('Open the logs');
+  await expect(page.getByTestId('home-five-doors-rankings')).toContainText('Open the rankings');
+  await expect(page.getByTestId('home-five-doors-guides')).toContainText('Open guides');
+  // Spec §3.A.6 "Around the site": Recent reports and Top guilds, unchanged mechanism.
   await expect(page.getByTestId('recent-reports')).toBeVisible();
   await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('home-top-guilds')).toBeVisible();
-  // The "Your guild" panel is gone (spec 2026-09-28): the hero's own guild card replaced
-  // it, and that card is signed-in only, so a signed-out visitor sees no trace of it.
-  await expect(page.getByTestId('home-guild-card')).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();
+  // Signed-in-only regions are absent from the signed-out page.
+  await expect(page.getByTestId('home-upgrades')).toBeHidden();
+  await expect(page.getByTestId('home-another-class')).toBeHidden();
+  await expect(page.getByRole('heading', { name: 'Latest' })).toBeVisible();
   await expect(page.getByText('Not affiliated with or endorsed by Blizzard Entertainment')).toBeVisible();
   expect(errors).toEqual([]);
 });
 
-test('the four next-steps cards link to their tools, with the planner and simulator live elements gone from this page', async ({
-  page,
-}) => {
+test('every class crest in the hero picker links to its class guide', async ({ page }) => {
   await page.goto('/');
-  await expect(
-    page.getByTestId('home-next-planner-signed-out').getByRole('link', { name: 'Open the planner' }),
-  ).toHaveAttribute('href', '/planner');
-  await expect(
-    page.getByTestId('home-next-simulator-signed-out').getByRole('link', { name: 'Open the simulator' }),
-  ).toHaveAttribute('href', '/sim');
-  await expect(
-    page.getByTestId('home-next-logs-signed-out').getByRole('link', { name: 'Open the logs' }),
-  ).toHaveAttribute('href', '/logs');
-  await expect(
-    page.getByTestId('home-next-rankings-signed-out').getByRole('link', { name: 'Open the rankings' }),
-  ).toHaveAttribute('href', '/rankings');
-  // The class-tile row and the spec-pill wall left the home page (spec 2026-09-24 §3).
-  await expect(page.getByRole('link', { name: 'Warrior', exact: true })).toHaveCount(0);
+  await expect(page.getByTestId('home-class-picker-warrior')).toHaveAttribute('href', '/guides/warrior');
+  await expect(page.getByTestId('home-class-picker-hunter')).toHaveAttribute('href', '/guides/hunter');
+  await expect(page.getByRole('link', { name: 'All 27 specs' }).first()).toHaveAttribute('href', '/bis');
 });
-
-// The reference tiles' and addon/companion row's own ordering and hrefs are
-// handoffs-home.spec.ts's job; the assertions above already cover this page's presence.
 
 test('content pages ship no client JavaScript', async ({ page }) => {
   for (const path of ['/about', '/premium']) {
@@ -120,16 +105,9 @@ test('the header and footer navigations are distinguishable landmarks', async ({
   await expect(page.getByRole('navigation', { name: 'Footer' })).toBeVisible();
 });
 
-test('at desktop width, the hero timeline card stays inside its own column instead of the page', async ({
+test('at desktop width, the hero class picker stays inside its own column, never the page', async ({
   page,
 }, testInfo) => {
-  // Fix round (night-site-ux, 2026-09-28): the timeline's grid-area:1/1 overlay wrapper had
-  // no min-width:0, so a CSS grid item's default min-width (its own content, not the
-  // track) forced the whole lg:col-span-5 column -- and the Nov 4 Launch date, Dec 9 First
-  // raids date and "Updated" stamp inside it -- past the viewport and into SkyBand's
-  // overflow-hidden, invisible and unreachable by any scroll. Only reproduces at the `lg`
-  // breakpoint (1024px+) the two-column hero uses, so this is desktop-only; the mobile
-  // project stacks the column full-width and never hit this.
   test.skip(testInfo.project.name !== 'desktop', 'lg two-column hero only');
   await page.goto('/');
 
@@ -137,32 +115,22 @@ test('at desktop width, the hero timeline card stays inside its own column inste
   expect(viewport, 'desktop project always sets a viewport').not.toBeNull();
   const viewportWidth = viewport!.width;
 
-  const guildBlock = page.getByTestId('home-guild-block');
-  const guildBlockBox = await guildBlock.boundingBox();
-  expect(guildBlockBox?.x ?? 0, 'the hero column itself starts on-screen').toBeGreaterThanOrEqual(0);
+  const accountBlock = page.getByTestId('home-account-block');
+  const accountBlockBox = await accountBlock.boundingBox();
+  expect(accountBlockBox?.x ?? 0, 'the hero column itself starts on-screen').toBeGreaterThanOrEqual(0);
   expect(
-    guildBlockBox!.x + guildBlockBox!.width,
+    accountBlockBox!.x + accountBlockBox!.width,
     'the hero column stays inside the viewport',
   ).toBeLessThanOrEqual(viewportWidth + 1);
 
-  // The card that holds the timeline rows must be contained the same way -- not merely the
-  // grid cell around it -- since the original bug had the grid cell measuring correctly
-  // while its overlaid child still blew out past it.
+  // The timeline now lives in its own full-width section, outside the sky band's hero grid
+  // entirely (home rebuild spec §3.A.3 must-fix), so it can no longer inherit a column's
+  // overflow bug the way the old two-column layout could -- this still checks it stays on
+  // screen at desktop width.
   const timeline = page.getByTestId('home-timeline');
   const timelineBox = await timeline.boundingBox();
   expect(
     timelineBox!.x + timelineBox!.width,
-    'the timeline card stays inside the viewport, not clipped by an ancestor',
+    'the timeline card stays inside the viewport',
   ).toBeLessThanOrEqual(viewportWidth + 1);
-
-  // The last row and the updated stamp are the two elements the original bug hid entirely
-  // (they sat past 1280px, inside SkyBand's overflow-hidden, on every viewport narrower
-  // than ~1500px) -- both must at least be reachable by scrolling the card horizontally.
-  const rows = page.getByTestId('home-timeline-row');
-  await expect(rows.last()).toBeAttached();
-  await rows.last().scrollIntoViewIfNeeded();
-  await expect(rows.last()).toBeInViewport();
-  const updated = page.getByTestId('home-timeline-updated');
-  await updated.scrollIntoViewIfNeeded();
-  await expect(updated).toBeInViewport();
 });

@@ -1,20 +1,19 @@
 // web/tests/e2e/handoffs-home.spec.ts
 import { expect, test } from '@playwright/test';
 
-test('the five next-steps cards carry Planner, Simulator, Logs, Rankings and Guides, in spec order', async ({
+test('the five doors carry Planner, Simulator, Logs, Rankings and Guides, in spec order', async ({
   page,
 }) => {
   await page.goto('/');
-  const grid = page.getByTestId('home-next-steps-signed-out');
-  const labels = await grid.locator('[data-testid^="home-next-"] .label').allTextContents();
-  expect(labels).toEqual(['Planner', 'Simulator', 'Logs', 'Rankings', 'Guides']);
-  await expect(
-    page.getByTestId('home-next-simulator-signed-out').getByRole('link', { name: 'Open the simulator' }),
-  ).toHaveAttribute('href', '/sim');
+  const order = ['planner', 'simulator', 'logs', 'rankings', 'guides'];
+  const cardHandles = await page.getByTestId('home-five-doors').locator('a').all();
+  const testids = await Promise.all(cardHandles.map((card) => card.getAttribute('data-testid')));
+  expect(testids).toEqual(order.map((slug) => `home-five-doors-${slug}`));
+  await expect(page.getByTestId('home-five-doors-simulator')).toHaveAttribute('href', '/sim');
+  await expect(page.getByTestId('home-five-doors-simulator')).toContainText('Open the simulator');
   // Review round 1 fix item 2: Guides is a fifth door here, not just a header nav link.
-  await expect(
-    page.getByTestId('home-next-guides-signed-out').getByRole('link', { name: 'Open guides' }),
-  ).toHaveAttribute('href', '/guides');
+  await expect(page.getByTestId('home-five-doors-guides')).toHaveAttribute('href', '/guides');
+  await expect(page.getByTestId('home-five-doors-guides')).toContainText('Open guides');
 });
 
 test('the "Get set up" card links to /setup', async ({ page }) => {
@@ -52,7 +51,7 @@ test('a signed-in visitor sees the "Get set up" banner collapse to one line, nev
   await expect(line).toHaveAttribute('href', '/setup');
 });
 
-test('a signed-in visitor with an addon-linked build sees the collapsed one-line sentence', async ({
+test('a signed-in visitor with an addon-linked build sees the collapsed sentence, naming the real sync time', async ({
   page,
 }) => {
   await page.route('**/v1/me', (route) =>
@@ -70,7 +69,10 @@ test('a signed-in visitor with an addon-linked build sees the collapsed one-line
               ruleset: 'normal',
               name: 'Kiloz',
               class: 'Warrior',
-              build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
+              // Home rebuild spec §3.B.6: this line and the hero's own sync line
+              // (home-panel.spec.ts) must never disagree about the addon's last sync,
+              // both reading the same `build.captured_at`.
+              build: { source: 'addon', captured_at: new Date(Date.now() - 10 * 60_000).toISOString() },
             },
           ],
           guilds: [],
@@ -82,6 +84,6 @@ test('a signed-in visitor with an addon-linked build sees the collapsed one-line
   );
   await page.goto('/');
   await expect(page.getByTestId('home-get-set-up')).toHaveText(
-    'Signed in and addon linked · Set up the companion →',
+    'Signed in and addon linked · synced 10 minutes ago → Set up the companion',
   );
 });
