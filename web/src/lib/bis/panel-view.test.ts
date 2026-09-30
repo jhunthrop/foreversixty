@@ -1,4 +1,7 @@
 // web/src/lib/bis/panel-view.test.ts
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { LootFile } from '../sim/loot';
@@ -6,6 +9,11 @@ import { bisCopy } from './copy';
 import { bandInfosFor, collectModelsInto, parseSwapNote, type PanelViewDeps } from './panel-view';
 import type { BisAlternative, BisBand, BisFile, BisSlot, ItemDetail, LootQuestsFile } from './types';
 import { SLOTS } from '../planner/types';
+
+const REAL_HUNTER_MARKSMANSHIP = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../../data/builds/1.60.1.70009/bis/hunter-marksmanship.json',
+);
 
 function slot(overrides: Partial<BisSlot> = {}): BisSlot {
   return {
@@ -889,6 +897,41 @@ describe('bandInfosFor: no_sourced_item across bands (bis rebuild spec §4.D)', 
     expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
       'No trinket you can get at 60 raises your damage.',
     );
+  });
+
+  it('the second empty trinket row in the SAME band defers to the short sentence (wow-player review round 1): never repeats the first row’s full sentence verbatim', () => {
+    const noSourcedTrinket2 = { ...missingSlot('trinket2'), empty_reason: 'no_sourced_item' } as BisSlot;
+    const file = fileWith([
+      band({ band: 20, slots: [noSourcedTrinket, noSourcedTrinket2] }),
+      band({ band: 40, slots: [slot({ slot: 'trinket1' }), slot({ slot: 'trinket2' })] }),
+    ]);
+    const infos = bandInfosFor(file, [20, 40], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
+      'No trinket you can get at 20 to 29 raises your damage. The first that does comes at 40.',
+    );
+    expect(infos[0].rows.find((r) => r.slot === 'trinket2')?.emptyCopy).toBe('Nothing here either until 40.');
+  });
+});
+
+describe('bandInfosFor: no_sourced_item against the real published file (ux-designer review round 1)', () => {
+  // A regression guard against the real data, not a synthetic fixture (tenet 8): both
+  // trinket slots are `no_sourced_item` through band 40 in the 2026-09-30 nightly regen for
+  // BOTH factions, first sourced at band 50 -- this pins that real number so a future regen
+  // that moves it fails loudly here rather than silently changing the page's own sentence.
+  const real = JSON.parse(readFileSync(REAL_HUNTER_MARKSMANSHIP, 'utf8')) as BisFile;
+  const bands = [...new Set(real.bands.map((b) => b.band))].sort((a, b) => a - b);
+
+  it.each(['alliance', 'horde'] as const)('names band 50 as where trinkets first help, %s', (faction) => {
+    const infos = bandInfosFor(real, bands, faction, depsWith({ spec: 'hunter-marksmanship' }));
+    const band20 = infos.find((info) => info.band === 20)!;
+    expect(band20.rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
+      'No trinket you can get at 20 to 29 raises your damage. The first that does comes at 50.',
+    );
+    expect(band20.rows.find((r) => r.slot === 'trinket2')?.emptyCopy).toBe('Nothing here either until 50.');
+    const band40 = infos.find((info) => info.band === 40)!;
+    expect(band40.rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe('Nothing here either until 50.');
+    const band50 = infos.find((info) => info.band === 50)!;
+    expect(band50.rows.find((r) => r.slot === 'trinket1')?.empty).toBe(false);
   });
 });
 

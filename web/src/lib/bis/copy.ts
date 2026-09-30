@@ -282,6 +282,13 @@ export const bisCopy = {
   talentsInPlanner: 'Talents in planner',
   statWeightsAtBand: (bandLabel: string): string => `Stat weights at ${bandLabel}`,
   playItHeading: (bandLabel: string): string => `Play it · ${bandLabel}`,
+  /** The rotation line's own icon placeholder (spec §4.C.3) -- this build carries no spell-
+   *  icon-by-id data for a trained (non-talent) ability at all (verified: `spells.json`,
+   *  `spellranks.json` and `spellconst/<class>.json` all checked), so every line falls back
+   *  to a plain bordered square. Its own title, never `noKnownSourceForSlot`'s wording
+   *  (that line describes an EMPTY GEAR SLOT with no pick at all -- a different fact from
+   *  "this ability's icon isn't resolved yet"; ux-designer review round 1). */
+  iconNotAvailableYet: 'Icon not available yet',
   openGuideLink: (specName: string): string => `Open the ${specName} guide`,
   theListHeading: 'The list',
   hoverOrTapCaption: 'Hover or tap an item for its stats',
@@ -345,7 +352,6 @@ export const bisCopy = {
 
   // --- Character card (bis rebuild spec §4.B) ----------------------------------------------
   yourCharacterLabel: 'Your character',
-  samplePillLabel: 'Sample',
   switchLabel: 'Switch',
   syncedRelative: (relative: string): string => `synced ${relative}`,
   notSyncedYetLabel: 'Not synced yet',

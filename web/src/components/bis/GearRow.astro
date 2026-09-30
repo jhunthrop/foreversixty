@@ -13,6 +13,8 @@ import { bisCopy } from '../../lib/bis/copy';
 import { dataUrl } from '../../lib/planner/load';
 import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
 import { SLOT_DISPLAY_LABELS, type Slot } from '../../lib/planner/types';
+import type { Faction } from '../../lib/bis/types';
+import FactionMark from '../FactionMark.astro';
 import SourceKindIcon from './SourceKindIcon.astro';
 import VerifiedGlyph from './VerifiedGlyph.astro';
 
@@ -28,12 +30,16 @@ interface Props {
   isNew: boolean;
   build: string;
   you?: YouView;
+  /** This band's own faction -- a `rep`-kind source line's own emblem (spec §7: "16px in a
+   *  row descriptor") shows the band's faction, since a rep-kind pick only ever appears in
+   *  that faction's own panel. */
+  faction: Faction;
   /** `bis-slot-<faction>-<band>-<slot>` -- assembled by the caller, which alone knows the
    *  faction and band this row belongs to. */
   slotTestId: string;
 }
 
-const { row, isNew, build, you, slotTestId } = Astro.props;
+const { row, isNew, build, you, faction, slotTestId } = Astro.props;
 
 // `inv_misc_questionmark` is the item pipeline's own placeholder for an id it has no real
 // icon for -- the client's literal red-bordered "?" texture, and the exact icon the owner's
@@ -143,6 +149,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
             {row.keyStatsLine && <span class="gear-row-stats text-muted">{row.keyStatsLine}</span>}
             <span class="gear-row-source text-muted">
               <SourceKindIcon kind={row.sourceKind ?? 'unknown'} />
+              {row.sourceKind === 'rep' && <FactionMark faction={faction} size={16} />}
               {row.sourceDetail}
               {row.itemLevel !== undefined && (
                 <span class="gear-row-ilvl tabular">· {bisCopy.itemLevelShort(row.itemLevel)}</span>
@@ -216,6 +223,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                   </span>
                   <span class="gear-row-alt-source text-muted" title={alt.sourceDetail}>
                     <SourceKindIcon kind={alt.sourceKind} class="gear-row-alt-source-icon" />
+                    {alt.sourceKind === 'rep' && <FactionMark faction={faction} size={16} />}
                     <span class="gear-row-alt-source-text">{alt.sourceDetail}</span>
                   </span>
                   <span class="gear-row-alt-gap text-muted">

@@ -155,23 +155,30 @@ function firstRealPickBandAfter(
   return undefined;
 }
 
-/** `no_sourced_item`'s own two-sentence shape (spec §4.D): the slot's FIRST empty band in
- *  this file gets the full "no X at this band / the first that does comes at Y" sentence;
- *  every later band the same slot is still `no_sourced_item` gets the shorter "Nothing here
- *  either until Y" follow-up instead -- decided by whether the immediately PREVIOUS band
- *  (this file's leveling data only ever gains sources, never loses one, so this is the same
- *  as "the earliest occurrence") was already `no_sourced_item` for the same slot. */
+/** `no_sourced_item`'s own two-sentence shape (spec §4.D): the FIRST empty row in this band
+ *  showing the fact at all gets the full "no X at this band / the first that does comes at
+ *  Y" sentence; every OTHER row that also shows it -- either a later band, the same exact
+ *  slot (this file's leveling data only ever gains sources, never loses one, so "was the
+ *  immediately previous band already `no_sourced_item` for this slot" is the same test as
+ *  "is this the earliest occurrence"), or a SIBLING slot in the same band sharing this
+ *  slot's own collapsed display label (wow-player review round 1: both ring or both
+ *  trinket rows read as one group to a player, so the second one must defer to the short
+ *  "Nothing here either" line rather than repeat the first row's full sentence verbatim) --
+ *  gets the shorter "Nothing here either until Y" follow-up instead. `isFirstInGroupThisBand`
+ *  is the caller's own answer to that second condition (`bandInfosFor` computes it once per
+ *  band, in canonical slot order, before building any row). */
 function noSourcedItemCopyFor(
   file: BisFile,
   bands: readonly number[],
   faction: Faction,
   slot: string,
   band: number,
+  isFirstInGroupThisBand: boolean,
 ): string {
   const index = bands.indexOf(band);
   const previousBand = index <= 0 ? undefined : bands[index - 1];
   const previousRow = previousBand === undefined ? undefined : slotRowAt(file, previousBand, faction, slot);
-  const isFirstOccurrence = !isNoSourcedItemRow(previousRow);
+  const isFirstOccurrence = isFirstInGroupThisBand && !isNoSourcedItemRow(previousRow);
   const nextRealBand = firstRealPickBandAfter(file, bands, faction, slot, band);
   return isFirstOccurrence
     ? bisCopy.noSourcedItemFirst(
@@ -196,10 +203,11 @@ function emptyReasonLabel(
   faction: Faction,
   slot: string,
   band: number,
+  isFirstInGroupThisBand: boolean,
 ): string {
   switch (reason) {
     case 'no_sourced_item':
-      return noSourcedItemCopyFor(file, bands, faction, slot, band);
+      return noSourcedItemCopyFor(file, bands, faction, slot, band, isFirstInGroupThisBand);
     case 'no_dps_value':
       return bisCopy.emptyReasonNoDpsValue;
     case 'effect_not_modelled':
@@ -333,6 +341,7 @@ function buildRowView(
   file: BisFile,
   bands: readonly number[],
   mainHandItemName: string | undefined,
+  isFirstInGroupThisBand: boolean,
 ): RowView {
   if (isMissingSlot(row) || !hasKnownSource(row)) {
     // A missing slot (`isMissingSlot`) never published an `empty_reason` at all -- the
@@ -342,7 +351,7 @@ function buildRowView(
     const emptyCopy =
       row.slot === 'off_hand' && mainHandTwoHanded
         ? bisCopy.twoHanderEquippedNamed(mainHandItemName ?? bisCopy.noKnownSourceForSlot)
-        : emptyReasonLabel(emptyReason, file, bands, faction, row.slot, band);
+        : emptyReasonLabel(emptyReason, file, bands, faction, row.slot, band, isFirstInGroupThisBand);
     return { slot: row.slot, empty: true, emptyCopy };
   }
   const badgeLabel = sourceBadgeLabel(row, faction);
@@ -588,6 +597,18 @@ export function bandInfosFor(
       mainHandRow !== undefined && !isMissingSlot(mainHandRow) && hasKnownSource(mainHandRow)
         ? mainHandRow.item_name
         : undefined;
+    // Which slot, per display-label group (Ring/Trinket collapse every pair to one group),
+    // is the FIRST this band to show `no_sourced_item` -- computed once, in canonical slot
+    // order, before any row is built, so the second ring/trinket row always defers to the
+    // short "Nothing here either" line rather than repeat the first row's full sentence
+    // (wow-player review round 1). A slot is its own group's first claimant the moment
+    // nothing earlier in `slotRows`' own order already claimed that label this band.
+    const groupFirstSlot = new Map<string, string>();
+    for (const row of slotRows) {
+      if (isMissingSlot(row) || hasKnownSource(row) || row.empty_reason !== 'no_sourced_item') continue;
+      const label = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
+      if (!groupFirstSlot.has(label)) groupFirstSlot.set(label, row.slot);
+    }
     const rows = slotRows.map((row) =>
       buildRowView(
         row,
@@ -601,6 +622,7 @@ export function bandInfosFor(
         file,
         bands,
         mainHandItemName,
+        groupFirstSlot.get(SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot) === row.slot,
       ),
     );
     // The list's own "N / total wearable slots" denominator (spec §4.B, reused by §4.E's

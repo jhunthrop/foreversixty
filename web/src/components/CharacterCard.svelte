@@ -45,6 +45,30 @@
   const syncedRelative = $derived(
     character?.build === undefined ? '' : relativeTime(character.build.captured_at),
   );
+
+  /**
+   * The header's own race select defaults to the visitor's OWN character race once signed
+   * in (ux-designer review round 1: "the header race select must default to the visitor's
+   * character race ... never the faction default; the two panels must agree") -- reaches
+   * outside this island's own root to both `ClassHeader` copies (`[data-testid="bis-race-
+   * select"]`, one per faction, only one ever visible at a time) the same cross-island DOM-
+   * reach pattern `HomeAccountPanel.svelte`'s own `inert` effect and `syncTabHrefs` already
+   * use, since the select lives in a plain Astro component this island cannot otherwise
+   * reach. Matched by the OPTION's own text against `character.race` rather than a slug, so
+   * this needs no second race-name-to-slug mapping of its own: `ClassHeader` already renders
+   * each option's real display name as its text content. A race the current page's class
+   * cannot be (no matching option) leaves the select on its own per-faction default rather
+   * than force a selection that does not exist here. */
+  $effect(() => {
+    const race = character?.race;
+    if (race === undefined) return;
+    document.querySelectorAll<HTMLSelectElement>('[data-testid="bis-race-select"]').forEach((select) => {
+      const match = Array.from(select.options).find(
+        (option) => option.textContent?.trim().toLowerCase() === race.toLowerCase(),
+      );
+      if (match !== undefined) select.value = match.value;
+    });
+  });
 </script>
 
 {#if state.status === 'loading'}
@@ -75,12 +99,13 @@
   <div class="panel-box character-card" data-testid="bis-character-card">
     <div class="character-card-label-row">
       <span class="label character-card-label-text">
+        <!-- A "Sample" pill is the approved mock's own illustrative labelling for its
+             stand-in character, never a real runtime state of this card (ux-designer/
+             wow-player review round 1): a signed-in visitor's own character -- synced or
+             not -- is real, and is never labelled that way. Removed entirely, not
+             conditioned on whether the character is synced, since both real states must be
+             free of it; its own copy string left this module with it. -->
         {bisCopy.yourCharacterLabel}
-        {#if !synced}
-          <span class="pill pill-sample" data-testid="bis-character-card-sample-pill">
-            {bisCopy.samplePillLabel}
-          </span>
-        {/if}
       </span>
       <a class="character-card-switch" href={switchHref}>{bisCopy.switchLabel}</a>
     </div>

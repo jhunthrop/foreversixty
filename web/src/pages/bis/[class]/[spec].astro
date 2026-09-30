@@ -172,19 +172,33 @@ const bandViewsByFaction: Readonly<Record<Faction, BandView[]>> = {
 };
 
 /**
- * `ClassHeader`'s own band text (the h1's " · 20 to 29" suffix and the summary sentence)
- * renders one hidden variant per band; this generates the CSS that shows the right one --
- * the first band's by default, or whichever band's own panel is `:target` (either
- * faction's id: the inactive faction's whole header is already `display:none` from the
- * faction toggle, so this never needs to know which faction is active, only which band).
- * `:has()` reaches from `.page-body` down into both the header (band text) and the band
- * panels (`:target`) at once, which a forward-only `~` sibling combinator cannot do since
- * the header comes BEFORE the band panels in the DOM. Built once, server-side, from the
- * same `bands` array and `bisCopy` strings the header itself rendered from -- never a
- * second, drifting copy of that wording in a client script (spec's own band-60 "at 60, no
- * to X" acceptance screenshot requires this text to actually track the open band, not just
- * the pill). */
-const bandTextCss =
+ * CSS that must NOT go through Astro's own scoped `<style>` (hence `set:html` below, raw
+ * and unscoped): every rule here reaches from a page-level element (the two faction radios,
+ * `.page-body`) into an element a CHILD component (`ClassHeader.astro`) rendered, which
+ * carries that component's own, different scope id -- a scoped page rule silently never
+ * matches it (confirmed by reading the rendered HTML: `#faction-alliance` carries the
+ * page's own `data-astro-cid-*`, `[data-testid="bis-faction-toggle-alliance"]` carries
+ * `ClassHeader`'s own, different one). Two concerns share this one unscoped block:
+ *
+ * 1. `ClassHeader`'s own band text (the h1's " · 20 to 29" suffix and the summary sentence)
+ *    renders one hidden variant per band; shows the first band's by default, or whichever
+ *    band's own panel is `:target` (either faction's id: the inactive faction's whole
+ *    header is already `display:none` from the faction toggle, so this never needs to know
+ *    which faction is active, only which band). `:has()` reaches from `.page-body` down
+ *    into both the header (band text) and the band panels (`:target`) at once, which a
+ *    forward-only `~` sibling combinator cannot do since the header comes BEFORE the band
+ *    panels in the DOM. Built once, server-side, from the same `bands` array and `bisCopy`
+ *    strings the header itself rendered from -- never a second, drifting copy of that
+ *    wording in a client script (spec's own band-60 "at 60, no to X" acceptance screenshot
+ *    requires this text to actually track the open band, not just the pill).
+ * 2. The FactionToggle pill is a plain `<label for=...>`, not the radio itself (the radio
+ *    stays `sr-only`, the existing mechanism) -- a keyboard tab lands on the radio, so its
+ *    own focus ring must be projected onto the visible pill rather than show on nothing a
+ *    player can see (ux-designer review round 1's own focus-visible screenshot surfaced
+ *    this: the rule silently never matched while it lived in the page's scoped `<style>`
+ *    below). Same sibling-then-descendant reach as concern 1, since the radios sit at the
+ *    top of `<main>`, before `.page-body`, and every pill is a later descendant of it. */
+const crossScopeCss =
   '[data-band-text-for],[data-band-summary-for]{display:none}' +
   (bands[0] === undefined
     ? ''
@@ -196,7 +210,10 @@ const bandTextCss =
         `.page-body:has(#band-alliance-${b}:target,#band-horde-${b}:target) [data-band-text-for="${b}"]{display:inline-block}` +
         `.page-body:has(#band-alliance-${b}:target,#band-horde-${b}:target) [data-band-summary-for="${b}"]{display:block}`,
     )
-    .join('');
+    .join('') +
+  `#faction-alliance:focus-visible ~ .page-body [data-testid="bis-faction-toggle-alliance"],` +
+  `#faction-horde:focus-visible ~ .page-body [data-testid="bis-faction-toggle-horde"]` +
+  `{outline:2px solid var(--color-gold);outline-offset:2px}`;
 ---
 
 <Base title={title} description={description} path={path}>
@@ -238,7 +255,7 @@ const bandTextCss =
 
         <input type="radio" name="faction" id="faction-alliance" class="sr-only" checked />
         <input type="radio" name="faction" id="faction-horde" class="sr-only" />
-        <style set:html={bandTextCss}></style>
+        <style set:html={crossScopeCss}></style>
 
         <div class="page-body">
           <ArtPanel classSlug={specEntry.class_slug}>
@@ -317,6 +334,7 @@ const bandTextCss =
                               row={row}
                               isNew={view.info.newSlots.has(row.slot)}
                               build={build}
+                              faction={faction}
                               slotTestId={`bis-slot-${faction}-${view.band}-${row.slot}`}
                             />
                           ))}
@@ -417,7 +435,6 @@ const bandTextCss =
   #faction-horde:checked ~ .page-body .horde {
     display: block;
   }
-
   .band-panel {
     display: none;
   }
