@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:25:44Z",
+  "generated_at": "2026-09-30T16:42:03Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -533,8 +533,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.597424708,
-      "verify_run_seconds": 0.588993395,
+      "weights_run_seconds": 0.58548315,
+      "verify_run_seconds": 0.580952457,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1143,8 +1143,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.597424708,
-      "verify_run_seconds": 0.55398092,
+      "weights_run_seconds": 0.58548315,
+      "verify_run_seconds": 0.560852267,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1826,8 +1826,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.652821706,
-      "verify_run_seconds": 0.629506279,
+      "weights_run_seconds": 0.622855349,
+      "verify_run_seconds": 0.632249124,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2512,8 +2512,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.652821706,
-      "verify_run_seconds": 0.609680654,
+      "weights_run_seconds": 0.622855349,
+      "verify_run_seconds": 0.599873863,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3169,8 +3169,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.717754797,
-      "verify_run_seconds": 0.649316411,
+      "weights_run_seconds": 0.715507678,
+      "verify_run_seconds": 0.658838379,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3818,8 +3818,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.717754797,
-      "verify_run_seconds": 0.617087773,
+      "weights_run_seconds": 0.715507678,
+      "verify_run_seconds": 0.6831314,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4479,8 +4479,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.787110712,
-      "verify_run_seconds": 0.692966188,
+      "weights_run_seconds": 0.78024883,
+      "verify_run_seconds": 0.671640516,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5151,8 +5151,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.787110712,
-      "verify_run_seconds": 0.719145121,
+      "weights_run_seconds": 0.78024883,
+      "verify_run_seconds": 0.716920938,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5307,10 +5307,10 @@
               "verified": true
             },
             {
-              "item_id": 16441,
+              "item_id": 231604,
               "item_name": "Field Marshal's Coronet",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
               "dps_delta": -9.612622030186388
             }
           ]
@@ -5420,7 +5420,7 @@
           "item_name": "Fireleaf Robe",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 79.29582202802254,
+          "score": 79.29582202802253,
           "verified": true,
           "alternatives": [
             {
@@ -5436,14 +5436,14 @@
               "item_name": "Robe of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -10.878171448966608
+              "dps_delta": -10.878171448966603
             },
             {
               "item_id": 16443,
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -13.127881407453506
+              "dps_delta": -13.127881407453504
             }
           ]
         },
@@ -5479,7 +5479,7 @@
           "item_name": "Fireleaf Gloves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 57.673117477489924,
+          "score": 57.67311747748992,
           "verified": true,
           "alternatives": [
             {
@@ -5495,14 +5495,14 @@
               "item_name": "Marshal's Silk Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -10.293304937591063
+              "dps_delta": -10.293304937591062
             },
             {
               "item_id": 231608,
               "item_name": "Marshal's Silk Gauntlets",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -10.293304937591063
+              "dps_delta": -10.293304937591062
             }
           ]
         },
@@ -5574,16 +5574,22 @@
         },
         {
           "slot": "feet",
-          "item_id": 240058,
-          "item_name": "Fireleaf Sandals",
+          "item_id": 240050,
+          "item_name": "Fireleaf Boots",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 51.70834510949062,
+          "score": 51.708345109490615,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 240058,
+              "item_name": "Fireleaf Sandals"
+            }
+          ],
           "alternatives": [
             {
-              "item_id": 240050,
-              "item_name": "Fireleaf Boots",
+              "item_id": 240058,
+              "item_name": "Fireleaf Sandals",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": 0,
@@ -5595,7 +5601,7 @@
               "item_name": "Marshal's Silk Footwraps",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -7.735901545214553
+              "dps_delta": -7.73590154521455
             }
           ]
         },
@@ -5834,7 +5840,7 @@
         "hands: Fireleaf Gloves",
         "waist: Fireleaf Belt",
         "legs: Fireleaf Leggings",
-        "feet: Fireleaf Sandals",
+        "feet: Fireleaf Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
@@ -5842,8 +5848,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.770823134,
-      "verify_run_seconds": 0.743586178,
+      "weights_run_seconds": 0.745043588,
+      "verify_run_seconds": 0.717784567,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5986,7 +5992,7 @@
           "item_name": "Fireleaf Circlet",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 69.33104966002323,
+          "score": 69.33104966002324,
           "verified": true,
           "alternatives": [
             {
@@ -5998,11 +6004,11 @@
               "verified": true
             },
             {
-              "item_id": 16533,
+              "item_id": 231601,
               "item_name": "Warlord's Silk Cowl",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -9.612622030186388
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Warlord · Horde",
+              "dps_delta": -9.612622030186394
             }
           ]
         },
@@ -6111,7 +6117,7 @@
           "item_name": "Fireleaf Robe",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 79.29582202802254,
+          "score": 79.29582202802253,
           "verified": true,
           "alternatives": [
             {
@@ -6127,14 +6133,14 @@
               "item_name": "Robe of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -10.878171448966608
+              "dps_delta": -10.878171448966603
             },
             {
               "item_id": 16535,
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -13.127881407453506
+              "dps_delta": -13.1278814074535
             }
           ]
         },
@@ -6255,26 +6261,26 @@
               "dps_delta": -7.815976193836942
             },
             {
-              "item_id": 16534,
+              "item_id": 231595,
               "item_name": "General's Silk Trousers",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -10.539125615469894
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": -10.539125615469892
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 240058,
-          "item_name": "Fireleaf Sandals",
+          "item_id": 240050,
+          "item_name": "Fireleaf Boots",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
           "score": 51.70834510949062,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240050,
-              "item_name": "Fireleaf Boots",
+              "item_id": 240058,
+              "item_name": "Fireleaf Sandals",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": 0,
@@ -6525,7 +6531,7 @@
         "hands: Fireleaf Gloves",
         "waist: Fireleaf Belt",
         "legs: Fireleaf Leggings",
-        "feet: Fireleaf Sandals",
+        "feet: Fireleaf Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
@@ -6533,8 +6539,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.770823134,
-      "verify_run_seconds": 0.75691421,
+      "weights_run_seconds": 0.745043588,
+      "verify_run_seconds": 0.750898313,
       "coverage": {
         "back": {
           "eligible": 450,

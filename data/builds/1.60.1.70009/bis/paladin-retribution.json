@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:26:42Z",
+  "generated_at": "2026-09-30T16:43:00Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -498,7 +498,7 @@
         }
       ],
       "set_dps": 34.647636360945086,
-      "no_source_count": 239,
+      "no_source_count": 230,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2273 Guerrilla Armor",
@@ -531,19 +531,19 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.037577865,
-      "verify_run_seconds": 0.839639468,
+      "weights_run_seconds": 0.992466717,
+      "verify_run_seconds": 0.796445565,
       "coverage": {
         "back": {
           "eligible": 98,
           "sourced": 80
         },
         "chest": {
-          "eligible": 185,
+          "eligible": 184,
           "sourced": 161
         },
         "feet": {
-          "eligible": 138,
+          "eligible": 137,
           "sourced": 119
         },
         "finger1": {
@@ -555,15 +555,15 @@
           "sourced": 19
         },
         "hands": {
-          "eligible": 139,
+          "eligible": 138,
           "sourced": 120
         },
         "head": {
-          "eligible": 32,
+          "eligible": 31,
           "sourced": 25
         },
         "legs": {
-          "eligible": 156,
+          "eligible": 155,
           "sourced": 138
         },
         "main_hand": {
@@ -583,7 +583,7 @@
           "sourced": 5
         },
         "shoulder": {
-          "eligible": 22,
+          "eligible": 21,
           "sourced": 12
         },
         "trinket1": {
@@ -595,11 +595,11 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 121,
+          "eligible": 119,
           "sourced": 108
         },
         "wrist": {
-          "eligible": 91,
+          "eligible": 90,
           "sourced": 68
         }
       },
@@ -1100,7 +1100,7 @@
         }
       ],
       "set_dps": 32.16176443339438,
-      "no_source_count": 229,
+      "no_source_count": 220,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1133,19 +1133,19 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.037577865,
-      "verify_run_seconds": 0.800052879,
+      "weights_run_seconds": 0.992466717,
+      "verify_run_seconds": 0.808441473,
       "coverage": {
         "back": {
           "eligible": 99,
           "sourced": 85
         },
         "chest": {
-          "eligible": 183,
+          "eligible": 182,
           "sourced": 158
         },
         "feet": {
-          "eligible": 134,
+          "eligible": 133,
           "sourced": 114
         },
         "finger1": {
@@ -1157,15 +1157,15 @@
           "sourced": 21
         },
         "hands": {
-          "eligible": 132,
+          "eligible": 131,
           "sourced": 112
         },
         "head": {
-          "eligible": 32,
+          "eligible": 31,
           "sourced": 25
         },
         "legs": {
-          "eligible": 152,
+          "eligible": 151,
           "sourced": 135
         },
         "main_hand": {
@@ -1185,7 +1185,7 @@
           "sourced": 5
         },
         "shoulder": {
-          "eligible": 22,
+          "eligible": 21,
           "sourced": 12
         },
         "trinket1": {
@@ -1197,11 +1197,11 @@
           "sourced": 3
         },
         "waist": {
-          "eligible": 120,
+          "eligible": 118,
           "sourced": 104
         },
         "wrist": {
-          "eligible": 93,
+          "eligible": 92,
           "sourced": 78
         }
       },
@@ -1730,7 +1730,7 @@
         }
       ],
       "set_dps": 68.53455953653432,
-      "no_source_count": 402,
+      "no_source_count": 393,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -1763,19 +1763,19 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.033297993,
-      "verify_run_seconds": 1.062004736,
+      "weights_run_seconds": 0.995968554,
+      "verify_run_seconds": 1.080438956,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 142
         },
         "chest": {
-          "eligible": 310,
+          "eligible": 309,
           "sourced": 280
         },
         "feet": {
-          "eligible": 223,
+          "eligible": 222,
           "sourced": 190
         },
         "finger1": {
@@ -1787,15 +1787,15 @@
           "sourced": 48
         },
         "hands": {
-          "eligible": 222,
+          "eligible": 221,
           "sourced": 196
         },
         "head": {
-          "eligible": 107,
+          "eligible": 106,
           "sourced": 93
         },
         "legs": {
-          "eligible": 250,
+          "eligible": 249,
           "sourced": 221
         },
         "main_hand": {
@@ -1815,7 +1815,7 @@
           "sourced": 5
         },
         "shoulder": {
-          "eligible": 111,
+          "eligible": 110,
           "sourced": 90
         },
         "trinket1": {
@@ -1827,11 +1827,11 @@
           "sourced": 9
         },
         "waist": {
-          "eligible": 220,
+          "eligible": 218,
           "sourced": 194
         },
         "wrist": {
-          "eligible": 165,
+          "eligible": 164,
           "sourced": 134
         }
       },
@@ -2366,7 +2366,7 @@
         }
       ],
       "set_dps": 67.66524529632808,
-      "no_source_count": 392,
+      "no_source_count": 383,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -2399,19 +2399,19 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.033297993,
-      "verify_run_seconds": 1.05653139,
+      "weights_run_seconds": 0.995968554,
+      "verify_run_seconds": 0.994015751,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 145
         },
         "chest": {
-          "eligible": 303,
+          "eligible": 302,
           "sourced": 270
         },
         "feet": {
-          "eligible": 222,
+          "eligible": 221,
           "sourced": 185
         },
         "finger1": {
@@ -2423,15 +2423,15 @@
           "sourced": 51
         },
         "hands": {
-          "eligible": 220,
+          "eligible": 219,
           "sourced": 191
         },
         "head": {
-          "eligible": 106,
+          "eligible": 105,
           "sourced": 92
         },
         "legs": {
-          "eligible": 246,
+          "eligible": 245,
           "sourced": 219
         },
         "main_hand": {
@@ -2451,7 +2451,7 @@
           "sourced": 5
         },
         "shoulder": {
-          "eligible": 110,
+          "eligible": 109,
           "sourced": 90
         },
         "trinket1": {
@@ -2463,11 +2463,11 @@
           "sourced": 7
         },
         "waist": {
-          "eligible": 220,
+          "eligible": 218,
           "sourced": 192
         },
         "wrist": {
-          "eligible": 168,
+          "eligible": 167,
           "sourced": 144
         }
       },
@@ -3030,8 +3030,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.05883051,
-      "verify_run_seconds": 0.993382196,
+      "weights_run_seconds": 0.987780347,
+      "verify_run_seconds": 0.927548426,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3661,8 +3661,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.05883051,
-      "verify_run_seconds": 1.005278602,
+      "weights_run_seconds": 0.987780347,
+      "verify_run_seconds": 0.962272351,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4295,8 +4295,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.141421108,
-      "verify_run_seconds": 1.011895034,
+      "weights_run_seconds": 1.066208503,
+      "verify_run_seconds": 0.969458209,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4929,8 +4929,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.141421108,
-      "verify_run_seconds": 0.9731106,
+      "weights_run_seconds": 1.066208503,
+      "verify_run_seconds": 1.004081024,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5213,7 +5213,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.629126640431222
+              "dps_delta": -1.6291266404312212
             },
             {
               "item_id": 23087,
@@ -5345,7 +5345,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689446
+              "dps_delta": -2.0108810357689437
             },
             {
               "item_id": 14554,
@@ -5604,8 +5604,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.133611659,
-      "verify_run_seconds": 1.057036037,
+      "weights_run_seconds": 1.033402485,
+      "verify_run_seconds": 1.022376054,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5888,7 +5888,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.629126640431222
+              "dps_delta": -1.6291266404312212
             },
             {
               "item_id": 23087,
@@ -6020,7 +6020,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689446
+              "dps_delta": -2.0108810357689437
             },
             {
               "item_id": 14554,
@@ -6280,8 +6280,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.133611659,
-      "verify_run_seconds": 1.032982549,
+      "weights_run_seconds": 1.033402485,
+      "verify_run_seconds": 1.010933417,
       "coverage": {
         "back": {
           "eligible": 449,

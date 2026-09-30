@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:26:58Z",
+  "generated_at": "2026-09-30T16:43:16Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -927,8 +927,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.683940539,
-      "verify_run_seconds": 0.851877792,
+      "weights_run_seconds": 0.694212472,
+      "verify_run_seconds": 0.811864461,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -2010,8 +2010,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.683940539,
-      "verify_run_seconds": 0.719054867,
+      "weights_run_seconds": 0.694212472,
+      "verify_run_seconds": 0.759588147,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2690,8 +2690,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.56276633,
-      "verify_run_seconds": 0.567822208,
+      "weights_run_seconds": 0.580902094,
+      "verify_run_seconds": 0.545969835,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3377,8 +3377,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.56276633,
-      "verify_run_seconds": 0.574143922,
+      "weights_run_seconds": 0.580902094,
+      "verify_run_seconds": 0.53608849,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4028,8 +4028,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.615188356,
-      "verify_run_seconds": 0.536132068,
+      "weights_run_seconds": 0.573985838,
+      "verify_run_seconds": 0.521378267,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4673,8 +4673,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.615188356,
-      "verify_run_seconds": 0.590721765,
+      "weights_run_seconds": 0.573985838,
+      "verify_run_seconds": 0.565792875,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5349,8 +5349,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.590930795,
-      "verify_run_seconds": 0.622697804,
+      "weights_run_seconds": 0.575980507,
+      "verify_run_seconds": 0.598257098,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5516,7 +5516,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.2699444807178657
+              "dps_delta": -1.2699444807178655
             }
           ]
         },
@@ -5765,7 +5765,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.7497260913494572
+              "dps_delta": -0.7497260913494576
             },
             {
               "item_id": 10807,
@@ -6033,8 +6033,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.590930795,
-      "verify_run_seconds": 0.608734387,
+      "weights_run_seconds": 0.575980507,
+      "verify_run_seconds": 0.605627001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6442,7 +6442,7 @@
           "item_name": "Leggings of Revelation",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 66.08332490309422,
+          "score": 66.08332490309424,
           "verified": true,
           "alternatives": [
             {
@@ -6450,14 +6450,14 @@
               "item_name": "Marshal's Satin Pants",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.018753511169475
+              "dps_delta": -1.0187535111694765
             },
             {
               "item_id": 22752,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.733389154582191
+              "dps_delta": -1.7333891545821927
             },
             {
               "item_id": 231619,
@@ -6517,14 +6517,14 @@
               "item_name": "Channeler's Ring",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.4699579805787044
+              "dps_delta": -2.4699579805787035
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.6425328180830254
+              "dps_delta": -2.6425328180830245
             },
             {
               "item_id": 11669,
@@ -6744,8 +6744,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.620139421,
-      "verify_run_seconds": 0.635860532,
+      "weights_run_seconds": 0.597188244,
+      "verify_run_seconds": 0.618061831,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7147,7 +7147,7 @@
           "item_name": "Leggings of Revelation",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 66.08332490309422,
+          "score": 66.08332490309424,
           "verified": true,
           "swap_note": "confirmed by the sim against General's Satin Leggings (id 17625): kept the pick, +2.9 DPS (253.3 vs 250.4 set DPS)",
           "dps_delta": 2.851436685068734,
@@ -7157,14 +7157,14 @@
               "item_name": "General's Satin Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.018753511169475
+              "dps_delta": -1.0187535111694765
             },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.733389154582191
+              "dps_delta": -1.7333891545821927
             }
           ]
         },
@@ -7174,7 +7174,7 @@
           "item_name": "Sandals of Revelation",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 46.80137302501013,
+          "score": 46.801373025010136,
           "verified": true,
           "alternatives": [
             {
@@ -7182,14 +7182,14 @@
               "item_name": "General's Satin Boots",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.26689395334918065
+              "dps_delta": -0.2668939533491814
             },
             {
               "item_id": 226959,
               "item_name": "Virtuous Slippers",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.6454864055163314
+              "dps_delta": -0.6454864055163322
             },
             {
               "item_id": 231610,
@@ -7444,8 +7444,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.620139421,
-      "verify_run_seconds": 0.631009817,
+      "weights_run_seconds": 0.597188244,
+      "verify_run_seconds": 0.620425366,
       "coverage": {
         "back": {
           "eligible": 450,

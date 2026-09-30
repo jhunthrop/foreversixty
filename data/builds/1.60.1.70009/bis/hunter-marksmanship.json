@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:24:56Z",
+  "generated_at": "2026-09-30T16:41:18Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -528,8 +528,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.1243536,
-      "verify_run_seconds": 1.2484842999999999,
+      "weights_run_seconds": 1.014272171,
+      "verify_run_seconds": 1.140735414,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1146,8 +1146,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.1243536,
-      "verify_run_seconds": 1.251341316,
+      "weights_run_seconds": 1.014272171,
+      "verify_run_seconds": 1.24456304,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1866,8 +1866,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.250566261,
-      "verify_run_seconds": 1.379028881,
+      "weights_run_seconds": 1.134288971,
+      "verify_run_seconds": 1.262063848,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2572,8 +2572,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.250566261,
-      "verify_run_seconds": 1.363292746,
+      "weights_run_seconds": 1.134288971,
+      "verify_run_seconds": 1.243655674,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3239,8 +3239,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.217858563,
-      "verify_run_seconds": 1.415787158,
+      "weights_run_seconds": 1.119444038,
+      "verify_run_seconds": 1.298306173,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3907,8 +3907,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.217858563,
-      "verify_run_seconds": 1.395749188,
+      "weights_run_seconds": 1.119444038,
+      "verify_run_seconds": 1.29424071,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4569,8 +4569,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.235917067,
-      "verify_run_seconds": 1.514067878,
+      "weights_run_seconds": 1.15920994,
+      "verify_run_seconds": 1.355466416,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5244,8 +5244,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.235917067,
-      "verify_run_seconds": 1.442637,
+      "weights_run_seconds": 1.15920994,
+      "verify_run_seconds": 1.342656577,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5374,7 +5374,7 @@
           "item_name": "Dawnstalker Visor",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 196.26772639232126,
+          "score": 196.26772639232124,
           "verified": true,
           "alternatives": [
             {
@@ -5382,7 +5382,7 @@
               "item_name": "Field Marshal's Chain Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -5.484115225658293
+              "dps_delta": -5.484115225658291
             },
             {
               "item_id": 239540,
@@ -5433,7 +5433,7 @@
           "item_name": "Dawnstalker Pauldrons",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 143.07868515539013,
+          "score": 143.07868515539016,
           "verified": true,
           "alternatives": [
             {
@@ -5449,14 +5449,14 @@
               "item_name": "Darkspear Pauldrons",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.3943299052108955
+              "dps_delta": -3.3943299052108973
             },
             {
               "item_id": 272106,
               "item_name": "Darkspear Epaulets",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.3943299052108955
+              "dps_delta": -3.3943299052108973
             }
           ]
         },
@@ -5631,7 +5631,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 193.92920458018202,
+          "score": 193.929204580182,
           "verified": true,
           "alternatives": [
             {
@@ -5639,7 +5639,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.8809368007991054
+              "dps_delta": -3.880936800799104
             },
             {
               "item_id": 239541,
@@ -5926,8 +5926,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.230679455,
-      "verify_run_seconds": 1.5009694150000001,
+      "weights_run_seconds": 1.078293709,
+      "verify_run_seconds": 1.417334278,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6056,7 +6056,7 @@
           "item_name": "Dawnstalker Visor",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 196.26772639232124,
+          "score": 196.26772639232126,
           "verified": true,
           "alternatives": [
             {
@@ -6064,14 +6064,14 @@
               "item_name": "Warlord's Chain Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -5.484115225658291
+              "dps_delta": -5.484115225658293
             },
             {
               "item_id": 231571,
               "item_name": "Warlord's Chain Helm",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -5.484115225658291
+              "dps_delta": -5.484115225658293
             },
             {
               "item_id": 239540,
@@ -6203,7 +6203,7 @@
               "item_name": "Dawn Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.3785261187610205
+              "dps_delta": -5.378526118761021
             },
             {
               "item_id": 23089,
@@ -6320,7 +6320,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 193.929204580182,
+          "score": 193.92920458018202,
           "verified": true,
           "alternatives": [
             {
@@ -6328,14 +6328,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.880936800799104
+              "dps_delta": -3.8809368007991054
             },
             {
               "item_id": 22673,
               "item_name": "Outrider's Chain Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -5.023741038865471
+              "dps_delta": -5.023741038865472
             },
             {
               "item_id": 239541,
@@ -6622,8 +6622,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.230679455,
-      "verify_run_seconds": 1.4434225299999999,
+      "weights_run_seconds": 1.078293709,
+      "verify_run_seconds": 1.4271232,
       "coverage": {
         "back": {
           "eligible": 450,

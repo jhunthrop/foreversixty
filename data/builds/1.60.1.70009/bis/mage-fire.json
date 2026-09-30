@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:26:02Z",
+  "generated_at": "2026-09-30T16:42:21Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -531,8 +531,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.592443626,
-      "verify_run_seconds": 0.559182727,
+      "weights_run_seconds": 0.625738071,
+      "verify_run_seconds": 0.590974517,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1142,8 +1142,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.592443626,
-      "verify_run_seconds": 0.607445326,
+      "weights_run_seconds": 0.625738071,
+      "verify_run_seconds": 0.619151797,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1802,8 +1802,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.632164702,
-      "verify_run_seconds": 0.607049186,
+      "weights_run_seconds": 0.655766556,
+      "verify_run_seconds": 0.620465257,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2468,8 +2468,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.632164702,
-      "verify_run_seconds": 0.59707089,
+      "weights_run_seconds": 0.655766556,
+      "verify_run_seconds": 0.608135612,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3119,8 +3119,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.697372387,
-      "verify_run_seconds": 0.581745688,
+      "weights_run_seconds": 0.637048129,
+      "verify_run_seconds": 0.57088387,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3764,8 +3764,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.697372387,
-      "verify_run_seconds": 0.576723936,
+      "weights_run_seconds": 0.637048129,
+      "verify_run_seconds": 0.58438682,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4429,8 +4429,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.611172665,
-      "verify_run_seconds": 0.615170679,
+      "weights_run_seconds": 0.642440862,
+      "verify_run_seconds": 0.607913284,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5114,8 +5114,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.611172665,
-      "verify_run_seconds": 0.626737346,
+      "weights_run_seconds": 0.642440862,
+      "verify_run_seconds": 0.672064937,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5383,7 +5383,7 @@
           "item_name": "Fireleaf Robe",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 96.7106262016884,
+          "score": 96.71062620168841,
           "verified": true,
           "alternatives": [
             {
@@ -5399,14 +5399,14 @@
               "item_name": "Robe of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -7.773980998302082
+              "dps_delta": -7.7739809983020844
             },
             {
               "item_id": 16443,
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -8.219238624158272
+              "dps_delta": -8.219238624158276
             }
           ]
         },
@@ -5416,7 +5416,7 @@
           "item_name": "Fireleaf Bindings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 58.168563919835066,
+          "score": 58.16856391983507,
           "verified": true,
           "alternatives": [
             {
@@ -5424,7 +5424,7 @@
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -5.898625814733572
+              "dps_delta": -5.898625814733574
             },
             {
               "item_id": 240044,
@@ -5498,7 +5498,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -6.0908991496518015
+              "dps_delta": -6.0908991496518
             }
           ]
         },
@@ -5804,8 +5804,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.700722543,
-      "verify_run_seconds": 0.69983828,
+      "weights_run_seconds": 0.69886941,
+      "verify_run_seconds": 0.694207573,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6494,8 +6494,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.700722543,
-      "verify_run_seconds": 0.689699198,
+      "weights_run_seconds": 0.69886941,
+      "verify_run_seconds": 0.716444775,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:29:32Z",
+  "generated_at": "2026-09-30T16:45:37Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -531,8 +531,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.0404804460000001,
-      "verify_run_seconds": 0.883424074,
+      "weights_run_seconds": 0.976235134,
+      "verify_run_seconds": 0.815018291,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1141,8 +1141,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.0404804460000001,
-      "verify_run_seconds": 0.862304367,
+      "weights_run_seconds": 0.976235134,
+      "verify_run_seconds": 0.815581335,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1823,8 +1823,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.086510143,
-      "verify_run_seconds": 0.921780034,
+      "weights_run_seconds": 0.929655181,
+      "verify_run_seconds": 0.821993518,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2510,8 +2510,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.086510143,
-      "verify_run_seconds": 0.928950738,
+      "weights_run_seconds": 0.929655181,
+      "verify_run_seconds": 0.820443831,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3167,8 +3167,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.912657218,
-      "verify_run_seconds": 0.820936014,
+      "weights_run_seconds": 0.823385151,
+      "verify_run_seconds": 0.742356298,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3817,8 +3817,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.912657218,
-      "verify_run_seconds": 0.829321046,
+      "weights_run_seconds": 0.823385151,
+      "verify_run_seconds": 0.753843842,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4288,7 +4288,7 @@
               "item_name": "Sergeant Major's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.385386295106878
+              "dps_delta": -3.3853862951068785
             }
           ]
         },
@@ -4500,8 +4500,8 @@
         "trinket2: Uther's Strength",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.95725163,
-      "verify_run_seconds": 1.029216756,
+      "weights_run_seconds": 0.959511859,
+      "verify_run_seconds": 0.926231544,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5191,8 +5191,8 @@
         "trinket2: Uther's Strength",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.95725163,
-      "verify_run_seconds": 1.056298098,
+      "weights_run_seconds": 0.959511859,
+      "verify_run_seconds": 0.937893348,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5852,8 +5852,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.044473919,
-      "verify_run_seconds": 1.036420254,
+      "weights_run_seconds": 0.928660671,
+      "verify_run_seconds": 0.924347582,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6425,7 +6425,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -2.004029075855467
+              "dps_delta": -2.004029075855463
             },
             {
               "item_id": 1728,
@@ -6513,8 +6513,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.044473919,
-      "verify_run_seconds": 0.998743015,
+      "weights_run_seconds": 0.928660671,
+      "verify_run_seconds": 0.880059503,
       "coverage": {
         "back": {
           "eligible": 450,

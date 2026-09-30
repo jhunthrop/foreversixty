@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:28:42Z",
+  "generated_at": "2026-09-30T16:44:52Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -69,34 +69,35 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 250532,
-          "item_name": "Crusader's Silvered Chain Helm",
-          "source": "Blacksmithing",
+          "item_id": 252507,
+          "item_name": "Wisdom's Leather Hood",
+          "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 11,
           "verified": true,
+          "swap_note": "beat the scored pick Totemic Leather Hood (id 252448) in the sim: +0.3 DPS over it",
+          "dps_delta": 0.32315090098397903,
           "alternatives": [
+            {
+              "item_id": 253949,
+              "item_name": "Pristine Circlet",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 252505,
+              "item_name": "Trapper's Leather Hood",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.0207132236846582
+            },
             {
               "item_id": 252448,
               "item_name": "Totemic Leather Hood",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.24236317573798516,
+              "dps_delta": -0.32315090098397903,
               "verified": true
-            },
-            {
-              "item_id": 250531,
-              "item_name": "Acolyte's Silvered Chain Helm",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.38341861675705613
-            },
-            {
-              "item_id": 252507,
-              "item_name": "Wisdom's Leather Hood",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.47927327094632016
             }
           ]
         },
@@ -119,7 +120,7 @@
               "item_name": "Reinforced Woolen Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.26121587855882566,
+              "dps_delta": -0.25920918497634204,
               "verified": true
             },
             {
@@ -139,7 +140,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Pearl-clasped Cloak (id 5542) in the sim: +0.3 DPS over it",
-          "dps_delta": 0.26399804152609363,
+          "dps_delta": 0.26210189441269094,
           "alternatives": [
             {
               "item_id": 6632,
@@ -160,7 +161,7 @@
               "item_name": "Pearl-clasped Cloak",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.26399804152609363,
+              "dps_delta": -0.26210189441269094,
               "verified": true
             }
           ]
@@ -175,26 +176,26 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 250492,
-              "item_name": "Crusader's Chain Shirt",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
-              "item_id": 250491,
-              "item_name": "Acolyte's Chain Shirt",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.2875639625677921
-            },
-            {
               "item_id": 252493,
               "item_name": "Wisdom's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
+              "dps_delta": 0,
+              "verified": true
+            },
+            {
+              "item_id": 253901,
+              "item_name": "Filigreed Pristine Gown",
+              "source_kind": "crafted",
+              "source": "Tailoring",
               "dps_delta": -0.2875639625677921
+            },
+            {
+              "item_id": 252435,
+              "item_name": "Totemic Leather Armor",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.33031298374125956
             }
           ]
         },
@@ -206,7 +207,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "beat the scored pick Owl Bracers (id 4796) in the sim: +1.3 DPS over it",
-          "dps_delta": 1.3411647093054668,
+          "dps_delta": 1.3208650540450435,
           "alternatives": [
             {
               "item_id": 3647,
@@ -227,7 +228,7 @@
               "item_name": "Owl Bracers",
               "source_kind": "vendor",
               "source": "Bernard Brubaker",
-              "dps_delta": -1.3411647093054668,
+              "dps_delta": -1.3208650540450435,
               "verified": true
             }
           ]
@@ -246,21 +247,21 @@
               "item_name": "Serpent Gloves",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Serpentis",
-              "dps_delta": -0.07892586764141285,
+              "dps_delta": -0.07629933722659388,
               "verified": true
-            },
-            {
-              "item_id": 250511,
-              "item_name": "Acolyte's Gloves",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.1224074706971623
             },
             {
               "item_id": 5630,
               "item_name": "Windfelt Gloves",
               "source_kind": "quest",
               "source": "The Absent Minded Prospector",
+              "dps_delta": -0.16515649187062978
+            },
+            {
+              "item_id": 253913,
+              "item_name": "Pristine Gloves",
+              "source_kind": "crafted",
+              "source": "Tailoring",
               "dps_delta": -0.16515649187062978
             }
           ]
@@ -273,7 +274,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Stormrider's Leather Belt (id 252432) in the sim: +0.4 DPS over it",
-          "dps_delta": 0.4443324888529716,
+          "dps_delta": 0.44433248885296805,
           "alternatives": [
             {
               "item_id": 253885,
@@ -283,10 +284,10 @@
               "dps_delta": -0.06930183768136576
             },
             {
-              "item_id": 250516,
-              "item_name": "Acolyte's Chain Belt",
+              "item_id": 252433,
+              "item_name": "Wisdom's Leather Belt",
               "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "source": "Leatherworking",
               "dps_delta": -0.09585465418926403
             },
             {
@@ -294,7 +295,7 @@
               "item_name": "Stormrider's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.4443324888529716,
+              "dps_delta": -0.44433248885296805,
               "verified": true
             }
           ]
@@ -317,18 +318,18 @@
               "verified": true
             },
             {
-              "item_id": 250496,
-              "item_name": "Acolyte's Chain Leggings",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.26101114605989384
-            },
-            {
               "item_id": 270016,
               "item_name": "Dreamer's Leggings",
               "source_kind": "quest",
               "source": "Underground Assault",
               "dps_delta": -0.2713677579022229
+            },
+            {
+              "item_id": 252503,
+              "item_name": "Wisdom's Leather Pants",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.33031298374125956
             }
           ]
         },
@@ -350,18 +351,18 @@
               "verified": true
             },
             {
-              "item_id": 250506,
-              "item_name": "Acolyte's Boots",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.21826212488642635
-            },
-            {
               "item_id": 252444,
               "item_name": "Wisdom's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.21826212488642635
+            },
+            {
+              "item_id": 252442,
+              "item_name": "Totemic Leather Boots",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.3730620049147271
             }
           ]
         },
@@ -374,7 +375,7 @@
           "score": 6.445977522270958,
           "verified": true,
           "swap_note": "confirmed by the sim against Lorekeeper's Ring (id 20431): kept the pick, +0.8 DPS over it",
-          "dps_delta": 0.8055653138644985,
+          "dps_delta": 0.803858184252725,
           "alternatives": [
             {
               "item_id": 1156,
@@ -420,7 +421,7 @@
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
               "source": "Westfall: Gilnid",
-              "dps_delta": -0.21556942725458583,
+              "dps_delta": -0.2231127572935172,
               "verified": true
             },
             {
@@ -487,27 +488,27 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 26.337555455335437,
-      "no_source_count": 267,
+      "set_dps": 26.42050180858749,
+      "no_source_count": 218,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "2273 Guerrilla Armor",
-        "2543 Militia Pants",
         "2664 Spinner Fang",
         "2952 Fine Light Hide Jerkin",
         "3222 Wicked Dagger",
-        "3579 Ornate Copper Shoulders",
         "3738 Brewing Rod",
         "4642 Star of Xil'yeh",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
-        "4800 Mighty Chain Pants",
-        "4816 Legionnaire's Leggings",
-        "4964 Goblin Smasher"
+        "4964 Goblin Smasher",
+        "5255 Quilboar Tomahawk",
+        "5821 Darkstalker Boots",
+        "5968 Rugged Boots",
+        "6478 Rat Stompers",
+        "7187 VanCleef's Boots"
       ],
       "new_at_band": [
-        "head: Crusader's Silvered Chain Helm",
+        "head: Wisdom's Leather Hood",
         "shoulder: Magician's Mantle",
         "back: Heavy Woolen Cloak",
         "chest: Stormrider's Leather Armor",
@@ -520,20 +521,20 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.231312657,
-      "verify_run_seconds": 0.87288375,
+      "weights_run_seconds": 1.195960246,
+      "verify_run_seconds": 0.81416603,
       "coverage": {
         "back": {
           "eligible": 98,
           "sourced": 80
         },
         "chest": {
-          "eligible": 184,
-          "sourced": 161
+          "eligible": 137,
+          "sourced": 122
         },
         "feet": {
-          "eligible": 137,
-          "sourced": 119
+          "eligible": 94,
+          "sourced": 81
         },
         "finger1": {
           "eligible": 31,
@@ -544,16 +545,16 @@
           "sourced": 19
         },
         "hands": {
-          "eligible": 138,
-          "sourced": 120
+          "eligible": 100,
+          "sourced": 88
         },
         "head": {
-          "eligible": 31,
-          "sourced": 25
+          "eligible": 23,
+          "sourced": 19
         },
         "legs": {
-          "eligible": 155,
-          "sourced": 138
+          "eligible": 107,
+          "sourced": 99
         },
         "main_hand": {
           "eligible": 252,
@@ -572,8 +573,8 @@
           "sourced": 7
         },
         "shoulder": {
-          "eligible": 21,
-          "sourced": 12
+          "eligible": 11,
+          "sourced": 8
         },
         "trinket1": {
           "eligible": 10,
@@ -584,12 +585,12 @@
           "sourced": 3
         },
         "waist": {
-          "eligible": 119,
-          "sourced": 108
+          "eligible": 84,
+          "sourced": 78
         },
         "wrist": {
-          "eligible": 90,
-          "sourced": 68
+          "eligible": 62,
+          "sourced": 48
         }
       },
       "reference_dps_per_point": 0.09585465418926403,
@@ -660,34 +661,35 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 250532,
-          "item_name": "Crusader's Silvered Chain Helm",
-          "source": "Blacksmithing",
+          "item_id": 252507,
+          "item_name": "Wisdom's Leather Hood",
+          "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 11,
           "verified": true,
+          "swap_note": "beat the scored pick Totemic Leather Hood (id 252448) in the sim: +0.3 DPS over it",
+          "dps_delta": 0.32402974832992015,
           "alternatives": [
+            {
+              "item_id": 253949,
+              "item_name": "Pristine Circlet",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 252505,
+              "item_name": "Trapper's Leather Hood",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.0207132236846582
+            },
             {
               "item_id": 252448,
               "item_name": "Totemic Leather Hood",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.24302231124744011,
+              "dps_delta": -0.32402974832992015,
               "verified": true
-            },
-            {
-              "item_id": 250531,
-              "item_name": "Acolyte's Silvered Chain Helm",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.38341861675705613
-            },
-            {
-              "item_id": 252507,
-              "item_name": "Wisdom's Leather Hood",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.47927327094632016
             }
           ]
         },
@@ -698,15 +700,15 @@
           "source": "Friend of the Library",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "beat the scored pick Roadwatcher's Confidence (id 281265) in the sim: +0.4 DPS over it",
-          "dps_delta": 0.3503468013572437,
+          "swap_note": "beat the scored pick Roadwatcher's Confidence (id 281265) in the sim: +0.3 DPS over it",
+          "dps_delta": 0.34476199735822277,
           "alternatives": [
             {
               "item_id": 281265,
               "item_name": "Roadwatcher's Confidence",
               "source_kind": "quest",
               "source": "Watching the Roads",
-              "dps_delta": -0.3503468013572437,
+              "dps_delta": -0.34476199735822277,
               "verified": true
             }
           ]
@@ -725,7 +727,7 @@
               "item_name": "Reinforced Woolen Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6935516268397812,
+              "dps_delta": -0.6835921367011473,
               "verified": true
             },
             {
@@ -745,7 +747,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Pearl-clasped Cloak (id 5542) in the sim: +0.7 DPS over it",
-          "dps_delta": 0.6612906811412103,
+          "dps_delta": 0.6546622027582067,
           "alternatives": [
             {
               "item_id": 6632,
@@ -766,40 +768,41 @@
               "item_name": "Pearl-clasped Cloak",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6612906811412103,
+              "dps_delta": -0.6546622027582067,
               "verified": true
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 252492,
-          "item_name": "Stormrider's Leather Armor",
+          "item_id": 252493,
+          "item_name": "Wisdom's Leather Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 11.614943805677395,
           "verified": true,
+          "swap_note": "beat the scored pick Stormrider's Leather Armor (id 252492) in the sim: +0.2 DPS over it",
+          "dps_delta": 0.24302231124744011,
           "alternatives": [
             {
-              "item_id": 250491,
-              "item_name": "Acolyte's Chain Shirt",
+              "item_id": 253901,
+              "item_name": "Filigreed Pristine Gown",
               "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.2875639625677921
+              "source": "Tailoring",
+              "dps_delta": 0
             },
             {
-              "item_id": 252493,
-              "item_name": "Wisdom's Leather Armor",
+              "item_id": 252435,
+              "item_name": "Totemic Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.2875639625677921
+              "dps_delta": -0.04274902117346749
             },
             {
-              "item_id": 250492,
-              "item_name": "Crusader's Chain Shirt",
+              "item_id": 252492,
+              "item_name": "Stormrider's Leather Armor",
               "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.35276618059925013,
+              "source": "Leatherworking",
+              "dps_delta": -0.24302231124744011,
               "verified": true
             }
           ]
@@ -847,13 +850,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 250511,
-              "item_name": "Acolyte's Gloves",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.1224074706971623
-            },
-            {
               "item_id": 253913,
               "item_name": "Pristine Gloves",
               "source_kind": "crafted",
@@ -861,11 +857,18 @@
               "dps_delta": -0.16515649187062978
             },
             {
+              "item_id": 892,
+              "item_name": "Gnoll Casting Gloves",
+              "source_kind": "world",
+              "source": "Mosshide Mistweaver",
+              "dps_delta": -0.181352696536199
+            },
+            {
               "item_id": 5970,
               "item_name": "Serpent Gloves",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Serpentis",
-              "dps_delta": -0.3364788156820815,
+              "dps_delta": -0.3275731690703054,
               "verified": true
             }
           ]
@@ -878,7 +881,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Stormrider's Leather Belt (id 252432) in the sim: +0.4 DPS over it",
-          "dps_delta": 0.44554090395365975,
+          "dps_delta": 0.445540903953642,
           "alternatives": [
             {
               "item_id": 253885,
@@ -888,10 +891,10 @@
               "dps_delta": -0.06930183768136576
             },
             {
-              "item_id": 250516,
-              "item_name": "Acolyte's Chain Belt",
+              "item_id": 252433,
+              "item_name": "Wisdom's Leather Belt",
               "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "source": "Leatherworking",
               "dps_delta": -0.09585465418926403
             },
             {
@@ -899,7 +902,7 @@
               "item_name": "Stormrider's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.44554090395365975,
+              "dps_delta": -0.445540903953642,
               "verified": true
             }
           ]
@@ -912,15 +915,8 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Abomination Skin Leggings (id 23173) in the sim: +0.6 DPS over it",
-          "dps_delta": 0.6206103607275715,
+          "dps_delta": 0.6133315345613894,
           "alternatives": [
-            {
-              "item_id": 250496,
-              "item_name": "Acolyte's Chain Leggings",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.21826212488642635
-            },
             {
               "item_id": 252503,
               "item_name": "Wisdom's Leather Pants",
@@ -929,11 +925,18 @@
               "dps_delta": -0.2875639625677921
             },
             {
+              "item_id": 253937,
+              "item_name": "Filigreed Pristine Leggings",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.38341861675705613
+            },
+            {
               "item_id": 23173,
               "item_name": "Abomination Skin Leggings",
               "source_kind": "dungeon",
               "source": "Shadowfang Keep: Sever",
-              "dps_delta": -0.6206103607275715,
+              "dps_delta": -0.6133315345613894,
               "verified": true
             }
           ]
@@ -952,15 +955,8 @@
               "item_name": "Stormrider's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.1420568217220115,
+              "dps_delta": -0.14041710642372252,
               "verified": true
-            },
-            {
-              "item_id": 250506,
-              "item_name": "Acolyte's Boots",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.21826212488642635
             },
             {
               "item_id": 252444,
@@ -968,6 +964,13 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.21826212488642635
+            },
+            {
+              "item_id": 252442,
+              "item_name": "Totemic Leather Boots",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.3730620049147271
             }
           ]
         },
@@ -980,7 +983,7 @@
           "score": 5,
           "verified": true,
           "swap_note": "confirmed by the sim against Lavishly Jeweled Ring (id 1156): kept the pick, +0.4 DPS over it",
-          "dps_delta": 0.3679767139105401,
+          "dps_delta": 0.37463946242561974,
           "alternatives": [
             {
               "item_id": 281673,
@@ -1069,7 +1072,7 @@
               "item_name": "Gnarled Necromancer's Staff",
               "source_kind": "quest",
               "source": "The Wrath of Rath'mael",
-              "dps_delta": -0.0817924272046433,
+              "dps_delta": -0.08676020948222529,
               "verified": true
             },
             {
@@ -1093,31 +1096,31 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 25.786424360442865,
-      "no_source_count": 248,
+      "set_dps": 26.11868484307695,
+      "no_source_count": 207,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
-        "2273 Guerrilla Armor",
-        "2543 Militia Pants",
         "2664 Spinner Fang",
         "2952 Fine Light Hide Jerkin",
         "3222 Wicked Dagger",
-        "3579 Ornate Copper Shoulders",
         "3738 Brewing Rod",
         "4642 Star of Xil'yeh",
         "5255 Quilboar Tomahawk",
         "5821 Darkstalker Boots",
-        "5822 Hedgeseed Gauntlets",
         "5968 Rugged Boots",
-        "6189 Durable Chain Shoulders"
+        "6478 Rat Stompers",
+        "7187 VanCleef's Boots",
+        "7188 Stormwind Guard Shield",
+        "14389 Durability Shoulderpads",
+        "14705 Brackwater Chain Shield"
       ],
       "new_at_band": [
-        "head: Crusader's Silvered Chain Helm",
+        "head: Wisdom's Leather Hood",
         "neck: Scholarly Pendant",
         "shoulder: Magician's Mantle",
         "back: Heavy Woolen Cloak",
-        "chest: Stormrider's Leather Armor",
+        "chest: Wisdom's Leather Armor",
         "wrist: Tabitha's Cuffs",
         "hands: Stormrider's Leather Gloves",
         "waist: Pristine Sash",
@@ -1127,20 +1130,20 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.231312657,
-      "verify_run_seconds": 0.84413325,
+      "weights_run_seconds": 1.195960246,
+      "verify_run_seconds": 0.772593947,
       "coverage": {
         "back": {
           "eligible": 99,
           "sourced": 85
         },
         "chest": {
-          "eligible": 182,
-          "sourced": 158
+          "eligible": 135,
+          "sourced": 120
         },
         "feet": {
-          "eligible": 133,
-          "sourced": 114
+          "eligible": 94,
+          "sourced": 78
         },
         "finger1": {
           "eligible": 32,
@@ -1151,16 +1154,16 @@
           "sourced": 21
         },
         "hands": {
-          "eligible": 131,
-          "sourced": 112
+          "eligible": 94,
+          "sourced": 81
         },
         "head": {
-          "eligible": 31,
-          "sourced": 25
+          "eligible": 23,
+          "sourced": 19
         },
         "legs": {
-          "eligible": 151,
-          "sourced": 135
+          "eligible": 105,
+          "sourced": 95
         },
         "main_hand": {
           "eligible": 256,
@@ -1179,8 +1182,8 @@
           "sourced": 7
         },
         "shoulder": {
-          "eligible": 21,
-          "sourced": 12
+          "eligible": 11,
+          "sourced": 8
         },
         "trinket1": {
           "eligible": 10,
@@ -1191,12 +1194,12 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 118,
-          "sourced": 104
+          "eligible": 83,
+          "sourced": 74
         },
         "wrist": {
-          "eligible": 92,
-          "sourced": 78
+          "eligible": 64,
+          "sourced": 54
         }
       },
       "reference_dps_per_point": 0.09585465418926403,
@@ -1275,19 +1278,12 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 250502,
-              "item_name": "Crusader's Chain Helm",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
               "item_id": 3020,
               "item_name": "Enduring Cap",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.11333105191019668
+              "dps_delta": 0,
+              "verified": true
             },
             {
               "item_id": 252456,
@@ -1295,6 +1291,13 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.21033763190842691
+            },
+            {
+              "item_id": 2721,
+              "item_name": "Holy Shroud",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.3101433115147822
             }
           ]
         },
@@ -1486,11 +1489,11 @@
               "dps_delta": -0.5475316880308916
             },
             {
-              "item_id": 250511,
-              "item_name": "Acolyte's Gloves",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.5853087053342904
+              "item_id": 9698,
+              "item_name": "Gloves of Insight",
+              "source_kind": "quest",
+              "source": "Return to Vahlarriel",
+              "dps_delta": -0.5906718416821485
             },
             {
               "item_id": 252498,
@@ -1512,18 +1515,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 250559,
-              "item_name": "Prefect's Belt",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.21849986786440997
-            },
-            {
               "item_id": 6911,
               "item_name": "Moss Cinch",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Aku'mai",
               "dps_delta": -0.28589166651522446
+            },
+            {
+              "item_id": 7055,
+              "item_name": "Crimson Silk Belt",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.3183055474707653
             },
             {
               "item_id": 20099,
@@ -1724,23 +1727,23 @@
         }
       ],
       "set_dps": 47.67024903905632,
-      "no_source_count": 433,
+      "no_source_count": 359,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
-        "2016 Dusty Chain Armor",
-        "2273 Guerrilla Armor",
-        "2543 Militia Pants",
         "2664 Spinner Fang",
         "2944 Cursed Eye of Paleth",
         "2952 Fine Light Hide Jerkin",
         "3222 Wicked Dagger",
-        "3579 Ornate Copper Shoulders",
         "3738 Brewing Rod",
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
         "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak"
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4964 Goblin Smasher",
+        "5000 Coral Band",
+        "5004 Mark of the Kirin Tor"
       ],
       "new_at_band": [
         "head: Enchanter's Cowl",
@@ -1757,20 +1760,20 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.345471465,
-      "verify_run_seconds": 0.837320009,
+      "weights_run_seconds": 1.20970024,
+      "verify_run_seconds": 0.858511948,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 142
         },
         "chest": {
-          "eligible": 309,
-          "sourced": 280
+          "eligible": 226,
+          "sourced": 206
         },
         "feet": {
-          "eligible": 222,
-          "sourced": 190
+          "eligible": 148,
+          "sourced": 129
         },
         "finger1": {
           "eligible": 78,
@@ -1781,16 +1784,16 @@
           "sourced": 48
         },
         "hands": {
-          "eligible": 221,
-          "sourced": 196
+          "eligible": 155,
+          "sourced": 138
         },
         "head": {
-          "eligible": 106,
-          "sourced": 93
+          "eligible": 75,
+          "sourced": 66
         },
         "legs": {
-          "eligible": 249,
-          "sourced": 221
+          "eligible": 177,
+          "sourced": 160
         },
         "main_hand": {
           "eligible": 388,
@@ -1809,8 +1812,8 @@
           "sourced": 7
         },
         "shoulder": {
-          "eligible": 110,
-          "sourced": 90
+          "eligible": 74,
+          "sourced": 63
         },
         "trinket1": {
           "eligible": 19,
@@ -1821,12 +1824,12 @@
           "sourced": 7
         },
         "waist": {
-          "eligible": 218,
-          "sourced": 194
+          "eligible": 150,
+          "sourced": 137
         },
         "wrist": {
-          "eligible": 164,
-          "sourced": 134
+          "eligible": 113,
+          "sourced": 92
         }
       },
       "reference_dps_per_point": 0.0998056796063553,
@@ -1909,7 +1912,8 @@
               "item_name": "Enduring Cap",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.11333105191019668
+              "dps_delta": -0.06426947943202066,
+              "verified": true
             },
             {
               "item_id": 252456,
@@ -1919,12 +1923,11 @@
               "dps_delta": -0.21033763190842691
             },
             {
-              "item_id": 250502,
-              "item_name": "Crusader's Chain Helm",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.2815610518696232,
-              "verified": true
+              "item_id": 2721,
+              "item_name": "Holy Shroud",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.3101433115147822
             }
           ]
         },
@@ -2142,18 +2145,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 250559,
-              "item_name": "Prefect's Belt",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.21849986786440997
-            },
-            {
               "item_id": 6911,
               "item_name": "Moss Cinch",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Aku'mai",
               "dps_delta": -0.28589166651522446
+            },
+            {
+              "item_id": 7055,
+              "item_name": "Crimson Silk Belt",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.3183055474707653
             },
             {
               "item_id": 20164,
@@ -2382,23 +2385,23 @@
         }
       ],
       "set_dps": 45.07700643245726,
-      "no_source_count": 417,
+      "no_source_count": 353,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
         "1832 Lucky Trousers",
-        "2016 Dusty Chain Armor",
-        "2273 Guerrilla Armor",
-        "2543 Militia Pants",
         "2664 Spinner Fang",
         "2944 Cursed Eye of Paleth",
         "2952 Fine Light Hide Jerkin",
         "3222 Wicked Dagger",
-        "3579 Ornate Copper Shoulders",
         "3738 Brewing Rod",
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
-        "5000 Coral Band"
+        "5000 Coral Band",
+        "5004 Mark of the Kirin Tor",
+        "5005 Emberspark Pendant",
+        "5255 Quilboar Tomahawk",
+        "5821 Darkstalker Boots"
       ],
       "new_at_band": [
         "head: Enchanter's Cowl",
@@ -2416,20 +2419,20 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 1.345471465,
-      "verify_run_seconds": 0.827086474,
+      "weights_run_seconds": 1.20970024,
+      "verify_run_seconds": 0.841645633,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 145
         },
         "chest": {
-          "eligible": 302,
-          "sourced": 270
+          "eligible": 223,
+          "sourced": 201
         },
         "feet": {
-          "eligible": 221,
-          "sourced": 185
+          "eligible": 153,
+          "sourced": 128
         },
         "finger1": {
           "eligible": 79,
@@ -2440,16 +2443,16 @@
           "sourced": 51
         },
         "hands": {
-          "eligible": 219,
-          "sourced": 191
+          "eligible": 150,
+          "sourced": 131
         },
         "head": {
-          "eligible": 105,
-          "sourced": 92
+          "eligible": 75,
+          "sourced": 66
         },
         "legs": {
-          "eligible": 245,
-          "sourced": 219
+          "eligible": 173,
+          "sourced": 155
         },
         "main_hand": {
           "eligible": 383,
@@ -2468,8 +2471,8 @@
           "sourced": 7
         },
         "shoulder": {
-          "eligible": 109,
-          "sourced": 90
+          "eligible": 73,
+          "sourced": 62
         },
         "trinket1": {
           "eligible": 19,
@@ -2480,12 +2483,12 @@
           "sourced": 9
         },
         "waist": {
-          "eligible": 218,
-          "sourced": 192
+          "eligible": 154,
+          "sourced": 138
         },
         "wrist": {
-          "eligible": 167,
-          "sourced": 144
+          "eligible": 116,
+          "sourced": 97
         }
       },
       "reference_dps_per_point": 0.0998056796063553,
@@ -3038,8 +3041,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.470699873,
-      "verify_run_seconds": 0.952908074,
+      "weights_run_seconds": 1.289188183,
+      "verify_run_seconds": 0.834948921,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3662,8 +3665,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.470699873,
-      "verify_run_seconds": 0.972248246,
+      "weights_run_seconds": 1.289188183,
+      "verify_run_seconds": 0.808931854,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4313,8 +4316,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.486660681,
-      "verify_run_seconds": 1.033631814,
+      "weights_run_seconds": 1.388608687,
+      "verify_run_seconds": 0.928766656,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4979,8 +4982,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.486660681,
-      "verify_run_seconds": 1.091026548,
+      "weights_run_seconds": 1.388608687,
+      "verify_run_seconds": 1.068170924,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5139,7 +5142,7 @@
               "item_name": "Blue Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.369127814176763
+              "dps_delta": -3.3691278141767635
             },
             {
               "item_id": 252605,
@@ -5264,14 +5267,14 @@
               "item_name": "Soulcrusher Tunic",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.9108899219877276
+              "dps_delta": -1.910889921987729
             },
             {
               "item_id": 240101,
               "item_name": "Soulcrusher Chestguard",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.7789739836349927
+              "dps_delta": -2.778973983634995
             },
             {
               "item_id": 23089,
@@ -5370,7 +5373,7 @@
               "item_name": "Soulcrusher Girdle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.28237903618467375
+              "dps_delta": -0.28237903618467436
             },
             {
               "item_id": 240107,
@@ -5657,8 +5660,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 1.5212005610000001,
-      "verify_run_seconds": 1.063218144,
+      "weights_run_seconds": 1.334924524,
+      "verify_run_seconds": 0.93079741,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5867,7 +5870,7 @@
           "item_name": "Soulcrusher Mantle",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 71.60576712187398,
+          "score": 71.605767121874,
           "verified": true,
           "alternatives": [
             {
@@ -5875,14 +5878,14 @@
               "item_name": "Darkspear Shoulderguards",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -1.9661490485944686
+              "dps_delta": -1.96614904859447
             },
             {
               "item_id": 231659,
               "item_name": "Warlord's Mail Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.2111587802480077
+              "dps_delta": -2.211158780248009
             },
             {
               "item_id": 227808,
@@ -5941,14 +5944,14 @@
               "item_name": "Soulcrusher Tunic",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.9108899219877276
+              "dps_delta": -1.910889921987729
             },
             {
               "item_id": 240101,
               "item_name": "Soulcrusher Chestguard",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.7789739836349927
+              "dps_delta": -2.778973983634995
             },
             {
               "item_id": 23089,
@@ -6040,7 +6043,7 @@
               "item_name": "Soulcrusher Girdle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.28237903618467375
+              "dps_delta": -0.28237903618467436
             },
             {
               "item_id": 240126,
@@ -6340,8 +6343,8 @@
         "trinket2: Second Wind",
         "main_hand: Hammer of Divine Might"
       ],
-      "weights_run_seconds": 1.5212005610000001,
-      "verify_run_seconds": 0.903255027,
+      "weights_run_seconds": 1.334924524,
+      "verify_run_seconds": 0.837504949,
       "coverage": {
         "back": {
           "eligible": 451,

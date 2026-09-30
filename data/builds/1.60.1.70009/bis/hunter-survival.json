@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:25:27Z",
+  "generated_at": "2026-09-30T16:41:47Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -555,8 +555,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.418142491,
-      "verify_run_seconds": 1.3366334229999999,
+      "weights_run_seconds": 1.327047483,
+      "verify_run_seconds": 1.216914421,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1188,8 +1188,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.418142491,
-      "verify_run_seconds": 1.288854169,
+      "weights_run_seconds": 1.327047483,
+      "verify_run_seconds": 1.187705796,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.526624985,
-      "verify_run_seconds": 1.417242244,
+      "weights_run_seconds": 1.359333545,
+      "verify_run_seconds": 1.30702699,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2539,8 +2539,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.526624985,
-      "verify_run_seconds": 1.379867175,
+      "weights_run_seconds": 1.359333545,
+      "verify_run_seconds": 1.340758866,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3212,8 +3212,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.511198131,
-      "verify_run_seconds": 1.398383306,
+      "weights_run_seconds": 1.397611663,
+      "verify_run_seconds": 1.297277011,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3892,8 +3892,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.511198131,
-      "verify_run_seconds": 1.366625884,
+      "weights_run_seconds": 1.397611663,
+      "verify_run_seconds": 1.289869806,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4594,8 +4594,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.527374085,
-      "verify_run_seconds": 1.572317842,
+      "weights_run_seconds": 1.386565601,
+      "verify_run_seconds": 1.431742762,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5304,8 +5304,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.527374085,
-      "verify_run_seconds": 1.531735967,
+      "weights_run_seconds": 1.386565601,
+      "verify_run_seconds": 1.4283307029999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5699,7 +5699,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 119.0124167083772,
+          "score": 119.01241670837722,
           "verified": true,
           "alternatives": [
             {
@@ -5707,14 +5707,14 @@
               "item_name": "Dawnstalker Legguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.499024684448931
+              "dps_delta": -2.499024684448932
             },
             {
               "item_id": 237819,
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.1675094076583554
+              "dps_delta": -3.1675094076583563
             },
             {
               "item_id": 231558,
@@ -5773,7 +5773,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.32799392801791905
+              "dps_delta": -0.3279939280179189
             },
             {
               "item_id": 17713,
@@ -5806,7 +5806,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.08360115868060386
+              "dps_delta": -0.08360115868060368
             },
             {
               "item_id": 17713,
@@ -6029,8 +6029,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.5341563379999998,
-      "verify_run_seconds": 1.568282159,
+      "weights_run_seconds": 1.362216938,
+      "verify_run_seconds": 1.416368292,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6511,7 +6511,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.3279939280179189
+              "dps_delta": -0.32799392801791905
             },
             {
               "item_id": 11669,
@@ -6544,7 +6544,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.08360115868060368
+              "dps_delta": -0.08360115868060386
             },
             {
               "item_id": 11669,
@@ -6760,8 +6760,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.5341563379999998,
-      "verify_run_seconds": 1.548027424,
+      "weights_run_seconds": 1.362216938,
+      "verify_run_seconds": 1.424762889,
       "coverage": {
         "back": {
           "eligible": 450,

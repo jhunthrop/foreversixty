@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-00000000000000000-2531000000000000000)
 
-Set DPS (verified): 37.5. Weights run: 0.5s. Verify run: 0.5s. 147 eligible items had no known source.
+Set DPS (verified): 37.5. Weights run: 0.6s. Verify run: 0.5s. 147 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.375 ± 0.009, crit=0.074 ± 0.003 per rating point (14 rating = 1%, 1.030 per %), hit=0.198 ± 0.002 per rating point (10 rating = 1%, 1.980 per %), spell_haste=0.719 ± 0.179, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 147, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-2535111300000000000)
 
-Set DPS (verified): 62.0. Weights run: 0.6s. Verify run: 0.5s. 246 eligible items had no known source.
+Set DPS (verified): 62.0. Weights run: 0.6s. Verify run: 0.6s. 246 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=0.471 ± 0.016, crit=0.138 ± 0.008 per rating point (14 rating = 1%, 1.937 per %), hit=0.230 ± 0.003 per rating point (10 rating = 1%, 2.304 per %), spell_haste=not significant (0.678 ± 0.285), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 328, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 000000000000000000-23500000000000000-2535111300000301051)
 
-Set DPS (verified): 134.9. Weights run: 0.6s. Verify run: 0.5s. 422 eligible items had no known source.
+Set DPS (verified): 134.9. Weights run: 0.6s. Verify run: 0.6s. 422 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=0.911 ± 0.050, crit=0.368 ± 0.021 per rating point (14 rating = 1%, 5.153 per %), hit=0.574 ± 0.009 per rating point (10 rating = 1%, 5.744 per %), spell_haste=not significant (-1.194 ± 0.805), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -143,7 +143,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | hands | Fireleaf Gloves (240057) | Leonid Barthalomew the Revered [vendor] | 73.0 spell_power points (8.95 DPS) | yes | Fireleaf Mitts (240049, -1.42 DPS, sim-verified) [vendor]; Marshal's Silk Gloves (16440, -4.14 DPS) [vendor]; Marshal's Silk Gauntlets (231608, -4.14 DPS) [vendor] |
 | waist | Fireleaf Belt (240053) | Leonid Barthalomew the Revered [vendor] | 70.1 spell_power points (8.59 DPS) | yes | Knowledge of the Timbermaw (228190, -1.45 DPS) [vendor]; Fireleaf Waistguard (240045, -2.76 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -3.12 DPS) [crafted] |
 | legs | Fireleaf Leggings (240055) | Leonid Barthalomew the Revered [vendor] | 87.7 spell_power points (10.76 DPS) | yes | Fireleaf Pants (240047, -1.70 DPS, sim-verified) [vendor]; Sentinel's Silk Leggings (237815, -3.53 DPS) [vendor]; Marshal's Silk Leggings (16442, -3.55 DPS) [vendor] |
-| feet | Fireleaf Sandals (240058) | Leonid Barthalomew the Revered [vendor] | 65.6 spell_power points (8.05 DPS) | yes | Fireleaf Boots (240050, +0.00 DPS, sim-verified) [vendor]; Marshal's Silk Footwraps (231606, -2.40 DPS) [pvp] |
+| feet | Fireleaf Boots (240050) | Leonid Barthalomew the Revered [vendor] | 65.6 spell_power points (8.05 DPS) | yes | Fireleaf Sandals (240058, +0.00 DPS, sim-verified) [vendor]; Marshal's Silk Footwraps (231606, -2.40 DPS) [pvp] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (259.9 DPS) | yes | Songstone of Ironforge (12543, -2.80 DPS) [quest]; Maiden's Circle (13001, -2.80 DPS) [world_drop]; Naglering (11669, -12.54 DPS, sim-verified) [dungeon] |
 | finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (259.9 DPS) | yes | Songstone of Ironforge (12543, -0.99 DPS) [quest]; Maiden's Circle (13001, -0.99 DPS) [world_drop]; Naglering (11669, -8.11 DPS, sim-verified) [dungeon] |
 | trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (259.9 DPS) | yes | Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor]; Second Wind (11819, -0.05 DPS, sim-verified) [dungeon] |
@@ -152,7 +152,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |  |
 | ranged | Torch of Light (279246) | Enchanting [crafted] | 631.8 spell_power points (77.50 DPS) | yes | Ritssyn's Wand of Bad Mojo (22408, -4.58 DPS, sim-verified) [dungeon]; Bonecreeper Stylus (13938, -13.02 DPS) [dungeon]; Sparkling Crystal Wand (20672, -13.43 DPS) [world] |
 
-**New at 60:** head: Fireleaf Circlet; neck: Amulet of the Dawn; shoulder: Fireleaf Shoulderpads; back: Arcanoweave Cloak; chest: Fireleaf Robe; wrist: Fireleaf Bindings; hands: Fireleaf Gloves; waist: Fireleaf Belt; legs: Fireleaf Leggings; feet: Fireleaf Sandals; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Briarwood Reed; main_hand: Crackling Staff; ranged: Torch of Light
+**New at 60:** head: Fireleaf Circlet; neck: Amulet of the Dawn; shoulder: Fireleaf Shoulderpads; back: Arcanoweave Cloak; chest: Fireleaf Robe; wrist: Fireleaf Bindings; hands: Fireleaf Gloves; waist: Fireleaf Belt; legs: Fireleaf Leggings; feet: Fireleaf Boots; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Briarwood Reed; main_hand: Crackling Staff; ranged: Torch of Light
 
 No-known-source sample (15 of 1030, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1030, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 000000000000000000-00000000000000000-2531000000000000000)
 
-Set DPS (verified): 33.8. Weights run: 0.5s. Verify run: 0.6s. 141 eligible items had no known source.
+Set DPS (verified): 33.8. Weights run: 0.6s. Verify run: 0.6s. 141 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.375 ± 0.009, crit=0.074 ± 0.003 per rating point (14 rating = 1%, 1.030 per %), hit=0.198 ± 0.002 per rating point (10 rating = 1%, 1.980 per %), spell_haste=0.719 ± 0.179, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 318, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 000000000000000000-23500000000000000-2535111300000301051)
 
-Set DPS (verified): 122.7. Weights run: 0.6s. Verify run: 0.6s. 412 eligible items had no known source.
+Set DPS (verified): 122.7. Weights run: 0.6s. Verify run: 0.7s. 412 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=0.911 ± 0.050, crit=0.368 ± 0.021 per rating point (14 rating = 1%, 5.153 per %), hit=0.574 ± 0.009 per rating point (10 rating = 1%, 5.744 per %), spell_haste=not significant (-1.194 ± 0.805), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 

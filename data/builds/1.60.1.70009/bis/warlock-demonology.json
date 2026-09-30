@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:29:52Z",
+  "generated_at": "2026-09-30T16:45:56Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -540,8 +540,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.108202638,
-      "verify_run_seconds": 0.911672572,
+      "weights_run_seconds": 1.019325281,
+      "verify_run_seconds": 0.83458447,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1158,8 +1158,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.108202638,
-      "verify_run_seconds": 0.915693373,
+      "weights_run_seconds": 1.019325281,
+      "verify_run_seconds": 0.815738448,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1852,8 +1852,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.227822494,
-      "verify_run_seconds": 0.868222341,
+      "weights_run_seconds": 1.081773104,
+      "verify_run_seconds": 0.787319146,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2546,8 +2546,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.227822494,
-      "verify_run_seconds": 0.881602292,
+      "weights_run_seconds": 1.081773104,
+      "verify_run_seconds": 0.814403352,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3211,8 +3211,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.0344478559999999,
-      "verify_run_seconds": 0.821922332,
+      "weights_run_seconds": 0.937938422,
+      "verify_run_seconds": 0.738796648,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3862,8 +3862,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.0344478559999999,
-      "verify_run_seconds": 0.826740768,
+      "weights_run_seconds": 0.937938422,
+      "verify_run_seconds": 0.734823646,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4340,7 +4340,7 @@
               "item_name": "Sergeant Major's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.4225105060089462
+              "dps_delta": -3.422510506008946
             }
           ]
         },
@@ -4553,8 +4553,8 @@
         "trinket2: Uther's Strength",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.043029314,
-      "verify_run_seconds": 0.999749782,
+      "weights_run_seconds": 0.947286436,
+      "verify_run_seconds": 0.795821535,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5252,8 +5252,8 @@
         "trinket2: Uther's Strength",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.043029314,
-      "verify_run_seconds": 0.936310377,
+      "weights_run_seconds": 0.947286436,
+      "verify_run_seconds": 0.811933912,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5469,7 +5469,7 @@
           "item_name": "Heretic Shoulderpads",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 53.44890452517998,
+          "score": 53.448904525179984,
           "verified": true,
           "alternatives": [
             {
@@ -5477,7 +5477,7 @@
               "item_name": "Field Marshal's Dreadweave Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.506394091108385
+              "dps_delta": -2.506394091108386
             },
             {
               "item_id": 227808,
@@ -5658,7 +5658,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.2491927079997014
+              "dps_delta": -3.2491927079997005
             }
           ]
         },
@@ -5932,8 +5932,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.05861827,
-      "verify_run_seconds": 0.877008022,
+      "weights_run_seconds": 0.930506301,
+      "verify_run_seconds": 0.796275449,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6339,7 +6339,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.2491927079997014
+              "dps_delta": -3.2491927079997005
             }
           ]
         },
@@ -6612,8 +6612,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.05861827,
-      "verify_run_seconds": 0.894561609,
+      "weights_run_seconds": 0.930506301,
+      "verify_run_seconds": 0.782064308,
       "coverage": {
         "back": {
           "eligible": 450,

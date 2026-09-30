@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:23:29Z",
+  "generated_at": "2026-09-30T16:39:57Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -527,8 +527,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.233879369,
-      "verify_run_seconds": 0.658620564,
+      "weights_run_seconds": 1.222670896,
+      "verify_run_seconds": 0.714032872,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1134,8 +1134,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.233879369,
-      "verify_run_seconds": 0.686731914,
+      "weights_run_seconds": 1.222670896,
+      "verify_run_seconds": 0.657015597,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1771,8 +1771,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.349972858,
-      "verify_run_seconds": 0.743583278,
+      "weights_run_seconds": 1.25541163,
+      "verify_run_seconds": 0.748677715,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2409,8 +2409,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.349972858,
-      "verify_run_seconds": 0.824747031,
+      "weights_run_seconds": 1.25541163,
+      "verify_run_seconds": 0.7687437,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3039,8 +3039,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.439057832,
-      "verify_run_seconds": 0.939301512,
+      "weights_run_seconds": 1.371908347,
+      "verify_run_seconds": 0.754833853,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3670,8 +3670,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.439057832,
-      "verify_run_seconds": 0.884839494,
+      "weights_run_seconds": 1.371908347,
+      "verify_run_seconds": 0.799887155,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4314,8 +4314,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.475763728,
-      "verify_run_seconds": 0.955381362,
+      "weights_run_seconds": 1.360818483,
+      "verify_run_seconds": 0.813974203,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4721,7 +4721,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5253183341642544
+              "dps_delta": -0.525318334164254
             }
           ]
         },
@@ -4971,8 +4971,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.475763728,
-      "verify_run_seconds": 0.9874768,
+      "weights_run_seconds": 1.360818483,
+      "verify_run_seconds": 0.874742999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5221,7 +5221,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.59909100620111,
+          "score": 30.599091006201114,
           "verified": true,
           "alternatives": [
             {
@@ -5237,14 +5237,14 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381236
+              "dps_delta": -0.6702785051381239
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.082861677359641
+              "dps_delta": -1.0828616773596413
             }
           ]
         },
@@ -5295,14 +5295,14 @@
               "item_name": "Waywatcher Wristguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.2126430709675655
+              "dps_delta": -2.2126430709675664
             },
             {
               "item_id": 19595,
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -2.785797000767819
+              "dps_delta": -2.78579700076782
             },
             {
               "item_id": 23093,
@@ -5419,7 +5419,7 @@
           "item_name": "Waywatcher Sandals",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 58.02793587068517,
+          "score": 58.02793587068516,
           "verified": true,
           "alternatives": [
             {
@@ -5435,14 +5435,14 @@
               "item_name": "Feralheart Galoshes",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.9770054161204047
+              "dps_delta": -1.977005416120404
             },
             {
               "item_id": 231698,
               "item_name": "Marshal's Dragonhide Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.338358937812372
+              "dps_delta": -2.3383589378123713
             }
           ]
         },
@@ -5745,8 +5745,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.522935,
-      "verify_run_seconds": 0.923272032,
+      "weights_run_seconds": 1.377534831,
+      "verify_run_seconds": 0.840980126,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6514,8 +6514,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.522935,
-      "verify_run_seconds": 0.982501779,
+      "weights_run_seconds": 1.377534831,
+      "verify_run_seconds": 0.883548058,
       "coverage": {
         "back": {
           "eligible": 451,

@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:26:18Z",
+  "generated_at": "2026-09-30T16:42:37Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -531,8 +531,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.545354111,
-      "verify_run_seconds": 0.508059506,
+      "weights_run_seconds": 0.606235018,
+      "verify_run_seconds": 0.529103206,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1141,8 +1141,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.545354111,
-      "verify_run_seconds": 0.553132142,
+      "weights_run_seconds": 0.606235018,
+      "verify_run_seconds": 0.584738258,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1822,8 +1822,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.570447661,
-      "verify_run_seconds": 0.544639266,
+      "weights_run_seconds": 0.580432667,
+      "verify_run_seconds": 0.565796494,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2508,8 +2508,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.570447661,
-      "verify_run_seconds": 0.555822742,
+      "weights_run_seconds": 0.580432667,
+      "verify_run_seconds": 0.584939389,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3158,8 +3158,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.599334324,
-      "verify_run_seconds": 0.490204261,
+      "weights_run_seconds": 0.623401179,
+      "verify_run_seconds": 0.532632554,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3803,8 +3803,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.599334324,
-      "verify_run_seconds": 0.525876809,
+      "weights_run_seconds": 0.623401179,
+      "verify_run_seconds": 0.539019278,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4466,8 +4466,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.582498895,
-      "verify_run_seconds": 0.548708834,
+      "weights_run_seconds": 0.564969663,
+      "verify_run_seconds": 0.579120543,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5146,8 +5146,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.582498895,
-      "verify_run_seconds": 0.637861323,
+      "weights_run_seconds": 0.564969663,
+      "verify_run_seconds": 0.654746876,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5448,7 +5448,7 @@
           "item_name": "Fireleaf Bindings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 59.66068033315894,
+          "score": 59.66068033315895,
           "verified": true,
           "alternatives": [
             {
@@ -5464,7 +5464,7 @@
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -3.6195747880366493
+              "dps_delta": -3.6195747880366502
             }
           ]
         },
@@ -5569,16 +5569,16 @@
         },
         {
           "slot": "feet",
-          "item_id": 240058,
-          "item_name": "Fireleaf Sandals",
+          "item_id": 240050,
+          "item_name": "Fireleaf Boots",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
           "score": 65.6230048650397,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240050,
-              "item_name": "Fireleaf Boots",
+              "item_id": 240058,
+              "item_name": "Fireleaf Sandals",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": 0,
@@ -5828,7 +5828,7 @@
         "hands: Fireleaf Gloves",
         "waist: Fireleaf Belt",
         "legs: Fireleaf Leggings",
-        "feet: Fireleaf Sandals",
+        "feet: Fireleaf Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
@@ -5836,8 +5836,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.594888905,
-      "verify_run_seconds": 0.599664667,
+      "weights_run_seconds": 0.593958149,
+      "verify_run_seconds": 0.581339261,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6105,7 +6105,7 @@
           "item_name": "Fireleaf Robe",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 99.0764701235428,
+          "score": 99.07647012354279,
           "verified": true,
           "alternatives": [
             {
@@ -6121,14 +6121,14 @@
               "item_name": "Robe of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -4.721167883008793
+              "dps_delta": -4.721167883008791
             },
             {
               "item_id": 16535,
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -4.954927004484754
+              "dps_delta": -4.954927004484753
             }
           ]
         },
@@ -6138,7 +6138,7 @@
           "item_name": "Fireleaf Bindings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 59.66068033315894,
+          "score": 59.66068033315895,
           "verified": true,
           "alternatives": [
             {
@@ -6154,7 +6154,7 @@
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -3.6195747880366493
+              "dps_delta": -3.6195747880366502
             }
           ]
         },
@@ -6444,7 +6444,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.23300726040463265
+              "dps_delta": -0.2330072604046318
             },
             {
               "item_id": 1728,
@@ -6532,8 +6532,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.594888905,
-      "verify_run_seconds": 0.619260648,
+      "weights_run_seconds": 0.593958149,
+      "verify_run_seconds": 0.582594179,
       "coverage": {
         "back": {
           "eligible": 450,

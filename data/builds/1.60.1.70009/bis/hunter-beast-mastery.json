@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:24:29Z",
+  "generated_at": "2026-09-30T16:40:52Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -528,8 +528,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.133417942,
-      "verify_run_seconds": 1.240060569,
+      "weights_run_seconds": 1.0897485630000001,
+      "verify_run_seconds": 1.133058089,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1146,8 +1146,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.133417942,
-      "verify_run_seconds": 1.198166357,
+      "weights_run_seconds": 1.0897485630000001,
+      "verify_run_seconds": 1.133690871,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1866,8 +1866,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.220010134,
-      "verify_run_seconds": 1.381837473,
+      "weights_run_seconds": 1.095349326,
+      "verify_run_seconds": 1.308617215,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2572,8 +2572,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.220010134,
-      "verify_run_seconds": 1.380957582,
+      "weights_run_seconds": 1.095349326,
+      "verify_run_seconds": 1.211859814,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3238,8 +3238,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.365131228,
-      "verify_run_seconds": 1.535748603,
+      "weights_run_seconds": 1.218833945,
+      "verify_run_seconds": 1.373257763,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3905,8 +3905,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.365131228,
-      "verify_run_seconds": 1.486880736,
+      "weights_run_seconds": 1.218833945,
+      "verify_run_seconds": 1.438969211,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4567,8 +4567,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.3455227060000001,
-      "verify_run_seconds": 1.570897024,
+      "weights_run_seconds": 1.210139022,
+      "verify_run_seconds": 1.448387893,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5242,8 +5242,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.3455227060000001,
-      "verify_run_seconds": 1.588249771,
+      "weights_run_seconds": 1.210139022,
+      "verify_run_seconds": 1.417810169,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5538,14 +5538,14 @@
               "item_name": "Dawnstalker Wristguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.6305154957901453
+              "dps_delta": -0.6305154957901461
             },
             {
               "item_id": 18375,
               "item_name": "Bracers of the Eclipse",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -2.434306210945536
+              "dps_delta": -2.4343062109455365
             },
             {
               "item_id": 23093,
@@ -5924,8 +5924,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.34657656,
-      "verify_run_seconds": 1.601711479,
+      "weights_run_seconds": 1.213789219,
+      "verify_run_seconds": 1.531843957,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6227,14 +6227,14 @@
               "item_name": "Dawnstalker Wristguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.6305154957901453
+              "dps_delta": -0.6305154957901461
             },
             {
               "item_id": 18375,
               "item_name": "Bracers of the Eclipse",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -2.434306210945536
+              "dps_delta": -2.4343062109455365
             },
             {
               "item_id": 23093,
@@ -6620,8 +6620,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.34657656,
-      "verify_run_seconds": 1.5612166589999998,
+      "weights_run_seconds": 1.213789219,
+      "verify_run_seconds": 1.445320153,
       "coverage": {
         "back": {
           "eligible": 450,

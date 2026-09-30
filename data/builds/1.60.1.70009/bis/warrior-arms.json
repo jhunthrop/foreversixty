@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:30:48Z",
+  "generated_at": "2026-09-30T16:46:45Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -509,7 +509,7 @@
         }
       ],
       "set_dps": 30.444100321273822,
-      "no_source_count": 302,
+      "no_source_count": 293,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2273 Guerrilla Armor",
@@ -542,19 +542,19 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.1613620789999999,
-      "verify_run_seconds": 0.936972487,
+      "weights_run_seconds": 1.081954863,
+      "verify_run_seconds": 0.858889559,
       "coverage": {
         "back": {
           "eligible": 98,
           "sourced": 80
         },
         "chest": {
-          "eligible": 185,
+          "eligible": 184,
           "sourced": 161
         },
         "feet": {
-          "eligible": 138,
+          "eligible": 137,
           "sourced": 119
         },
         "finger1": {
@@ -566,15 +566,15 @@
           "sourced": 19
         },
         "hands": {
-          "eligible": 139,
+          "eligible": 138,
           "sourced": 120
         },
         "head": {
-          "eligible": 32,
+          "eligible": 31,
           "sourced": 25
         },
         "legs": {
-          "eligible": 156,
+          "eligible": 155,
           "sourced": 138
         },
         "main_hand": {
@@ -594,7 +594,7 @@
           "sourced": 26
         },
         "shoulder": {
-          "eligible": 22,
+          "eligible": 21,
           "sourced": 12
         },
         "trinket1": {
@@ -606,11 +606,11 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 121,
+          "eligible": 119,
           "sourced": 108
         },
         "wrist": {
-          "eligible": 91,
+          "eligible": 90,
           "sourced": 68
         }
       },
@@ -1141,7 +1141,7 @@
         }
       ],
       "set_dps": 33.51925793836903,
-      "no_source_count": 285,
+      "no_source_count": 276,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1174,19 +1174,19 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.1613620789999999,
-      "verify_run_seconds": 0.917841218,
+      "weights_run_seconds": 1.081954863,
+      "verify_run_seconds": 0.848102699,
       "coverage": {
         "back": {
           "eligible": 99,
           "sourced": 85
         },
         "chest": {
-          "eligible": 183,
+          "eligible": 182,
           "sourced": 158
         },
         "feet": {
-          "eligible": 134,
+          "eligible": 133,
           "sourced": 114
         },
         "finger1": {
@@ -1198,15 +1198,15 @@
           "sourced": 21
         },
         "hands": {
-          "eligible": 132,
+          "eligible": 131,
           "sourced": 112
         },
         "head": {
-          "eligible": 32,
+          "eligible": 31,
           "sourced": 25
         },
         "legs": {
-          "eligible": 152,
+          "eligible": 151,
           "sourced": 135
         },
         "main_hand": {
@@ -1226,7 +1226,7 @@
           "sourced": 23
         },
         "shoulder": {
-          "eligible": 22,
+          "eligible": 21,
           "sourced": 12
         },
         "trinket1": {
@@ -1238,11 +1238,11 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 120,
+          "eligible": 118,
           "sourced": 104
         },
         "wrist": {
-          "eligible": 93,
+          "eligible": 92,
           "sourced": 78
         }
       },
@@ -1800,7 +1800,7 @@
         }
       ],
       "set_dps": 70.72775638461681,
-      "no_source_count": 488,
+      "no_source_count": 479,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -1834,19 +1834,19 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.262293289,
-      "verify_run_seconds": 1.124575753,
+      "weights_run_seconds": 1.138020188,
+      "verify_run_seconds": 1.052037656,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 142
         },
         "chest": {
-          "eligible": 311,
+          "eligible": 310,
           "sourced": 281
         },
         "feet": {
-          "eligible": 223,
+          "eligible": 222,
           "sourced": 190
         },
         "finger1": {
@@ -1858,15 +1858,15 @@
           "sourced": 48
         },
         "hands": {
-          "eligible": 223,
+          "eligible": 222,
           "sourced": 197
         },
         "head": {
-          "eligible": 108,
+          "eligible": 107,
           "sourced": 94
         },
         "legs": {
-          "eligible": 251,
+          "eligible": 250,
           "sourced": 222
         },
         "main_hand": {
@@ -1886,7 +1886,7 @@
           "sourced": 55
         },
         "shoulder": {
-          "eligible": 111,
+          "eligible": 110,
           "sourced": 90
         },
         "trinket1": {
@@ -1898,11 +1898,11 @@
           "sourced": 9
         },
         "waist": {
-          "eligible": 220,
+          "eligible": 218,
           "sourced": 194
         },
         "wrist": {
-          "eligible": 165,
+          "eligible": 164,
           "sourced": 134
         }
       },
@@ -2467,7 +2467,7 @@
         }
       ],
       "set_dps": 72.06596955444928,
-      "no_source_count": 471,
+      "no_source_count": 462,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -2501,19 +2501,19 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.262293289,
-      "verify_run_seconds": 1.126863635,
+      "weights_run_seconds": 1.138020188,
+      "verify_run_seconds": 1.002186519,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 145
         },
         "chest": {
-          "eligible": 304,
+          "eligible": 303,
           "sourced": 271
         },
         "feet": {
-          "eligible": 222,
+          "eligible": 221,
           "sourced": 185
         },
         "finger1": {
@@ -2525,15 +2525,15 @@
           "sourced": 51
         },
         "hands": {
-          "eligible": 221,
+          "eligible": 220,
           "sourced": 192
         },
         "head": {
-          "eligible": 107,
+          "eligible": 106,
           "sourced": 93
         },
         "legs": {
-          "eligible": 247,
+          "eligible": 246,
           "sourced": 220
         },
         "main_hand": {
@@ -2553,7 +2553,7 @@
           "sourced": 53
         },
         "shoulder": {
-          "eligible": 110,
+          "eligible": 109,
           "sourced": 90
         },
         "trinket1": {
@@ -2565,11 +2565,11 @@
           "sourced": 9
         },
         "waist": {
-          "eligible": 220,
+          "eligible": 218,
           "sourced": 192
         },
         "wrist": {
-          "eligible": 168,
+          "eligible": 167,
           "sourced": 144
         }
       },
@@ -3173,8 +3173,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.593941623,
-      "verify_run_seconds": 1.183912445,
+      "weights_run_seconds": 1.394487951,
+      "verify_run_seconds": 1.0764707040000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3851,8 +3851,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.593941623,
-      "verify_run_seconds": 1.204525065,
+      "weights_run_seconds": 1.394487951,
+      "verify_run_seconds": 1.137348949,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3996,7 +3996,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -1.2187532363582554
+              "dps_delta": -1.218753236358255
             },
             {
               "item_id": 220804,
@@ -4520,8 +4520,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.623439126,
-      "verify_run_seconds": 1.3152120219999999,
+      "weights_run_seconds": 1.469899125,
+      "verify_run_seconds": 1.25061412,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4673,7 +4673,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -1.2187532363582554
+              "dps_delta": -1.218753236358255
             },
             {
               "item_id": 220803,
@@ -5202,8 +5202,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.623439126,
-      "verify_run_seconds": 1.4114062330000001,
+      "weights_run_seconds": 1.469899125,
+      "verify_run_seconds": 1.257774574,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5597,7 +5597,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.071645739611836
+              "dps_delta": -3.071645739611837
             },
             {
               "item_id": 22385,
@@ -5885,8 +5885,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.690859339,
-      "verify_run_seconds": 1.38654098,
+      "weights_run_seconds": 1.517201461,
+      "verify_run_seconds": 1.255314547,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6239,7 +6239,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 169.77262092861727,
+          "score": 169.77262092861724,
           "verified": true,
           "alternatives": [
             {
@@ -6247,14 +6247,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.678352469737099
+              "dps_delta": -1.6783524697370982
             },
             {
               "item_id": 16547,
               "item_name": "General's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.9563626954386188
+              "dps_delta": -1.9563626954386177
             },
             {
               "item_id": 227814,
@@ -6280,7 +6280,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.071645739611837
+              "dps_delta": -3.071645739611836
             },
             {
               "item_id": 22385,
@@ -6569,8 +6569,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.690859339,
-      "verify_run_seconds": 1.336081457,
+      "weights_run_seconds": 1.517201461,
+      "verify_run_seconds": 1.270361795,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:31:19Z",
+  "generated_at": "2026-09-30T16:47:13Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -564,7 +564,7 @@
         }
       ],
       "set_dps": 32.828459014917755,
-      "no_source_count": 302,
+      "no_source_count": 293,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2273 Guerrilla Armor",
@@ -599,19 +599,19 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.164066259,
-      "verify_run_seconds": 1.112748689,
+      "weights_run_seconds": 1.07327318,
+      "verify_run_seconds": 1.0780315599999999,
       "coverage": {
         "back": {
           "eligible": 98,
           "sourced": 80
         },
         "chest": {
-          "eligible": 185,
+          "eligible": 184,
           "sourced": 161
         },
         "feet": {
-          "eligible": 138,
+          "eligible": 137,
           "sourced": 119
         },
         "finger1": {
@@ -623,15 +623,15 @@
           "sourced": 19
         },
         "hands": {
-          "eligible": 139,
+          "eligible": 138,
           "sourced": 120
         },
         "head": {
-          "eligible": 32,
+          "eligible": 31,
           "sourced": 25
         },
         "legs": {
-          "eligible": 156,
+          "eligible": 155,
           "sourced": 138
         },
         "main_hand": {
@@ -651,7 +651,7 @@
           "sourced": 26
         },
         "shoulder": {
-          "eligible": 22,
+          "eligible": 21,
           "sourced": 12
         },
         "trinket1": {
@@ -663,11 +663,11 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 121,
+          "eligible": 119,
           "sourced": 108
         },
         "wrist": {
-          "eligible": 91,
+          "eligible": 90,
           "sourced": 68
         }
       },
@@ -1227,7 +1227,7 @@
         }
       ],
       "set_dps": 29.690425967442312,
-      "no_source_count": 285,
+      "no_source_count": 276,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1262,19 +1262,19 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.164066259,
-      "verify_run_seconds": 1.106155784,
+      "weights_run_seconds": 1.07327318,
+      "verify_run_seconds": 1.058922677,
       "coverage": {
         "back": {
           "eligible": 99,
           "sourced": 85
         },
         "chest": {
-          "eligible": 183,
+          "eligible": 182,
           "sourced": 158
         },
         "feet": {
-          "eligible": 134,
+          "eligible": 133,
           "sourced": 114
         },
         "finger1": {
@@ -1286,15 +1286,15 @@
           "sourced": 21
         },
         "hands": {
-          "eligible": 132,
+          "eligible": 131,
           "sourced": 112
         },
         "head": {
-          "eligible": 32,
+          "eligible": 31,
           "sourced": 25
         },
         "legs": {
-          "eligible": 152,
+          "eligible": 151,
           "sourced": 135
         },
         "main_hand": {
@@ -1314,7 +1314,7 @@
           "sourced": 23
         },
         "shoulder": {
-          "eligible": 22,
+          "eligible": 21,
           "sourced": 12
         },
         "trinket1": {
@@ -1326,11 +1326,11 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 120,
+          "eligible": 118,
           "sourced": 104
         },
         "wrist": {
-          "eligible": 93,
+          "eligible": 92,
           "sourced": 78
         }
       },
@@ -1917,7 +1917,7 @@
         }
       ],
       "set_dps": 53.70303902407057,
-      "no_source_count": 488,
+      "no_source_count": 479,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -1952,19 +1952,19 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.259432885,
-      "verify_run_seconds": 1.128410911,
+      "weights_run_seconds": 1.151520761,
+      "verify_run_seconds": 1.121938911,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 142
         },
         "chest": {
-          "eligible": 311,
+          "eligible": 310,
           "sourced": 281
         },
         "feet": {
-          "eligible": 223,
+          "eligible": 222,
           "sourced": 190
         },
         "finger1": {
@@ -1976,15 +1976,15 @@
           "sourced": 48
         },
         "hands": {
-          "eligible": 223,
+          "eligible": 222,
           "sourced": 197
         },
         "head": {
-          "eligible": 108,
+          "eligible": 107,
           "sourced": 94
         },
         "legs": {
-          "eligible": 251,
+          "eligible": 250,
           "sourced": 222
         },
         "main_hand": {
@@ -2004,7 +2004,7 @@
           "sourced": 55
         },
         "shoulder": {
-          "eligible": 111,
+          "eligible": 110,
           "sourced": 90
         },
         "trinket1": {
@@ -2016,11 +2016,11 @@
           "sourced": 9
         },
         "waist": {
-          "eligible": 220,
+          "eligible": 218,
           "sourced": 194
         },
         "wrist": {
-          "eligible": 165,
+          "eligible": 164,
           "sourced": 134
         }
       },
@@ -2614,7 +2614,7 @@
         }
       ],
       "set_dps": 53.7786053355514,
-      "no_source_count": 471,
+      "no_source_count": 462,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -2649,19 +2649,19 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.259432885,
-      "verify_run_seconds": 1.162931652,
+      "weights_run_seconds": 1.151520761,
+      "verify_run_seconds": 1.124953224,
       "coverage": {
         "back": {
           "eligible": 175,
           "sourced": 145
         },
         "chest": {
-          "eligible": 304,
+          "eligible": 303,
           "sourced": 271
         },
         "feet": {
-          "eligible": 222,
+          "eligible": 221,
           "sourced": 185
         },
         "finger1": {
@@ -2673,15 +2673,15 @@
           "sourced": 51
         },
         "hands": {
-          "eligible": 221,
+          "eligible": 220,
           "sourced": 192
         },
         "head": {
-          "eligible": 107,
+          "eligible": 106,
           "sourced": 93
         },
         "legs": {
-          "eligible": 247,
+          "eligible": 246,
           "sourced": 220
         },
         "main_hand": {
@@ -2701,7 +2701,7 @@
           "sourced": 53
         },
         "shoulder": {
-          "eligible": 110,
+          "eligible": 109,
           "sourced": 90
         },
         "trinket1": {
@@ -2713,11 +2713,11 @@
           "sourced": 9
         },
         "waist": {
-          "eligible": 220,
+          "eligible": 218,
           "sourced": 192
         },
         "wrist": {
-          "eligible": 168,
+          "eligible": 167,
           "sourced": 144
         }
       },
@@ -3330,8 +3330,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.436254927,
-      "verify_run_seconds": 1.329839802,
+      "weights_run_seconds": 1.2806283299999999,
+      "verify_run_seconds": 1.193275838,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4011,8 +4011,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.436254927,
-      "verify_run_seconds": 1.347308443,
+      "weights_run_seconds": 1.2806283299999999,
+      "verify_run_seconds": 1.194176145,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4692,8 +4692,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.566913981,
-      "verify_run_seconds": 1.62209002,
+      "weights_run_seconds": 1.43048979,
+      "verify_run_seconds": 1.429816421,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5400,8 +5400,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.566913981,
-      "verify_run_seconds": 1.817017554,
+      "weights_run_seconds": 1.43048979,
+      "verify_run_seconds": 1.6001855809999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5537,7 +5537,7 @@
           "item_name": "Lightbreaker Greathelm",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 141.6266999106463,
+          "score": 141.62669991064627,
           "verified": true,
           "alternatives": [
             {
@@ -5545,7 +5545,7 @@
               "item_name": "Field Marshal's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.6335902795545487
+              "dps_delta": -3.633590279554547
             },
             {
               "item_id": 239525,
@@ -5696,14 +5696,14 @@
               "item_name": "Berserker Bracers",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.5364675481146637
+              "dps_delta": -1.5364675481146628
             },
             {
               "item_id": 16481,
               "item_name": "Marshal's Plate Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.8331130423840025
+              "dps_delta": -1.8331130423840016
             },
             {
               "item_id": 23090,
@@ -6106,8 +6106,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.601082968,
-      "verify_run_seconds": 1.702172966,
+      "weights_run_seconds": 1.475478205,
+      "verify_run_seconds": 1.480161531,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6243,7 +6243,7 @@
           "item_name": "Lightbreaker Greathelm",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 141.6266999106463,
+          "score": 141.62669991064627,
           "verified": true,
           "alternatives": [
             {
@@ -6251,7 +6251,7 @@
               "item_name": "Warlord's Plate Headpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.6335902795545487
+              "dps_delta": -3.633590279554547
             },
             {
               "item_id": 239525,
@@ -6302,7 +6302,7 @@
           "item_name": "Lightbreaker Shoulders",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.77938074444339,
+          "score": 101.77938074444337,
           "verified": true,
           "alternatives": [
             {
@@ -6310,7 +6310,7 @@
               "item_name": "Champion's Plate Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -2.8216201130646126
+              "dps_delta": -2.8216201130646117
             },
             {
               "item_id": 239524,
@@ -6402,14 +6402,14 @@
               "item_name": "Berserker Bracers",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.5364675481146628
+              "dps_delta": -1.5364675481146637
             },
             {
               "item_id": 16546,
               "item_name": "General's Plate Armguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.8331130423840016
+              "dps_delta": -1.8331130423840025
             },
             {
               "item_id": 23090,
@@ -6812,8 +6812,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.601082968,
-      "verify_run_seconds": 1.7154551009999999,
+      "weights_run_seconds": 1.475478205,
+      "verify_run_seconds": 1.586866926,
       "coverage": {
         "back": {
           "eligible": 450,

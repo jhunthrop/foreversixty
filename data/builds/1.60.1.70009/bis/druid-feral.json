@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:24:00Z",
+  "generated_at": "2026-09-30T16:40:25Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -519,8 +519,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.391941921,
-      "verify_run_seconds": 1.1481712370000001,
+      "weights_run_seconds": 1.296851735,
+      "verify_run_seconds": 1.071167155,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1109,8 +1109,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.391941921,
-      "verify_run_seconds": 1.153277276,
+      "weights_run_seconds": 1.296851735,
+      "verify_run_seconds": 1.065234072,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1732,8 +1732,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.633160247,
-      "verify_run_seconds": 1.4357873589999999,
+      "weights_run_seconds": 1.425243512,
+      "verify_run_seconds": 1.296994416,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2355,8 +2355,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.633160247,
-      "verify_run_seconds": 1.42867676,
+      "weights_run_seconds": 1.425243512,
+      "verify_run_seconds": 1.289099546,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2978,8 +2978,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.721237142,
-      "verify_run_seconds": 1.513399996,
+      "weights_run_seconds": 1.503237356,
+      "verify_run_seconds": 1.371606713,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3602,8 +3602,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.721237142,
-      "verify_run_seconds": 1.5091400579999998,
+      "weights_run_seconds": 1.503237356,
+      "verify_run_seconds": 1.333333245,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4219,8 +4219,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.737298209,
-      "verify_run_seconds": 1.393461963,
+      "weights_run_seconds": 1.526947523,
+      "verify_run_seconds": 1.254229512,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4855,8 +4855,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.737298209,
-      "verify_run_seconds": 1.492963519,
+      "weights_run_seconds": 1.526947523,
+      "verify_run_seconds": 1.3322531450000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5618,8 +5618,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.70703081,
-      "verify_run_seconds": 1.584870032,
+      "weights_run_seconds": 1.488298627,
+      "verify_run_seconds": 1.43981487,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5770,7 +5770,7 @@
               "item_name": "Warlord's Dragonhide Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.9861693925497215
+              "dps_delta": -3.9861693925497224
             },
             {
               "item_id": 226792,
@@ -6374,8 +6374,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.70703081,
-      "verify_run_seconds": 1.568304603,
+      "weights_run_seconds": 1.488298627,
+      "verify_run_seconds": 1.465912093,
       "coverage": {
         "back": {
           "eligible": 451,
