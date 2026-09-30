@@ -279,7 +279,7 @@ describe('bandInfosFor: weight rail', () => {
     // The rail's first line (referenceSentenceLine) already states "1 Ranged attack power =
     // 2.50 DPS" -- the reference row itself must never restate that as "= 1" or "1.00"
     // (bis-web-polish, 2026-09-30): its own value column reads the plain word instead.
-    expect(reference?.valueText).toBe('reference');
+    expect(reference?.valueText).toBe('Reference');
   });
 
   it('gives every significant, non-reference row its weight to two decimals as valueText, and an insignificant row "No effect"', () => {

@@ -153,7 +153,7 @@ export const bisCopy = {
    *  first line, `weightsReferenceDpsLine`, already states the real "1 <reference> = <n>
    *  DPS" conversion; this row exists only to anchor the bar chart, and reads as what it
    *  is). */
-  weightsReferenceRowValue: 'reference',
+  weightsReferenceRowValue: 'Reference',
   /** The empty off-hand row when the main hand is a two-hander -- never
    *  `noKnownSourceForSlot`, which would read as a data gap rather than the game rule it
    *  actually is (wow-player fix 4). */
