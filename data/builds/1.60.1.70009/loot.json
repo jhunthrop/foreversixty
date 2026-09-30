@@ -4806,7 +4806,8 @@
             "15410": "wowhead"
           }
         }
-      ]
+      ],
+      "source_origin": "classic-db"
     },
     {
       "id": "raid:ruins-of-ahnqiraj",
@@ -24705,7 +24706,8 @@
             "16884": "wowhead"
           }
         }
-      ]
+      ],
+      "source_origin": "classic-db"
     },
     {
       "id": "dungeon:ragefire-chasm",
@@ -25005,7 +25007,8 @@
             "5370": "wowhead"
           }
         }
-      ]
+      ],
+      "source_origin": "classic-db"
     },
     {
       "id": "dungeon:razorfen-downs",

@@ -38704,31 +38704,6 @@
       "client_unconfirmed": true
     },
     {
-      "id": 5608,
-      "name": "Living Cowl",
-      "icon": "inv_misc_questionmark",
-      "slot": "head",
-      "quality": 2,
-      "required_level": 35,
-      "required_level_source": "classic-db",
-      "item_level": 40,
-      "armor": 43,
-      "stats": {
-        "stamina": 11,
-        "spirit": 10
-      },
-      "damage_min": 0,
-      "damage_max": 0,
-      "speed": 0.0,
-      "dps": 0.0,
-      "two_hand": false,
-      "effect_text": "",
-      "stats_source": "classic-db",
-      "set_id": null,
-      "unique": false,
-      "client_unconfirmed": true
-    },
-    {
       "id": 14251,
       "name": "Lunar Cloak",
       "icon": "inv_misc_cape_02",
@@ -43947,6 +43922,31 @@
       "two_hand": false,
       "effect_text": "",
       "stats_source": null,
+      "set_id": null,
+      "unique": false,
+      "client_unconfirmed": false
+    },
+    {
+      "id": 5608,
+      "name": "Living Cowl",
+      "icon": "inv_helmet_04",
+      "slot": "head",
+      "quality": 2,
+      "required_level": 39,
+      "required_level_source": "wowhead",
+      "item_level": 44,
+      "armor": 47,
+      "stats": {
+        "spell_power": 13,
+        "stamina": 12
+      },
+      "damage_min": 0,
+      "damage_max": 0,
+      "speed": 0.0,
+      "dps": 0.0,
+      "two_hand": false,
+      "effect_text": "",
+      "stats_source": "wowhead",
       "set_id": null,
       "unique": false,
       "client_unconfirmed": false
@@ -56051,6 +56051,31 @@
       "two_hand": false,
       "effect_text": "",
       "stats_source": null,
+      "set_id": null,
+      "unique": false,
+      "client_unconfirmed": false
+    },
+    {
+      "id": 284041,
+      "name": "Ironback Signet",
+      "icon": "inv_jewelry_ring_17",
+      "slot": "finger",
+      "quality": 2,
+      "required_level": 48,
+      "required_level_source": "wowhead",
+      "item_level": 53,
+      "armor": 0,
+      "stats": {
+        "defense": 4,
+        "stamina": 10
+      },
+      "damage_min": 0,
+      "damage_max": 0,
+      "speed": 0.0,
+      "dps": 0.0,
+      "two_hand": false,
+      "effect_text": "",
+      "stats_source": "wowhead",
       "set_id": null,
       "unique": false,
       "client_unconfirmed": false
