@@ -83,20 +83,56 @@ def is_world_drop_pattern(
     )
 
 
-def is_confirmed_boss_drop(is_instance_zone: bool) -> bool:
-    """Whether one row inside an item already classified a world-drop
-    pattern (`is_world_drop_pattern`) still keeps its own boss/trash
-    attribution rather than folding into the item's synthetic
-    `world_drop` pool.
+def is_confirmed_boss_drop(
+    is_instance_zone: bool, has_world_drop_record: bool, chance: float | None
+) -> bool:
+    """Whether one dungeon/raid creature row keeps its own boss/trash
+    attribution rather than folding into the item's `world_drop` pool.
 
     raid-loot-regression lane, 2026-09-29: a creature that spawns in a
-    dungeon or raid instance is NEVER a world-pool member, whatever
-    chance its row states -- `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`'s own
-    retirement doc, above, has the measured regression this closes. The
-    world-pool rule (`is_world_drop_pattern`) applies to OPEN-WORLD
-    creatures only: this predicate is now exactly "does this row resolve
-    to a dungeon/raid zone", no chance involved."""
-    return is_instance_zone
+    dungeon or raid instance is NEVER a world-pool member on the strength
+    of its OWN chance alone -- `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`'s own
+    retirement doc, above, has the measured regression a chance floor by
+    itself caused (a tier-armour row folding into the pool because its
+    dump-stated chance was low or unknown). An open-world row
+    (`is_instance_zone` false) is never confirmed here -- the world-pool
+    rule (`is_world_drop_pattern`) owns those.
+
+    pooled-boss-greens lane, 2026-09-29's own addendum: that "whatever
+    its chance" reach is too wide for a dungeon/raid row whose item is
+    ALSO a known world-drop pool member by another route
+    (`has_world_drop_record` -- the item carries its own separate
+    `world_drop` `ClassicDbSourceRecord`/wowhead pool, from a signal this
+    one row's own creature never triggered on its own). cmangos gives
+    many dungeon bosses a "(Boss Loot)" `reference_loot_template` used by
+    that ONE boss alone -- e.g. id 35009, Maraudon's Princess Theradras,
+    265 rows, one referencing creature -- holding the boss's real drops
+    AND ~260 equal-weight random BoE greens at `ChanceOrQuestChance` 0
+    (an equal-share group). `_world_drop_pools`' own three signals
+    (marked comment, >= `_SHARED_REFERENCE_MAX_USERS` users, multi-map)
+    all key off the REFERENCING creature count, so a one-user reference
+    like this one is invisible to them even though every item inside is,
+    separately, a well-known world drop with its OWN `world_drop` record
+    from a differently-shaped (marked/multi-map/fan-out) pool elsewhere
+    in the dump -- measured on build 1.60.1.70009: Princess Theradras 273
+    items, Spawn of Hakkar 277, Darkmaster Gandling 164, Anvilrage
+    Overseer/Warden/Guardsman 107 each, Mangled Cadaver 101, audit
+    category C minors 1,817 -> 27,927.
+    `WORLD_DROP_MAX_CHANCE_PERCENT` is the same "this could plausibly be
+    a normal kill" floor `is_world_drop_pattern` already uses -- a row
+    whose OWN stated chance clears it is a real, specific boss kill
+    regardless of what else the item is also known for, so it still
+    keeps its attribution; only an unknown (`None`, or cmangos' own `0`
+    sentinel) or sub-floor chance folds. A folded row needs no new pool:
+    the item's own existing `world_drop` source already lists it
+    (`classicdb_additions`'s own doc). An item with NO `world_drop`
+    record keeps every instance attribution whatever its chance -- the
+    raid-tier invariant raid-loot-regression established, unchanged."""
+    if not is_instance_zone:
+        return False
+    if not has_world_drop_record:
+        return True
+    return chance is not None and chance >= WORLD_DROP_MAX_CHANCE_PERCENT
 
 
 def world_drop_id(level_min: int | None, level_max: int | None) -> str:

@@ -126,17 +126,39 @@ RAID_SOURCE_IDS = [
 #: bosses (Nefarian 356 rows -> 25 real drops); the raid tier Forever re-itemised away
 #: (Perdition's Blade, Band of Accuria, Ashkandi) is absent from the client catalogue and
 #: cannot be sourced at all, which is why these honest counts are lower.
+#:
+#: pooled-boss-greens lane, 2026-09-29: re-based again, lower, after
+#: `pipeline.loot.constants.is_confirmed_boss_drop` stopped keeping a
+#: dungeon/raid row's attribution unconditionally when the item is ALSO
+#: a known `world_drop` pool member and this row's own chance is unknown
+#: or below `WORLD_DROP_MAX_CHANCE_PERCENT` -- cmangos gives many raid
+#: bosses a one-user "(Boss Loot)" reference group mixing the boss's real
+#: drops with ~200+ equal-share random BoE greens at `ChanceOrQuestChance`
+#: 0, invisible to `_world_drop_pools`' fan-out/multi-map signals since
+#: exactly one creature (the boss) references it. Every one of these
+#: items keeps its OWN `world_drop` source (see `SOURCES_PER_KIND`);
+#: `AhnQiraj 178 -> 122, BlackwingLair 142 -> 60, MoltenCore 109 -> 65,
+#: Naxxramas 152 -> 97, RuinsOfAhnQiraj 133 -> 63, ZulGurub 215 -> 118`
+#: measured on build 1.60.1.70009's `loot-merge` re-run, this lane's own
+#: report. Verified (per this lane's report) that ZERO of the items each
+#: raid lost carries an equippable `inventory_type` -- every one is a
+#: consumable, recipe or quest item now correctly folded into
+#: `world_drop`; no raid's own TIER or other gear moved off its boss.
 RAID_SHAPE = {
-    "raid:ahnqiraj": (25, 7, 178),
-    "raid:blackwing-lair": (18, 3, 142),
-    "raid:molten-core": (21, 5, 109),
-    "raid:naxxramas": (49, 7, 152),
+    "raid:ahnqiraj": (25, 7, 122),
+    "raid:blackwing-lair": (18, 3, 60),
+    "raid:molten-core": (21, 5, 65),
+    "raid:naxxramas": (49, 7, 97),
     "raid:onyxias-lair": (1, 0, 6),
-    "raid:ruins-of-ahnqiraj": (29, 1, 133),
-    "raid:zulgurub": (49, 1, 215),
+    "raid:ruins-of-ahnqiraj": (29, 1, 63),
+    "raid:zulgurub": (49, 1, 118),
 }
 RAID_BOSSES = 192
-RAID_ITEMS = 569
+#: pooled-boss-greens lane, 2026-09-29: 569 -> 455, the same fold as
+#: RAID_SHAPE's own doc above (the pooled greens still count under their
+#: own `world_drop` source, just no longer double-counted under a raid
+#: too).
+RAID_ITEMS = 455
 #: Bosses the fork database names no NPC for. An invented name would be
 #: worse than a blank one, so this was measured rather than forbidden --
 #: until the loot-contracts lane, 2026-09-29: `build_loot` now DROPS a
