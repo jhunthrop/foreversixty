@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-30T02:08:23.460696+00:00",
+ "generated_at": "2026-09-30T02:48:53.900885+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -614386,6 +614386,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
+  "208222": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "208414": {
    "dropped_by": [
     {
@@ -614431,6 +614439,25 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "208424": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 214954,
+     "name": "Rix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 45,
+     "max_level": 45,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "208689": {
    "dropped_by": [
@@ -615156,6 +615183,29 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "220606": {
+   "dropped_by": [
+    {
+     "npc_id": 221943,
+     "name": "Hazzas",
+     "zone_ids": [
+      1477
+     ],
+     "min_level": 9999,
+     "max_level": 9999,
+     "chance": 22.2222
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "enchanting"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "220794": {
    "dropped_by": [],
@@ -618025,6 +618075,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "221518": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "223073": {
    "dropped_by": [],
    "sold_by": [
@@ -618204,6 +618262,153 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
+  "226772": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226774": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226775": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "226777": {
    "dropped_by": [],
    "sold_by": [
@@ -618252,6 +618457,202 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "226780": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226781": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226782": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226783": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "226784": {
    "dropped_by": [],
@@ -618302,6 +618703,398 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "226785": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226786": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226787": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226788": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226789": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226790": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226791": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226792": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "226793": {
    "dropped_by": [],
    "sold_by": [
@@ -618350,6 +619143,349 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "226794": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226795": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226796": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226797": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226798": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226799": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226801": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "226802": {
    "dropped_by": [],
@@ -618400,6 +619536,104 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "226803": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226804": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "226828": {
    "dropped_by": [],
    "sold_by": [
@@ -618449,6 +619683,398 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "226831": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226857": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226860": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226865": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226866": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226867": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226868": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226869": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "226870": {
    "dropped_by": [],
    "sold_by": [
@@ -618497,6 +620123,153 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "226871": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226872": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226881": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "226883": {
    "dropped_by": [],
@@ -618596,6 +620369,55 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "226931": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "226950": {
    "dropped_by": [],
    "sold_by": [
@@ -618644,6 +620466,251 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "226953": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226954": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226955": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226956": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226957": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "226958": {
    "dropped_by": [],
@@ -618694,6 +620761,447 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "226959": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226960": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226974": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226976": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226977": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226978": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226979": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226980": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226981": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "226982": {
    "dropped_by": [],
    "sold_by": [
@@ -618742,6 +621250,349 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "226983": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226984": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226985": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226986": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226987": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226988": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226989": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "226990": {
    "dropped_by": [],
@@ -618792,6 +621643,398 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "226991": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "226992": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227007": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227009": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227010": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227011": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227012": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227013": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "227014": {
    "dropped_by": [],
    "sold_by": [
@@ -618841,6 +622084,349 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "227015": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227016": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227017": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227018": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227019": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227020": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227021": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "227022": {
    "dropped_by": [],
    "sold_by": [
@@ -618889,6 +622475,104 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "227023": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227024": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 230317,
+     "name": "Mokvar",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230319,
+     "name": "Deliana",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 230565,
+     "name": "Ironforge Guard",
+     "zone_ids": [
+      1537
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    },
+    {
+     "npc_id": 230566,
+     "name": "Kor'kron Elite",
+     "zone_ids": [
+      1637
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "227044": {
    "dropped_by": [],
@@ -620150,6 +623834,195 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T00:33:09.338509+00:00"
   },
+  "227198": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227199": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227200": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227201": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227202": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227203": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227205": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227206": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227207": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "227444": {
    "dropped_by": [
     {
@@ -620226,6 +624099,431 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
+  "227803": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227804": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227805": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227807": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227808": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227809": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227810": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227814": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 10856,
+     "name": "Argent Quartermaster Hasana",
+     "zone_ids": [
+      85
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 10857,
+     "name": "Argent Quartermaster Lightspark",
+     "zone_ids": [
+      28
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 11536,
+     "name": "Quartermaster Miranda Breechlock",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227815": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 10856,
+     "name": "Argent Quartermaster Hasana",
+     "zone_ids": [
+      85
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 10857,
+     "name": "Argent Quartermaster Lightspark",
+     "zone_ids": [
+      28
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 11536,
+     "name": "Quartermaster Miranda Breechlock",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227816": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 10856,
+     "name": "Argent Quartermaster Hasana",
+     "zone_ids": [
+      85
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 10857,
+     "name": "Argent Quartermaster Lightspark",
+     "zone_ids": [
+      28
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 11536,
+     "name": "Quartermaster Miranda Breechlock",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227817": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 10856,
+     "name": "Argent Quartermaster Hasana",
+     "zone_ids": [
+      85
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 10857,
+     "name": "Argent Quartermaster Lightspark",
+     "zone_ids": [
+      28
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 11536,
+     "name": "Quartermaster Miranda Breechlock",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227818": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 10856,
+     "name": "Argent Quartermaster Hasana",
+     "zone_ids": [
+      85
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 10857,
+     "name": "Argent Quartermaster Lightspark",
+     "zone_ids": [
+      28
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 11536,
+     "name": "Quartermaster Miranda Breechlock",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227859": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 10856,
+     "name": "Argent Quartermaster Hasana",
+     "zone_ids": [
+      85
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 10857,
+     "name": "Argent Quartermaster Lightspark",
+     "zone_ids": [
+      28
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 11536,
+     "name": "Quartermaster Miranda Breechlock",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227862": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "227888": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 10856,
+     "name": "Argent Quartermaster Hasana",
+     "zone_ids": [
+      85
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 10857,
+     "name": "Argent Quartermaster Lightspark",
+     "zone_ids": [
+      28
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    },
+    {
+     "npc_id": 11536,
+     "name": "Quartermaster Miranda Breechlock",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "227947": {
    "dropped_by": [],
    "sold_by": [],
@@ -620233,6 +624531,176 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
+  },
+  "228175": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [
+    {
+     "profession": "enchanting"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "228176": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [
+    {
+     "profession": "enchanting"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "228190": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 11557,
+     "name": "Meilosh",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "231557": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "231558": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "231561": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "231562": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "231563": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "236755": {
    "dropped_by": [],
@@ -620249,6 +624717,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "236760": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "241089": {
    "dropped_by": [],
@@ -626238,6 +630714,70 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "260210": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "260211": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "260212": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "260216": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "260217": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "260218": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "260219": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "260308": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "263005": {
    "dropped_by": [],
    "sold_by": [],
@@ -628100,6 +632640,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
+  },
+  "270123": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "270225": {
    "dropped_by": [],
@@ -631685,6 +636233,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T20:27:14.213726+00:00"
   },
+  "273800": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "273804": {
    "dropped_by": [],
    "sold_by": [],
@@ -631875,6 +636431,14 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "274035": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "274042": {
    "dropped_by": [],
@@ -632284,6 +636848,30 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T00:33:09.338509+00:00"
   },
+  "274265": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "274270": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "274271": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "274290": {
    "dropped_by": [],
    "sold_by": [],
@@ -632347,6 +636935,22 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T20:27:14.213726+00:00"
+  },
+  "274383": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "274384": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "274417": {
    "dropped_by": [],
@@ -632523,6 +637127,38 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "274718": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "274719": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "274720": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "274721": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "274740": {
    "dropped_by": [],
@@ -633278,6 +637914,54 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
   },
+  "275291": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275293": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275296": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275347": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275390": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275434": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "275437": {
    "dropped_by": [],
    "sold_by": [],
@@ -633285,6 +637969,30 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T00:33:09.338509+00:00"
+  },
+  "275438": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275439": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275441": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "275604": {
    "dropped_by": [],
@@ -633574,6 +638282,206 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T23:57:41.450153+00:00"
   },
+  "275630": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275645": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275647": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275648": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275649": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275666": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275668": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275669": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275671": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275685": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275698": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275700": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275701": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275708": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275711": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275715": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275721": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275729": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275736": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275737": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275738": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275739": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275740": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275741": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275742": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "275824": {
    "dropped_by": [],
    "sold_by": [],
@@ -633581,6 +638489,62 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "275827": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275831": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275832": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275833": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275836": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275837": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "275838": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "275864": {
    "dropped_by": [],
@@ -633720,6 +638684,86 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
   },
+  "276332": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276333": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276334": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276335": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276336": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276337": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276338": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276339": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276340": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "276341": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "276399": {
    "dropped_by": [],
    "sold_by": [],
@@ -633855,6 +638899,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276754": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "276765": {
    "dropped_by": [],
@@ -635251,6 +640303,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
+  },
+  "277202": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "277203": {
    "dropped_by": [],
@@ -636657,6 +641717,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "281261": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "281262": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "281263": {
    "dropped_by": [],
    "sold_by": [],
@@ -636833,6 +641909,30 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T02:08:23.459721+00:00"
   },
+  "281279": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "281280": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "281281": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "281283": {
    "dropped_by": [],
    "sold_by": [],
@@ -636880,6 +641980,30 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281286": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "281287": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "281288": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "281289": {
    "dropped_by": [],
@@ -637217,6 +642341,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
+  "281538": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "281539": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "281586": {
    "dropped_by": [],
    "sold_by": [],
@@ -637240,6 +642380,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281600": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "281628": {
    "dropped_by": [],
@@ -637280,6 +642428,22 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281636": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
+  "281637": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "281648": {
    "dropped_by": [],
@@ -637828,6 +642992,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T00:33:09.338509+00:00"
   },
+  "282074": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "282080": {
    "dropped_by": [],
    "sold_by": [],
@@ -638142,6 +643314,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
   },
+  "284154": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
+  },
   "284165": {
    "dropped_by": [],
    "sold_by": [],
@@ -638262,6 +643442,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "284253": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T02:48:53.899966+00:00"
   },
   "284257": {
    "dropped_by": [],
