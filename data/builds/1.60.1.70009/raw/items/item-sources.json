@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-30T12:50:46.605065+00:00",
+ "generated_at": "2026-09-30T13:11:21.955753+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -266473,6 +266473,18 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T06:49:19.478401+00:00"
+  },
+  "4383": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "engineering"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
   },
   "4561": {
    "dropped_by": [
@@ -614111,6 +614123,18 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T06:58:44.990194+00:00"
   },
+  "8187": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
   "8708": {
    "dropped_by": [],
    "sold_by": [],
@@ -614126,6 +614150,18 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T06:58:44.990194+00:00"
+  },
+  "9366": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
   },
   "9372": {
    "dropped_by": [],
@@ -614247,6 +614283,27 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T06:58:44.990194+00:00"
   },
+  "12584": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
   "12615": {
    "dropped_by": [],
    "sold_by": [],
@@ -614359,6 +614416,1262 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T06:58:44.990194+00:00"
   },
+  "16345": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16397": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16421": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16427": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16437": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16441": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16442": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16443": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16444": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16446": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16448": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16449": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16450": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16453": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16454": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16455": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16456": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16457": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16459": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16463": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16465": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16467": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16471": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16473": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16476": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16477": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16478": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16479": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16480": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16483": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16484": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16494": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16496": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16501": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16503": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16521": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16523": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16528": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16533": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16534": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16535": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16536": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16539": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16541": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16542": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16543": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16544": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16545": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16548": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16552": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16554": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16555": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16558": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16560": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16561": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16562": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16563": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16564": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16567": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16568": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16569": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16573": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16574": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16578": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16579": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "16580": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
   "16664": {
    "dropped_by": [],
    "sold_by": [],
@@ -614414,6 +615727,266 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T06:58:44.990194+00:00"
+  },
+  "17578": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17579": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17580": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17581": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17583": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17584": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17586": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17588": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17590": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17591": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17592": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17593": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "17599": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
   },
   "17733": {
    "dropped_by": [],
@@ -615462,6 +617035,1203 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T07:38:30.971530+00:00"
+  },
+  "21994": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8937,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8944,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "21996": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8912,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8920,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "21997": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9006,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9013,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "21998": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8937,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8944,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22000": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8959,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9022,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22001": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8959,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9022,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22002": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8935,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8941,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22004": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8910,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8917,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22005": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9004,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9010,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22007": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8956,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9020,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22008": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8956,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9020,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22009": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9004,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9010,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22010": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8931,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8938,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22011": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8906,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8914,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22013": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9000,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9008,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22016": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8952,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9017,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22017": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8952,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9017,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22060": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9000,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9008,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22062": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8932,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8939,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22063": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8907,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8915,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22065": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9001,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9014,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22067": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8953,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "both"
+    },
+    {
+     "quest_id": 9018,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22068": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8953,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "both"
+    },
+    {
+     "quest_id": 9018,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22069": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9001,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9014,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22070": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8936,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8943,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22071": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8911,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8919,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22072": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8958,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9021,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22073": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8958,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9021,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22074": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9005,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9012,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22075": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9005,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9012,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22076": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8958,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9021,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22077": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8936,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8943,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22078": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8934,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8940,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22079": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8909,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 8916,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22080": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9003,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9009,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22082": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8955,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9019,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22083": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9003,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9009,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22084": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8955,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9019,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22085": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8955,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9019,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22086": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8933,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22088": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8908,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22089": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9002,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22090": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8933,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22092": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8954,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22093": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8954,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22095": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8918,
+     "name": "An Earnest Proposition",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22097": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9011,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22098": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8942,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22099": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8942,
+     "name": "Just Compensation",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22100": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8957,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22101": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8957,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22102": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9011,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22109": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8999,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9007,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22111": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8951,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9016,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22112": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8951,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9016,
+     "name": "Anthion's Parting Words",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
+  },
+  "22113": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 8999,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 9007,
+     "name": "Saving the Best for Last",
+     "min_level": 58,
+     "level": 60,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:11:21.954580+00:00"
   },
   "22230": {
    "dropped_by": [],

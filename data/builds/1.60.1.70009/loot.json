@@ -133518,6 +133518,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8937,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8944,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "21995": [
@@ -133558,6 +133576,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8912,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8920,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "21997": [
@@ -133578,6 +133614,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9006,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9013,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "21998": [
@@ -133598,6 +133652,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8937,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8944,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "21999": [
@@ -133638,6 +133710,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8959,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9022,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22001": [
@@ -133658,6 +133748,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8959,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9022,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22002": [
@@ -133678,6 +133786,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8935,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8941,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22003": [
@@ -133718,6 +133844,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8910,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8917,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22005": [
@@ -133738,6 +133882,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9004,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9010,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22006": [
@@ -133778,6 +133940,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8956,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9020,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22008": [
@@ -133798,6 +133978,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8956,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9020,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22009": [
@@ -133818,6 +134016,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9004,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9010,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22010": [
@@ -133838,6 +134054,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8931,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8938,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22011": [
@@ -133858,6 +134092,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8906,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8914,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22013": [
@@ -133878,6 +134130,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9000,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9008,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22015": [
@@ -133918,6 +134188,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8952,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9017,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22017": [
@@ -133938,6 +134226,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8952,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9017,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22057": [
@@ -133969,6 +134275,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9000,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9008,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22061": [
@@ -134009,6 +134333,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8932,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8939,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22063": [
@@ -134029,6 +134371,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8907,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8915,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22064": [
@@ -134069,6 +134429,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9001,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9014,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22066": [
@@ -134109,6 +134487,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8953,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9018,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22068": [
@@ -134129,6 +134525,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8953,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9018,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22069": [
@@ -134149,6 +134563,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9001,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9014,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22070": [
@@ -134169,6 +134601,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8936,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8943,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22071": [
@@ -134189,6 +134639,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8911,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8919,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22072": [
@@ -134209,6 +134677,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8958,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9021,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22073": [
@@ -134229,6 +134715,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8958,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9021,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22074": [
@@ -134249,6 +134753,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9005,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9012,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22075": [
@@ -134269,6 +134791,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9005,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9012,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22076": [
@@ -134289,6 +134829,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8958,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9021,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22077": [
@@ -134309,6 +134867,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8936,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8943,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22078": [
@@ -134329,6 +134905,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8934,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8940,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22079": [
@@ -134349,6 +134943,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8909,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8916,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22080": [
@@ -134369,6 +134981,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9003,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9009,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22081": [
@@ -134409,6 +135039,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8955,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9019,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22083": [
@@ -134429,6 +135077,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9003,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9009,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22084": [
@@ -134449,6 +135115,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8955,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9019,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22085": [
@@ -134469,6 +135153,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8955,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9019,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22086": [
@@ -134489,6 +135191,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8933,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22087": [
@@ -134529,6 +135240,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8908,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22089": [
@@ -134549,6 +135269,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9002,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22090": [
@@ -134569,6 +135298,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8933,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22091": [
@@ -134609,6 +135347,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22093": [
@@ -134629,6 +135376,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22095": [
@@ -134649,6 +135405,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8918,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22096": [
@@ -134689,6 +135454,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9011,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22098": [
@@ -134709,6 +135483,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8942,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22099": [
@@ -134729,6 +135512,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8942,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22100": [
@@ -134749,6 +135541,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22101": [
@@ -134769,6 +135570,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22102": [
@@ -134789,6 +135599,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9011,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22106": [
@@ -134869,6 +135688,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8999,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9007,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22110": [
@@ -134909,6 +135746,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8951,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9016,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22112": [
@@ -134929,6 +135784,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8951,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9016,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22113": [
@@ -134949,6 +135822,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8999,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9007,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "22137": [
@@ -141711,6 +142602,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9004,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9010,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226826": [
@@ -141731,6 +142640,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8956,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9020,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226827": [
@@ -141751,6 +142678,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8956,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9020,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226829": [
@@ -141771,6 +142716,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9004,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9010,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226830": [
@@ -141791,6 +142754,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8910,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8917,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226832": [
@@ -141811,6 +142792,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8935,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8941,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226858": [
@@ -141831,6 +142830,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8959,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9022,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226859": [
@@ -141851,6 +142868,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8959,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9022,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226861": [
@@ -141871,6 +142906,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8937,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8944,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226862": [
@@ -141891,6 +142944,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9006,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9013,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226863": [
@@ -141911,6 +142982,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8912,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8920,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226864": [
@@ -141931,6 +143020,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8937,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8944,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226882": [
@@ -141951,6 +143058,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8952,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9017,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226884": [
@@ -141971,6 +143096,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8952,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9017,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226885": [
@@ -141991,6 +143134,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8906,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8914,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226886": [
@@ -142011,6 +143172,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9000,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9008,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226887": [
@@ -142031,6 +143210,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9000,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9008,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226888": [
@@ -142051,6 +143248,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8931,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8938,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226905": [
@@ -142071,6 +143286,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8936,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8943,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226906": [
@@ -142091,6 +143324,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9005,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9012,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226907": [
@@ -142111,6 +143362,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8911,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8919,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226908": [
@@ -142131,6 +143400,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8958,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9021,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226909": [
@@ -142151,6 +143438,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9005,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9012,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226910": [
@@ -142171,6 +143476,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8958,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9021,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226911": [
@@ -142191,6 +143514,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8936,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8943,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226912": [
@@ -142211,6 +143552,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8958,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9021,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226929": [
@@ -142231,6 +143590,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8907,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8915,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226932": [
@@ -142251,6 +143628,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9001,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9014,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226933": [
@@ -142271,6 +143666,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8953,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9018,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226934": [
@@ -142291,6 +143704,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8932,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8939,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226935": [
@@ -142311,6 +143742,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9001,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9014,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226936": [
@@ -142331,6 +143780,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8953,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9018,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226945": [
@@ -142351,6 +143818,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9003,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9009,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226946": [
@@ -142371,6 +143856,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8955,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9019,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226947": [
@@ -142391,6 +143894,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9003,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9009,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226948": [
@@ -142411,6 +143932,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8934,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8940,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226949": [
@@ -142431,6 +143970,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8909,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 8916,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226951": [
@@ -142451,6 +144008,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8955,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9019,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226952": [
@@ -142471,6 +144046,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8955,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9019,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226969": [
@@ -142491,6 +144084,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226970": [
@@ -142511,6 +144113,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8908,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226971": [
@@ -142531,6 +144142,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8933,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226972": [
@@ -142551,6 +144171,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226973": [
@@ -142571,6 +144200,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9002,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226975": [
@@ -142591,6 +144229,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8933,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "217274": [
@@ -142622,6 +144269,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8918,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "227002": [
@@ -142642,6 +144298,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9011,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "227003": [
@@ -142662,6 +144327,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "227008": [
@@ -142682,6 +144356,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8942,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "227004": [
@@ -142702,6 +144385,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 9011,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "227005": [
@@ -142722,6 +144414,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "227006": [
@@ -142742,6 +144443,15 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8942,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "228659": [
@@ -142827,6 +144537,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8999,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9007,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226776": [
@@ -142847,6 +144575,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8999,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9007,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226778": [
@@ -142867,6 +144613,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8951,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9016,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "226779": [
@@ -142887,6 +144651,24 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db"
+      },
+      {
+        "quest_id": 8951,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 9016,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "wowhead"
       }
     ],
     "281167": [
