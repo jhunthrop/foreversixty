@@ -166,6 +166,21 @@ class NpcSource(BaseModel):
     min_level: int | None = None
     max_level: int | None = None
     chance: float | None = None
+    #: data-followups-9 lane, 2026-09-30: a `sold-by` row's own
+    #: `ItemExtendedCost`-shaped `cost` field -- `[money_copper,
+    #: currency_pairs, item_pairs]` on wowhead's own listview row. `0`
+    #: when the row states no gold price (every row this lane measured
+    #: on vendor 11036/240248 is `0`: the whole price is the item cost
+    #: below). `dropped-by` rows never carry `cost` at all, so this is
+    #: always `0` for one.
+    cost_money: int = 0
+    #: The item id half of every `[item_id, qty]` pair in the same
+    #: `cost` field's item-cost list (quantity is not kept -- only
+    #: WHETHER the id itself resolves to a real, obtainable item matters
+    #: to `pipeline.loot.wowhead`'s gate). Empty for a row with no
+    #: ItemExtendedCost override (an ordinary gold buy) or no `cost` at
+    #: all (`dropped-by`).
+    cost_item_ids: list[int] = []
 
 
 class CraftedSource(BaseModel):
@@ -196,6 +211,30 @@ class ItemPageSources(BaseModel):
     sold_by: list[NpcSource] = []
     crafted_by: list[CraftedSource] = []
     quest_rewards: list[QuestRewardSource] = []
+    #: vendor-11036 lane, 2026-09-30: this item's own `jsonequip.
+    #: reqfaction` -- a real Blizzard `Faction.dbc` id, verified against
+    #: a primary source to agree with the fork database's OWN numbering
+    #: one for one (item 21200 "Signet Ring of the Bronze Dragonflight":
+    #: wowhead states `reqfaction: 910`, the fork's own rep source for
+    #: the identical id is `rep:brood-of-nozdormu:*`, faction id 910) --
+    #: unlike `QuestRewardSource`'s `side`/`reprewards` fields, which
+    #: `pipeline.wowhead_item_sources`' own module doc already warned
+    #: disagree with the fork's numbering. `None` when the item states
+    #: no reputation requirement at all (wowhead omits `jsonequip.
+    #: reqfaction` entirely rather than a sentinel).
+    required_faction_id: int | None = None
+    #: `jsonequip.reqrep` -- wowhead's OWN standing enum, 0 (Hated)
+    #: through 7 (Exalted), one less than `pipeline.forkdb.REP_LEVELS`'
+    #: 1-8 at every level checked (item 21200: wowhead `reqrep: 7`, the
+    #: fork's own source is `rep:brood-of-nozdormu:exalted`, REP_LEVELS'
+    #: `8`; item 21197: wowhead `reqrep: 4`, fork's own source
+    #: `rep:brood-of-nozdormu:friendly`, REP_LEVELS' `5`). Kept RAW
+    #: (wowhead's own number, not yet offset into REP_LEVELS) the same
+    #: way this module leaves `QuestRewardSource.faction` as wowhead's
+    #: own `side` encoding rather than decoding early -- decoding one
+    #: extra place would be one more place to keep in sync with
+    #: `pipeline.forkdb.REP_LEVELS` if it ever changes.
+    required_standing_raw: int | None = None
 
     def is_empty(self) -> bool:
         return not (self.dropped_by or self.sold_by or self.crafted_by or self.quest_rewards)
@@ -242,19 +281,76 @@ def _row_chance(row: dict) -> float | None:
     return round(100 * count / outof, 4)
 
 
+def _row_cost(row: dict) -> tuple[int, list[int]]:
+    """`(money, item_ids)` from a `sold-by` row's own `cost` field.
+    `(0, [])` for a `dropped-by` row (never carries `cost`) or a
+    `sold-by` row wowhead states no cost at all for (an empty `cost`
+    list). Otherwise `cost[0]` is either `[money_copper]` -- a plain
+    gold price, no `ItemExtendedCost` override at all (item 16769's own
+    `sold-by` row, "Gorn One Eye": `cost: [[133081]]`) -- or the fuller
+    `[money_copper, currency_pairs, item_pairs]` an `ItemExtendedCost`
+    override carries (vendor 11036's own rows, `cost: [[0, [],
+    [[239759, 1]]]]`); either shape's first element is always the gold
+    price."""
+    cost = row.get("cost") or []
+    if not cost:
+        return 0, []
+    entry = cost[0]
+    money = int(entry[0] or 0) if entry else 0
+    items = entry[2] if len(entry) > 2 else []
+    return money, [int(pair[0]) for pair in items]
+
+
 def _npc_rows(html: str, listview_id: str) -> list[NpcSource]:
     rows = _listview_data(html, listview_id) or []
-    return [
-        NpcSource(
-            npc_id=int(row["id"]),
-            name=str(row.get("name") or row.get("displayName") or ""),
-            zone_ids=[int(z) for z in (row.get("location") or [])],
-            min_level=row.get("minlevel"),
-            max_level=row.get("maxlevel"),
-            chance=_row_chance(row),
+    out = []
+    for row in rows:
+        money, item_ids = _row_cost(row)
+        out.append(
+            NpcSource(
+                npc_id=int(row["id"]),
+                name=str(row.get("name") or row.get("displayName") or ""),
+                zone_ids=[int(z) for z in (row.get("location") or [])],
+                min_level=row.get("minlevel"),
+                max_level=row.get("maxlevel"),
+                chance=_row_chance(row),
+                cost_money=money,
+                cost_item_ids=item_ids,
+            )
         )
-        for row in rows
-    ]
+    return out
+
+
+def _item_equip_requirement(html: str, item_id: int) -> tuple[int | None, int | None]:
+    """`(reqfaction, reqrep)` off THIS item's own `jsonequip` record in
+    the page's `WH.Gatherer.addData(3, 16, {...})` blob -- the same
+    per-item tooltip data every wowhead item page embeds regardless of
+    class/subtype (verified against item 21200, "Signet Ring of the
+    Bronze Dragonflight": see `ItemPageSources.required_faction_id`'s
+    own doc for the primary-source cross-check). `(None, None)` when the
+    blob is missing (a malformed/notFound page `parse_item_page`'s own
+    `ItemPageNotFound` guard already rejects before this runs) or the
+    item's own record states no `reqfaction` -- the overwhelming
+    majority of items, which need no reputation at all.
+    """
+    marker = "WH.Gatherer.addData(3, 16, "
+    at = html.find(marker)
+    if at < 0:
+        return None, None
+    start = at + len(marker)
+    try:
+        blob, _ = json.JSONDecoder().raw_decode(html[start:])
+    except ValueError:
+        return None, None
+    record = blob.get(str(item_id))
+    if not isinstance(record, dict):
+        return None, None
+    equip = record.get("jsonequip") or {}
+    faction = equip.get("reqfaction")
+    standing = equip.get("reqrep")
+    if faction is None or standing is None:
+        return None, None
+    return int(faction), int(standing)
 
 
 def _crafted_rows(html: str) -> list[CraftedSource]:
@@ -285,12 +381,15 @@ def _quest_reward_rows(html: str) -> list[QuestRewardSource]:
 def parse_item_page(item_id: int, html: str) -> ItemPageSources:
     if "new Listview(" not in html:
         raise ItemPageNotFound(f"item {item_id}: no Listview blocks in page")
+    required_faction_id, required_standing_raw = _item_equip_requirement(html, item_id)
     return ItemPageSources(
         item_id=item_id,
         dropped_by=_npc_rows(html, "dropped-by"),
         sold_by=_npc_rows(html, "sold-by"),
         crafted_by=_crafted_rows(html),
         quest_rewards=_quest_reward_rows(html),
+        required_faction_id=required_faction_id,
+        required_standing_raw=required_standing_raw,
     )
 
 

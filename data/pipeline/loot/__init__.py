@@ -71,6 +71,7 @@ from pipeline.loot.sources import (
     pvp_ranks,
 )
 from pipeline.loot.supersede import apply_supersession, mark_superseded_items, superseded_pairs
+from pipeline.loot.vendor_cost import apply_vendor_cost_gate
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.normalize import write_document, write_records
@@ -217,6 +218,15 @@ def write_loot_files(
     # taught by a quest itself needs already settled -- see
     # apply_crafted_opens_gate's own doc.
     document = apply_crafted_opens_gate(document, classic_crafted)
+    # vendor-11036 lane, 2026-09-30: AFTER every other gate above (its own
+    # rule 4 reads the launch-phase item level ceiling off whichever
+    # sources overlays/quest-gate/crafted-gate left ungated) -- see
+    # apply_vendor_cost_gate's own doc.
+    item_levels = {int(row["id"]): int(row.get("item_level") or 0) for row in item_rows}
+    item_qualities = {int(row["id"]): int(row.get("quality") or 0) for row in item_rows}
+    document, vendor_cost_gated = apply_vendor_cost_gate(
+        document, item_sources, build_items, item_levels, item_qualities
+    )
     superseded_marked = mark_superseded_items(build_dir, superseded)
     # Day3 data-followups-7 lane, 2026-09-30: AFTER every document mutation
     # above (needs the FINAL `document.quests`, same reasoning as
@@ -259,7 +269,9 @@ def write_loot_files(
         "items.json: %d with suffix options, %d faction-restricted, %d superseded "
         "rows marked (%d source/boss listings deduplicated); "
         "items/*.json: %d weapon rows won by the fork's own damage, %d quest-only rows "
-        "dropped for excluding their own class across %d classes",
+        "dropped for excluding their own class across %d classes; "
+        "%d vendor rows gated to opens=later (unresolvable ItemExtendedCost or "
+        "beta-inventory heuristic)",
         len(document.sources),
         stats.items,
         stats.classicdb_items,
@@ -283,6 +295,7 @@ def write_loot_files(
         weapons_won,
         sum(quest_class_gate_dropped.values()),
         len(quest_class_gate_dropped),
+        vendor_cost_gated,
     )
     refresh_manifest(build_dir)
     return [
@@ -476,6 +489,13 @@ def merge_loot_files(
     document = apply_overlays(document, load_overlays(overlay_dir))
     document = apply_quest_opens_gate(document, classic_sources)
     document = apply_crafted_opens_gate(document, classic_crafted)
+    # vendor-11036 lane, 2026-09-30: same placement/reasoning as
+    # `write_loot_files`' own call.
+    item_levels = {int(row["id"]): int(row.get("item_level") or 0) for row in item_rows}
+    item_qualities = {int(row["id"]): int(row.get("quality") or 0) for row in item_rows}
+    document, vendor_cost_gated = apply_vendor_cost_gate(
+        document, item_sources, build_items, item_levels, item_qualities
+    )
     write_document(document, build_dir / LOOT)
     superseded_marked = mark_superseded_items(build_dir, superseded)
     # Day3 data-followups-7 lane, 2026-09-30: same placement/reasoning as
@@ -487,7 +507,8 @@ def merge_loot_files(
         "%d via title, %d unresolved and dropped; %d fork ids left out, %d fork entries "
         "with no kind dropped, %d bosses dropped for having no name in either database; "
         "%d superseded rows marked (%d source/boss listings deduplicated); %d quest-only "
-        "rows dropped for excluding their own class across %d classes",
+        "rows dropped for excluding their own class across %d classes; %d vendor rows "
+        "gated to opens=later",
         len(document.sources),
         stats.items,
         stats.classicdb_items,
@@ -503,6 +524,7 @@ def merge_loot_files(
         superseded_removed,
         sum(quest_class_gate_dropped.values()),
         len(quest_class_gate_dropped),
+        vendor_cost_gated,
     )
     refresh_manifest(build_dir)
     return [

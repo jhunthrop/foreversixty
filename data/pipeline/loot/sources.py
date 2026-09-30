@@ -1203,6 +1203,7 @@ def build_loot(
             item_factions(fork, build_items),
             required_levels,
             classicdb_world_drop_items,
+            fork.factions,
         )
         sources = merge_wowhead_sources(sources, wowhead_sources)
         quest = sorted(set(quest) | set(wowhead_quest))

@@ -48,11 +48,19 @@ def test_parse_item_page_reads_dropped_by():
 def test_parse_item_page_reads_sold_by():
     """A `sold-by` row states no `count`/`outof` (wowhead has a
     stock/cost there instead), so `chance` stays `None` even though
-    `minlevel`/`maxlevel` are present."""
+    `minlevel`/`maxlevel` are present. The fixture's own `cost` field is
+    the plain-gold-price shape (`[[133081]]`, no `ItemExtendedCost`
+    override), so `cost_money` is the gold price and `cost_item_ids` is
+    empty -- vendor-11036 lane, 2026-09-30."""
     sources = wis.parse_item_page(16769, SOLD_BY.read_text(encoding="utf-8"))
     assert sources.sold_by == [
         wis.NpcSource(
-            npc_id=11555, name="Gorn One Eye", zone_ids=[361], min_level=55, max_level=55
+            npc_id=11555,
+            name="Gorn One Eye",
+            zone_ids=[361],
+            min_level=55,
+            max_level=55,
+            cost_money=133081,
         )
     ]
 
@@ -69,6 +77,35 @@ def test_parse_item_page_reads_reward_from_q_with_level_and_faction():
             quest_id=176, name='WANTED: "Hogger"', min_level=5, level=11, faction="alliance"
         )
     ]
+
+
+def test_parse_item_page_reads_reqfaction_and_reqrep_off_the_gatherer_blob():
+    """vendor-11036 lane, 2026-09-30: `jsonequip.reqfaction`/`reqrep`
+    live in `WH.Gatherer.addData(3, 16, {...})`, a separate blob from
+    every listview this module already reads -- verified against a
+    primary source (item 21200, "Signet Ring of the Bronze Dragonflight":
+    wowhead states `reqfaction: 910, reqrep: 7`; the fork's OWN `rep`
+    source for the identical id is `rep:brood-of-nozdormu:exalted`,
+    faction id 910). A synthetic minimal page (never the network)."""
+    html = (
+        'new Listview({template: "item", id: "outfit", data: []});'
+        'WH.Gatherer.addData(3, 16, {"21200":{"name_enus":"Signet Ring of the Bronze '
+        'Dragonflight","jsonequip":{"reqfaction":910,"reqrep":7,"reqlevel":60}}});'
+    )
+    sources = wis.parse_item_page(21200, html)
+    assert sources.required_faction_id == 910
+    assert sources.required_standing_raw == 7
+
+
+def test_parse_item_page_leaves_reqfaction_none_when_the_gatherer_record_states_none():
+    html = (
+        'new Listview({template: "item", id: "outfit", data: []});'
+        'WH.Gatherer.addData(3, 16, {"239512":{"name_enus":"Lightbreaker Wrists",'
+        '"jsonequip":{"buyprice":252635,"reqlevel":60}}});'
+    )
+    sources = wis.parse_item_page(239512, html)
+    assert sources.required_faction_id is None
+    assert sources.required_standing_raw is None
 
 
 def test_parse_item_page_returns_empty_lists_for_a_page_with_no_usable_listview():

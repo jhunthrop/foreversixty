@@ -18,6 +18,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+from pipeline.forkdb import REP_LEVELS, decode
 from pipeline.item_sources import ItemSourceEntry
 from pipeline.loot.constants import (
     INSTANCE_KIND,
@@ -291,6 +292,7 @@ def wowhead_additions(
     item_factions: dict[int, str],
     required_levels: dict[int, int] | None = None,
     classicdb_world_drop_items: set[int] | None = None,
+    fork_factions: dict[int, str] | None = None,
 ) -> tuple[list[LootSource], list[int], dict[int, list[QuestSource]]]:
     """Extra sources `pipeline.item_sources`' wowhead scrape names for an
     item the fork database itself named NO source for at all. Every
@@ -327,9 +329,22 @@ def wowhead_additions(
     classic-db, never a second wowhead-derived one under a different id
     that `merge_wowhead_sources` (id-keyed) would append rather than
     union.
+
+    `fork_factions` (`pipeline.forkdb.ForkDatabase.factions`) gates
+    vendor-11036 lane, 2026-09-30's own reputation signal the same way
+    `pipeline.loot.sources._keyed_sources` already gates the fork's own
+    `rep` sources: an `ItemSourceEntry.required_faction_id` wowhead's
+    scrape states is only trusted when the fork's own faction table
+    knows that exact id (see `ItemPageSources.required_faction_id`'s own
+    doc for why wowhead's numbering is trusted here at all, unlike
+    `QuestRewardSource.faction`'s). A vendor whose items state no
+    reputation requirement at all (the overwhelming majority, `sold_by`
+    rows with no `jsonequip.reqrep`) gets `faction_id=None`/
+    `standing=None`, same as today.
     """
     classicdb_world_drop_items = classicdb_world_drop_items or set()
     required_levels = required_levels or {}
+    fork_factions = fork_factions or {}
     bosses: dict[tuple[int, int], set[int]] = defaultdict(set)
     boss_names: dict[int, str] = {}
     world: dict[int, set[int]] = defaultdict(set)
@@ -338,6 +353,11 @@ def wowhead_additions(
     world_drop: dict[tuple[int | None, int | None], set[int]] = defaultdict(set)
     vendor_items: dict[int, set[int]] = defaultdict(set)
     vendor_names: dict[int, str] = {}
+    #: npc_id -> (faction_id, standing name), first item sold that states
+    #: a fork-recognised reputation requirement wins -- same `setdefault`
+    #: precedence `pipeline.loot.classicdb.classicdb_additions`' own
+    #: `vendor_condition` uses.
+    vendor_condition: dict[int, tuple[int, str]] = {}
     crafted: dict[str, set[int]] = defaultdict(set)
     quest: set[int] = set()
     quest_detail: dict[int, list[QuestSource]] = defaultdict(list)
@@ -372,6 +392,18 @@ def wowhead_additions(
                 continue
             vendor_items[row.npc_id].add(item_id)
             vendor_names.setdefault(row.npc_id, row.name)
+            if (
+                page.required_faction_id is not None
+                and page.required_faction_id in fork_factions
+                and page.required_standing_raw is not None
+            ):
+                vendor_condition.setdefault(
+                    row.npc_id,
+                    (
+                        page.required_faction_id,
+                        decode(REP_LEVELS, page.required_standing_raw + 1, "wowhead rep level"),
+                    ),
+                )
         for row in page.crafted_by:
             crafted[row.profession].add(item_id)
         for row in page.quest_rewards:
@@ -466,6 +498,8 @@ def wowhead_additions(
             name=vendor_names[npc_id],
             npc_id=npc_id,
             items=sorted(items),
+            faction_id=vendor_condition.get(npc_id, (None, None))[0],
+            standing=vendor_condition.get(npc_id, (None, None))[1],
             source_origin="wowhead",
         )
         for npc_id, items in sorted(vendor_items.items())
