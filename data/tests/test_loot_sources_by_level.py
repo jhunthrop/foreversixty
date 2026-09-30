@@ -54,7 +54,12 @@ def test_the_quests_map_faction_matches_the_items_own_restriction():
         expected = by_restriction[rows[item_id]["faction_restriction"]]
         for entry in entries:
             if entry["faction_source"] == "item":
-                assert entry["faction"] == expected, item_id
+                # data-followups-3, 2026-09-30: an unrestricted reward item says
+                # nothing about the quest's side, so such a quest now publishes an
+                # honest "unknown" unless wowhead states a side; a restricted item
+                # still pins it.
+                allowed = {expected, "unknown"} if expected == "both" else {expected}
+                assert entry["faction"] in allowed, item_id
 
 
 def test_the_factions_map_never_says_both():

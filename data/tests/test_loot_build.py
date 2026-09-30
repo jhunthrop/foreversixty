@@ -19,7 +19,7 @@ from pipeline.loot.buffs import SIMBUFFS, ids_md_ids
 from pipeline.loot.sources import KIND_ORDER
 from pipeline.simdb.statmap import PROTO_STAT_ALIASES, STAT_IDS
 
-QUEST_FACTION_VALUES = {"alliance", "horde", "both"}
+QUEST_FACTION_VALUES = {"alliance", "horde", "both", "unknown"}
 FACTION_VALUES = {"alliance", "horde"}
 
 BUILD = "1.60.1.70009"
@@ -569,7 +569,10 @@ def test_vendor_sources_are_one_per_npc_selling_equippable_gear():
 
 def test_crafted_rep_pvp_and_quest_carry_their_own_keys_and_counts():
     crafted = {s["id"]: len(s["items"]) for s in loot()["sources"] if s["kind"] == "crafted"}
-    assert set(crafted) == set(CRAFTED_ITEMS)
+    # data-followups-3, 2026-09-30: a crafted item whose recipe or reagent is raid-bound
+    # sits in a `crafted:<profession>:<phase>` sibling; the base ids are still the whole set.
+    base_ids = {":".join(source_id.split(":")[:2]) for source_id in crafted}
+    assert base_ids == set(CRAFTED_ITEMS)
     for source_id, measured in CRAFTED_ITEMS.items():
         assert crafted[source_id] >= measured, source_id
     for source in loot()["sources"]:
@@ -789,7 +792,7 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     quests = loot()["quests"]
     assert len(quests) >= QUEST_DETAIL_ITEMS
     assert set(quests) == {str(i) for i in by_id()["quest"]["items"]}
-    counts = {"alliance": 0, "horde": 0, "both": 0}
+    counts = {"alliance": 0, "horde": 0, "both": 0, "unknown": 0}
     optional_keys = {"opens", "required_rep_faction", "required_rep_standing"}
     for item_id, entries in quests.items():
         assert entries, item_id
@@ -808,7 +811,7 @@ def test_quests_map_carries_id_name_and_faction_per_item():
             if "opens" in entry:
                 assert entry["opens"] in PHASES | {OPENS_LATER}
             assert entry["faction"] in QUEST_FACTION_VALUES
-            assert entry["faction_source"] in {"classic-db", "item"}, item_id
+            assert entry["faction_source"] in {"classic-db", "item", "wowhead"}, item_id
             assert entry["name"].strip(), item_id
             assert entry["quest_id"] > 0
             assert entry["level_source"] in {"classic-db", "wowhead", "item_level_proxy"}
@@ -826,7 +829,7 @@ def test_quests_map_carries_id_name_and_faction_per_item():
             assert 0 <= entry["min_level"] <= 60
             assert -1 <= entry["level"] <= 61
             counts[entry["faction"]] += 1
-    assert set(counts) == set(QUEST_FACTION_COUNTS)
+    assert set(counts) == set(QUEST_FACTION_COUNTS) | {"unknown"}
     # Floors for the one-sided counts only: every quest classic-db newly
     # settles moves OUT of "both" into alliance or horde (quest-faction lane,
     # 2026-09-29), so "both" legitimately shrinks night by night while the
