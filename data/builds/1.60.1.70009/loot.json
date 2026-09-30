@@ -381872,6 +381872,9 @@
         250588,
         250589,
         250590,
+        250591,
+        250592,
+        250593,
         250602,
         250603,
         250604,
@@ -381886,8 +381889,15 @@
         250613,
         250614,
         250615,
+        250616,
         250620,
         250621,
+        275622,
+        275623,
+        275624,
+        275625,
+        275626,
+        275627,
         276992,
         276993,
         276994,
@@ -381927,6 +381937,8 @@
         249144,
         249232,
         249234,
+        249237,
+        249385,
         249392,
         249393,
         249394,
@@ -382270,6 +382282,7 @@
         252478,
         252479,
         252480,
+        252481,
         252490,
         252491,
         252492,
@@ -382336,6 +382349,10 @@
         252553,
         252554,
         252555,
+        252556,
+        252557,
+        252558,
+        252559,
         252562,
         252563,
         252564,
@@ -382373,6 +382390,20 @@
         252596,
         252597,
         252598,
+        252599,
+        252600,
+        275610,
+        275611,
+        275612,
+        275613,
+        275614,
+        275615,
+        275616,
+        275617,
+        275618,
+        275619,
+        275620,
+        275621,
         276998,
         276999,
         277000,
@@ -382706,11 +382737,18 @@
         254115,
         254117,
         254119,
+        254121,
+        254123,
         254125,
+        254127,
+        254129,
+        254131,
         275604,
         275605,
         275606,
         275607,
+        275608,
+        275609,
         277010,
         277011,
         277012,
@@ -426158,7 +426196,7 @@
       {
         "quest_id": 9004,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426167,7 +426205,7 @@
       {
         "quest_id": 9010,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426178,7 +426216,7 @@
       {
         "quest_id": 8956,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426187,7 +426225,7 @@
       {
         "quest_id": 9020,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426198,7 +426236,7 @@
       {
         "quest_id": 8956,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426207,7 +426245,7 @@
       {
         "quest_id": 9020,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426218,7 +426256,7 @@
       {
         "quest_id": 9004,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426227,7 +426265,7 @@
       {
         "quest_id": 9010,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426238,7 +426276,7 @@
       {
         "quest_id": 8910,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426247,7 +426285,7 @@
       {
         "quest_id": 8917,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426258,7 +426296,7 @@
       {
         "quest_id": 8935,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426267,7 +426305,7 @@
       {
         "quest_id": 8941,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426278,7 +426316,7 @@
       {
         "quest_id": 8959,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426287,7 +426325,7 @@
       {
         "quest_id": 9022,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426298,7 +426336,7 @@
       {
         "quest_id": 8959,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426307,7 +426345,7 @@
       {
         "quest_id": 9022,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426318,7 +426356,7 @@
       {
         "quest_id": 8937,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426327,7 +426365,7 @@
       {
         "quest_id": 8944,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426338,7 +426376,7 @@
       {
         "quest_id": 9006,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426347,7 +426385,7 @@
       {
         "quest_id": 9013,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426358,7 +426396,7 @@
       {
         "quest_id": 8912,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426367,7 +426405,7 @@
       {
         "quest_id": 8920,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426378,7 +426416,7 @@
       {
         "quest_id": 8937,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426387,7 +426425,7 @@
       {
         "quest_id": 8944,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426398,7 +426436,7 @@
       {
         "quest_id": 1442,
         "name": "Seeking the Kor Gem",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 20,
         "level": 22,
@@ -426409,7 +426447,7 @@
       {
         "quest_id": 8952,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426418,7 +426456,7 @@
       {
         "quest_id": 9017,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426429,7 +426467,7 @@
       {
         "quest_id": 8952,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426438,7 +426476,7 @@
       {
         "quest_id": 9017,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426449,7 +426487,7 @@
       {
         "quest_id": 8906,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426458,7 +426496,7 @@
       {
         "quest_id": 8914,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426469,7 +426507,7 @@
       {
         "quest_id": 9000,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426478,7 +426516,7 @@
       {
         "quest_id": 9008,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426489,7 +426527,7 @@
       {
         "quest_id": 9000,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426498,7 +426536,7 @@
       {
         "quest_id": 9008,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426509,7 +426547,7 @@
       {
         "quest_id": 8931,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426518,7 +426556,7 @@
       {
         "quest_id": 8938,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426529,7 +426567,7 @@
       {
         "quest_id": 5805,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426538,7 +426576,7 @@
       {
         "quest_id": 5841,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426547,7 +426585,7 @@
       {
         "quest_id": 5842,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426556,7 +426594,7 @@
       {
         "quest_id": 5843,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426565,7 +426603,7 @@
       {
         "quest_id": 5844,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426574,7 +426612,7 @@
       {
         "quest_id": 5847,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426585,7 +426623,7 @@
       {
         "quest_id": 5805,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426594,7 +426632,7 @@
       {
         "quest_id": 5841,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426603,7 +426641,7 @@
       {
         "quest_id": 5842,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426612,7 +426650,7 @@
       {
         "quest_id": 5843,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426621,7 +426659,7 @@
       {
         "quest_id": 5844,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426630,7 +426668,7 @@
       {
         "quest_id": 5847,
         "name": "Welcome!",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 1,
         "level": 1,
@@ -426641,7 +426679,7 @@
       {
         "quest_id": 8936,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426650,7 +426688,7 @@
       {
         "quest_id": 8943,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426661,7 +426699,7 @@
       {
         "quest_id": 9005,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426670,7 +426708,7 @@
       {
         "quest_id": 9012,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426681,7 +426719,7 @@
       {
         "quest_id": 8911,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426690,7 +426728,7 @@
       {
         "quest_id": 8919,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426701,7 +426739,7 @@
       {
         "quest_id": 8958,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426710,7 +426748,7 @@
       {
         "quest_id": 9021,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426721,7 +426759,7 @@
       {
         "quest_id": 9005,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426730,7 +426768,7 @@
       {
         "quest_id": 9012,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426741,7 +426779,7 @@
       {
         "quest_id": 8958,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426750,7 +426788,7 @@
       {
         "quest_id": 9021,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426761,7 +426799,7 @@
       {
         "quest_id": 8936,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426770,7 +426808,7 @@
       {
         "quest_id": 8943,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426781,7 +426819,7 @@
       {
         "quest_id": 8958,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426790,7 +426828,7 @@
       {
         "quest_id": 9021,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426801,7 +426839,7 @@
       {
         "quest_id": 8907,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426810,7 +426848,7 @@
       {
         "quest_id": 8915,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426821,7 +426859,7 @@
       {
         "quest_id": 9001,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426830,7 +426868,7 @@
       {
         "quest_id": 9014,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426841,7 +426879,7 @@
       {
         "quest_id": 8953,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426850,7 +426888,7 @@
       {
         "quest_id": 9018,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426861,7 +426899,7 @@
       {
         "quest_id": 8932,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426870,7 +426908,7 @@
       {
         "quest_id": 8939,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426881,7 +426919,7 @@
       {
         "quest_id": 9001,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426890,7 +426928,7 @@
       {
         "quest_id": 9014,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426901,7 +426939,7 @@
       {
         "quest_id": 8953,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426910,7 +426948,7 @@
       {
         "quest_id": 9018,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426921,7 +426959,7 @@
       {
         "quest_id": 9003,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426930,7 +426968,7 @@
       {
         "quest_id": 9009,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426941,7 +426979,7 @@
       {
         "quest_id": 8955,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426950,7 +426988,7 @@
       {
         "quest_id": 9019,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426961,7 +426999,7 @@
       {
         "quest_id": 9003,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426970,7 +427008,7 @@
       {
         "quest_id": 9009,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426981,7 +427019,7 @@
       {
         "quest_id": 8934,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -426990,7 +427028,7 @@
       {
         "quest_id": 8940,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427001,7 +427039,7 @@
       {
         "quest_id": 8909,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427010,7 +427048,7 @@
       {
         "quest_id": 8916,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427021,7 +427059,7 @@
       {
         "quest_id": 8955,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427030,7 +427068,7 @@
       {
         "quest_id": 9019,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427041,7 +427079,7 @@
       {
         "quest_id": 8955,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427050,7 +427088,7 @@
       {
         "quest_id": 9019,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427061,7 +427099,7 @@
       {
         "quest_id": 8954,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427070,7 +427108,7 @@
       {
         "quest_id": 8954,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427081,7 +427119,7 @@
       {
         "quest_id": 8908,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427090,7 +427128,7 @@
       {
         "quest_id": 8908,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427101,7 +427139,7 @@
       {
         "quest_id": 8933,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427110,7 +427148,7 @@
       {
         "quest_id": 8933,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427121,7 +427159,7 @@
       {
         "quest_id": 8954,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427130,7 +427168,7 @@
       {
         "quest_id": 8954,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427141,7 +427179,7 @@
       {
         "quest_id": 9002,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427150,7 +427188,7 @@
       {
         "quest_id": 9002,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427161,7 +427199,7 @@
       {
         "quest_id": 8933,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427170,7 +427208,7 @@
       {
         "quest_id": 8933,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427181,7 +427219,7 @@
       {
         "quest_id": 2758,
         "name": "The Origins of Smithing",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 40,
         "level": 40,
@@ -427192,7 +427230,7 @@
       {
         "quest_id": 8918,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427201,7 +427239,7 @@
       {
         "quest_id": 8918,
         "name": "An Earnest Proposition",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427212,7 +427250,7 @@
       {
         "quest_id": 9011,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427221,7 +427259,7 @@
       {
         "quest_id": 9011,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427232,7 +427270,7 @@
       {
         "quest_id": 8957,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427241,7 +427279,7 @@
       {
         "quest_id": 8957,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427252,7 +427290,7 @@
       {
         "quest_id": 8942,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427261,7 +427299,7 @@
       {
         "quest_id": 8942,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427272,7 +427310,7 @@
       {
         "quest_id": 9011,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427281,7 +427319,7 @@
       {
         "quest_id": 9011,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427292,7 +427330,7 @@
       {
         "quest_id": 8957,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427301,7 +427339,7 @@
       {
         "quest_id": 8957,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427312,7 +427350,7 @@
       {
         "quest_id": 8942,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427321,7 +427359,7 @@
       {
         "quest_id": 8942,
         "name": "Just Compensation",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427365,7 +427403,7 @@
       {
         "quest_id": 8228,
         "name": "Could I get a Fishing Flier?",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 55,
         "level": 60,
@@ -427374,7 +427412,7 @@
       {
         "quest_id": 8229,
         "name": "Could I get a Fishing Flier?",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 55,
         "level": 60,
@@ -427385,7 +427423,7 @@
       {
         "quest_id": 8999,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427394,7 +427432,7 @@
       {
         "quest_id": 9007,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427405,7 +427443,7 @@
       {
         "quest_id": 8999,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427414,7 +427452,7 @@
       {
         "quest_id": 9007,
         "name": "Saving the Best for Last",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427425,7 +427463,7 @@
       {
         "quest_id": 8951,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427434,7 +427472,7 @@
       {
         "quest_id": 9016,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427445,7 +427483,7 @@
       {
         "quest_id": 8951,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
@@ -427454,7 +427492,7 @@
       {
         "quest_id": 9016,
         "name": "Anthion's Parting Words",
-        "faction": "both",
+        "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
         "level": 60,
