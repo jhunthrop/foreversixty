@@ -127,9 +127,68 @@ func checkPublishedSpecFile(t *testing.T, path string) {
 	}
 
 	checkHunterSurvivalWeightsMeleeNotRanged(t, path, spec)
+	checkSetDPSMonotonicAcrossBands(t, path, report.Bands)
 
 	for _, band := range report.Bands {
 		checkPublishedBand(t, path, band, spec, byID, lootIdx)
+	}
+}
+
+// checkSetDPSMonotonicAcrossBands is this lane's brief (bis-ranker-
+// integrity-10), item 1: rogue-assassination's own published set_dps
+// fell from band 30 (47.7/47.2, Alliance/Horde) to band 40
+// (36.7/36.5) - the ninth wow-player sweep's melee-ranged finding 1,
+// and the only non-monotonic band pair this repository's own bis
+// files carried across 20 specs - while band 40's own weapons (Gut
+// Ripper 2164, dps 33.89; Ardent Custodian 868, dps 32.86) genuinely
+// out-DPS band 30's (Royal Diplomatic Scepter 9457, dps 23.04;
+// Ironspine's Fist 7687, dps 22.92). Traced with a local, uncommitted
+// `go run ./sim/cmd/leveling-bis -spec rogue-assassination -bands
+// 30,40` against this build's own simdb.bin (copied from the main
+// checkout for the trace only, per this lane's own instructions -
+// never committed): the engine's own log named the cause directly -
+// "item 2164 (Gut Ripper) is not in this build's simdb.bin... stripped
+// by simdb.Attach's UnequipUnknown before every sim" - and band 30's
+// own main_hand (9457) is unknown to simdb.bin exactly the same way.
+// Both bands' main_hand is silently unequipped before every verify
+// sim SetDPS is measured from, so both bands' SetDPS was always "this
+// set, minus its main-hand weapon" (bandReport.SetDPSPartial's own
+// doc), never a real dual-wield measurement of the set either band
+// actually publishes - band 30's off-hand (Ironspine's Fist) simply
+// carries the set further alone than band 40's off-hand (Ardent
+// Custodian) does, which is not the same claim as "band 40 is a worse
+// set". main.go's runSpec already detects this (markNotInSimDB,
+// ranker-integrity-9 lane) and publishes it honestly: SetDPSPartial is
+// true on every affected band, exactly the "published reason" this
+// lane's brief asks for - the gap this function closes is that
+// nothing enforced that reason ever actually gets published instead
+// of a silent drop reaching site visitors. (The repository's own
+// currently-committed data/builds/1.60.1.70009/bis/
+// rogue-assassination.json predates this ranker-9 feature actually
+// running against it - Nightly owns generated data, so this lane
+// never regenerates or commits it; the next nightly run republishes
+// it with SetDPSPartial already true on both bands, which is what
+// lets this exact check pass once that happens.)
+//
+// The rule: within one faction, walking bands in ascending order (the
+// order runSpec's own band loop writes them, per faction, in - this
+// lane's brief's own words, "for every written spec"), a lower SetDPS
+// than the band before it is only legitimate when at least one of the
+// two bands involved is SetDPSPartial - a genuine full-set comparison
+// (both bands fully simmable) must never regress, but a comparison
+// where either side's own measurement is honestly incomplete is not
+// evidence of a real regression at all, so it is not one of this
+// check's failures - it is exactly the case SetDPSPartial exists to
+// name instead of hiding.
+func checkSetDPSMonotonicAcrossBands(t testing.TB, path string, bands []bandReport) {
+	t.Helper()
+	previous := map[string]bandReport{}
+	for _, band := range bands {
+		prev, ok := previous[band.Faction]
+		if ok && band.SetDPS < prev.SetDPS && !prev.SetDPSPartial && !band.SetDPSPartial {
+			t.Errorf("%s: %s %s: set_dps fell from %.2f (band %d) to %.2f (band %d) with no published reason (set_dps_partial is false on both bands) - tenet 8: a real drop needs a reason, never silent", path, band.Spec, band.Faction, prev.SetDPS, prev.Band, band.SetDPS, band.Band)
+		}
+		previous[band.Faction] = band
 	}
 }
 
@@ -399,5 +458,79 @@ func checkHunterSurvivalWeightsMeleeNotRanged(t *testing.T, path string, spec sp
 	}
 	if spec.ReferenceStat != "attack_power" {
 		t.Errorf("%s: hunter-survival's reference_stat is %q, want attack_power (melee) - see this function's own doc", path, spec.ReferenceStat)
+	}
+}
+
+// fakeTB is a minimal testing.TB stand-in that only implements
+// Helper()/Errorf() - everything checkSetDPSMonotonicAcrossBands
+// actually calls - so its unit tests below can assert on exactly what
+// was flagged without a real failing subtest bubbling up and marking
+// this file's own test binary as failed (t.Run's failure always
+// propagates to its parent, which is the wrong tool for asserting "did
+// this checker correctly flag a synthetic violation"). The embedded
+// nil testing.TB satisfies every other method by panicking if this
+// function ever called one of them, which would itself fail whichever
+// test reached it - exactly as it should.
+type fakeTB struct {
+	testing.TB
+	errors []string
+}
+
+func (f *fakeTB) Helper() {}
+func (f *fakeTB) Errorf(format string, args ...any) {
+	f.errors = append(f.errors, fmt.Sprintf(format, args...))
+}
+
+// TestCheckSetDPSMonotonicAcrossBandsFlagsAnUnexplainedDrop is this
+// lane's brief (bis-ranker-integrity-10), item 1's own contract test,
+// as a synthetic unit test (checkSetDPSMonotonicAcrossBands' own doc
+// explains the real rogue-assassination repro this table is modelled
+// on) so it runs under an ordinary `go test`, not only
+// FOREVER_BIS_SANITY's nightly pass over the committed bis files.
+func TestCheckSetDPSMonotonicAcrossBandsFlagsAnUnexplainedDrop(t *testing.T) {
+	bands := []bandReport{
+		{Spec: "rogue-assassination", Band: 30, Faction: "alliance", SetDPS: 47.68},
+		{Spec: "rogue-assassination", Band: 40, Faction: "alliance", SetDPS: 36.71},
+	}
+	fake := &fakeTB{}
+	checkSetDPSMonotonicAcrossBands(fake, "testdata/synthetic.json", bands)
+	if len(fake.errors) != 1 {
+		t.Fatalf("checkSetDPSMonotonicAcrossBands errors = %v, want exactly one flagged drop (neither band is set_dps_partial)", fake.errors)
+	}
+}
+
+// TestCheckSetDPSMonotonicAcrossBandsAllowsAPartialExplainedDrop is
+// the same shape, with both bands honestly marked SetDPSPartial
+// (report.go's own doc: a stripped, not-in-sim main_hand left each
+// band's own measurement incomplete) - the published reason this
+// lane's brief asks for, so this must not be flagged.
+func TestCheckSetDPSMonotonicAcrossBandsAllowsAPartialExplainedDrop(t *testing.T) {
+	bands := []bandReport{
+		{Spec: "rogue-assassination", Band: 30, Faction: "alliance", SetDPS: 47.68, SetDPSPartial: true},
+		{Spec: "rogue-assassination", Band: 40, Faction: "alliance", SetDPS: 36.71, SetDPSPartial: true},
+	}
+	fake := &fakeTB{}
+	checkSetDPSMonotonicAcrossBands(fake, "testdata/synthetic.json", bands)
+	if len(fake.errors) != 0 {
+		t.Fatalf("checkSetDPSMonotonicAcrossBands errors = %v, want none: both bands are set_dps_partial, a published reason for the drop", fake.errors)
+	}
+}
+
+// TestCheckSetDPSMonotonicAcrossBandsIgnoresOtherFactionsAndIncreases
+// confirms two more cases in the same table: a genuine increase never
+// flags (whatever SetDPSPartial says), and two factions are compared
+// independently - a horde band's own lower SetDPS never gets compared
+// against an unrelated alliance band's.
+func TestCheckSetDPSMonotonicAcrossBandsIgnoresOtherFactionsAndIncreases(t *testing.T) {
+	bands := []bandReport{
+		{Spec: "hunter-marksmanship", Band: 20, Faction: "alliance", SetDPS: 100},
+		{Spec: "hunter-marksmanship", Band: 20, Faction: "horde", SetDPS: 10},
+		{Spec: "hunter-marksmanship", Band: 30, Faction: "alliance", SetDPS: 150},
+		{Spec: "hunter-marksmanship", Band: 30, Faction: "horde", SetDPS: 20},
+	}
+	fake := &fakeTB{}
+	checkSetDPSMonotonicAcrossBands(fake, "testdata/synthetic.json", bands)
+	if len(fake.errors) != 0 {
+		t.Fatalf("checkSetDPSMonotonicAcrossBands errors = %v, want none: every band increased within its own faction", fake.errors)
 	}
 }
