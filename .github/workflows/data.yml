@@ -10,6 +10,11 @@ on:
     inputs:
       product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
       build: { description: 'build string (blank = latest)', required: false }
+      allow_shrink:
+        description: 'deliberate re-baseline: let normalize/loot write a catalogue smaller than the committed one (e.g. after dropping QA rows)'
+        required: false
+        default: false
+        type: boolean
 permissions: { contents: read }
 jobs:
   test:
@@ -59,7 +64,11 @@ jobs:
         env:
           PRODUCT: ${{ inputs.product }}
           BUILD_IN: ${{ inputs.build }}
+          ALLOW_SHRINK: ${{ inputs.allow_shrink }}
         run: |
+          # A deliberate re-baseline (dropping rows on purpose) passes --allow-shrink
+          # to every gated stage below; the default keeps the no-shrink gates armed.
+          if [ "$ALLOW_SHRINK" = "true" ]; then echo "SHRINK=--allow-shrink" >> "$GITHUB_ENV"; else echo "SHRINK=" >> "$GITHUB_ENV"; fi
           ARGS=(--product "$PRODUCT")
           [ -n "$BUILD_IN" ] && ARGS+=(--build "$BUILD_IN")
           BUILD=$(uv run python -m pipeline fetch "${ARGS[@]}" | tail -1)
@@ -75,12 +84,12 @@ jobs:
           path: data/.icon-cache
           key: icon-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: icon-cache-${{ runner.os }}-
-      - run: uv run python -m pipeline normalize --build "$BUILD"
+      - run: uv run python -m pipeline normalize --build "$BUILD" $SHRINK
       - run: uv run python -m pipeline icons --build "$BUILD"
       - run: uv run python -m pipeline tree-art --build "$BUILD"
       # Re-run the offline normalize so manifest.json also covers the icons and tree art
       # the steps above just wrote.
-      - run: uv run python -m pipeline normalize --build "$BUILD"
+      - run: uv run python -m pipeline normalize --build "$BUILD" $SHRINK
       # The fetched build's copy of the curated stat weights, and the addon's
       # data. Without these a new build lands with neither file. They read only
       # classes.json, talents/ and curated/, so they run straight after
@@ -120,7 +129,7 @@ jobs:
       # `faction_restriction`, which pipeline/simdb/items.py reads into
       # SimItem. Both refresh the same manifest, and the diff step at the
       # end sees the finished directory either way.
-      - run: uv run python -m pipeline loot --build "$BUILD" --engine ../.engine
+      - run: uv run python -m pipeline loot --build "$BUILD" --engine ../.engine $SHRINK
       # The simulator's outputs. All three read the same raw inputs normalize
       # does and all three refresh manifest.json, so they run after the
       # normalize that covers icons and tree art rather than before it.
