@@ -199,6 +199,41 @@ def _faction_from_required_races(races: int) -> Literal["alliance", "horde", "bo
     return "both"
 
 
+#: Vanilla's own reputation standing thresholds -- the MINIMUM absolute
+#: reputation value needed to BE at each standing, ascending, the same
+#: eight-name vocabulary `pipeline.forkdb.REP_LEVELS` uses. Universal
+#: across every faction (a faction's own reputation track is centred on
+#: this same zero point, "Neutral", regardless of which faction it is),
+#: so this is not itself per-faction data -- unlike `REP_LEVELS`, which
+#: decodes a RANK index (cmangos' 0-indexed Hated..Exalted, `conditions`
+#: type 5's own `value2`), this decodes an absolute VALUE
+#: (`quest_template.RequiredMinRepValue`), a different unit entirely.
+_REP_VALUE_THRESHOLDS: tuple[tuple[int, str], ...] = (
+    (-42000, "hated"),
+    (-6000, "hostile"),
+    (-3000, "unfriendly"),
+    (0, "neutral"),
+    (3000, "friendly"),
+    (9000, "honored"),
+    (21000, "revered"),
+    (42000, "exalted"),
+)
+
+
+def _standing_from_min_rep_value(value: int) -> str:
+    """`quest_template.RequiredMinRepValue`'s own absolute reputation
+    points as the standing name a player reads on their reputation pane --
+    the highest `_REP_VALUE_THRESHOLDS` entry at or below `value`, so a
+    quest requiring exactly a standing's own cutoff (3000 for Friendly)
+    reads that standing, not the one below it."""
+    standing = _REP_VALUE_THRESHOLDS[0][1]
+    for threshold, name in _REP_VALUE_THRESHOLDS:
+        if value < threshold:
+            break
+        standing = name
+    return standing
+
+
 ClassicDbSourceKind = Literal[
     "creature_drop", "object_drop", "vendor", "quest_reward", "skinning", "pickpocketing",
     "fishing", "world_drop",
@@ -249,6 +284,30 @@ class ClassicDbQuestInfo(BaseModel):
     #: "only obtainable from a source with opens set", so it never gates
     #: anything).
     turn_in_item_ids: list[int] = []
+    #: `quest_template.RequiredMinRepFaction`/`RequiredMinRepValue` -- the
+    #: reputation faction and standing needed to be OFFERED or to TURN IN
+    #: this quest at all, when the dump states one (0/0, both `None` here,
+    #: for the overwhelming majority of quests, which need no reputation).
+    #: `required_rep_standing` is `RequiredMinRepValue`'s own absolute
+    #: reputation points converted to the standing name a player reads on
+    #: their reputation pane (`_standing_from_min_rep_value`), not the raw
+    #: number. `RequiredMaxRepFaction`/`Value` (an upper bound some quests
+    #: use to retire once a later track supersedes them) is not read here:
+    #: it never GATES a reward the way a minimum does, so it has no
+    #: bearing on `pipeline.loot.sources.apply_quest_opens_gate`.
+    #:
+    #: rep-gate lane, 2026-09-30, this lane's brief item 1: Earthstrike
+    #: (item 21180)'s own quest 8573 "Champion's Battlegear" states NO
+    #: reputation requirement on its `quest_template` row -- these two
+    #: fields stay `None` for it, and `apply_quest_opens_gate`'s own
+    #: fallback (the SAME item's `rep`-kind `LootSource`) is what actually
+    #: gates that one. This field pair is for the quests that DO carry
+    #: the requirement directly (13 measured on build 1.60.1.70009's own
+    #: pinned dump, Cenarion Circle among them at Friendly/Honored/
+    #: Revered) -- a more direct, verifiable signal than the item-source
+    #: fallback wherever the dump actually states it.
+    required_rep_faction: int | None = None
+    required_rep_standing: str | None = None
 
 
 class ClassicDbSourceRecord(BaseModel):
@@ -652,6 +711,68 @@ def _parse_object_drops(
             )
 
 
+#: cmangos' own `gameobject_template.type` for a lootable chest --
+#: `gameobject_chest_loot`'s own doc for why this is the ONE type this
+#: reads `data1` for.
+_GAMEOBJECT_TYPE_CHEST = 3
+
+
+def gameobject_chest_loot(sql_text: str) -> dict[int, dict[int, float]]:
+    """gameobject entry -> {item id: percent chance}, for every
+    `_GAMEOBJECT_TYPE_CHEST` row whose own `data1` (cmangos' own chest
+    `lootId` column -- NOT the object's own entry) resolves loot in
+    `gameobject_loot_template`: direct rows plus a NEGATIVE
+    `mincountOrRef` row's own `reference_loot_template` expansion, the
+    same recursive rule `_expand_loot_template` already applies to every
+    other loot table this module reads.
+
+    `pipeline.audit.check_drops`' own gap this closes (this lane's brief
+    item 3): a "boss" that is really a reward CHEST -- Dire Maul's
+    "Tribute" (object entry 179564, `Gordok Tribute` in classic-db, chest
+    lootId 16577) and Blackrock Depths' "Chest of The Seven" (object
+    entry 169243, chest lootId 12260) -- stores its real loot under a
+    DIFFERENT numeric id than its own entry. `_parse_object_drops` above
+    never needed this: it only ever reads `gameobject_loot_template`
+    keyed by an object's OWN entry, which is right for the overwhelming
+    majority of lootable objects (an ore vein, a generic loot chest) but
+    silently empty for one of these named reward chests -- measured on
+    the pinned dump, 8 of 8 "Chest of The Seven" items and 20 of 39
+    "Tribute" items resolve correctly once `data1` is followed instead of
+    the object's own entry. This lives here, callable straight from the
+    raw dump text, rather than duplicating `_expand_loot_template`'s own
+    recursion in `pipeline.audit.dumpdb` (which has no reason to reach
+    into this module's private helpers for its own sake).
+    """
+    chest_loot_ids: dict[int, int] = {}
+    for row in iter_table_records(sql_text, "gameobject_template"):
+        if int(row.get("type", "0")) != _GAMEOBJECT_TYPE_CHEST:
+            continue
+        data1 = int(row.get("data1", "0"))
+        if data1:
+            chest_loot_ids[int(row["entry"])] = data1
+
+    rows_by_entry = _rows_by_entry(list(iter_table_records(sql_text, "gameobject_loot_template")))
+    reference_rows = _rows_by_entry(list(iter_table_records(sql_text, "reference_loot_template")))
+    # No `_excluded_reference_ids`/`_world_drop_pools` exclusion here,
+    # unlike every OTHER `_expand_loot_template` call in this module: a
+    # named reward chest's own loot table is already curated, specific
+    # loot (the whole reason cmangos gives it a distinct `data1` lootId
+    # rather than folding it into a shared pool), never one of the
+    # generic "any creature/object can drop this" pools that exclusion
+    # exists to catch -- and skipping it means this function only ever
+    # needs `gameobject_template`/`gameobject_loot_template`/
+    # `reference_loot_template`, not the other four loot tables
+    # `_excluded_reference_ids` scans across the whole dump for.
+    excluded_refs: frozenset[int] = frozenset()
+
+    out: dict[int, dict[int, float]] = {}
+    for object_entry, loot_id in chest_loot_ids.items():
+        expanded = _expand_loot_template(loot_id, rows_by_entry, reference_rows, excluded_refs)
+        if expanded:
+            out[object_entry] = dict(expanded)
+    return out
+
+
 def _parse_conditions(sql_text: str) -> dict[int, ClassicDbCondition]:
     out: dict[int, ClassicDbCondition] = {}
     for row in iter_table_records(sql_text, "conditions"):
@@ -756,12 +877,23 @@ def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceReco
     for row in rows:
         entry = int(row["entry"])
         title = unquote(row["Title"]) or ""
+        # `.get(..., "0")`: same reasoning as `ReqItemId1-4`/`PrevQuestId`
+        # above -- a fixture (or a real dump predating this lane) whose
+        # own `CREATE TABLE quest_template` declares fewer columns simply
+        # states no reputation requirement, rather than a KeyError.
+        required_rep_faction = int(row.get("RequiredMinRepFaction", "0"))
         quest = ClassicDbQuestInfo(
             quest_id=entry,
             min_level=int(row["MinLevel"]),
             level=int(row["QuestLevel"]),
             faction=_faction_from_required_races(int(row["RequiredRaces"])),
             turn_in_item_ids=_quest_chain_turn_in_items(entry, own_turn_ins, prev_quest),
+            required_rep_faction=required_rep_faction or None,
+            required_rep_standing=(
+                _standing_from_min_rep_value(int(row.get("RequiredMinRepValue", "0")))
+                if required_rep_faction
+                else None
+            ),
         )
         reward_ids = {
             int(row[f"RewChoiceItemId{n}"]) for n in range(1, 7)

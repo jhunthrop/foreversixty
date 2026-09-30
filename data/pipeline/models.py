@@ -488,6 +488,21 @@ class QuestSource(BaseModel):
     #: gates a quest-sourced legendary or raid-chain reward exactly the
     #: way it already gates a direct raid drop.
     opens: str | None = None
+    #: `pipeline.classic_sources.ClassicDbQuestInfo.required_rep_faction`/
+    #: `required_rep_standing` -- the reputation faction and standing this
+    #: quest itself needs, when classic-db's own `quest_template` row
+    #: states one directly. `pipeline.loot.sources.apply_quest_opens_gate`
+    #: also fills these in as a FALLBACK, from the SAME item's own
+    #: `rep`-kind `LootSource`, for a quest classic-db states no
+    #: reputation requirement on directly (rep-gate lane, 2026-09-30:
+    #: Earthstrike, item 21180, quest 8573 "Champion's Battlegear" -- the
+    #: fork database already names that item from a
+    #: `rep:cenarion-circle:exalted` source, so the quest reward inherits
+    #: that gate rather than reading as available with no requirement at
+    #: all). `None`/`None` for the overwhelming majority of quests, which
+    #: need no reputation at all.
+    required_rep_faction: int | None = None
+    required_rep_standing: str | None = None
 
 
 class LootFile(BaseModel):

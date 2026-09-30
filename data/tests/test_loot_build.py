@@ -761,15 +761,24 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     id is absent from that dump and `faction` falls back to the reward
     item's own restriction, unverified against the quest itself. Every
     entry on the committed build carries one or the other -- `None` is
-    only for a `QuestSource` a caller other than `build_loot` built."""
+    only for a `QuestSource` a caller other than `build_loot` built.
+
+    rep-gate lane, 2026-09-30: `required_rep_faction`/`required_rep_
+    standing` (QuestSource's own doc) are the same kind of optional key
+    as `opens` -- present only for a quest classic-db states (or,
+    Earthstrike's own case, the same item's `rep`-kind `LootSource`
+    supplies) a reputation requirement for, omitted (`exclude_none`) on
+    every other entry -- so both are excluded from the fixed key list
+    below the same way `opens` already is."""
     quests = loot()["quests"]
     assert len(quests) >= QUEST_DETAIL_ITEMS
     assert set(quests) == {str(i) for i in by_id()["quest"]["items"]}
     counts = {"alliance": 0, "horde": 0, "both": 0}
+    optional_keys = {"opens", "required_rep_faction", "required_rep_standing"}
     for item_id, entries in quests.items():
         assert entries, item_id
         for entry in entries:
-            assert sorted(k for k in entry if k != "opens") == [
+            assert sorted(k for k in entry if k not in optional_keys) == [
                 "faction",
                 "faction_source",
                 "level",

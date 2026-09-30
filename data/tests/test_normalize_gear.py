@@ -370,6 +370,8 @@ def test_resolve_required_level_is_none_for_an_item_level_one_row():
         "zzOLDCodex of Prayer of Fortitude",
         "ZZZZZ sword 2",  # classic-db QA rows 5031-5039
         "ZZZZZZZZ",
+        "Fishing Pole (JEFFTEST)",  # classic-db row: \btest\b has no boundary here
+        "JEFFTEST",  # same token, no parens: a whole ALL-CAPS word ending in "test"
     ],
 )
 def test_the_junk_name_matcher_catches_every_pattern_class(name: str):
@@ -389,6 +391,8 @@ def test_the_junk_name_matcher_catches_every_pattern_class(name: str):
         "Rexxar's Testament",  # "Testament" is not a \btest\b or \btesting\b match
         "Corrupt Tested Sample",  # "Tested" is not "testing"; no pattern matches it
         "Un'Goro Tested Sample",
+        "Contest Winner's Tabard (Alliance)",  # parenthesised, but not ALL CAPS
+        "Testament of Hope (Bound)",  # ditto: real name, ordinarily-cased parens
     ],
 )
 def test_the_junk_name_matcher_keeps_real_items_that_merely_contain_the_letters(name: str):

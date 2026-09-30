@@ -176,6 +176,67 @@ def test_the_flat_quest_bucket_source_never_ungates_a_per_quest_entry():
     assert gated.quests[str(ONYXIA_TOOTH_PENDANT)][0].opens == "raids-1"
 
 
+EARTHSTRIKE = 21180
+
+
+def test_a_quest_with_its_own_required_min_rep_faction_is_gated_to_the_rep_phase():
+    """rep-gate lane, 2026-09-30, this lane's brief item 1: a synthetic
+    quest whose `QuestSource.required_rep_faction` is 609 (Cenarion
+    Circle, as `pipeline.classic_sources._parse_quest_rewards` would set
+    it from a `quest_template` row's own `RequiredMinRepFaction`) is
+    gated to `REP_FACTION_RAID_PHASE_OPENS[609]` -- the same "later" AQ
+    phase `curated/loot/forever-raid-phases.json` already gates
+    `raid:ahnqiraj` to -- with no turn-in item or classic_sources
+    coverage needed at all."""
+    document = LootFile(
+        sources=[],
+        quests={
+            str(ORDINARY_TURN_IN): [
+                QuestSource(
+                    quest_id=9999, name="A Rep-Gated Quest", faction="both", min_level=60,
+                    level=60, level_source="classic-db", required_rep_faction=609,
+                    required_rep_standing="exalted",
+                )
+            ],
+        },
+    )
+    gated = apply_quest_opens_gate(document, classic_sources={})
+    entry = gated.quests[str(ORDINARY_TURN_IN)][0]
+    assert entry.opens == "later"
+    assert entry.required_rep_faction == 609
+    assert entry.required_rep_standing == "exalted"
+
+
+def test_earthstrikes_own_quest_source_inherits_its_items_rep_gate():
+    """The real-dump shape this lane's brief names directly: Earthstrike
+    (item 21180) has NO `RequiredMinRepFaction` on its own quest_template
+    row (quest 8573 "Champion's Battlegear") -- classic-db states
+    nothing there -- but the fork database already names the SAME item
+    from a `rep:cenarion-circle:exalted` source. The quest source must
+    inherit that source's own gate rather than bypassing it."""
+    document = LootFile(
+        sources=[
+            LootSource(
+                id="rep:cenarion-circle:exalted", kind="rep", name="Cenarion Circle",
+                faction_id=609, standing="exalted", items=[EARTHSTRIKE, 21188, 21190],
+            ),
+        ],
+        quests={
+            str(EARTHSTRIKE): [
+                QuestSource(
+                    quest_id=8573, name="Champion's Battlegear", faction="both", min_level=60,
+                    level=60, level_source="classic-db",
+                ),
+            ],
+        },
+    )
+    gated = apply_quest_opens_gate(document, classic_sources={})
+    entry = gated.quests[str(EARTHSTRIKE)][0]
+    assert entry.required_rep_faction == 609
+    assert entry.required_rep_standing == "exalted"
+    assert entry.opens == "later"
+
+
 def test_two_faction_mirrored_quests_for_the_same_item_are_gated_independently():
     """Same shape `QuestSource`'s own doc already relies on (Hammerbone,
     quest 914): one item, two per-faction QuestSource entries -- both

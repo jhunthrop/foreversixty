@@ -77,13 +77,25 @@ PLANNER_QUALITIES = frozenset({2, 3, 4, 5})
 #: so build_class_items's own slot filter drops it before is_junk_name is ever
 #: called; see test_the_testing_pattern_has_a_known_false_positive_on_real_
 #: consumables.
+#: classic-db follow-up, 2026-09-30: "Fishing Pole (JEFFTEST)" slipped past
+#: every alternative above -- \btest\b needs a word boundary on both sides,
+#: and "JEFFTEST" has none before "test". The two alternatives below catch a
+#: token ENDING in "test" that is either parenthesised ("(JEFFTEST)") or a
+#: whole ALL-CAPS word on its own ("JEFFTEST" with no parens), scoped
+#: case-sensitive with (?-i:...) so they only fire on shouting-case tokens --
+#: not on real, ordinarily-cased names that happen to end in "test", such as
+#: "Contest Winner's Tabard" or "Rexxar's Testament" (see
+#: test_the_junk_name_matcher_keeps_real_items_that_merely_contain_the_letters).
 JUNK_NAME_PATTERN = re.compile(
     r"\bgamemaster\b|\bgm\b|\btest\b|\btesting\b|\bqatest\b"
     r"|\bdeprecated\b|\bmonster\b|\bunused\b|\bplaceholder\b|\bdnd\b"
     r"|\(old\)|zzold|\[ph\]|\[dnt\]"
     # catalogue-universe follow-up, 2026-09-30: classic-db's own QA rows
     # 5031-5039 are named "ZZZZZ", "ZZZZZZZZ", "ZZZZZ sword N".
-    r"|\bz{4,}",
+    r"|\bz{4,}"
+    # catalogue-universe follow-up, 2026-09-30: an ALL-CAPS token ending in
+    # "test", parenthesised or standalone (e.g. "(JEFFTEST)", "JEFFTEST").
+    r"|(?-i:\(\w*TEST\)|\b[A-Z]+TEST\b)",
     re.IGNORECASE,
 )
 

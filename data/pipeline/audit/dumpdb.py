@@ -21,6 +21,7 @@ import gzip
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from pipeline.classic_sources import gameobject_chest_loot as _gameobject_chest_loot
 from pipeline.sqldump import iter_table_records, unquote
 
 #: cmangos' own SPELL_EFFECT_CREATE_ITEM id (Classic 1.12 effect list).
@@ -78,6 +79,48 @@ class ClassicDbDump:
         rare instance-bound copy still resolves to its usual map."""
         by_entry: dict[int, Counter[int]] = defaultdict(Counter)
         for row in iter_table_records(self._text, "creature"):
+            by_entry[int(row["id"])][int(row["map"])] += 1
+        return {entry: counts.most_common(1)[0][0] for entry, counts in by_entry.items()}
+
+    @functools.cached_property
+    def gameobject_chest_loot(self) -> dict[int, dict[int, float]]:
+        """`pipeline.classic_sources.gameobject_chest_loot`'s own result
+        (gameobject entry -> {item id: percent chance}), cached the same
+        lazy way every other dump-derived table here is -- check C's own
+        fix for a "boss" that is really a reward chest, whose loot lives
+        under `gameobject_template.data1`, not the object's own entry."""
+        return _gameobject_chest_loot(self._text)
+
+    @functools.cached_property
+    def gameobject_names(self) -> dict[int, str]:
+        """gameobject entry -> `gameobject_template.name` -- same shape
+        as `creature_names`, for `pipeline.audit.check_drops._resolve_
+        chest_loot`'s own name-containment gate (a common item, on the
+        same instance map, purely by coincidence naming the same id a
+        totally unrelated chest also carries, is NOT enough on its own to
+        credit a chest resolution -- measured while building this lane's
+        brief item 3's fix: without this gate, `1710` "Greater Healing
+        Potion" and similar ubiquitous items produced 13 false "chance
+        disagrees" majors for bosses with no chest at all)."""
+        return {
+            int(row["entry"]): unquote(row["name"]) or ""
+            for row in iter_table_records(self._text, "gameobject_template")
+        }
+
+    @functools.cached_property
+    def object_spawn_map(self) -> dict[int, int]:
+        """gameobject entry -> the map id it spawns on most often -- same
+        `Counter.most_common` rule `creature_spawn_map` uses, for
+        `pipeline.audit.check_drops`'s own chest-boss resolution: a
+        reward chest's `LootBoss.npc_id` is a fork-internal placeholder
+        with no relation to classic-db's real object entry (measured:
+        9034/14324, Blackrock Depths' "Chest of The Seven"/Dire Maul's
+        "Tribute", are unrelated classic-db CREATURES), and matching by
+        name does not work either ("Tribute" vs classic-db's own "Gordok
+        Tribute") -- the instance's own map id is the signal that
+        narrows candidates down to the ones actually IN that instance."""
+        by_entry: dict[int, Counter[int]] = defaultdict(Counter)
+        for row in iter_table_records(self._text, "gameobject"):
             by_entry[int(row["id"])][int(row["map"])] += 1
         return {entry: counts.most_common(1)[0][0] for entry, counts in by_entry.items()}
 
