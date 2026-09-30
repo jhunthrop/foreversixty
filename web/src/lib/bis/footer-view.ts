@@ -5,7 +5,8 @@
 // wording is wrong for this spec's own real data in two places the spec calls out by name:
 // the "comes at 30" trinket claim and the exact instance/rep list -- see panel-view.ts's
 // `noSourcedItemCopyFor` for the first; this module is the second).
-import { SLOTS, SLOT_DISPLAY_LABELS, type Slot } from '../planner/types';
+import { SLOTS, type Slot } from '../planner/types';
+import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 import { bisCopy, joinWithAnd } from './copy';
 import type { BandInfo, RowView } from './panel-view';
 import type { SourceCell } from './source-cell';

@@ -31,7 +31,8 @@ import type {
   LootQuestsFile,
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
-import { SLOT_DISPLAY_LABELS, type Slot } from '../planner/types';
+import type { Slot } from '../planner/types';
+import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 
 /** The two ranker-own `swap_note` templates (`sim/cmd/leveling-bis/report.go`'s own
  *  `fmt.Sprintf` calls): "confirmed by the sim against X (id N): kept the pick, A vs B set

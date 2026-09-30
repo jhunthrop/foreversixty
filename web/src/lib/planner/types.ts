@@ -153,20 +153,6 @@ export const SLOT_LABELS: Record<Slot, string> = {
   ranged: 'Ranged',
 };
 
-/** The best-in-slot list's own slot column (bis rebuild spec §4.D): the client's own
- *  paperdoll labels both ring sockets and both trinket sockets identically ("Finger" /
- *  "Trinket"), unlike `SLOT_LABELS` above, which stays the disambiguating internal label
- *  every other caller (the planner, `data-testid`s) still needs. A second map, not an
- *  overload of `SLOT_LABELS` itself, because two different callers need two different
- *  strings for the same key. */
-export const SLOT_DISPLAY_LABELS: Record<Slot, string> = {
-  ...SLOT_LABELS,
-  finger1: 'Ring',
-  finger2: 'Ring',
-  trinket1: 'Trinket',
-  trinket2: 'Trinket',
-};
-
 export interface Item {
   id: number;
   name: string;
