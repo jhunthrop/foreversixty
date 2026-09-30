@@ -424,6 +424,16 @@ older-schema build works if one is ever fetched again.
   vendors (the 266 rank sets among them are covered by the `pvp` kind, read off the
   client's `RequiredPVPRank`) and 363 open-world drops from NPCs the fork does not
   name — and are dropped rather than guessed into a kind.
+- **classic-db-only items and `client_unconfirmed`** (catalogue-universe lane,
+  2026-09-30): `items/<class-slug>.json` also carries the real 1.12 gear neither the
+  client's `ItemSparse` (shipped or hotfix-merged) nor wowhead's Forever gear-planner
+  scrape name at all — Hand of Justice, Devilsaur Eye and about 1,500 more on build
+  1.60.1.70009 — with `stats_source`/`required_level_source: "classic-db"` and
+  `client_unconfirmed: true` on every such row (`pipeline/classicdb_items.py`). That flag
+  means the row is real vanilla itemization the Forever client has not (yet) shipped
+  itself, not a guess; the beta box's hotfix cache promotes it to ordinary client stats
+  (`client_unconfirmed` clears) the next time the client sees the item and the hotfix
+  cache is refreshed and re-merged.
 
 ## What the beta client changed about the talents
 

@@ -73,3 +73,45 @@ def test_created_item_to_spells(tmp_path):
     dump = _write_dump(tmp_path)
     assert dump.created_item_to_spells[700] == [7001]
     assert 0 not in dump.created_item_to_spells
+
+
+# --- equippable_item_template_rows / spell_names (catalogue-universe lane) ---
+
+EQUIPPABLE_SQL = """
+CREATE TABLE `item_template` (
+  `entry` mediumint,
+  `class` tinyint,
+  `InventoryType` tinyint
+) ENGINE=MyISAM;
+INSERT INTO `item_template` VALUES
+  (100,2,13),
+  (200,4,1),
+  (300,4,0),
+  (400,9,5);
+
+CREATE TABLE `spell_template` (
+  `Id` int,
+  `SpellName` text
+) ENGINE=MyISAM;
+INSERT INTO `spell_template` VALUES (7001,'Increase Spell Dam 29');
+"""
+
+
+def test_equippable_item_template_rows_keeps_only_weapon_or_armor_with_a_real_slot():
+    dump = ClassicDbDump.from_text(EQUIPPABLE_SQL)
+    ids = {int(row["entry"]) for row in dump.equippable_item_template_rows}
+    # 100 is a weapon with a real slot, 200 is armour with a real slot; 300 is
+    # armour with InventoryType 0 (not equippable) and 400 is neither class
+    # (consumable, ClassID 9) -- both excluded.
+    assert ids == {100, 200}
+
+
+def test_spell_names_reads_the_internal_cmangos_label():
+    dump = ClassicDbDump.from_text(EQUIPPABLE_SQL)
+    assert dump.spell_names[7001] == "Increase Spell Dam 29"
+
+
+def test_from_text_builds_a_dump_with_no_backing_file():
+    dump = ClassicDbDump.from_text(EQUIPPABLE_SQL)
+    assert dump.path is None
+    assert len(dump.equippable_item_template_rows) == 2

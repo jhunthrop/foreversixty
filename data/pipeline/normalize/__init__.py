@@ -126,6 +126,10 @@ def normalize_build(
     from pipeline.icons_fix import load_fork_icons, load_wowhead_icons
     from pipeline.manifest import write_manifest
     from pipeline.normalize.classes import normalize_classes, normalize_races
+    from pipeline.normalize.classicdb import load_classicdb_supplement
+    from pipeline.normalize.classicdb import merge_class_items as merge_classicdb_class_items
+    from pipeline.normalize.classicdb import merge_items as merge_classicdb_items
+    from pipeline.normalize.classicdb import merge_sets as merge_classicdb_sets
     from pipeline.normalize.dungeons import normalize_dungeons
     from pipeline.normalize.effects import EffectIndex
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
@@ -184,11 +188,38 @@ def normalize_build(
     write_json(normalize_zones(t("AreaTable"), t("Map")), build_dir / "zones.json")
     write_json(normalize_dungeons(t("JournalInstance")), build_dir / "dungeons.json")
     client_items = normalize_items(t("ItemSparse"), t("Item"))
-    wowhead_supplement = load_supplement(build_dir, {item.id for item in client_items})
+    client_ids = {item.id for item in client_items}
+    wowhead_supplement = load_supplement(build_dir, client_ids)
     items = (
         merge_items(client_items, wowhead_supplement)
         if wowhead_supplement is not None
         else client_items
+    )
+    # classic-db's 1.12 item_template only ever fills the ids BOTH the client
+    # and wowhead's own supplement lack (catalogue-universe lane, 2026-09-30;
+    # see pipeline.classicdb_items' own doc) -- so it runs strictly after the
+    # wowhead merge above, over the union of ids either one already placed.
+    #
+    # "the client already has this id" means the client's own ItemSparse/
+    # hotfix row is real equippable data (InventoryType != 0), not merely
+    # that a row with this id exists: Orb of Deception (1973, build
+    # 1.60.1.70009) is a case in point -- its hotfix-merged ItemSparse row
+    # carries the right quality/required_level/item_level (3/54/59, matching
+    # classic-db's own item_template exactly) but a bare 0 for
+    # InventoryType, so build_class_items silently drops it as unslotted;
+    # classic-db's real InventoryType 12 (trinket) is what actually ships
+    # it. Treating "any row" as "known" would leave this id in the same
+    # unshipped state a client-only build already left it in, for a
+    # different reason -- the exact defect this lane exists to close.
+    client_equippable_ids = {item.id for item in client_items if item.inventory_type != 0}
+    known_ids = client_equippable_ids | (
+        {item.id for item in wowhead_supplement} if wowhead_supplement is not None else set()
+    )
+    classicdb_supplement = load_classicdb_supplement(build_dir, known_ids)
+    items = (
+        merge_classicdb_items(items, classicdb_supplement)
+        if classicdb_supplement is not None
+        else items
     )
     # items.json's own completeness gate and write are deferred to just after
     # the per-class items/ gate below (still before "Curated Forever facts"),
@@ -271,6 +302,8 @@ def normalize_build(
     item_sets = build_item_sets(t("ItemSet"), t("ItemSetSpell"), spell_text)
     if wowhead_supplement is not None:
         item_sets = merge_sets(item_sets, wowhead_supplement)
+    if classicdb_supplement is not None:
+        item_sets = merge_classicdb_sets(item_sets, classicdb_supplement)
     write_json(item_sets, build_dir / "sets.json")
     # Captured now, before anything below can delete or overwrite the
     # committed items/ directory, so the shrink gate has the old counts to
@@ -325,6 +358,15 @@ def normalize_build(
     else:
         if wowhead_supplement is not None:
             class_items = merge_class_items(class_items, wowhead_supplement, class_rows)
+        if classicdb_supplement is not None:
+            class_items = merge_classicdb_class_items(
+                class_items,
+                classicdb_supplement,
+                class_rows,
+                spell_text,
+                fork_icons,
+                wowhead_icons,
+            )
         # Every class is checked against its own previous count before any of
         # them is written -- one class failing the gate must not leave a
         # directory that is half regenerated and half deleted.
