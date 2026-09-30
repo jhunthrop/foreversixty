@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -258,6 +259,138 @@ func restrictRangedByProficiency(list []scored, classSlug string) []scored {
 				out = append(out, c)
 			}
 		}
+	}
+	return out
+}
+
+// classWeaponSubclasses is this lane's brief (bis-ranker-integrity-10),
+// item 3: a Go-side, class-keyed weapon subclass allow-list, so main_hand/
+// off_hand/ranged never publish a weapon subclass this class cannot
+// wear even if a data regression puts one in <class>.json - eligible.go's
+// own doc says plainly that class weapon legality is "NOT checked here
+// - candidates are already sourced from data/builds/<build>/items/
+// <class>.json", i.e. entirely delegated to the Python pipeline's own
+// data/pipeline/proficiency.py; this is the safety net that catches the
+// pipeline getting it wrong, checked independently rather than by
+// re-reading proficiency.py itself (a second reader of the SAME wrong
+// table would still agree with a regression in it).
+//
+// loadWeaponSubclasses (below) prefers a published table over this one
+// the moment either data-followups-5's `data/builds/<build>/
+// proficiency.json` or a `data/curated/classes.json` weapon-proficiency
+// field exists; as of this lane (2026-09-29/30), neither one does -
+// data-followups-5 (this lane's own branch point predates it) is the
+// lane that will publish one, and data/curated/ carries no static
+// weapon-proficiency table of its own today (checked directly: only
+// data/pipeline/proficiency.py, code, has one) - so this table is
+// itself the static fallback loadWeaponSubclasses' own doc says to use
+// "and say so": every entry below is Classic 1.x's own base weapon-skill
+// table (subclass ids from proficiency.py's own doc comment: 0/1 axe
+// 1H/2H, 2 bow, 3 gun, 4/5 mace 1H/2H, 6 polearm, 7/8 sword 1H/2H, 10
+// staff, 13 fist, 15 dagger, 16 thrown, 18 crossbow, 19 wand), plus
+// Forever's own two documented deviations from it (.claude/agents/
+// wow-player.md's own facts list: "shamans train one- and two-handed
+// axes and maces, rogues train maces" - nothing else, paladin and
+// druid included, which data-followups-5's own brief independently
+// confirms is the exact regression: paladin.json/druid.json wrongly
+// carry axes/polearm today). Warrior and hunter are unchanged from
+// proficiency.py's own table (already correct there); priest/mage/
+// warlock are unchanged too.
+var classWeaponSubclasses = map[string]map[int]bool{
+	// Everything melee/ranged except wand - unchanged from proficiency.py.
+	"warrior": {0: true, 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 10: true, 13: true, 15: true, 16: true, 18: true},
+	// Classic 1.x: mace 1H/2H, polearm, sword 1H/2H - NOT axes. proficiency.py
+	// wrongly grants one-hand (0) and two-hand (1) axe; the fix is their
+	// absence here.
+	"paladin": {4: true, 5: true, 6: true, 7: true, 8: true},
+	// Unchanged from proficiency.py: axes, bow/gun/crossbow/thrown, sword
+	// 1H/2H, polearm, staff, fist, dagger - no maces.
+	"hunter": {0: true, 1: true, 2: true, 3: true, 6: true, 7: true, 8: true, 10: true, 13: true, 15: true, 16: true, 18: true},
+	// Unchanged from proficiency.py: bow/gun/crossbow/thrown, sword 1H,
+	// mace 1H, fist, dagger - Forever's documented "rogues train maces"
+	// change is already this table's own mace 1H (4) entry.
+	"rogue": {2: true, 3: true, 4: true, 7: true, 13: true, 15: true, 16: true, 18: true},
+	// Unchanged from proficiency.py: mace 1H, staff, dagger, wand.
+	"priest": {4: true, 10: true, 15: true, 19: true},
+	// Forever's documented "shamans train one- and two-handed axes and
+	// maces" change is already this table's own axe 1H/2H (0, 1) and
+	// mace 1H/2H (4, 5) entries, alongside Classic 1.x's own staff (10),
+	// fist (13) and dagger (15) - unchanged from proficiency.py.
+	"shaman": {0: true, 1: true, 4: true, 5: true, 10: true, 13: true, 15: true},
+	// Unchanged from proficiency.py: staff, dagger, wand - no mace (a
+	// mage never gets Forever's shaman/rogue exception).
+	"mage": {7: true, 10: true, 15: true, 19: true},
+	// Unchanged from proficiency.py: staff, dagger, wand.
+	"warlock": {7: true, 10: true, 15: true, 19: true},
+	// Classic 1.x: dagger, fist, mace 1H/2H, staff - NOT polearm.
+	// proficiency.py wrongly grants polearm (6); the fix is its absence
+	// here.
+	"druid": {4: true, 5: true, 10: true, 13: true, 15: true},
+}
+
+// loadWeaponSubclasses returns classSlug's allowed weapon ClassID-2
+// subclass ids, and a human-readable name for whichever source
+// actually produced them (this lane's brief: "make the module say
+// which source produced the table at run time" is data-followups-5's
+// own ask of the Python module; this is the Go-side equivalent, read
+// off the returned source string by main.go's own log line).
+//
+// Preference order, checked once per spec run the same way
+// aplRotationRequiresDagger/aplRotationCastsShoot already are:
+//  1. data/builds/<build>/proficiency.json, if data-followups-5 (or a
+//     later lane) has published one - a flat class_slug -> []int
+//     subclass-id map, the simplest shape a per-build data file could
+//     take for this fact. Absent today (checked directly against this
+//     lane's own branch point): reading it is defensive, not a claim
+//     that it exists yet.
+//  2. classWeaponSubclasses (above), this lane's own static fallback,
+//     read only once the published file is confirmed absent (not on
+//     any decode error against a file that DOES exist - a malformed
+//     published file is a data bug worth failing loudly over, not
+//     silently falling back past).
+func loadWeaponSubclasses(buildDir, classSlug string) (map[int]bool, string, error) {
+	path := filepath.Join(buildDir, "proficiency.json")
+	b, err := os.ReadFile(path)
+	switch {
+	case err == nil:
+		var published map[string][]int
+		if jsonErr := json.Unmarshal(b, &published); jsonErr != nil {
+			return nil, "", fmt.Errorf("decoding %s: %w", path, jsonErr)
+		}
+		subclasses, ok := published[classSlug]
+		if !ok {
+			return nil, "", fmt.Errorf("%s carries no entry for class %q", path, classSlug)
+		}
+		out := make(map[int]bool, len(subclasses))
+		for _, s := range subclasses {
+			out[s] = true
+		}
+		return out, path, nil
+	case !errors.Is(err, fs.ErrNotExist):
+		return nil, "", fmt.Errorf("reading %s: %w", path, err)
+	}
+	fallback, ok := classWeaponSubclasses[classSlug]
+	if !ok {
+		return nil, "", fmt.Errorf("no weapon-proficiency data for class %q: no %s and no static fallback table entry", classSlug, path)
+	}
+	return fallback, "classWeaponSubclasses (static fallback: no data/builds/<build>/proficiency.json published yet)", nil
+}
+
+// restrictToProficientWeapons returns a copy of list (a bySlot pool -
+// main_hand/off_hand/ranged) with every weapon-class candidate whose
+// SubclassID is not in allowed dropped - this lane's brief, item 3: "a
+// paladin never receives an axe even if a data regression puts one in
+// paladin.json." A non-weapon candidate (a relic, or any ClassID other
+// than itemClassWeapon) passes through unchanged, the same exemption
+// restrictRangedByProficiency (above) already gives one, for the same
+// reason: this gate is only about weapon legality.
+func restrictToProficientWeapons(list []scored, allowed map[int]bool) []scored {
+	out := make([]scored, 0, len(list))
+	for _, c := range list {
+		if c.ClassID == itemClassWeapon && !allowed[c.SubclassID] {
+			continue
+		}
+		out = append(out, c)
 	}
 	return out
 }
