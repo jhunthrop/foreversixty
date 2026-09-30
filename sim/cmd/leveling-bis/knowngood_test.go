@@ -132,6 +132,11 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 		byID[c.ID] = c
 	}
 
+	castsShoot, err := aplRotationCastsShoot(publishedRepoRoot, specName)
+	if err != nil {
+		t.Fatalf("aplRotationCastsShoot(%q): %v", specName, err)
+	}
+
 	report, err := readPublishedReport(buildDir, specName)
 	if err != nil {
 		// Not every written spec has been ranked into a committed
@@ -155,7 +160,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 				continue
 			}
 			weights := reconstructWeights(bandRow.Weights)
-			pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, bandRow.ReferenceDPSPerPoint)
+			pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, bandRow.ReferenceDPSPerPoint, castsShoot)
 			// pickBySlot mirrors main.go's own runSpec exactly (this
 			// lane's brief, item 3): without excludeAbovePvpRankCap, this
 			// test's own locally-recomputed "primary.Item" reconstructs a
@@ -178,7 +183,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 			}
 			picks := pick(spec.Spec, pickBySlot)
 			for _, want := range wantItems {
-				checkKnownGoodItem(t, specName, spec.ClassSlug, band, faction, want, byID, lootIdx, weights, picks, bandRow.ReferenceDPSPerPoint)
+				checkKnownGoodItem(t, specName, spec.ClassSlug, band, faction, want, byID, lootIdx, weights, picks, bandRow.ReferenceDPSPerPoint, castsShoot)
 			}
 		}
 	}
@@ -232,7 +237,7 @@ func reconstructWeights(rows []weightRow) map[string]float64 {
 // the item is), or scoring above the pick by more than the 10% margin
 // yet neither picked nor the runner-up (a real ranking gap the sim's
 // own greedy pick() should not have made).
-func checkKnownGoodItem(t *testing.T, specName, classSlug string, band int, faction string, want knownGoodItem, byID map[int]candidate, lootIdx lootIndex, weights map[string]float64, picks map[string]slotPick, referenceDPSPerPoint float64) {
+func checkKnownGoodItem(t *testing.T, specName, classSlug string, band int, faction string, want knownGoodItem, byID map[int]candidate, lootIdx lootIndex, weights map[string]float64, picks map[string]slotPick, referenceDPSPerPoint float64, castsShoot bool) {
 	t.Helper()
 
 	c, ok := byID[want.ItemID]
@@ -268,7 +273,7 @@ func checkKnownGoodItem(t *testing.T, specName, classSlug string, band int, fact
 		t.Errorf("%s: eligible=true sourced=true, but carries no planner slot at all (data.go's plannerSlots) - cannot be picked for anything", label)
 		return
 	}
-	itemScore := score(c, c.Slots[0], weights, referenceDPSPerPoint)
+	itemScore := score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot)
 
 	picked, runnerUp := false, false
 	for _, slot := range c.Slots {

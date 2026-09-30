@@ -286,6 +286,17 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return fmt.Errorf("checking %s's rotation for a dagger requirement: %w", spec, err)
 	}
 
+	// Caster sweep, bis-ranker-integrity-4 lane, item 2: read once per
+	// spec, the same way requiresDagger is, whether this spec's own
+	// rotation casts Shoot at all - score.go's own doc for why a
+	// wand's flat DPS may only ever count for a spec whose rotation
+	// actually fires it (mage/priest-shadow/warlock do; shaman-
+	// elemental and druid-balance do not).
+	castsShoot, err := aplRotationCastsShoot(repoRoot, spec)
+	if err != nil {
+		return fmt.Errorf("checking %s's rotation for a Shoot cast: %w", spec, err)
+	}
+
 	factions := []struct{ name, race string }{
 		{"alliance", guide.AllianceRace},
 		{"horde", guide.HordeRace},
@@ -320,7 +331,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
 		for _, f := range factions {
-			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, referenceDPSPerPoint)
+			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, referenceDPSPerPoint, castsShoot)
 			bySlot := candidatesBySlot(pool.Scored)
 			if requiresDagger {
 				// weapon_requirements.go's own doc: a mace or sword is a
