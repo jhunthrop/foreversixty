@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/leveling"
@@ -70,6 +71,77 @@ func TestLoadClassItems(t *testing.T) {
 func TestLoadClassItemsMissingClass(t *testing.T) {
 	if _, err := loadClassItems(buildDirFixture(), "nonexistent-class"); err == nil {
 		t.Fatal("loadClassItems for a class with no file: want an error, got nil")
+	}
+}
+
+// TestLoadCandidatesExcludesSupersededItems is this lane's brief
+// (bis-ranker-integrity-10), item 2: data-followups-4's own
+// superseded_by key means "never a candidate" - the pinned example
+// being "Grand Marshal's Stave" 18873 (superseded_by 234571), a real
+// client row Forever kept beside its own re-itemised copy. Read
+// defensively off either row (flatItem.SupersededBy's own doc): this
+// case sets it only on the flat items.json row, the shape data-
+// followups-4's own brief describes first ("mark the legacy row...
+// on the flat and per-class rows"), so this test also stands as the
+// minimal case a build that has only regenerated one of the two rows
+// still excludes correctly.
+func TestLoadCandidatesExcludesSupersededItems(t *testing.T) {
+	dir := t.TempDir()
+	writeFile(t, filepath.Join(dir, "items.json"), `[
+		{"id": 18873, "name": "Grand Marshal's Stave", "quality": 4, "item_level": 78, "required_level": 60, "class_id": 2, "subclass_id": 10, "inventory_type": 17, "suffixes": [], "faction_restriction": "", "superseded_by": 234571},
+		{"id": 234571, "name": "Grand Marshal's Runed Stave", "quality": 4, "item_level": 80, "required_level": 60, "class_id": 2, "subclass_id": 10, "inventory_type": 17, "suffixes": [], "faction_restriction": ""}
+	]`)
+	writeFile(t, filepath.Join(dir, "items", "priest.json"), `{
+		"build": "testbuild", "class_slug": "priest",
+		"items": [
+			{"id": 18873, "name": "Grand Marshal's Stave", "slot": "main_hand", "quality": 4, "required_level": 60, "item_level": 78, "armor": 0, "stats": {}, "damage_min": 100, "damage_max": 150, "speed": 2.8, "dps": 44.6, "two_hand": true, "effect_text": "", "set_id": null, "unique": true},
+			{"id": 234571, "name": "Grand Marshal's Runed Stave", "slot": "main_hand", "quality": 4, "required_level": 60, "item_level": 80, "armor": 0, "stats": {"spirit": 10}, "damage_min": 105, "damage_max": 155, "speed": 2.8, "dps": 46.4, "two_hand": true, "effect_text": "", "set_id": null, "unique": true}
+		]
+	}`)
+	candidates, missing, err := loadCandidates(dir, "priest")
+	if err != nil {
+		t.Fatalf("loadCandidates: %v", err)
+	}
+	if len(candidates) != 1 || candidates[0].ID != 234571 {
+		t.Fatalf("loadCandidates = %+v, want only the re-itemised copy (234571), the legacy row (18873, superseded_by 234571) excluded", candidates)
+	}
+	found := false
+	for _, m := range missing {
+		if strings.Contains(m, "18873") && strings.Contains(m, "superseded_by 234571") {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("missing = %v, want a note naming 18873's superseded_by 234571", missing)
+	}
+}
+
+// TestLoadCandidatesExcludesSupersededItemsMarkedOnlyOnClassRow
+// confirms the defensive read the other way: a class regeneration
+// that has landed superseded_by on items/<class>.json before the flat
+// items.json regeneration has (or ever will, for a build the flat
+// pipeline stage never revisits) still excludes the item - the flat
+// row here carries no superseded_by at all.
+func TestLoadCandidatesExcludesSupersededItemsMarkedOnlyOnClassRow(t *testing.T) {
+	dir := t.TempDir()
+	writeFile(t, filepath.Join(dir, "items.json"), `[
+		{"id": 18874, "name": "High Warlord's War Staff", "quality": 4, "item_level": 78, "required_level": 60, "class_id": 2, "subclass_id": 10, "inventory_type": 17, "suffixes": [], "faction_restriction": ""}
+	]`)
+	writeFile(t, filepath.Join(dir, "items", "priest.json"), `{
+		"build": "testbuild", "class_slug": "priest",
+		"items": [
+			{"id": 18874, "name": "High Warlord's War Staff", "slot": "main_hand", "quality": 4, "required_level": 60, "item_level": 78, "armor": 0, "stats": {}, "damage_min": 100, "damage_max": 150, "speed": 2.8, "dps": 44.6, "two_hand": true, "effect_text": "", "set_id": null, "unique": true, "superseded_by": 234549}
+		]
+	}`)
+	candidates, missing, err := loadCandidates(dir, "priest")
+	if err != nil {
+		t.Fatalf("loadCandidates: %v", err)
+	}
+	if len(candidates) != 0 {
+		t.Fatalf("loadCandidates = %+v, want zero candidates: the class row's own superseded_by must exclude it even with no flat-row match", candidates)
+	}
+	if len(missing) != 1 || !strings.Contains(missing[0], "superseded_by 234549") {
+		t.Errorf("missing = %v, want a note naming superseded_by 234549", missing)
 	}
 }
 
@@ -210,6 +282,56 @@ func TestLoadLootIndexCarriesOpensThrough(t *testing.T) {
 	dungeonSrc, ok := idx[2002]
 	if !ok || len(dungeonSrc) != 1 || dungeonSrc[0].Opens != "" {
 		t.Fatalf("idx[2002] = %+v, want one source with Opens empty (not phase-gated)", dungeonSrc)
+	}
+}
+
+// TestLoadLootIndexCraftedSourceWithPhaseSuffixedIDCarriesOpensThrough
+// is this lane's brief (bis-ranker-integrity-10), item 2: data-
+// followups-3's own `crafted:<profession>:<phase>` source id (the
+// crafted-source builder's own gate, splitting a phase-restricted
+// crafted item like Sulfuron Hammer out of a launch-open
+// `crafted:blacksmithing` bucket) must carry `opens` "like a raid" -
+// this test confirms the loader already reads it that way with no
+// code change: nothing in loadLootIndex's add() closure special-cases
+// "crafted" by id shape at all (unlike "world"/"vendor"/"rep"/"pvp",
+// each of which DOES get a kind-specific override below) - every
+// source's own Opens (src.Opens) is carried onto its itemSource in the
+// one generic assignment every kind shares, so a longer, phase-
+// suffixed crafted id changes nothing about how Opens reaches
+// band.go's sourceObtainable, which itself gates on Opens being
+// non-empty with no kind check either (see its own doc: "no raid is
+// open on launch day at all... Opens non-empty... is refused at EVERY
+// band, not only below 60"). Named explicitly per this lane's brief:
+// wiring is confirmed by this test, not added.
+func TestLoadLootIndexCraftedSourceWithPhaseSuffixedIDCarriesOpensThrough(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "crafted:blacksmithing:phase2", "kind": "crafted", "name": "Blacksmithing", "profession": "blacksmithing", "opens": "raids-1", "items": [12583]},
+			{"id": "crafted:blacksmithing", "kind": "crafted", "name": "Blacksmithing", "profession": "blacksmithing", "items": [12719]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	gated, ok := idx[12583]
+	if !ok || len(gated) != 1 || gated[0].Kind != "crafted" || gated[0].Opens != "raids-1" {
+		t.Fatalf("idx[12583] = %+v, want one crafted source with Opens \"raids-1\"", gated)
+	}
+	if sourceObtainable(gated[0], 60, "alliance", "") {
+		t.Error("sourceObtainable(the phase-gated crafted source) = true at level 60, want false - Opens must gate a crafted source exactly like a raid, at every band")
+	}
+	open, ok := idx[12719]
+	if !ok || len(open) != 1 || open[0].Kind != "crafted" || open[0].Opens != "" {
+		t.Fatalf("idx[12719] = %+v, want one crafted source with Opens empty (launch-open)", open)
+	}
+	if !sourceObtainable(open[0], 20, "alliance", "") {
+		t.Error("sourceObtainable(the ungated crafted source) = false at level 20, want true")
 	}
 }
 

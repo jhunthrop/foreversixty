@@ -37,6 +37,21 @@ type flatItem struct {
 	InventoryType      int    `json:"inventory_type"`
 	Suffixes           []int  `json:"suffixes"`
 	FactionRestriction string `json:"faction_restriction"`
+	// SupersededBy is the data-followups-4 lane's own key (this lane's
+	// brief, item 2): a legacy client row Forever kept in items.json
+	// (the vanilla id, still shipped by the client) alongside its own
+	// re-itemised copy under a different id (the quartermaster/vendor/
+	// loot source actually hands out the NEW id) - the pinned example
+	// being "Grand Marshal's Stave" 18873 (superseded_by 234571) and
+	// "High Warlord's War Staff" 18874 (superseded_by 234549). Non-zero
+	// means this exact row is never a candidate: loadCandidates below
+	// excludes it, the same way a class-file/flat-file id mismatch
+	// already gets excluded with a note, rather than silently ranking a
+	// row nothing in the game actually awards any more. The row itself
+	// stays in items.json (data-followups-4's own words: "for tooltips
+	// of anything a player already owns"), so this field's presence,
+	// not the row's absence, is what "never a candidate" reads.
+	SupersededBy int `json:"superseded_by,omitempty"`
 }
 
 // classItem is one row of data/builds/<build>/items/<class>.json: the
@@ -76,6 +91,14 @@ type classItem struct {
 	// place this is read, and treats empty as "unknown", never as a
 	// wand.
 	WeaponType string `json:"weapon_type"`
+	// SupersededBy mirrors flatItem.SupersededBy's own doc: the
+	// data-followups-4 lane marks the legacy row on "the flat and
+	// per-class rows (models + JSON)" (this lane's brief, item 2), so
+	// loadCandidates below reads it defensively off whichever row
+	// actually carries it - a class-file regeneration that only
+	// updates one of the two rows still excludes the item, rather than
+	// only working when both happen to agree.
+	SupersededBy int `json:"superseded_by,omitempty"`
 }
 
 type classItemFile struct {
@@ -185,7 +208,12 @@ func markNotInSimDB(items []candidate) []candidate {
 // class into the candidate pool. An id the class file carries but the
 // flat file does not (should not happen; every build ships both from
 // the same pipeline run) is skipped with a note, because eligibility
-// cannot be decided without required_level/faction/armor-type.
+// cannot be decided without required_level/faction/armor-type. An id
+// either row marks superseded_by (data-followups-4 lane, this lane's
+// brief item 2) is skipped with a note too: it is never a candidate,
+// whatever its own score would have been - see flatItem.SupersededBy's
+// own doc for why the row still exists in items.json without ever
+// reaching this pool.
 func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 	flatItems, err := loadFlatItems(buildDir)
 	if err != nil {
@@ -205,6 +233,18 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 		fi, ok := byID[ci.ID]
 		if !ok {
 			missing = append(missing, fmt.Sprintf("%d %s: in items/%s.json but not items.json", ci.ID, ci.Name, classSlug))
+			continue
+		}
+		// Read defensively off whichever row carries it (flatItem.
+		// SupersededBy's own doc): fi.SupersededBy wins when both are
+		// set and happen to disagree, since items.json is the flat,
+		// class-independent source of truth for this fact.
+		supersededBy := fi.SupersededBy
+		if supersededBy == 0 {
+			supersededBy = ci.SupersededBy
+		}
+		if supersededBy != 0 {
+			missing = append(missing, fmt.Sprintf("%d %s: superseded_by %d, excluded from candidates", ci.ID, ci.Name, supersededBy))
 			continue
 		}
 		out = append(out, candidate{

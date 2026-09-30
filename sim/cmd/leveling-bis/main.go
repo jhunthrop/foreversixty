@@ -320,6 +320,21 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return fmt.Errorf("checking %s's rotation for a Shoot cast: %w", spec, err)
 	}
 
+	// This lane's brief (bis-ranker-integrity-10), item 3: read once
+	// per spec, the same way requiresDagger/castsShoot are (the class's
+	// weapon proficiency does not change per band/faction) - the
+	// Go-side safety net so a data regression that puts an illegal
+	// weapon subclass in <class>.json (a paladin axe, a druid polearm)
+	// never reaches a published pick, whatever score() thinks of its
+	// stats. weaponSubclassesSource is logged once so the nightly log
+	// says whether this run read a published table or fell back to
+	// weapon_requirements.go's own static one.
+	weaponSubclasses, weaponSubclassesSource, err := loadWeaponSubclasses(buildDir, specInfo.ClassSlug)
+	if err != nil {
+		return fmt.Errorf("loading %s's weapon proficiency: %w", specInfo.ClassSlug, err)
+	}
+	log.Printf("leveling-bis: %s: weapon proficiency source: %s", spec, weaponSubclassesSource)
+
 	factions := []struct{ name, race string }{
 		{"alliance", guide.AllianceRace},
 		{"horde", guide.HordeRace},
@@ -380,6 +395,15 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		for _, f := range factions {
 			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
 			bySlot := candidatesBySlot(pool.Scored)
+			// This lane's brief (bis-ranker-integrity-10), item 3:
+			// applied before the dagger/ranged-type restrictions below
+			// (a narrower, spec- or ranged-specific gate), to every
+			// weapon slot this class actually equips a weapon in - the
+			// general class-legality gate eligible.go's own doc says
+			// is otherwise "NOT checked here" at all.
+			bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
+			bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
+			bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
 			if requiresDagger {
 				// weapon_requirements.go's own doc: a mace or sword is a
 				// real, legally-equippable item this class file already
