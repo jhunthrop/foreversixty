@@ -301,6 +301,30 @@ func TestEnforceTwoHandOffHandInvariantLeavesAOneHandedMainHandAlone(t *testing.
 	}
 }
 
+// This lane's brief (bis-ranker-integrity-6), item 5: clearTrinketPlaceholders
+// must reset BOTH trinket slots (not just one) and leave every other
+// slot's own pick() decision untouched.
+func TestClearTrinketPlaceholdersResetsBothTrinketSlotsOnly(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "Placeholder A"}}},
+		"trinket2": {Item: &scored{candidate: candidate{ID: 2, Name: "Placeholder B"}}},
+		"head":     {Item: &scored{candidate: candidate{ID: 3, Name: "Real Helm"}}},
+	}
+	out := clearTrinketPlaceholders(picks)
+	if out["trinket1"].Item != nil {
+		t.Fatalf("trinket1 = %+v, want cleared", out["trinket1"].Item)
+	}
+	if out["trinket2"].Item != nil {
+		t.Fatalf("trinket2 = %+v, want cleared", out["trinket2"].Item)
+	}
+	if out["head"].Item == nil || out["head"].Item.ID != 3 {
+		t.Fatalf("head = %+v, want untouched", out["head"].Item)
+	}
+	if picks["trinket1"].Item == nil || picks["trinket2"].Item == nil {
+		t.Fatal("clearTrinketPlaceholders mutated its input picks")
+	}
+}
+
 // This lane's brief, defect 4: three one-handers scoring identically
 // (8.28 apiece) must all be recorded, not just the lowest-id winner -
 // pick()'s own tie-break silently discarded the other two equally-good

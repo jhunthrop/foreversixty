@@ -56,7 +56,12 @@ func TestBuildReportFirstBandHasNoPreviousSoEveryPickIsNew(t *testing.T) {
 }
 
 func TestBuildReportUnchangedFromPreviousBandIsNotNew(t *testing.T) {
-	item1 := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
+	// Score: 10 (not the zero-value default) so this row clears the
+	// zero-value gate above and actually publishes with an ItemID -
+	// new_at_band is computed from the final, gated rows (this lane's
+	// brief, item 7), not the raw pick, so a zero-scoring item here
+	// would be emptied before new_at_band ever saw it.
+	item1 := &scored{candidate: candidate{ID: 1, Name: "Helm"}, Score: 10}
 	picks := map[string]slotPick{"head": {Item: item1}}
 	previous := map[string]slotPick{"head": {Item: item1}}
 	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, previous, 0, 0, nil, nil, nil, 0, "")
@@ -66,11 +71,51 @@ func TestBuildReportUnchangedFromPreviousBandIsNotNew(t *testing.T) {
 }
 
 func TestBuildReportChangedFromPreviousBandIsNew(t *testing.T) {
-	picks := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 2, Name: "Better Helm"}}}}
-	previous := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Helm"}}}}
+	picks := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 2, Name: "Better Helm"}, Score: 10}}}
+	previous := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Helm"}, Score: 10}}}
 	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, previous, 0, 0, nil, nil, nil, 0, "")
 	if len(r.NewAtBand) != 1 || !strings.Contains(r.NewAtBand[0], "Better Helm") {
 		t.Fatalf("NewAtBand = %v, want Better Helm listed", r.NewAtBand)
+	}
+}
+
+// This lane's brief (bis-ranker-integrity-6), item 7: the mage-fire
+// band 20 Alliance repro - new_at_band named "neck: Sentinel's
+// Medallion", "trinket1: Rune of Perfection" and "trinket2: Rune of
+// Duty" while every one of those slots' own row published empty
+// (score() valued each at exactly 0 with no effect_text, the same
+// zero-value gate TestBuildReportPublishesEmptySlotWithNoDPSValueReason
+// exercises). new_at_band must never name a slot its own row does not
+// actually publish a pick for.
+func TestBuildReportNewAtBandNeverNamesAnEmptiedSlot(t *testing.T) {
+	picks := map[string]slotPick{
+		// A real, kept pick (Score != 0): should be named.
+		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Real Helm"}, Score: 10}},
+		// Zero-scoring, no effect_text, no trinket/weapon exemption -
+		// the zero-value gate empties this row entirely.
+		"neck":     {Item: &scored{candidate: candidate{ID: 2, Name: "Sentinel's Medallion"}, Score: 0}},
+		"trinket1": {Item: &scored{candidate: candidate{ID: 3, Name: "Rune of Perfection"}, Score: 0}},
+		"trinket2": {Item: &scored{candidate: candidate{ID: 4, Name: "Rune of Duty"}, Score: 0}},
+	}
+	r := buildReport(reportSpec(), 20, "alliance", "human", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+	}
+	for _, slot := range []string{"neck", "trinket1", "trinket2"} {
+		if byslot[slot].ItemID != 0 {
+			t.Fatalf("test setup wrong: %s row = %+v, want emptied by the zero-value gate", slot, byslot[slot])
+		}
+	}
+	for _, entry := range r.NewAtBand {
+		slot, _, _ := strings.Cut(entry, ":")
+		row, ok := byslot[slot]
+		if !ok || row.ItemID == 0 {
+			t.Errorf("new_at_band entry %q names a slot with no published pick - row = %+v", entry, row)
+		}
+	}
+	if len(r.NewAtBand) != 1 || !strings.Contains(r.NewAtBand[0], "Real Helm") {
+		t.Fatalf("NewAtBand = %v, want only head: Real Helm", r.NewAtBand)
 	}
 }
 
@@ -335,6 +380,40 @@ func TestBuildReportFlagsInsignificantWeights(t *testing.T) {
 	}
 	if byStat["melee_haste"].Error != 6.0 {
 		t.Errorf("melee_haste.Error = %v, want 6.0 carried through unchanged", byStat["melee_haste"].Error)
+	}
+}
+
+// This lane's brief (bis-ranker-integrity-6), item 1: warrior-arms/
+// fury band 40-60's own repro -- the reference stat (attack_power,
+// weight always 1.00 by construction) published Insignificant: true
+// because its error happened to be wide enough to fail
+// isWeightSignificant's generic 25%-of-value bar, even though
+// referenceMeasurementReason (weights.go) already trusted this exact
+// band's reference measurement (weightsReason == ""). The reference
+// row IS that trusted measurement, so it must publish significant
+// regardless of its own error bar, while an ordinary non-reference
+// stat with the same wide error still gets flagged.
+func TestBuildReportReferenceRowIsSignificantWhenBandIsTrusted(t *testing.T) {
+	weights := map[string]api.StatWeight{
+		// The reference stat's own row: Weight is always 1.0 by
+		// construction, and its Error here (0.43) fails the 25% bar
+		// isWeightSignificant applies to an ordinary stat.
+		"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.00, Error: 0.43},
+		// An ordinary stat with the identical error shape must still
+		// be flagged -- this test only exempts the reference row.
+		"agility": {Stat: "agility", Weight: 1.00, Error: 0.43},
+	}
+	order := []string{"ranged_attack_power", "agility"}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, weights, order, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0.5, "")
+	byStat := map[string]weightRow{}
+	for _, w := range r.Weights {
+		byStat[w.Stat] = w
+	}
+	if byStat["ranged_attack_power"].Insignificant {
+		t.Errorf("reference stat ranged_attack_power reported insignificant while the band's own reference measurement (weightsReason == \"\") is trusted")
+	}
+	if !byStat["agility"].Insignificant {
+		t.Errorf("agility (same error shape, not the reference stat) reported significant - only the reference row should be exempted")
 	}
 }
 
@@ -1624,5 +1703,89 @@ func TestWriteMarkdownPrintsSimVerifiedDPSNotZeroScore(t *testing.T) {
 	}
 	if !strings.Contains(content, "sim-verified (165.0 DPS)") {
 		t.Errorf("markdown missing the sim-verified DPS note in the Score column:\n%s", content)
+	}
+}
+
+// This lane's brief (bis-ranker-integrity-6), item 6: the
+// shaman-elemental band 60 Horde repro - eight unrelated slots all
+// publishing the identical sim_dps (verifyBand's one shared,
+// pre-promotion baseline sim), none of them equal to the band's own
+// final set_dps because some OTHER slot's own swap promoted and
+// applySwaps re-measured the whole set to a new total. A row publishes
+// an absolute sim_dps only when it still equals the finished set's own
+// set_dps (finishedSetEpsilon); every unpromoted slot sharing the
+// stale baseline must omit sim_dps instead of all repeating one
+// now-wrong number.
+func TestBuildReportOmitsSimDPSWhenTheSharedSwapBaselineNoLongerMatchesSetDPS(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 1, Name: "Helm of the Elements"}, MeasuredDPS: 300.0}, RunnerUp: &scored{candidate: candidate{ID: 11, Name: "Runner Up Helm"}}},
+		"chest": {Item: &scored{candidate: candidate{ID: 2, Name: "Robe of the Elements"}, MeasuredDPS: 300.0}, RunnerUp: &scored{candidate: candidate{ID: 12, Name: "Runner Up Robe"}}},
+	}
+	// Every slot's own swap trial shares the identical, stale
+	// pre-promotion baseline (300.0) - verifyBand's own doc: one
+	// baseline sim, run once for the whole band. Neither swap beat it
+	// (Beat: false), but some OTHER slot elsewhere in the real band
+	// promoted, so the band's own final SetDPS (below, 310.5) no
+	// longer matches this shared number.
+	swaps := []swapResult{
+		{Slot: "head", SwapDPS: 290.0, BaselineDPS: 300.0, Beat: false},
+		{Slot: "chest", SwapDPS: 288.0, BaselineDPS: 300.0, Beat: false},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "orc", "", 0, nil, nil, picks, 310.5, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+	}
+	for _, slot := range []string{"head", "chest"} {
+		row := byslot[slot]
+		if row.SimDPS != 0 {
+			t.Errorf("%s row.SimDPS = %v, want 0 (omitted): the shared baseline 300.0 does not match set_dps 310.5", slot, row.SimDPS)
+		}
+		// buildAlternatives' own swap-override force-include (this
+		// lane's brief item 3, an earlier lane) always surfaces the one
+		// candidate verify.go actually simmed as a Verified alternative
+		// with its own real DPSDelta/SimDPS, regardless of whether this
+		// row's own top-level DPSDelta got set - that IS the "dps_delta
+		// already on the row" this lane's brief refers to, and it must
+		// survive this row's own sim_dps being withheld.
+		if len(row.Alternatives) != 1 || !row.Alternatives[0].Verified {
+			t.Fatalf("%s row.Alternatives = %+v, want the one verified, sim-tested runner-up still present", slot, row.Alternatives)
+		}
+	}
+}
+
+// The markdown table must not fall back to printing "0.0 <ref> points
+// (0.00 DPS)" for a row in exactly the state
+// TestBuildReportOmitsSimDPSWhenTheSharedSwapBaselineNoLongerMatchesSetDPS
+// leaves behind (Score deliberately zeroed by the simDecided
+// convention, SimDPS withheld for staleness) - it must show the row's
+// own dps_delta instead, the same way it already shows a promoted
+// swap's real numbers.
+func TestWriteMarkdownShowsDPSDeltaWhenSimDPSWasWithheldForStaleness(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "shaman-elemental.md")
+	spec := specInfo{Spec: "shaman-elemental", Name: "Elemental", ReferenceStat: "spell_power"}
+	delta := 10.0
+	reports := []bandReport{
+		{
+			Band: 60, Faction: "horde", Race: "orc",
+			Slots: []slotRow{
+				{Slot: "head", ItemID: 1, ItemName: "Helm of the Elements", Score: 0, SimDPS: 0, DPSDelta: &delta, Verified: true},
+			},
+		},
+	}
+	if err := writeMarkdown(path, spec, reports); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading written file: %v", err)
+	}
+	content := string(b)
+	if strings.Contains(content, "0.0 spell_power points (0.00 DPS)") {
+		t.Fatalf("markdown still prints the misleading bare-zero score/DPS conversion:\n%s", content)
+	}
+	if !strings.Contains(content, "+10.0 DPS vs the runner-up") {
+		t.Errorf("markdown missing the withheld row's own dps_delta:\n%s", content)
 	}
 }

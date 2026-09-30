@@ -168,3 +168,96 @@ func restrictToDaggers(list []scored) []scored {
 	}
 	return out
 }
+
+// casterWandOnlyClasses is which class_slugs' own ranged slot proficiency
+// is Wand and nothing else (Classic's own class skill list: Mage,
+// Priest, Warlock) - this lane's brief (bis-ranker-integrity-6), item
+// 9.
+var casterWandOnlyClasses = map[string]bool{"mage": true, "priest": true, "warlock": true}
+
+// rangedWeaponSkillClasses is which class_slugs carry Bows/Guns/
+// Crossbows/Thrown Weapons proficiency (Classic's own class skill
+// list: Hunter, Warrior, Rogue) - this lane's brief's own list.
+// Paladin/Shaman/Druid are deliberately absent: their only ranged-slot
+// proficiency is a relic (libram/idol/totem, ClassID armorClassID),
+// which restrictRangedByProficiency below never touches at all - "already
+// handled" per this lane's brief, by the per-class item file eligible.go's
+// own doc already delegates class legality to (a paladin's item file
+// was never going to carry a bow or a wand in the first place).
+var rangedWeaponSkillClasses = map[string]bool{"hunter": true, "warrior": true, "rogue": true}
+
+// rangedWeaponTypesForSkillClasses is the candidate.WeaponType values
+// rangedWeaponSkillClasses' own classes may equip - every ranged
+// weapon type except Wand.
+var rangedWeaponTypesForSkillClasses = map[string]bool{"bow": true, "gun": true, "crossbow": true, "thrown": true}
+
+// restrictRangedByProficiency returns a copy of list (candidatesBySlot's
+// own bySlot["ranged"]) with every ranged weapon-class candidate this
+// classSlug cannot actually wield dropped - this lane's brief
+// (bis-ranker-integrity-6), item 9: score()'s own Shoot fallback
+// (score.go) converts ANY ranged-slot item's raw DPS into a caster's
+// score once its rotation casts Shoot, with nothing checking that the
+// item is actually a wand - a thrown weapon (or a bow/gun/crossbow) in
+// a caster's ranged slot would score identically to a real wand, with
+// nothing in score() able to tell them apart. (This lane's own first
+// pass named Torch of Light 279246 and Cold Snap 19130 as the repro -
+// the controller's own direct note corrected that: both are real
+// wands, subclass_id 19 per the client and classic-db's item_template,
+// so they are legitimate caster picks; the underlying gap in score()
+// was real regardless of those two items' own type.) The real fix is
+// the same shape weapon_requirements.go already uses for a dagger-only
+// rotation (restrictToDaggers, above): filter the CANDIDATE POOL
+// itself, before pick()/rankSlotWithEffects/score() ever see a
+// candidate this class cannot legally use as its ranged weapon, rather
+// than patching every downstream consumer to second-guess a candidate
+// that should never have reached them.
+//
+// A non-weapon-class candidate (a relic, ClassID armorClassID -
+// paladin/shaman/druid's own ranged slot) passes through unchanged;
+// this gate is only about weapon-class ranged items (bow/gun/
+// crossbow/wand/thrown - ClassID itemClassWeapon).
+//
+// The gate itself, by classSlug:
+//   - casterWandOnlyClasses (mage/priest/warlock): WeaponType must be
+//     exactly "wand". Any other value - a real bow/gun/crossbow/
+//     thrown, OR "" (unknown - candidate.WeaponType's own doc: every
+//     ranged row until data/pipeline's classicdb-fidelity lane's own
+//     rebuild lands) - is excluded. An unsourced-type weapon is never
+//     a caster's wand (this lane's brief's own words): the absence of
+//     proof is not proof of a wand.
+//   - rangedWeaponSkillClasses (hunter/warrior/rogue): a RECOGNISED,
+//     non-wand type (rangedWeaponTypesForSkillClasses) is kept; a
+//     recognised type this class cannot use (a caster's wand) is
+//     excluded; an EMPTY/unrecognised type is kept rather than
+//     excluded - this lane's brief scopes the immediate "exclude
+//     unknown" rule to caster ranged slots alone ("until the data
+//     carries it... exclude it from CASTER ranged slots"), because
+//     almost every real bow/gun/crossbow/thrown item a hunter/warrior/
+//     rogue actually uses today carries this same empty WeaponType,
+//     and excluding them too would empty every one of those classes'
+//     ranged slots over the identical data gap, not fix a defect.
+//   - every other classSlug (paladin/shaman/druid): excluded outright
+//   - their per-class item file was never going to hand this
+//     function a weapon-class ranged candidate at all (see
+//     rangedWeaponSkillClasses' own doc), so one reaching here is a
+//     data anomaly, not a legal pick.
+func restrictRangedByProficiency(list []scored, classSlug string) []scored {
+	out := make([]scored, 0, len(list))
+	for _, c := range list {
+		if c.ClassID != itemClassWeapon {
+			out = append(out, c)
+			continue
+		}
+		switch {
+		case casterWandOnlyClasses[classSlug]:
+			if c.WeaponType == "wand" {
+				out = append(out, c)
+			}
+		case rangedWeaponSkillClasses[classSlug]:
+			if c.WeaponType == "" || rangedWeaponTypesForSkillClasses[c.WeaponType] {
+				out = append(out, c)
+			}
+		}
+	}
+	return out
+}

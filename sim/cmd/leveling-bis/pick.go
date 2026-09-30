@@ -423,6 +423,40 @@ func enforceTwoHandOffHandInvariant(picks map[string]slotPick) map[string]slotPi
 	return out
 }
 
+// clearTrinketPlaceholders returns a copy of picks with trinket1 and
+// trinket2 both reset to the empty slotPick - this lane's brief
+// (bis-ranker-integrity-6), item 5: pick()'s own score()-based choice
+// for a trinket slot is a "lowest item id" tiebreak with no real
+// tournament behind it at all (every trinket ties score 0 - trinkets.go's
+// own package doc), yet rankTrinketSlot's own pair-mate exclusion
+// (trinketShortlist's excludePairMate) reads picks[the OTHER trinket
+// slot] as though it were an already-decided, real pick the moment
+// EITHER slot's own rankTrinketSlot call runs - main.go's own trinket
+// loop processes trinket1 first specifically so trinket2 would see
+// trinket1's real, finished pick (that loop's own comment), but never
+// noticed that trinket1's OWN call, running FIRST, still reads
+// trinket2's bare pick() placeholder as its pair-mate to exclude.
+// shaman-elemental band 40 and druid-balance band 40's own repro: that
+// placeholder happened to be Ankh of Life (a real, valuable,
+// engine-implemented-effect trinket) purely because its id was the
+// second-lowest among a pool where every candidate ties on score -
+// trinket1's own real tournament then wrongly excluded it as
+// "trinket2's own pick" before trinket2 ever got a real chance to earn
+// it, and every OTHER candidate left in trinket1's own pool was a
+// genuine zero-value stat-stick, so the slot emptied outright.
+// Clearing both slots before EITHER rankTrinketSlot call runs means
+// neither one can read the other as a real, already-decided pair-mate
+// until it actually is one.
+func clearTrinketPlaceholders(picks map[string]slotPick) map[string]slotPick {
+	out := make(map[string]slotPick, len(picks))
+	for k, v := range picks {
+		out[k] = v
+	}
+	out["trinket1"] = slotPick{}
+	out["trinket2"] = slotPick{}
+	return out
+}
+
 // promoteLowValueWeapon reorders a weapon slot's own score()-sorted
 // pool so pick() lands on a defensible fallback instead of an
 // arbitrary lowest-id item, for this lane's brief item 1's second

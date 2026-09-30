@@ -36,7 +36,8 @@
       "two_hand": false,
       "effect_text": "",
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "weapon_type": "bow"
     },
     {
       "id": 1003,

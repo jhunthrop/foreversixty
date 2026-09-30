@@ -59,6 +59,22 @@ type classItem struct {
 	EffectText    string             `json:"effect_text"`
 	SetID         *int               `json:"set_id"`
 	Unique        bool               `json:"unique"`
+	// WeaponType is a weapon row's own bow/gun/crossbow/wand/thrown (or
+	// melee axe/mace/polearm/sword/staff/fist/dagger) kind - this
+	// lane's brief (bis-ranker-integrity-6), item 9, corrected per the
+	// controller's own direct note: subclass_id (flatItem, items.json)
+	// is unreliable for a ranged row, so the classicdb-fidelity lane
+	// (merged origin/main@0ace46ba) adds this field instead, by this
+	// exact JSON key (data/pipeline/normalize/gear.py's
+	// weapon_type_for), to the PER-CLASS row (items/<class>.json,
+	// classItem - to_gear_item's own construction), not the flat
+	// items.json row - this field lives here, not on flatItem, for
+	// that reason. Empty for a non-weapon row, and for any row the
+	// data has not been rebuilt with this field yet -
+	// restrictRangedByProficiency (weapon_requirements.go) is the one
+	// place this is read, and treats empty as "unknown", never as a
+	// wand.
+	WeaponType string `json:"weapon_type"`
 }
 
 type classItemFile struct {
@@ -87,13 +103,17 @@ func plannerSlots(slot string) []string {
 // candidate is one item merged from items.json and items/<class>.json,
 // the unit eligible/score/pick all work on.
 type candidate struct {
-	ID                 int
-	Name               string
-	Quality            int
-	RequiredLevel      int
-	ItemLevel          int
-	ClassID            int
-	SubclassID         int
+	ID            int
+	Name          string
+	Quality       int
+	RequiredLevel int
+	ItemLevel     int
+	ClassID       int
+	SubclassID    int
+	// WeaponType is classItem.WeaponType carried through unchanged -
+	// see that field's own doc (data.go's classItem) for why this
+	// exists alongside SubclassID rather than reusing it.
+	WeaponType         string
 	FactionRestriction string
 	Stats              map[string]float64
 	DamageMin          float64
@@ -163,6 +183,7 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 			ItemLevel:              ci.ItemLevel,
 			ClassID:                fi.ClassID,
 			SubclassID:             fi.SubclassID,
+			WeaponType:             ci.WeaponType,
 			FactionRestriction:     factionOfRestriction(fi.FactionRestriction),
 			Stats:                  ci.Stats,
 			DamageMin:              ci.DamageMin,

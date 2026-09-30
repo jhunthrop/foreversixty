@@ -123,3 +123,95 @@ func TestRestrictToDaggersDropsNonDaggerWeaponsOnly(t *testing.T) {
 		}
 	}
 }
+
+// This lane's brief (bis-ranker-integrity-6), item 9: a caster's ranged
+// slot is only ever a real wand - score()'s own Shoot fallback
+// (score.go) had nothing checking that before this fix, so a thrown
+// weapon or a bow in the ranged slot scored identically to a real
+// wand. (Not Torch of Light/Cold Snap: the controller's own direct
+// note corrected this lane's first pass - both are real wands, not
+// thrown weapons, so fictional ids are used here instead of asserting
+// a false fact about a real item.)
+func containsID(list []scored, id int) bool {
+	for _, c := range list {
+		if c.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func TestRestrictRangedByProficiencyCasterKeepsOnlyWands(t *testing.T) {
+	wand := scored{candidate: candidate{ID: 1, Name: "A Wand", ClassID: itemClassWeapon, WeaponType: "wand"}}
+	thrown := scored{candidate: candidate{ID: 2, Name: "A Thrown Weapon", ClassID: itemClassWeapon, WeaponType: "thrown"}}
+	bow := scored{candidate: candidate{ID: 3, Name: "A Bow", ClassID: itemClassWeapon, WeaponType: "bow"}}
+	unknown := scored{candidate: candidate{ID: 4, Name: "A Ranged Weapon With No weapon_type Yet", ClassID: itemClassWeapon, WeaponType: ""}}
+	for _, casterClass := range []string{"mage", "priest", "warlock"} {
+		got := restrictRangedByProficiency([]scored{wand, thrown, bow, unknown}, casterClass)
+		if len(got) != 1 || got[0].ID != 1 {
+			t.Fatalf("%s: restrictRangedByProficiency = %+v, want only the wand (id 1)", casterClass, got)
+		}
+	}
+}
+
+// A relic (paladin/shaman/druid's own ranged slot, ClassID armorClassID)
+// is never this gate's concern, for any class.
+func TestRestrictRangedByProficiencyNeverTouchesRelics(t *testing.T) {
+	relic := scored{candidate: candidate{ID: 3, Name: "A Libram", ClassID: armorClassID, SubclassID: armorSublibramID}}
+	for _, classSlug := range []string{"mage", "hunter", "paladin", "shaman", "druid"} {
+		got := restrictRangedByProficiency([]scored{relic}, classSlug)
+		if !containsID(got, 3) {
+			t.Fatalf("%s: restrictRangedByProficiency dropped a relic: %+v", classSlug, got)
+		}
+	}
+}
+
+// Hunter/warrior/rogue keep every recognised ranged weapon type per
+// this lane's brief's own list (bows/guns/crossbows/thrown), and lose
+// a wand - the one type they have no proficiency for.
+func TestRestrictRangedByProficiencySkillClassesKeepEveryRecognisedType(t *testing.T) {
+	bow := scored{candidate: candidate{ID: 1, Name: "A Bow", ClassID: itemClassWeapon, WeaponType: "bow"}}
+	gun := scored{candidate: candidate{ID: 2, Name: "A Gun", ClassID: itemClassWeapon, WeaponType: "gun"}}
+	crossbow := scored{candidate: candidate{ID: 3, Name: "A Crossbow", ClassID: itemClassWeapon, WeaponType: "crossbow"}}
+	thrown := scored{candidate: candidate{ID: 4, Name: "A Thrown Weapon", ClassID: itemClassWeapon, WeaponType: "thrown"}}
+	wand := scored{candidate: candidate{ID: 5, Name: "A Wand", ClassID: itemClassWeapon, WeaponType: "wand"}}
+	for _, classSlug := range []string{"hunter", "warrior", "rogue"} {
+		got := restrictRangedByProficiency([]scored{bow, gun, crossbow, thrown, wand}, classSlug)
+		if len(got) != 4 {
+			t.Fatalf("%s: restrictRangedByProficiency = %+v, want bow/gun/crossbow/thrown kept, wand dropped", classSlug, got)
+		}
+		if containsID(got, 5) {
+			t.Fatalf("%s: restrictRangedByProficiency kept a wand (id 5), no proficiency for one: %+v", classSlug, got)
+		}
+	}
+}
+
+// This lane's brief's own scoping: "until the data carries it... exclude
+// it from CASTER ranged slots" - a hunter/warrior/rogue's own real bow/
+// gun/crossbow/thrown item with an empty WeaponType (the data gap this
+// lane's brief describes as almost every ranged row's current state)
+// must NOT be excluded, or every one of those classes' ranged slots
+// would empty over the identical gap the caster fix targets.
+func TestRestrictRangedByProficiencySkillClassesGrandfatherUnknownType(t *testing.T) {
+	unknownType := scored{candidate: candidate{ID: 6, Name: "A Real Bow With No weapon_type Yet", ClassID: itemClassWeapon, WeaponType: ""}}
+	for _, classSlug := range []string{"hunter", "warrior", "rogue"} {
+		got := restrictRangedByProficiency([]scored{unknownType}, classSlug)
+		if !containsID(got, 6) {
+			t.Fatalf("%s: restrictRangedByProficiency dropped an unknown-type item, want it grandfathered in: %+v", classSlug, got)
+		}
+	}
+}
+
+// A weapon-class ranged candidate for a relic-only class (paladin/
+// shaman/druid) is a data anomaly this gate excludes outright - their
+// own per-class item file was never going to hand it one for real
+// (rangedWeaponSkillClasses' own doc).
+func TestRestrictRangedByProficiencyExcludesWeaponClassForRelicOnlyClasses(t *testing.T) {
+	bow := scored{candidate: candidate{ID: 7, Name: "A Bow", ClassID: itemClassWeapon, WeaponType: "bow"}}
+	for _, classSlug := range []string{"paladin", "shaman", "druid"} {
+		got := restrictRangedByProficiency([]scored{bow}, classSlug)
+		if len(got) != 0 {
+			t.Fatalf("%s: restrictRangedByProficiency = %+v, want the weapon-class candidate excluded", classSlug, got)
+		}
+	}
+}
