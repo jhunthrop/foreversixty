@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-30T13:11:21.955753+00:00",
+ "generated_at": "2026-09-30T13:46:30.793640+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -615988,6 +615988,90 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T13:11:21.954580+00:00"
   },
+  "17604": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "17622": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "17624": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "17625": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
   "17733": {
    "dropped_by": [],
    "sold_by": [],
@@ -616067,6 +616151,594 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T07:38:30.971530+00:00"
+  },
+  "18825": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18826": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18827": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18828": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18830": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18831": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18833": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18835": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18836": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18837": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18838": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18840": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18843": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18844": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18847": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18848": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18855": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18860": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18865": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18866": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18867": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18868": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18869": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18871": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18873": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18874": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18876": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "18877": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
   },
   "19065": {
    "dropped_by": [],
@@ -618249,6 +618921,678 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T06:58:44.990194+00:00"
   },
+  "22843": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22852": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22855": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22856": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22857": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22858": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22859": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22860": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22862": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22863": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22864": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22865": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22867": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22868": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22869": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22870": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22872": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22873": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22874": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22875": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22876": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22877": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22878": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22879": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22880": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22881": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22882": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22883": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22884": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22885": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22886": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "22887": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
   "23034": {
    "dropped_by": [],
    "sold_by": [],
@@ -618264,6 +619608,2172 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-30T07:38:30.971530+00:00"
+  },
+  "23199": {
+   "dropped_by": [
+    {
+     "npc_id": 8528,
+     "name": "Dread Weaver",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 58,
+     "max_level": 59,
+     "chance": 0.2004
+    },
+    {
+     "npc_id": 9693,
+     "name": "Bloodaxe Evoker",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 58,
+     "max_level": 59,
+     "chance": 0.2967
+    },
+    {
+     "npc_id": 9816,
+     "name": "Pyroguard Emberseer",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 9999,
+     "max_level": 9999,
+     "chance": 0.097
+    },
+    {
+     "npc_id": 9817,
+     "name": "Blackhand Dreadweaver",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0051
+    },
+    {
+     "npc_id": 9818,
+     "name": "Blackhand Summoner",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0043
+    },
+    {
+     "npc_id": 9819,
+     "name": "Blackhand Veteran",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.1399
+    },
+    {
+     "npc_id": 10317,
+     "name": "Blackhand Elite",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.0076
+    },
+    {
+     "npc_id": 10318,
+     "name": "Blackhand Assassin",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.0694
+    },
+    {
+     "npc_id": 10319,
+     "name": "Blackhand Iron Guard",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.0061
+    },
+    {
+     "npc_id": 10366,
+     "name": "Rage Talon Dragon Guard",
+     "zone_ids": [
+      1583
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.5181
+    },
+    {
+     "npc_id": 10381,
+     "name": "Ravaged Cadaver",
+     "zone_ids": [
+      2017
+     ],
+     "min_level": 56,
+     "max_level": 57,
+     "chance": 0.012
+    },
+    {
+     "npc_id": 10399,
+     "name": "Thuzadin Acolyte",
+     "zone_ids": [
+      2017
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0374
+    },
+    {
+     "npc_id": 10417,
+     "name": "Venom Belcher",
+     "zone_ids": [
+      2017
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.0054
+    },
+    {
+     "npc_id": 10426,
+     "name": "Crimson Inquisitor",
+     "zone_ids": [
+      2017
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0781
+    },
+    {
+     "npc_id": 10432,
+     "name": "Vectus",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.2506
+    },
+    {
+     "npc_id": 10464,
+     "name": "Wailing Banshee",
+     "zone_ids": [
+      2017
+     ],
+     "min_level": 58,
+     "max_level": 59,
+     "chance": 0.1379
+    },
+    {
+     "npc_id": 10469,
+     "name": "Scholomance Adept",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 58,
+     "max_level": 59,
+     "chance": 0.002
+    },
+    {
+     "npc_id": 10478,
+     "name": "Splintered Skeleton",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0089
+    },
+    {
+     "npc_id": 10488,
+     "name": "Risen Construct",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 58,
+     "max_level": 61,
+     "chance": 0.3448
+    },
+    {
+     "npc_id": 10489,
+     "name": "Risen Guard",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 57,
+     "max_level": 59,
+     "chance": 0.0013
+    },
+    {
+     "npc_id": 10498,
+     "name": "Spectral Tutor",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 58,
+     "max_level": 60,
+     "chance": 0.088
+    },
+    {
+     "npc_id": 10502,
+     "name": "Lady Illucia Barov",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0854
+    },
+    {
+     "npc_id": 10678,
+     "name": "Plagued Hatchling",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 57,
+     "max_level": 59,
+     "chance": 0.0913
+    },
+    {
+     "npc_id": 11339,
+     "name": "Hakkari Shadow Hunter",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.137
+    },
+    {
+     "npc_id": 11340,
+     "name": "Hakkari Blood Priest",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.4484
+    },
+    {
+     "npc_id": 11350,
+     "name": "Gurubashi Axe Thrower",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0053
+    },
+    {
+     "npc_id": 11351,
+     "name": "Gurubashi Headhunter",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.232
+    },
+    {
+     "npc_id": 11352,
+     "name": "Gurubashi Berserker",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 58,
+     "max_level": 62,
+     "chance": 0.0041
+    },
+    {
+     "npc_id": 11353,
+     "name": "Gurubashi Blood Drinker",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.01
+    },
+    {
+     "npc_id": 11356,
+     "name": "Gurubashi Champion",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.033
+    },
+    {
+     "npc_id": 11357,
+     "name": "Son of Hakkar",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0085
+    },
+    {
+     "npc_id": 11361,
+     "name": "Zulian Tiger",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0037
+    },
+    {
+     "npc_id": 11365,
+     "name": "Zulian Panther",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0028
+    },
+    {
+     "npc_id": 11371,
+     "name": "Razzashi Serpent",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0033
+    },
+    {
+     "npc_id": 11372,
+     "name": "Razzashi Adder",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0033
+    },
+    {
+     "npc_id": 11387,
+     "name": "Sandfury Speaker",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 1.7544
+    },
+    {
+     "npc_id": 11447,
+     "name": "Mushgog",
+     "zone_ids": [
+      357
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": -1.4085
+    },
+    {
+     "npc_id": 11497,
+     "name": "The Razza",
+     "zone_ids": [
+      357
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": -0.1965
+    },
+    {
+     "npc_id": 11498,
+     "name": "Skarr the Unbreakable",
+     "zone_ids": [
+      357
+     ],
+     "min_level": 58,
+     "max_level": 58,
+     "chance": -0.2024
+    },
+    {
+     "npc_id": 11582,
+     "name": "Scholomance Dark Summoner",
+     "zone_ids": [
+      2057
+     ],
+     "min_level": 58,
+     "max_level": 59,
+     "chance": 0.1538
+    },
+    {
+     "npc_id": 11658,
+     "name": "Molten Giant",
+     "zone_ids": [
+      2717
+     ],
+     "min_level": 61,
+     "max_level": 62,
+     "chance": 0.0031
+    },
+    {
+     "npc_id": 11665,
+     "name": "Lava Annihilator",
+     "zone_ids": [
+      2717
+     ],
+     "min_level": 61,
+     "max_level": 62,
+     "chance": 0.0025
+    },
+    {
+     "npc_id": 11668,
+     "name": "Firelord",
+     "zone_ids": [
+      2717
+     ],
+     "min_level": 60,
+     "max_level": 62,
+     "chance": 0.0017
+    },
+    {
+     "npc_id": 11673,
+     "name": "Ancient Core Hound",
+     "zone_ids": [
+      2717
+     ],
+     "min_level": 61,
+     "max_level": 62,
+     "chance": 0.0085
+    },
+    {
+     "npc_id": 11728,
+     "name": "Hive'Zora Reaver",
+     "zone_ids": [
+      1377
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0587
+    },
+    {
+     "npc_id": 11729,
+     "name": "Hive'Zora Hive Sister",
+     "zone_ids": [
+      1377
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.004
+    },
+    {
+     "npc_id": 11731,
+     "name": "Hive'Regal Burrower",
+     "zone_ids": [
+      1377
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.05
+    },
+    {
+     "npc_id": 11734,
+     "name": "Hive'Regal Hive Lord",
+     "zone_ids": [
+      1377
+     ],
+     "min_level": 59,
+     "max_level": 61,
+     "chance": 0.0057
+    },
+    {
+     "npc_id": 11741,
+     "name": "Dredge Crusher",
+     "zone_ids": [
+      1377
+     ],
+     "min_level": 57,
+     "max_level": 58,
+     "chance": 0.0317
+    },
+    {
+     "npc_id": 11830,
+     "name": "Hakkari Priest",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0149
+    },
+    {
+     "npc_id": 11831,
+     "name": "Hakkari Witch Doctor",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0249
+    },
+    {
+     "npc_id": 11881,
+     "name": "Twilight Geolord",
+     "zone_ids": [
+      1377
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0157
+    },
+    {
+     "npc_id": 11883,
+     "name": "Twilight Master",
+     "zone_ids": [
+      1377
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.079
+    },
+    {
+     "npc_id": 12076,
+     "name": "Lava Elemental",
+     "zone_ids": [
+      2717
+     ],
+     "min_level": 61,
+     "max_level": 62,
+     "chance": 0.0032
+    },
+    {
+     "npc_id": 12100,
+     "name": "Lava Reaver",
+     "zone_ids": [
+      2717
+     ],
+     "min_level": 62,
+     "max_level": 63,
+     "chance": 0.0016
+    },
+    {
+     "npc_id": 12459,
+     "name": "Blackwing Warlock",
+     "zone_ids": [
+      2677
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.0133
+    },
+    {
+     "npc_id": 12461,
+     "name": "Death Talon Overseer",
+     "zone_ids": [
+      2677
+     ],
+     "min_level": 61,
+     "max_level": 62,
+     "chance": 0.0147
+    },
+    {
+     "npc_id": 13996,
+     "name": "Blackwing Technician",
+     "zone_ids": [
+      2677
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.0212
+    },
+    {
+     "npc_id": 14821,
+     "name": "Razzashi Raptor",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.008
+    },
+    {
+     "npc_id": 14825,
+     "name": "Withered Mistress",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 56,
+     "max_level": 60,
+     "chance": 0.0077
+    },
+    {
+     "npc_id": 14882,
+     "name": "Atal'ai Mistress",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0132
+    },
+    {
+     "npc_id": 15043,
+     "name": "Zulian Crocolisk",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0012
+    },
+    {
+     "npc_id": 15230,
+     "name": "Vekniss Warrior",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0224
+    },
+    {
+     "npc_id": 15233,
+     "name": "Vekniss Guardian",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0169
+    },
+    {
+     "npc_id": 15235,
+     "name": "Vekniss Stinger",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 62,
+     "max_level": 62,
+     "chance": 0.0568
+    },
+    {
+     "npc_id": 15236,
+     "name": "Vekniss Wasp",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0236
+    },
+    {
+     "npc_id": 15249,
+     "name": "Qiraji Lasher",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.1486
+    },
+    {
+     "npc_id": 15262,
+     "name": "Obsidian Eradicator",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 59,
+     "max_level": 60,
+     "chance": 0.1567
+    },
+    {
+     "npc_id": 15312,
+     "name": "Obsidian Nullifier",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0944
+    },
+    {
+     "npc_id": 15318,
+     "name": "Hive'Zara Drone",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.058
+    },
+    {
+     "npc_id": 15319,
+     "name": "Hive'Zara Collector",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0541
+    },
+    {
+     "npc_id": 15324,
+     "name": "Qiraji Gladiator",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.4435
+    },
+    {
+     "npc_id": 15325,
+     "name": "Hive'Zara Wasp",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0077
+    },
+    {
+     "npc_id": 15327,
+     "name": "Hive'Zara Stinger",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0117
+    },
+    {
+     "npc_id": 15338,
+     "name": "Obsidian Destroyer",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0114
+    },
+    {
+     "npc_id": 15355,
+     "name": "Anubisath Guardian",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 62,
+     "max_level": 62,
+     "chance": 0.0277
+    },
+    {
+     "npc_id": 15462,
+     "name": "Spitting Scarab",
+     "zone_ids": [
+      3429
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0373
+    },
+    {
+     "npc_id": 15753,
+     "name": "Qiraji Brigadier General",
+     "zone_ids": [
+      357,
+      440,
+      1377
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.3759
+    },
+    {
+     "npc_id": 15754,
+     "name": "Greater Anubisath Warbringer",
+     "zone_ids": [
+      357,
+      440,
+      1377
+     ],
+     "min_level": 58,
+     "max_level": 59,
+     "chance": 0.1957
+    },
+    {
+     "npc_id": 15817,
+     "name": "Qiraji Brigadier General Pax-lish",
+     "zone_ids": [
+      440,
+      1377
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 21.875
+    },
+    {
+     "npc_id": 166359,
+     "name": "Zulian Tiger",
+     "zone_ids": [
+      1977
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": 0.0134
+    },
+    {
+     "npc_id": 228918,
+     "name": "Mannoroc Shadowstalker",
+     "zone_ids": [
+      15475
+     ],
+     "min_level": 60,
+     "max_level": 61,
+     "chance": 0.7143
+    },
+    {
+     "npc_id": 234800,
+     "name": "Qiraji Slayer",
+     "zone_ids": [
+      3428
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0131
+    },
+    {
+     "npc_id": 240783,
+     "name": "Scarlet Curate",
+     "zone_ids": [
+      16236
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 1.1628
+    },
+    {
+     "npc_id": 240785,
+     "name": "Scarlet Alchemist",
+     "zone_ids": [
+      16236
+     ],
+     "min_level": 61,
+     "max_level": 61,
+     "chance": 0.0826
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23243": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23244": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23251": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23252": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23253": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23254": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23255": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23256": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23257": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23258": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23259": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23260": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23261": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23262": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23263": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23264": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12792,
+     "name": "Lady Palanseer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23278": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23279": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23280": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23281": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23282": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23283": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23284": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23285": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23287": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23288": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23289": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23290": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23291": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23293": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23294": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23296": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23297": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23298": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23300": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23302": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23303": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23304": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23305": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23306": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23307": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23308": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23309": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23310": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23311": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23312": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23313": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23315": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23316": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23317": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23318": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23319": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12777,
+     "name": "Captain Dirgehammer",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23451": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23452": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23453": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23455": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23456": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 12782,
+     "name": "Captain O'Neal",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23465": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23466": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23467": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23468": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
+  },
+  "23469": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 14581,
+     "name": "Sergeant Thunderhorn",
+     "zone_ids": [
+      2597,
+      3358,
+      3277
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T13:46:30.792675+00:00"
   },
   "191312": {
    "dropped_by": [],
