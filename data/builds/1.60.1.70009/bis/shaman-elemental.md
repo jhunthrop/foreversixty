@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 26.4. Weights run: 1.2s. Verify run: 0.9s. 267 eligible items had no known source.
+Set DPS (verified): 26.4. Weights run: 1.6s. Verify run: 1.1s. 267 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.723 ± 0.018, crit=0.059 ± 0.003 per rating point (14 rating = 1%, 0.822 per %), hit=0.153 ± 0.002 per rating point (10 rating = 1%, 1.532 per %), spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 267, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 47.7. Weights run: 1.3s. Verify run: 0.9s. 433 eligible items had no known source.
+Set DPS (verified): 47.7. Weights run: 1.7s. Verify run: 1.2s. 433 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.811 ± 0.026, crit=0.124 ± 0.008 per rating point (14 rating = 1%, 1.742 per %), hit=0.230 ± 0.003 per rating point (10 rating = 1%, 2.297 per %), spell_haste=2.693 ± 0.329, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.664 ± 0.003
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 433, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 62.3. Weights run: 1.5s. Verify run: 0.9s. 582 eligible items had no known source.
+Set DPS (verified): 62.3. Weights run: 1.9s. Verify run: 1.2s. 582 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.227 ± 0.045, crit=0.214 ± 0.014 per rating point (14 rating = 1%, 2.997 per %), hit=0.380 ± 0.006 per rating point (10 rating = 1%, 3.799 per %), spell_haste=not significant (-0.692 ± 0.671), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.529 ± 0.003
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 582, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 89.4. Weights run: 1.5s. Verify run: 1.1s. 752 eligible items had no known source.
+Set DPS (verified): 89.4. Weights run: 1.9s. Verify run: 1.4s. 752 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.216 ± 0.055, crit=0.275 ± 0.018 per rating point (14 rating = 1%, 3.848 per %), hit=0.505 ± 0.007 per rating point (10 rating = 1%, 5.046 per %), spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
@@ -117,18 +117,18 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | finger1 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 18.2 spell_power points (1.61 DPS) | yes | Philanthropist's Ring (281635, -0.08 DPS) [quest]; Mindseye Circle (10634, -0.32 DPS) [dungeon]; Band of the Unicorn (7553, -0.46 DPS) [world_drop] |
 | finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 17.5 spell_power points (1.54 DPS) | yes | Philanthropist's Ring (281635, +0.00 DPS, sim-verified) [quest]; Mindseye Circle (10634, -0.26 DPS) [dungeon]; Band of the Unicorn (7553, -0.40 DPS) [world_drop] |
 | trinket1 | Fire Ruby (20036) | Destroy Morphaz [quest] | sim-verified (89.4 DPS) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Frozen Heart of the Mountain (249469, -2.59 DPS, sim-verified) [crafted] |
-| trinket2 | Sanctified Orb (20512) | Forging the Mightstone [quest] | sim-verified (89.4 DPS) | yes | Uther's Strength (11302, +0.00 DPS, sim-verified) [world_drop]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | - | - |  |  |  |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-verified (89.4 DPS) | yes | Spellshifter Rod (9527, -0.64 DPS) [quest]; Blade of Eternal Darkness (17780, -0.74 DPS, sim-verified) [dungeon]; Mechanic's Pipehammer (9604, -0.90 DPS) [quest] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Red Mageweave Headband; neck: Arcane Crystal Pendant; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Skycaller's Leather Waistguard; legs: Spellshock Leggings; feet: Skycaller's Leather Boots; finger1: Brainlash; finger2: Cyclopean Band; trinket1: Fire Ruby; trinket2: Sanctified Orb; main_hand: Glowing Brightwood Staff
+**New at 50:** head: Red Mageweave Headband; neck: Arcane Crystal Pendant; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Skycaller's Leather Waistguard; legs: Spellshock Leggings; feet: Skycaller's Leather Boots; finger1: Brainlash; finger2: Cyclopean Band; trinket1: Fire Ruby; main_hand: Glowing Brightwood Staff
 
 No-known-source sample (15 of 752, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
 ### Band 60 (dwarf, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 170.8. Weights run: 1.5s. Verify run: 1.0s. 1692 eligible items had no known source.
+Set DPS (verified): 170.8. Weights run: 1.9s. Verify run: 1.3s. 1692 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.219 ± 0.086, crit=0.399 ± 0.027 per rating point (14 rating = 1%, 5.588 per %), hit=0.656 ± 0.011 per rating point (10 rating = 1%, 6.555 per %), spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
@@ -144,7 +144,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 58.4 spell_power points (5.06 DPS) | yes | Soulcrusher Girdle (240099, -0.28 DPS) [vendor]; Soulcrusher Waistguard (240107, -1.10 DPS) [vendor]; Soulcrusher Cord (240126, -1.28 DPS, sim-verified) [vendor] |
 | legs | Soulcrusher Kilt (240124) | Leonid Barthalomew the Revered [vendor] | 88.5 spell_power points (7.67 DPS) | yes | Ironfeather Leggings (252486, -1.99 DPS) [crafted]; Red Dragonscale Leggings (252603, -2.56 DPS) [crafted]; Soulcrusher Legguards (240097, -4.74 DPS, sim-verified) [vendor] |
 | feet | Soulcrusher Greaves (240110) | Leonid Barthalomew the Revered [vendor] | 64.8 spell_power points (5.62 DPS) | yes | Slippers of The Five Thunders (227007, -2.11 DPS) [vendor]; Dragonrider Boots (18102, -2.37 DPS) [dungeon]; Soulcrusher Boots (240093, -4.39 DPS, sim-verified) [vendor] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (170.8 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.28 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.37 DPS) [vendor]; Naglering (11669, -9.28 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (170.8 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.28 DPS) [vendor]; Naglering (11669, -9.28 DPS, sim-verified) [dungeon] |
 | finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (170.8 DPS) | yes | Songstone of Ironforge (12543, -0.77 DPS) [quest]; Maiden's Circle (13001, -0.77 DPS) [world_drop]; Naglering (11669, -7.51 DPS, sim-verified) [dungeon] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (170.8 DPS) | yes | Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor]; Briarwood Reed (12930, -3.71 DPS, sim-verified) [dungeon] |
 | trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (170.8 DPS) | yes | Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor]; Briarwood Reed (12930, -0.32 DPS, sim-verified) [dungeon] |
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1692, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 25.8. Weights run: 1.2s. Verify run: 0.9s. 248 eligible items had no known source.
+Set DPS (verified): 25.8. Weights run: 1.6s. Verify run: 1.1s. 248 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.723 ± 0.018, crit=0.059 ± 0.003 per rating point (14 rating = 1%, 0.822 per %), hit=0.153 ± 0.002 per rating point (10 rating = 1%, 1.532 per %), spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 248, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 45.1. Weights run: 1.3s. Verify run: 0.9s. 417 eligible items had no known source.
+Set DPS (verified): 45.1. Weights run: 1.7s. Verify run: 1.1s. 417 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.811 ± 0.026, crit=0.124 ± 0.008 per rating point (14 rating = 1%, 1.742 per %), hit=0.230 ± 0.003 per rating point (10 rating = 1%, 2.297 per %), spell_haste=2.693 ± 0.329, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.664 ± 0.003
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 417, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 62.7. Weights run: 1.5s. Verify run: 0.9s. 565 eligible items had no known source.
+Set DPS (verified): 62.7. Weights run: 1.9s. Verify run: 1.3s. 565 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.227 ± 0.045, crit=0.214 ± 0.014 per rating point (14 rating = 1%, 2.997 per %), hit=0.380 ± 0.006 per rating point (10 rating = 1%, 3.799 per %), spell_haste=not significant (-0.692 ± 0.671), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.529 ± 0.003
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 565, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 88.9. Weights run: 1.5s. Verify run: 1.0s. 722 eligible items had no known source.
+Set DPS (verified): 88.9. Weights run: 1.9s. Verify run: 1.3s. 722 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.216 ± 0.055, crit=0.275 ± 0.018 per rating point (14 rating = 1%, 3.848 per %), hit=0.505 ± 0.007 per rating point (10 rating = 1%, 5.046 per %), spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
@@ -268,19 +268,19 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | feet | Skycaller's Leather Boots (252471) (or Skycaller's Mail Sabatons (252577)) | Leatherworking [crafted] | 28.4 spell_power points (2.50 DPS) | yes | Skycaller's Mail Sabatons (252577, +0.00 DPS, sim-verified) [crafted]; Greaves of Withering Despair (22240, -0.01 DPS) [dungeon]; Earthen Silk Slippers (254013, -0.39 DPS) [crafted] |
 | finger1 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 18.2 spell_power points (1.61 DPS) | yes | Philanthropist's Ring (281635, -0.08 DPS) [quest]; Mindseye Circle (10634, -0.32 DPS) [dungeon]; Band of the Unicorn (7553, -0.46 DPS) [world_drop] |
 | finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 17.5 spell_power points (1.54 DPS) | yes | Philanthropist's Ring (281635, -0.12 DPS, sim-verified) [quest]; Mindseye Circle (10634, -0.26 DPS) [dungeon]; Band of the Unicorn (7553, -0.40 DPS) [world_drop] |
-| trinket1 | Fire Ruby (20036) | Destroy Morphaz [quest] | sim-verified (88.9 DPS) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Frozen Heart of the Mountain (249469, -1.58 DPS, sim-verified) [crafted] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (88.9 DPS) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Frozen Heart of the Mountain (249469, +0.00 DPS, sim-verified) [crafted] |
+| trinket1 | - | - |  |  |  |
+| trinket2 | - | - |  |  |  |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-verified (88.9 DPS) | yes | Spellshifter Rod (9527, -0.64 DPS) [quest]; Blade of Eternal Darkness (17780, -0.94 DPS, sim-verified) [dungeon]; Radiant Staff (249453, -1.07 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Red Mageweave Headband; neck: Arcane Crystal Pendant; shoulder: Ironfeather Shoulders; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Skycaller's Leather Waistguard; legs: Stone Guard's Pulsing Legplates; feet: Skycaller's Leather Boots; finger1: Brainlash; finger2: Cyclopean Band; trinket1: Fire Ruby; trinket2: Rune of the Guard Captain; main_hand: Glowing Brightwood Staff
+**New at 50:** head: Red Mageweave Headband; neck: Arcane Crystal Pendant; shoulder: Ironfeather Shoulders; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Skycaller's Leather Waistguard; legs: Stone Guard's Pulsing Legplates; feet: Skycaller's Leather Boots; finger1: Brainlash; finger2: Cyclopean Band; main_hand: Glowing Brightwood Staff
 
 No-known-source sample (15 of 722, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 60 (orc, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 170.5. Weights run: 1.5s. Verify run: 1.0s. 1616 eligible items had no known source.
+Set DPS (verified): 170.5. Weights run: 1.9s. Verify run: 1.4s. 1616 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.219 ± 0.086, crit=0.399 ± 0.027 per rating point (14 rating = 1%, 5.588 per %), hit=0.656 ± 0.011 per rating point (10 rating = 1%, 6.555 per %), spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
@@ -296,7 +296,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 58.4 spell_power points (5.06 DPS) | yes | Soulcrusher Cord (240126, +0.00 DPS, sim-verified) [vendor]; Soulcrusher Girdle (240099, -0.28 DPS) [vendor]; Soulcrusher Waistguard (240107, -1.10 DPS) [vendor] |
 | legs | Soulcrusher Kilt (240124) | Leonid Barthalomew the Revered [vendor] | 88.5 spell_power points (7.67 DPS) | yes | Ironfeather Leggings (252486, -1.99 DPS) [crafted]; General's Mail Leggings (231664, -2.23 DPS) [pvp]; Soulcrusher Legguards (240097, -2.54 DPS, sim-verified) [vendor] |
 | feet | Soulcrusher Greaves (240110) | Leonid Barthalomew the Revered [vendor] | 64.8 spell_power points (5.62 DPS) | yes | General's Mail Boots (16573, -2.09 DPS) [vendor]; General's Mail Sabatons (231661, -2.09 DPS) [vendor]; Soulcrusher Boots (240093, -4.30 DPS, sim-verified) [vendor] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | 0.0 spell_power points (0.00 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.28 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.37 DPS) [vendor]; Naglering (11669, -7.89 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | 0.0 spell_power points (0.00 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.28 DPS) [vendor]; Naglering (11669, -7.89 DPS, sim-verified) [dungeon] |
 | finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | 0.0 spell_power points (0.00 DPS) | yes | Eye of Orgrimmar (12545, -0.77 DPS) [quest]; Maiden's Circle (13001, -0.77 DPS) [world_drop]; Naglering (11669, -6.21 DPS, sim-verified) [dungeon] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | 0.0 spell_power points (0.00 DPS) | yes | Royal Seal of Eldre'Thalas (18471, +0.00 DPS) [quest]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Briarwood Reed (12930, -2.16 DPS, sim-verified) [dungeon] |
 | trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | 0.0 spell_power points (0.00 DPS) | yes | Briarwood Reed (12930, +0.00 DPS, sim-verified) [dungeon]; Royal Seal of Eldre'Thalas (18471, +0.00 DPS) [quest]; Weakness Analyzer (272438, +0.00 DPS) [vendor] |

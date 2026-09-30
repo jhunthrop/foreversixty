@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:53:45Z",
+  "generated_at": "2026-09-30T15:15:33Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -555,8 +555,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.472613051,
-      "verify_run_seconds": 1.31976542,
+      "weights_run_seconds": 1.836219314,
+      "verify_run_seconds": 1.710364585,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1188,8 +1188,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.472613051,
-      "verify_run_seconds": 1.305958096,
+      "weights_run_seconds": 1.836219314,
+      "verify_run_seconds": 1.644612858,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1375,13 +1375,6 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.26293594460716946
-            },
-            {
-              "item_id": 20444,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.3490666453182588
             }
           ]
         },
@@ -1872,8 +1865,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.5830114480000002,
-      "verify_run_seconds": 1.414610693,
+      "weights_run_seconds": 1.977070652,
+      "verify_run_seconds": 1.816190752,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2059,13 +2052,6 @@
               "source": "Warsong Outriders",
               "dps_delta": -0.26742093894770846,
               "verified": true
-            },
-            {
-              "item_id": 20442,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.3490666453182588
             }
           ]
         },
@@ -2555,8 +2541,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.5830114480000002,
-      "verify_run_seconds": 1.390951526,
+      "weights_run_seconds": 1.977070652,
+      "verify_run_seconds": 1.7608214279999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2743,13 +2729,6 @@
               "source": "Scarlet Monastery: Azshir the Sleepless",
               "dps_delta": -0.46939916100409107,
               "verified": true
-            },
-            {
-              "item_id": 19541,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.5541537894705072
             }
           ]
         },
@@ -3237,8 +3216,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.575044831,
-      "verify_run_seconds": 1.424581904,
+      "weights_run_seconds": 1.914938722,
+      "verify_run_seconds": 1.805777985,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3919,8 +3898,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.575044831,
-      "verify_run_seconds": 1.414329298,
+      "weights_run_seconds": 1.914938722,
+      "verify_run_seconds": 1.7689307159999998,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4631,8 +4610,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.564711535,
-      "verify_run_seconds": 1.581095946,
+      "weights_run_seconds": 1.951638507,
+      "verify_run_seconds": 2.043567969,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5350,8 +5329,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.564711535,
-      "verify_run_seconds": 1.563088007,
+      "weights_run_seconds": 1.951638507,
+      "verify_run_seconds": 1.982861626,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5687,6 +5666,8 @@
           "source_kind": "vendor",
           "sim_dps": 304.25300102023493,
           "verified": true,
+          "swap_note": "confirmed by the sim against Marshal's Chain Grips (id 16463): kept the pick, +9.3 DPS (304.3 vs 295.0 set DPS)",
+          "dps_delta": 9.275702638795906,
           "alternatives": [
             {
               "item_id": 231560,
@@ -5701,14 +5682,6 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": -2.279856313031409
-            },
-            {
-              "item_id": 16463,
-              "item_name": "Marshal's Chain Grips",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -9.275702638795906,
-              "verified": true
             }
           ]
         },
@@ -5828,13 +5801,6 @@
               "dps_delta": 0
             },
             {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.12140678166344379
-            },
-            {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
@@ -5858,7 +5824,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.08360115868060386
+              "dps_delta": -0.08360115868060368
             },
             {
               "item_id": 17713,
@@ -6083,8 +6049,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.548929472,
-      "verify_run_seconds": 1.6067338580000001,
+      "weights_run_seconds": 1.9579435630000002,
+      "verify_run_seconds": 2.035230419,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6235,7 +6201,7 @@
               "item_name": "Champion's Chain Greathelm",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.98132058367091
+              "dps_delta": -2.9813205836709105
             },
             {
               "item_id": 231568,
@@ -6561,13 +6527,6 @@
               "dps_delta": 0
             },
             {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.12140678166344379
-            },
-            {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
@@ -6816,8 +6775,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.548929472,
-      "verify_run_seconds": 1.586749363,
+      "weights_run_seconds": 1.9579435630000002,
+      "verify_run_seconds": 1.99983259,
       "coverage": {
         "back": {
           "eligible": 451,

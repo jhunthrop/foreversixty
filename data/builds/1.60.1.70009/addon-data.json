@@ -8371,16 +8371,6 @@
               "source_kind": "quest",
               "source": "Greater Friend of the Library"
             },
-            "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -8448,16 +8438,6 @@
               "source_kind": "quest",
               "source": "Greater Friend of the Library"
             },
-            "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -8479,8 +8459,6 @@
             252471,
             11824,
             281635,
-            249469,
-            20512,
             812
           ],
           "horde": [
@@ -8496,8 +8474,6 @@
             252471,
             11824,
             281635,
-            11302,
-            19120,
             812
           ]
         },
@@ -9332,11 +9308,6 @@
               "source_kind": "quest",
               "source": "Voodoo Feathers"
             },
-            "trinket2": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
             "main_hand": {
               "item_id": 10626,
               "source_kind": "dungeon",
@@ -9436,7 +9407,6 @@
             19516,
             7686,
             20130,
-            20036,
             10626
           ],
           "horde": [
@@ -10346,11 +10316,6 @@
               "source_kind": "quest",
               "source": "The Green Drake"
             },
-            "trinket2": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
             "main_hand": {
               "item_id": 9480,
               "source_kind": "dungeon",
@@ -10459,7 +10424,6 @@
             9533,
             2951,
             19991,
-            20036,
             9480,
             285281
           ],
@@ -11364,11 +11328,6 @@
               "source_kind": "quest",
               "source": "The Green Drake"
             },
-            "trinket2": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
             "main_hand": {
               "item_id": 9480,
               "source_kind": "dungeon",
@@ -11477,7 +11436,6 @@
             9533,
             2951,
             19991,
-            20512,
             9480,
             285281
           ],
@@ -13406,16 +13364,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "trinket2": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
             "main_hand": {
               "item_id": 1664,
               "source_kind": "world",
@@ -13488,16 +13436,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
             "main_hand": {
               "item_id": 1664,
               "source_kind": "world",
@@ -13520,8 +13458,6 @@
             9484,
             7553,
             19523,
-            11302,
-            20512,
             11748
           ],
           "horde": [
@@ -13533,8 +13469,6 @@
             9484,
             7553,
             19519,
-            249469,
-            19120,
             11748
           ]
         },
@@ -14386,16 +14320,6 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
-            "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -14468,16 +14392,6 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
-            "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
             "main_hand": {
               "item_id": 17780,
               "source_kind": "dungeon",
@@ -14504,8 +14418,6 @@
             220891,
             6440,
             11824,
-            249469,
-            20036,
             812,
             11748
           ],
@@ -14522,8 +14434,6 @@
             220909,
             6440,
             11824,
-            20036,
-            19120,
             17780,
             11748
           ]
@@ -14601,16 +14511,6 @@
               "source_kind": "world",
               "source": "Prince Skaldrenox"
             },
-            "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
-            },
-            "trinket2": {
-              "item_id": 12930,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
-            },
             "main_hand": {
               "item_id": 19102,
               "source_kind": "rep",
@@ -14683,16 +14583,6 @@
               "source_kind": "world",
               "source": "Prince Skaldrenox"
             },
-            "trinket1": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "trinket2": {
-              "item_id": 12930,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
-            },
             "main_hand": {
               "item_id": 20654,
               "source_kind": "world",
@@ -14719,8 +14609,6 @@
             240050,
             234032,
             20682,
-            11832,
-            12930,
             19102,
             279246
           ],
@@ -14737,8 +14625,6 @@
             240050,
             234032,
             20682,
-            22678,
-            12930,
             20654,
             279246
           ]
@@ -15387,16 +15273,6 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
-            "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
-            "trinket2": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -15469,16 +15345,6 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
-            "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
-            "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -15503,8 +15369,6 @@
             12466,
             9484,
             11824,
-            20036,
-            20512,
             812,
             11748
           ],
@@ -15519,8 +15383,6 @@
             12466,
             9484,
             11824,
-            20036,
-            249469,
             812,
             11748
           ]
@@ -15583,7 +15445,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240058,
+              "item_id": 240050,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -15601,11 +15463,6 @@
               "item_id": 22678,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "trinket2": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 19102,
@@ -15684,11 +15541,6 @@
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
-            "trinket2": {
-              "item_id": 12930,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
-            },
             "main_hand": {
               "item_id": 20654,
               "source_kind": "world",
@@ -15712,11 +15564,10 @@
             240057,
             240053,
             240055,
-            240058,
+            240050,
             234032,
             20682,
             22678,
-            22268,
             19102,
             279246
           ],
@@ -15734,7 +15585,6 @@
             234032,
             20682,
             22678,
-            12930,
             20654,
             279246
           ]
@@ -16353,11 +16203,6 @@
               "source_kind": "quest",
               "source": "Voodoo Feathers"
             },
-            "trinket2": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
             "main_hand": {
               "item_id": 1982,
               "source_kind": "world_drop",
@@ -16456,7 +16301,6 @@
             17713,
             19516,
             20130,
-            20036,
             1982
           ],
           "horde": [
@@ -17332,16 +17176,6 @@
               "source_kind": "quest",
               "source": "Greater Friend of the Library"
             },
-            "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
-            "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -17419,11 +17253,6 @@
               "source_kind": "quest",
               "source": "Destroy Morphaz"
             },
-            "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -17450,8 +17279,6 @@
             220891,
             11824,
             281635,
-            20036,
-            11302,
             812,
             11748
           ],
@@ -17469,7 +17296,6 @@
             11824,
             281635,
             20036,
-            11302,
             812,
             11748
           ]
@@ -18364,16 +18190,6 @@
               "source_kind": "world_drop",
               "source": "World drop"
             },
-            "trinket1": {
-              "item_id": 20130,
-              "source_kind": "quest",
-              "source": "Voodoo Feathers"
-            },
-            "trinket2": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
             "main_hand": {
               "item_id": 8190,
               "source_kind": "world_drop",
@@ -18488,8 +18304,6 @@
             17728,
             17713,
             13095,
-            20130,
-            20512,
             8190,
             2163,
             2100
@@ -19416,11 +19230,6 @@
               "source_kind": "quest",
               "source": "Voodoo Feathers"
             },
-            "trinket2": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
             "main_hand": {
               "item_id": 809,
               "source_kind": "world_drop",
@@ -19536,7 +19345,6 @@
             17713,
             13095,
             20130,
-            20512,
             809,
             2163,
             2100
@@ -20456,16 +20264,6 @@
               "source_kind": "world_drop",
               "source": "World drop"
             },
-            "trinket1": {
-              "item_id": 20130,
-              "source_kind": "quest",
-              "source": "Voodoo Feathers"
-            },
-            "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
             "main_hand": {
               "item_id": 12791,
               "source_kind": "dungeon",
@@ -20580,8 +20378,6 @@
             17728,
             17713,
             13095,
-            20130,
-            249469,
             12791,
             6660,
             2100
@@ -21431,11 +21227,6 @@
               "source_kind": "quest",
               "source": "Destroy Morphaz"
             },
-            "trinket2": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -21503,16 +21294,6 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
-            "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -21535,7 +21316,6 @@
             6440,
             11824,
             20036,
-            20512,
             812
           ],
           "horde": [
@@ -21551,8 +21331,6 @@
             252471,
             6440,
             11824,
-            20036,
-            19120,
             812
           ]
         },
@@ -23407,11 +23185,6 @@
               "source_kind": "quest",
               "source": "Trolls of a Feather"
             },
-            "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 1664,
               "source_kind": "world",
@@ -23517,7 +23290,6 @@
             7553,
             19523,
             20534,
-            11302,
             17745
           ],
           "horde": [
@@ -24393,11 +24165,6 @@
               "source_kind": "quest",
               "source": "Trolls of a Feather"
             },
-            "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
             "main_hand": {
               "item_id": 1664,
               "source_kind": "world",
@@ -24504,7 +24271,6 @@
             7553,
             19523,
             20534,
-            249469,
             17745
           ],
           "horde": [
@@ -25467,11 +25233,6 @@
               "source_kind": "quest",
               "source": "Trolls of a Feather"
             },
-            "trinket2": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -25515,7 +25276,6 @@
             6440,
             11824,
             20534,
-            20036,
             812,
             11748
           ]
@@ -25537,38 +25297,73 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
+            "neck": {
+              "item_id": 22657,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "shoulder": {
+              "item_id": 240143,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
             "back": {
-              "item_id": 3475,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            "chest": {
+              "item_id": 240138,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "wrist": {
+              "item_id": 240145,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "hands": {
+              "item_id": 240140,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "waist": {
+              "item_id": 240144,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "legs": {
+              "item_id": 240142,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "feet": {
+              "item_id": 240139,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
-              "item_id": 21200,
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor"
+              "item_id": 234032,
+              "source_kind": "vendor",
+              "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 22725,
-              "source_kind": "quest",
-              "source": "A Humble Offering"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
-            },
-            "trinket2": {
               "item_id": 22678,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
-            "main_hand": {
-              "item_id": 21521,
-              "source_kind": "quest",
-              "source": "Treasure of the Timeless One"
+            "trinket2": {
+              "item_id": 12930,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher"
             },
-            "off_hand": {
-              "item_id": 19312,
+            "main_hand": {
+              "item_id": 19102,
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
@@ -25584,20 +25379,60 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
+            "neck": {
+              "item_id": 22657,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "shoulder": {
+              "item_id": 240143,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
             "back": {
-              "item_id": 3475,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            "chest": {
+              "item_id": 240138,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "wrist": {
+              "item_id": 240145,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "hands": {
+              "item_id": 240140,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "waist": {
+              "item_id": 240144,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "legs": {
+              "item_id": 240142,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "feet": {
+              "item_id": 240139,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
-              "item_id": 21200,
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor"
+              "item_id": 234032,
+              "source_kind": "vendor",
+              "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 22725,
-              "source_kind": "quest",
-              "source": "A Humble Offering"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22678,
@@ -25605,19 +25440,14 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 22268,
+              "item_id": 12930,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Blackrock Spire: Jed Runewatcher"
             },
             "main_hand": {
-              "item_id": 21521,
-              "source_kind": "quest",
-              "source": "Treasure of the Timeless One"
-            },
-            "off_hand": {
-              "item_id": 19312,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan"
+              "item_id": 20654,
+              "source_kind": "world",
+              "source": "Azure Templar"
             },
             "ranged": {
               "item_id": 22408,
@@ -25629,24 +25459,38 @@
         "new_at_band": {
           "alliance": [
             240141,
-            3475,
-            21200,
-            22725,
-            22268,
+            22657,
+            240143,
+            272411,
+            240138,
+            240145,
+            240140,
+            240144,
+            240142,
+            240139,
+            234032,
+            20682,
             22678,
-            21521,
-            19312,
+            12930,
+            19102,
             22408
           ],
           "horde": [
             240141,
-            3475,
-            21200,
-            22725,
+            22657,
+            240143,
+            272411,
+            240138,
+            240145,
+            240140,
+            240144,
+            240142,
+            240139,
+            234032,
+            20682,
             22678,
-            22268,
-            21521,
-            19312,
+            12930,
+            20654,
             22408
           ]
         },
@@ -26279,11 +26123,6 @@
               "source_kind": "quest",
               "source": "Voodoo Feathers"
             },
-            "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
             "main_hand": {
               "item_id": 1982,
               "source_kind": "world_drop",
@@ -26392,7 +26231,6 @@
             17713,
             13095,
             20130,
-            249469,
             13039
           ],
           "horde": [
@@ -26488,11 +26326,6 @@
               "item_id": 11815,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-            },
-            "trinket2": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
             },
             "main_hand": {
               "item_id": 12592,
@@ -26603,7 +26436,6 @@
             234034,
             19514,
             11815,
-            19289,
             12592,
             19107
           ],
@@ -27312,11 +27144,6 @@
               "source_kind": "quest",
               "source": "Voodoo Feathers"
             },
-            "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            },
             "main_hand": {
               "item_id": 809,
               "source_kind": "world_drop",
@@ -27434,7 +27261,6 @@
             12555,
             17713,
             20130,
-            249469,
             809,
             12535,
             13039

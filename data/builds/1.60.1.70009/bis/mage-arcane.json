@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:54:00Z",
+  "generated_at": "2026-09-30T15:15:52Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -533,8 +533,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.573747941,
-      "verify_run_seconds": 0.592077911,
+      "weights_run_seconds": 0.7650199,
+      "verify_run_seconds": 0.74766246,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1143,8 +1143,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.573747941,
-      "verify_run_seconds": 0.555065726,
+      "weights_run_seconds": 0.7650199,
+      "verify_run_seconds": 0.705603791,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1831,8 +1831,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.64949308,
-      "verify_run_seconds": 0.592511215,
+      "weights_run_seconds": 0.772303457,
+      "verify_run_seconds": 0.761698645,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2521,8 +2521,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.64949308,
-      "verify_run_seconds": 0.637169574,
+      "weights_run_seconds": 0.772303457,
+      "verify_run_seconds": 0.80633638,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3180,8 +3180,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.739059971,
-      "verify_run_seconds": 0.638558534,
+      "weights_run_seconds": 0.928758973,
+      "verify_run_seconds": 0.831202433,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3831,8 +3831,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.739059971,
-      "verify_run_seconds": 0.646316927,
+      "weights_run_seconds": 0.928758973,
+      "verify_run_seconds": 0.816765244,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4217,6 +4217,8 @@
           "source_kind": "dungeon",
           "score": 15.07681607715751,
           "verified": true,
+          "swap_note": "confirmed by the sim against Highlander's Cloth Girdle (id 20098): kept the pick, +0.3 DPS (275.8 vs 275.5 set DPS)",
+          "dps_delta": 0.3470137564005995,
           "alternatives": [
             {
               "item_id": 20097,
@@ -4224,14 +4226,6 @@
               "source_kind": "rep",
               "source": "The League of Arathor",
               "dps_delta": -0.2942842108020143
-            },
-            {
-              "item_id": 20098,
-              "item_name": "Highlander's Cloth Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -0.3470137564005995,
-              "verified": true
             },
             {
               "item_id": 254073,
@@ -4378,42 +4372,13 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 11302,
-          "item_name": "Uther's Strength",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "sim_dps": 275.84582555343457,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
-          "item_id": 20512,
-          "item_name": "Sanctified Orb",
-          "source": "Forging the Mightstone",
-          "source_kind": "quest",
-          "sim_dps": 275.84582555343457,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4516,12 +4481,10 @@
         "legs: Spellshock Leggings",
         "finger1: Band of the Unicorn",
         "finger2: Lorekeeper's Ring",
-        "trinket1: Uther's Strength",
-        "trinket2: Sanctified Orb",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.752532725,
-      "verify_run_seconds": 0.736063462,
+      "weights_run_seconds": 0.971435254,
+      "verify_run_seconds": 0.943227137,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4899,6 +4862,8 @@
           "source_kind": "dungeon",
           "score": 15.07681607715751,
           "verified": true,
+          "swap_note": "confirmed by the sim against Defiler's Cloth Girdle (id 20166): kept the pick, +0.3 DPS (266.0 vs 265.7 set DPS)",
+          "dps_delta": 0.3268953645355168,
           "alternatives": [
             {
               "item_id": 20165,
@@ -4906,14 +4871,6 @@
               "source_kind": "rep",
               "source": "The Defilers",
               "dps_delta": -0.2942842108020143
-            },
-            {
-              "item_id": 20166,
-              "item_name": "Defiler's Cloth Girdle",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -0.3268953645355168,
-              "verified": true
             },
             {
               "item_id": 254073,
@@ -5060,42 +5017,13 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 249469,
-          "item_name": "Frozen Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "sim_dps": 265.9949747059236,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.08901819945469924,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
-          "item_id": 19120,
-          "item_name": "Rune of the Guard Captain",
-          "source": "Job Opening: Guard Captain of Revantusk Village",
-          "source_kind": "quest",
-          "sim_dps": 265.9949747059236,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -5198,12 +5126,10 @@
         "legs: Spellshock Leggings",
         "finger1: Band of the Unicorn",
         "finger2: Advisor's Ring",
-        "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.752532725,
-      "verify_run_seconds": 0.745979235,
+      "weights_run_seconds": 0.971435254,
+      "verify_run_seconds": 0.925123238,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5358,13 +5284,6 @@
               "verified": true
             },
             {
-              "item_id": 16441,
-              "item_name": "Field Marshal's Coronet",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -9.61262203018639
-            },
-            {
               "item_id": 231604,
               "item_name": "Field Marshal's Coronet",
               "source_kind": "pvp",
@@ -5497,10 +5416,10 @@
               "dps_delta": -10.878171448966608
             },
             {
-              "item_id": 16443,
+              "item_id": 231603,
               "item_name": "Field Marshal's Silk Vestments",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
               "dps_delta": -13.127881407453506
             }
           ]
@@ -5528,13 +5447,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -7.394418996973993
-            },
-            {
-              "item_id": 19596,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -8.187824572813781
             }
           ]
         },
@@ -5544,7 +5456,7 @@
           "item_name": "Fireleaf Gloves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 57.673117477489924,
+          "score": 57.67311747748992,
           "verified": true,
           "alternatives": [
             {
@@ -5560,14 +5472,14 @@
               "item_name": "Marshal's Silk Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -10.293304937591063
+              "dps_delta": -10.293304937591062
             },
             {
               "item_id": 231608,
               "item_name": "Marshal's Silk Gauntlets",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -10.293304937591063
+              "dps_delta": -10.293304937591062
             }
           ]
         },
@@ -5600,7 +5512,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -9.06519165789284
+              "dps_delta": -9.065191657892838
             }
           ]
         },
@@ -5610,7 +5522,7 @@
           "item_name": "Fireleaf Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 69.33104966002323,
+          "score": 69.33104966002324,
           "verified": true,
           "alternatives": [
             {
@@ -5626,14 +5538,14 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -7.815976193836942
+              "dps_delta": -7.8159761938369465
             },
             {
-              "item_id": 231605,
+              "item_id": 16442,
               "item_name": "Marshal's Silk Leggings",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -10.539125615469892
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -10.5391256154699
             }
           ]
         },
@@ -5643,14 +5555,8 @@
           "item_name": "Fireleaf Boots",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 51.708345109490615,
+          "score": 51.70834510949062,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 240058,
-              "item_name": "Fireleaf Sandals"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 240058,
@@ -5662,18 +5568,11 @@
               "sim_dps": 551.3928338891839
             },
             {
-              "item_id": 16437,
-              "item_name": "Marshal's Silk Footwraps",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -7.73590154521455
-            },
-            {
               "item_id": 231606,
               "item_name": "Marshal's Silk Footwraps",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -7.73590154521455
+              "dps_delta": -7.735901545214553
             }
           ]
         },
@@ -5693,13 +5592,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.7494714460937589
-            },
-            {
-              "item_id": 234024,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -1.102240104267623
             },
             {
               "item_id": 11669,
@@ -5922,8 +5814,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.775982797,
-      "verify_run_seconds": 0.761121128,
+      "weights_run_seconds": 0.9969316,
+      "verify_run_seconds": 0.954627664,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6066,7 +5958,7 @@
           "item_name": "Fireleaf Circlet",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 69.33104966002324,
+          "score": 69.33104966002323,
           "verified": true,
           "alternatives": [
             {
@@ -6078,18 +5970,11 @@
               "verified": true
             },
             {
-              "item_id": 16533,
-              "item_name": "Warlord's Silk Cowl",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -9.612622030186394
-            },
-            {
               "item_id": 231601,
               "item_name": "Warlord's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -9.612622030186396
+              "dps_delta": -9.61262203018639
             }
           ]
         },
@@ -6248,13 +6133,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "dps_delta": -7.394418996973993
-            },
-            {
-              "item_id": 19596,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -8.187824572813781
             }
           ]
         },
@@ -6297,7 +6175,7 @@
           "item_name": "Fireleaf Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 54.654697500223016,
+          "score": 54.65469750022301,
           "verified": true,
           "alternatives": [
             {
@@ -6313,14 +6191,14 @@
               "item_name": "Knowledge of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -7.012734653936882
+              "dps_delta": -7.012734653936879
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -9.065191657892841
+              "dps_delta": -9.06519165789284
             }
           ]
         },
@@ -6363,14 +6241,8 @@
           "item_name": "Fireleaf Boots",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 51.708345109490615,
+          "score": 51.70834510949062,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 240058,
-              "item_name": "Fireleaf Sandals"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 240058,
@@ -6382,18 +6254,11 @@
               "sim_dps": 529.348254830209
             },
             {
-              "item_id": 16539,
-              "item_name": "General's Silk Boots",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -7.73590154521455
-            },
-            {
               "item_id": 231597,
               "item_name": "General's Silk Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -7.73590154521455
+              "dps_delta": -7.735901545214553
             }
           ]
         },
@@ -6413,13 +6278,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.7494714460937589
-            },
-            {
-              "item_id": 234024,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -1.102240104267623
             },
             {
               "item_id": 11669,
@@ -6642,8 +6500,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.775982797,
-      "verify_run_seconds": 0.770943694,
+      "weights_run_seconds": 0.9969316,
+      "verify_run_seconds": 0.949770236,
       "coverage": {
         "back": {
           "eligible": 451,
