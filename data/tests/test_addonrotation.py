@@ -230,3 +230,47 @@ def test_the_real_committed_data_produces_a_rotation_for_every_spec():
     # card must not show it earlier.
     names_at_30 = {line.name for line in fury[30]}
     assert "Bloodthirst" not in names_at_30
+
+
+#: spec -> {ability name -> known-good icon}, each pinned against TWO independent primary
+#: sources (player-review sweep 16, 2026-09-30): this build's own raw SpellMisc.csv ->
+#: ManifestInterfaceData.csv join (re-fetched from wago.tools for both 1.60.1.70009 and
+#: Classic Era 1.15.9.70003 -- identical on both) and Wowhead Classic's own rendered
+#: icondb id for the same spell ids (78, 284, 285, 1608, 11564-11567, 25286 for Heroic
+#: Strike; 772, 6546-6548, 11572-11574 for Rend; 19434/27632 for Aimed Shot; 2643 for
+#: Multi-Shot). Heroic Strike and Rend look wrong at a glance -- they carry Rogue
+#: Ambush's and Gouge's own icon files -- but that is a real, longstanding Classic client
+#: quirk (both ranks' SpellMisc.SpellIconFileDataID rows have carried those file ids since
+#: at least 1.12, on both Era and this Forever beta), not a pipeline bug: sweep 15 flagged
+#: it as one, sweep 16 re-verified it against the client tables and Wowhead and found the
+#: join correct. Aimed Shot/Multi-Shot are the "looks right, still checked" control pair.
+#: A change to any of these six values fails this test until a person re-verifies it
+#: against the same two sources and explains why the new answer is right (tenet 8).
+KNOWN_GOOD_ROTATION_ICONS = {
+    "warrior-arms": {"Heroic Strike": "ability_rogue_ambush", "Rend": "ability_gouge"},
+    "warrior-fury": {"Heroic Strike": "ability_rogue_ambush"},
+    "hunter-marksmanship": {
+        "Aimed Shot": "inv_spear_07",
+        "Multi-Shot": "ability_upgrademoonglaive",
+    },
+    "hunter-beast-mastery": {
+        "Aimed Shot": "inv_spear_07",
+        "Multi-Shot": "ability_upgrademoonglaive",
+    },
+}
+
+
+def test_known_spells_pin_to_their_verified_client_icon():
+    """Regression pin for player-review sweep 15's "wrong icon" report: re-verified in
+    sweep 16 against a fresh wago.tools SpellMisc/ManifestInterfaceData fetch and
+    Wowhead Classic's own icondb id, both of which agree with what this build already
+    committed. See KNOWN_GOOD_ROTATION_ICONS's own doc."""
+    rotations = build_rotations(Path("builds"), BUILD)
+    for spec, expected_by_name in KNOWN_GOOD_ROTATION_ICONS.items():
+        band_60 = next(band for band in rotations[spec] if band.level == 60)
+        icon_by_name = {line.name: line.icon for line in band_60.lines}
+        for name, expected_icon in expected_by_name.items():
+            assert icon_by_name.get(name) == expected_icon, (
+                f"{spec} band 60 {name!r}: expected verified icon {expected_icon!r}, "
+                f"got {icon_by_name.get(name)!r}"
+            )

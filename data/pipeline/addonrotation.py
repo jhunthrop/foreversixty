@@ -291,6 +291,20 @@ def compute_spell_icons(
 
     Sorted by id on return: small, deterministic, and a stable diff when a
     curated APL or spellranks.json changes which ids are referenced.
+
+    Player-review sweep 15 (2026-09-30) flagged this join as wrong for
+    Heroic Strike (all 9 ranks: 78, 284, 285, 1608, 11564-11567, 25286) and
+    Rend (all 7 ranks: 772, 6546-6548, 11572-11574) -- both resolve to a
+    Rogue ability's icon file (Ambush's 132282/ability_rogue_ambush, Gouge's
+    132155/ability_gouge). Sweep 16 re-fetched SpellMisc.csv and
+    ManifestInterfaceData.csv fresh from wago.tools for both this build and
+    Classic Era 1.15.9.70003, and cross-checked Wowhead Classic's own
+    rendered icondb id for the same spell ids: all four sources agree, on
+    both ability's every rank. This is a real, longstanding Classic client
+    quirk (these two Vanilla abilities' base SpellMisc rows have carried a
+    borrowed Rogue icon file since at least 1.12), not a join bug -- see
+    test_known_spells_pin_to_their_verified_client_icon, which pins it
+    (tenet 8) so a future sweep does not re-file the same false positive.
     """
     spellranks_path = root / build / "spellranks.json"
     if not spellranks_path.exists():

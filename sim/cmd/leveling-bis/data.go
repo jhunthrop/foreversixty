@@ -710,8 +710,26 @@ var raidLockedQuestOpens = map[int]string{
 // firstNonEmpty(src.Opens, this map[factionID]) in loadLootIndex - the
 // pipeline-curated fact wins when one exists; this hand-maintained
 // fallback only fires where loot.json is silent.
+//
+// bis-ranker-integrity-17 lane, 2026-09-30, player-review sweep 15/16:
+// the same gap, a second AQ War Effort faction. "Signet Ring of the
+// Bronze Dragonflight" (items 21200/21205/21210, band-60 finger) is
+// reachable both by a quest reward (fixed at the pipeline level -
+// pipeline.loot.sources.REP_FACTION_RAID_PHASE_OPENS, which bakes the
+// gate straight into loot.json's own quest entries) AND directly by
+// reputation (loot.json's own rep:brood-of-nozdormu:exalted source,
+// which - like every rep-kind source - never carries an Opens value of
+// its own). Without this fallback the rep-kind path stayed ungated
+// even after the quest path was fixed, which is enough on its own to
+// keep the item showing as a launch-day pick (an item counts as
+// reachable the moment ANY one of its sources is ungated). Brood of
+// Nozdormu (faction 910) is confirmed the same Gates of Ahn'Qiraj
+// (Patch 1.9) War Effort reputation Cenarion Circle is, off this same
+// build's loot.json ("Brood of Nozdormu" rep sources at every standing)
+// and spells.json ("Brood of Nozdormu Factoin +1000").
 var repFactionRaidPhaseOpens = map[int]string{
 	609: "later", // Cenarion Circle - Gates of Ahn'Qiraj (AQ War Effort)
+	910: "later", // Brood of Nozdormu - Gates of Ahn'Qiraj (AQ War Effort)
 }
 
 // worldBossSources is a loot.json "world"-kind source id -> the content

@@ -66,7 +66,7 @@
         }
       },
       {
-        "notes": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active, the same shape warrior-arms.json's own Overpower line uses.",
+        "notes": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -110,5 +110,8 @@
         }
       }
     ]
+  },
+  "engineering_notes": {
+    "2": "The same shape warrior-arms.json's own Overpower line uses (that file's step 5): a proc-gated bare cast with no combo-point or resource condition."
   }
 }

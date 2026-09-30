@@ -63,9 +63,56 @@ describe('engineeringLeakIn', () => {
     expect(engineeringLeakIn('maintained in ui/warlock/apls/rotation.apl.json already')).toMatch(/file path/);
   });
 
+  it('flags a bare filename with no directory prefix', () => {
+    expect(
+      engineeringLeakIn("the same shape warrior-arms.json's own Overpower line uses"),
+    ).toMatch(/file path/);
+    expect(engineeringLeakIn('a real, engine-implemented DoT (see druid.py for the walk)')).toMatch(
+      /file path/,
+    );
+  });
+
   it('flags "fix round" and "smoke run", case-insensitively', () => {
     expect(engineeringLeakIn('Fix round 4: tracks the engine aura')).toMatch(/fix round/);
     expect(engineeringLeakIn('unresolved under this build’s no-talent smoke run')).toMatch(/smoke run/);
+  });
+
+  it('flags "audit finding" and "not yet implemented", case-insensitively', () => {
+    expect(engineeringLeakIn('(audit finding druid.md #3 -- absent from the guide)')).toMatch(
+      /audit finding/,
+    );
+    expect(engineeringLeakIn('the functional finisher while Venom is not yet implemented')).toMatch(
+      /not yet implemented/,
+    );
+  });
+
+  it('flags "engine\'s", straight or curly apostrophe', () => {
+    expect(engineeringLeakIn("the engine's ExtraCastCondition only lets it land")).toMatch(
+      /engineering phrase/,
+    );
+    expect(engineeringLeakIn('totemRemainingTime is the engine’s own primitive')).toMatch(
+      /engineering phrase|camelCase/,
+    );
+  });
+
+  it('flags a camelCase or PascalCase code identifier but not game shorthand', () => {
+    expect(engineeringLeakIn('totemRemainingTime needs no aura or spell id to check')).toMatch(
+      /code identifier/,
+    );
+    expect(engineeringLeakIn('gated by the engine ExtraCastCondition mechanism')).toMatch(
+      /code identifier/,
+    );
+    expect(engineeringLeakIn('loops at 1-3 combo points via currentComboPoints')).toMatch(
+      /code identifier/,
+    );
+    expect(engineeringLeakIn('a PvP rank 9 reward, correctly gated')).toBeNull();
+    expect(engineeringLeakIn('an AoE DoT that ticks for GCD-free upkeep')).toBeNull();
+  });
+
+  it('flags an ISO date, the shape of a commit-log timestamp', () => {
+    expect(
+      engineeringLeakIn("Multi-Shot's real cooldown, corrected 2026-09-29, zeroed Arcane Shot"),
+    ).toMatch(/ISO date/);
   });
 
   it('flags a hex/commit-looking token but not a plain decimal spell or item id', () => {

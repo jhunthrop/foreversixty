@@ -12,6 +12,31 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
+// Player-review sweep 15/16's own repro: warlock-destruction band 60
+// Alliance legs printed "kept the pick, +-2.7 DPS over it" -- a
+// negative delta double-signed by a literal "+" in front of "%.1f".
+// dpsComparisonPhrase's own doc has the fix ("%+.1f", Go's sign flag).
+func TestDPSComparisonPhraseNeverDoubleSignsANegativeDelta(t *testing.T) {
+	got := dpsComparisonPhrase(-2.7, 100, 102.7, 50)
+	if strings.Contains(got, "+-") {
+		t.Fatalf("dpsComparisonPhrase(-2.7, ...) = %q, contains a double sign", got)
+	}
+	want := "-2.7 DPS over it"
+	if got != want {
+		t.Fatalf("dpsComparisonPhrase(-2.7, ...) = %q, want %q", got, want)
+	}
+}
+
+// The positive-delta case must still read "+N.N DPS", not a bare
+// number with no sign at all.
+func TestDPSComparisonPhraseKeepsAPlusSignOnAPositiveDelta(t *testing.T) {
+	got := dpsComparisonPhrase(2.7, 100, 97.3, 100)
+	want := "+2.7 DPS (100.0 vs 97.3 set DPS)"
+	if got != want {
+		t.Fatalf("dpsComparisonPhrase(2.7, ...) = %q, want %q", got, want)
+	}
+}
+
 func TestTitleCase(t *testing.T) {
 	cases := map[string]string{"horde": "Horde", "alliance": "Alliance", "": "", "a": "A"}
 	for in, want := range cases {
@@ -201,7 +226,8 @@ func TestApplyLabelSuffixForNameCollisionsLabelsBothSides(t *testing.T) {
 		},
 	}
 	levels := map[int]int{237815: 78, 22752: 65, 231587: 70}
-	applyLabelSuffixForNameCollisions(&row, func(id int) int { return levels[id] })
+	noStats := map[int]map[string]float64{}
+	applyLabelSuffixForNameCollisions(&row, func(id int) int { return levels[id] }, func(id int) map[string]float64 { return noStats[id] })
 	if row.LabelSuffix != "(ilvl 78)" {
 		t.Fatalf("row.LabelSuffix = %q, want \"(ilvl 78)\"", row.LabelSuffix)
 	}
@@ -221,9 +247,76 @@ func TestApplyLabelSuffixForNameCollisionsLeavesUniqueNamesAlone(t *testing.T) {
 		ItemName:     "Helm",
 		Alternatives: []alternativeRow{{ItemID: 2, ItemName: "Cap"}},
 	}
-	applyLabelSuffixForNameCollisions(&row, func(id int) int { return 60 })
+	applyLabelSuffixForNameCollisions(&row, func(id int) int { return 60 }, func(id int) map[string]float64 { return nil })
 	if row.LabelSuffix != "" || row.Alternatives[0].LabelSuffix != "" {
 		t.Fatalf("row = %+v, want no LabelSuffix anywhere: the names do not collide", row)
+	}
+}
+
+// bis-ranker-integrity-17 lane's brief, item 4: when the colliding
+// items' own item levels ALSO tie, an "(ilvl 80)" suffix on both sides
+// tells a player nothing - the real repro, three "Signet Ring of the
+// Bronze Dragonflight" variants (21200/21205/21210), all item_level 80,
+// each a different role's stat line. roleStatHint's own priority order
+// picks Defense over the ring's higher-value Stamina because Defense
+// is the stat that actually signals "this is the tank one".
+func TestApplyLabelSuffixForNameCollisionsFallsBackToARoleStatHintWhenItemLevelsTie(t *testing.T) {
+	row := slotRow{
+		ItemID:   21210,
+		ItemName: "Signet Ring of the Bronze Dragonflight",
+		Alternatives: []alternativeRow{
+			{ItemID: 21200, ItemName: "Signet Ring of the Bronze Dragonflight"},
+			{ItemID: 21205, ItemName: "Signet Ring of the Bronze Dragonflight"},
+		},
+	}
+	levels := map[int]int{21200: 80, 21205: 80, 21210: 80}
+	stats := map[int]map[string]float64{
+		21200: {"stamina": 24, "strength": 13, "defense": 7},
+		21205: {"agility": 24, "stamina": 13, "hit": 10},
+		21210: {"intellect": 9, "stamina": 8, "spell_power": 28, "mp5": 5},
+	}
+	applyLabelSuffixForNameCollisions(
+		&row,
+		func(id int) int { return levels[id] },
+		func(id int) map[string]float64 { return stats[id] },
+	)
+	if row.LabelSuffix != "(Spell power)" {
+		t.Fatalf("row.LabelSuffix = %q, want \"(Spell power)\" (the caster ring, 21210)", row.LabelSuffix)
+	}
+	if row.Alternatives[0].LabelSuffix != "(Defense)" {
+		t.Fatalf("Alternatives[0].LabelSuffix = %q, want \"(Defense)\" (the tank ring, 21200)", row.Alternatives[0].LabelSuffix)
+	}
+	if row.Alternatives[1].LabelSuffix != "(Agility)" {
+		t.Fatalf("Alternatives[1].LabelSuffix = %q, want \"(Agility)\" (the melee ring, 21205)", row.Alternatives[1].LabelSuffix)
+	}
+}
+
+// When only SOME of the colliding item levels tie, the ones that do
+// not tie keep their own, still-informative ilvl suffix rather than
+// switching to a stat hint they do not need.
+func TestApplyLabelSuffixForNameCollisionsKeepsItemLevelWhenLevelsDiffer(t *testing.T) {
+	row := slotRow{
+		ItemID:   1,
+		ItemName: "Ring of Duplicates",
+		Alternatives: []alternativeRow{
+			{ItemID: 2, ItemName: "Ring of Duplicates"},
+		},
+	}
+	levels := map[int]int{1: 80, 2: 70}
+	stats := map[int]map[string]float64{
+		1: {"spell_power": 20},
+		2: {"agility": 20},
+	}
+	applyLabelSuffixForNameCollisions(
+		&row,
+		func(id int) int { return levels[id] },
+		func(id int) map[string]float64 { return stats[id] },
+	)
+	if row.LabelSuffix != "(ilvl 80)" {
+		t.Fatalf("row.LabelSuffix = %q, want \"(ilvl 80)\" (levels differ, no hint needed)", row.LabelSuffix)
+	}
+	if row.Alternatives[0].LabelSuffix != "(ilvl 70)" {
+		t.Fatalf("Alternatives[0].LabelSuffix = %q, want \"(ilvl 70)\"", row.Alternatives[0].LabelSuffix)
 	}
 }
 

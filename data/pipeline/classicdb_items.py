@@ -49,7 +49,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from pipeline.icons import PLACEHOLDER_ICON, resolve_icon_name
+from pipeline.icons import PLACEHOLDER_ICON, resolve_icon, resolve_icon_name
 from pipeline.models import GearItem, Item
 from pipeline.normalize.effects import equip_stat_folds_out_text
 from pipeline.normalize.gear import (
@@ -909,6 +909,39 @@ def effect_text(
     return " ".join(part for part in parts if part)
 
 
+def _classicdb_client_icon(
+    item_id: int, client_icon_file_ids: dict[int, int], icon_names: dict[int, str]
+) -> str:
+    """The client's own icon for a classic-db-sourced item id, straight off
+    `Item.csv`'s `IconFileDataID` through `ManifestInterfaceData` -- the same
+    join `pipeline.normalize.gear.build_class_items` already runs for a
+    client row, tried here too before this item ever reaches the fork-db/
+    wowhead fallback chain.
+
+    player-review sweep 15/16, 2026-09-30: "First Sergeant's Cloak" (16340,
+    a real 1.12 PvP reward, `client_unconfirmed: true` because this beta's
+    own `ItemSparse` is only ~60% populated -- this module's own doc -- and
+    has no row for this id at all) still resolved a placeholder icon even
+    though `Item.csv` (a smaller, separate table `normalize_items` also
+    reads, populated independently of `ItemSparse`) carries a real,
+    nonzero `IconFileDataID` (133759, `inv_misc_cape_07.blp`, confirmed
+    against a fresh wago.tools fetch for this exact build). Item ids are a
+    permanent registry across Blizzard's whole catalogue -- an id missing
+    from `ItemSparse` does not mean `Item.csv` has forgotten it too, only
+    that this ONE client row lacks usable equip data, which is exactly why
+    stats/required_level still come from classic-db regardless of what
+    this function returns.
+
+    `client_icon_file_ids`/`icon_names` default to empty (every caller
+    before this existed, and any test that does not care) so a classic-db
+    item with no client Item.csv row at all -- the overwhelming majority --
+    falls straight through to `PLACEHOLDER_ICON`, exactly as before."""
+    file_id = client_icon_file_ids.get(item_id, 0)
+    if not file_id:
+        return PLACEHOLDER_ICON
+    return resolve_icon(file_id, icon_names, f"classic-db item {item_id}")
+
+
 def to_gear_item(
     item: ClassicDbItem,
     spell_text: SpellText,
@@ -916,11 +949,15 @@ def to_gear_item(
     fork_icons: dict[int, str],
     wowhead_icons: dict[int, str],
     client_spell_names: dict[int, str] | None = None,
+    client_icon_file_ids: dict[int, int] | None = None,
+    icon_names: dict[int, str] | None = None,
 ) -> GearItem:
-    """classic-db states no icon at all (`item_template` has no such column);
-    `icon` falls back through the same fork-db/wowhead chain a client row's
-    placeholder icon does (`pipeline.icons.resolve_icon_name`), starting from
-    `PLACEHOLDER_ICON` rather than a client-resolved base."""
+    """classic-db's own `item_template` states no icon at all (no such
+    column); `icon` first tries the client's OWN `Item.csv` table for this
+    exact id (`_classicdb_client_icon`'s own doc -- `Item.csv` is populated
+    independently of the `ItemSparse` gap that put this item here at all),
+    then falls back through the same fork-db/wowhead chain a client row's
+    placeholder icon does (`pipeline.icons.resolve_icon_name`)."""
     is_weapon = is_weapon_row(item.class_id, item.inventory_type)
     speed = round(item.delay / 1000, 2)
     dps = (
@@ -928,7 +965,10 @@ def to_gear_item(
         if is_weapon and speed > 0
         else 0.0
     )
-    icon, icon_source = resolve_icon_name(PLACEHOLDER_ICON, item.id, fork_icons, wowhead_icons)
+    base_icon = _classicdb_client_icon(
+        item.id, client_icon_file_ids or {}, icon_names or {}
+    )
+    icon, icon_source = resolve_icon_name(base_icon, item.id, fork_icons, wowhead_icons)
     stats = planner_stats(item)
     for key, amount in equip_stats(item, spells).items():
         stats[key] = stats.get(key, 0) + amount

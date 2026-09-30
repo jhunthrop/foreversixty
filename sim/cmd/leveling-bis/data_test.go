@@ -704,6 +704,41 @@ func TestLoadLootIndexGatesCenarionCircleRepToLaterPhase(t *testing.T) {
 	}
 }
 
+// Player-review sweep 15/16, 2026-09-30: the same gap as Earthstrike
+// above, a second AQ War Effort faction. "Signet Ring of the Bronze
+// Dragonflight" (21200/21205/21210) is reachable directly by reputation
+// (rep:brood-of-nozdormu:exalted) with no gate at all in loot.json - the
+// quest-reward path is fixed at the pipeline level
+// (pipeline.loot.sources.REP_FACTION_RAID_PHASE_OPENS bakes the gate
+// into loot.json's own quest entries), but this rep-kind source is a
+// second, independent way to reach the same item, and an item counts as
+// launch-day reachable the moment any ONE of its sources is ungated -
+// so this fallback has to cover it too, exactly the way Cenarion
+// Circle's own entry already does for Earthstrike.
+func TestLoadLootIndexGatesBroodOfNozdormuRepToLaterPhase(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "rep:brood-of-nozdormu:exalted", "kind": "rep", "name": "Brood of Nozdormu", "faction_id": 910, "standing": "exalted", "items": [21210]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	ring, ok := idx[21210]
+	if !ok || len(ring) != 1 || ring[0].Opens != "later" {
+		t.Fatalf(
+			"idx[21210] (Signet Ring of the Bronze Dragonflight, Brood of Nozdormu exalted) = %+v, want one source with Opens \"later\"",
+			ring,
+		)
+	}
+}
+
 // A rep source loot.json itself already gives an explicit opens value
 // for must keep that computed value, not the hand-maintained
 // repFactionRaidPhaseOpens fallback - the same firstNonEmpty priority

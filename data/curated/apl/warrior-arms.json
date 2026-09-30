@@ -3,7 +3,8 @@
   "state": "written",
   "notes": "Vanilla Arms at 60: Rend and Mortal Strike are the priority openers, Overpower is a bare cast so it only lands when the dodge-triggered aura from sim/warrior/overpower.go is up, and Heroic Strike is the rage dump. Arms has no burst cooldown in this rotation: Recklessness (sim/warrior/recklessness.go) is registered Berserker-Stance-only, but Arms correctly sits in Battle Stance the whole fight for Overpower, so a bare Recklessness cast can never resolve (warrior.StanceMatches fails silently, sim/warrior/warrior.go) -- it was here before and removed rather than added back with a stance-dance, since a fake burst window that silently never fires is worse than admitting Arms has none; Arms also has no Death Wish (that talent lives in the Fury tree only). The fork's warrior/apls/dps_no_reck.apl.json preset is actually Bloodthirst-based (a Fury list despite the generic name); there is no Arms-specific preset upstream, so this is adapted from it plus the community rotation order. The cited Warcraft Tavern guide has a dedicated Arms Warrior PvE rotation section reading, verbatim: 'Keep Rend applied at all times on your primary target. After that, use Mortal Strike on cooldown. When MS is on cooldown, use Overpower as a filler ability. When MS and OP are on cooldown, use Heroic Strike or Cleave depending on the number of enemies.' -- this file's order matches that sentence exactly. The guide does not put Execute in that same priority sentence and calls the ability 'a touchy topic' for Arms given the spec's poor rage generation; Execute is kept here anyway, gated to the execute-phase window and ordered below Overpower so it never competes with Mortal Strike or Overpower for a global, which is a defensible read of the guide's caution rather than a contradiction of it. Every rank named here is checked against the spellconst of the newest client build in builds/ -- Overpower and Mortal Strike each carry an extra low rank in this build that vanilla did not have, so the highest-numbered rank, not the highest rank number remembered from live Classic, is what is named. Nothing here is Forever-specific yet: the validation job (design section 6) is the evidence for changing it.",
   "engineering_notes": {
-    "3": "Fix round 3: Rend's DoT lives on the target, not the warrior, so the gate is dotIsActive against the current target rather than auraIsActive against the caster -- the same shape shaman-elemental and druid-feral already use for their own DoT upkeep checks. The old auraIsActive gate never resolved (nil condition, read as always true), so Rend was recast on every free global."
+    "3": "Fix round 3: Rend's DoT lives on the target, not the warrior, so the gate is dotIsActive against the current target rather than auraIsActive against the caster -- the same shape shaman-elemental and druid-feral already use for their own DoT upkeep checks. The old auraIsActive gate never resolved (nil condition, read as always true), so Rend was recast on every free global.",
+    "5": "Gated by the engine's ExtraCastCondition mechanism (not a player-visible condition check) against the dodge-triggered proc aura."
   },
   "sources": [
     {
@@ -128,7 +129,7 @@
         }
       },
       {
-        "notes": "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through otherwise.",
+        "notes": "Overpower is a bare cast: it only lands while the dodge-triggered proc aura is up, so it is a free line that falls through otherwise.",
         "action": {
           "castSpell": {
             "spellId": {

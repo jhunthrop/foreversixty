@@ -554,6 +554,45 @@ def test_to_gear_item_resolves_icon_through_the_fork_wowhead_fallback_chain():
     assert gear.icon_source == "fork"
 
 
+def test_to_gear_item_prefers_the_clients_own_item_csv_icon_over_fork_and_wowhead():
+    """Player-review sweep 15/16, 2026-09-30: "First Sergeant's Cloak"
+    (16340) still resolved the placeholder icon even though the client's
+    own Item.csv carries a real IconFileDataID for that id -- ItemSparse
+    (this build's stats source) is only ~60% populated, but Item.csv is a
+    separate table, populated independently (module doc). The client icon
+    wins over BOTH fork and wowhead once it resolves at all."""
+    item = _item(id=16340)
+    gear = to_gear_item(
+        item,
+        _FakeSpellText({}),
+        {},
+        fork_icons={16340: "inv_jewelry_ring_03"},
+        wowhead_icons={16340: "inv_misc_questionmark"},
+        client_icon_file_ids={16340: 133759},
+        icon_names={133759: "inv_misc_cape_07"},
+    )
+    assert gear.icon == "inv_misc_cape_07"
+    assert gear.icon_source == "client"
+
+
+def test_to_gear_item_falls_back_to_fork_wowhead_when_the_client_has_no_icon_for_the_id():
+    """The overwhelming majority of classic-db-sourced ids: no Item.csv row
+    at all (or one with IconFileDataID 0). Unchanged from before this
+    lane: fork, then wowhead, then the placeholder."""
+    item = _item(id=11815)
+    gear = to_gear_item(
+        item,
+        _FakeSpellText({}),
+        {},
+        fork_icons={11815: "inv_jewelry_ring_03"},
+        wowhead_icons={},
+        client_icon_file_ids={},
+        icon_names={},
+    )
+    assert gear.icon == "inv_jewelry_ring_03"
+    assert gear.icon_source == "fork"
+
+
 def test_to_gear_item_computes_weapon_damage_two_hand_and_weapon_type():
     sword = _item(
         id=647,
