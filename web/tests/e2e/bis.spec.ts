@@ -177,25 +177,34 @@ test('Leveling BiS: a pick’s alternatives render as rows beside it, every one 
   }
 });
 
-test('Leveling BiS: the weight rail shows a DPS-per-point line when the band carries reference_dps_per_point, and "No effect" for an insignificant stat', async ({
+test('Leveling BiS: the weight rail shows scale factors normalized to the top stat, DPS per point, the haste caption and the addon button', async ({
   page,
 }) => {
   await page.goto('/bis/hunter/marksmanship#band-alliance-60');
   const band60 = page.getByTestId('bis-band-alliance-60');
   const weights60 = band60.getByTestId('bis-weights-alliance-60');
-  // Band 60's own reference_dps_per_point: "1 Ranged attack power = <n> DPS".
-  await expect(band60).toContainText(/1 Ranged attack power = \d+\.\d\d DPS/);
-  // A significant, non-reference row reads its own weight-times-reference DPS clause.
-  await expect(weights60).toContainText(/DPS per point/);
-  // Whichever stat the nightly flags insignificant reads "No effect", never a number or a
-  // bar implying a real measurement. Which band carries one moves with the data (hit was
-  // insignificant at 60 until the 2026-09-30 engine fix measured it), so look across the
-  // Alliance bands and skip the assertion honestly when none does this build.
+  // The rail follows the convention players know from SimulationCraft's scale factors:
+  // per point, normalized so the top per-point stat reads 1.00, with the absolute DPS per
+  // point beside it. Which stat is on top moves with the data, so the assertion reads the
+  // note the page prints rather than pinning Agility.
+  await expect(band60).toContainText(/normalized to [A-Za-z ]+ = 1\.00/);
+  await expect(weights60).toContainText(/\d\.\d\d\d DPS/);
+  // Haste has no rating in this client, so it is never a table row: the caption carries it.
+  await expect(band60).toContainText(/Haste: \d+\.\d\d per 1%/);
+  // The weights feed our own addon; no other addon is ever named (owner rule, 2026-09-30).
+  await expect(band60).toContainText('Use these weights in the addon');
+  await expect(band60).not.toContainText(/Pawn/);
+  // Whichever stat the nightly flags insignificant reads "Not significant", never a number
+  // implying a real measurement. Which band carries one moves with the data, so look across
+  // the Alliance bands and skip the assertion honestly when none does this build.
   const rails = page.locator('[data-testid^="bis-weights-alliance-"]');
   const railTexts = await rails.allInnerTexts();
-  const noEffectRail = railTexts.find((text) => text.includes('No effect'));
-  test.skip(noEffectRail === undefined, 'no insignificant stat on any Alliance band with the current data');
-  expect(noEffectRail).toContain('No effect');
+  const notSignificantRail = railTexts.find((text) => text.includes('Not significant'));
+  test.skip(
+    notSignificantRail === undefined,
+    'no insignificant stat on any Alliance band with the current data',
+  );
+  expect(notSignificantRail).toContain('Not significant');
 });
 
 test('Leveling BiS: an ordinary empty slot (not a two-hander gap) reads the plain no-source copy', async ({
