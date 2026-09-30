@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"os"
 	"path/filepath"
@@ -497,6 +498,79 @@ func TestBuildReportCarriesTiedAlternatives(t *testing.T) {
 	}
 	if len(byslot["head"].Ties) != 0 {
 		t.Fatalf("head Ties = %+v, want none: no tied alternative was recorded", byslot["head"].Ties)
+	}
+}
+
+// TestBuildReportDropsATieARealSimMeasuredAsALoss is this lane's brief
+// (bis-ranker-integrity-14), item 3: hunter-beast-mastery/hunter-
+// marksmanship band 20 hands published Serpent Gloves as TYING Gloves
+// of the Fang (an exact score() match) while the row's own
+// Alternatives entry for Gloves of the Fang showed dps_delta -0.08 -
+// buildAlternatives' own swap-override publishing the REAL,
+// sim-measured result of verify.go's swap pass against pk.RunnerUp
+// (Gloves of the Fang is both the score tie AND the one candidate a
+// real sim actually tested). A score tie and a real, above-noise
+// measured loss cannot both be true on the same row: the tie must be
+// dropped once real evidence contradicts it (reconcileTies, report.go).
+func TestBuildReportDropsATieARealSimMeasuredAsALoss(t *testing.T) {
+	glovesOfTheFang := scored{candidate: candidate{ID: 101, Name: "Gloves of the Fang"}, Score: 10}
+	picks := map[string]slotPick{
+		"hands": {
+			Item:     &scored{candidate: candidate{ID: 100, Name: "Serpent Gloves"}, Score: 10},
+			RunnerUp: &glovesOfTheFang,
+			Ties:     []scored{glovesOfTheFang},
+		},
+	}
+	// BaselineDPS (the kept pick's own measured DPS) minus SwapDPS
+	// (Gloves of the Fang's own measured DPS) is a real -0.08, well
+	// past swapDeltaNoiseFloorDPS (0.05) - not a measurement artifact.
+	swaps := []swapResult{{Slot: "hands", BaselineDPS: 100.08, SwapDPS: 100.00, Beat: false}}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 100.08, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+	}
+	hands := byslot["hands"]
+	if len(hands.Ties) != 0 {
+		t.Fatalf("hands.Ties = %+v, want none: a real sim measured a -0.08 DPS loss for the only tie, contradicting the score tie", hands.Ties)
+	}
+	var fang *alternativeRow
+	for i := range hands.Alternatives {
+		if hands.Alternatives[i].ItemID == 101 {
+			fang = &hands.Alternatives[i]
+		}
+	}
+	if fang == nil {
+		t.Fatal("hands.Alternatives has no row for Gloves of the Fang (id 101)")
+	}
+	if !fang.Verified || math.Abs(fang.DPSDelta-(-0.08)) > 1e-9 {
+		t.Fatalf("Gloves of the Fang alternative = %+v, want Verified=true DPSDelta=-0.08 (the real swap measurement)", *fang)
+	}
+}
+
+// TestBuildReportKeepsATieTheSimNeverContradicted is
+// TestBuildReportDropsATieARealSimMeasuredAsALoss's own control case:
+// a genuine tie with no real-sim evidence against it (no swap ran for
+// this slot at all) must still publish as a tie - reconcileTies only
+// drops a tie a real measurement actually contradicts, never a tie it
+// simply has no opinion about.
+func TestBuildReportKeepsATieTheSimNeverContradicted(t *testing.T) {
+	picks := map[string]slotPick{
+		"hands": {
+			Item: &scored{candidate: candidate{ID: 100, Name: "Serpent Gloves"}, Score: 10},
+			Ties: []scored{{candidate: candidate{ID: 101, Name: "Gloves of the Fang"}, Score: 10}},
+		},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var hands slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "hands" {
+			hands = s
+		}
+	}
+	want := []tieAlternative{{ItemID: 101, ItemName: "Gloves of the Fang"}}
+	if len(hands.Ties) != 1 || hands.Ties[0] != want[0] {
+		t.Fatalf("hands.Ties = %+v, want %+v (no sim ran, so the score tie stands)", hands.Ties, want)
 	}
 }
 
@@ -1505,6 +1579,115 @@ func TestWriteMarkdownRendersFactionsSortedWithTablesAndNotes(t *testing.T) {
 	}
 	if !strings.Contains(content, "Sim-Verified Cap (7, -1.50 DPS, sim-verified) [quest]") {
 		t.Error("markdown missing the sim-verified note on a swap-corrected alternative (owner review, tenet 8)")
+	}
+}
+
+// TestWriteMarkdownCapsTiedAlternativesAtFiveWithAndNMore is this
+// lane's brief (bis-ranker-integrity-14), item 4: priest-shadow band
+// 20 main_hand published 107 (alliance) / 117 (horde) tied items in
+// one table cell (day3/player-review-33/casters.md finding 8) - the
+// live site never reads `ties` at all and caps Alternatives at 3, so
+// this .md-only rendering is the only place the wall of names ever
+// reached a reader. Capped at mdTieDisplayLimit (5) plus a summary of
+// the rest.
+func TestWriteMarkdownCapsTiedAlternativesAtFiveWithAndNMore(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "spec.md")
+	var ties []tieAlternative
+	for i := 0; i < 8; i++ {
+		ties = append(ties, tieAlternative{ItemID: 100 + i, ItemName: fmt.Sprintf("Tied Item %d", i)})
+	}
+	reports := []bandReport{{
+		Band: 20, Faction: "horde", Race: "troll",
+		Slots: []slotRow{{Slot: "main_hand", ItemID: 1, ItemName: "Evocator's Blade", Score: 10, Verified: true, Ties: ties}},
+	}}
+	if err := writeMarkdown(path, specInfo{Spec: "priest-shadow", Name: "Shadow", ReferenceStat: "spell_power"}, reports); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading %s: %v", path, err)
+	}
+	content := string(b)
+	for i := 0; i < 5; i++ {
+		if !strings.Contains(content, fmt.Sprintf("Tied Item %d (%d)", i, 100+i)) {
+			t.Errorf("markdown missing tied item %d, want the first 5 named in full:\n%s", i, content)
+		}
+	}
+	for i := 5; i < 8; i++ {
+		if strings.Contains(content, fmt.Sprintf("Tied Item %d (%d)", i, 100+i)) {
+			t.Errorf("markdown names tied item %d, want only the first 5 named, the rest summarized:\n%s", i, content)
+		}
+	}
+	if !strings.Contains(content, "and 3 more") {
+		t.Errorf("markdown missing the \"and 3 more\" summary for the remaining ties:\n%s", content)
+	}
+}
+
+// TestWriteMarkdownPrintsSimDecidedInsteadOfAFabricatedZeroScore is
+// this lane's brief (bis-ranker-integrity-14), item 4: 46 occurrences
+// across 8 caster specs (day3/player-review-33/casters.md finding 9) -
+// a pick whose Score was deliberately zeroed because a real sim
+// tournament decided it (buildReport's own doc), not a genuinely
+// zero-value LowValue weapon, but whose own SimDPS/DPSDelta were ALSO
+// both withheld, fell through to the raw reference-points branch and
+// printed the literal "0.0 spell_power points (0.00 DPS)" - read by a
+// player as "this item does nothing", the exact misreading the
+// SimDPS/DPSDelta cases already exist to prevent for every other state
+// this row could be in.
+func TestWriteMarkdownPrintsSimDecidedInsteadOfAFabricatedZeroScore(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "spec.md")
+	refDPSPerPoint := 0.5
+	reports := []bandReport{{
+		Band: 30, Faction: "alliance", Race: "night-elf",
+		ReferenceDPSPerPoint: &refDPSPerPoint,
+		Slots:                []slotRow{{Slot: "main_hand", ItemID: 9604, ItemName: "Mechanic's Pipehammer", Score: 0, Verified: true}},
+	}}
+	if err := writeMarkdown(path, specInfo{Spec: "druid-balance", Name: "Balance", ReferenceStat: "spell_power"}, reports); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading %s: %v", path, err)
+	}
+	content := string(b)
+	if strings.Contains(content, "0.0 spell_power points (0.00 DPS)") {
+		t.Errorf("markdown still prints the fabricated zero score:\n%s", content)
+	}
+	if !strings.Contains(content, "sim-decided") {
+		t.Errorf("markdown missing the \"sim-decided\" label for a zero-score, non-LowValue pick:\n%s", content)
+	}
+}
+
+// TestWriteMarkdownStillPrintsAPlainZeroScoreForALowValueWeapon is the
+// above test's own control: a genuinely zero-scoring weapon pick
+// (LowValue true, band.go's weaponSlots - score() found no weighted
+// stat on it at all, not a sim tournament) is a different, honest
+// claim ("this weapon carries none of this spec's weighted stats") and
+// must not be relabelled "sim-decided".
+func TestWriteMarkdownStillPrintsAPlainZeroScoreForALowValueWeapon(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "spec.md")
+	refDPSPerPoint := 0.5
+	reports := []bandReport{{
+		Band: 30, Faction: "alliance", Race: "night-elf",
+		ReferenceDPSPerPoint: &refDPSPerPoint,
+		Slots:                []slotRow{{Slot: "main_hand", ItemID: 1, ItemName: "Plain Stick", Score: 0, Verified: true, LowValue: true}},
+	}}
+	if err := writeMarkdown(path, specInfo{Spec: "druid-balance", Name: "Balance", ReferenceStat: "spell_power"}, reports); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading %s: %v", path, err)
+	}
+	content := string(b)
+	if strings.Contains(content, "sim-decided") {
+		t.Errorf("markdown labels a genuinely zero-scoring LowValue weapon \"sim-decided\":\n%s", content)
+	}
+	if !strings.Contains(content, "0.0 spell_power points (0.00 DPS)") {
+		t.Errorf("markdown missing the plain zero-score line for a genuinely zero-scoring LowValue weapon:\n%s", content)
 	}
 }
 

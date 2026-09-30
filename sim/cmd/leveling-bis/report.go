@@ -301,12 +301,74 @@ type tieAlternative struct {
 	ItemName string `json:"item_name"`
 }
 
+// reconcileTies is this lane's brief (bis-ranker-integrity-14), item 3:
+// hunter-beast-mastery/hunter-marksmanship band 20 hands published
+// Serpent Gloves as TYING Gloves of the Fang (pick.go's own
+// slotPick.Ties - an exact SCORE match, computed before any real sim
+// ever ran) while the very same row's own Alternatives entry for
+// Gloves of the Fang showed dps_delta -0.08 - a real, sim-measured
+// loss, from buildAlternatives' own swap-override (Gloves of the Fang
+// is also pk.RunnerUp here, the one candidate verify.go's real swap
+// pass actually tested against the pick). A score tie and a measured,
+// above-noise loss cannot both be true; the tie label and the
+// alternative's own delta must come from the same measurement.
+//
+// Alternatives is the stronger evidence whenever it exists for a given
+// item id: buildAlternatives' own swap-override (its doc) only ever
+// replaces a tie's default 0 delta with swapMeasuredDelta's real
+// result when verify.go actually simmed that exact candidate -
+// everything else in Alternatives for a genuine tie still publishes
+// scoreDelta*referenceDPSPerPoint, which is exactly 0 for an identical
+// score (toRow's own arithmetic). So a tie whose own alternatives row
+// carries a nonzero DPSDelta was contradicted by a real measurement -
+// dropped here instead of published as a tie the sim itself disproved.
+// A tie with no matching alternatives row at all (buildAlternatives'
+// own realAlternative/excluded gates can leave one out) or one whose
+// alternatives row is still exactly 0 remains a genuine tie.
+//
+// What decides which of several genuinely-tied candidates the PICK
+// itself is remains candidatesBySlot's own dead-stat-count-then-
+// item-level rule (pick.go, ranker-12) - this function only reconciles
+// the REPORTED tie list against the real evidence Alternatives already
+// carries; it never changes which item is the pick.
+func reconcileTies(ties []tieAlternative, alternatives []alternativeRow) []tieAlternative {
+	if len(ties) == 0 {
+		return ties
+	}
+	deltaByID := make(map[int]float64, len(alternatives))
+	for _, a := range alternatives {
+		deltaByID[a.ItemID] = a.DPSDelta
+	}
+	out := make([]tieAlternative, 0, len(ties))
+	for _, tie := range ties {
+		if delta, ok := deltaByID[tie.ItemID]; ok && delta != 0 {
+			continue
+		}
+		out = append(out, tie)
+	}
+	return out
+}
+
 // alternativesLimit bounds how many candidates slotRow.Alternatives
 // carries beyond the pick itself (this lane's brief: "the next best 3
 // candidates by score after the pick") - enough for a player who
 // cannot get the picked item's own source to see a genuine fallback,
 // without ballooning the JSON with a slot's whole candidate pool.
 const alternativesLimit = 3
+
+// mdTieDisplayLimit bounds how many of a pick's tied items (slotRow.
+// Ties) writeMarkdown names in its own Item cell before summarizing
+// the rest as "and N more" - this lane's brief, item 4: the JSON's own
+// `ties` field is uncapped (report.go publishes every real score tie,
+// which a reader of the raw data may want in full), but the .md
+// prototype page renders it inline in a single table cell, and a slot
+// with 100+ ties (priest-shadow band 20 main_hand: 107/117 across
+// factions) turned that cell into a wall of names longer than the
+// rest of the table combined. 5, not alternativesLimit's 3: a true
+// score tie is "equally good", a stronger claim than an ordinary
+// runner-up alternative, so this cell keeps a little more room for it
+// while still capping the pathological case.
+const mdTieDisplayLimit = 5
 
 // alternativeRow is one candidate slotRow.Alternatives names beyond
 // the slot's own pick.
@@ -1138,6 +1200,10 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				swForSlot = &s
 			}
 			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks, referenceDPSPerPoint, swForSlot, setDPS)
+			// This lane's brief, item 3: reconcile row.Ties against
+			// row.Alternatives' own, possibly sim-measured delta for the
+			// same item id - reconcileTies' own doc, above.
+			row.Ties = reconcileTies(row.Ties, row.Alternatives)
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
@@ -1640,11 +1706,30 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 				if row.ItemID != 0 {
 					item = fmt.Sprintf("%s (%d)", row.ItemName, row.ItemID)
 					if len(row.Ties) > 0 {
-						alts := make([]string, len(row.Ties))
-						for i, t := range row.Ties {
+						// This lane's brief, item 4: priest-shadow band 20
+						// main_hand alone ties 107 (alliance) / 117 (horde)
+						// other items - the web page never reads `ties` at
+						// all and caps Alternatives at 3 (alternativesLimit),
+						// so this .md-only cell printing every tied name made
+						// one table cell longer than the rest of the table
+						// combined (wow-player sweep, day3/player-review-33/
+						// casters.md finding 8). Capped at mdTieDisplayLimit
+						// names, "and N more" for the rest.
+						shown := row.Ties
+						var more int
+						if len(shown) > mdTieDisplayLimit {
+							more = len(shown) - mdTieDisplayLimit
+							shown = shown[:mdTieDisplayLimit]
+						}
+						alts := make([]string, len(shown))
+						for i, t := range shown {
 							alts[i] = fmt.Sprintf("%s (%d)", t.ItemName, t.ItemID)
 						}
-						item += " (or " + strings.Join(alts, ", ") + ")"
+						tieText := strings.Join(alts, ", ")
+						if more > 0 {
+							tieText += fmt.Sprintf(", and %d more", more)
+						}
+						item += " (or " + tieText + ")"
 					}
 					// This lane's brief, item 1 (bis-ranker-integrity-3,
 					// 2026-09-29): a sim-decided row (SimDPS set, Score
@@ -1676,6 +1761,28 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 						// this state publishes its one still-trustworthy
 						// number, dps_delta, instead.
 						score = fmt.Sprintf("sim-verified (%+.1f DPS vs the runner-up, not corroborated against the finished set)", *row.DPSDelta)
+					case row.Score == 0 && !row.LowValue:
+						// This lane's brief, item 4: 46 occurrences across
+						// 8 caster specs (wow-player sweep, day3/player-
+						// review-33/casters.md finding 9) - a pick with no
+						// score AT ALL (Score deliberately zeroed because
+						// the pick came from a real sim tournament -
+						// buildReport's own doc - not because it truly
+						// scores zero: that case sets LowValue instead,
+						// excluded above) whose own SimDPS/DPSDelta both
+						// happened to be withheld too (the finishedSetEpsilon
+						// staleness guard, or an alternative already showing
+						// the same evidence - buildReport's own doc on both)
+						// fell through the two cases above and printed the
+						// literal string "0.0 spell_power points (0.00 DPS)"
+						// next to "Verified: yes" - read by a player as "this
+						// item contributes zero DPS", the exact misreading
+						// the SimDPS/DPSDelta cases above already exist to
+						// prevent for every OTHER state that clears row.Score
+						// == 0. Naming what actually happened - a real sim
+						// tournament decided this slot - instead of a
+						// fabricated zero score.
+						score = "sim-decided (no score - a real sim tournament chose this pick)"
 					case r.ReferenceDPSPerPoint != nil:
 						// This lane's brief, item 3: the DPS conversion
 						// beside the raw reference-stat-points number,
