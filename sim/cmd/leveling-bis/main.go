@@ -255,6 +255,23 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	for _, m := range missing {
 		log.Printf("leveling-bis: %s: %s", spec, m)
 	}
+	// rating-units lane: items/<class>.json states hit/crit/dodge/
+	// parry/block/defense as the RATING number the client's own
+	// tooltip shows (ItemModType 31/32/12-15), but every weight
+	// score() (score.go) dots a candidate's stats against was measured
+	// by the weights sweep per SIM UNIT (percent) - the same unit
+	// data/pipeline/simdb/ratings.py already divides item/enchant
+	// stats into before they reach simdb.bin. Loaded once per spec run
+	// (this build's own gametables/combatratings.txt level-60 row
+	// never changes within a run) and applied to every candidate right
+	// here, before any band's score() ever sees one, so every
+	// downstream consumer of a candidate's Stats already agrees with
+	// the engine's own units.
+	ratingFactorsForBuild, err := loadRatingFactors(buildDir)
+	if err != nil {
+		return err
+	}
+	items = convertCandidateRatings(items, ratingFactorsForBuild)
 	// itemFactionRestriction: item id -> its own client-stated
 	// faction_restriction, for correctedRepSource's general check
 	// (data.go's own doc: a mined rep source's Side is wrong for a real
@@ -475,6 +492,14 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			verifySeconds := time.Since(verifyStart).Seconds()
 
 			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, bandReferenceDPSPerPoint, weightsReason)
+			// This lane's brief, item 3: what the site publishes is per
+			// RATING point (what the item's own tooltip shows), not per
+			// sim unit (percent) - publishWeightRatingUnits (report.go)
+			// converts exactly the rating-family rows, keeping the raw
+			// sim-unit weight under weight_per_percent. Applied here,
+			// once per band+faction, rather than inside buildReport
+			// itself - see that function's own doc for why.
+			report.Weights = publishWeightRatingUnits(report.Weights, ratingFactorsForBuild)
 			reports = append(reports, report)
 			previous[f.name] = picks
 

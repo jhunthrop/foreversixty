@@ -973,3 +973,112 @@ func TestAnItemWithNoRequiredLevelIsGatedByItsItemLevel(t *testing.T) {
 		t.Fatalf("a stated required level must stand: got %d", got)
 	}
 }
+
+// wantRatingFactors is the fixture build's own gametables/
+// combatratings.txt level 60 row (testdata/reporoot/data/builds/
+// testbuild/gametables/combatratings.txt), copied from
+// data/tests/fixtures/sim/combatratings.txt, itself the real client's
+// 1.60.1.70009 level 60 row (data/builds/1.60.1.70009/gametables/
+// combatratings.txt): 10 hit rating = 1% hit, 14 crit = 1% crit,
+// defense 1, dodge 12, parry 15, block 5.
+var wantRatingFactors = ratingFactors{
+	"hit": 10, "crit": 14, "dodge": 12, "parry": 15, "block": 5, "defense": 1,
+}
+
+func TestLoadRatingFactorsReadsTheBuildsLevel60Row(t *testing.T) {
+	got, err := loadRatingFactors(buildDirFixture())
+	if err != nil {
+		t.Fatalf("loadRatingFactors: %v", err)
+	}
+	for stat, want := range wantRatingFactors {
+		if got[stat] != want {
+			t.Errorf("factors[%q] = %v, want %v", stat, got[stat], want)
+		}
+	}
+}
+
+func TestLoadRatingFactorsMissingFile(t *testing.T) {
+	if _, err := loadRatingFactors(t.TempDir()); err == nil {
+		t.Fatal("loadRatingFactors on a dir with no gametables/combatratings.txt: want an error, got nil")
+	}
+}
+
+func TestLoadRatingFactorsMissingColumn(t *testing.T) {
+	dir := t.TempDir()
+	writeGameTable(t, dir, "Level\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\n60\t12\t15\t5\t10\t10\t10\t14\t14\t14\n")
+	if _, err := loadRatingFactors(dir); err == nil {
+		t.Fatal("loadRatingFactors with no Defense Skill column: want an error, got nil")
+	}
+}
+
+func TestLoadRatingFactorsNoLevel60Row(t *testing.T) {
+	dir := t.TempDir()
+	writeGameTable(t, dir, "Level\tDefense Skill\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\n59\t1\t12\t15\t5\t10\t10\t10\t14\t14\t14\n")
+	if _, err := loadRatingFactors(dir); err == nil {
+		t.Fatal("loadRatingFactors with no level 60 row: want an error, got nil")
+	}
+}
+
+func TestLoadRatingFactorsDisagreeingColumnsErrors(t *testing.T) {
+	// Hit - Melee and Hit - Ranged disagree (10 vs 11): loadRatingFactors
+	// must fail loudly rather than silently pick one, mirroring
+	// data/pipeline/simdb/ratings.py's own load_rating_factors.
+	dir := t.TempDir()
+	writeGameTable(t, dir, "Level\tDefense Skill\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\n60\t1\t12\t15\t5\t10\t11\t10\t14\t14\t14\n")
+	if _, err := loadRatingFactors(dir); err == nil {
+		t.Fatal("loadRatingFactors with disagreeing hit columns: want an error, got nil")
+	}
+}
+
+func writeGameTable(t *testing.T, buildDir, contents string) {
+	t.Helper()
+	dir := filepath.Join(buildDir, "gametables")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatalf("MkdirAll: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "combatratings.txt"), []byte(contents), 0o644); err != nil {
+		t.Fatalf("WriteFile: %v", err)
+	}
+}
+
+func TestConvertRatingStatsDividesRatingFamilyStatsOnly(t *testing.T) {
+	stats := map[string]float64{"crit": 14, "hit": 20, "agility": 10, "spell_power": 5}
+	got := convertRatingStats(stats, wantRatingFactors)
+	want := map[string]float64{"crit": 1, "hit": 2, "agility": 10, "spell_power": 5}
+	for stat, w := range want {
+		if got[stat] != w {
+			t.Errorf("convertRatingStats[%q] = %v, want %v", stat, got[stat], w)
+		}
+	}
+	// Immutability: the input map must be untouched.
+	if stats["crit"] != 14 || stats["hit"] != 20 {
+		t.Errorf("convertRatingStats mutated its input: %+v", stats)
+	}
+}
+
+// TestScoreAgreesForARatingItemOnceConvertedAtFactor is this lane's
+// brief, item 2's exact synthetic-item test: a +14 crit RATING item
+// (Medallion of the Dawn-shaped: 14 crit rating at this build's own
+// factor of 14) must, once run through convertCandidateRatings, score
+// identically to a hand-built +1 crit STAT UNIT item against the same
+// weight - proving the ranker now scores in the same sim units
+// (percent) the weights sweep measured a weight in, not raw rating
+// points.
+func TestScoreAgreesForARatingItemOnceConvertedAtFactor(t *testing.T) {
+	ratingItem := []candidate{{ID: 1, Stats: map[string]float64{"crit": 14}}}
+	converted := convertCandidateRatings(ratingItem, ratingFactors{"crit": 14})
+	weights := map[string]float64{"crit": 1.0}
+
+	got := score(converted[0], "neck", weights, 0, false)
+	statUnitItem := candidate{Stats: map[string]float64{"crit": 1}}
+	want := score(statUnitItem, "neck", weights, 0, false)
+
+	if got != want || got != 1.0 {
+		t.Fatalf("score(converted +14 crit rating) = %v, want %v (== 1.0, matching +1 crit stat unit at weight 1.0)", got, want)
+	}
+	// The original, unconverted candidate slice is untouched
+	// (convertCandidateRatings returns a new slice/new Stats maps).
+	if ratingItem[0].Stats["crit"] != 14 {
+		t.Errorf("convertCandidateRatings mutated its input: %+v", ratingItem[0].Stats)
+	}
+}
