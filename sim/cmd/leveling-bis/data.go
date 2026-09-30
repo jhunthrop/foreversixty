@@ -267,6 +267,14 @@ type lootQuestEntry struct {
 	MinLevel    int    `json:"min_level"`
 	Level       int    `json:"level"`
 	LevelSource string `json:"level_source"`
+	// Opens is QuestSource.opens (data/pipeline/loot/sources.py's own
+	// apply_quest_opens_gate, quest-gates lane 2026-09-29): set when this
+	// quest's own classic-db turn-in item(s) -- SrcItemId/ReqItemId1-4,
+	// resolved through the quest's PrevQuestId chain -- are themselves
+	// only obtainable from an opens-gated source (a raid boss drop, or
+	// another such quest, recursively). Empty for the overwhelming
+	// majority of quests, which need no raid-exclusive item at all.
+	Opens string `json:"opens,omitempty"`
 }
 
 type lootFile struct {
@@ -382,6 +390,20 @@ var raidLockedQuestOpens = map[int]string{
 	8756: "later", // The Qiraji Conqueror - Ahn'Qiraj War Effort reward
 	8789: "later", // Imperial Qiraji Armaments - Ahn'Qiraj War Effort reward
 	8790: "later", // Imperial Qiraji Regalia - Ahn'Qiraj War Effort reward
+}
+
+// firstNonEmpty returns the first non-empty string, or "" when every one
+// is - used wherever a computed fact (the pipeline's own
+// QuestSource.opens) should win over a hand-maintained fallback
+// (raidLockedQuestOpens) without a chain of if-empty checks at the call
+// site.
+func firstNonEmpty(values ...string) string {
+	for _, v := range values {
+		if v != "" {
+			return v
+		}
+	}
+	return ""
 }
 
 // repFactionSwap pairs the six battleground faction ids with their
@@ -536,7 +558,13 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				Kind:  "quest",
 				Label: e.Name,
 				Side:  questFactionSide[e.Faction],
-				Opens: raidLockedQuestOpens[e.QuestID],
+				// e.Opens (the pipeline's own computed gate, quest-gates
+				// lane 2026-09-29) wins when set; raidLockedQuestOpens
+				// stays as the fallback for the Ahn'Qiraj war-effort
+				// three (8756/8789/8790), whose own gate is the war
+				// EVENT itself, not a classic-db turn-in item the
+				// generic computation can see (that map's own doc).
+				Opens: firstNonEmpty(e.Opens, raidLockedQuestOpens[e.QuestID]),
 			})
 		}
 		questFloors[id] = leveling.LowestFloor(levels)

@@ -11,3 +11,10 @@ ID,NameSubtext_lang,Description_lang,AuraDescription_lang
 21838,,"Gives you a $h% chance to generate an additional Rage point.",
 12321,,"Increases the duration of your shouts by $m1%.",
 12777,,"Deals $m1 damage and stuns for $m2 sec.",
+439510,,"Engrave your cloak with the Improved Swipe rune:
+
+$@spellicon12282
+$@spelldesc12282",
+439511,,"Grants: $@spellname12282",
+439512,,"Unlocks $@spellname999998 and $@spelldesc999998 and $@spellicon999998.",
+439513,,"$@spelldesc439513",

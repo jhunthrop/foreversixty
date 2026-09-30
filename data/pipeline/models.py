@@ -360,6 +360,21 @@ class QuestSource(BaseModel):
     min_level: int
     level: int
     level_source: str
+    #: A phase name from `api/internal/phase`, same vocabulary and same
+    #: meaning as `LootSource.opens` (that field's own doc) -- `None`
+    #: means open from launch. Quest-gates lane, 2026-09-29:
+    #: `pipeline.loot.sources.apply_quest_opens_gate` sets this (never
+    #: the generator's `_keyed_sources`/`classicdb_additions`/
+    #: `wowhead_additions`, which all run before every source is merged)
+    #: whenever this quest's own turn-in item(s) -- classic-db's
+    #: `SrcItemId`/`ReqItemId1-4`, resolved through the quest's
+    #: `PrevQuestId` chain -- are themselves only obtainable from a
+    #: source `opens` is already set on: a raid boss drop directly, or
+    #: another such quest, recursively. `sim/cmd/leveling-bis/data.go`'s
+    #: `itemSource.Opens` carries this through so the leveling ranker
+    #: gates a quest-sourced legendary or raid-chain reward exactly the
+    #: way it already gates a direct raid drop.
+    opens: str | None = None
 
 
 class LootFile(BaseModel):
