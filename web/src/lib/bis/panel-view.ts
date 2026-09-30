@@ -31,6 +31,8 @@ import type {
   LootQuestsFile,
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
+import type { Slot } from '../planner/types';
+import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 
 /** The two ranker-own `swap_note` templates (`sim/cmd/leveling-bis/report.go`'s own
  *  `fmt.Sprintf` calls): "confirmed by the sim against X (id N): kept the pick, A vs B set
@@ -120,14 +122,93 @@ function verifiedGlyphTitleFor(row: BisSlot): string | undefined {
     : undefined;
 }
 
+/** This slot's row at `band` in `file`/`faction`, or `undefined` when the band itself has
+ *  no entry for this faction -- the one place "The list"'s own cross-band empty-row copy
+ *  (`noSourcedItemCopyFor`) reaches outside the band it is currently rendering. */
+function slotRowAt(file: BisFile, band: number, faction: Faction, slot: string): SlotRow | undefined {
+  const bandData = bandEntry(file, band, faction);
+  if (bandData === undefined) return undefined;
+  return filledSlots(bandData).find((row) => row.slot === slot);
+}
+
+function isNoSourcedItemRow(row: SlotRow | undefined): boolean {
+  return row !== undefined && !isMissingSlot(row) && row.empty_reason === 'no_sourced_item';
+}
+
+/** The first LATER band (after `band`, in `bands`' own ascending order) where this slot
+ *  carries a real pick -- `undefined` when no later band in this file ever sources it
+ *  either (spec §4.D: "when no later band ever fills the slot either, drop the second
+ *  sentence entirely" rather than name a band that also turns out empty). Never hardcoded
+ *  to "the next band": the mock's own illustrative wording claims trinket relief "comes at
+ *  30" for this exact spec, which real data contradicts (`trinket1`/`trinket2` are still
+ *  `no_sourced_item` at band 30 too, first filled at band 40) -- this scan is the fix. */
+function firstRealPickBandAfter(
+  file: BisFile,
+  bands: readonly number[],
+  faction: Faction,
+  slot: string,
+  band: number,
+): number | undefined {
+  for (const later of bands.filter((candidate) => candidate > band)) {
+    const row = slotRowAt(file, later, faction, slot);
+    if (row !== undefined && !isMissingSlot(row) && hasKnownSource(row)) return later;
+  }
+  return undefined;
+}
+
+/** `no_sourced_item`'s own two-sentence shape (spec §4.D): the FIRST empty row in this band
+ *  showing the fact at all gets the full "no X at this band / the first that does comes at
+ *  Y" sentence; every OTHER row that also shows it -- either a later band, the same exact
+ *  slot (this file's leveling data only ever gains sources, never loses one, so "was the
+ *  immediately previous band already `no_sourced_item` for this slot" is the same test as
+ *  "is this the earliest occurrence"), or a SIBLING slot in the same band sharing this
+ *  slot's own collapsed display label (wow-player review round 1: both ring or both
+ *  trinket rows read as one group to a player, so the second one must defer to the short
+ *  "Nothing here either" line rather than repeat the first row's full sentence verbatim) --
+ *  gets the shorter "Nothing here either until Y" follow-up instead. `isFirstInGroupThisBand`
+ *  is the caller's own answer to that second condition (`bandInfosFor` computes it once per
+ *  band, in canonical slot order, before building any row). */
+function noSourcedItemCopyFor(
+  file: BisFile,
+  bands: readonly number[],
+  faction: Faction,
+  slot: string,
+  band: number,
+  isFirstInGroupThisBand: boolean,
+): string {
+  const index = bands.indexOf(band);
+  const previousBand = index <= 0 ? undefined : bands[index - 1];
+  const previousRow = previousBand === undefined ? undefined : slotRowAt(file, previousBand, faction, slot);
+  const isFirstOccurrence = isFirstInGroupThisBand && !isNoSourcedItemRow(previousRow);
+  const nextRealBand = firstRealPickBandAfter(file, bands, faction, slot, band);
+  return isFirstOccurrence
+    ? bisCopy.noSourcedItemFirst(
+        (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot).toLowerCase(),
+        bisCopy.bandRangeLabel(band),
+        nextRealBand,
+      )
+    : bisCopy.noSourcedItemLater(nextRealBand);
+}
+
 /** `empty_reason` -> the honest, player-worded line for why this slot has no pick (spec
- *  item 3) -- `no_sourced_item` and any value this page does not recognise both fall back
- *  to today's plain `noKnownSourceForSlot` line, never a fabricated reason. Never called for
- *  the off-hand-under-a-two-hander case, which `buildRowView` special-cases first with its
- *  own copy regardless of what `empty_reason` says (that rule predates this field and stays
- *  the more specific, more player-legible one of the two). */
-function emptyReasonLabel(reason: string | undefined): string {
+ *  item 3) -- `no_sourced_item` is computed (`noSourcedItemCopyFor`, spec §4.D); any value
+ *  this page does not recognise falls back to today's plain `noKnownSourceForSlot` line,
+ *  never a fabricated reason. Never called for the off-hand-under-a-two-hander case, which
+ *  `buildRowView` special-cases first with its own copy regardless of what `empty_reason`
+ *  says (that rule predates this field and stays the more specific, more player-legible one
+ *  of the two). */
+function emptyReasonLabel(
+  reason: string | undefined,
+  file: BisFile,
+  bands: readonly number[],
+  faction: Faction,
+  slot: string,
+  band: number,
+  isFirstInGroupThisBand: boolean,
+): string {
   switch (reason) {
+    case 'no_sourced_item':
+      return noSourcedItemCopyFor(file, bands, faction, slot, band, isFirstInGroupThisBand);
     case 'no_dps_value':
       return bisCopy.emptyReasonNoDpsValue;
     case 'effect_not_modelled':
@@ -178,6 +259,12 @@ export interface RowView {
   itemLevel?: number;
   sourceKind?: SourceCell['kind'];
   sourceDetail?: string;
+  /** The raw resolved cell `sourceDetail` was built from (`source-cell.ts`) -- kept, not
+   *  just its already-described line, so a caller needing the COARSE source (an instance
+   *  name without its boss, a crafted profession without "Crafted:") can group by it
+   *  without re-resolving the same pick a second time (`footer-view.ts`'s "Where to get
+   *  it", spec §4.E). */
+  sourceCell?: SourceCell;
   keyStatsLine?: string;
   verified?: boolean;
   /** Always an array on a filled row (never undefined) -- empty when the pick has no
@@ -252,6 +339,10 @@ function buildRowView(
   tooltipFor: (itemId: number) => ItemTooltipModel | undefined,
   mainHandTwoHanded: boolean,
   band: number,
+  file: BisFile,
+  bands: readonly number[],
+  mainHandItemName: string | undefined,
+  isFirstInGroupThisBand: boolean,
 ): RowView {
   if (isMissingSlot(row) || !hasKnownSource(row)) {
     // A missing slot (`isMissingSlot`) never published an `empty_reason` at all -- the
@@ -260,8 +351,8 @@ function buildRowView(
     const emptyReason = isMissingSlot(row) ? undefined : row.empty_reason;
     const emptyCopy =
       row.slot === 'off_hand' && mainHandTwoHanded
-        ? bisCopy.twoHanderEquippedLabel
-        : emptyReasonLabel(emptyReason);
+        ? bisCopy.twoHanderEquippedNamed(mainHandItemName ?? bisCopy.noKnownSourceForSlot)
+        : emptyReasonLabel(emptyReason, file, bands, faction, row.slot, band, isFirstInGroupThisBand);
     return { slot: row.slot, empty: true, emptyCopy };
   }
   const badgeLabel = sourceBadgeLabel(row, faction);
@@ -276,6 +367,7 @@ function buildRowView(
     itemLevel: itemDetailsMap.get(row.item_id)?.item_level,
     sourceKind: cell.kind,
     sourceDetail: describeSourceCell(cell),
+    sourceCell: cell,
     keyStatsLine: model && model.stats.length > 0 ? model.stats.slice(0, 4).join(', ') : undefined,
     verified: row.verified,
     alternatives: (row.alternatives ?? []).map((alt) =>
@@ -466,6 +558,9 @@ export interface BandInfo {
   /** Haste's own one-line caption (`hasteCaptionFor`) -- `undefined` when this spec carries
    *  no haste weight_stat, or the band's own weights could not be trusted at all. */
   hasteCaptionLine: string | undefined;
+  /** This band's own wearable-slot denominator (spec §4.B/§4.E) -- 17 minus the off hand
+   *  under a two-hander, minus every still-empty trinket slot, computed from `rows`. */
+  totalSlots: number;
 }
 
 export interface PanelViewDeps {
@@ -499,6 +594,22 @@ export function bandInfosFor(
         ? deps.tooltipFor(mainHandRow.item_id)
         : undefined;
     const mainHandTwoHanded = mainHandModel?.typeLabel === 'Two-Handed Weapon';
+    const mainHandItemName =
+      mainHandRow !== undefined && !isMissingSlot(mainHandRow) && hasKnownSource(mainHandRow)
+        ? mainHandRow.item_name
+        : undefined;
+    // Which slot, per display-label group (Ring/Trinket collapse every pair to one group),
+    // is the FIRST this band to show `no_sourced_item` -- computed once, in canonical slot
+    // order, before any row is built, so the second ring/trinket row always defers to the
+    // short "Nothing here either" line rather than repeat the first row's full sentence
+    // (wow-player review round 1). A slot is its own group's first claimant the moment
+    // nothing earlier in `slotRows`' own order already claimed that label this band.
+    const groupFirstSlot = new Map<string, string>();
+    for (const row of slotRows) {
+      if (isMissingSlot(row) || hasKnownSource(row) || row.empty_reason !== 'no_sourced_item') continue;
+      const label = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
+      if (!groupFirstSlot.has(label)) groupFirstSlot.set(label, row.slot);
+    }
     const rows = slotRows.map((row) =>
       buildRowView(
         row,
@@ -509,8 +620,21 @@ export function bandInfosFor(
         deps.tooltipFor,
         mainHandTwoHanded,
         band,
+        file,
+        bands,
+        mainHandItemName,
+        groupFirstSlot.get(SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot) === row.slot,
       ),
     );
+    // The list's own "N / total wearable slots" denominator (spec §4.B, reused by §4.E's
+    // "N of the total picks" sentence): 17 minus the off hand when a two-hander is
+    // equipped, minus every trinket slot this band has no sourced item for -- computed from
+    // the SAME `rows` the list renders, never a hardcoded 14, so it tracks a spec whose
+    // two-hander/trinket state differs band to band.
+    const totalSlots =
+      17 -
+      (mainHandTwoHanded ? 1 : 0) -
+      rows.filter((r) => r.empty && (r.slot === 'trinket1' || r.slot === 'trinket2')).length;
     const newSlots = new Set(
       bandIndex === 0
         ? rows.filter((row) => !row.empty).map((row) => row.slot)
@@ -559,6 +683,7 @@ export function bandInfosFor(
         scaleRows,
         scaleNoteLine,
         hasteCaptionLine,
+        totalSlots,
       },
     ];
   });

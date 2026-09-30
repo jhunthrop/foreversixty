@@ -1,68 +1,56 @@
 ---
 // web/src/pages/bis/[class]/[spec].astro
-// One page per written spec (data/curated/specs.json -- the same catalog the rotation
-// accuracy program measures against), static, no island above the fold: two SSR faction
-// panels toggled by hidden radio inputs and plain CSS (the `has-[:checked]` pattern
-// Upload.svelte already uses), band pills toggled by CSS `:target` within each panel. The
-// only scripts on the page are tiny inline ones (never a hydrated island): one syncs the
-// faction radios from `?faction=` on load, one lets arrow keys move focus along the level
-// scale, and one shows/hides the level scale's own edge fades on narrow screens (the same
-// pattern SimTabs.astro uses for its tab strip).
+// Rebuild (bis rebuild spec, 2026-09-30, ux-designer, mock `Bis.dc.html`): replaces the
+// character-panel redesign's two-column paperdoll (lane bis-character-panel, 2026-09-29)
+// with the mock's single-column "The list", a real `ArtPanel`/`ClassHeader`, a
+// `CharacterCard`, and computed "Where to get it"/"New at this band" sections. See this
+// lane's own report for what was kept unchanged (`lib/bis/load.ts`, `types.ts`,
+// `source-cell.ts`, the tooltip-host island, the faction/band CSS toggle mechanism) and
+// what changed (`GearRow.astro`'s layout, `panel-view.ts`'s row/empty-copy computation, the
+// weight rail's own markup).
 //
-// Character-panel redesign (lane bis-character-panel, 2026-09-29 -- ux-designer spec
-// `2026-09-29-bis-character-panel.md`, controller rulings on top of it): the band panel is
-// now the classic character panel (PaperDollFrame) borrowed literally -- two flanking gear
-// columns (`.paperdoll-left` 6 slots, `.paperdoll-right` 8) around a quiet centre column
-// that carries the one thing a model can't (Set DPS, the weight rail), a weapon row
-// (`.paperdoll-bottom`) below. Order at `<1024px` is the client's own read order: centre
-// first (so the answer needs zero scrolling on a phone), then left, then right, then
-// weapons -- done with `order`/`lg:order` utilities rather than DOM reshuffling, so the
-// same three-column grid at `>=1024px` and the same markup serve both.
-//
-// A pick now shows its alternatives (tenet 7): up to three compact rows under the pick
-// (`GearRow.astro`), each a real mention (icon, quality-coloured name, one-line source, the
-// DPS gap from the pick) rather than a bare chip -- every alternative id rides into the same
-// shared tooltip model map a main pick's id already did. The runner-up `<details>` fallback
-// (a single swapped-in alternative parsed out of `swap_note`) is gone entirely: `alternatives`
-// is the one way a pick shows what else was close.
-//
-// `swap_note` itself is read again as of the fourth wow-player sweep (day 3, item 1): a
-// verified pick with no visible evidence anywhere on the page (the sweep's own top-3
-// finding) now gets one more muted line under its source line, `GearRow.astro`'s own
-// evidence line, built by `lib/bis/panel-view.ts`'s `evidenceLineFor`/`parseSwapNote` from
-// the ranker's own sentence rather than the raw pipeline text.
-//
-// The coverage line ("Sources known for N of M items") is gone from the page (tenet 7:
-// pipeline counters stay out of the player's view) -- `band.coverage` itself is untouched,
-// still read and defaulted by `lib/bis/load.ts`'s `normaliseBisFile` for whichever other
-// surface (guardrail tooling) still wants it.
-//
-// The row-building and weight-rail view-model this page used to compute in its own
-// frontmatter now lives in `lib/bis/panel-view.ts` -- `GearRow.astro` needs the exact same
-// `RowView` shape this page does, which only a shared module (not another page's
-// frontmatter) can give both.
-//
-// Every mention on this page is plain server markup (an icon, a quality-coloured name, a
-// `data-bis-item="<id>"` attribute) collected into ONE deduplicated tooltip-model map
-// (`collectModelsInto`), handed to a single `BisTooltipHost` island (`client:idle`) as a
-// sibling JSON `<script>` tag -- unchanged from the list-first page's own lane
-// (bis-tooltip-host, 2026-09-29): one island owns hover/focus/tap open-close for the whole
-// page instead of an island per mention.
+// Faction toggle, widened (still the same two hidden radios + CSS `~` sibling display this
+// page has always used, `.faction-panel`'s own convention): EVERYTHING below the header now
+// differs by faction (the header's own suffix/summary sentence too, once this rebuild adds
+// them), so the toggle now hides/shows one `.page-body > .header-row .header-faction.<X>`
+// and one `.page-body > .faction-content.<X>` per faction, via `~ .page-body <descendant>`
+// (a sibling combinator followed by a descendant one), rather than the OLD page's own
+// direct-sibling-only rule. `CharacterCard` sits beside the header, outside the toggle
+// entirely -- it shows the signed-in visitor's own character, which has nothing to do with
+// which faction's BiS list is on screen.
 import Base from '../../../layouts/Base.astro';
-import UpdatedStamp from '../../../components/UpdatedStamp.astro';
-import BisTooltipHost from '../../../components/BisTooltipHost.svelte';
+import ArtPanel from '../../../components/ArtPanel.astro';
+import ClassHeader from '../../../components/ClassHeader.astro';
+import CharacterCard from '../../../components/CharacterCard.svelte';
+import ThisSetPanel from '../../../components/bis/ThisSetPanel.astro';
+import StatWeightsPanel from '../../../components/bis/StatWeightsPanel.astro';
+import PlayItPanel from '../../../components/bis/PlayItPanel.astro';
 import GearRow from '../../../components/bis/GearRow.astro';
-import ItemPill from '../../../components/bis/ItemPill.astro';
 import GlyphSheet from '../../../components/bis/GlyphSheet.astro';
+import BisTooltipHost from '../../../components/BisTooltipHost.svelte';
 import { readItemTooltipModel } from '../../../lib/items/lookup';
 import type { ItemTooltipModel } from '../../../lib/items/tooltip';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
-import { classIconUrl } from '../../../lib/account/character-descriptor';
-import { SLOT_LABELS, type Slot } from '../../../lib/planner/types';
 import { bisCopy } from '../../../lib/bis/copy';
-import { bandLevels, itemDetails, loadBisFile, loadLootFile, readSpecCatalog } from '../../../lib/bis/load';
+import {
+  bandEntry,
+  bandLevels,
+  itemDetails,
+  loadBisFile,
+  loadLootFile,
+  readSpecCatalog,
+} from '../../../lib/bis/load';
 import { bandInfosFor, collectModelsInto, type BandInfo } from '../../../lib/bis/panel-view';
+import { newAtBandLinesFor, sourceGroupsFor } from '../../../lib/bis/footer-view';
+import {
+  bandTopLevel,
+  loadRotations,
+  rotationEntryFor,
+  rotationLinesFor,
+} from '../../../lib/bis/rotation-view';
+import { specTabIcon } from '../../../lib/bis/spec-icon';
+import { classRows, racesForClass } from '../../../lib/planner/reference';
 import type { Faction } from '../../../lib/bis/types';
 
 export async function getStaticPaths() {
@@ -78,29 +66,22 @@ const title = `${className} ${specEntry.name} leveling BiS`;
 const description = bisCopy.metaDescription(specEntry.name, className);
 const path = `/bis/${specEntry.class_slug}/${specEntry.spec_slug}`;
 const guideHref = `/guides/${specEntry.class_slug}/${specEntry.spec_slug}`;
-const classIconHref = classIconUrl({ name: className, class: specEntry.class_slug });
+const build = activeBuild.build;
 
-const file = loadBisFile(specEntry.spec, activeBuild.build);
+const file = loadBisFile(specEntry.spec, build);
 const bands = file ? bandLevels(file) : [];
-const details = itemDetails(activeBuild.build, specEntry.class_slug);
-const loot = loadLootFile(activeBuild.build);
+const details = itemDetails(build, specEntry.class_slug);
+const loot = loadLootFile(build);
 const factions: Faction[] = ['alliance', 'horde'];
+const rotationEntries = loadRotations(build, specEntry.spec) ?? [];
 
-// The shared item tooltip (lib/items) built off disk for this page's class; undefined when
-// the item table has no row for it, in which case the id is simply absent from
-// `tooltipModels` below and BisTooltipHost shows nothing for it.
 function tooltipFor(itemId: number): ItemTooltipModel | undefined {
-  return readItemTooltipModel(activeBuild.build, specEntry.class_slug, itemId) ?? undefined;
+  return readItemTooltipModel(build, specEntry.class_slug, itemId) ?? undefined;
 }
 
 function bandInfosForFaction(faction: Faction): BandInfo[] {
   if (file === null) return [];
-  return bandInfosFor(file, bands, faction, {
-    itemDetails: details,
-    loot,
-    tooltipFor,
-    spec: specEntry.spec,
-  });
+  return bandInfosFor(file, bands, faction, { itemDetails: details, loot, tooltipFor, spec: specEntry.spec });
 }
 
 const bandInfosByFaction: Readonly<Record<Faction, BandInfo[]>> = {
@@ -109,432 +90,351 @@ const bandInfosByFaction: Readonly<Record<Faction, BandInfo[]>> = {
 };
 
 const tooltipModels = new Map<number, ItemTooltipModel>();
-collectModelsInto(tooltipModels, bandInfosByFaction.alliance, tooltipFor);
-collectModelsInto(tooltipModels, bandInfosByFaction.horde, tooltipFor);
-
-// `<` -> `<` (never actual escaping of `"`/`'`) is the standard "safe to inline in a
-// <script> tag" transform: JSON never emits a bare `<`, so this is the one substitution
-// needed to make `</script` unreachable in the output, without the HTML-attribute quote-
-// escaping an island prop of this size would otherwise cost (see the header note above).
+if (file !== null) {
+  collectModelsInto(tooltipModels, bandInfosByFaction.alliance, tooltipFor);
+  collectModelsInto(tooltipModels, bandInfosByFaction.horde, tooltipFor);
+}
 const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).replace(/</g, '\\u003c');
+
+// SpecTabs: every spec of this class, in the talent tree's own left-to-right order.
+const specTabs = readSpecCatalog()
+  .filter((s) => s.class_slug === specEntry.class_slug)
+  .sort((a, b) => a.tree_index - b.tree_index)
+  .map((s) => ({
+    specSlug: s.spec_slug,
+    name: s.name,
+    icon: specTabIcon(build, s.class_slug, s.tree_index),
+    href: `/bis/${s.class_slug}/${s.spec_slug}`,
+    active: s.spec_slug === specEntry.spec_slug,
+  }));
+
+// Race select (spec §4.A/§4.G -- the spec's own §4.G is missing from the written doc; the
+// build lane's own defensible default, named in its report: the active faction's first
+// race in this build's own race list, never a guess at a specific one).
+const classRow = classRows.find((c) => c.slug === specEntry.class_slug);
+const racesForThisClass = classRow ? racesForClass(classRow.id) : [];
+function raceOptionsFor(faction: Faction): { slug: string; name: string }[] {
+  return racesForThisClass.filter((r) => r.faction === faction).map((r) => ({ slug: r.slug, name: r.name }));
+}
+
+interface BandView {
+  band: number;
+  bandIndex: number;
+  bandLabel: string;
+  info: BandInfo;
+  simHref: string;
+  plannerHref: string;
+  generatedAtDate: string;
+  rotationLines: ReturnType<typeof rotationLinesFor>;
+  sourceGroups: ReturnType<typeof sourceGroupsFor>;
+  newAtBand: ReturnType<typeof newAtBandLinesFor>;
+  nextBandLabel: string | undefined;
+  nextBand: number | undefined;
+}
+
+function bandViewsFor(faction: Faction): BandView[] {
+  if (file === null) return [];
+  return bands.map((band, bandIndex): BandView => {
+    const info = bandInfosByFaction[faction][bandIndex]!;
+    const rawBand = bandEntry(file, band, faction);
+    const nextBand = bandIndex + 1 < bands.length ? bands[bandIndex + 1] : undefined;
+    const nextInfo = nextBand === undefined ? undefined : bandInfosByFaction[faction][bandIndex + 1];
+    const nextRawBand = nextBand === undefined ? undefined : bandEntry(file, nextBand, faction);
+    const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(band));
+    return {
+      band,
+      bandIndex,
+      bandLabel: bisCopy.bandRangeLabel(band),
+      info,
+      simHref: `/sim?spec=${specEntry.spec}&band=${band}`,
+      plannerHref: `/planner?spec=${specEntry.spec}&talents=${encodeURIComponent(rawBand?.talents ?? '')}`,
+      generatedAtDate: file.generated_at.slice(0, 10),
+      rotationLines:
+        rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, specEntry.class_slug),
+      sourceGroups: sourceGroupsFor(info.rows),
+      newAtBand: newAtBandLinesFor(
+        info,
+        band,
+        rawBand?.new_at_band ?? [],
+        nextInfo,
+        nextBand === undefined ? undefined : bisCopy.bandRangeLabel(nextBand),
+        nextRawBand?.new_at_band,
+      ),
+      nextBandLabel: nextBand === undefined ? undefined : bisCopy.bandRangeLabel(nextBand),
+      nextBand,
+    };
+  });
+}
+
+const bandViewsByFaction: Readonly<Record<Faction, BandView[]>> = {
+  alliance: bandViewsFor('alliance'),
+  horde: bandViewsFor('horde'),
+};
+
+/**
+ * CSS that must NOT go through Astro's own scoped `<style>` (hence `set:html` below, raw
+ * and unscoped): every rule here reaches from a page-level element (the two faction radios,
+ * `.page-body`) into an element a CHILD component (`ClassHeader.astro`) rendered, which
+ * carries that component's own, different scope id -- a scoped page rule silently never
+ * matches it (confirmed by reading the rendered HTML: `#faction-alliance` carries the
+ * page's own `data-astro-cid-*`, `[data-testid="bis-faction-toggle-alliance"]` carries
+ * `ClassHeader`'s own, different one). Two concerns share this one unscoped block:
+ *
+ * 1. `ClassHeader`'s own band text (the h1's " · 20 to 29" suffix and the summary sentence)
+ *    renders one hidden variant per band; shows the first band's by default, or whichever
+ *    band's own panel is `:target` (either faction's id: the inactive faction's whole
+ *    header is already `display:none` from the faction toggle, so this never needs to know
+ *    which faction is active, only which band). `:has()` reaches from `.page-body` down
+ *    into both the header (band text) and the band panels (`:target`) at once, which a
+ *    forward-only `~` sibling combinator cannot do since the header comes BEFORE the band
+ *    panels in the DOM. Built once, server-side, from the same `bands` array and `bisCopy`
+ *    strings the header itself rendered from -- never a second, drifting copy of that
+ *    wording in a client script (spec's own band-60 "at 60, no to X" acceptance screenshot
+ *    requires this text to actually track the open band, not just the pill).
+ * 2. The FactionToggle pill is a plain `<label for=...>`, not the radio itself (the radio
+ *    stays `sr-only`, the existing mechanism) -- a keyboard tab lands on the radio, so its
+ *    own focus ring must be projected onto the visible pill rather than show on nothing a
+ *    player can see (ux-designer review round 1's own focus-visible screenshot surfaced
+ *    this: the rule silently never matched while it lived in the page's scoped `<style>`
+ *    below). Same sibling-then-descendant reach as concern 1, since the radios sit at the
+ *    top of `<main>`, before `.page-body`, and every pill is a later descendant of it. */
+const crossScopeCss =
+  '[data-band-text-for],[data-band-summary-for]{display:none}' +
+  (bands[0] === undefined
+    ? ''
+    : `.page-body:not(:has(.band-panel:target)) [data-band-text-for="${bands[0]}"]{display:inline-block}` +
+      `.page-body:not(:has(.band-panel:target)) [data-band-summary-for="${bands[0]}"]{display:block}`) +
+  bands
+    .map(
+      (b) =>
+        `.page-body:has(#band-alliance-${b}:target,#band-horde-${b}:target) [data-band-text-for="${b}"]{display:inline-block}` +
+        `.page-body:has(#band-alliance-${b}:target,#band-horde-${b}:target) [data-band-summary-for="${b}"]{display:block}`,
+    )
+    .join('') +
+  `#faction-alliance:focus-visible ~ .page-body [data-testid="bis-faction-toggle-alliance"],` +
+  `#faction-horde:focus-visible ~ .page-body [data-testid="bis-faction-toggle-horde"]` +
+  `{outline:2px solid var(--color-gold);outline-offset:2px}`;
 ---
 
 <Base title={title} description={description} path={path}>
-  <main
-    id="main"
-    tabindex="-1"
-    class="mx-auto flex w-full max-w-[1120px] flex-col gap-5 px-[18px] py-10 md:px-12"
-  >
+  <main id="main" tabindex="-1" class="bis-page">
     <GlyphSheet />
-    <header class="border-line flex flex-col gap-2 border-b pb-5">
-      <p class="text-muted text-[13px]">
-        <a href="/bis">{bisCopy.backToIndex}</a>
-      </p>
-      <div class="flex items-center gap-3">
-        {classIconHref && (
-          <img src={classIconHref} alt="" width="28" height="28" class="rounded-control border-line border" />
-        )}
-        <h1 class="text-[28px] font-bold tracking-[0.02em]">{title}</h1>
-      </div>
-      {file && <UpdatedStamp date={new Date(file.generated_at)} />}
-      {file && <p class="text-muted text-[13px]">{bisCopy.generatedFrom(file.engine_version)}</p>}
-    </header>
 
-    {!file && (
-      <div class="rounded-control bg-raised border-line border p-6" data-testid="bis-empty-state">
-        <p class="font-semibold">{bisCopy.noDataYet}</p>
-        <p class="text-muted mt-2 text-[14px]">{bisCopy.noDataYetBody}</p>
-        <p class="mt-3 text-[14px]">
-          <a href={guideHref}>{specEntry.name} guide</a>
-        </p>
-      </div>
-    )}
-
-    {file && (
+    {file === null ? (
       <Fragment>
-        {/* One island for the whole page (see the header note): the models map rides as a
-            sibling JSON script tag rather than this island's own (HTML-attribute-escaped)
-            props, and BisTooltipHost reads it once, on mount, by this fixed id. */}
+        <ArtPanel classSlug={specEntry.class_slug}>
+          <ClassHeader
+            classSlug={specEntry.class_slug}
+            className={className}
+            specName={specEntry.name}
+            specTabs={specTabs}
+            bands={[]}
+            build={build}
+            minimal
+          />
+        </ArtPanel>
+        <div class="bis-empty-wrap">
+          <div class="rounded-control bg-raised border-line border p-6" data-testid="bis-empty-state">
+            <p class="font-semibold">{bisCopy.noDataYet}</p>
+            <p class="text-muted mt-2 text-[14px]">{bisCopy.noDataYetBody}</p>
+            <p class="mt-3 text-[14px]">
+              <a href={guideHref}>{specEntry.name} guide</a>
+            </p>
+          </div>
+        </div>
+      </Fragment>
+    ) : (
+      <Fragment>
         <script
           is:inline
           type="application/json"
           id="bis-tooltip-models"
           set:html={tooltipModelsJson}
         ></script>
-        <BisTooltipHost client:idle build={activeBuild.build} />
-      </Fragment>
-    )}
+        <BisTooltipHost client:idle build={build} />
 
-    {file && (
-      <div class="bis-faction-root">
         <input type="radio" name="faction" id="faction-alliance" class="sr-only" checked />
         <input type="radio" name="faction" id="faction-horde" class="sr-only" />
-        <div class="mb-3 flex gap-2" role="group" aria-label="Faction">
-          <label for="faction-alliance" class="faction-pill" data-testid="bis-faction-toggle-alliance">
-            {bisCopy.factionAlliance}
-          </label>
-          <label for="faction-horde" class="faction-pill" data-testid="bis-faction-toggle-horde">
-            {bisCopy.factionHorde}
-          </label>
-        </div>
+        <style set:html={crossScopeCss}></style>
 
-        {factions.map((faction) => {
-          const bandInfos = bandInfosByFaction[faction];
-          return (
-            <section
-              id={`panel-${faction}`}
-              class="faction-panel"
-              data-testid={`bis-faction-panel-${faction}`}
-            >
-              <div class="band-panels" id={`bands-${faction}`}>
-                <div class="level-scale-wrap relative mb-5">
-                  <div
-                    class="level-scale flex flex-nowrap items-center gap-1 overflow-x-auto overscroll-x-contain"
-                    role="group"
-                    aria-label={bisCopy.levelScaleGroupLabel}
-                    data-band-strip
-                  >
-                    {bandInfos.map(({ band, newSlots }) => (
-                      <a
-                        href={`#band-${faction}-${band}`}
-                        class="level-tab"
-                        data-band-link
-                        data-testid={`bis-band-pill-${faction}-${band}`}
-                      >
-                        <span aria-hidden="true">{band}</span>
-                        <span class="sr-only">{bisCopy.levelLabel(band)}</span>
-                        {newSlots.size > 0 && (
-                          <span class="level-tab-badge" data-testid={`bis-band-pill-new-${faction}-${band}`}>
-                            <span class="sr-only">{bisCopy.newAtBandCount(newSlots.size)}</span>
-                            <span aria-hidden="true">{newSlots.size}</span>
-                          </span>
-                        )}
-                      </a>
-                    ))}
-                  </div>
-                  <div
-                    aria-hidden="true"
-                    data-testid={`bis-level-scale-fade-start-${faction}`}
-                    class="edge-fade edge-fade-start pointer-events-none absolute inset-y-0 left-0 w-6 opacity-0 transition-opacity duration-150"
-                  />
-                  <div
-                    aria-hidden="true"
-                    data-testid={`bis-level-scale-fade-end-${faction}`}
-                    class="edge-fade edge-fade-end pointer-events-none absolute inset-y-0 right-0 w-6 opacity-0 transition-opacity duration-150"
+        <div class="page-body">
+          <ArtPanel classSlug={specEntry.class_slug}>
+            <div class="header-row">
+              {factions.map((faction) => (
+                <div class={`header-faction ${faction}`}>
+                  <ClassHeader
+                    classSlug={specEntry.class_slug}
+                    className={className}
+                    specName={specEntry.name}
+                    specTabs={specTabs.map((tab) => ({
+                      ...tab,
+                      href: tab.active ? `${tab.href}?faction=${faction}` : tab.href,
+                    }))}
+                    bands={bands}
+                    faction={faction}
+                    race={raceOptionsFor(faction)[0]?.slug ?? ''}
+                    raceOptions={raceOptionsFor(faction)}
+                    build={build}
                   />
                 </div>
+              ))}
+              <div class="header-character-card">
+                <CharacterCard client:idle nextPath={path} />
+              </div>
+            </div>
+          </ArtPanel>
 
-                {bandInfos.map(
-                  ({
-                    band,
-                    bandIndex,
-                    rows,
-                    newSlots,
-                    changed,
-                    previousBand,
-                    upgradesCount,
-                    setDps,
-                    dpsDelta,
-                    setDpsPartial,
-                    setDpsPartialCount,
-                    race,
-                    talentPoints,
-                    scaleRows,
-                    scaleNoteLine,
-                    hasteCaptionLine,
-                  }) => {
-                    // `rows` is always the planner's 17 slots in SLOTS' own canonical order
-                    // (`filledSlots`) -- the paperdoll's own left/right/bottom split, the
-                    // client's own left-hand -> right-hand -> weapon-row read order.
-                    const leftRows = rows.slice(0, 6);
-                    const rightRows = rows.slice(6, 14);
-                    const bottomRows = rows.slice(14, 17);
-                    return (
-                      <div
-                        id={`band-${faction}-${band}`}
-                        class:list={['band-panel', bandIndex === 0 && 'band-panel-default']}
-                        data-testid={`bis-band-${faction}-${band}`}
-                      >
-                        <h2 class="band-heading mb-2 text-[13px]">{bisCopy.bandHeading(band)}</h2>
+          {factions.map((faction) => (
+            <div class={`faction-content ${faction}`} data-testid={`bis-faction-panel-${faction}`}>
+              <div class="band-panels" id={`bands-${faction}`}>
+                {bandViewsByFaction[faction].map((view) => (
+                  <div
+                    id={`band-${faction}-${view.band}`}
+                    class:list={['band-panel', view.bandIndex === 0 && 'band-panel-default']}
+                    data-testid={`bis-band-${faction}-${view.band}`}
+                  >
+                    <section class="three-panel-row">
+                      <ThisSetPanel
+                        setDps={view.info.setDps}
+                        characterLevel={bandTopLevel(view.band)}
+                        race={view.info.race}
+                        talentPoints={view.info.talentPoints}
+                        generatedAtDate={view.generatedAtDate}
+                        simHref={view.simHref}
+                        plannerHref={view.plannerHref}
+                      />
+                      <StatWeightsPanel
+                        bandLabel={view.bandLabel}
+                        scaleRows={view.info.scaleRows}
+                        scaleNoteLine={view.info.scaleNoteLine}
+                        hasteCaptionLine={view.info.hasteCaptionLine}
+                      />
+                      <PlayItPanel
+                        bandLabel={view.bandLabel}
+                        lines={view.rotationLines}
+                        specName={specEntry.name}
+                        guideHref={guideHref}
+                      />
+                    </section>
 
-                        <div class="paperdoll grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-[1fr_300px_1fr]">
-                          <div class="paperdoll-left order-2 min-w-0 lg:order-1">
-                            <ul class="gear-rows" data-testid={`bis-band-${faction}-${band}-left`}>
-                              {leftRows.map((row) => (
-                                <GearRow
-                                  row={row}
-                                  isNew={newSlots.has(row.slot)}
-                                  build={activeBuild.build}
-                                  slotTestId={`bis-slot-${faction}-${band}-${row.slot}`}
-                                />
-                              ))}
-                            </ul>
-                          </div>
-
-                          <aside class="paperdoll-center order-1 flex flex-col gap-4 text-[13px] lg:order-2">
-                            <div>
-                              <p class="aside-label">{bisCopy.setDpsLabel}</p>
-                              <p class="dps-value tabular">{setDps.toFixed(1)}</p>
-                              {dpsDelta !== undefined && (
-                                <p class="dps-delta text-muted tabular">{bisCopy.setDpsDelta(dpsDelta)}</p>
-                              )}
-                              {setDpsPartial && (
-                                <p
-                                  class="dps-partial-note text-muted"
-                                  data-testid={`bis-set-dps-partial-${faction}-${band}`}
-                                >
-                                  {bisCopy.setDpsPartialNote(setDpsPartialCount)}
-                                </p>
-                              )}
-                            </div>
-                            <p class="text-muted">{bisCopy.raceTalentsLine(race, talentPoints)}</p>
-                            <div>
-                              <p class="aside-label">{bisCopy.statWeightsLabel}</p>
-                              <p class="weights-reference-line">{scaleNoteLine}</p>
-                              <ul class="weight-bars" data-testid={`bis-weights-${faction}-${band}`}>
-                                {scaleRows.map(
-                                  ({
-                                    stat,
-                                    label,
-                                    scaleFactor,
-                                    dpsPerPoint,
-                                    scaleError,
-                                    significant,
-                                    barPercent,
-                                    ratingFactorTitle,
-                                  }) => (
-                                    <li
-                                      class:list={['weight-bar-row', !significant && 'weight-bar-row-faint']}
-                                      title={ratingFactorTitle}
-                                      data-testid={`bis-weight-row-${faction}-${band}-${stat}`}
-                                    >
-                                      <span class="weight-bar-top">
-                                        <span class="weight-bar-label">{label}</span>
-                                        <span class="weight-bar-value tabular">
-                                          {significant
-                                            ? scaleFactor.toFixed(2)
-                                            : bisCopy.weightsNotSignificant}
-                                        </span>
-                                      </span>
-                                      {significant && (
-                                        <Fragment>
-                                          <span class="weight-bar-track">
-                                            <span class="weight-bar-fill" style={`width:${barPercent}%`} />
-                                          </span>
-                                          <span class="weight-bar-meta text-muted tabular">
-                                            {dpsPerPoint !== undefined && (
-                                              <span>{dpsPerPoint.toFixed(3)} DPS</span>
-                                            )}
-                                            <span>&plusmn;{scaleError.toFixed(2)}</span>
-                                          </span>
-                                        </Fragment>
-                                      )}
-                                    </li>
-                                  ),
-                                )}
-                              </ul>
-                              {hasteCaptionLine && (
-                                <p
-                                  class="weights-haste-caption text-muted"
-                                  data-testid={`bis-weights-haste-${faction}-${band}`}
-                                >
-                                  {hasteCaptionLine}
-                                </p>
-                              )}
-                              <p class="weights-rating-note text-muted">
-                                {bisCopy.weightsRatingConversionNote}
-                              </p>
-                              <p class="weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
-                              <a
-                                href="/addon"
-                                class="weights-addon-button rounded-control border-line-warm text-text inline-flex min-h-11 items-center justify-center border px-4 text-center text-[13px] font-semibold"
-                                data-testid={`bis-weights-addon-${faction}-${band}`}
-                              >
-                                {bisCopy.weightsAddonButton}
-                              </a>
-                            </div>
-                          </aside>
-
-                          <div class="paperdoll-right order-3 min-w-0">
-                            <ul class="gear-rows" data-testid={`bis-band-${faction}-${band}-right`}>
-                              {rightRows.map((row) => (
-                                <GearRow
-                                  row={row}
-                                  isNew={newSlots.has(row.slot)}
-                                  build={activeBuild.build}
-                                  slotTestId={`bis-slot-${faction}-${band}-${row.slot}`}
-                                />
-                              ))}
-                            </ul>
-                          </div>
-
-                          <div class="paperdoll-bottom order-4 lg:col-span-3">
-                            <ul
-                              class="paperdoll-bottom-row grid grid-cols-1 gap-2 sm:grid-cols-3"
-                              data-testid={`bis-band-${faction}-${band}-weapons`}
-                            >
-                              {bottomRows.map((row) => (
-                                <GearRow
-                                  row={row}
-                                  isNew={newSlots.has(row.slot)}
-                                  build={activeBuild.build}
-                                  slotTestId={`bis-slot-${faction}-${band}-${row.slot}`}
-                                />
-                              ))}
-                            </ul>
-                          </div>
+                    <section class="the-list-section">
+                      <div class="the-list-heading-row">
+                        <h2 class="section-title">{bisCopy.theListHeading}</h2>
+                        <span class="text-muted text-[12px]">{bisCopy.hoverOrTapCaption}</span>
+                      </div>
+                      <div class="panel-box the-list-panel">
+                        <div class="the-list-header" role="row">
+                          <span class="label">{bisCopy.slotHeaderLabel}</span>
+                          <span class="label">{bisCopy.pickHeaderLabel}</span>
+                          <span class="label">{bisCopy.runnersUpHeaderLabel}</span>
                         </div>
+                        <ul class="the-list-rows" data-testid={`bis-list-${faction}-${view.band}`}>
+                          {view.info.rows.map((row) => (
+                            <GearRow
+                              row={row}
+                              isNew={view.info.newSlots.has(row.slot)}
+                              build={build}
+                              faction={faction}
+                              slotTestId={`bis-slot-${faction}-${view.band}-${row.slot}`}
+                            />
+                          ))}
+                        </ul>
+                      </div>
+                    </section>
 
-                        <div class="mt-3" data-testid={`bis-changed-since-${faction}-${band}`}>
-                          {bandIndex === 0 ? (
-                            <p class="text-muted text-[13px]">{bisCopy.changedSinceFirst}</p>
-                          ) : upgradesCount === 0 ? (
-                            <p class="text-muted text-[13px]">
-                              {bisCopy.upgradesSinceHeading(0, previousBand ?? band)}
-                            </p>
-                          ) : (
-                            <details class="upgrades-disclosure">
-                              <summary class="upgrades-summary">
-                                {bisCopy.upgradesSinceHeading(upgradesCount, previousBand ?? band)}
-                              </summary>
-                              <ul class="upgrades-list">
-                                {(changed ?? []).map((entry) => (
-                                  <li class="upgrade-row">
-                                    <span class="upgrade-slot">
-                                      {SLOT_LABELS[entry.slot as Slot] ?? entry.slot}
-                                    </span>
-                                    {entry.before === undefined ? (
-                                      <span class="upgrade-new-slot">{bisCopy.newSlotLabel}</span>
-                                    ) : (
-                                      <ItemPill
-                                        itemId={entry.before.item_id}
-                                        model={tooltipFor(entry.before.item_id)}
-                                        build={activeBuild.build}
-                                      />
-                                    )}
-                                    {entry.before !== undefined && <span aria-hidden="true">&rarr;</span>}
-                                    {entry.after ? (
-                                      <ItemPill
-                                        itemId={entry.after.item_id}
-                                        model={tooltipFor(entry.after.item_id)}
-                                        build={activeBuild.build}
-                                      />
-                                    ) : (
-                                      <span class="text-muted text-[12px]">
-                                        {bisCopy.noKnownSourceForSlot}
-                                      </span>
-                                    )}
-                                  </li>
+                    <section class="footer-row">
+                      <div class="footer-col">
+                        <h2 class="section-title">{bisCopy.whereToGetItHeading}</h2>
+                        <div
+                          class="panel-box footer-groups-panel"
+                          data-testid={`bis-source-groups-${faction}-${view.band}`}
+                        >
+                          {view.sourceGroups.map((group) => (
+                            <div class="footer-group">
+                              <span class="footer-group-name">
+                                {group.label}{' '}
+                                <span class="font-mono tabular footer-group-count">
+                                  {bisCopy.groupCountSuffix(group.items.length)}
+                                </span>
+                              </span>
+                              <span class="footer-group-items">
+                                {group.items.map((item) => (
+                                  <span
+                                    class="footer-group-item"
+                                    data-bis-item={item.itemId}
+                                    tabindex="0"
+                                    role="button"
+                                    aria-haspopup="true"
+                                  >
+                                    {item.itemName}
+                                  </span>
                                 ))}
-                              </ul>
-                            </details>
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div class="footer-col">
+                        <h2 class="section-title">{bisCopy.newAtThisBandHeading}</h2>
+                        <div class="new-at-band-card" data-testid={`bis-new-at-band-${faction}-${view.band}`}>
+                          <p class="new-at-band-line">{view.newAtBand.sentence1}</p>
+                          {view.newAtBand.sentence2 !== undefined && (
+                            <p class="text-muted new-at-band-line">{view.newAtBand.sentence2}</p>
+                          )}
+                          {view.nextBand !== undefined && (
+                            <a class="new-at-band-see-link" href={`#band-${faction}-${view.nextBand}`}>
+                              {bisCopy.seeBandLink(view.nextBandLabel!)}
+                            </a>
                           )}
                         </div>
                       </div>
-                    );
-                  },
-                )}
+                    </section>
+                  </div>
+                ))}
               </div>
-            </section>
-          );
-        })}
-      </div>
+            </div>
+          ))}
+        </div>
+      </Fragment>
     )}
   </main>
 </Base>
 
 <style>
-  .bis-faction-root {
-    position: relative;
+  .bis-page {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 40px;
   }
-  .faction-panel {
-    display: none;
-  }
-  #faction-alliance:checked ~ #panel-alliance {
-    display: block;
-  }
-  #faction-horde:checked ~ #panel-horde {
-    display: block;
-  }
-  .faction-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.25rem;
-    padding: 0 0.85rem;
-    border-radius: var(--radius-control, 8px);
-    border: 1px solid var(--color-line, #333);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  #faction-alliance:checked ~ div .faction-pill[for='faction-alliance'],
-  #faction-horde:checked ~ div .faction-pill[for='faction-horde'] {
-    color: var(--color-gold, #c9a35e);
-    border-color: var(--color-gold, #c9a35e);
+  .bis-empty-wrap {
+    padding: 28px 48px;
   }
 
-  /* --- level scale: a compact single-row tab strip, numbers only, that scrolls (never
-     wraps to a second row) on a phone. --- */
-  .level-scale {
-    scrollbar-width: none;
-    /* The strip scrolls horizontally, which also clips vertically: leave room
-       for each tab's "new picks" badge (top/right -5px) inside the scroll box
-       so the row above never appears to cover it (owner report, 2026-09-30). */
-    padding: 6px 6px 2px 0;
-    margin-top: -6px;
+  .header-row {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 24px;
+    padding: 28px 48px 24px 48px;
+    align-items: end;
   }
-  .level-scale::-webkit-scrollbar {
+  .header-faction {
     display: none;
+    min-width: 0;
   }
-  .level-tab {
-    position: relative;
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
-    padding: 0 0.5rem;
-    border-radius: var(--radius-control, 8px);
-    border: 1px solid var(--color-line, #333);
-    font-size: 12px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-  .level-tab:focus-visible {
-    outline: 2px solid var(--color-gold, #c9a35e);
-    outline-offset: 2px;
-  }
-  .level-tab-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    display: inline-flex;
-    min-width: 14px;
-    height: 14px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: var(--color-gold, #c9a35e);
-    color: #1a1400;
-    padding: 0 3px;
-    font-size: 9px;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .edge-fade-start {
-    background: linear-gradient(to right, var(--color-bg), transparent);
-  }
-  .edge-fade-end {
-    background: linear-gradient(to left, var(--color-bg), transparent);
-  }
-  .edge-fade.is-visible {
-    opacity: 1;
+  .header-character-card {
+    min-width: 0;
   }
 
+  .faction-content {
+    display: none;
+  }
+  #faction-alliance:checked ~ .page-body .alliance {
+    display: block;
+  }
+  #faction-horde:checked ~ .page-body .horde {
+    display: block;
+  }
   .band-panel {
     display: none;
   }
@@ -544,157 +444,142 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
   .band-panels:not(:has(.band-panel:target)) .band-panel-default {
     display: block;
   }
-  .band-heading {
-    font-family: var(--font-body);
-    font-weight: 700;
-    color: var(--color-strong);
-    text-transform: none;
-    letter-spacing: normal;
+
+  .three-panel-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    padding: 28px 48px 0 48px;
   }
 
-  /* --- the paperdoll's two gear columns: same row list either side, mirrored borders (§5:
-     "left/right gear columns carry equal visual weight"). --- */
-  .gear-rows {
+  .the-list-section {
     display: flex;
     flex-direction: column;
+    gap: 12px;
+    padding: 28px 48px 0 48px;
   }
-
-  /* --- centre column: intentionally undecorated (§3.2) -- no border, no card background,
-     distinguished from the two bordered gear columns only by whitespace. --- */
-  .aside-label {
-    color: var(--color-muted, #999);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: 11px;
-    margin-bottom: 2px;
-  }
-  .dps-value {
-    font-size: 22px;
-    font-weight: 700;
-  }
-  .dps-delta {
-    font-size: 12px;
-  }
-  .dps-partial-note {
-    font-size: 11px;
-  }
-  .weights-reference-line {
-    font-size: 13px;
-    color: var(--color-strong, #f2eee4);
-    margin-bottom: 0.4rem;
-  }
-  .weight-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  /* Label above its own bar, not squeezed into a fixed-width grid column -- a stat name as
-     long as "Ranged attack power" (the reference row itself) must never truncate. */
-  .weight-bar-row {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 12px;
-  }
-  .weight-bar-row-faint {
-    opacity: 0.5;
-  }
-  .weight-bar-top {
+  .the-list-heading-row {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 8px;
   }
-  .weight-bar-value-sentence {
-    display: block;
+  .panel-box {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
   }
-  .weight-bar-track {
-    position: relative;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--color-line-soft, #222);
-    overflow: hidden;
+  .the-list-panel {
+    padding: 4px 20px 6px 20px;
   }
-  .weight-bar-fill {
-    display: block;
-    height: 100%;
-    border-radius: 999px;
-    background: var(--color-gold, #c9a35e);
+  .the-list-header {
+    display: grid;
+    grid-template-columns: 90px 1fr 1fr;
+    gap: 16px;
+    padding: 12px 0 6px 0;
+    border-bottom: 1px solid var(--color-line);
   }
-  .weight-bar-value {
-    flex-shrink: 0;
-  }
-  /* --- scale rail meta line: per-point DPS and the sim error, in the row's own normalized
-     units (bis-weights-simc, owner: "align with simcraft stat weights output"). --- */
-  .weight-bar-meta {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 11px;
-  }
-  .weights-haste-caption {
-    font-size: 12px;
-    margin-top: 0.4rem;
-  }
-  .weights-rating-note {
-    font-size: 11px;
-    margin-top: 0.6rem;
-  }
-  .weights-addon-blurb {
-    font-size: 12px;
-    margin-top: 0.6rem;
-  }
-  .weights-addon-button {
-    margin-top: 0.5rem;
-    width: 100%;
+  .the-list-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
-  /* --- what changed: one disclosure line, never a wall of rows above the list. --- */
-  .upgrades-disclosure summary {
-    cursor: pointer;
-    color: var(--color-muted, #999);
-    font-size: 13px;
-    list-style: none;
+  .footer-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 28px 48px 28px 48px;
   }
-  .upgrades-disclosure summary::-webkit-details-marker {
-    display: none;
-  }
-  .upgrades-disclosure summary::before {
-    content: '▸ ';
-  }
-  .upgrades-disclosure[open] summary::before {
-    content: '▾ ';
-  }
-  .upgrades-list {
+  .footer-col {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    margin-top: 0.5rem;
-    font-size: 13px;
+    gap: 12px;
   }
-  .upgrade-row {
+  .footer-groups-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 4px 20px 8px 20px;
+  }
+  .footer-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .footer-group:last-child {
+    border-bottom: none;
+  }
+  .footer-group-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .footer-group-count {
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+  .footer-group-items {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
   }
-  .upgrade-slot {
-    color: var(--color-muted, #999);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-size: 11px;
+  .footer-group-item {
+    font-size: 13px;
+    cursor: pointer;
   }
-  .upgrade-new-slot {
-    color: var(--color-muted, #999);
+  .new-at-band-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 18px;
+    background: var(--color-card-top);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .new-at-band-line {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-nav);
+  }
+  .new-at-band-see-link {
     font-size: 12px;
-    font-style: italic;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 1023px) {
+    .header-row {
+      grid-template-columns: 1fr;
+      padding: 22px 18px 18px 18px;
+    }
+    .three-panel-row {
+      grid-template-columns: 1fr;
+      padding: 22px 18px 0 18px;
+      gap: 22px;
+    }
+    .the-list-section,
+    .footer-row {
+      padding: 22px 18px 0 18px;
+    }
+    .footer-row {
+      grid-template-columns: 1fr;
+      gap: 22px;
+      padding-bottom: 22px;
+    }
+    .the-list-header {
+      display: none;
+    }
   }
 </style>
 
 <script is:inline>
   // Not an island: a plain inline script, no framework, so `?faction=horde` opens on the
   // right panel without paying for a hydrated component the way the rest of this page
-  // (two SSR lists plus a CSS radio toggle) never does either.
+  // (server-rendered rows plus a CSS radio toggle) never does either.
   (function () {
     const faction = new URLSearchParams(window.location.search).get('faction');
     if (faction === 'horde') {
@@ -703,7 +588,7 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
     }
   })();
 
-  // Arrow-key band navigation: focus never leaves the level scale's own links, and moving
+  // Arrow-key band navigation: focus never leaves the band strip's own links, and moving
   // focus also follows the link (the same `#band-<faction>-<band>` CSS `:target` toggle a
   // click already drives), so the keyboard path and the pointer path land on the exact same
   // state rather than two behaviours to keep in sync.
@@ -725,26 +610,25 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
     });
   })();
 
-  // Edge fades for the level scale on a narrow screen (night-sim-tabs' own pattern,
-  // SimTabs.astro): only present on whichever side still has tabs scrolled out of view, and
-  // desktop never overflows (the level scale fits one row well under 1120px), so the fades
-  // stay hidden there without a breakpoint check.
+  // The band strip's own live "which one is open" highlight (ClassHeader's own note): kept
+  // as a plain inline script, the same convention the two scripts above already use, rather
+  // than a `:has()` selector per band -- this covers any number of bands with one listener
+  // set instead of one generated CSS rule per band/faction pair.
   (function () {
-    const EPSILON_PX = 1;
-    document.querySelectorAll('[data-band-strip]').forEach(function (nav) {
-      const wrap = nav.parentElement;
-      const fadeStart = wrap && wrap.querySelector('.edge-fade-start');
-      const fadeEnd = wrap && wrap.querySelector('.edge-fade-end');
-      if (!fadeStart || !fadeEnd) return;
-      const updateFades = function () {
-        const hiddenStart = nav.scrollLeft > EPSILON_PX;
-        const hiddenEnd = nav.scrollLeft + nav.clientWidth < nav.scrollWidth - EPSILON_PX;
-        fadeStart.classList.toggle('is-visible', hiddenStart);
-        fadeEnd.classList.toggle('is-visible', hiddenEnd);
-      };
-      nav.addEventListener('scroll', updateFades, { passive: true });
-      window.addEventListener('resize', updateFades);
-      updateFades();
-    });
+    function syncActive() {
+      document.querySelectorAll('[data-band-strip]').forEach(function (strip) {
+        const links = Array.prototype.slice.call(strip.querySelectorAll('[data-band-link]'));
+        if (links.length === 0) return;
+        const current =
+          links.find(function (link) {
+            return link.getAttribute('href') === window.location.hash;
+          }) || links[0];
+        links.forEach(function (link) {
+          link.classList.toggle('is-current', link === current);
+        });
+      });
+    }
+    window.addEventListener('hashchange', syncActive);
+    syncActive();
   })();
 </script>

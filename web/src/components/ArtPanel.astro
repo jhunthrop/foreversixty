@@ -1,0 +1,29 @@
+---
+// web/src/components/ArtPanel.astro
+// The class page header's background panel (bis rebuild spec §4.A/§7): class-specific tree
+// art behind a night-to-`--bg` gradient in the design system's own words. Asset sourcing is
+// out of scope for this spec (§8) -- this ships a flat `--bg-raised` panel background until
+// the art lane delivers the per-class tree art, never a placeholder texture invented here.
+// New (design/DESIGN-SYSTEM.md's "Class page header": `ArtPanel` + `ClassHeader`, neither
+// exists in web/src/components/ today -- confirmed by search).
+interface Props {
+  /** Selects the per-class tree art once the art lane delivers it -- unused today, kept so
+   *  a future fill-in changes only this component's own background, never its callers. */
+  classSlug: string;
+}
+
+const { classSlug: _classSlug } = Astro.props;
+---
+
+<div class="art-panel">
+  <slot />
+</div>
+
+<style>
+  .art-panel {
+    /* Flat fallback (spec §4.A/§7): a future lane swaps this for the class's own tree art
+       behind a night-to-`--bg` gradient without touching this component's callers. */
+    background: var(--color-raised);
+    width: 100%;
+  }
+</style>

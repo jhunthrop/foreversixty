@@ -1,6 +1,14 @@
 // web/src/lib/bis/copy.ts
 // Every string the /bis pages show, in one module (the site's own pattern -- see
-// lib/planner/copy.ts and lib/sim/copy.ts).
+// lib/planner/copy.ts and lib/sim/copy.ts). `craftedSourceLabel`/`pvpSourceLabel` (and
+// `pvpRankTitle`, re-exported below for existing importers) live in
+// `lib/items/source-labels.ts`, not here, and are only re-attached to this object -- see
+// that file's own header for why (the item tooltip needs those two functions but must
+// never pay for the rest of this much larger, /bis-page-only object).
+import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from '../items/source-labels';
+
+export { pvpRankTitle };
+
 export const bisCopy = {
   navLabel: 'Leveling BiS',
   indexTitle: 'Leveling BiS',
@@ -48,9 +56,16 @@ export const bisCopy = {
 
   // --- source cell (step 1) ---------------------------------------------------------------
   questSourceLabel: (questName: string): string => `Quest: ${questName}`,
-  questLevelLabel: (level: number): string => `Level ${level}`,
+  // A non-breaking space between the label word and its number (here and in every other
+  // "Word N" metadata token below) -- a source/meta line wraps at its own " · " separators
+  // on a narrow phone (bis rebuild spec §6), never mid-token; a plain space let the browser
+  // orphan the number on its own line ("Quest: The Defias Brotherhood · Level" / "22",
+  // wow-player review round 2, 390px capture). Never a `white-space: nowrap` on the line's
+  // own outer element instead: several of these lines (`alternativeMetaLabel` below) join
+  // two such tokens with " · ", which must still be free to wrap between them.
+  questLevelLabel: (level: number): string => `Level ${level}`,
   /** The row's small item-level figure, labelled so a bare number never has to be guessed at. */
-  itemLevelShort: (level: number): string => `ilvl ${level}`,
+  itemLevelShort: (level: number): string => `ilvl ${level}`,
   dungeonSourceLabel: (instance: string, boss?: string): string =>
     boss === undefined ? instance : `${instance} · ${boss}`,
   /** "Crafted: Blacksmithing" when the source's own name already IS the profession --
@@ -60,11 +75,9 @@ export const bisCopy = {
    *  polish, 2026-09-30). "Crafted: <Profession> · <name>" only when they genuinely differ,
    *  for a future crafted source named by something other than its own profession (a
    *  specific recipe, say). Shared by the panel's source cell (`source-cell.ts`) and the
-   *  item tooltip (`items/tooltip.ts`) so both say the same thing for the same source. */
-  craftedSourceLabel: (name: string, profession?: string): string =>
-    profession === undefined || profession.toLowerCase() === name.toLowerCase()
-      ? `Crafted: ${name}`
-      : `Crafted: ${capitalise(profession)} · ${name}`,
+   *  item tooltip (`items/tooltip.ts`) so both say the same thing for the same source --
+   *  its own implementation lives in `items/source-labels.ts`, this file's own import. */
+  craftedSourceLabel,
   vendorSourceLabel: (npc: string): string => `Vendor: ${npc}`,
   repSourceLabel: (factionName: string, standing?: string): string =>
     standing === undefined ? factionName : `${factionName} (${standing})`,
@@ -75,13 +88,7 @@ export const bisCopy = {
    *  faction, not a pipeline id. Falls back to naming just the rank and faction when the
    *  rank falls outside the known ladder (`pvpRankTitle` returning `undefined` -- should
    *  not happen on real data, but never worse than an incomplete-but-true line). */
-  pvpSourceLabel: (rank: number, faction: 'alliance' | 'horde'): string => {
-    const title = pvpRankTitle(faction, rank);
-    const factionLabel = faction === 'alliance' ? 'Alliance' : 'Horde';
-    return title === undefined
-      ? `PvP rank ${rank} · ${factionLabel}`
-      : `PvP rank ${rank} · ${title} · ${factionLabel}`;
-  },
+  pvpSourceLabel,
   /** "40% from Lord Serpentis", "6% from Deadmines trash" -- classic-db's own drop
    *  chance (src-classicdb lane, 2026-09-29), shown in front of the place a source cell
    *  would otherwise just name plainly. */
@@ -149,7 +156,7 @@ export const bisCopy = {
    *  band's own level is already implied by the row being shown here at all, so naming it
    *  every time would be noise, not information. */
   alternativeMetaLabel: (itemLevel: number, requiredLevel: number, band: number): string =>
-    requiredLevel > band ? `ilvl ${itemLevel} · needs ${requiredLevel}` : `ilvl ${itemLevel}`,
+    requiredLevel > band ? `ilvl ${itemLevel} · needs ${requiredLevel}` : `ilvl ${itemLevel}`,
   /** A rating-family row's native `title` hover (spec addendum 2, §C(2)): the client's own
    *  rating-per-percent conversion, so "Crit rating" doesn't leave a player guessing what
    *  "rating" means -- `14 Crit rating = 1% Crit`. */
@@ -254,6 +261,125 @@ export const bisCopy = {
    *  text (spec's "unknown -> the last"), never a fabricated reason. */
   emptyReasonNoDpsValue: 'Nothing sourced at this level helps your DPS',
   emptyReasonEffectNotModelled: "Relic effects aren't simulated yet",
+
+  // --- "The list" rebuild (bis rebuild spec, 2026-09-30) -----------------------------------
+  headerEyebrow: 'Best in slot · leveling',
+  /** `{band}` -> `"20 to 29"` through `"50 to 59"`, and plain `"60"` for the top band --
+   *  design system's own explicit rule, never `"60 to 60"` (spec §4.A). Every band in this
+   *  contract is a ten-level bracket (`bands` are `[20, 30, 40, 50, 60]`, one entry per
+   *  lower bound) except the last, which has no bracket to show. */
+  bandRangeLabel: (band: number): string => (band === 60 ? '60' : `${band} to ${band + 9}`),
+  /** The header's one summary sentence (spec §4.A) -- `bandHigh` is `undefined` only for
+   *  the plain-60 band, which drops the whole "from X to Y" clause rather than say "at 60
+   *  to 60" or invent a range the contract does not have. */
+  headerSummary: (bandLow: number, bandHigh: number | undefined): string =>
+    bandHigh === undefined
+      ? `The gear that raises your damage most at ${bandLow}, ranked by the simulator with every item equipped, and where each piece comes from.`
+      : `The gear that raises your damage most from ${bandLow} to ${bandHigh}, ranked by the simulator with every item equipped, and where each piece comes from.`,
+  thisSetLabel: 'This set',
+  /** "DPS on the training dummy, level 29 Troll, 11 talent points" -- `characterLevel` is
+   *  the band's own training-dummy level (never a signed-in character's real level, spec
+   *  §4.C.1's own explicit warning: the two are unrelated facts that happen to coincide in
+   *  the mock's own worked example). */
+  thisSetFigureLine: (characterLevel: number, race: string, talentPoints: number): string =>
+    `DPS on the training dummy, level ${characterLevel} ${capitalise(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
+  simmedLine: (generatedAtDate: string): string =>
+    `Simmed ${generatedAtDate}, every pick measured with the item equipped`,
+  openInSimulator: 'Open in simulator',
+  talentsInPlanner: 'Talents in planner',
+  statWeightsAtBand: (bandLabel: string): string => `Stat weights at ${bandLabel}`,
+  playItHeading: (bandLabel: string): string => `Play it · ${bandLabel}`,
+  /** The rotation line's own icon placeholder (spec §4.C.3) -- this build carries no spell-
+   *  icon-by-id data for a trained (non-talent) ability at all (verified: `spells.json`,
+   *  `spellranks.json` and `spellconst/<class>.json` all checked), so every line falls back
+   *  to a plain bordered square. Its own title, never `noKnownSourceForSlot`'s wording
+   *  (that line describes an EMPTY GEAR SLOT with no pick at all -- a different fact from
+   *  "this ability's icon isn't resolved yet"; ux-designer review round 1). */
+  iconNotAvailableYet: 'Icon not available yet',
+  openGuideLink: (specName: string): string => `Open the ${specName} guide`,
+  theListHeading: 'The list',
+  hoverOrTapCaption: 'Hover or tap an item for its stats',
+  slotHeaderLabel: 'Slot',
+  pickHeaderLabel: 'Best in slot · where it comes from',
+  runnersUpHeaderLabel: 'Runners-up · DPS vs the pick',
+  youHeaderLabel: 'You',
+  whereToGetItHeading: 'Where to get it',
+  newAtThisBandHeading: 'New at this band',
+  /** `source_kind === 'world_drop'`'s own group label for "Where to get it" (spec §4.E) --
+   *  never `worldDropSourceLabel`'s `"World drop (BoE)"` phrasing, which is pipeline jargon
+   *  for the same row's own individual source line; this is the one place on the page
+   *  naming the actual action a player takes (the auction house), for a whole GROUP of
+   *  items rather than one row. */
+  worldDropGroupLabel: 'World drop (auction house)',
+  groupCountSuffix: (count: number): string => `×${count}`,
+  firstBandEveryPickNew: 'This is the first band — every pick here is new.',
+  /** Sentence 1 of "New at this band" (spec §4.E) for every band past the first -- `parts`
+   *  is the already-built, ordered list of instance names and `"the <faction> rewards"`
+   *  clauses (`joinWithAnd` below joins them into one clause). */
+  reachingBandOpens: (bandLow: number, joinedParts: string, n: number, total: number): string =>
+    `Reaching ${bandLow} opens ${joinedParts}: ${n} of the ${total} picks come from there.`,
+  /** Sentence 2, the next band's own preview -- `joinedParts` is `''` when the next band
+   *  opens nothing a dungeon/rep clause would name (every new pick there is a vendor/quest/
+   *  world/crafted source), in which case the sentence starts straight from the slot clause
+   *  (or is empty entirely when neither clause has anything to say). */
+  nextBandLine: (bandLabel: string, joinedParts: string, helpfulSlotLabel: string | undefined): string => {
+    const head = `Next band (${bandLabel})`;
+    const slotClause = helpfulSlotLabel === undefined ? '' : `the first ${helpfulSlotLabel} that helps`;
+    if (joinedParts === '' && slotClause === '') return `${head}.`;
+    if (joinedParts === '') return `${head}: ${slotClause}.`;
+    if (slotClause === '') return `${head}: ${joinedParts}.`;
+    return `${head}: ${joinedParts}, and ${slotClause}.`;
+  },
+  seeBandLink: (bandLabel: string): string => `See ${bandLabel}`,
+  /** The off-hand's own empty row when the main hand is a two-hander, NAMING the weapon
+   *  (spec §4.D) -- replaces the older, generic `twoHanderEquippedLabel` for this rebuild's
+   *  list row (kept above, unchanged, for any other surface that still reads it). */
+  twoHanderEquippedNamed: (mainHandName: string): string =>
+    `${mainHandName} is a two-hander; the off hand is taken.`,
+  /** `no_sourced_item`, this slot's own first empty occurrence in the file (spec §4.D) --
+   *  `nextRealBand` is `undefined` when no later band in this same file ever sources the
+   *  slot either, which drops the second sentence entirely rather than name a band that
+   *  also turns out empty. Named as the plain band NUMBER ("comes at 30"), not the band's
+   *  own range label -- verified against the approved mock's own exact wording ("No
+   *  trinket you can get at 20 to 29 raises your damage. The first that does comes at
+   *  30."): the band this sentence is ABOUT gets the range, the band a bare "comes at"
+   *  points to does not. */
+  noSourcedItemFirst: (slotLower: string, bandLabel: string, nextRealBand: number | undefined): string =>
+    nextRealBand === undefined
+      ? `No ${slotLower} you can get at ${bandLabel} raises your damage.`
+      : `No ${slotLower} you can get at ${bandLabel} raises your damage. The first that does comes at ${nextRealBand}.`,
+  /** `no_sourced_item`, a LATER empty band for a slot this file's already named once (spec
+   *  §4.D) -- `undefined` the same way `noSourcedItemFirst`'s own clause is: no later band
+   *  ever sources it either. Same plain-band-number rule as above (mock: "Nothing here
+   *  either until 30."). */
+  noSourcedItemLater: (nextRealBand: number | undefined): string =>
+    nextRealBand === undefined
+      ? 'Nothing here helps at this level either.'
+      : `Nothing here either until ${nextRealBand}.`,
+
+  // --- Character card (bis rebuild spec §4.B) ----------------------------------------------
+  yourCharacterLabel: 'Your character',
+  switchLabel: 'Switch',
+  syncedRelative: (relative: string): string => `synced ${relative}`,
+  notSyncedYetLabel: 'Not synced yet',
+  characterCardIdentityLine: (level: number, race: string): string => `${level} ${capitalise(race)}`,
+  upgradesLabel: 'Upgrades',
+  togetherLabel: 'Together',
+  togetherDpsValue: (delta: number): string => `+${delta.toFixed(1)} DPS`,
+  equippedLabel: 'Equipped',
+  equippedValue: (n: number, total: number): string => `${n} / ${total}`,
+  sendListToAddon: 'Send this list to the addon',
+  installTheAddon: 'Install the addon',
+  installAddonToCompare: 'Install the addon to compare your gear against this list.',
+  gearSyncNotHereYet: "Gear sync isn't here yet — install the addon to compare your gear against this list.",
+  characterCardLoadError: 'Your character did not load.',
+  /** The list row's own "You" column (spec §4.D/§7 `GearRow`'s `you` slot) -- unused today
+   *  (the column itself is omitted entirely while the worn-gear gap is open, §9), kept here
+   *  so the component that renders it needs no second copy module once a future lane
+   *  supplies real data. */
+  equippedTickLabel: 'equipped',
+  youGainOverWorn: (dpsDelta: number, wornItemName: string): string =>
+    `+${dpsDelta.toFixed(1)} DPS over your ${wornItemName}`,
 } as const;
 
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner
@@ -263,50 +389,13 @@ function capitalise(word: string): string {
   return word.length === 0 ? word : word[0]!.toUpperCase() + word.slice(1);
 }
 
-// --- pvp rank titles (third wow-player sweep defect, 2026-09-29) --------------------------
-// Vanilla's own Alliance/Horde PvP rank ladders, ranks 1-14 in order -- mirrors
-// data/pipeline/loot/pvp_faction.py's ALLIANCE_TITLES/HORDE_TITLES, the primary source for
-// both. Blizzard's own client `RequiredPVPRank` column (loot.json's `LootSource.rank`) is
-// these ranks + 4, which `pvpRankTitle` undoes.
-const ALLIANCE_PVP_TITLES = [
-  'Private',
-  'Corporal',
-  'Sergeant',
-  'Master Sergeant',
-  'Sergeant Major',
-  'Knight',
-  'Knight-Lieutenant',
-  'Knight-Captain',
-  'Knight-Champion',
-  'Lieutenant Commander',
-  'Commander',
-  'Marshal',
-  'Field Marshal',
-  'Grand Marshal',
-] as const;
-
-const HORDE_PVP_TITLES = [
-  'Scout',
-  'Grunt',
-  'Sergeant',
-  'Senior Sergeant',
-  'First Sergeant',
-  'Stone Guard',
-  'Blood Guard',
-  'Legionnaire',
-  'Centurion',
-  'Champion',
-  'Lieutenant General',
-  'General',
-  'Warlord',
-  'High Warlord',
-] as const;
-
-/** loot.json's own pvp source `rank` (Blizzard's client RequiredPVPRank, 5-18) -> the
- *  in-game rank title for `faction` ("Knight-Lieutenant" for alliance rank 11). `undefined`
- *  for a rank outside the ladder -- should not happen; loot.json only ever writes 5-18, but
- *  a caller sees a title-less line rather than an out-of-bounds crash if it ever did. */
-export function pvpRankTitle(faction: 'alliance' | 'horde', rank: number): string | undefined {
-  const titles = faction === 'alliance' ? ALLIANCE_PVP_TITLES : HORDE_PVP_TITLES;
-  return titles[rank - 5];
+/** `["A"]` -> `"A"`, `["A", "B"]` -> `"A and B"`, `["A", "B", "C"]` -> `"A, B and C"` --
+ *  the one join "New at this band"'s two computed sentences use for an instance/rep list of
+ *  any length, English's own list convention (no Oxford comma, one "and" before the last
+ *  item). `[]` -> `""`, so a caller can always check for the empty string rather than a
+ *  separate "were there any parts at all" branch. */
+export function joinWithAnd(parts: readonly string[]): string {
+  if (parts.length === 0) return '';
+  if (parts.length === 1) return parts[0]!;
+  return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
 }

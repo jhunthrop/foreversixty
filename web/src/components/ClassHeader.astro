@@ -1,0 +1,415 @@
+---
+// web/src/components/ClassHeader.astro
+// The class page header's content (bis rebuild spec §4.A): crest, h1 with the band/faction
+// suffix, one summary sentence, `SpecTabs`, `BandTabs`, `FactionToggle`, race select. New
+// (design/DESIGN-SYSTEM.md's "Class page header" -- neither this nor `ArtPanel` exists in
+// web/src/components/ today, confirmed by search). `SpecTabs`/`BandTabs`/`FactionToggle`
+// are this component's own sub-markup rather than four separate files (spec §7 explicitly
+// allows this, "at the build lane's discretion, so long as the markup matches §4.A's spec
+// exactly").
+//
+// This component renders ONCE PER FACTION (the page mounts one copy inside each of its two
+// faction sections, toggled by the existing radio mechanism, §4.C's own note on why: the
+// header's suffix and summary sentence name the active faction/band, which only a second
+// copy -- not a client-side re-render -- can do on a page with no island above the fold).
+// `FactionToggle`'s own pills still work from either copy: both point `for=` at the same
+// two page-level radios, and only the copy inside the currently visible faction section is
+// ever interactive at a time.
+import ClassCrest from './ClassCrest.astro';
+import FactionMark from './FactionMark.astro';
+import { bisCopy } from '../lib/bis/copy';
+import { classColorVar } from '../lib/report/format';
+import type { Faction } from '../lib/bis/types';
+
+export interface SpecTabEntry {
+  specSlug: string;
+  name: string;
+  /** The tree's own first talent's icon (`talents/<class>.json`'s own
+   *  `trees[tree_index].talents[0].icon`) -- the best available per-spec icon; this build
+   *  carries no dedicated talent-TAB icon field at all (confirmed by search), so this is a
+   *  defensible, real-data-grounded stand-in, not an invented image (see this lane's own
+   *  report for the full reasoning). `undefined` renders a plain neutral square. */
+  icon?: string;
+  href: string;
+  active: boolean;
+}
+
+export interface RaceOption {
+  slug: string;
+  name: string;
+}
+
+interface Props {
+  classSlug: string;
+  className: string;
+  specName: string;
+  specTabs: SpecTabEntry[];
+  bands: number[];
+  faction?: Faction;
+  race?: string;
+  raceOptions?: RaceOption[];
+  build: string;
+  /** True for a healer/tank spec with no ranked `BisFile` (spec §5): crest/h1/`SpecTabs`
+   *  still render (the class/spec identity is known even with no ranked data yet), but the
+   *  band/faction suffix, the summary sentence and the whole controls row (`BandTabs`,
+   *  `FactionToggle`, race select) are dropped -- there is no band to name, no faction to
+   *  toggle, and no list to jump around in. */
+  minimal?: boolean;
+}
+
+const {
+  classSlug,
+  className,
+  specName,
+  specTabs,
+  bands,
+  faction,
+  race,
+  raceOptions = [],
+  build,
+  minimal = false,
+} = Astro.props;
+
+const color = classColorVar(className);
+const factionLabel =
+  faction === undefined ? undefined : faction === 'alliance' ? bisCopy.factionAlliance : bisCopy.factionHorde;
+
+/** One suffix/summary variant per band, all but the first band's own hidden by default
+ *  (spec's own "at 60" band-60 screenshot requirement means this text must genuinely
+ *  change with the open band, not just the pill -- see the page's own generated `:has()`
+ *  CSS, which flips `data-band-text-for` visibility to match whichever `#band-<faction>-N`
+ *  is `:target`). No client-side text rewriting, no second copy of `headerSummary`'s own
+ *  wording in a script -- one source of truth (`bisCopy`), rendered once per band. */
+const bandTextVariants = bands.map((band) => ({
+  band,
+  bandLabel: bisCopy.bandRangeLabel(band),
+  summary: bisCopy.headerSummary(band, band === 60 ? undefined : band + 9),
+}));
+---
+
+<div class="class-header">
+  <p class="label class-header-eyebrow">
+    <i class="class-header-eyebrow-rule" aria-hidden="true"></i>
+    {bisCopy.headerEyebrow}
+  </p>
+  <div class="class-header-identity">
+    <ClassCrest slug={classSlug} size={64} />
+    <div class="class-header-titles">
+      <h1 class="class-header-h1" style={`color:${color}`}>
+        {specName} {className}{' '}
+        {!minimal && (
+          <span class="class-header-suffix">
+            ·{' '}
+            {bandTextVariants.map((variant) => (
+              <span class="class-header-band-text" data-band-text-for={variant.band}>
+                {variant.bandLabel}
+              </span>
+            ))}{' '}
+            · {factionLabel}
+          </span>
+        )}
+      </h1>
+      {!minimal &&
+        bandTextVariants.map((variant) => (
+          <p class="class-header-summary" data-band-summary-for={variant.band}>
+            {variant.summary}
+          </p>
+        ))}
+    </div>
+  </div>
+
+  <div class="class-header-spec-tabs" role="tablist" aria-label="Spec">
+    {specTabs.map((tab) => (
+      <a
+        href={tab.href}
+        role="tab"
+        aria-selected={tab.active}
+        class:list={['class-header-spec-tab', tab.active && 'is-active']}
+        style={tab.active ? `border-color:${color}` : undefined}
+        data-testid={`bis-spec-tab-${tab.specSlug}`}
+      >
+        {tab.icon !== undefined ? (
+          <img
+            src={`/data/${build}/icons/${tab.icon}.webp`}
+            alt=""
+            width="28"
+            height="28"
+            loading="lazy"
+            decoding="async"
+            class="class-header-spec-icon"
+          />
+        ) : (
+          <span class="class-header-spec-icon class-header-spec-icon-placeholder" aria-hidden="true" />
+        )}
+        <span class="display class-header-spec-name" style={tab.active ? `color:${color}` : undefined}>
+          {tab.name}
+        </span>
+      </a>
+    ))}
+  </div>
+
+  {!minimal && (
+    <div class="class-header-controls">
+      <span
+        class="class-header-band-tabs"
+        role="group"
+        aria-label={bisCopy.bandPillGroupLabel}
+        data-band-strip
+      >
+        {bands.map((band) => (
+          <a
+            href={`#band-${faction}-${band}`}
+            class="class-header-band-tab font-mono tabular"
+            data-band-link={band}
+            data-testid={`bis-band-pill-${faction}-${band}`}
+          >
+            {bisCopy.bandRangeLabel(band)}
+          </a>
+        ))}
+      </span>
+      <span class="class-header-divider" aria-hidden="true"></span>
+      <span class="class-header-faction-toggle" role="group" aria-label="Faction">
+        <label
+          for="faction-alliance"
+          class:list={['class-header-faction-pill', faction === 'alliance' && 'is-active-alliance']}
+          data-testid="bis-faction-toggle-alliance"
+        >
+          <FactionMark faction="alliance" size={20} />
+          {bisCopy.factionAlliance}
+        </label>
+        <label
+          for="faction-horde"
+          class:list={['class-header-faction-pill', faction === 'horde' && 'is-active-horde']}
+          data-testid="bis-faction-toggle-horde"
+        >
+          <FactionMark faction="horde" size={20} />
+          {bisCopy.factionHorde}
+        </label>
+      </span>
+      <span class="class-header-divider" aria-hidden="true"></span>
+      <select class="class-header-race-select" aria-label="Race" data-testid="bis-race-select">
+        {raceOptions.map((option) => (
+          <option value={option.slug} selected={option.slug === race}>
+            {option.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  )}
+</div>
+
+<style>
+  .class-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 28px 48px 0 48px;
+  }
+  .class-header-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-gold);
+  }
+  .class-header-eyebrow-rule {
+    width: 28px;
+    height: 1px;
+    background: var(--color-gold);
+    display: inline-block;
+  }
+  .class-header-identity {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .class-header-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .class-header-h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 22px;
+    line-height: 1.1;
+    font-weight: 700;
+    text-transform: none;
+  }
+  .class-header-suffix {
+    color: var(--color-muted);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: none;
+  }
+  .class-header-summary {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-nav);
+    max-width: 62ch;
+  }
+
+  .class-header-spec-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .class-header-spec-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .class-header-spec-tab {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 8px;
+    height: 44px;
+    box-sizing: border-box;
+    padding: 0 14px 0 8px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-raised) 60%, transparent);
+    color: var(--color-nav);
+  }
+  .class-header-spec-tab.is-active {
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+  .class-header-spec-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    flex-shrink: 0;
+  }
+  .class-header-spec-icon-placeholder {
+    background: var(--color-raised);
+  }
+  .class-header-spec-name {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .class-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .class-header-band-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .class-header-band-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .class-header-band-tab {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 44px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    border-radius: var(--radius-control);
+    font-size: 13px;
+    border: 1px solid var(--color-line);
+    color: var(--color-nav);
+    background: transparent;
+  }
+  .class-header-band-tab:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  /* Live "which band is open" highlight: a tiny inline page script (no island) toggles
+     this class from `location.hash`, defaulting to the first pill when nothing is
+     targeted yet -- the same convention the page's existing band-strip scripts already
+     use (arrow-key nav, edge fades), never a second source of truth for which band is
+     open (the CSS `:target` panel toggle stays the one mechanism that actually shows the
+     content; this class only keeps the pill's own look in sync with it). */
+  .class-header-band-tab.is-current {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    background: color-mix(in srgb, var(--color-gold) 8%, transparent);
+  }
+  .class-header-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--color-line);
+    flex-shrink: 0;
+  }
+  .class-header-faction-toggle {
+    display: flex;
+    gap: 6px;
+  }
+  .class-header-faction-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-nav);
+    cursor: pointer;
+  }
+  .class-header-faction-pill.is-active-horde {
+    border-color: var(--color-horde);
+    background: color-mix(in srgb, var(--color-horde-bar) 15%, transparent);
+    color: var(--color-horde);
+  }
+  .class-header-faction-pill.is-active-alliance {
+    border-color: var(--color-alliance);
+    background: color-mix(in srgb, var(--color-alliance-bar) 15%, transparent);
+    color: var(--color-alliance);
+  }
+  .class-header-race-select {
+    height: 44px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-text);
+    font-size: 13px;
+    font-family: var(--font-body);
+  }
+  /* This page's own race select defaults to the active faction's first race (a real,
+     documented choice, never the mock's own "Troll" example) until `CharacterCard`'s island
+     syncs it to the signed-in visitor's own character race (ux-designer review round 2).
+     That sync is a cross-island DOM write that only ever runs after hydration, so a probably-
+     signed-in visitor (Base.astro's own pre-paint session hint, `fs_csrf` readable cookie,
+     `<html data-session="1">`, unchanged here) would otherwise see the wrong default flash
+     before the real one lands. Hidden (not removed: the control keeps its layout space, no
+     shift) until either the sync applies the real race or `CharacterCard` confirms there is
+     nothing to sync (signed out after all, or a race this class cannot be) and marks
+     `<html data-race-select-synced>` either way. A visitor with no session hint at all never
+     hides: there is nothing to wait for. */
+  :global(html[data-session='1']:not([data-race-select-synced])) .class-header-race-select {
+    visibility: hidden;
+  }
+
+  @media (max-width: 1023px) {
+    .class-header {
+      padding: 22px 18px 0 18px;
+    }
+    .class-header-controls {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .class-header-divider {
+      display: none;
+    }
+    .class-header-band-tabs,
+    .class-header-faction-toggle {
+      width: 100%;
+    }
+  }
+</style>

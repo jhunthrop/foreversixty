@@ -1,28 +1,46 @@
 ---
 // web/src/components/bis/GearRow.astro
-// One paperdoll slot row (lane bis-character-panel, 2026-09-29): the left/right gear
-// columns and the bottom weapon row all render the identical row, so it lives once here
-// rather than three times in the page -- filled, empty, and empty-because-a-two-hander-is-
-// equipped (ruling 4) are its only three shapes.
+// "The list"'s own per-slot row (bis rebuild spec §4.D) -- extended from the character-
+// panel redesign's row (lane bis-character-panel, 2026-09-29), not forked: the same pick/
+// alternatives/flags markup, now laid out as the design system's Pick row grid (`90px /
+// 1fr / 300px / 190px`, the last column collapsing away entirely while the `you` prop is
+// absent -- see below) instead of the paperdoll's flex column. Two changes from that
+// version: the lead glyph is gone in favour of the plain 90px slot label the design system
+// asks for (a second small icon next to the pick's own 40px one is redundant, tenet 11), and
+// the alternatives list is its own grid column beside the pick rather than stacked under it.
 import type { RowView } from '../../lib/bis/panel-view';
 import { bisCopy } from '../../lib/bis/copy';
 import { dataUrl } from '../../lib/planner/load';
 import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
-import { SLOT_LABELS, type Slot } from '../../lib/planner/types';
-import SlotIcon from './SlotIcon.astro';
+import type { Slot } from '../../lib/planner/types';
+import { SLOT_DISPLAY_LABELS } from '../../lib/bis/slot-display-labels';
+import type { Faction } from '../../lib/bis/types';
+import FactionMark from '../FactionMark.astro';
 import SourceKindIcon from './SourceKindIcon.astro';
 import VerifiedGlyph from './VerifiedGlyph.astro';
+
+/** The row's own gain-over-worn-gear column (design system's Pick row: "a 'You' column
+ *  with the gain over what you wear or an 'equipped' tick") -- always `undefined` today,
+ *  the same blocked-on-worn-gear-data gap §4.B's Character card names (spec §9, out of
+ *  scope). Typed and threaded through now so a future lane that closes that gap only has
+ *  to start passing it, never fork this component to add it. */
+export type YouView = { kind: 'equipped' } | { kind: 'delta'; wornItemName: string; dpsDelta: number };
 
 interface Props {
   row: RowView;
   isNew: boolean;
   build: string;
+  you?: YouView;
+  /** This band's own faction -- a `rep`-kind source line's own emblem (spec §7: "16px in a
+   *  row descriptor") shows the band's faction, since a rep-kind pick only ever appears in
+   *  that faction's own panel. */
+  faction: Faction;
   /** `bis-slot-<faction>-<band>-<slot>` -- assembled by the caller, which alone knows the
    *  faction and band this row belongs to. */
   slotTestId: string;
 }
 
-const { row, isNew, build, slotTestId } = Astro.props;
+const { row, isNew, build, you, faction, slotTestId } = Astro.props;
 
 // `inv_misc_questionmark` is the item pipeline's own placeholder for an id it has no real
 // icon for -- the client's literal red-bordered "?" texture, and the exact icon the owner's
@@ -31,23 +49,23 @@ const { row, isNew, build, slotTestId } = Astro.props;
 function hasRealIcon(icon: string | undefined): icon is string {
   return icon !== undefined && icon !== 'inv_misc_questionmark';
 }
+
+const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
 ---
 
-<li class:list={['gear-row', isNew && 'gear-row-new']} data-testid={slotTestId}>
-  <span class="gear-row-lead" aria-hidden="true">
-    <SlotIcon slot={row.slot as Slot} size={16} />
-  </span>
+<li
+  class:list={['gear-row-list', isNew && 'gear-row-new', you !== undefined && 'gear-row-list-4col']}
+  data-testid={slotTestId}
+>
+  <span class="gear-row-slot-label">{slotLabel}</span>
   {row.empty ? (
     <div class="gear-row-empty">
       <span class="gear-row-icon gear-row-icon-empty rounded-control border" aria-hidden="true" />
-      <span class="gear-row-empty-body">
-        <span class="gear-row-slot-label">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
-        <span class="text-muted text-[12px]">{row.emptyCopy}</span>
-      </span>
+      <span class="text-muted text-[12px]">{row.emptyCopy}</span>
     </div>
   ) : (
-    <>
-      <span class="gear-row-body">
+    <Fragment>
+      <div class="gear-row-pick">
         <span
           class="gear-row-item"
           data-testid={`item-hover-${row.itemId}`}
@@ -72,13 +90,11 @@ function hasRealIcon(icon: string | undefined): icon is string {
               class="gear-row-icon gear-row-icon-placeholder rounded-control border"
               style={`border-color:${rarityBorderColorFor(row.model?.quality ?? 1)}`}
               aria-hidden="true"
-            >
-              <SlotIcon slot={row.slot as Slot} />
-            </span>
+            />
           )}
           <span class="gear-row-content">
             <span class="gear-row-name-line">
-              <span class="sr-only">{SLOT_LABELS[row.slot as Slot] ?? row.slot}:</span>
+              <span class="sr-only">{slotLabel}:</span>
               <span class:list={['gear-row-name', rarityClassFor(row.model?.quality ?? 1)]}>
                 {row.itemName}
               </span>
@@ -134,7 +150,11 @@ function hasRealIcon(icon: string | undefined): icon is string {
             {row.keyStatsLine && <span class="gear-row-stats text-muted">{row.keyStatsLine}</span>}
             <span class="gear-row-source text-muted">
               <SourceKindIcon kind={row.sourceKind ?? 'unknown'} />
+              {row.sourceKind === 'rep' && <FactionMark faction={faction} size={16} />}
               {row.sourceDetail}
+              {row.itemLevel !== undefined && (
+                <span class="gear-row-ilvl tabular">· {bisCopy.itemLevelShort(row.itemLevel)}</span>
+              )}
             </span>
             {row.evidenceLine && (
               <span class="gear-row-evidence text-muted" data-testid="bis-row-evidence">
@@ -144,6 +164,9 @@ function hasRealIcon(icon: string | undefined): icon is string {
             )}
           </span>
         </span>
+      </div>
+
+      <div class="gear-row-runners">
         {row.alternatives && row.alternatives.length > 0 && (
           <span class="gear-row-alts">
             <span class="gear-row-alts-label label text-muted">{bisCopy.alternativesLabel}</span>
@@ -162,8 +185,8 @@ function hasRealIcon(icon: string | undefined): icon is string {
                     <img
                       src={dataUrl(build, `icons/${alt.model!.icon}.webp`)}
                       alt=""
-                      width="20"
-                      height="20"
+                      width="24"
+                      height="24"
                       loading="lazy"
                       decoding="async"
                       class="gear-row-alt-icon rounded-control border object-cover"
@@ -174,9 +197,7 @@ function hasRealIcon(icon: string | undefined): icon is string {
                       class="gear-row-alt-icon gear-row-icon-placeholder rounded-control border"
                       style={`border-color:${rarityBorderColorFor(alt.model?.quality ?? 1)}`}
                       aria-hidden="true"
-                    >
-                      <SlotIcon slot={row.slot as Slot} size={12} />
-                    </span>
+                    />
                   )}
                   <span class="gear-row-alt-name-line">
                     <span class:list={['gear-row-alt-name', rarityClassFor(alt.model?.quality ?? 1)]}>
@@ -203,6 +224,7 @@ function hasRealIcon(icon: string | undefined): icon is string {
                   </span>
                   <span class="gear-row-alt-source text-muted" title={alt.sourceDetail}>
                     <SourceKindIcon kind={alt.sourceKind} class="gear-row-alt-source-icon" />
+                    {alt.sourceKind === 'rep' && <FactionMark faction={faction} size={16} />}
                     <span class="gear-row-alt-source-text">{alt.sourceDetail}</span>
                   </span>
                   <span class="gear-row-alt-gap text-muted">
@@ -215,44 +237,55 @@ function hasRealIcon(icon: string | undefined): icon is string {
             </span>
           </span>
         )}
-      </span>
-      <span class="gear-row-ilvl tabular text-muted" title={bisCopy.levelHeading}>
-        {row.itemLevel === undefined ? '—' : bisCopy.itemLevelShort(row.itemLevel)}
-      </span>
-    </>
+      </div>
+
+      {you !== undefined && (
+        <div class="gear-row-you tabular" data-testid="bis-row-you">
+          {you.kind === 'equipped' ? (
+            <span class="gear-row-you-equipped">
+              <VerifiedGlyph size={12} decorative />
+              {bisCopy.equippedTickLabel}
+            </span>
+          ) : (
+            <span class="gear-row-you-delta">{bisCopy.youGainOverWorn(you.dpsDelta, you.wornItemName)}</span>
+          )}
+        </div>
+      )}
+    </Fragment>
   )}
 </li>
 
 <style>
-  .gear-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    padding: 0.6rem 0;
+  /* Design system's Pick row grid: 90px slot label, the pick, the runners-up, and (only
+     once real worn-gear data exists) a 190px You column -- 90px/1fr/1fr today, spec §4.D's
+     own explicit "never a 4th column rendered blank" rule for the blocked state. */
+  .gear-row-list {
+    display: grid;
+    grid-template-columns: 90px 1fr 1fr;
+    column-gap: 16px;
+    align-items: start;
+    padding: 10px 0;
     border-bottom: 1px solid var(--color-line-soft, #222);
+  }
+  .gear-row-list-4col {
+    grid-template-columns: 90px 1fr 300px 190px;
   }
   .gear-row-new {
     background: color-mix(in srgb, var(--color-gold, #c9a35e) 6%, transparent);
   }
-  .gear-row-lead {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    height: 40px;
+  .gear-row-slot-label {
+    padding-top: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-muted, #999);
   }
   .gear-row-empty {
+    grid-column: 2 / -1;
     display: flex;
-    flex: 1;
     min-width: 0;
     align-items: center;
     gap: 0.6rem;
-  }
-  .gear-row-empty-body {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    gap: 2px;
-    justify-content: center;
   }
   .gear-row-icon-empty {
     flex-shrink: 0;
@@ -260,33 +293,14 @@ function hasRealIcon(icon: string | undefined): icon is string {
     height: 40px;
     background: transparent;
     border-color: var(--color-line-soft, #222);
+    border-style: dashed;
   }
-  .gear-row-slot-label {
-    color: var(--color-muted, #999);
-    font-size: 12px;
-    font-weight: 600;
-  }
-  /* Column, not row: the pick (`.gear-row-item`) and its alternatives (`.gear-row-alts`)
-     stack, and critically are SIBLINGS here rather than the alternatives nesting inside the
-     pick's own hover target -- fix round 1 (e2e failure, 2026-09-29): with alternatives
-     nested inside `.gear-row-item`, that element's bounding box grew tall enough that
-     hovering its visual centre (Playwright's default hover point, and a mouse user's most
-     natural target) landed on a nested alternative's own smaller box instead, opening the
-     wrong tooltip; a screen reader also saw a button nested in a button. Two siblings under
-     one column fixes both: the pick's own hover target is now sized to just its icon/name/
-     stat/source content, and every alternative is its own independent hover target next to
-     it, never inside it. */
-  .gear-row-body {
-    display: flex;
-    flex: 1;
+  .gear-row-pick {
     min-width: 0;
-    flex-direction: column;
-    gap: 0.3rem;
   }
   .gear-row-item {
     position: relative;
     display: flex;
-    flex: 1;
     min-width: 0;
     align-items: flex-start;
     gap: 0.6rem;
@@ -335,9 +349,7 @@ function hasRealIcon(icon: string | undefined): icon is string {
     font-size: 12px;
   }
   .gear-row-ilvl {
-    flex-shrink: 0;
-    padding-top: 2px;
-    font-size: 12px;
+    color: var(--color-muted, #999);
   }
   .new-pill {
     display: inline-flex;
@@ -381,13 +393,16 @@ function hasRealIcon(icon: string | undefined): icon is string {
     gap: 0.3rem;
     font-size: 11px;
   }
-  /* --- alternatives row (ruling 2): a compact row under the pick, not a bare chip. Each
-     alternative is its own CSS grid (fix round 1, UX-designer review 2026-09-29): icon |
+  /* --- runners-up (spec §4.D): its own grid column beside the pick, not stacked under it.
+     Each alternative is its own CSS grid (UX-designer review, carried over unchanged): icon |
      name (row 1) / source (row 2, ellipsis-truncated, full text in its own `title`) | delta
      (row 1, always at the right edge of the NAME's line) / item level (row 2, right edge of
      the SOURCE's line) -- a long source name can never strand the delta on a line of its
      own, at any width down to 360px, because the delta's grid cell never depends on how
      much text wrapped above it. --- */
+  .gear-row-runners {
+    min-width: 0;
+  }
   .gear-row-alts {
     display: flex;
     flex-direction: column;
@@ -404,7 +419,7 @@ function hasRealIcon(icon: string | undefined): icon is string {
   .gear-row-alt {
     position: relative;
     display: grid;
-    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
     grid-template-rows: auto auto;
     column-gap: 0.45rem;
     row-gap: 1px;
@@ -414,8 +429,8 @@ function hasRealIcon(icon: string | undefined): icon is string {
   .gear-row-alt-icon {
     grid-column: 1;
     grid-row: 1 / span 2;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     object-fit: cover;
   }
   .gear-row-alt-name-line {
@@ -439,18 +454,26 @@ function hasRealIcon(icon: string | undefined): icon is string {
     grid-row: 2;
     display: flex;
     min-width: 0;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.25rem;
     font-size: 12px;
   }
   .gear-row-alt-source-icon {
     flex-shrink: 0;
+    /* Lines up with the wrapped text's own first line, not centred across both (this icon
+       sits beside a source line that can now wrap to two lines -- see
+       .gear-row-alt-source-text's own note). */
+    margin-top: 2px;
   }
+  /* Wraps at its own " · "/word boundaries rather than a single-line ellipsis (wow-player
+     review round 3): a level requirement is real, load-bearing information ("Level 22"),
+     never something an ellipsis is allowed to hide, unlike the item NAME above it
+     (.gear-row-alt-name), which stays a deliberate single-line truncation with the full
+     text in its own `title`. The "Level N"/"ilvl N" tokens this can still wrap AROUND stay
+     unbreakable via `copy.ts`'s own non-breaking space between the word and its number
+     (round 2's fix) -- this rule only removes the OUTER line's own single-line cap. */
   .gear-row-alt-source-text {
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .gear-row-alt-gap {
     grid-column: 3;
@@ -468,5 +491,34 @@ function hasRealIcon(icon: string | undefined): icon is string {
     justify-self: end;
     white-space: nowrap;
     font-size: 10px;
+  }
+  .gear-row-you {
+    text-align: right;
+    font-size: 12px;
+  }
+  .gear-row-you-equipped {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--color-gold, #c9a35e);
+  }
+  .gear-row-you-delta {
+    color: var(--color-kill, #7fd48a);
+  }
+
+  /* Phone: one stacked card per slot (spec §6) -- slot label -> pick -> runners-up -> You,
+     the same left-to-right, top-to-bottom read order as desktop's columns. */
+  @media (max-width: 1023px) {
+    .gear-row-list,
+    .gear-row-list-4col {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+    }
+    .gear-row-empty {
+      grid-column: 1;
+    }
+    .gear-row-you {
+      text-align: left;
+    }
   }
 </style>
