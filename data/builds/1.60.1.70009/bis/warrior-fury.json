@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T02:24:48Z",
+  "generated_at": "2026-09-30T02:59:34Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -532,8 +532,8 @@
           "slot": "main_hand",
           "item_id": 1482,
           "item_name": "Shadowfang",
-          "source": "Shadowfang Keep: Son of Arugal",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 248.92000000000002,
           "verified": true,
           "effect_unmodelled": true,
@@ -682,8 +682,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.5022620519999998,
-      "verify_run_seconds": 1.5440533680000001,
+      "weights_run_seconds": 1.598485977,
+      "verify_run_seconds": 1.508271616,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1284,8 +1284,8 @@
           "slot": "main_hand",
           "item_id": 1482,
           "item_name": "Shadowfang",
-          "source": "Shadowfang Keep: Son of Arugal",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 248.92000000000002,
           "verified": true,
           "effect_unmodelled": true,
@@ -1434,8 +1434,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.5022620519999998,
-      "verify_run_seconds": 1.452683038,
+      "weights_run_seconds": 1.598485977,
+      "verify_run_seconds": 1.41700389,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1755,8 +1755,8 @@
           "slot": "wrist",
           "item_id": 4438,
           "item_name": "Pugilist Bracers",
-          "source": "Razorfen Kraul: Overlord Ramtusk",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 20.22739153875704,
           "verified": true,
           "alternatives": [
@@ -2240,8 +2240,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.6152091450000001,
-      "verify_run_seconds": 1.7322661780000002,
+      "weights_run_seconds": 1.726055465,
+      "verify_run_seconds": 1.719743674,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2561,8 +2561,8 @@
           "slot": "wrist",
           "item_id": 4438,
           "item_name": "Pugilist Bracers",
-          "source": "Razorfen Kraul: Overlord Ramtusk",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 20.22739153875704,
           "verified": true,
           "alternatives": [
@@ -3044,8 +3044,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.6152091450000001,
-      "verify_run_seconds": 1.678608572,
+      "weights_run_seconds": 1.726055465,
+      "verify_run_seconds": 1.630994901,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3367,8 +3367,8 @@
             {
               "item_id": 4438,
               "item_name": "Pugilist Bracers",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 15.44620941947364,
               "score_delta": -4.5537905805263605,
               "dps_delta": -0.22093976250660133
@@ -3844,8 +3844,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.852684467,
-      "verify_run_seconds": 1.914373372,
+      "weights_run_seconds": 1.988769357,
+      "verify_run_seconds": 1.920503739,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4176,8 +4176,8 @@
             {
               "item_id": 4438,
               "item_name": "Pugilist Bracers",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 15.44620941947364,
               "score_delta": -4.5537905805263605,
               "dps_delta": -0.22093976250660133
@@ -4644,8 +4644,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.852684467,
-      "verify_run_seconds": 1.9772117200000001,
+      "weights_run_seconds": 1.988769357,
+      "verify_run_seconds": 1.9845106000000001,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4877,8 +4877,8 @@
             {
               "item_id": 13066,
               "item_name": "Wyrmslayer Spaulders",
-              "source_kind": "world",
-              "source": "Azuregos",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 21.819721634879897,
               "score_delta": -60.95293484019027,
               "dps_delta": -5.774607317537378
@@ -4889,8 +4889,8 @@
           "slot": "back",
           "item_id": 14801,
           "item_name": "Bloodlust Cape",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 14.256602141407503,
           "verified": true,
           "alternatives": [
@@ -4915,8 +4915,8 @@
             {
               "item_id": 14673,
               "item_name": "Pridelord Cape",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 7.914484340931129,
               "score_delta": -6.342117800476374,
               "dps_delta": -0.6008445689339774
@@ -5458,8 +5458,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.042759298,
-      "verify_run_seconds": 1.925894938,
+      "weights_run_seconds": 2.126037206,
+      "verify_run_seconds": 1.930135634,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5691,8 +5691,8 @@
             {
               "item_id": 13066,
               "item_name": "Wyrmslayer Spaulders",
-              "source_kind": "world",
-              "source": "Azuregos",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 21.819721634879897,
               "score_delta": -60.95293484019027,
               "dps_delta": -5.774607317537378
@@ -5703,8 +5703,8 @@
           "slot": "back",
           "item_id": 14801,
           "item_name": "Bloodlust Cape",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 14.256602141407503,
           "verified": true,
           "alternatives": [
@@ -6274,8 +6274,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.042759298,
-      "verify_run_seconds": 1.9531978639999998,
+      "weights_run_seconds": 2.126037206,
+      "verify_run_seconds": 2.025267682,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6427,9 +6427,9 @@
               "item_name": "Ragefury Eyepatch",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Guzzler",
-              "dps_delta": -10.379350900583972,
+              "dps_delta": -10.411363946672623,
               "verified": true,
-              "sim_dps": 217.87815009187815
+              "sim_dps": 217.41934635955826
             }
           ]
         },
@@ -6439,9 +6439,18 @@
           "item_name": "Medallion of the Dawn",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 227.07629022908756,
+          "sim_dps": 228.07881586525804,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 21809,
+              "item_name": "Fury of the Forgotten Swarm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score": 201.5928645723138,
+              "score_delta": -5.248320392375092,
+              "dps_delta": -0.30301140462862886
+            },
             {
               "item_id": 18404,
               "item_name": "Onyxia Tooth Pendant",
@@ -6459,15 +6468,6 @@
               "score": 42,
               "score_delta": -164.8411849646889,
               "dps_delta": -9.51709409154307
-            },
-            {
-              "item_id": 21506,
-              "item_name": "Pendant of the Shifting Sands",
-              "source_kind": "quest",
-              "source": "The Fall of Ossirian",
-              "score": 32.81543931334357,
-              "score_delta": -174.02574565134532,
-              "dps_delta": -10.047364049643173
             }
           ]
         },
@@ -6511,7 +6511,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 228.25750099246213
+              "sim_dps": 227.83071030623088
             }
           ]
         },
@@ -6521,9 +6521,9 @@
           "item_name": "Drape of Unyielding Strength",
           "source": "Drape of Unyielding Strength",
           "source_kind": "quest",
-          "sim_dps": 232.57597212598753,
+          "sim_dps": 234.46520889181747,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 232.6 vs 228.3 set DPS",
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 234.5 vs 227.8 set DPS",
           "alternatives": [
             {
               "item_id": 21710,
@@ -6548,9 +6548,9 @@
               "item_name": "Chromatic Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -4.3184711335254065,
+              "dps_delta": -6.634498585586584,
               "verified": true,
-              "sim_dps": 228.25750099246213
+              "sim_dps": 227.83071030623088
             }
           ]
         },
@@ -6568,9 +6568,9 @@
               "item_name": "Stormshroud Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.5144881913499546,
+              "dps_delta": -1.2197513854378883,
               "verified": true,
-              "sim_dps": 226.74301280111217
+              "sim_dps": 226.610958920793
             },
             {
               "item_id": 11726,
@@ -6594,30 +6594,22 @@
         },
         {
           "slot": "wrist",
-          "item_id": 13400,
-          "item_name": "Vambraces of the Sadist",
-          "source": "Stratholme: Timmy the Cruel",
-          "source_kind": "dungeon",
-          "score": 199.24890462136068,
+          "item_id": 21184,
+          "item_name": "Deeprock Bracers",
+          "source": "Stalwart's Battlegear",
+          "source_kind": "quest",
+          "sim_dps": 230.51666802353898,
           "verified": true,
+          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 230.5 vs 227.8 set DPS",
           "alternatives": [
-            {
-              "item_id": 21184,
-              "item_name": "Deeprock Bracers",
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 228.34473691147178
-            },
             {
               "item_id": 19578,
               "item_name": "Berserker Bracers",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "score": 48.1363550798057,
-              "score_delta": -151.11254954155498,
-              "dps_delta": -8.724472301676387
+              "score_delta": -0.9002790029241439,
+              "dps_delta": -0.05197754421205502
             },
             {
               "item_id": 16481,
@@ -6625,8 +6617,17 @@
               "source_kind": "pvp",
               "source": "Rank 16",
               "score": 42.998295676437415,
-              "score_delta": -156.25060894492327,
-              "dps_delta": -9.021117795945727
+              "score_delta": -6.038338406292432,
+              "dps_delta": -0.3486230384813939
+            },
+            {
+              "item_id": 13400,
+              "item_name": "Vambraces of the Sadist",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Timmy the Cruel",
+              "dps_delta": -2.6859577173080993,
+              "verified": true,
+              "sim_dps": 227.83071030623088
             }
           ]
         },
@@ -6670,39 +6671,39 @@
         },
         {
           "slot": "waist",
-          "item_id": 19823,
-          "item_name": "Zandalar Vindicator's Belt",
-          "source": "Paragons of Power: The Vindicator's Belt",
-          "source_kind": "quest",
-          "score": 241.44018373851668,
+          "item_id": 227814,
+          "item_name": "Radiant Girdle of the Dawn",
+          "source": "Argent Quartermaster Hasana",
+          "source_kind": "vendor",
+          "score": 246.12810364042292,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20042,
-              "item_name": "Highlander's Lamellar Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "score": 218.0005842289856,
-              "score_delta": -23.439599509531092,
-              "dps_delta": -1.3532836108165576
-            },
-            {
-              "item_id": 20043,
-              "item_name": "Highlander's Chain Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "score": 216.8411849646889,
-              "score_delta": -24.598998773827788,
-              "dps_delta": -1.4202214448920716
+              "item_id": 19823,
+              "item_name": "Zandalar Vindicator's Belt",
+              "source_kind": "quest",
+              "source": "Paragons of Power: The Vindicator's Belt",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 228.25750099246213
             },
             {
               "item_id": 20041,
               "item_name": "Highlander's Plate Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -4.292401858810734,
-              "verified": true,
-              "sim_dps": 223.9650991336514
+              "score": 222.6885041308918,
+              "score_delta": -23.43959950953112,
+              "dps_delta": -1.3532836108165591
+            },
+            {
+              "item_id": 20042,
+              "item_name": "Highlander's Lamellar Girdle",
+              "source_kind": "rep",
+              "source": "The League of Arathor",
+              "score": 218.0005842289856,
+              "score_delta": -28.127519411437333,
+              "dps_delta": -1.6239403329798703
             }
           ]
         },
@@ -6830,6 +6831,15 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 21182,
+              "item_name": "Band of Earthen Might",
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 228.25750099246213
+            },
+            {
               "item_id": 13217,
               "item_name": "Band of the Penitent",
               "source_kind": "quest",
@@ -6846,15 +6856,6 @@
               "score": 182.8411849646889,
               "score_delta": -16,
               "dps_delta": -0.9237588621879179
-            },
-            {
-              "item_id": 21182,
-              "item_name": "Band of Earthen Might",
-              "source_kind": "quest",
-              "source": "Veteran's Battlegear",
-              "dps_delta": -1.9623862172205975,
-              "verified": true,
-              "sim_dps": 226.29511477524153
             }
           ]
         },
@@ -6864,7 +6865,7 @@
           "item_name": "Onyxia Blood Talisman",
           "source": "Celebrating Good Times",
           "source_kind": "quest",
-          "sim_dps": 227.07629022908756,
+          "sim_dps": 228.07881586525804,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6897,7 +6898,7 @@
           "item_name": "Talisman of Arathor",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "sim_dps": 227.07629022908756,
+          "sim_dps": 228.07881586525804,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6930,7 +6931,7 @@
           "item_name": "Ravencrest's Legacy",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 227.07629022908756,
+          "sim_dps": 228.07881586525804,
           "verified": true,
           "alternatives": [
             {
@@ -6938,8 +6939,8 @@
               "item_name": "High Warlord's Pig Sticker",
               "source_kind": "vendor",
               "source": "Sergeant Thunderhorn",
-              "score": 1727.7681036404229,
-              "score_delta": 889.9253687648737,
+              "score": 1727.768103640423,
+              "score_delta": 889.925368764874,
               "dps_delta": 0
             },
             {
@@ -6956,8 +6957,8 @@
               "item_name": "Grand Marshal's Glaive",
               "source_kind": "vendor",
               "source": "Captain O'Neal",
-              "score": 1727.7681036404229,
-              "score_delta": 889.9253687648737,
+              "score": 1727.768103640423,
+              "score_delta": 889.925368764874,
               "dps_delta": 0
             }
           ]
@@ -6968,7 +6969,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 227.07629022908756,
+          "sim_dps": 228.07881586525804,
           "verified": true,
           "alternatives": [
             {
@@ -7006,7 +7007,7 @@
           "item_name": "The Purifier",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 227.07629022908756,
+          "sim_dps": 228.07881586525804,
           "verified": true,
           "alternatives": [
             {
@@ -7039,8 +7040,8 @@
           ]
         }
       ],
-      "set_dps": 232.57597212598753,
-      "no_source_count": 2597,
+      "set_dps": 236.65936327156783,
+      "no_source_count": 2570,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7063,9 +7064,9 @@
         "neck: Medallion of the Dawn",
         "back: Drape of Unyielding Strength",
         "chest: Bloodsoul Breastplate",
-        "wrist: Vambraces of the Sadist",
+        "wrist: Deeprock Bracers",
         "hands: Chromatic Gauntlets",
-        "waist: Zandalar Vindicator's Belt",
+        "waist: Radiant Girdle of the Dawn",
         "legs: Knight-Captain's Plate Leggings",
         "feet: Conqueror's Greaves",
         "finger1: Signet of Unyielding Strength",
@@ -7076,8 +7077,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.043224111,
-      "verify_run_seconds": 2.298637605,
+      "weights_run_seconds": 2.173214079,
+      "verify_run_seconds": 2.360408908,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7085,11 +7086,11 @@
         },
         "chest": {
           "eligible": 718,
-          "sourced": 489
+          "sourced": 491
         },
         "feet": {
           "eligible": 613,
-          "sourced": 412
+          "sourced": 418
         },
         "finger1": {
           "eligible": 297,
@@ -7101,15 +7102,15 @@
         },
         "hands": {
           "eligible": 623,
-          "sourced": 417
+          "sourced": 419
         },
         "head": {
           "eligible": 451,
-          "sourced": 291
+          "sourced": 294
         },
         "legs": {
           "eligible": 612,
-          "sourced": 402
+          "sourced": 404
         },
         "main_hand": {
           "eligible": 1064,
@@ -7117,7 +7118,7 @@
         },
         "neck": {
           "eligible": 144,
-          "sourced": 70
+          "sourced": 71
         },
         "off_hand": {
           "eligible": 350,
@@ -7129,7 +7130,7 @@
         },
         "shoulder": {
           "eligible": 470,
-          "sourced": 273
+          "sourced": 278
         },
         "trinket1": {
           "eligible": 76,
@@ -7141,11 +7142,11 @@
         },
         "waist": {
           "eligible": 571,
-          "sourced": 377
+          "sourced": 382
         },
         "wrist": {
           "eligible": 478,
-          "sourced": 281
+          "sourced": 282
         }
       },
       "reference_dps_per_point": 0.05773492888674487,
@@ -7216,6 +7217,15 @@
               "dps_delta": -2.4359104994698058
             },
             {
+              "item_id": 11735,
+              "item_name": "Ragefury Eyepatch",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Guzzler",
+              "dps_delta": -7.895469650046834,
+              "verified": true,
+              "sim_dps": 210.89903511717722
+            },
+            {
               "item_id": 16478,
               "item_name": "Field Marshal's Plate Helm",
               "source_kind": "vendor",
@@ -7223,15 +7233,6 @@
               "score": 248.472063591376,
               "score_delta": -159.40158545515777,
               "dps_delta": -9.20303920068792
-            },
-            {
-              "item_id": 11735,
-              "item_name": "Ragefury Eyepatch",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Guzzler",
-              "dps_delta": -10.74904328375132,
-              "verified": true,
-              "sim_dps": 209.84122660040302
             }
           ]
         },
@@ -7241,9 +7242,18 @@
           "item_name": "Medallion of the Dawn",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 224.7770685603599,
+          "sim_dps": 222.78028311682493,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 21809,
+              "item_name": "Fury of the Forgotten Swarm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score": 201.5928645723138,
+              "score_delta": -5.248320392375092,
+              "dps_delta": -0.30301140462862886
+            },
             {
               "item_id": 18404,
               "item_name": "Onyxia Tooth Pendant",
@@ -7261,15 +7271,6 @@
               "score": 42,
               "score_delta": -164.8411849646889,
               "dps_delta": -9.51709409154307
-            },
-            {
-              "item_id": 21506,
-              "item_name": "Pendant of the Shifting Sands",
-              "source_kind": "quest",
-              "source": "The Fall of Ossirian",
-              "score": 32.81543931334357,
-              "score_delta": -174.02574565134532,
-              "dps_delta": -10.047364049643173
             }
           ]
         },
@@ -7313,7 +7314,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 220.59026988415434
+              "sim_dps": 218.79450476722405
             }
           ]
         },
@@ -7323,9 +7324,9 @@
           "item_name": "Drape of Unyielding Strength",
           "source": "Drape of Unyielding Strength",
           "source_kind": "quest",
-          "sim_dps": 225.0701098456447,
+          "sim_dps": 225.754561248301,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 225.1 vs 220.6 set DPS",
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 225.8 vs 218.8 set DPS",
           "alternatives": [
             {
               "item_id": 21710,
@@ -7350,9 +7351,9 @@
               "item_name": "Chromatic Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -4.47983996149037,
+              "dps_delta": -6.960056481076947,
               "verified": true,
-              "sim_dps": 220.59026988415434
+              "sim_dps": 218.79450476722405
             }
           ]
         },
@@ -7370,9 +7371,9 @@
               "item_name": "Stormshroud Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8055199731917355,
+              "dps_delta": -1.3309504255497586,
               "verified": true,
-              "sim_dps": 219.7847499109626
+              "sim_dps": 217.4635543416743
             },
             {
               "item_id": 11726,
@@ -7396,30 +7397,22 @@
         },
         {
           "slot": "wrist",
-          "item_id": 13400,
-          "item_name": "Vambraces of the Sadist",
-          "source": "Stratholme: Timmy the Cruel",
-          "source_kind": "dungeon",
-          "score": 199.24890462136068,
+          "item_id": 21184,
+          "item_name": "Deeprock Bracers",
+          "source": "Stalwart's Battlegear",
+          "source_kind": "quest",
+          "sim_dps": 223.1443587428386,
           "verified": true,
+          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 223.1 vs 218.8 set DPS",
           "alternatives": [
-            {
-              "item_id": 21184,
-              "item_name": "Deeprock Bracers",
-              "source_kind": "quest",
-              "source": "Stalwart's Battlegear",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 221.74328387635987
-            },
             {
               "item_id": 19578,
               "item_name": "Berserker Bracers",
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "score": 48.1363550798057,
-              "score_delta": -151.11254954155498,
-              "dps_delta": -8.724472301676387
+              "score_delta": -0.9002790029241439,
+              "dps_delta": -0.05197754421205502
             },
             {
               "item_id": 16481,
@@ -7427,8 +7420,17 @@
               "source_kind": "pvp",
               "source": "Rank 16",
               "score": 42.998295676437415,
-              "score_delta": -156.25060894492327,
-              "dps_delta": -9.021117795945727
+              "score_delta": -6.038338406292432,
+              "dps_delta": -0.3486230384813939
+            },
+            {
+              "item_id": 13400,
+              "item_name": "Vambraces of the Sadist",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Timmy the Cruel",
+              "dps_delta": -4.349853975614536,
+              "verified": true,
+              "sim_dps": 218.79450476722405
             }
           ]
         },
@@ -7472,39 +7474,39 @@
         },
         {
           "slot": "waist",
-          "item_id": 19823,
-          "item_name": "Zandalar Vindicator's Belt",
-          "source": "Paragons of Power: The Vindicator's Belt",
-          "source_kind": "quest",
-          "score": 241.44018373851668,
+          "item_id": 227814,
+          "item_name": "Radiant Girdle of the Dawn",
+          "source": "Argent Quartermaster Hasana",
+          "source_kind": "vendor",
+          "score": 246.12810364042292,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20150,
-              "item_name": "Defiler's Chain Girdle",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "score": 216.8411849646889,
-              "score_delta": -24.598998773827788,
-              "dps_delta": -1.4202214448920716
-            },
-            {
-              "item_id": 20190,
-              "item_name": "Defiler's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "score": 216.8411849646889,
-              "score_delta": -24.598998773827788,
-              "dps_delta": -1.4202214448920716
+              "item_id": 19823,
+              "item_name": "Zandalar Vindicator's Belt",
+              "source_kind": "quest",
+              "source": "Paragons of Power: The Vindicator's Belt",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 220.59026988415434
             },
             {
               "item_id": 20204,
               "item_name": "Defiler's Plate Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -2.9895566286635358,
-              "verified": true,
-              "sim_dps": 217.6007132554908
+              "score": 222.6885041308918,
+              "score_delta": -23.43959950953112,
+              "dps_delta": -1.3532836108165591
+            },
+            {
+              "item_id": 20150,
+              "item_name": "Defiler's Chain Girdle",
+              "source_kind": "rep",
+              "source": "The Defilers",
+              "score": 216.8411849646889,
+              "score_delta": -29.28691867573403,
+              "dps_delta": -1.6908781670553843
             }
           ]
         },
@@ -7632,6 +7634,15 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 21182,
+              "item_name": "Band of Earthen Might",
+              "source_kind": "quest",
+              "source": "Veteran's Battlegear",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 220.59026988415434
+            },
+            {
               "item_id": 13217,
               "item_name": "Band of the Penitent",
               "source_kind": "quest",
@@ -7648,15 +7659,6 @@
               "score": 182.8411849646889,
               "score_delta": -16,
               "dps_delta": -0.9237588621879179
-            },
-            {
-              "item_id": 21182,
-              "item_name": "Band of Earthen Might",
-              "source_kind": "quest",
-              "source": "Veteran's Battlegear",
-              "dps_delta": -1.9669934239975362,
-              "verified": true,
-              "sim_dps": 218.6232764601568
             }
           ]
         },
@@ -7666,7 +7668,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 224.7770685603599,
+          "sim_dps": 222.78028311682493,
           "verified": true,
           "alternatives": [
             {
@@ -7701,7 +7703,7 @@
           "item_name": "Onyxia Blood Talisman",
           "source": "For All To See",
           "source_kind": "quest",
-          "sim_dps": 224.7770685603599,
+          "sim_dps": 222.78028311682493,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7734,7 +7736,7 @@
           "item_name": "Ravencrest's Legacy",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 224.7770685603599,
+          "sim_dps": 222.78028311682493,
           "verified": true,
           "alternatives": [
             {
@@ -7742,8 +7744,8 @@
               "item_name": "High Warlord's Pig Sticker",
               "source_kind": "vendor",
               "source": "Sergeant Thunderhorn",
-              "score": 1727.7681036404229,
-              "score_delta": 889.9253687648737,
+              "score": 1727.768103640423,
+              "score_delta": 889.925368764874,
               "dps_delta": 0
             },
             {
@@ -7760,8 +7762,8 @@
               "item_name": "Grand Marshal's Glaive",
               "source_kind": "vendor",
               "source": "Captain O'Neal",
-              "score": 1727.7681036404229,
-              "score_delta": 889.9253687648737,
+              "score": 1727.768103640423,
+              "score_delta": 889.925368764874,
               "dps_delta": 0
             }
           ]
@@ -7772,7 +7774,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 224.7770685603599,
+          "sim_dps": 222.78028311682493,
           "verified": true,
           "alternatives": [
             {
@@ -7810,7 +7812,7 @@
           "item_name": "The Purifier",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 224.7770685603599,
+          "sim_dps": 222.78028311682493,
           "verified": true,
           "alternatives": [
             {
@@ -7843,8 +7845,8 @@
           ]
         }
       ],
-      "set_dps": 225.0701098456447,
-      "no_source_count": 2600,
+      "set_dps": 227.50347428902478,
+      "no_source_count": 2573,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7867,9 +7869,9 @@
         "neck: Medallion of the Dawn",
         "back: Drape of Unyielding Strength",
         "chest: Bloodsoul Breastplate",
-        "wrist: Vambraces of the Sadist",
+        "wrist: Deeprock Bracers",
         "hands: Chromatic Gauntlets",
-        "waist: Zandalar Vindicator's Belt",
+        "waist: Radiant Girdle of the Dawn",
         "legs: Knight-Captain's Plate Leggings",
         "feet: Conqueror's Greaves",
         "finger1: Signet of Unyielding Strength",
@@ -7879,8 +7881,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.043224111,
-      "verify_run_seconds": 2.3291034919999998,
+      "weights_run_seconds": 2.173214079,
+      "verify_run_seconds": 2.4443474419999998,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7888,11 +7890,11 @@
         },
         "chest": {
           "eligible": 713,
-          "sourced": 482
+          "sourced": 484
         },
         "feet": {
           "eligible": 610,
-          "sourced": 407
+          "sourced": 413
         },
         "finger1": {
           "eligible": 297,
@@ -7904,15 +7906,15 @@
         },
         "hands": {
           "eligible": 623,
-          "sourced": 413
+          "sourced": 415
         },
         "head": {
           "eligible": 451,
-          "sourced": 291
+          "sourced": 294
         },
         "legs": {
           "eligible": 606,
-          "sourced": 395
+          "sourced": 397
         },
         "main_hand": {
           "eligible": 1058,
@@ -7920,7 +7922,7 @@
         },
         "neck": {
           "eligible": 146,
-          "sourced": 72
+          "sourced": 73
         },
         "off_hand": {
           "eligible": 350,
@@ -7932,7 +7934,7 @@
         },
         "shoulder": {
           "eligible": 467,
-          "sourced": 270
+          "sourced": 275
         },
         "trinket1": {
           "eligible": 76,
@@ -7944,11 +7946,11 @@
         },
         "waist": {
           "eligible": 571,
-          "sourced": 377
+          "sourced": 382
         },
         "wrist": {
           "eligible": 483,
-          "sourced": 289
+          "sourced": 290
         }
       },
       "reference_dps_per_point": 0.05773492888674487,

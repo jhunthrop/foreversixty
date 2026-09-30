@@ -7810,8 +7810,8 @@
             },
             "wrist": {
               "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 5970,
@@ -8454,9 +8454,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 220865,
+              "item_id": 220864,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 220862,
@@ -8557,8 +8557,8 @@
             },
             "trinket1": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 19120,
@@ -8586,7 +8586,7 @@
             15092,
             226777,
             20097,
-            220865,
+            220864,
             220862,
             17713,
             281635,
@@ -8659,9 +8659,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 18405,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 220864,
@@ -8684,14 +8684,14 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 744,
-              "source_kind": "quest",
-              "source": "Sweet Amber"
-            },
-            "trinket2": {
               "item_id": 1713,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "trinket2": {
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
               "item_id": 21188,
@@ -8741,9 +8741,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 18405,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 220864,
@@ -8795,13 +8795,10 @@
             19682,
             21186,
             19686,
-            18405,
-            220864,
+            228190,
             19684,
             21709,
             19325,
-            744,
-            1713,
             21188,
             23197
           ],
@@ -8812,7 +8809,7 @@
             19682,
             21186,
             19686,
-            18405,
+            228190,
             19684,
             21709,
             19325,
@@ -9494,8 +9491,8 @@
             },
             "wrist": {
               "item_id": 13120,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 867,
@@ -9576,8 +9573,8 @@
             },
             "wrist": {
               "item_id": 13120,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 867,
@@ -9956,8 +9953,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -10043,8 +10040,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -10151,8 +10148,8 @@
             },
             "legs": {
               "item_id": 9509,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "feet": {
               "item_id": 1121,
@@ -10238,8 +10235,8 @@
             },
             "legs": {
               "item_id": 9509,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "feet": {
               "item_id": 1121,
@@ -10571,8 +10568,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220827,
@@ -10581,8 +10578,8 @@
             },
             "wrist": {
               "item_id": 13120,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 867,
@@ -10658,8 +10655,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220827,
@@ -10668,8 +10665,8 @@
             },
             "wrist": {
               "item_id": 13120,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 867,
@@ -11073,8 +11070,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -11160,8 +11157,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -11268,8 +11265,8 @@
             },
             "legs": {
               "item_id": 9509,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "feet": {
               "item_id": 1121,
@@ -11355,8 +11352,8 @@
             },
             "legs": {
               "item_id": 9509,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "feet": {
               "item_id": 1121,
@@ -11688,8 +11685,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220827,
@@ -11698,8 +11695,8 @@
             },
             "wrist": {
               "item_id": 13120,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 867,
@@ -11775,8 +11772,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220827,
@@ -11785,8 +11782,8 @@
             },
             "wrist": {
               "item_id": 13120,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 867,
@@ -12191,8 +12188,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -12278,8 +12275,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -13078,9 +13075,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 744,
+              "item_id": 18406,
               "source_kind": "quest",
-              "source": "Sweet Amber"
+              "source": "Celebrating Good Times"
             },
             "main_hand": {
               "item_id": 6622,
@@ -13105,9 +13102,9 @@
               "source": "Lady Palanseer"
             },
             "neck": {
-              "item_id": 18404,
-              "source_kind": "quest",
-              "source": "For All To See"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 22439,
@@ -13115,9 +13112,9 @@
               "source": "Cryptstalker Spaulders"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 21403,
+              "source_kind": "quest",
+              "source": "Cloak of the Unseen Path"
             },
             "chest": {
               "item_id": 227083,
@@ -13170,9 +13167,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 12798,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 6622,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 21520,
@@ -13200,15 +13197,16 @@
             22440,
             19325,
             19384,
+            18406,
             6622,
             21520,
             18282
           ],
           "horde": [
             227080,
-            18404,
+            17111,
             22439,
-            18509,
+            21403,
             227083,
             22443,
             19157,
@@ -13218,7 +13216,7 @@
             19325,
             19384,
             1713,
-            12798,
+            6622,
             21520,
             18282
           ]
@@ -13259,8 +13257,8 @@
             },
             "wrist": {
               "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 5970,
@@ -13336,8 +13334,8 @@
             },
             "wrist": {
               "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 5970,
@@ -13543,8 +13541,8 @@
             },
             "chest": {
               "item_id": 1486,
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "wrist": {
               "item_id": 9448,
@@ -13928,8 +13926,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 11750,
@@ -14083,9 +14081,9 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 18509,
@@ -14139,8 +14137,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20069,
@@ -14148,9 +14146,9 @@
               "source": "The League of Arathor"
             },
             "ranged": {
-              "item_id": 249385,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 19108,
+              "source_kind": "quest",
+              "source": "Korrak the Bloodrager"
             }
           },
           "horde": {
@@ -14165,9 +14163,9 @@
               "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 18509,
@@ -14221,8 +14219,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20220,
@@ -14240,7 +14238,7 @@
           "alliance": [
             22498,
             18404,
-            19050,
+            227808,
             18509,
             22496,
             21186,
@@ -14251,12 +14249,12 @@
             19325,
             21709,
             20069,
-            249385
+            19108
           ],
           "horde": [
             22498,
             18404,
-            19050,
+            227808,
             18509,
             22496,
             21186,
@@ -14385,8 +14383,8 @@
             },
             "wrist": {
               "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 279877,
@@ -14916,8 +14914,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220887,
@@ -14976,8 +14974,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 11750,
@@ -14998,8 +14996,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220887,
@@ -15124,9 +15122,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 19999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 22498,
+              "source_kind": "quest",
+              "source": "Frostfire Circlet"
             },
             "neck": {
               "item_id": 18404,
@@ -15134,9 +15132,9 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 21187,
@@ -15184,14 +15182,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 18406,
+              "item_id": 744,
               "source_kind": "quest",
-              "source": "Celebrating Good Times"
+              "source": "Sweet Amber"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20069,
@@ -15199,9 +15197,9 @@
               "source": "The League of Arathor"
             },
             "ranged": {
-              "item_id": 19108,
+              "item_id": 16997,
               "source_kind": "quest",
-              "source": "Korrak the Bloodrager"
+              "source": "Order Must Be Restored"
             }
           },
           "horde": {
@@ -15211,14 +15209,14 @@
               "source": "Frostfire Circlet"
             },
             "neck": {
-              "item_id": 19601,
+              "item_id": 18404,
               "source_kind": "quest",
-              "source": "The Jewel of Kajaro"
+              "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 21187,
@@ -15236,9 +15234,9 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 14146,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 22502,
@@ -15271,9 +15269,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 20220,
@@ -15289,9 +15287,9 @@
         },
         "new_at_band": {
           "alliance": [
-            19999,
+            22498,
             18404,
-            19050,
+            227808,
             21187,
             22496,
             21186,
@@ -15301,24 +15299,24 @@
             21344,
             19325,
             21709,
-            18406,
+            744,
+            1713,
             20069,
-            19108
+            16997
           ],
           "horde": [
             22498,
-            19601,
-            19050,
+            18404,
+            227808,
             21187,
             22496,
             21186,
-            14146,
+            22066,
             22502,
             22497,
             21344,
             19325,
             21709,
-            1713,
             20220,
             19108
           ]
@@ -15435,8 +15433,8 @@
             },
             "wrist": {
               "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 253913,
@@ -15968,8 +15966,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220887,
@@ -16028,8 +16026,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 11750,
@@ -16050,8 +16048,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220887,
@@ -16185,9 +16183,9 @@
               "source": "The Jewel of Kajaro"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 21187,
@@ -16241,8 +16239,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20069,
@@ -16267,9 +16265,9 @@
               "source": "The Jewel of Kajaro"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 21187,
@@ -16342,7 +16340,7 @@
           "alliance": [
             22498,
             19601,
-            19050,
+            227808,
             21187,
             22496,
             21186,
@@ -16358,7 +16356,7 @@
           "horde": [
             22498,
             19601,
-            19050,
+            227808,
             21187,
             22496,
             21186,
@@ -16627,8 +16625,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 3341,
@@ -16709,8 +16707,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 3341,
@@ -17025,9 +17023,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 220804,
+              "item_id": 220803,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 7731,
@@ -17041,8 +17039,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220794,
@@ -17123,8 +17121,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220794,
@@ -17190,7 +17188,7 @@
         },
         "new_at_band": {
           "alliance": [
-            220804,
+            220803,
             220795,
             14801,
             220794,
@@ -17269,9 +17267,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 20041,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 227814,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
               "item_id": 22385,
@@ -17321,9 +17319,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 21809,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220795,
@@ -17351,9 +17349,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 20204,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 227814,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
               "item_id": 22385,
@@ -17361,9 +17359,9 @@
               "source": "Blacksmithing"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227146,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 19325,
@@ -17405,7 +17403,7 @@
             252483,
             13400,
             21278,
-            20041,
+            227814,
             22385,
             22430,
             19325,
@@ -17417,14 +17415,14 @@
           ],
           "horde": [
             12640,
-            17111,
+            21809,
             21187,
             252483,
             13400,
             21278,
-            20204,
+            227814,
             22385,
-            19684,
+            227146,
             19325,
             21182,
             19323,
@@ -18086,8 +18084,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 17732,
@@ -18146,8 +18144,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 11750,
@@ -18168,8 +18166,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 17732,
@@ -18303,9 +18301,9 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 21187,
@@ -18328,9 +18326,9 @@
               "source": "Scholomance: Lorekeeper Polkelt"
             },
             "waist": {
-              "item_id": 18405,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 19683,
@@ -18358,9 +18356,9 @@
               "source": "World drop"
             },
             "trinket2": {
-              "item_id": 744,
-              "source_kind": "quest",
-              "source": "Sweet Amber"
+              "item_id": 11302,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20069,
@@ -18368,9 +18366,9 @@
               "source": "The League of Arathor"
             },
             "ranged": {
-              "item_id": 16997,
+              "item_id": 19108,
               "source_kind": "quest",
-              "source": "Order Must Be Restored"
+              "source": "Korrak the Bloodrager"
             }
           },
           "horde": {
@@ -18385,9 +18383,9 @@
               "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226955,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 21187,
@@ -18400,9 +18398,9 @@
               "source": "Vestments of the Oracle"
             },
             "wrist": {
-              "item_id": 19595,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 21186,
+              "source_kind": "quest",
+              "source": "Stalwart's Battlegear"
             },
             "hands": {
               "item_id": 16705,
@@ -18410,9 +18408,9 @@
               "source": "Scholomance: Lorekeeper Polkelt"
             },
             "waist": {
-              "item_id": 18405,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 19683,
@@ -18441,8 +18439,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20220,
@@ -18460,30 +18458,29 @@
           "alliance": [
             21348,
             18404,
-            19050,
+            227808,
             21187,
             21351,
             21186,
             16705,
-            18405,
+            228190,
             19683,
             19684,
             21709,
             19325,
             1713,
-            744,
             20069,
-            16997
+            19108
           ],
           "horde": [
             21348,
             18404,
-            19050,
+            226955,
             21187,
             21351,
-            19595,
+            21186,
             16705,
-            18405,
+            228190,
             19683,
             19684,
             21709,
@@ -18579,8 +18576,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 5191,
@@ -18666,8 +18663,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 5191,
@@ -19189,8 +19186,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220854,
@@ -19276,8 +19273,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220854,
@@ -19689,8 +19686,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 5191,
@@ -19776,8 +19773,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 5191,
@@ -20298,8 +20295,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220854,
@@ -20385,8 +20382,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220854,
@@ -21404,8 +21401,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220854,
@@ -21491,8 +21488,8 @@
             },
             "back": {
               "item_id": 8259,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220854,
@@ -21852,8 +21849,8 @@
             },
             "wrist": {
               "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 252498,
@@ -21929,8 +21926,8 @@
             },
             "wrist": {
               "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 252498,
@@ -22461,8 +22458,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 15067,
@@ -22521,8 +22518,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 810,
@@ -22543,8 +22540,8 @@
             },
             "neck": {
               "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 15067,
@@ -22674,9 +22671,9 @@
               "source": "Celebrating Good Times"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 18509,
@@ -22699,14 +22696,14 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 18405,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 15057,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 22748,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "feet": {
               "item_id": 19684,
@@ -22724,14 +22721,14 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "trinket2": {
               "item_id": 744,
               "source_kind": "quest",
               "source": "Sweet Amber"
+            },
+            "trinket2": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 21188,
@@ -22756,9 +22753,9 @@
               "source": "For All To See"
             },
             "shoulder": {
-              "item_id": 19050,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 18509,
@@ -22806,7 +22803,7 @@
               "source": "The Savior of Kalimdor"
             },
             "trinket1": {
-              "item_id": 1713,
+              "item_id": 11302,
               "source_kind": "world_drop",
               "source": "World drop"
             },
@@ -22831,24 +22828,25 @@
           "alliance": [
             19999,
             18404,
-            19050,
+            227808,
             18509,
             19682,
             21186,
             21278,
-            18405,
-            15057,
+            228190,
+            22748,
             19684,
             19325,
             21709,
             744,
+            249469,
             21188,
             23199
           ],
           "horde": [
             19999,
             18404,
-            19050,
+            227808,
             18509,
             19682,
             21186,
@@ -22858,6 +22856,7 @@
             19684,
             19325,
             21709,
+            11302,
             21188,
             23199
           ]
@@ -23130,8 +23129,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 7348,
@@ -23217,8 +23216,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 3341,
@@ -23569,8 +23568,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220826,
@@ -23656,8 +23655,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220826,
@@ -23775,14 +23774,14 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 13404,
-              "source_kind": "dungeon",
-              "source": "Stratholme: The Unforgiven"
+              "item_id": 19999,
+              "source_kind": "crafted",
+              "source": "Engineering"
             },
             "neck": {
-              "item_id": 18404,
-              "source_kind": "quest",
-              "source": "Celebrating Good Times"
+              "item_id": 21809,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220823,
@@ -23835,9 +23834,9 @@
               "source": "Veteran's Battlegear"
             },
             "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 744,
@@ -23867,9 +23866,9 @@
               "source": "Stratholme: The Unforgiven"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 21809,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220823,
@@ -23927,12 +23926,12 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
-              "item_id": 12798,
+              "item_id": 19170,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
@@ -23950,8 +23949,8 @@
         },
         "new_at_band": {
           "alliance": [
-            13404,
-            18404,
+            19999,
+            21809,
             18509,
             19690,
             19687,
@@ -23961,6 +23960,7 @@
             19684,
             19325,
             21182,
+            1713,
             744,
             19170,
             21522,
@@ -23968,7 +23968,7 @@
           ],
           "horde": [
             13404,
-            17111,
+            21809,
             18509,
             19690,
             19687,
@@ -23978,7 +23978,8 @@
             19684,
             19325,
             21182,
-            12798,
+            1713,
+            19170,
             21522,
             23199
           ]
@@ -24689,8 +24690,8 @@
             },
             "trinket1": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 20534,
@@ -24750,9 +24751,9 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 220906,
+              "item_id": 220888,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 220891,
@@ -24776,8 +24777,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20536,
@@ -24812,7 +24813,7 @@
             11623,
             9448,
             20165,
-            220906,
+            220888,
             220891,
             17713,
             19519,
@@ -24869,9 +24870,9 @@
               "source": "Just Compensation"
             },
             "waist": {
-              "item_id": 22510,
-              "source_kind": "quest",
-              "source": "Plagueheart Belt"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 19683,
@@ -24895,8 +24896,8 @@
             },
             "trinket1": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 20534,
@@ -24982,8 +24983,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20220,
@@ -25006,7 +25007,7 @@
             22504,
             21186,
             22077,
-            22510,
+            228190,
             19683,
             19684,
             21417,
@@ -25725,8 +25726,8 @@
             },
             "trinket1": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 20534,
@@ -25807,8 +25808,8 @@
             },
             "trinket1": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 20534,
@@ -25900,14 +25901,14 @@
               "source": "Plagueheart Bindings"
             },
             "hands": {
-              "item_id": 22509,
-              "source_kind": "quest",
-              "source": "Plagueheart Gloves"
+              "item_id": 272098,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 16685,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Smolderthorn Mystic"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 22505,
@@ -25926,8 +25927,8 @@
             },
             "finger2": {
               "item_id": 19140,
-              "source_kind": "world",
-              "source": "Flamewaker Elite"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket1": {
               "item_id": 20534,
@@ -25936,8 +25937,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 19102,
@@ -25987,9 +25988,9 @@
               "source": "Plagueheart Gloves"
             },
             "waist": {
-              "item_id": 16685,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Smolderthorn Mystic"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 22505,
@@ -26008,8 +26009,8 @@
             },
             "finger2": {
               "item_id": 19140,
-              "source_kind": "world",
-              "source": "Flamewaker Elite"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket1": {
               "item_id": 20534,
@@ -26018,13 +26019,13 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 13000,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "ranged": {
               "item_id": 249385,
@@ -26041,8 +26042,8 @@
             272063,
             22504,
             22511,
-            22509,
-            16685,
+            272098,
+            228190,
             22505,
             22508,
             20682,
@@ -26060,7 +26061,7 @@
             22504,
             22511,
             22509,
-            16685,
+            228190,
             22505,
             22508,
             20682,
@@ -26311,8 +26312,8 @@
             },
             "chest": {
               "item_id": 1486,
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "wrist": {
               "item_id": 9448,
@@ -26393,8 +26394,8 @@
             },
             "chest": {
               "item_id": 1486,
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "wrist": {
               "item_id": 9448,
@@ -26776,8 +26777,8 @@
             },
             "trinket1": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 20534,
@@ -26863,8 +26864,8 @@
             },
             "trinket2": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 20536,
@@ -26953,14 +26954,14 @@
               "source": "Stalwart's Battlegear"
             },
             "hands": {
-              "item_id": 22077,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
-              "item_id": 22510,
-              "source_kind": "quest",
-              "source": "Plagueheart Belt"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 22505,
@@ -26968,9 +26969,9 @@
               "source": "Plagueheart Leggings"
             },
             "feet": {
-              "item_id": 22508,
-              "source_kind": "quest",
-              "source": "Plagueheart Sandals"
+              "item_id": 19684,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 21417,
@@ -26984,8 +26985,8 @@
             },
             "trinket1": {
               "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket2": {
               "item_id": 20534,
@@ -27040,9 +27041,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 22510,
-              "source_kind": "quest",
-              "source": "Plagueheart Belt"
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
             },
             "legs": {
               "item_id": 22505,
@@ -27070,9 +27071,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 20220,
@@ -27080,9 +27081,9 @@
               "source": "The Defilers"
             },
             "ranged": {
-              "item_id": 16997,
+              "item_id": 19108,
               "source_kind": "quest",
-              "source": "The Scarlet Oracle, Demetria"
+              "source": "The Legend of Korrak"
             }
           }
         },
@@ -27094,10 +27095,10 @@
             21187,
             22504,
             21186,
-            22077,
-            22510,
+            14146,
+            228190,
             22505,
-            22508,
+            19684,
             21417,
             19325,
             20069,
@@ -27111,13 +27112,14 @@
             22504,
             21186,
             14146,
-            22510,
+            228190,
             22505,
             19684,
             21417,
             19325,
+            249469,
             20220,
-            16997
+            19108
           ]
         },
         "weights": {
@@ -27359,8 +27361,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 3341,
@@ -27441,8 +27443,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 3341,
@@ -27770,8 +27772,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220794,
@@ -27852,8 +27854,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220794,
@@ -27969,9 +27971,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 22659,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 21809,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220795,
@@ -27999,9 +28001,9 @@
               "source": "Just Compensation"
             },
             "waist": {
-              "item_id": 19823,
-              "source_kind": "quest",
-              "source": "Paragons of Power: The Vindicator's Belt"
+              "item_id": 227814,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
               "item_id": 227047,
@@ -28051,9 +28053,9 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 22659,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 21809,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 220795,
@@ -28081,9 +28083,9 @@
               "source": "Just Compensation"
             },
             "waist": {
-              "item_id": 19823,
-              "source_kind": "quest",
-              "source": "Paragons of Power: The Vindicator's Belt"
+              "item_id": 227814,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
               "item_id": 227047,
@@ -28130,12 +28132,12 @@
         "new_at_band": {
           "alliance": [
             12640,
-            22659,
+            21809,
             21710,
             19690,
             13400,
             21998,
-            19823,
+            227814,
             227047,
             21333,
             21393,
@@ -28147,12 +28149,12 @@
           ],
           "horde": [
             12640,
-            22659,
+            21809,
             21710,
             19690,
             13400,
             21998,
-            19823,
+            227814,
             227047,
             21333,
             21393,
@@ -28245,8 +28247,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -28332,8 +28334,8 @@
             },
             "main_hand": {
               "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 1292,
@@ -28426,8 +28428,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 3341,
@@ -28513,8 +28515,8 @@
             },
             "wrist": {
               "item_id": 4438,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 7348,
@@ -28863,8 +28865,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220794,
@@ -28950,8 +28952,8 @@
             },
             "back": {
               "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 220794,
@@ -29093,9 +29095,9 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 13400,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Timmy the Cruel"
+              "item_id": 21184,
+              "source_kind": "quest",
+              "source": "Stalwart's Battlegear"
             },
             "hands": {
               "item_id": 19157,
@@ -29103,9 +29105,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 19823,
-              "source_kind": "quest",
-              "source": "Paragons of Power: The Vindicator's Belt"
+              "item_id": 227814,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
               "item_id": 227047,
@@ -29180,9 +29182,9 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 13400,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Timmy the Cruel"
+              "item_id": 21184,
+              "source_kind": "quest",
+              "source": "Stalwart's Battlegear"
             },
             "hands": {
               "item_id": 19157,
@@ -29190,9 +29192,9 @@
               "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 19823,
-              "source_kind": "quest",
-              "source": "Paragons of Power: The Vindicator's Belt"
+              "item_id": 227814,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
               "item_id": 227047,
@@ -29247,9 +29249,9 @@
             22659,
             21394,
             19690,
-            13400,
+            21184,
             19157,
-            19823,
+            227814,
             227047,
             21333,
             21393,
@@ -29265,9 +29267,9 @@
             22659,
             21394,
             19690,
-            13400,
+            21184,
             19157,
-            19823,
+            227814,
             227047,
             21333,
             21393,

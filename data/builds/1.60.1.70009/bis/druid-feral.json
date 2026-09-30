@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T02:16:32Z",
+  "generated_at": "2026-09-30T02:50:56Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -675,8 +675,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.788023218,
-      "verify_run_seconds": 1.493894851,
+      "weights_run_seconds": 1.8580310309999999,
+      "verify_run_seconds": 1.4893761300000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1421,8 +1421,8 @@
         "main_hand: Hammerbone",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.788023218,
-      "verify_run_seconds": 1.465741973,
+      "weights_run_seconds": 1.8580310309999999,
+      "verify_run_seconds": 1.461368153,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1636,8 +1636,8 @@
             {
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 14.941175025129645,
               "score_delta": -13.094117502513775,
               "dps_delta": -0.6841911496545701
@@ -1806,8 +1806,8 @@
             {
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 20.564705015078598,
               "score_delta": -122.38966443462732,
               "dps_delta": -6.39507971417615
@@ -2092,8 +2092,8 @@
             {
               "item_id": 1976,
               "item_name": "Slaghammer",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 358.0200000000018,
               "score_delta": -92.57058751256562,
               "dps_delta": -4.836979405619522
@@ -2101,8 +2101,8 @@
             {
               "item_id": 7730,
               "item_name": "Cobalt Crusher",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -24.10692154181247,
               "verified": true,
               "sim_dps": 77.07646149517068
@@ -2217,8 +2217,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.092087032,
-      "verify_run_seconds": 2.063270229,
+      "weights_run_seconds": 2.101617317,
+      "verify_run_seconds": 2.09326533,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2432,8 +2432,8 @@
             {
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 14.941175025129645,
               "score_delta": -13.094117502513775,
               "dps_delta": -0.6841911496545701
@@ -2602,8 +2602,8 @@
             {
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 20.564705015078598,
               "score_delta": -122.38966443462732,
               "dps_delta": -6.39507971417615
@@ -2888,8 +2888,8 @@
             {
               "item_id": 1976,
               "item_name": "Slaghammer",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 358.0200000000018,
               "score_delta": -92.57058751256562,
               "dps_delta": -4.836979405619522
@@ -2897,8 +2897,8 @@
             {
               "item_id": 7730,
               "item_name": "Cobalt Crusher",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -23.594877520845642,
               "verified": true,
               "sim_dps": 76.22852902440164
@@ -3013,8 +3013,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.092087032,
-      "verify_run_seconds": 2.055481171,
+      "weights_run_seconds": 2.101617317,
+      "verify_run_seconds": 2.087927611,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3810,8 +3810,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 2.225435185,
-      "verify_run_seconds": 2.167143554,
+      "weights_run_seconds": 2.250462452,
+      "verify_run_seconds": 2.213727685,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4608,8 +4608,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 2.225435185,
-      "verify_run_seconds": 2.188790492,
+      "weights_run_seconds": 2.250462452,
+      "verify_run_seconds": 2.221649919,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4873,8 +4873,8 @@
             {
               "item_id": 14801,
               "item_name": "Bloodlust Cape",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 20.8800000000039,
               "score_delta": -2.622691848740285,
               "dps_delta": -0.14533697151621294
@@ -4882,8 +4882,8 @@
             {
               "item_id": 14673,
               "item_name": "Pridelord Cape",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.3225166214020021,
               "verified": true,
               "sim_dps": 154.39452817737904
@@ -4891,8 +4891,8 @@
             {
               "item_id": 8259,
               "item_name": "Serpentskin Cloak",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 17.56826838935957,
               "score_delta": -5.934423459384615,
               "dps_delta": -0.3288572135136631
@@ -4947,8 +4947,8 @@
           "slot": "wrist",
           "item_id": 13120,
           "item_name": "Deepfury Bracers",
-          "source": "Azuregos",
-          "source_kind": "world",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 33.236729621855694,
           "verified": true,
           "alternatives": [
@@ -4973,8 +4973,8 @@
             {
               "item_id": 14672,
               "item_name": "Pridelord Bands",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 27.57115308123814,
               "score_delta": -5.665576540617554,
               "dps_delta": -0.3139590099775377
@@ -5423,8 +5423,8 @@
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Smoking Heart of the Mountain"
       ],
-      "weights_run_seconds": 2.202216606,
-      "verify_run_seconds": 2.201483183,
+      "weights_run_seconds": 2.251654097,
+      "verify_run_seconds": 2.253841554,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5688,8 +5688,8 @@
             {
               "item_id": 14801,
               "item_name": "Bloodlust Cape",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 20.8800000000039,
               "score_delta": -2.622691848740285,
               "dps_delta": -0.14533697151621294
@@ -5697,8 +5697,8 @@
             {
               "item_id": 14673,
               "item_name": "Pridelord Cape",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.3167259518737353,
               "verified": true,
               "sim_dps": 159.04899001165526
@@ -5706,8 +5706,8 @@
             {
               "item_id": 8259,
               "item_name": "Serpentskin Cloak",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 17.56826838935957,
               "score_delta": -5.934423459384615,
               "dps_delta": -0.3288572135136631
@@ -5762,8 +5762,8 @@
           "slot": "wrist",
           "item_id": 13120,
           "item_name": "Deepfury Bracers",
-          "source": "Azuregos",
-          "source_kind": "world",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 33.236729621855694,
           "verified": true,
           "alternatives": [
@@ -5788,8 +5788,8 @@
             {
               "item_id": 14672,
               "item_name": "Pridelord Bands",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 27.57115308123814,
               "score_delta": -5.665576540617554,
               "dps_delta": -0.3139590099775377
@@ -6241,8 +6241,8 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 2.202216606,
-      "verify_run_seconds": 2.188147399,
+      "weights_run_seconds": 2.251654097,
+      "verify_run_seconds": 2.245562811,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6391,9 +6391,9 @@
               "item_name": "Field Marshal's Dragonhide Helmet",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score": 271.9274411012983,
-              "score_delta": -126.16411220517114,
-              "dps_delta": -6.844149413796596
+              "score": 271.92744110129837,
+              "score_delta": -126.16411220517108,
+              "dps_delta": -6.844149413796593
             },
             {
               "item_id": 16550,
@@ -6425,12 +6425,12 @@
               "dps_delta": 0
             },
             {
-              "item_id": 19491,
-              "item_name": "Amulet of the Darkmoon",
-              "source_kind": "quest",
-              "source": "1200 Tickets - Amulet of the Darkmoon",
-              "score": 56.6416644480619,
-              "score_delta": 33.760525615179105,
+              "item_id": 21809,
+              "item_name": "Fury of the Forgotten Swarm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score": 210.64577665323594,
+              "score_delta": 187.76463782035313,
               "dps_delta": 0
             },
             {
@@ -6951,6 +6951,10 @@
           "verified": true,
           "ties": [
             {
+              "item_id": 220606,
+              "item_name": "Idol of the Dream"
+            },
+            {
               "item_id": 227444,
               "item_name": "Idol of the Huntress"
             },
@@ -6993,6 +6997,15 @@
           ],
           "alternatives": [
             {
+              "item_id": 220606,
+              "item_name": "Idol of the Dream",
+              "source_kind": "dungeon",
+              "source": "The Temple of Atal'Hakkar: Hazzas",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 162.33862003919518
+            },
+            {
               "item_id": 220915,
               "item_name": "Idol of the Raging Shambler",
               "source_kind": "vendor",
@@ -7004,15 +7017,6 @@
               "item_name": "Idol of the Huntress",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 162.33862003919518
-            },
-            {
-              "item_id": 249441,
-              "item_name": "Talons of Wrath",
-              "source_kind": "crafted",
-              "source": "Enchanting",
               "dps_delta": 0
             }
           ],
@@ -7020,7 +7024,7 @@
         }
       ],
       "set_dps": 169.98294655954118,
-      "no_source_count": 1806,
+      "no_source_count": 1759,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7054,8 +7058,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.215996875,
-      "verify_run_seconds": 2.172535571,
+      "weights_run_seconds": 2.296963959,
+      "verify_run_seconds": 2.2683469929999998,
       "coverage": {
         "back": {
           "eligible": 371,
@@ -7063,11 +7067,11 @@
         },
         "chest": {
           "eligible": 501,
-          "sourced": 330
+          "sourced": 335
         },
         "feet": {
           "eligible": 390,
-          "sourced": 256
+          "sourced": 264
         },
         "finger1": {
           "eligible": 302,
@@ -7079,15 +7083,15 @@
         },
         "hands": {
           "eligible": 407,
-          "sourced": 270
+          "sourced": 272
         },
         "head": {
           "eligible": 312,
-          "sourced": 193
+          "sourced": 199
         },
         "legs": {
           "eligible": 412,
-          "sourced": 263
+          "sourced": 269
         },
         "main_hand": {
           "eligible": 635,
@@ -7095,7 +7099,7 @@
         },
         "neck": {
           "eligible": 141,
-          "sourced": 70
+          "sourced": 71
         },
         "off_hand": {
           "eligible": 128,
@@ -7103,11 +7107,11 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 11
+          "sourced": 12
         },
         "shoulder": {
           "eligible": 305,
-          "sourced": 176
+          "sourced": 184
         },
         "trinket1": {
           "eligible": 76,
@@ -7119,11 +7123,11 @@
         },
         "waist": {
           "eligible": 365,
-          "sourced": 241
+          "sourced": 247
         },
         "wrist": {
           "eligible": 297,
-          "sourced": 169
+          "sourced": 173
         }
       },
       "reference_dps_per_point": 0.054247989338414036,
@@ -7238,12 +7242,12 @@
               "dps_delta": 0
             },
             {
-              "item_id": 19491,
-              "item_name": "Amulet of the Darkmoon",
-              "source_kind": "quest",
-              "source": "1200 Tickets - Amulet of the Darkmoon",
-              "score": 56.6416644480619,
-              "score_delta": 33.760525615179105,
+              "item_id": 21809,
+              "item_name": "Fury of the Forgotten Swarm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score": 210.64577665323594,
+              "score_delta": 187.76463782035313,
               "dps_delta": 0
             },
             {
@@ -7766,6 +7770,10 @@
           "verified": true,
           "ties": [
             {
+              "item_id": 220606,
+              "item_name": "Idol of the Dream"
+            },
+            {
               "item_id": 227444,
               "item_name": "Idol of the Huntress"
             },
@@ -7808,6 +7816,15 @@
           ],
           "alternatives": [
             {
+              "item_id": 220606,
+              "item_name": "Idol of the Dream",
+              "source_kind": "dungeon",
+              "source": "The Temple of Atal'Hakkar: Hazzas",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 165.40679014757154
+            },
+            {
               "item_id": 220915,
               "item_name": "Idol of the Raging Shambler",
               "source_kind": "vendor",
@@ -7819,15 +7836,6 @@
               "item_name": "Idol of the Huntress",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 165.40679014757154
-            },
-            {
-              "item_id": 249441,
-              "item_name": "Talons of Wrath",
-              "source_kind": "crafted",
-              "source": "Enchanting",
               "dps_delta": 0
             }
           ],
@@ -7835,7 +7843,7 @@
         }
       ],
       "set_dps": 173.60008967197797,
-      "no_source_count": 1814,
+      "no_source_count": 1767,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7868,8 +7876,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.215996875,
-      "verify_run_seconds": 2.201830263,
+      "weights_run_seconds": 2.296963959,
+      "verify_run_seconds": 2.237813076,
       "coverage": {
         "back": {
           "eligible": 376,
@@ -7877,11 +7885,11 @@
         },
         "chest": {
           "eligible": 498,
-          "sourced": 325
+          "sourced": 330
         },
         "feet": {
           "eligible": 394,
-          "sourced": 257
+          "sourced": 265
         },
         "finger1": {
           "eligible": 302,
@@ -7893,15 +7901,15 @@
         },
         "hands": {
           "eligible": 407,
-          "sourced": 267
+          "sourced": 269
         },
         "head": {
           "eligible": 313,
-          "sourced": 194
+          "sourced": 200
         },
         "legs": {
           "eligible": 407,
-          "sourced": 257
+          "sourced": 263
         },
         "main_hand": {
           "eligible": 640,
@@ -7909,7 +7917,7 @@
         },
         "neck": {
           "eligible": 143,
-          "sourced": 72
+          "sourced": 73
         },
         "off_hand": {
           "eligible": 127,
@@ -7917,11 +7925,11 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 11
+          "sourced": 12
         },
         "shoulder": {
           "eligible": 301,
-          "sourced": 172
+          "sourced": 180
         },
         "trinket1": {
           "eligible": 76,
@@ -7933,11 +7941,11 @@
         },
         "waist": {
           "eligible": 368,
-          "sourced": 243
+          "sourced": 249
         },
         "wrist": {
           "eligible": 300,
-          "sourced": 171
+          "sourced": 175
         }
       },
       "reference_dps_per_point": 0.054247989338414036,

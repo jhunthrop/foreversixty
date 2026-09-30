@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 32.2. Weights run: 1.6s. Verify run: 1.0s. 399 eligible items had no known source.
+Set DPS (verified): 32.2. Weights run: 1.6s. Verify run: 1.1s. 399 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.268 ± 0.163, crit=0.822 ± 0.037, hit=1.874 ± 0.118, spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -19,7 +19,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 10.1 | yes | Double-Stitched Woolen Shoulders (4314, -0.13 DPS, sim-verified) [crafted]; Rough Bronze Shoulders (3480, -0.97 DPS) [crafted]; Silvered Bronze Shoulders (3481, -0.97 DPS) [crafted] |
 | back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 0.0 | yes | Feyscale Cloak (6632, -0.10 DPS) [dungeon]; Black Whelp Cloak (7283, -0.10 DPS) [crafted]; Pearl-clasped Cloak (5542, -0.68 DPS, sim-verified) [crafted] |
 | chest | Stormrider's Leather Armor (252492) | Leatherworking [crafted] | 14.3 | yes | Acolyte's Chain Shirt (250491, +0.00 DPS, sim-verified) [crafted]; Wisdom's Leather Armor (252493, -0.29 DPS) [crafted]; Filigreed Pristine Gown (253901, -0.29 DPS) [crafted] |
-| wrist | Mindthrust Bracers (1974) | Shadowfang Keep: Son of Arugal [dungeon] | 0.0 | yes | Owl Bracers (4796, +0.00 DPS) [vendor]; Bright Bracers (3647, -0.12 DPS) [world_drop]; Tabitha's Cuffs (251486, -0.37 DPS, sim-verified) [quest] |
+| wrist | Mindthrust Bracers (1974) | World drop [world_drop] | 0.0 | yes | Owl Bracers (4796, +0.00 DPS) [vendor]; Bright Bracers (3647, -0.12 DPS) [world_drop]; Tabitha's Cuffs (251486, -0.37 DPS, sim-verified) [quest] |
 | hands | Stormrider's Leather Gloves (252498) | Leatherworking [crafted] | 0.0 | yes | Acolyte's Gloves (250511, -0.07 DPS) [crafted]; Blight Gloves (279877, -0.11 DPS) [quest]; Fletcher's Gloves (7348, -0.95 DPS, sim-verified) [crafted] |
 | waist | Stormrider's Leather Belt (252432) | Leatherworking [crafted] | 0.0 | yes | Pristine Sash (253925, +0.00 DPS) [crafted]; Acolyte's Chain Belt (250516, -0.10 DPS) [crafted]; Keller's Girdle (2911, -0.51 DPS, sim-verified) [world_drop] |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 19.1 | yes | Stormrider's Leather Pants (252502, -0.15 DPS) [crafted]; Acolyte's Chain Leggings (250496, -0.31 DPS) [crafted]; Dreamer's Leggings (270016, -0.35 DPS, sim-verified) [quest] |
@@ -45,12 +45,12 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Enduring Cap (3020) | World drop [world_drop] | 18.2 | yes | Enchanter's Cowl (4322, +0.00 DPS, sim-verified) [crafted]; Crusader's Chain Helm (250502, -0.42 DPS) [crafted]; Nightsky Cowl (4039, -0.45 DPS) [world_drop] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 13.8 | yes | Crystal Starfire Medallion (5003, -0.93 DPS) [world_drop]; Darkspear Warding Pendant (272075, -1.28 DPS, sim-verified) [vendor]; Pendant of Myzrael (4614, -1.38 DPS) [dungeon] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 13.8 | yes | Crystal Starfire Medallion (5003, -0.93 DPS) [world_drop]; Darkspear Warding Pendant (272075, -1.28 DPS, sim-verified) [vendor]; Pendant of Myzrael (4614, -1.38 DPS) [world_drop] |
 | shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 19.2 | yes | Fairywing Mantle (9536, -0.30 DPS) [quest]; Feline Mantle (3748, -0.61 DPS) [dungeon]; Death Speaker Mantle (6685, -0.70 DPS, sim-verified) [dungeon] |
 | back | Cloak of Rot (4462) (or Darkspear Raider's Cloak (272078)) | Lord Malathrom [world] | 9.1 | yes | Darkspear Raider's Cloak (272078, +0.00 DPS, sim-verified) [vendor]; Repairman's Cape (9605, -0.15 DPS) [quest]; Pearl-clasped Cloak (5542, -0.37 DPS) [crafted] |
 | chest | Green Silk Armor (7065) | Tailoring [crafted] | 23.8 | yes | Guardian Armor (4256, -0.23 DPS, sim-verified) [crafted]; Death Speaker Robes (6682, -0.43 DPS) [dungeon]; Stormrider's Leather Tunic (252510, -0.70 DPS) [crafted] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 | yes | Tabitha's Cuffs (251486, -0.22 DPS) [quest]; Technician's Bracers (270042, -0.22 DPS) [quest]; Nightsky Wristbands (6407, -1.23 DPS, sim-verified) [world_drop] |
-| hands | Town Clerk's Mittens (270029) | Crime and Punishment [quest] | 0.0 | yes | Stormrider's Leather Gloves (252498, -0.70 DPS) [crafted]; Hotshot Pilot's Gloves (9491, -0.74 DPS) [dungeon]; Fletcher's Gloves (7348, -1.00 DPS, sim-verified) [crafted] |
+| hands | Town Clerk's Mittens (270029) | Crime and Punishment [quest] | 0.0 | yes | Stormrider's Leather Gloves (252498, -0.70 DPS) [crafted]; Hotshot Pilot's Gloves (9491, -0.74 DPS) [world_drop]; Fletcher's Gloves (7348, -1.00 DPS, sim-verified) [crafted] |
 | waist | Prefect's Belt (250559) | Blacksmithing [crafted] | 0.0 | yes | Highlander's Cloth Girdle (20099, -0.05 DPS) [rep]; Guardian Belt (4258, -0.10 DPS) [crafted]; Skycaller's Leather Belt (252522, -0.88 DPS, sim-verified) [crafted] |
 | legs | Kodohide Legguards (285338) | Brontus [world] | 22.5 | yes | Guardian Pants (5962, -0.54 DPS) [crafted]; Acolyte's Silvered Chain Leggings (250526, -0.54 DPS) [crafted]; Abomination Skin Leggings (23173, -0.63 DPS, sim-verified) [dungeon] |
 | feet | Gilded Slippers (254001) | Tailoring [crafted] | 15.0 | yes | Stormrider's Leather Boots (252443, -0.33 DPS) [crafted]; Spidersilk Boots (4320, -0.34 DPS) [crafted]; Acidic Walkers (9454, -1.42 DPS, sim-verified) [dungeon] |
@@ -58,7 +58,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 8.0 | yes | Minor Channeling Ring (1449, +0.00 DPS, sim-verified) [quest]; Lorekeeper's Ring (19525, -0.10 DPS) [rep]; Lavishly Jeweled Ring (1156, -0.11 DPS) [dungeon] |
 | trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | 0.0 | yes | Rune of Perfection (21566, +0.00 DPS) [rep]; Rune of Duty (21568, +0.00 DPS) [rep]; Relentless Raider's Seal (272062, +0.00 DPS) [vendor] |
 | trinket2 | Talisman of Arathor (21119) | The League of Arathor [rep] | 0.0 | yes | Rune of Perfection (21566, +0.00 DPS) [rep]; Rune of Duty (21568, +0.00 DPS) [rep]; Relentless Raider's Seal (272062, +0.00 DPS, sim-verified) [vendor] |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 290.6 | yes | Cobalt Crusher (7730, -0.09 DPS) [dungeon]; Darkspear Raider's Reaper (272082, -1.10 DPS) [vendor]; Corpsemaker (6687, -10.70 DPS, sim-verified) [dungeon] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 290.6 | yes | Cobalt Crusher (7730, -0.09 DPS) [world_drop]; Darkspear Raider's Reaper (272082, -1.10 DPS) [vendor]; Corpsemaker (6687, -10.70 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | Kajaric Icon (206387) (or Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Rune Broker [vendor] | 0.0 | yes | Dyadic Icon (206381, +0.00 DPS) [vendor]; Tempest Icon (206382, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS, sim-verified) [crafted] |
 
@@ -98,26 +98,26 @@ No-known-source sample (15 of 1152, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (dwarf, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 98.0. Weights run: 1.9s. Verify run: 1.6s. 1491 eligible items had no known source.
+Set DPS (verified): 98.0. Weights run: 1.9s. Verify run: 1.7s. 1491 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (3.110 ± 0.789), crit=3.848 ± 0.256, hit=6.081 ± 0.559, spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 113.0 | yes | Blood Guard's Pulsing Helmet (220848, +0.00 DPS, sim-verified) [vendor]; Blood Guard's Inscribed Skullcap (220842, -2.19 DPS) [vendor]; Red Mageweave Headband (10033, -2.80 DPS) [crafted] |
-| neck | Horizon Choker (13085) | Azuregos [world] | 43.5 | yes | Darkspear Warding Pendant (272073, +0.00 DPS, sim-verified) [vendor]; Scorn's Icy Choker (23169, -1.58 DPS) [dungeon]; Mindburst Medallion (11196, -1.66 DPS) [quest] |
+| neck | Horizon Choker (13085) | World drop [world_drop] | 43.5 | yes | Darkspear Warding Pendant (272073, +0.00 DPS, sim-verified) [vendor]; Scorn's Icy Choker (23169, -1.58 DPS) [dungeon]; Mindburst Medallion (11196, -1.66 DPS) [quest] |
 | shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 0.0 | yes | Blood Guard's Mail Epaulets (220823, -0.69 DPS) [vendor]; Blood Guard's Inscribed Shoulder Pads (220841, -0.69 DPS) [vendor]; Blood Guard's Pulsing Shoulders (220849, -2.73 DPS, sim-verified) [vendor] |
-| back | Darkspear Raider's Cloak (272076) | Creeg Bothunk [vendor] | 43.5 | yes | Imperial Red Cloak (8248, +0.00 DPS, sim-verified) [dungeon]; Darkspear Raider's Cloak (272077, -0.82 DPS) [vendor]; Runecloth Cloak (13860, -0.85 DPS) [crafted] |
+| back | Darkspear Raider's Cloak (272076) | Creeg Bothunk [vendor] | 43.5 | yes | Imperial Red Cloak (8248, +0.00 DPS, sim-verified) [world_drop]; Darkspear Raider's Cloak (272077, -0.82 DPS) [vendor]; Runecloth Cloak (13860, -0.85 DPS) [crafted] |
 | chest | Stone Guard's Pulsing Breastplate (220844) | Lady Palanseer [vendor] | 116.1 | yes | Stone Guard's Mail Armor (220826, -1.93 DPS, sim-verified) [vendor]; Stone Guard's Inscribed Chestpiece (220838, -2.20 DPS) [vendor]; Knight's Mail Armor (223078, -2.20 DPS) [vendor] |
-| wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 41.1 | yes | Shizzle's Nozzle Wiper (11917, +0.00 DPS, sim-verified) [quest]; Imperial Red Bracers (8247, -0.61 DPS) [dungeon]; Bloodband Bracers (11469, -0.71 DPS) [quest] |
+| wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 41.1 | yes | Shizzle's Nozzle Wiper (11917, +0.00 DPS, sim-verified) [quest]; Imperial Red Bracers (8247, -0.61 DPS) [world_drop]; Bloodband Bracers (11469, -0.71 DPS) [quest] |
 | hands | Fists of The Five Thunders (227022) | Mokvar [vendor] | 94.0 | yes | Raider Handwraps (272098, -1.63 DPS) [vendor]; First Sergeant's Pulsing Gauntlets (220845, -1.68 DPS, sim-verified) [vendor]; First Sergeant's Mail Gauntlets (220831, -2.16 DPS) [vendor] |
 | waist | Highlander's Lizardhide Girdle (20103) (or Highlander's Mail Girdle (20118)) | The League of Arathor [rep] | 85.0 | yes | Highlander's Mail Girdle (20118, +0.00 DPS, sim-verified) [vendor]; Highlander's Cloth Girdle (20097, -0.58 DPS) [rep]; Dawnspire Cord (12466, -1.75 DPS) [dungeon] |
 | legs | Stone Guard's Pulsing Legplates (220847) | Lady Palanseer [vendor] | 116.1 | yes | Stormshroud Pants (15057, -2.12 DPS, sim-verified) [crafted]; Stone Guard's Mail Legplates (220834, -2.20 DPS) [vendor]; Stone Guard's Inscribed Legplates (220839, -2.20 DPS) [vendor] |
 | feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 102.9 | yes | Skycaller's Leather Boots (252471, +0.00 DPS, sim-verified) [crafted]; Skycaller's Mail Sabatons (252577, -4.73 DPS) [crafted]; Mender's Leather Boots (252472, -5.26 DPS) [crafted] |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 60.8 | yes | Ogremind Ring (1993, -3.44 DPS) [world_drop]; Voodoo Band (1996, -3.44 DPS) [world]; Mindbender Loop (5009, -3.44 DPS) [world_drop] |
-| finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 28.7 | yes | Voodoo Band (1996, -0.61 DPS) [world]; Mindbender Loop (5009, -0.61 DPS) [world_drop]; Ogremind Ring (1993, -0.98 DPS, sim-verified) [world_drop] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 60.8 | yes | Ogremind Ring (1993, -3.44 DPS) [world_drop]; Voodoo Band (1996, -3.44 DPS) [world_drop]; Mindbender Loop (5009, -3.44 DPS) [world_drop] |
+| finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 28.7 | yes | Voodoo Band (1996, -0.61 DPS) [world_drop]; Mindbender Loop (5009, -0.61 DPS) [world_drop]; Ogremind Ring (1993, -0.98 DPS, sim-verified) [world_drop] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Thunderbrew's Boot Flask (744, -1.17 DPS, sim-verified) [quest] |
-| trinket2 | Uther's Strength (11302) | Azuregos [world] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS, sim-verified) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Guardian Talisman (1490, -0.53 DPS) [quest] |
+| trinket2 | Uther's Strength (11302) | World drop [world_drop] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS, sim-verified) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Guardian Talisman (1490, -0.53 DPS) [quest] |
 | main_hand | Hammer of the Northern Wind (810) | World drop [world_drop] | 0.0 | yes | Soulkeeper (1607, +0.00 DPS) [world_drop]; Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
 | ranged | Totem of Ancestral Protection (249443) (or Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Enchanting [crafted] | 0.0 | yes | Tempest Icon (206382, +0.00 DPS) [vendor]; Kajaric Icon (206387, +0.00 DPS, sim-verified) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted] |
@@ -128,39 +128,39 @@ No-known-source sample (15 of 1491, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 134.8. Weights run: 1.9s. Verify run: 1.5s. 2301 eligible items had no known source.
+Set DPS (verified): 135.9. Weights run: 2.0s. Verify run: 1.6s. 2270 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.046 ± 0.865), crit=5.588 ± 0.380, hit=6.652 ± 0.739, spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Bloodvine Goggles (19999) | Engineering [crafted] | 0.0 | yes | Ragefury Eyepatch (11735, -4.75 DPS) [dungeon]; Bloodvine Lens (19998, -4.75 DPS) [crafted]; Mask of the Unforgiven (13404, -4.87 DPS, sim-verified) [dungeon] |
-| neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | 0.0 | yes | Medallion of the Dawn (22659, -5.77 DPS) [quest]; Beads of Ogre Might (22150, -6.78 DPS) [quest]; Charm of the Shifting Sands (21504, -9.29 DPS) [quest] |
-| shoulder | Mantle of the Timbermaw (19050) | Tailoring [crafted] | 108.8 | yes | Champion's Mail Pauldrons (227154, +0.00 DPS) [vendor]; Warlord's Mail Spaulders (231659, +0.00 DPS) [vendor]; Champion's Mail Spaulders (227160, -0.63 DPS, sim-verified) [vendor] |
+| head | Bloodvine Goggles (19999) | Engineering [crafted] | 0.0 | yes | Mask of the Unforgiven (13404, -2.86 DPS, sim-verified) [dungeon]; Ragefury Eyepatch (11735, -4.75 DPS) [dungeon]; Bloodvine Lens (19998, -4.75 DPS) [crafted] |
+| neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | 0.0 | yes | Fury of the Forgotten Swarm (21809, +0.00 DPS) [world_drop]; Medallion of the Dawn (22659, -5.77 DPS) [quest]; Beads of Ogre Might (22150, -6.78 DPS) [quest] |
+| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 120.9 | yes | Champion's Mail Pauldrons (227154, +0.00 DPS) [vendor]; Warlord's Mail Spaulders (231659, -0.43 DPS) [vendor]; Mantle of the Timbermaw (19050, -2.02 DPS, sim-verified) [crafted] |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 78.2 | yes | Earthweave Cloak (21187, +0.00 DPS, sim-verified) [quest]; Hide of the Wild (18510, -4.66 DPS) [crafted]; Spritecaster Cape (11623, -5.02 DPS) [dungeon] |
-| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 173.6 | yes | Bloodsoul Breastplate (19690, -1.49 DPS) [crafted]; Legionnaire's Mail Hauberk (227157, -2.50 DPS) [vendor]; Stormshroud Armor (15056, -4.73 DPS, sim-verified) [crafted] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 93.5 | yes | Primal Batskin Bracers (19687, -2.74 DPS, sim-verified) [crafted]; Bindings of Elements (16671, -5.22 DPS) [dungeon]; Dryad's Wrist Bindings (19595, -5.47 DPS) [rep] |
-| hands | Stormshroud Gloves (21278) | Leatherworking [crafted] | 144.7 | yes | Blood Guard's Mail Vices (227159, +0.00 DPS) [vendor]; Primal Batskin Gloves (19686, -0.30 DPS, sim-verified) [crafted]; General's Mail Gauntlets (231660, -2.59 DPS) [vendor] |
-| waist | Belt of the Archmage (18405) | Tailoring [crafted] | 115.0 | yes | Highlander's Cloth Girdle (20047, -1.11 DPS, sim-verified) [rep]; Highlander's Mail Girdle (20044, -1.64 DPS) [vendor]; Highlander's Lizardhide Girdle (20046, -1.64 DPS) [rep] |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 156.5 | yes | Sentinel's Chain Leggings (22748, +0.00 DPS, sim-verified) [rep]; Legionnaire's Mail Legguards (227156, -1.02 DPS) [vendor]; Ironfeather Leggings (252486, -1.86 DPS) [crafted] |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 102.3 | yes | Greaves of Withering Despair (22240, -2.53 DPS, sim-verified) [dungeon]; Blood Guard's Mail Greaves (227158, -3.10 DPS) [vendor]; General's Mail Boots (16573, -5.59 DPS) [vendor] |
-| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Stormpike Guard [rep] | 144.7 | yes | Band of Earthen Might (21182, -2.48 DPS, sim-verified) [quest]; Mindtear Band (20632, -3.32 DPS) [world]; Ritssyn's Ring of Chaos (21836, -3.60 DPS) [world] |
-| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 0.0 | yes | Mindtear Band (20632, -0.28 DPS) [world]; Ritssyn's Ring of Chaos (21836, -0.57 DPS) [world]; Band of Earthen Might (21182, -4.73 DPS, sim-verified) [quest] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world]; Frozen Heart of the Mountain (249469, +0.00 DPS, sim-verified) [crafted] |
+| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 173.6 | yes | Bloodsoul Breastplate (19690, -1.49 DPS) [crafted]; Legionnaire's Mail Hauberk (227157, -2.50 DPS) [vendor]; Stormshroud Armor (15056, -4.09 DPS, sim-verified) [crafted] |
+| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 93.5 | yes | Primal Batskin Bracers (19687, -2.74 DPS, sim-verified) [crafted]; Bindings of Elements (16671, -5.22 DPS) [world_drop]; Dryad's Wrist Bindings (19595, -5.47 DPS) [rep] |
+| hands | Stormshroud Gloves (21278) | Leatherworking [crafted] | 144.7 | yes | Primal Batskin Gloves (19686, +0.00 DPS, sim-verified) [crafted]; Blood Guard's Mail Vices (227159, +0.00 DPS) [vendor]; General's Mail Gauntlets (231660, -2.59 DPS) [vendor] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 0.0 | yes | Belt of the Archmage (18405, -1.31 DPS, sim-verified) [crafted]; Highlander's Cloth Girdle (20047, -1.39 DPS) [rep]; Highlander's Mail Girdle (20044, -1.61 DPS) [vendor] |
+| legs | Sentinel's Chain Leggings (22748) | Silverwing Sentinels [rep] | 0.0 | yes | Legionnaire's Mail Legguards (227156, +0.00 DPS) [vendor]; Ironfeather Leggings (252486, -0.84 DPS) [crafted]; Stormshroud Pants (15057, -1.56 DPS, sim-verified) [crafted] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 102.3 | yes | Dense Timbermaw Boots (227810, -1.83 DPS) [vendor]; Greaves of Withering Despair (22240, -2.24 DPS, sim-verified) [dungeon]; Blood Guard's Mail Greaves (227158, -3.10 DPS) [vendor] |
+| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Stormpike Guard [rep] | 144.7 | yes | Band of Earthen Might (21182, -2.65 DPS, sim-verified) [quest]; Mindtear Band (20632, -3.32 DPS) [world]; Ritssyn's Ring of Chaos (21836, -3.60 DPS) [world_drop] |
+| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 0.0 | yes | Mindtear Band (20632, -0.28 DPS) [world]; Ritssyn's Ring of Chaos (21836, -0.57 DPS) [world_drop]; Band of Earthen Might (21182, -4.28 DPS, sim-verified) [quest] |
+| trinket1 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop]; Uther's Strength (11302, +0.00 DPS) [world_drop] |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 0.0 | yes | Uther's Strength (11302, -0.29 DPS, sim-verified) [world_drop]; Guardian Talisman (1490, -5.19 DPS) [quest]; Ankh of Life (1713, -5.19 DPS) [world_drop] |
 | main_hand | Fist of Cenarius (21188) | Champion's Battlegear [quest] | 0.0 | yes | High Warlord's Destroyer (234546, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Totem of the Storm (23199) (or Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Kajaric Icon (206387, +0.00 DPS) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS, sim-verified) [world] |
+| ranged | Totem of the Storm (23199) (or Totem of Thunder (228176), Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Totem of Thunder (228176, +0.00 DPS, sim-verified) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS) [world] |
 
-**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; shoulder: Mantle of the Timbermaw; back: Chromatic Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Stormshroud Gloves; waist: Belt of the Archmage; legs: Stormshroud Pants; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket2: Thunderbrew's Boot Flask; main_hand: Fist of Cenarius; ranged: Totem of the Storm
+**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; shoulder: Rugged Mantle of the Timbermaw; back: Chromatic Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Stormshroud Gloves; waist: Knowledge of the Timbermaw; legs: Sentinel's Chain Leggings; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket1: Thunderbrew's Boot Flask; trinket2: Frozen Heart of the Mountain; main_hand: Fist of Cenarius; ranged: Totem of the Storm
 
-No-known-source sample (15 of 2301, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2270, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ## Horde
 
 ### Band 20 (orc, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 31.3. Weights run: 1.6s. Verify run: 1.0s. 401 eligible items had no known source.
+Set DPS (verified): 31.3. Weights run: 1.6s. Verify run: 1.1s. 401 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.268 ± 0.163, crit=0.822 ± 0.037, hit=1.874 ± 0.118, spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -171,7 +171,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 10.1 | yes | Double-Stitched Woolen Shoulders (4314, -0.42 DPS, sim-verified) [crafted]; Rough Bronze Shoulders (3480, -0.97 DPS) [crafted]; Silvered Bronze Shoulders (3481, -0.97 DPS) [crafted] |
 | back | Pearl-clasped Cloak (5542) | Tailoring [crafted] | 5.8 | yes | Feyscale Cloak (6632, -0.27 DPS) [dungeon]; Black Whelp Cloak (7283, -0.27 DPS) [crafted]; Heavy Woolen Cloak (4311, -0.51 DPS, sim-verified) [crafted] |
 | chest | Stormrider's Leather Armor (252492) | Leatherworking [crafted] | 14.3 | yes | Acolyte's Chain Shirt (250491, -0.20 DPS, sim-verified) [crafted]; Wisdom's Leather Armor (252493, -0.29 DPS) [crafted]; Filigreed Pristine Gown (253901, -0.29 DPS) [crafted] |
-| wrist | Mindthrust Bracers (1974) | Shadowfang Keep: Son of Arugal [dungeon] | 0.0 | yes | Owl Bracers (4796, +0.00 DPS) [vendor]; Featherbead Bracers (15452, +0.00 DPS) [quest]; Tabitha's Cuffs (251486, -0.47 DPS, sim-verified) [quest] |
+| wrist | Mindthrust Bracers (1974) | World drop [world_drop] | 0.0 | yes | Owl Bracers (4796, +0.00 DPS) [vendor]; Featherbead Bracers (15452, +0.00 DPS) [quest]; Tabitha's Cuffs (251486, -0.47 DPS, sim-verified) [quest] |
 | hands | Stormrider's Leather Gloves (252498) | Leatherworking [crafted] | 0.0 | yes | Acolyte's Gloves (250511, -0.07 DPS) [crafted]; Blight Gloves (279877, -0.11 DPS) [quest]; Fletcher's Gloves (7348, -0.34 DPS, sim-verified) [crafted] |
 | waist | Keller's Girdle (2911) | World drop [world_drop] | 10.1 | yes | Stormrider's Leather Belt (252432, +0.00 DPS, sim-verified) [crafted]; Pristine Sash (253925, -0.10 DPS) [crafted]; Acolyte's Chain Belt (250516, -0.20 DPS) [crafted] |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 19.1 | yes | Stormrider's Leather Pants (252502, -0.05 DPS, sim-verified) [crafted]; Acolyte's Chain Leggings (250496, -0.31 DPS) [crafted]; Wisdom's Leather Pants (252503, -0.43 DPS) [crafted] |
@@ -180,7 +180,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | finger2 | Advisor's Ring (20426) | Warsong Outriders [rep] | 0.0 | yes | Sludge-Stained Band (286535, -0.19 DPS) [world]; Black Pearl Ring (6332, -0.24 DPS) [world]; Loop of Sacrifice (281673, -0.41 DPS, sim-verified) [quest] |
 | trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes | - |
 | trinket2 | Rune of Duty (21568) | Warsong Outriders [rep] | 0.0 | yes | - |
-| main_hand | Twisted Chanter's Staff (890) | World drop [world_drop] | 225.9 | yes | Living Root (6631, -0.45 DPS) [dungeon]; Night Reaver (1318, -1.05 DPS) [dungeon]; Gnarled Necromancer's Staff (251534, -1.80 DPS, sim-verified) [quest] |
+| main_hand | Twisted Chanter's Staff (890) | World drop [world_drop] | 225.9 | yes | Living Root (6631, -0.45 DPS) [dungeon]; Night Reaver (1318, -1.05 DPS) [world_drop]; Gnarled Necromancer's Staff (251534, -1.80 DPS, sim-verified) [quest] |
 | off_hand | - | - |  |  |  |
 | ranged | Kajaric Icon (206387) (or Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Rune Broker [vendor] | 0.0 | yes | Dyadic Icon (206381, +0.00 DPS) [vendor]; Tempest Icon (206382, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS, sim-verified) [crafted] |
 
@@ -197,7 +197,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Enduring Cap (3020) | World drop [world_drop] | 18.2 | yes | Enchanter's Cowl (4322, +0.00 DPS, sim-verified) [crafted]; Crusader's Chain Helm (250502, -0.42 DPS) [crafted]; Nightsky Cowl (4039, -0.45 DPS) [world_drop] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 13.8 | yes | Crystal Starfire Medallion (5003, -0.93 DPS) [world_drop]; Darkspear Warding Pendant (272075, -1.19 DPS, sim-verified) [vendor]; Pendant of Myzrael (4614, -1.38 DPS) [dungeon] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 13.8 | yes | Crystal Starfire Medallion (5003, -0.93 DPS) [world_drop]; Darkspear Warding Pendant (272075, -1.19 DPS, sim-verified) [vendor]; Pendant of Myzrael (4614, -1.38 DPS) [world_drop] |
 | shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 19.2 | yes | Death Speaker Mantle (6685, -0.30 DPS, sim-verified) [dungeon]; Fairywing Mantle (9536, -0.30 DPS) [quest]; Feline Mantle (3748, -0.61 DPS) [dungeon] |
 | back | Cloak of Rot (4462) (or Darkspear Raider's Cloak (272078)) | Lord Malathrom [world] | 9.1 | yes | Darkspear Raider's Cloak (272078, +0.00 DPS, sim-verified) [vendor]; Soft Willow Cape (16661, -0.34 DPS) [quest]; Pearl-clasped Cloak (5542, -0.37 DPS) [crafted] |
 | chest | Green Silk Armor (7065) | Tailoring [crafted] | 23.8 | yes | Guardian Armor (4256, -0.33 DPS, sim-verified) [crafted]; Death Speaker Robes (6682, -0.43 DPS) [dungeon]; Stormrider's Leather Tunic (252510, -0.70 DPS) [crafted] |
@@ -210,7 +210,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 8.0 | yes | Advisor's Ring (19521, +0.00 DPS, sim-verified) [rep]; Lavishly Jeweled Ring (1156, -0.11 DPS) [dungeon]; Sea Giant's Toe Ring (274746, -0.20 DPS) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | 0.0 | yes | Rune of Perfection (21566, +0.00 DPS) [rep]; Rune of Duty (21568, +0.00 DPS) [rep]; Relentless Raider's Seal (272062, +0.00 DPS) [vendor] |
 | trinket2 | Defiler's Talisman (21120) | The Defilers [rep] | 0.0 | yes | Rune of Perfection (21566, +0.00 DPS) [rep]; Rune of Duty (21568, +0.00 DPS) [rep]; Relentless Raider's Seal (272062, +0.00 DPS, sim-verified) [vendor] |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 290.6 | yes | Cobalt Crusher (7730, -0.09 DPS) [dungeon]; Darkspear Raider's Reaper (272082, -1.10 DPS) [vendor]; Corpsemaker (6687, -7.07 DPS, sim-verified) [dungeon] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 290.6 | yes | Cobalt Crusher (7730, -0.09 DPS) [world_drop]; Darkspear Raider's Reaper (272082, -1.10 DPS) [vendor]; Corpsemaker (6687, -7.07 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | Kajaric Icon (206387) (or Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Rune Broker [vendor] | 0.0 | yes | Dyadic Icon (206381, +0.00 DPS) [vendor]; Tempest Icon (206382, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS, sim-verified) [crafted] |
 
@@ -250,26 +250,26 @@ No-known-source sample (15 of 1156, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (orc, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 104.6. Weights run: 1.9s. Verify run: 1.7s. 1496 eligible items had no known source.
+Set DPS (verified): 104.6. Weights run: 1.9s. Verify run: 1.6s. 1496 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (3.110 ± 0.789), crit=3.848 ± 0.256, hit=6.081 ± 0.559, spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 113.0 | yes | Blood Guard's Pulsing Helmet (220848, -0.28 DPS, sim-verified) [vendor]; Blood Guard's Inscribed Skullcap (220842, -2.19 DPS) [vendor]; Red Mageweave Headband (10033, -2.80 DPS) [crafted] |
-| neck | Horizon Choker (13085) | Azuregos [world] | 43.5 | yes | Darkspear Warding Pendant (272073, -0.35 DPS, sim-verified) [vendor]; Scorn's Icy Choker (23169, -1.58 DPS) [dungeon]; Mindburst Medallion (11196, -1.66 DPS) [quest] |
+| neck | Horizon Choker (13085) | World drop [world_drop] | 43.5 | yes | Darkspear Warding Pendant (272073, -0.35 DPS, sim-verified) [vendor]; Scorn's Icy Choker (23169, -1.58 DPS) [dungeon]; Mindburst Medallion (11196, -1.66 DPS) [quest] |
 | shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 0.0 | yes | Blood Guard's Mail Epaulets (220823, -0.69 DPS) [vendor]; Blood Guard's Inscribed Shoulder Pads (220841, -0.69 DPS) [vendor]; Blood Guard's Pulsing Shoulders (220849, -1.56 DPS, sim-verified) [vendor] |
-| back | Deep Woodlands Cloak (19121) | Wanted: Vile Priestess Hexx and Her Minions [quest] | 0.0 | yes | Imperial Red Cloak (8248, -0.51 DPS) [dungeon]; Darkspear Raider's Cloak (272077, -0.51 DPS) [vendor]; Darkspear Raider's Cloak (272076, -1.08 DPS, sim-verified) [vendor] |
+| back | Deep Woodlands Cloak (19121) | Wanted: Vile Priestess Hexx and Her Minions [quest] | 0.0 | yes | Imperial Red Cloak (8248, -0.51 DPS) [world_drop]; Darkspear Raider's Cloak (272077, -0.51 DPS) [vendor]; Darkspear Raider's Cloak (272076, -1.08 DPS, sim-verified) [vendor] |
 | chest | Stone Guard's Pulsing Breastplate (220844) | Lady Palanseer [vendor] | 116.1 | yes | Stone Guard's Mail Armor (220826, -1.72 DPS, sim-verified) [vendor]; Stone Guard's Inscribed Chestpiece (220838, -2.20 DPS) [vendor]; Knight's Mail Armor (223078, -2.20 DPS) [vendor] |
-| wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 41.1 | yes | Shizzle's Nozzle Wiper (11917, -0.37 DPS, sim-verified) [quest]; Imperial Red Bracers (8247, -0.61 DPS) [dungeon]; Bloodband Bracers (11469, -0.71 DPS) [quest] |
+| wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 41.1 | yes | Shizzle's Nozzle Wiper (11917, -0.37 DPS, sim-verified) [quest]; Imperial Red Bracers (8247, -0.61 DPS) [world_drop]; Bloodband Bracers (11469, -0.71 DPS) [quest] |
 | hands | Fists of The Five Thunders (227022) | Mokvar [vendor] | 94.0 | yes | First Sergeant's Pulsing Gauntlets (220845, -0.77 DPS, sim-verified) [vendor]; Raider Handwraps (272098, -1.63 DPS) [vendor]; First Sergeant's Mail Gauntlets (220831, -2.16 DPS) [vendor] |
 | waist | Highlander's Mail Girdle (20118) (or Defiler's Lizardhide Girdle (20174), Defiler's Mail Girdle (20196)) | Samuel Hawke [vendor] | 85.0 | yes | Defiler's Lizardhide Girdle (20174, +0.00 DPS, sim-verified) [rep]; Defiler's Mail Girdle (20196, +0.00 DPS) [rep]; Defiler's Cloth Girdle (20165, -0.58 DPS) [rep] |
 | legs | Stone Guard's Pulsing Legplates (220847) | Lady Palanseer [vendor] | 116.1 | yes | Stormshroud Pants (15057, -1.57 DPS, sim-verified) [crafted]; Stone Guard's Mail Legplates (220834, -2.20 DPS) [vendor]; Stone Guard's Inscribed Legplates (220839, -2.20 DPS) [vendor] |
 | feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 102.9 | yes | Skycaller's Leather Boots (252471, +0.00 DPS, sim-verified) [crafted]; Skycaller's Mail Sabatons (252577, -4.73 DPS) [crafted]; Mender's Leather Boots (252472, -5.26 DPS) [crafted] |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 60.8 | yes | Ogremind Ring (1993, -3.44 DPS) [world_drop]; Voodoo Band (1996, -3.44 DPS) [world]; Mindbender Loop (5009, -3.44 DPS) [world_drop] |
-| finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 28.7 | yes | Ogremind Ring (1993, -0.40 DPS, sim-verified) [world_drop]; Voodoo Band (1996, -0.61 DPS) [world]; Mindbender Loop (5009, -0.61 DPS) [world_drop] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world]; Frozen Heart of the Mountain (249469, -1.61 DPS, sim-verified) [crafted] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, -1.41 DPS, sim-verified) [crafted]; Uther's Strength (11302, -3.22 DPS) [world]; Guardian Talisman (1490, -3.75 DPS) [quest] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 60.8 | yes | Ogremind Ring (1993, -3.44 DPS) [world_drop]; Voodoo Band (1996, -3.44 DPS) [world_drop]; Mindbender Loop (5009, -3.44 DPS) [world_drop] |
+| finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 28.7 | yes | Ogremind Ring (1993, -0.40 DPS, sim-verified) [world_drop]; Voodoo Band (1996, -0.61 DPS) [world_drop]; Mindbender Loop (5009, -0.61 DPS) [world_drop] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world_drop]; Frozen Heart of the Mountain (249469, -1.61 DPS, sim-verified) [crafted] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, -1.41 DPS, sim-verified) [crafted]; Uther's Strength (11302, -3.22 DPS) [world_drop]; Guardian Talisman (1490, -3.75 DPS) [quest] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Soulkeeper (1607, +0.00 DPS) [world_drop]; Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
 | ranged | Totem of Ancestral Protection (249443) (or Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Enchanting [crafted] | 0.0 | yes | Tempest Icon (206382, +0.00 DPS) [vendor]; Kajaric Icon (206387, +0.00 DPS, sim-verified) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted] |
@@ -280,31 +280,31 @@ No-known-source sample (15 of 1496, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (orc, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 133.6. Weights run: 1.9s. Verify run: 1.4s. 2297 eligible items had no known source.
+Set DPS (verified): 133.8. Weights run: 2.0s. Verify run: 1.6s. 2266 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.046 ± 0.865), crit=5.588 ± 0.380, hit=6.652 ± 0.739, spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Bloodvine Goggles (19999) | Engineering [crafted] | 0.0 | yes | Mask of the Unforgiven (13404, -2.79 DPS, sim-verified) [dungeon]; Ragefury Eyepatch (11735, -4.75 DPS) [dungeon]; Bloodvine Lens (19998, -4.75 DPS) [crafted] |
-| neck | Onyxia Tooth Pendant (18404) | For All To See [quest] | 0.0 | yes | Medallion of the Dawn (22659, -5.77 DPS) [quest]; Beads of Ogre Might (22150, -6.78 DPS) [quest]; Charm of the Shifting Sands (21504, -9.29 DPS) [quest] |
-| shoulder | Mantle of the Timbermaw (19050) | Tailoring [crafted] | 108.8 | yes | Champion's Mail Pauldrons (227154, +0.00 DPS) [vendor]; Warlord's Mail Spaulders (231659, +0.00 DPS) [vendor]; Champion's Mail Spaulders (227160, -1.41 DPS, sim-verified) [vendor] |
+| head | Bloodvine Goggles (19999) | Engineering [crafted] | 0.0 | yes | Mask of the Unforgiven (13404, -1.63 DPS, sim-verified) [dungeon]; Ragefury Eyepatch (11735, -4.75 DPS) [dungeon]; Bloodvine Lens (19998, -4.75 DPS) [crafted] |
+| neck | Onyxia Tooth Pendant (18404) | For All To See [quest] | 0.0 | yes | Fury of the Forgotten Swarm (21809, +0.00 DPS) [world_drop]; Medallion of the Dawn (22659, -5.77 DPS) [quest]; Beads of Ogre Might (22150, -6.78 DPS) [quest] |
+| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 120.9 | yes | Champion's Mail Pauldrons (227154, +0.00 DPS) [vendor]; Warlord's Mail Spaulders (231659, -0.43 DPS) [vendor]; Mantle of the Timbermaw (19050, -3.47 DPS, sim-verified) [crafted] |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 78.2 | yes | Earthweave Cloak (21187, +0.00 DPS, sim-verified) [quest]; Cloak of the Gathering Storm (21400, -4.39 DPS) [quest]; Hide of the Wild (18510, -4.66 DPS) [crafted] |
-| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 173.6 | yes | Bloodsoul Breastplate (19690, -1.49 DPS) [crafted]; Legionnaire's Mail Hauberk (227157, -2.50 DPS) [vendor]; Stormshroud Armor (15056, -6.26 DPS, sim-verified) [crafted] |
-| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 93.5 | yes | Primal Batskin Bracers (19687, -2.55 DPS, sim-verified) [crafted]; Bindings of Elements (16671, -5.22 DPS) [dungeon]; Dryad's Wrist Bindings (19595, -5.47 DPS) [rep] |
+| chest | Bloodvine Vest (19682) | Tailoring [crafted] | 173.6 | yes | Bloodsoul Breastplate (19690, -1.49 DPS) [crafted]; Legionnaire's Mail Hauberk (227157, -2.50 DPS) [vendor]; Stormshroud Armor (15056, -6.44 DPS, sim-verified) [crafted] |
+| wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 93.5 | yes | Primal Batskin Bracers (19687, -2.55 DPS, sim-verified) [crafted]; Bindings of Elements (16671, -5.22 DPS) [world_drop]; Dryad's Wrist Bindings (19595, -5.47 DPS) [rep] |
 | hands | Stormshroud Gloves (21278) | Leatherworking [crafted] | 144.7 | yes | Primal Batskin Gloves (19686, +0.00 DPS, sim-verified) [crafted]; Blood Guard's Mail Vices (227159, +0.00 DPS) [vendor]; General's Mail Gauntlets (231660, -2.59 DPS) [vendor] |
-| waist | Belt of the Archmage (18405) | Tailoring [crafted] | 115.0 | yes | Defiler's Cloth Girdle (20163, -1.43 DPS) [rep]; Highlander's Mail Girdle (20044, -1.64 DPS) [vendor]; Cord of The Five Thunders (227008, -2.65 DPS, sim-verified) [quest] |
-| legs | Outrider's Chain Leggings (22673) | Warsong Outriders [rep] | 0.0 | yes | Legionnaire's Mail Legguards (227156, +0.00 DPS) [vendor]; Ironfeather Leggings (252486, -0.84 DPS) [crafted]; Stormshroud Pants (15057, -2.11 DPS, sim-verified) [crafted] |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 102.3 | yes | Greaves of Withering Despair (22240, -2.90 DPS, sim-verified) [dungeon]; Blood Guard's Mail Greaves (227158, -3.10 DPS) [vendor]; General's Mail Boots (16573, -5.59 DPS) [vendor] |
-| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Frostwolf Clan [rep] | 144.7 | yes | Band of Earthen Might (21182, -2.11 DPS, sim-verified) [quest]; Mindtear Band (20632, -3.32 DPS) [world]; Ritssyn's Ring of Chaos (21836, -3.60 DPS) [world] |
-| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 0.0 | yes | Mindtear Band (20632, -0.28 DPS) [world]; Ritssyn's Ring of Chaos (21836, -0.57 DPS) [world]; Band of Earthen Might (21182, -4.04 DPS, sim-verified) [quest] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world]; Frozen Heart of the Mountain (249469, -1.38 DPS, sim-verified) [crafted] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.79 DPS, sim-verified) [world]; Guardian Talisman (1490, -4.04 DPS) [quest] |
+| waist | Belt of the Archmage (18405) | Tailoring [crafted] | 115.0 | yes | Knowledge of the Timbermaw (228190, -0.51 DPS, sim-verified) [vendor]; Cord of The Five Thunders (227008, -0.96 DPS) [quest]; Defiler's Cloth Girdle (20163, -1.43 DPS) [rep] |
+| legs | Outrider's Chain Leggings (22673) | Warsong Outriders [rep] | 0.0 | yes | Legionnaire's Mail Legguards (227156, +0.00 DPS) [vendor]; Ironfeather Leggings (252486, -0.84 DPS) [crafted]; Stormshroud Pants (15057, -2.15 DPS, sim-verified) [crafted] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 102.3 | yes | Dense Timbermaw Boots (227810, -1.83 DPS) [vendor]; Greaves of Withering Despair (22240, -2.79 DPS, sim-verified) [dungeon]; Blood Guard's Mail Greaves (227158, -3.10 DPS) [vendor] |
+| finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Frostwolf Clan [rep] | 144.7 | yes | Band of Earthen Might (21182, -2.43 DPS, sim-verified) [quest]; Mindtear Band (20632, -3.32 DPS) [world]; Ritssyn's Ring of Chaos (21836, -3.60 DPS) [world_drop] |
+| finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 0.0 | yes | Mindtear Band (20632, -0.28 DPS) [world]; Ritssyn's Ring of Chaos (21836, -0.57 DPS) [world_drop]; Band of Earthen Might (21182, -2.18 DPS, sim-verified) [quest] |
+| trinket1 | Uther's Strength (11302) | World drop [world_drop] | 0.0 | yes | Frozen Heart of the Mountain (249469, -0.02 DPS, sim-verified) [crafted]; Guardian Talisman (1490, -0.52 DPS) [quest]; Ankh of Life (1713, -0.52 DPS) [world_drop] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, -1.02 DPS, sim-verified) [crafted]; Guardian Talisman (1490, -4.04 DPS) [quest]; Ankh of Life (1713, -4.04 DPS) [world_drop] |
 | main_hand | Fist of Cenarius (21188) | Champion's Battlegear [quest] | 0.0 | yes | High Warlord's Destroyer (234546, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Totem of the Storm (23199) (or Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Kajaric Icon (206387, +0.00 DPS) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS, sim-verified) [world] |
+| ranged | Totem of the Storm (23199) (or Totem of Thunder (228176), Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Totem of Thunder (228176, +0.00 DPS, sim-verified) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS) [world] |
 
-**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; shoulder: Mantle of the Timbermaw; back: Chromatic Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Stormshroud Gloves; waist: Belt of the Archmage; legs: Outrider's Chain Leggings; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; main_hand: Fist of Cenarius; ranged: Totem of the Storm
+**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; shoulder: Rugged Mantle of the Timbermaw; back: Chromatic Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Stormshroud Gloves; waist: Belt of the Archmage; legs: Outrider's Chain Leggings; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket1: Uther's Strength; main_hand: Fist of Cenarius; ranged: Totem of the Storm
 
-No-known-source sample (15 of 2297, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2266, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 

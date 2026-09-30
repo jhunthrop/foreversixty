@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T02:21:23Z",
+  "generated_at": "2026-09-30T02:56:00Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -340,8 +340,8 @@
             {
               "item_id": 3429,
               "item_name": "Guardsman Belt",
-              "source_kind": "world",
-              "source": "Jailor Eston",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 4.058092553538248,
               "score_delta": -13.941907446461752,
               "dps_delta": -0.6313739789093367
@@ -545,8 +545,8 @@
             {
               "item_id": 1935,
               "item_name": "Assassin's Blade",
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 221.47809255353823,
               "score_delta": -7.141907446461744,
               "dps_delta": -0.3234288090629337
@@ -554,8 +554,8 @@
             {
               "item_id": 2567,
               "item_name": "Evocator's Blade",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 214.34,
               "score_delta": -14.279999999999973,
               "dps_delta": -0.6466848566774441
@@ -683,8 +683,8 @@
         "off_hand: Edward's Knife",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.076168604,
-      "verify_run_seconds": 1.409028002,
+      "weights_run_seconds": 1.159420065,
+      "verify_run_seconds": 1.42152507,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1100,8 +1100,8 @@
             {
               "item_id": 3429,
               "item_name": "Guardsman Belt",
-              "source_kind": "world",
-              "source": "Jailor Eston",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 4.058092553538248,
               "score_delta": -13.941907446461752,
               "dps_delta": -0.6313739789093367
@@ -1305,8 +1305,8 @@
             {
               "item_id": 1935,
               "item_name": "Assassin's Blade",
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 221.47809255353823,
               "score_delta": -7.141907446461744,
               "dps_delta": -0.3234288090629337
@@ -1314,8 +1314,8 @@
             {
               "item_id": 2567,
               "item_name": "Evocator's Blade",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 214.34,
               "score_delta": -14.279999999999973,
               "dps_delta": -0.6466848566774441
@@ -1443,8 +1443,8 @@
         "off_hand: Edward's Knife",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.076168604,
-      "verify_run_seconds": 1.38402635,
+      "weights_run_seconds": 1.159420065,
+      "verify_run_seconds": 1.423760202,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1664,8 +1664,8 @@
             {
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.3143561329169984,
               "verified": true,
               "sim_dps": 34.04413847545062
@@ -1807,8 +1807,8 @@
             {
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 6.058226926773963,
               "score_delta": -9.941773073226038,
               "dps_delta": -0.4621570490486195
@@ -1880,8 +1880,8 @@
             {
               "item_id": 9509,
               "item_name": "Petrolspill Leggings",
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.593416606462462,
               "verified": true,
               "sim_dps": 33.76507800190516
@@ -1965,8 +1965,8 @@
             {
               "item_id": 1491,
               "item_name": "Ring of Precision",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 6.058226926773963,
               "score_delta": -3.029113463386982,
               "dps_delta": -0.14081252198790176
@@ -2003,8 +2003,8 @@
             {
               "item_id": 1491,
               "item_name": "Ring of Precision",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 6.058226926773963,
               "score_delta": -2.941773073226037,
               "dps_delta": -0.13675238335043444
@@ -2240,8 +2240,8 @@
         "off_hand: Torturing Poker",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.184475263,
-      "verify_run_seconds": 1.640454279,
+      "weights_run_seconds": 1.267847515,
+      "verify_run_seconds": 1.611763351,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2461,8 +2461,8 @@
             {
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.31003641692795725,
               "verified": true,
               "sim_dps": 33.51787743709558
@@ -2619,8 +2619,8 @@
             {
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 6.058226926773963,
               "score_delta": -9.941773073226038,
               "dps_delta": -0.4621570490486195
@@ -2692,8 +2692,8 @@
             {
               "item_id": 9509,
               "item_name": "Petrolspill Leggings",
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": -0.6116523581163733,
               "verified": true,
               "sim_dps": 33.21626149590716
@@ -2768,8 +2768,8 @@
             {
               "item_id": 1491,
               "item_name": "Ring of Precision",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 6.058226926773963,
               "score_delta": -3.029113463386982,
               "dps_delta": -0.14081252198790176
@@ -2806,8 +2806,8 @@
             {
               "item_id": 1491,
               "item_name": "Ring of Precision",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 6.058226926773963,
               "score_delta": -2.941773073226037,
               "dps_delta": -0.13675238335043444
@@ -3043,8 +3043,8 @@
         "off_hand: Torturing Poker",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.184475263,
-      "verify_run_seconds": 1.6482487030000001,
+      "weights_run_seconds": 1.267847515,
+      "verify_run_seconds": 1.6356429829999999,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3264,8 +3264,8 @@
             {
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 10.129815628072357,
               "score_delta": -13.012981562807237,
               "dps_delta": -0.6446371931784027
@@ -3492,8 +3492,8 @@
             {
               "item_id": 9509,
               "item_name": "Petrolspill Leggings",
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 14.181741879301303,
               "score_delta": -11.818258120698697,
               "dps_delta": -0.5854529729727495
@@ -3838,8 +3838,8 @@
         "off_hand: Black Menace",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.236479535,
-      "verify_run_seconds": 1.786547235,
+      "weights_run_seconds": 1.37646038,
+      "verify_run_seconds": 1.802384639,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4059,8 +4059,8 @@
             {
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 10.129815628072357,
               "score_delta": -13.012981562807237,
               "dps_delta": -0.6446371931784027
@@ -4293,8 +4293,8 @@
             {
               "item_id": 9509,
               "item_name": "Petrolspill Leggings",
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 14.181741879301303,
               "score_delta": -11.818258120698697,
               "dps_delta": -0.5854529729727495
@@ -4633,8 +4633,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.236479535,
-      "verify_run_seconds": 1.83972665,
+      "weights_run_seconds": 1.37646038,
+      "verify_run_seconds": 1.832902172,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4878,8 +4878,8 @@
           "slot": "back",
           "item_id": 8259,
           "item_name": "Serpentskin Cloak",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 13.398182757683493,
           "verified": true,
           "alternatives": [
@@ -4895,8 +4895,8 @@
             {
               "item_id": 14673,
               "item_name": "Pridelord Cape",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 10.962149529013766,
               "score_delta": -2.436033228669727,
               "dps_delta": -0.13187370123211734
@@ -4968,8 +4968,8 @@
             {
               "item_id": 13120,
               "item_name": "Deepfury Bracers",
-              "source_kind": "world",
-              "source": "Azuregos",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 109.38501518707066
@@ -4986,8 +4986,8 @@
             {
               "item_id": 14672,
               "item_name": "Pridelord Bands",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 12.180166143348629,
               "score_delta": -7.819833856651371,
               "dps_delta": -0.4233236318619409
@@ -5446,8 +5446,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.304441702,
-      "verify_run_seconds": 1.9587823279999999,
+      "weights_run_seconds": 1.392589971,
+      "verify_run_seconds": 2.024044453,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5691,8 +5691,8 @@
           "slot": "back",
           "item_id": 8259,
           "item_name": "Serpentskin Cloak",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "score": 13.398182757683493,
           "verified": true,
           "alternatives": [
@@ -5708,8 +5708,8 @@
             {
               "item_id": 14673,
               "item_name": "Pridelord Cape",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 10.962149529013766,
               "score_delta": -2.436033228669727,
               "dps_delta": -0.13187370123211734
@@ -5781,8 +5781,8 @@
             {
               "item_id": 13120,
               "item_name": "Deepfury Bracers",
-              "source_kind": "world",
-              "source": "Azuregos",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 111.72244348653112
@@ -5799,8 +5799,8 @@
             {
               "item_id": 14672,
               "item_name": "Pridelord Bands",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 12.180166143348629,
               "score_delta": -7.819833856651371,
               "dps_delta": -0.4233236318619409
@@ -6261,8 +6261,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.304441702,
-      "verify_run_seconds": 2.050908361,
+      "weights_run_seconds": 1.392589971,
+      "verify_run_seconds": 2.057196939,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6424,6 +6424,15 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 21809,
+              "item_name": "Fury of the Forgotten Swarm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score": 170.9920962948349,
+              "score_delta": -8.265601592449713,
+              "dps_delta": -0.43933559271116623
+            },
+            {
               "item_id": 22659,
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
@@ -6440,15 +6449,6 @@
               "score": 81.33440621298138,
               "score_delta": -97.92329167430324,
               "dps_delta": -5.204846484163538
-            },
-            {
-              "item_id": 21505,
-              "item_name": "Choker of the Shifting Sands",
-              "source_kind": "quest",
-              "source": "The Fall of Ossirian",
-              "score": 42,
-              "score_delta": -137.25769788728462,
-              "dps_delta": -7.295559963906796
             }
           ]
         },
@@ -6535,7 +6535,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Bonescythe Breastplate",
           "source_kind": "quest",
-          "score": 364.6497863766885,
+          "score": 364.64978637668844,
           "verified": true,
           "alternatives": [
             {
@@ -6553,8 +6553,8 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score": 227.3153801637071,
-              "score_delta": -137.3344062129814,
-              "dps_delta": -7.29963718652138
+              "score_delta": -137.33440621298135,
+              "dps_delta": -7.299637186521377
             },
             {
               "item_id": 21364,
@@ -6562,8 +6562,8 @@
               "source_kind": "quest",
               "source": "Deathdealer's Vest",
               "score": 214.68170471206918,
-              "score_delta": -149.96808166461932,
-              "dps_delta": -7.971145875947681
+              "score_delta": -149.96808166461926,
+              "dps_delta": -7.971145875947678
             }
           ]
         },
@@ -6727,7 +6727,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Bonescythe Sabatons",
           "source_kind": "quest",
-          "score": 234.99209629483494,
+          "score": 234.9920962948349,
           "verified": true,
           "alternatives": [
             {
@@ -6740,22 +6740,22 @@
               "sim_dps": 200.36389129687345
             },
             {
-              "item_id": 19684,
-              "item_name": "Bloodvine Boots",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "score": 57.33440621298137,
-              "score_delta": -177.65769008185356,
-              "dps_delta": -9.442911771008236
+              "item_id": 227815,
+              "item_name": "Fine Dawn Treaders",
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana",
+              "score": 70.32320871540236,
+              "score_delta": -164.66888757943255,
+              "dps_delta": -8.752527268176403
             },
             {
-              "item_id": 16711,
-              "item_name": "Shadowcraft Boots",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Rattlegore",
-              "score": 41.99712664124358,
-              "score_delta": -192.99496965359134,
-              "dps_delta": -10.25812319099506
+              "item_id": 226831,
+              "item_name": "Darkmantle Footpads",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "score": 68.47328980891459,
+              "score_delta": -166.51880648592032,
+              "dps_delta": -8.850854680907231
             }
           ]
         },
@@ -6765,7 +6765,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "score": 186.99209629483494,
+          "score": 186.9920962948349,
           "verified": true,
           "alternatives": [
             {
@@ -6774,8 +6774,8 @@
               "source_kind": "quest",
               "source": "Houses of the Holy",
               "score": 113.65769008185354,
-              "score_delta": -73.33440621298139,
-              "dps_delta": -3.8978910922989334
+              "score_delta": -73.33440621298136,
+              "dps_delta": -3.8978910922989316
             },
             {
               "item_id": 18403,
@@ -6783,8 +6783,8 @@
               "source_kind": "quest",
               "source": "Celebrating Good Times",
               "score": 113.65769008185354,
-              "score_delta": -73.33440621298139,
-              "dps_delta": -3.8978910922989334
+              "score_delta": -73.33440621298136,
+              "dps_delta": -3.8978910922989316
             },
             {
               "item_id": 18543,
@@ -6792,8 +6792,8 @@
               "source_kind": "world",
               "source": "Lord Kazzak",
               "score": 113.65769008185354,
-              "score_delta": -73.33440621298139,
-              "dps_delta": -3.8978910922989334
+              "score_delta": -73.33440621298136,
+              "dps_delta": -3.8978910922989316
             }
           ]
         },
@@ -6963,8 +6963,8 @@
             {
               "item_id": 15930,
               "item_name": "Imperial Red Scepter",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Darkmaster Gandling",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 2.3616004549856355,
               "score_delta": -796.064809170388,
               "dps_delta": -42.31266180223913
@@ -6972,8 +6972,8 @@
             {
               "item_id": 15968,
               "item_name": "Elunarian Sphere",
-              "source_kind": "world",
-              "source": "Azuregos",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 2.3616004549856355,
               "score_delta": -796.064809170388,
               "dps_delta": -42.31266180223913
@@ -7020,7 +7020,7 @@
         }
       ],
       "set_dps": 217.34104726715827,
-      "no_source_count": 1657,
+      "no_source_count": 1643,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7056,8 +7056,8 @@
         "off_hand: Dagger of Veiled Shadows",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.285923657,
-      "verify_run_seconds": 1.9792080570000001,
+      "weights_run_seconds": 1.3713926810000001,
+      "verify_run_seconds": 1.965811467,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7065,11 +7065,11 @@
         },
         "chest": {
           "eligible": 477,
-          "sourced": 325
+          "sourced": 326
         },
         "feet": {
           "eligible": 363,
-          "sourced": 249
+          "sourced": 253
         },
         "finger1": {
           "eligible": 299,
@@ -7081,15 +7081,15 @@
         },
         "hands": {
           "eligible": 380,
-          "sourced": 260
+          "sourced": 261
         },
         "head": {
           "eligible": 287,
-          "sourced": 188
+          "sourced": 189
         },
         "legs": {
           "eligible": 385,
-          "sourced": 257
+          "sourced": 258
         },
         "main_hand": {
           "eligible": 498,
@@ -7097,7 +7097,7 @@
         },
         "neck": {
           "eligible": 141,
-          "sourced": 70
+          "sourced": 71
         },
         "off_hand": {
           "eligible": 127,
@@ -7109,7 +7109,7 @@
         },
         "shoulder": {
           "eligible": 278,
-          "sourced": 172
+          "sourced": 175
         },
         "trinket1": {
           "eligible": 76,
@@ -7121,7 +7121,7 @@
         },
         "waist": {
           "eligible": 349,
-          "sourced": 240
+          "sourced": 242
         },
         "wrist": {
           "eligible": 283,
@@ -7219,12 +7219,12 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "score": 81.33440621298138,
-              "score_delta": 65.98400325557475,
+              "item_id": 21809,
+              "item_name": "Fury of the Forgotten Swarm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score": 170.9920962948349,
+              "score_delta": 155.64169333742828,
               "dps_delta": 0
             },
             {
@@ -7521,7 +7521,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Bonescythe Sabatons",
           "source_kind": "quest",
-          "score": 234.99209629483494,
+          "score": 234.9920962948349,
           "verified": true,
           "alternatives": [
             {
@@ -7534,22 +7534,22 @@
               "sim_dps": 204.94810089974067
             },
             {
-              "item_id": 19684,
-              "item_name": "Bloodvine Boots",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "score": 57.33440621298137,
-              "score_delta": -177.65769008185356,
-              "dps_delta": -9.442911771008236
+              "item_id": 227815,
+              "item_name": "Fine Dawn Treaders",
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana",
+              "score": 70.32320871540236,
+              "score_delta": -164.66888757943255,
+              "dps_delta": -8.752527268176403
             },
             {
-              "item_id": 16711,
-              "item_name": "Shadowcraft Boots",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Rattlegore",
-              "score": 41.99712664124358,
-              "score_delta": -192.99496965359134,
-              "dps_delta": -10.25812319099506
+              "item_id": 226831,
+              "item_name": "Darkmantle Footpads",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "score": 68.47328980891459,
+              "score_delta": -166.51880648592032,
+              "dps_delta": -8.850854680907231
             }
           ]
         },
@@ -7559,7 +7559,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "score": 186.9920962948349,
+          "score": 186.99209629483494,
           "verified": true,
           "alternatives": [
             {
@@ -7568,8 +7568,8 @@
               "source_kind": "quest",
               "source": "Houses of the Holy",
               "score": 113.65769008185354,
-              "score_delta": -73.33440621298136,
-              "dps_delta": -3.8978910922989316
+              "score_delta": -73.33440621298139,
+              "dps_delta": -3.8978910922989334
             },
             {
               "item_id": 18403,
@@ -7577,8 +7577,8 @@
               "source_kind": "quest",
               "source": "For All To See",
               "score": 113.65769008185354,
-              "score_delta": -73.33440621298136,
-              "dps_delta": -3.8978910922989316
+              "score_delta": -73.33440621298139,
+              "dps_delta": -3.8978910922989334
             },
             {
               "item_id": 18543,
@@ -7586,8 +7586,8 @@
               "source_kind": "world",
               "source": "Lord Kazzak",
               "score": 113.65769008185354,
-              "score_delta": -73.33440621298136,
-              "dps_delta": -3.8978910922989316
+              "score_delta": -73.33440621298139,
+              "dps_delta": -3.8978910922989334
             }
           ]
         },
@@ -7759,8 +7759,8 @@
             {
               "item_id": 15930,
               "item_name": "Imperial Red Scepter",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Darkmaster Gandling",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 2.3616004549856355,
               "score_delta": -796.064809170388,
               "dps_delta": -42.31266180223913
@@ -7768,8 +7768,8 @@
             {
               "item_id": 15968,
               "item_name": "Elunarian Sphere",
-              "source_kind": "world",
-              "source": "Azuregos",
+              "source_kind": "world_drop",
+              "source": "World drop",
               "score": 2.3616004549856355,
               "score_delta": -796.064809170388,
               "dps_delta": -42.31266180223913
@@ -7816,7 +7816,7 @@
         }
       ],
       "set_dps": 217.68051527630843,
-      "no_source_count": 1666,
+      "no_source_count": 1652,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7851,8 +7851,8 @@
         "off_hand: Dagger of Veiled Shadows",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.285923657,
-      "verify_run_seconds": 2.106969212,
+      "weights_run_seconds": 1.3713926810000001,
+      "verify_run_seconds": 2.098387262,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7860,11 +7860,11 @@
         },
         "chest": {
           "eligible": 474,
-          "sourced": 320
+          "sourced": 321
         },
         "feet": {
           "eligible": 367,
-          "sourced": 250
+          "sourced": 254
         },
         "finger1": {
           "eligible": 299,
@@ -7876,15 +7876,15 @@
         },
         "hands": {
           "eligible": 380,
-          "sourced": 257
+          "sourced": 258
         },
         "head": {
           "eligible": 288,
-          "sourced": 189
+          "sourced": 190
         },
         "legs": {
           "eligible": 380,
-          "sourced": 251
+          "sourced": 252
         },
         "main_hand": {
           "eligible": 497,
@@ -7892,7 +7892,7 @@
         },
         "neck": {
           "eligible": 143,
-          "sourced": 72
+          "sourced": 73
         },
         "off_hand": {
           "eligible": 126,
@@ -7904,7 +7904,7 @@
         },
         "shoulder": {
           "eligible": 274,
-          "sourced": 168
+          "sourced": 171
         },
         "trinket1": {
           "eligible": 76,
@@ -7916,7 +7916,7 @@
         },
         "waist": {
           "eligible": 352,
-          "sourced": 242
+          "sourced": 244
         },
         "wrist": {
           "eligible": 286,

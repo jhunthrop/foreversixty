@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 00000000000000000-2351000000000000000-0000000000000000)
 
-Set DPS (verified): 35.1. Weights run: 1.4s. Verify run: 1.0s. 204 eligible items had no known source.
+Set DPS (verified): 35.1. Weights run: 1.5s. Verify run: 1.1s. 204 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.103, intellect=not significant (-0.337 ± 0.116), crit=0.435 ± 0.021, hit=1.467 ± 0.069, spell_haste=0.633 ± 0.114, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.103, fire_power=not significant (0.000 ± 0.000)
 
@@ -19,7 +19,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 5.0 | yes | Double-Stitched Woolen Shoulders (4314, -0.29 DPS, sim-verified) [crafted]; Slime-encrusted Pads (6461, -0.67 DPS) [dungeon] |
 | back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes | Black Whelp Cloak (7283, -0.13 DPS) [crafted]; Caretaker's Cape (20428, -0.13 DPS) [rep]; Feyscale Cloak (6632, -0.26 DPS, sim-verified) [dungeon] |
 | chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 5.0 | yes | Gray Woolen Robe (2585, -0.13 DPS) [crafted]; Bloody Apron (6226, -0.13 DPS) [dungeon]; Green Woolen Vest (2582, -1.36 DPS, sim-verified) [crafted] |
-| wrist | Windsong Bangles (263336) | Breaking the Breaker [quest] | 1.0 | yes | Mindthrust Bracers (1974, -0.00 DPS, sim-verified) [dungeon]; Silver-lined Bracers (3224, -0.13 DPS) [world]; Seer's Cuffs (3645, -0.13 DPS) [world_drop] |
+| wrist | Windsong Bangles (263336) | Breaking the Breaker [quest] | 1.0 | yes | Mindthrust Bracers (1974, -0.00 DPS, sim-verified) [world_drop]; Silver-lined Bracers (3224, -0.13 DPS) [world]; Seer's Cuffs (3645, -0.13 DPS) [world_drop] |
 | hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes | Gnoll Casting Gloves (892, -0.29 DPS, sim-verified) [world]; Pristine Gloves (253913, -0.40 DPS) [crafted]; Heavy Woolen Gloves (4310, -0.67 DPS) [crafted] |
 | waist | Pristine Sash (253925) | Tailoring [crafted] | 0.0 | yes | Novice Ardent's Sash (253887, -0.27 DPS) [crafted]; Lesser Belt of the Spire (1299, -0.54 DPS) [world]; Novice Arcanist's Sash (253885, -0.83 DPS, sim-verified) [crafted] |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 9.0 | yes | Filigreed Pristine Leggings (253937, -0.40 DPS) [crafted]; Colorful Kilt (10048, -0.54 DPS) [crafted]; Silk-threaded Trousers (1929, -0.92 DPS, sim-verified) [dungeon] |
@@ -38,18 +38,18 @@ No-known-source sample (15 of 204, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-2352113101200000000-0000000000000000)
 
-Set DPS (verified): 53.9. Weights run: 1.4s. Verify run: 1.1s. 409 eligible items had no known source.
+Set DPS (verified): 53.9. Weights run: 1.5s. Verify run: 1.2s. 409 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.288), intellect=not significant (0.400 ± 0.325), crit=0.845 ± 0.045, hit=2.738 ± 0.165, spell_haste=1.692 ± 0.302, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.288), fire_power=not significant (0.000 ± 0.000)
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Holy Shroud (2721) | World drop [world_drop] | 11.0 | yes | Silk Headband (7050, -0.18 DPS) [crafted]; Embalmed Shroud (7691, -0.27 DPS) [dungeon]; Enchanter's Cowl (4322, -0.98 DPS, sim-verified) [crafted] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 9.4 | yes | Crystal Starfire Medallion (5003, -0.71 DPS) [world_drop]; Pendant of Myzrael (4614, -0.86 DPS) [dungeon]; Darkspear Warding Pendant (272075, -1.63 DPS, sim-verified) [vendor] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 9.4 | yes | Crystal Starfire Medallion (5003, -0.71 DPS) [world_drop]; Pendant of Myzrael (4614, -0.86 DPS) [world_drop]; Darkspear Warding Pendant (272075, -1.63 DPS, sim-verified) [vendor] |
 | shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 12.6 | yes | Fairywing Mantle (9536, -0.27 DPS) [quest]; Invoker's Mantle (215365, -0.33 DPS) [crafted]; Death Speaker Mantle (6685, -0.69 DPS, sim-verified) [dungeon] |
 | back | Hillman's Cloak (3719) | Leatherworking [crafted] | 5.0 | yes | Heavy Woolen Cloak (4311, -0.09 DPS) [crafted]; Prelacy Cape (7004, -0.09 DPS) [quest]; Repairman's Cape (9605, -0.54 DPS, sim-verified) [quest] |
-| chest | Green Silk Armor (7065) | Tailoring [crafted] | 14.2 | yes | Tree Bark Jacket (1486, +0.00 DPS, sim-verified) [dungeon]; Death Speaker Robes (6682, -0.26 DPS) [dungeon]; Pristine Gown (253961, -0.40 DPS) [crafted] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 | yes | Tabitha's Cuffs (251486, -0.60 DPS) [quest]; Mindthrust Bracers (1974, -0.64 DPS) [dungeon]; Nightsky Wristbands (6407, -2.02 DPS, sim-verified) [world_drop] |
+| chest | Green Silk Armor (7065) | Tailoring [crafted] | 14.2 | yes | Tree Bark Jacket (1486, +0.00 DPS, sim-verified) [world_drop]; Death Speaker Robes (6682, -0.26 DPS) [dungeon]; Pristine Gown (253961, -0.40 DPS) [crafted] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 | yes | Tabitha's Cuffs (251486, -0.60 DPS) [quest]; Mindthrust Bracers (1974, -0.64 DPS) [world_drop]; Nightsky Wristbands (6407, -2.02 DPS, sim-verified) [world_drop] |
 | hands | Town Clerk's Mittens (270029) | Crime and Punishment [quest] | 8.4 | yes | Serpent Gloves (5970, +0.00 DPS, sim-verified) [dungeon]; Shilly Mitts (9609, -0.13 DPS) [quest]; Truefaith Gloves (7049, -0.20 DPS) [crafted] |
 | waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 12.2 | yes | Invoker's Cord (215366, -0.29 DPS) [crafted]; Crimson Silk Belt (7055, -0.31 DPS) [crafted]; Belt of Arugal (6392, -0.44 DPS, sim-verified) [dungeon] |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 12.2 | yes | Gaze Dreamer Pants (6903, +0.00 DPS, sim-verified) [dungeon]; Pristine Leggings (253987, -0.22 DPS) [crafted]; Filigreed Pristine Leggings (253937, -0.35 DPS) [crafted] |
@@ -98,14 +98,14 @@ No-known-source sample (15 of 568, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 25300000000000000-2352113101200001351-0000000000000000)
 
-Set DPS (verified): 134.7. Weights run: 1.2s. Verify run: 1.0s. 721 eligible items had no known source.
+Set DPS (verified): 134.7. Weights run: 1.2s. Verify run: 1.1s. 721 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.208, intellect=not significant (-0.672 ± 0.236), crit=0.535 ± 0.036, hit=1.703 ± 0.134, spell_haste=not significant (0.459 ± 0.228), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.947 ± 0.209, fire_power=0.054 ± 0.001
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Spellpower Goggles Xtreme Plus (15999) | Engineering [crafted] | 27.0 | yes | Blood Guard's Dreadweave Hat (220907, -1.55 DPS) [vendor]; Dreamweave Circlet (10041, -1.68 DPS) [crafted]; Knight-Lieutenant's Dreadweave Hat (220889, -2.47 DPS, sim-verified) [vendor] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.0 | yes | Mindburst Medallion (11196, -0.32 DPS, sim-verified) [quest]; Necklace of Calisea (1714, -1.96 DPS) [world_drop]; Pendant of Myzrael (4614, -1.96 DPS) [dungeon] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.0 | yes | Mindburst Medallion (11196, -0.32 DPS, sim-verified) [quest]; Necklace of Calisea (1714, -1.96 DPS) [world_drop]; Pendant of Myzrael (4614, -1.96 DPS) [world_drop] |
 | shoulder | Knight-Lieutenant's Dreadweave Mantle (220887) (or Blood Guard's Dreadweave Mantle (220905)) | Captain Dirgehammer [vendor] | 15.5 | yes | Blood Guard's Dreadweave Mantle (220905, +0.00 DPS, sim-verified) [vendor]; Rotgrip Mantle (17732, -0.70 DPS) [dungeon]; Black Mageweave Shoulders (10027, -1.54 DPS) [crafted] |
 | back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 14.0 | yes | Runecloth Cloak (13860, -1.40 DPS) [crafted]; Nightfall Drape (12465, -1.43 DPS, sim-verified) [dungeon]; Icy Cloak (4327, -1.96 DPS) [crafted] |
 | chest | Robe of the Magi (1716) | World drop [world_drop] | 22.0 | yes | Stone Guard's Dreadweave Vest (220904, -0.70 DPS) [vendor]; Acumen Robes (17775, -0.84 DPS) [quest]; Knight's Dreadweave Vest (220886, -2.68 DPS, sim-verified) [vendor] |
@@ -116,11 +116,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | feet | Sergeant Major's Dreadweave Boots (220891) (or First Sergeant's Dreadweave Boots (220909)) | Captain Dirgehammer [vendor] | 25.0 | yes | First Sergeant's Dreadweave Boots (220909, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -0.29 DPS) [crafted]; Black Mageweave Boots (10026, -3.93 DPS) [crafted] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 17.0 | yes | Philanthropist's Ring (281635, -1.97 DPS) [quest]; Ring of Forlorn Spirits (2043, -2.53 DPS) [quest]; Reedknot Ring (9622, -2.81 DPS) [quest] |
 | finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 12.0 | yes | Philanthropist's Ring (281635, -0.71 DPS, sim-verified) [quest]; Lorekeeper's Ring (19524, -0.84 DPS) [rep]; Ring of Forlorn Spirits (2043, -1.12 DPS) [quest] |
-| trinket1 | Uther's Strength (11302) | Azuregos [world] | 0.0 | yes | Frozen Heart of the Mountain (249469, -0.65 DPS, sim-verified) [crafted]; Thunderbrew's Boot Flask (744, -1.68 DPS) [quest]; Guardian Talisman (1490, -1.68 DPS) [quest] |
+| trinket1 | Uther's Strength (11302) | World drop [world_drop] | 0.0 | yes | Frozen Heart of the Mountain (249469, -0.65 DPS, sim-verified) [crafted]; Thunderbrew's Boot Flask (744, -1.68 DPS) [quest]; Guardian Talisman (1490, -1.68 DPS) [quest] |
 | trinket2 | Abyss Shard (20534) | Trolls of a Feather [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, -2.41 DPS, sim-verified) [crafted]; Thunderbrew's Boot Flask (744, -3.36 DPS) [quest]; Guardian Talisman (1490, -3.36 DPS) [quest] |
 | main_hand | Soul Harvester (20536) | Trolls of a Feather [quest] | 0.0 | yes | Kindling Stave (11750, -1.66 DPS) [dungeon]; Soulkeeper (1607, -3.04 DPS) [world_drop]; Spire of Hakkar (10844, -3.15 DPS) [world] |
 | off_hand | - | - |  |  |  |
-| ranged | Noxious Shooter (17745) | Maraudon: Noxxion [dungeon] | 0.0 | yes | Pyric Caduceus (11748, -1.63 DPS, sim-verified) [dungeon]; Wand of Allistarj (13065, -2.98 DPS) [world]; Lesser Eternal Wand (249232, -3.41 DPS) [crafted] |
+| ranged | Noxious Shooter (17745) | Maraudon: Noxxion [dungeon] | 0.0 | yes | Pyric Caduceus (11748, -1.63 DPS, sim-verified) [dungeon]; Wand of Allistarj (13065, -2.98 DPS) [world_drop]; Lesser Eternal Wand (249232, -3.41 DPS) [crafted] |
 
 **New at 50:** head: Spellpower Goggles Xtreme Plus; shoulder: Knight-Lieutenant's Dreadweave Mantle; back: Spritecaster Cape; waist: Highlander's Cloth Girdle; legs: Knight's Dreadweave Leggings; feet: Sergeant Major's Dreadweave Boots; finger1: Blackstone Ring; finger2: Lorekeeper's Ring; trinket1: Uther's Strength; trinket2: Abyss Shard; main_hand: Soul Harvester; ranged: Noxious Shooter
 
@@ -128,39 +128,39 @@ No-known-source sample (15 of 721, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 25532300000000000-2352113101200001351-0000000000000000)
 
-Set DPS (verified): 261.4. Weights run: 1.3s. Verify run: 1.0s. 1147 eligible items had no known source.
+Set DPS (verified): 266.5. Weights run: 1.3s. Verify run: 1.1s. 1140 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± -0.620, intellect=4.547 ± -0.743, crit=-1.774 ± -0.098, hit=-5.572 ± -0.332, spell_haste=-2.242 ± -0.730, spell_penetration=not significant (-0.000 ± -0.000), shadow_power=1.083 ± -0.620, fire_power=-0.082 ± -0.001
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Plagueheart Circlet (22506) | Plagueheart Circlet [quest] | 0.0 | yes | Field Marshal's Coronal (17578, +0.00 DPS) [vendor]; Doomcaller's Circlet (21337, +0.00 DPS) [quest]; Magister's Crown (16686, -8.21 DPS, sim-verified) [dungeon] |
-| neck | Charm of the Shifting Sands (21504) | The Fall of Ossirian [quest] | 0.0 | yes | Horizon Choker (13085, +0.00 DPS) [world]; Beads of Ogre Mojo (22149, +0.00 DPS) [quest]; Amulet of the Dawn (22657, +0.00 DPS) [quest] |
+| head | Plagueheart Circlet (22506) | Plagueheart Circlet [quest] | 0.0 | yes | Field Marshal's Coronal (17578, +0.00 DPS) [vendor]; Doomcaller's Circlet (21337, +0.00 DPS) [quest]; Magister's Crown (16686, -9.51 DPS, sim-verified) [dungeon] |
+| neck | Charm of the Shifting Sands (21504) | The Fall of Ossirian [quest] | 0.0 | yes | Horizon Choker (13085, +0.00 DPS) [world_drop]; Beads of Ogre Mojo (22149, +0.00 DPS) [quest]; Amulet of the Dawn (22657, +0.00 DPS) [quest] |
 | shoulder | Magister's Mantle (16689) | Scholomance: Ras Frostwhisper [dungeon] | 108.0 | yes | Field Marshal's Dreadweave Shoulders (17580, +0.00 DPS) [vendor]; Warlord's Dreadweave Mantle (17590, +0.00 DPS) [vendor]; Field Marshal's Dreadweave Shoulders (231583, +0.00 DPS) [vendor] |
-| back | Darkspear Raider's Cloak (272063) | Creeg Bothunk [vendor] | 72.8 | yes | Hide of the Wild (18510, +0.00 DPS) [crafted]; Shroud of Unspoken Names (21418, +0.00 DPS) [quest]; Darkspear Raider's Cloak (272076, -0.47 DPS, sim-verified) [vendor] |
+| back | Darkspear Raider's Cloak (272063) | Creeg Bothunk [vendor] | 72.8 | yes | Hide of the Wild (18510, +0.00 DPS) [crafted]; Shroud of Unspoken Names (21418, +0.00 DPS) [quest]; Darkspear Raider's Cloak (272076, -0.85 DPS, sim-verified) [vendor] |
 | chest | Plagueheart Robe (22504) | Plagueheart Robe [quest] | 151.0 | yes | Field Marshal's Dreadweave Robe (17581, +0.00 DPS) [vendor]; Warlord's Dreadweave Robe (17592, +0.00 DPS) [vendor]; Field Marshal's Dreadweave Robe (231582, +0.00 DPS) [vendor] |
-| wrist | Plagueheart Bindings (22511) | Plagueheart Bindings [quest] | 86.7 | yes | Marshal's Dreadweave Cuffs (17582, +0.00 DPS) [pvp]; General's Dreadweave Bracers (17587, +0.00 DPS) [pvp]; Magiskull Cuffs (13107, -11.44 DPS, sim-verified) [world] |
-| hands | Plagueheart Gloves (22509) | Plagueheart Gloves [quest] | 0.0 | yes | Mooncloth Gloves (18409, +0.00 DPS) [crafted]; Virtuous Gloves (22081, +0.00 DPS) [quest]; Raider Handwraps (272098, -2.74 DPS, sim-verified) [vendor] |
-| waist | Magister's Belt (16685) | Blackrock Spire: Smolderthorn Mystic [dungeon] | 102.5 | yes | Marshal's Dreadweave Sash (17585, -0.40 DPS) [pvp]; General's Dreadweave Belt (17589, -0.40 DPS) [pvp]; Devout Belt (16696, -1.70 DPS, sim-verified) [dungeon] |
-| legs | Plagueheart Leggings (22505) | Plagueheart Leggings [quest] | 150.7 | yes | Marshal's Dreadweave Leggings (17579, +0.00 DPS) [vendor]; General's Dreadweave Pants (17593, +0.00 DPS) [vendor]; Doomcaller's Trousers (21336, -6.35 DPS, sim-verified) [quest] |
-| feet | Plagueheart Sandals (22508) | Plagueheart Sandals [quest] | 104.8 | yes | Knight-Lieutenant's Dreadweave Boots (17562, +0.00 DPS) [pvp]; Bloodvine Boots (19684, +0.00 DPS) [crafted]; Doomcaller's Footwraps (21338, -6.90 DPS, sim-verified) [quest] |
+| wrist | Plagueheart Bindings (22511) | Plagueheart Bindings [quest] | 86.7 | yes | Marshal's Dreadweave Cuffs (17582, +0.00 DPS) [pvp]; General's Dreadweave Bracers (17587, +0.00 DPS) [pvp]; Magiskull Cuffs (13107, -11.09 DPS, sim-verified) [world_drop] |
+| hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | 107.0 | yes | Mooncloth Gloves (18409, +0.00 DPS) [crafted]; Virtuous Gloves (22081, +0.00 DPS) [quest]; Plagueheart Gloves (22509, +0.00 DPS, sim-verified) [quest] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 125.0 | yes | Marshal's Dreadweave Sash (17585, +0.00 DPS) [pvp]; General's Dreadweave Belt (17589, +0.00 DPS) [pvp]; Magister's Belt (16685, -6.73 DPS, sim-verified) [world_drop] |
+| legs | Plagueheart Leggings (22505) | Plagueheart Leggings [quest] | 150.7 | yes | Marshal's Dreadweave Leggings (17579, +0.00 DPS) [vendor]; General's Dreadweave Pants (17593, +0.00 DPS) [vendor]; Doomcaller's Trousers (21336, -6.24 DPS, sim-verified) [quest] |
+| feet | Plagueheart Sandals (22508) | Plagueheart Sandals [quest] | 104.8 | yes | Knight-Lieutenant's Dreadweave Boots (17562, +0.00 DPS) [pvp]; Bloodvine Boots (19684, +0.00 DPS) [crafted]; Doomcaller's Footwraps (21338, -7.32 DPS, sim-verified) [quest] |
 | finger1 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | 72.0 | yes | Signet Ring of the Bronze Dragonflight (21209, +0.00 DPS) [quest]; Signet Ring of the Bronze Dragonflight (21210, +0.00 DPS) [quest]; Ring of the Fallen God (21709, +0.00 DPS) [quest] |
-| finger2 | Cauterizing Band (19140) | Flamewaker Elite [world] | 69.6 | yes | Signet Ring of the Bronze Dragonflight (21209, +0.00 DPS) [quest]; Ring of the Fallen God (21709, +0.00 DPS) [quest]; Signet Ring of the Bronze Dragonflight (21210, -1.40 DPS, sim-verified) [quest] |
-| trinket1 | Abyss Shard (20534) | Trolls of a Feather [quest] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, -4.45 DPS, sim-verified) [world_drop] |
-| trinket2 | Uther's Strength (11302) | Azuregos [world] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -2.70 DPS, sim-verified) [quest] |
+| finger2 | Cauterizing Band (19140) | World drop [world_drop] | 69.6 | yes | Signet Ring of the Bronze Dragonflight (21209, +0.00 DPS) [quest]; Ring of the Fallen God (21709, +0.00 DPS) [quest]; Signet Ring of the Bronze Dragonflight (21210, -0.56 DPS, sim-verified) [quest] |
+| trinket1 | Abyss Shard (20534) | Trolls of a Feather [quest] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, -4.04 DPS, sim-verified) [world_drop] |
+| trinket2 | Uther's Strength (11302) | World drop [world_drop] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, -2.36 DPS, sim-verified) [world_drop] |
 | main_hand | Crackling Staff (19102) | Stormpike Guard [rep] | 0.0 | yes | Grand Marshal's Stave (18873, -6.99 DPS) [vendor]; High Warlord's War Staff (234549, -8.88 DPS) [vendor]; Grand Marshal's Stave (234571, -8.88 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Brilliant Wand (249385) | Enchanting [crafted] | 40.8 | yes | Cairnstone Sliver (9654, +0.00 DPS) [quest]; Stormrager (16997, +0.00 DPS) [quest]; Charged Lightning Rod (11860, -6.48 DPS, sim-verified) [quest] |
+| ranged | Brilliant Wand (249385) | Enchanting [crafted] | 40.8 | yes | Cairnstone Sliver (9654, +0.00 DPS) [quest]; Stormrager (16997, +0.00 DPS) [quest]; Charged Lightning Rod (11860, -4.76 DPS, sim-verified) [quest] |
 
-**New at 60:** head: Plagueheart Circlet; neck: Charm of the Shifting Sands; shoulder: Magister's Mantle; back: Darkspear Raider's Cloak; chest: Plagueheart Robe; wrist: Plagueheart Bindings; hands: Plagueheart Gloves; waist: Magister's Belt; legs: Plagueheart Leggings; feet: Plagueheart Sandals; finger1: Elemental Focus Band; finger2: Cauterizing Band; trinket1: Abyss Shard; trinket2: Uther's Strength; main_hand: Crackling Staff; ranged: Brilliant Wand
+**New at 60:** head: Plagueheart Circlet; neck: Charm of the Shifting Sands; shoulder: Magister's Mantle; back: Darkspear Raider's Cloak; chest: Plagueheart Robe; wrist: Plagueheart Bindings; hands: Raider Handwraps; waist: Knowledge of the Timbermaw; legs: Plagueheart Leggings; feet: Plagueheart Sandals; finger1: Elemental Focus Band; finger2: Cauterizing Band; trinket1: Abyss Shard; trinket2: Uther's Strength; main_hand: Crackling Staff; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1147, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1140, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ## Horde
 
 ### Band 20 (troll, 00000000000000000-2351000000000000000-0000000000000000)
 
-Set DPS (verified): 34.3. Weights run: 1.4s. Verify run: 1.0s. 203 eligible items had no known source.
+Set DPS (verified): 34.3. Weights run: 1.5s. Verify run: 1.1s. 203 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.103, intellect=not significant (-0.337 ± 0.116), crit=0.435 ± 0.021, hit=1.467 ± 0.069, spell_haste=0.633 ± 0.114, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.103, fire_power=not significant (0.000 ± 0.000)
 
@@ -171,7 +171,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 5.0 | yes | Slime-encrusted Pads (6461, -0.67 DPS) [dungeon]; Double-Stitched Woolen Shoulders (4314, -1.03 DPS, sim-verified) [crafted] |
 | back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes | Black Whelp Cloak (7283, -0.13 DPS) [crafted]; Battle Healer's Cloak (20427, -0.13 DPS) [rep]; Feyscale Cloak (6632, -0.41 DPS, sim-verified) [dungeon] |
 | chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 5.0 | yes | Gray Woolen Robe (2585, -0.13 DPS) [crafted]; Bloody Apron (6226, -0.13 DPS) [dungeon]; Green Woolen Vest (2582, -2.04 DPS, sim-verified) [crafted] |
-| wrist | Owlbeard Bracers (16981) (or Windsong Bangles (263336)) | Earthen Arise [quest] | 1.0 | yes | Mindthrust Bracers (1974, -0.13 DPS) [dungeon]; Silver-lined Bracers (3224, -0.13 DPS) [world]; Windsong Bangles (263336, -0.81 DPS, sim-verified) [quest] |
+| wrist | Owlbeard Bracers (16981) (or Windsong Bangles (263336)) | Earthen Arise [quest] | 1.0 | yes | Mindthrust Bracers (1974, -0.13 DPS) [world_drop]; Silver-lined Bracers (3224, -0.13 DPS) [world]; Windsong Bangles (263336, -0.81 DPS, sim-verified) [quest] |
 | hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes | Gnoll Casting Gloves (892, -0.39 DPS, sim-verified) [world]; Apothecary Gloves (10919, -0.40 DPS) [quest]; Pristine Gloves (253913, -0.40 DPS) [crafted] |
 | waist | Pristine Sash (253925) | Tailoring [crafted] | 0.0 | yes | Novice Ardent's Sash (253887, -0.27 DPS) [crafted]; Lesser Belt of the Spire (1299, -0.54 DPS) [world]; Novice Arcanist's Sash (253885, -0.74 DPS, sim-verified) [crafted] |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 9.0 | yes | Filigreed Pristine Leggings (253937, -0.40 DPS) [crafted]; Colorful Kilt (10048, -0.54 DPS) [crafted]; Silk-threaded Trousers (1929, -2.06 DPS, sim-verified) [dungeon] |
@@ -190,18 +190,18 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-2352113101200000000-0000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 1.4s. Verify run: 1.1s. 410 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 1.5s. Verify run: 1.3s. 410 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.288), intellect=not significant (0.400 ± 0.325), crit=0.845 ± 0.045, hit=2.738 ± 0.165, spell_haste=1.692 ± 0.302, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.288), fire_power=not significant (0.000 ± 0.000)
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Holy Shroud (2721) | World drop [world_drop] | 11.0 | yes | Silk Headband (7050, -0.18 DPS) [crafted]; Embalmed Shroud (7691, -0.27 DPS) [dungeon]; Enchanter's Cowl (4322, -0.34 DPS, sim-verified) [crafted] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 9.4 | yes | Crystal Starfire Medallion (5003, -0.71 DPS) [world_drop]; Pendant of Myzrael (4614, -0.86 DPS) [dungeon]; Darkspear Warding Pendant (272075, -1.34 DPS, sim-verified) [vendor] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 9.4 | yes | Crystal Starfire Medallion (5003, -0.71 DPS) [world_drop]; Pendant of Myzrael (4614, -0.86 DPS) [world_drop]; Darkspear Warding Pendant (272075, -1.34 DPS, sim-verified) [vendor] |
 | shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 12.6 | yes | Fairywing Mantle (9536, -0.27 DPS) [quest]; Invoker's Mantle (215365, -0.33 DPS) [crafted]; Death Speaker Mantle (6685, -0.71 DPS, sim-verified) [dungeon] |
 | back | Hillman's Cloak (3719) (or Windsong Drape (15468)) | Leatherworking [crafted] | 5.0 | yes | Windsong Drape (15468, -0.01 DPS, sim-verified) [quest]; Heavy Woolen Cloak (4311, -0.09 DPS) [crafted]; Battle Healer's Cloak (19529, -0.09 DPS) [rep] |
-| chest | Green Silk Armor (7065) | Tailoring [crafted] | 14.2 | yes | Tree Bark Jacket (1486, +0.00 DPS, sim-verified) [dungeon]; Death Speaker Robes (6682, -0.26 DPS) [dungeon]; Pristine Gown (253961, -0.40 DPS) [crafted] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 | yes | Tabitha's Cuffs (251486, -0.60 DPS) [quest]; Mindthrust Bracers (1974, -0.64 DPS) [dungeon]; Nightsky Wristbands (6407, -1.44 DPS, sim-verified) [world_drop] |
+| chest | Green Silk Armor (7065) | Tailoring [crafted] | 14.2 | yes | Tree Bark Jacket (1486, +0.00 DPS, sim-verified) [world_drop]; Death Speaker Robes (6682, -0.26 DPS) [dungeon]; Pristine Gown (253961, -0.40 DPS) [crafted] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 | yes | Tabitha's Cuffs (251486, -0.60 DPS) [quest]; Mindthrust Bracers (1974, -0.64 DPS) [world_drop]; Nightsky Wristbands (6407, -1.44 DPS, sim-verified) [world_drop] |
 | hands | Jutebraid Gloves (10654) | Horde Presence [quest] | 8.0 | yes | Serpent Gloves (5970, +0.00 DPS, sim-verified) [dungeon]; Truefaith Gloves (7049, -0.16 DPS) [crafted]; Gnoll Casting Gloves (892, -0.18 DPS) [world] |
 | waist | Defiler's Cloth Girdle (20164) | The Defilers [rep] | 12.2 | yes | Belt of Arugal (6392, -0.18 DPS) [dungeon]; Warsong Sash (16975, -0.19 DPS, sim-verified) [quest]; Invoker's Cord (215366, -0.29 DPS) [crafted] |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 12.2 | yes | Gaze Dreamer Pants (6903, +0.00 DPS, sim-verified) [dungeon]; Pristine Leggings (253987, -0.22 DPS) [crafted]; Filigreed Pristine Leggings (253937, -0.35 DPS) [crafted] |
@@ -220,7 +220,7 @@ No-known-source sample (15 of 410, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-2352113101200001351-0000000000000000)
 
-Set DPS (verified): 103.2. Weights run: 1.2s. Verify run: 1.0s. 568 eligible items had no known source.
+Set DPS (verified): 103.2. Weights run: 1.2s. Verify run: 1.1s. 568 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.308), intellect=not significant (0.667 ± 0.396), crit=0.836 ± 0.047, hit=3.138 ± 0.219, spell_haste=1.901 ± 0.341, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.308), fire_power=not significant (0.000 ± 0.000)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 568, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 25300000000000000-2352113101200001351-0000000000000000)
 
-Set DPS (verified): 131.0. Weights run: 1.2s. Verify run: 1.0s. 721 eligible items had no known source.
+Set DPS (verified): 131.0. Weights run: 1.2s. Verify run: 1.1s. 721 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.208, intellect=not significant (-0.672 ± 0.236), crit=0.535 ± 0.036, hit=1.703 ± 0.134, spell_haste=not significant (0.459 ± 0.228), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.947 ± 0.209, fire_power=0.054 ± 0.001
 
@@ -268,11 +268,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | feet | Sergeant Major's Dreadweave Boots (220891) (or First Sergeant's Dreadweave Boots (220909)) | Captain Dirgehammer [vendor] | 25.0 | yes | First Sergeant's Dreadweave Boots (220909, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -0.29 DPS) [crafted]; Black Mageweave Boots (10026, -3.93 DPS) [crafted] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 17.0 | yes | Philanthropist's Ring (281635, -1.97 DPS) [quest]; Reedknot Ring (9622, -2.81 DPS) [quest]; Sea Giant's Toe Ring (274746, -3.09 DPS) [vendor] |
 | finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 12.0 | yes | Advisor's Ring (19520, -0.84 DPS) [rep]; Reedknot Ring (9622, -1.40 DPS) [quest]; Philanthropist's Ring (281635, -1.40 DPS, sim-verified) [quest] |
-| trinket1 | Uther's Strength (11302) | Azuregos [world] | 0.0 | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, -1.55 DPS, sim-verified) [crafted]; Guardian Talisman (1490, -1.68 DPS) [quest] |
+| trinket1 | Uther's Strength (11302) | World drop [world_drop] | 0.0 | yes | Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, -1.55 DPS, sim-verified) [crafted]; Guardian Talisman (1490, -1.68 DPS) [quest] |
 | trinket2 | Abyss Shard (20534) | Trolls of a Feather [quest] | 0.0 | yes | Rune of the Guard Captain (19120, -0.02 DPS) [quest]; Frozen Heart of the Mountain (249469, -2.82 DPS, sim-verified) [crafted]; Guardian Talisman (1490, -3.36 DPS) [quest] |
 | main_hand | Soul Harvester (20536) | Trolls of a Feather [quest] | 0.0 | yes | Kindling Stave (11750, -1.66 DPS) [dungeon]; Soulkeeper (1607, -3.04 DPS) [world_drop]; Spire of Hakkar (10844, -3.15 DPS) [world] |
 | off_hand | - | - |  |  |  |
-| ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 187.3 | yes | Noxious Shooter (17745, +0.00 DPS, sim-verified) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world]; Lesser Eternal Wand (249232, -4.51 DPS) [crafted] |
+| ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 187.3 | yes | Noxious Shooter (17745, +0.00 DPS, sim-verified) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world_drop]; Lesser Eternal Wand (249232, -4.51 DPS) [crafted] |
 
 **New at 50:** head: Spellpower Goggles Xtreme Plus; shoulder: Knight-Lieutenant's Dreadweave Mantle; back: Spritecaster Cape; waist: Defiler's Cloth Girdle; legs: Knight's Dreadweave Leggings; feet: Sergeant Major's Dreadweave Boots; finger1: Blackstone Ring; finger2: Advisor's Ring; trinket1: Uther's Strength; trinket2: Abyss Shard; main_hand: Soul Harvester; ranged: Pyric Caduceus
 
@@ -280,31 +280,31 @@ No-known-source sample (15 of 721, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 25532300000000000-2352113101200001351-0000000000000000)
 
-Set DPS (verified): 251.7. Weights run: 1.3s. Verify run: 1.0s. 1147 eligible items had no known source.
+Set DPS (verified): 259.4. Weights run: 1.3s. Verify run: 1.1s. 1140 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± -0.620, intellect=4.547 ± -0.743, crit=-1.774 ± -0.098, hit=-5.572 ± -0.332, spell_haste=-2.242 ± -0.730, spell_penetration=not significant (-0.000 ± -0.000), shadow_power=1.083 ± -0.620, fire_power=-0.082 ± -0.001
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Plagueheart Circlet (22506) | Plagueheart Circlet [quest] | 0.0 | yes | Field Marshal's Coronal (17578, +0.00 DPS) [vendor]; Doomcaller's Circlet (21337, +0.00 DPS) [quest]; Magister's Crown (16686, -8.57 DPS, sim-verified) [dungeon] |
-| neck | Charm of the Shifting Sands (21504) | The Fall of Ossirian [quest] | 0.0 | yes | Horizon Choker (13085, +0.00 DPS) [world]; Beads of Ogre Mojo (22149, +0.00 DPS) [quest]; Amulet of the Dawn (22657, +0.00 DPS) [quest] |
+| head | Plagueheart Circlet (22506) | Plagueheart Circlet [quest] | 0.0 | yes | Field Marshal's Coronal (17578, +0.00 DPS) [vendor]; Doomcaller's Circlet (21337, +0.00 DPS) [quest]; Magister's Crown (16686, -7.97 DPS, sim-verified) [dungeon] |
+| neck | Charm of the Shifting Sands (21504) | The Fall of Ossirian [quest] | 0.0 | yes | Horizon Choker (13085, +0.00 DPS) [world_drop]; Beads of Ogre Mojo (22149, +0.00 DPS) [quest]; Amulet of the Dawn (22657, +0.00 DPS) [quest] |
 | shoulder | Magister's Mantle (16689) | Scholomance: Ras Frostwhisper [dungeon] | 108.0 | yes | Field Marshal's Dreadweave Shoulders (17580, +0.00 DPS) [vendor]; Warlord's Dreadweave Mantle (17590, +0.00 DPS) [vendor]; Field Marshal's Dreadweave Shoulders (231583, +0.00 DPS) [vendor] |
-| back | Darkspear Raider's Cloak (272063) | Creeg Bothunk [vendor] | 72.8 | yes | Hide of the Wild (18510, +0.00 DPS) [crafted]; Shroud of Unspoken Names (21418, +0.00 DPS) [quest]; Darkspear Raider's Cloak (272076, -0.53 DPS, sim-verified) [vendor] |
+| back | Darkspear Raider's Cloak (272063) | Creeg Bothunk [vendor] | 72.8 | yes | Hide of the Wild (18510, +0.00 DPS) [crafted]; Shroud of Unspoken Names (21418, +0.00 DPS) [quest]; Darkspear Raider's Cloak (272076, -0.07 DPS, sim-verified) [vendor] |
 | chest | Plagueheart Robe (22504) | Plagueheart Robe [quest] | 151.0 | yes | Field Marshal's Dreadweave Robe (17581, +0.00 DPS) [vendor]; Warlord's Dreadweave Robe (17592, +0.00 DPS) [vendor]; Field Marshal's Dreadweave Robe (231582, +0.00 DPS) [vendor] |
-| wrist | Plagueheart Bindings (22511) | Plagueheart Bindings [quest] | 86.7 | yes | Marshal's Dreadweave Cuffs (17582, +0.00 DPS) [pvp]; General's Dreadweave Bracers (17587, +0.00 DPS) [pvp]; Magiskull Cuffs (13107, -10.31 DPS, sim-verified) [world] |
-| hands | Plagueheart Gloves (22509) | Plagueheart Gloves [quest] | 0.0 | yes | Mooncloth Gloves (18409, +0.00 DPS) [crafted]; Virtuous Gloves (22081, +0.00 DPS) [quest]; Raider Handwraps (272098, -3.22 DPS, sim-verified) [vendor] |
-| waist | Magister's Belt (16685) | Blackrock Spire: Smolderthorn Mystic [dungeon] | 102.5 | yes | Marshal's Dreadweave Sash (17585, -0.40 DPS) [pvp]; General's Dreadweave Belt (17589, -0.40 DPS) [pvp]; Devout Belt (16696, -1.45 DPS, sim-verified) [dungeon] |
-| legs | Plagueheart Leggings (22505) | Plagueheart Leggings [quest] | 150.7 | yes | Marshal's Dreadweave Leggings (17579, +0.00 DPS) [vendor]; General's Dreadweave Pants (17593, +0.00 DPS) [vendor]; Doomcaller's Trousers (21336, -5.88 DPS, sim-verified) [quest] |
-| feet | Plagueheart Sandals (22508) | Plagueheart Sandals [quest] | 104.8 | yes | Knight-Lieutenant's Dreadweave Boots (17562, +0.00 DPS) [pvp]; Bloodvine Boots (19684, +0.00 DPS) [crafted]; Doomcaller's Footwraps (21338, -6.21 DPS, sim-verified) [quest] |
+| wrist | Plagueheart Bindings (22511) | Plagueheart Bindings [quest] | 86.7 | yes | Marshal's Dreadweave Cuffs (17582, +0.00 DPS) [pvp]; General's Dreadweave Bracers (17587, +0.00 DPS) [pvp]; Magiskull Cuffs (13107, -10.99 DPS, sim-verified) [world_drop] |
+| hands | Plagueheart Gloves (22509) | Plagueheart Gloves [quest] | 0.0 | yes | Mooncloth Gloves (18409, +0.00 DPS) [crafted]; Virtuous Gloves (22081, +0.00 DPS) [quest]; Raider Handwraps (272098, -3.32 DPS, sim-verified) [vendor] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 125.0 | yes | Marshal's Dreadweave Sash (17585, +0.00 DPS) [pvp]; General's Dreadweave Belt (17589, +0.00 DPS) [pvp]; Magister's Belt (16685, -7.06 DPS, sim-verified) [world_drop] |
+| legs | Plagueheart Leggings (22505) | Plagueheart Leggings [quest] | 150.7 | yes | Marshal's Dreadweave Leggings (17579, +0.00 DPS) [vendor]; General's Dreadweave Pants (17593, +0.00 DPS) [vendor]; Doomcaller's Trousers (21336, -5.73 DPS, sim-verified) [quest] |
+| feet | Plagueheart Sandals (22508) | Plagueheart Sandals [quest] | 104.8 | yes | Knight-Lieutenant's Dreadweave Boots (17562, +0.00 DPS) [pvp]; Bloodvine Boots (19684, +0.00 DPS) [crafted]; Doomcaller's Footwraps (21338, -5.70 DPS, sim-verified) [quest] |
 | finger1 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | 72.0 | yes | Signet Ring of the Bronze Dragonflight (21209, +0.00 DPS) [quest]; Signet Ring of the Bronze Dragonflight (21210, +0.00 DPS) [quest]; Ring of the Fallen God (21709, +0.00 DPS) [quest] |
-| finger2 | Cauterizing Band (19140) | Flamewaker Elite [world] | 69.6 | yes | Signet Ring of the Bronze Dragonflight (21209, +0.00 DPS) [quest]; Ring of the Fallen God (21709, +0.00 DPS) [quest]; Signet Ring of the Bronze Dragonflight (21210, -0.55 DPS, sim-verified) [quest] |
-| trinket1 | Abyss Shard (20534) | Trolls of a Feather [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop]; Ankh of Life (1713, -3.24 DPS, sim-verified) [world_drop] |
-| trinket2 | Uther's Strength (11302) | Azuregos [world] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
-| main_hand | Staff of Hale Magefire (13000) | Azuregos [world] | 0.0 | yes | Grand Marshal's Stave (18873, -11.72 DPS) [vendor]; High Warlord's War Staff (234549, -13.61 DPS) [vendor]; Grand Marshal's Stave (234571, -13.61 DPS) [vendor] |
+| finger2 | Cauterizing Band (19140) | World drop [world_drop] | 69.6 | yes | Signet Ring of the Bronze Dragonflight (21209, +0.00 DPS) [quest]; Ring of the Fallen God (21709, +0.00 DPS) [quest]; Signet Ring of the Bronze Dragonflight (21210, -1.26 DPS, sim-verified) [quest] |
+| trinket1 | Abyss Shard (20534) | Trolls of a Feather [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop]; Ankh of Life (1713, -3.58 DPS, sim-verified) [world_drop] |
+| trinket2 | Uther's Strength (11302) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
+| main_hand | Staff of Hale Magefire (13000) | World drop [world_drop] | 0.0 | yes | Grand Marshal's Stave (18873, -11.72 DPS) [vendor]; High Warlord's War Staff (234549, -13.61 DPS) [vendor]; Grand Marshal's Stave (234571, -13.61 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Brilliant Wand (249385) | Enchanting [crafted] | 40.8 | yes | Charged Lightning Rod (11860, +0.00 DPS) [quest]; Stormrager (16997, +0.00 DPS) [quest]; Nature's Breath (19118, -8.02 DPS, sim-verified) [quest] |
+| ranged | Brilliant Wand (249385) | Enchanting [crafted] | 40.8 | yes | Charged Lightning Rod (11860, +0.00 DPS) [quest]; Stormrager (16997, +0.00 DPS) [quest]; Nature's Breath (19118, -7.98 DPS, sim-verified) [quest] |
 
-**New at 60:** head: Plagueheart Circlet; neck: Charm of the Shifting Sands; shoulder: Magister's Mantle; back: Darkspear Raider's Cloak; chest: Plagueheart Robe; wrist: Plagueheart Bindings; hands: Plagueheart Gloves; waist: Magister's Belt; legs: Plagueheart Leggings; feet: Plagueheart Sandals; finger1: Elemental Focus Band; finger2: Cauterizing Band; trinket1: Abyss Shard; trinket2: Uther's Strength; main_hand: Staff of Hale Magefire; ranged: Brilliant Wand
+**New at 60:** head: Plagueheart Circlet; neck: Charm of the Shifting Sands; shoulder: Magister's Mantle; back: Darkspear Raider's Cloak; chest: Plagueheart Robe; wrist: Plagueheart Bindings; hands: Plagueheart Gloves; waist: Knowledge of the Timbermaw; legs: Plagueheart Leggings; feet: Plagueheart Sandals; finger1: Elemental Focus Band; finger2: Cauterizing Band; trinket1: Abyss Shard; trinket2: Uther's Strength; main_hand: Staff of Hale Magefire; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1147, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1140, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers
 
