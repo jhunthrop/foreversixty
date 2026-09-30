@@ -36,6 +36,7 @@ from pipeline.classic_sources import (
     quest_factions_from_classic_sources,
     quest_turn_in_items_from_classic_sources,
 )
+from pipeline.classicdb_crafted import ClassicDbCraftedRecipe
 from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
 from pipeline.item_sources import ItemSourceEntry
@@ -70,6 +71,92 @@ KIND_ORDER = (
 #: quest that hands it out -- the fork database states no faction on a
 #: quest directly. 0 means the quest is open to both, per the design.
 QUEST_FACTION_BY_RESTRICTION = {0: "both", 1: "alliance", 2: "horde"}
+
+
+def resolve_quest_faction(
+    quest_id: int,
+    item_id: int,
+    quest_factions: dict[int, str],
+    quest_levels: dict[int, QuestLevelEntry],
+    item_sources: dict[int, ItemSourceEntry],
+    item_faction_restrictions: dict[int, str],
+) -> tuple[str, str]:
+    """`(faction, faction_source)` for one (quest id, reward item id)
+    pair, in primary-source order (data-followups-3 lane, 2026-09-30,
+    item 2 -- the "Friend of the Library" defect, quest 78150: neither
+    reward item, Erudite's Amulet nor Scholarly Pendant, carries a
+    `factionRestriction`, so the OLD item-derived guess this function
+    replaces was always "both" regardless of which faction can actually
+    receive each one):
+
+    1. `quest_factions` (`quest_factions_from_classic_sources`'s
+       result): the quest's own classic-db `RequiredRaces` -- verified
+       against a primary source, wins outright when present, for every
+       reward item the quest hands out alike (a fact about the QUEST).
+    2. `item_faction_restrictions` (`item_factions`'s own result): the
+       reward item's own client-stated `factionRestriction`, when it is
+       genuinely non-zero -- `QuestSource`'s own long-standing contract
+       (`test_loot_sources_wowhead.
+       test_a_wowhead_quest_reward_faction_follows_the_items_own_
+       restriction_not_the_scrapes`: item 100's real `alliance_only`
+       wins over a deliberately-mismatched wowhead scrape). Left
+       UNTOUCHED by this lane -- only a REAL restriction short-circuits
+       here; an unrestricted item (absent from this dict, its
+       `factionRestriction` 0) falls through to step 3, which is what
+       Friend of the Library's own two items do (neither carries one).
+    3. `item_sources[item_id].quest_rewards` (`pipeline.
+       wowhead_item_sources.QuestRewardSource.faction`, already
+       committed in `raw/items/item-sources.json` for every item the
+       fork database itself names no source for -- no new fetch needed):
+       the matching `quest_id` row's own wowhead `side`, when it states
+       "alliance" or "horde" -- a real, per-ITEM signal (measured while
+       building this lane's report: 106 of 145 item/quest pairs among
+       this build's `faction_source: "item"` quests resolve this way,
+       including the "Guardian Talisman"-shaped case wowhead.py's own
+       `wowhead_additions` doc already names -- the SAME item rewarded
+       by two faction-mirrored quest ids, each correctly one-sided here).
+       Skipped when wowhead states "both": indistinguishable, in
+       practice, from "wowhead's scrape has not resolved this one either"
+       -- Friend of the Library's own two items are exactly this case,
+       both wowhead-labelled "both" despite the observed one-reward-per-
+       faction split in play, so this tier does not report it as fact.
+    4. `quest_levels[quest_id].faction` (`pipeline.quest_levels.
+       QuestLevelEntry.faction`): wowhead's own `side` off the quest
+       PAGE'S `g_quests[<id>]` payload (a per-QUEST, not per-item,
+       fallback for an item the fork itself sources, so step 3's
+       `item_sources` cache was never fetched for it) -- the client's
+       own DB2 quest tables (`QuestV2`/`QuestInfo`'s allowable-races
+       mask, whichever names it) would be the primary source ahead of
+       even classic-db, but this pipeline does not fetch them at all (no
+       build under `data/builds/<build>/raw/quests/` carries one) -- see
+       this lane's own report for which table a future lane would add.
+    5. `"unknown"`, published honestly rather than invented from a
+       DEFAULTED (not real) item restriction -- `QuestSource`'s own doc,
+       item 270018 Hammerbone/quest 914 for why a quest's own faction and
+       an unrestricted item's can legitimately disagree.
+       `sim/cmd/leveling-bis/data.go`'s own `questFactionSide` map has no
+       `"unknown"` key, so a Go map lookup's own zero value reads this
+       exactly like `"both"` until a real source covers it -- not a new
+       runtime behaviour, just an honest label in place of a wrong guess.
+
+    Every case is tagged `faction_source`: `"classic-db"`, `"item"`
+    (either a real restriction, step 2, or unverified, step 5 -- kept as
+    one tag for continuity with the pre-existing contract, which never
+    distinguished the two), or `"wowhead"` (steps 3/4).
+    """
+    if quest_id in quest_factions:
+        return quest_factions[quest_id], "classic-db"
+    if item_id in item_faction_restrictions:
+        return item_faction_restrictions[item_id], "item"
+    item_entry = item_sources.get(item_id)
+    if item_entry is not None:
+        for reward in item_entry.quest_rewards:
+            if reward.quest_id == quest_id and reward.faction != "both":
+                return reward.faction, "wowhead"
+    quest_entry = quest_levels.get(quest_id)
+    if quest_entry is not None and quest_entry.faction is not None:
+        return quest_entry.faction, "wowhead"
+    return "unknown", "item"
 
 #: `pipeline.forkdb.FACTION_RESTRICTIONS`' 1/2 (alliance_only/horde_only),
 #: minus the `_only` suffix, for comparing an item's own restriction
@@ -702,6 +789,157 @@ def apply_quest_opens_gate(
     return document.model_copy(update={"quests": quests})
 
 
+def item_effective_gate(document: LootFile, item_id: int) -> str | None:
+    """The SAME "does this item have even one un-gated way to get it"
+    check `apply_quest_opens_gate`'s own `item_gate` closure runs
+    mid-fixed-point-loop, but over the FINAL, fully-resolved `document`
+    (every raid/dungeon `LootSource.opens` an overlay set, every
+    `QuestSource.opens` `apply_quest_opens_gate` itself already
+    computed) -- `apply_crafted_opens_gate`'s own use, for a recipe or
+    reagent item, needs no fixed-point loop of its own: by the time it
+    runs (after `apply_quest_opens_gate`), nothing it reads changes
+    again.
+
+    `None` for an item with no known source at all (never invented into
+    a gate, tenet 8) OR at least one un-gated way; otherwise the sole
+    (or, when more than one way is gated to a different phase,
+    deterministically first-sorted) gate value -- identical semantics to
+    `apply_quest_opens_gate`'s own `item_gate`, just not tied to its
+    local, in-progress `quests`/`non_quest_ways` dicts.
+    """
+    ways = [
+        source.opens or ""
+        for source in document.sources
+        if source.kind != "quest" and item_id in source_item_ids(source)
+    ]
+    ways += [entry.opens or "" for entry in document.quests.get(str(item_id), [])]
+    if not ways or any(not way for way in ways):
+        return None
+    return sorted(set(ways))[0]
+
+
+#: `apply_crafted_opens_gate`'s own two known phase values, LEAST
+#: restrictive first -- `curated/loot/forever-raid-phases.json`'s own
+#: notes: "raids-1" (Onyxia's Lair, the one announced-date raid, opens 9
+#: December) opens strictly BEFORE "later" (every other raid, no
+#: announced date at all). An alternative recipe source or reagent this
+#: tuple does not name (a future third phase this file's own curators
+#: have not added here yet) sorts LAST -- treated as the MOST
+#: restrictive rather than guessed into either known slot, so a new
+#: phase value never silently under-gates an item.
+_CRAFTED_OPENS_ORDER = ("raids-1", "later")
+
+
+def _opens_rank(value: str) -> int:
+    try:
+        return _CRAFTED_OPENS_ORDER.index(value)
+    except ValueError:
+        return len(_CRAFTED_OPENS_ORDER)
+
+
+def _least_restrictive_gate(gates: list[str]) -> str | None:
+    """For an OR relationship (alternative recipe items -- only one is
+    ever needed): `None` the moment any one alternative is itself
+    ungated (`item_effective_gate` already returned `None` for it), else
+    whichever named gate opens soonest."""
+    if not gates:
+        return None
+    return min(gates, key=_opens_rank)
+
+
+def _most_restrictive_gate(gates: list[str]) -> str | None:
+    """For an AND relationship (every reagent is needed, and the recipe
+    AND its reagents together): the LATEST-opening gate among every
+    non-`None` input, or `None` when none of them gates at all."""
+    named = [gate for gate in gates if gate]
+    if not named:
+        return None
+    return max(named, key=_opens_rank)
+
+
+def _crafted_item_gate(document: LootFile, recipe: ClassicDbCraftedRecipe) -> str | None:
+    """`opens` for one crafted item, per this lane's own brief: the most
+    restrictive of (a) its recipe item(s) -- `None` outright when
+    trainer-taught (`recipe_item_ids` empty, always open) -- and (b) its
+    reagents, each checked as an ordinary item (a reagent with NO known
+    source at all is silently skipped, never invented into a gate,
+    exactly `item_effective_gate`'s own "no source" case; a reagent
+    obtainable from even one un-gated place is likewise not a gate)."""
+    if recipe.recipe_item_ids:
+        recipe_ways = [item_effective_gate(document, item_id) for item_id in recipe.recipe_item_ids]
+        recipe_gate = None if any(way is None for way in recipe_ways) else _least_restrictive_gate(
+            [way for way in recipe_ways if way]
+        )
+    else:
+        recipe_gate = None  # trainer-taught: no item stands in the way at all
+    reagent_gates = [item_effective_gate(document, item_id) for item_id in recipe.reagent_item_ids]
+    reagent_gate = _most_restrictive_gate(reagent_gates)
+    return _most_restrictive_gate([recipe_gate, reagent_gate])
+
+
+def apply_crafted_opens_gate(
+    document: LootFile, classic_crafted: dict[int, ClassicDbCraftedRecipe]
+) -> LootFile:
+    """Splits each `crafted:<profession>` `LootSource` into its ungated
+    items (kept on the original id, `opens` still unset) and, for every
+    distinct non-empty gate `_crafted_item_gate` computes, a same-
+    profession `crafted:<profession>:<phase>` sibling with `opens` set --
+    the shape `sim/cmd/leveling-bis/data.go`'s own `loadLootIndex`
+    already understands with NO Go change at all: it applies one
+    `itemSource.Opens` per SOURCE (`lootSource.Opens`' own doc), never a
+    per-item map for a `crafted`-kind source, so two differently-gated
+    items sharing one profession bucket need two source ids, not one
+    (this lane's brief, item 1, asked which shape the ranker already
+    reads; this is it).
+
+    Must run AFTER `apply_overlays` (a raid/dungeon source's own `opens`
+    is itself an overlay fact) AND AFTER `apply_quest_opens_gate` (a
+    recipe item taught by a quest needs that quest's own `opens` already
+    resolved) -- same ordering rule both of those already state for
+    themselves.
+
+    A crafted item id `classic_crafted` does not cover (a Forever-new
+    id, or a Classic id classic-db's own dump names no create-item spell
+    for -- `pipeline.audit.check_crafted`'s own finding) is left in its
+    original, ungated bucket -- never invented into a gate.
+    """
+    if not classic_crafted:
+        return document
+    new_sources: list[LootSource] = []
+    gated: dict[tuple[str, str], set[int]] = defaultdict(set)
+    changed = False
+    for source in document.sources:
+        if source.kind != "crafted" or not source.items:
+            new_sources.append(source)
+            continue
+        ungated_items: list[int] = []
+        for item_id in source.items:
+            recipe = classic_crafted.get(item_id)
+            gate = _crafted_item_gate(document, recipe) if recipe is not None else None
+            if gate:
+                gated[(source.profession or "", gate)].add(item_id)
+                changed = True
+            else:
+                ungated_items.append(item_id)
+        if ungated_items:
+            new_sources.append(source.model_copy(update={"items": sorted(ungated_items)}))
+    if not changed:
+        return document
+    for (profession, phase), item_ids in sorted(gated.items()):
+        new_sources.append(
+            LootSource(
+                id=f"crafted:{profession}:{phase}",
+                kind="crafted",
+                name=profession.replace("-", " ").title(),
+                profession=profession,
+                items=sorted(item_ids),
+                opens=phase,
+            )
+        )
+    new_sources.sort(key=lambda source: (KIND_ORDER.index(source.kind), source.id))
+    return document.model_copy(update={"sources": new_sources})
+
+
 def _resolve_or_drop_unnamed_bosses(
     sources: list[LootSource], npc_names: dict[int, str]
 ) -> tuple[list[LootSource], int]:
@@ -968,28 +1206,40 @@ def build_loot(
         quest = sorted(set(quest) | set(wowhead_quest))
         for item_id, entries in wowhead_quest_detail.items():
             quest_detail[item_id] = [*quest_detail.get(item_id, []), *entries]
-    # quest-faction lane, 2026-09-29: the quest's own classic-db
-    # `RequiredRaces` (verified against a primary source) wins over every
-    # `QuestSource.faction` built above (fork, classic-db and wowhead
-    # alike all currently guess a quest's faction from the reward ITEM's
-    # own `factionRestriction`, which can legitimately disagree with the
-    # quest -- item 270018 Hammerbone, quest 914 Leaders of the Fang,
-    # `QuestSource`'s own doc). Applied once here, after every scrape's
-    # quest_detail has been folded in, so it covers a quest id regardless
-    # of which one produced the link. A quest id classic-db does not
-    # cover (a Forever-new quest) keeps its item-derived guess, tagged
-    # `faction_source="item"` rather than `"classic-db"` so the site and
-    # reports can say the faction is unverified.
+    # quest-faction lane, 2026-09-29, extended by the data-followups-3
+    # lane, 2026-09-30 (item 2): the quest's own primary-source faction
+    # wins over every `QuestSource.faction` built above (fork, classic-db
+    # and wowhead alike all currently guess a quest's faction from the
+    # reward ITEM's own `factionRestriction`, which can legitimately
+    # disagree with the quest, or -- 78150 Friend of the Library -- carry
+    # no restriction at all even though the quest itself is single-
+    # faction). Applied once here, after every scrape's quest_detail has
+    # been folded in, so it covers a quest id regardless of which one
+    # produced the link -- see `resolve_quest_faction`'s own doc for the
+    # full fallback order (classic-db, then the item's own REAL
+    # restriction, then wowhead, then "unknown" -- never a defaulted
+    # "both" republished as fact).
     quest_factions = quest_factions_from_classic_sources(classic_sources or {})
+    quest_levels_by_id = quest_levels or {}
+    item_sources_by_id = item_sources or {}
+    item_faction_restrictions = item_factions(fork, build_items)
     quest_detail = {
         item_id: [
             entry.model_copy(
-                update={
-                    "faction": quest_factions.get(entry.quest_id, entry.faction),
-                    "faction_source": (
-                        "classic-db" if entry.quest_id in quest_factions else "item"
-                    ),
-                }
+                update=dict(
+                    zip(
+                        ("faction", "faction_source"),
+                        resolve_quest_faction(
+                            entry.quest_id,
+                            item_id,
+                            quest_factions,
+                            quest_levels_by_id,
+                            item_sources_by_id,
+                            item_faction_restrictions,
+                        ),
+                        strict=True,
+                    )
+                )
             )
             for entry in entries
         ]

@@ -1,0 +1,13373 @@
+{
+ "generated_at": "2026-09-30T11:34:47.630803+00:00",
+ "source": {
+  "classic-db": {
+   "repo": "cmangos/classic-db",
+   "commit": "ec4f596146be6467ea93c57397858e329e2db852",
+   "license": "GPL-3.0",
+   "note": "item_template.spellid_1-5 + spell_template's own SPELL_EFFECT_LEARN_SPELL/SPELL_EFFECT_CREATE_ITEM effects and Reagent1-8/ReagentCount1-8 columns -- see pipeline.classicdb_crafted's own doc."
+  }
+ },
+ "items": {
+  "118": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    765,
+    2447,
+    3371
+   ]
+  },
+  "724": {
+   "recipe_item_ids": [
+    2697
+   ],
+   "reagent_item_ids": [
+    723,
+    2678
+   ]
+  },
+  "733": {
+   "recipe_item_ids": [
+    728
+   ],
+   "reagent_item_ids": [
+    729,
+    730,
+    731
+   ]
+  },
+  "787": {
+   "recipe_item_ids": [
+    6326
+   ],
+   "reagent_item_ids": [
+    6303
+   ]
+  },
+  "858": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    118,
+    2450
+   ]
+  },
+  "929": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2450,
+    2453,
+    3372
+   ]
+  },
+  "1017": {
+   "recipe_item_ids": [
+    2701
+   ],
+   "reagent_item_ids": [
+    1015,
+    2665
+   ]
+  },
+  "1082": {
+   "recipe_item_ids": [
+    2699
+   ],
+   "reagent_item_ids": [
+    1080,
+    1081
+   ]
+  },
+  "1113": {
+   "recipe_item_ids": [
+    1099,
+    4143
+   ],
+   "reagent_item_ids": []
+  },
+  "1114": {
+   "recipe_item_ids": [
+    1655,
+    4147
+   ],
+   "reagent_item_ids": []
+  },
+  "1251": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589
+   ]
+  },
+  "1253": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "1254": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "1450": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    878
+   ]
+  },
+  "1487": {
+   "recipe_item_ids": [
+    4152,
+    8853,
+    8871
+   ],
+   "reagent_item_ids": []
+  },
+  "1710": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3356,
+    3357,
+    3372
+   ]
+  },
+  "2136": {
+   "recipe_item_ids": [
+    5650
+   ],
+   "reagent_item_ids": []
+  },
+  "2288": {
+   "recipe_item_ids": [
+    3097
+   ],
+   "reagent_item_ids": []
+  },
+  "2300": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2302": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2303": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2304": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318
+   ]
+  },
+  "2305": {
+   "recipe_item_ids": [
+    2404
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2306": {
+   "recipe_item_ids": [
+    2405
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2307": {
+   "recipe_item_ids": [
+    2406
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2308": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2321
+   ]
+  },
+  "2309": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2310": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "2311": {
+   "recipe_item_ids": [
+    2407
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    2324
+   ]
+  },
+  "2312": {
+   "recipe_item_ids": [
+    2408
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    4231
+   ]
+  },
+  "2313": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2320
+   ]
+  },
+  "2314": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4231
+   ]
+  },
+  "2315": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4340
+   ]
+  },
+  "2316": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4340
+   ]
+  },
+  "2317": {
+   "recipe_item_ids": [
+    2409
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4340
+   ]
+  },
+  "2318": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2934
+   ]
+  },
+  "2319": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318
+   ]
+  },
+  "2454": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    765,
+    2449,
+    3371
+   ]
+  },
+  "2455": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    765,
+    785,
+    3371
+   ]
+  },
+  "2456": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    785,
+    2447,
+    3371
+   ]
+  },
+  "2457": {
+   "recipe_item_ids": [
+    2553
+   ],
+   "reagent_item_ids": [
+    765,
+    2452,
+    3371
+   ]
+  },
+  "2458": {
+   "recipe_item_ids": [
+    2554
+   ],
+   "reagent_item_ids": [
+    2447,
+    2449,
+    3371
+   ]
+  },
+  "2459": {
+   "recipe_item_ids": [
+    2555
+   ],
+   "reagent_item_ids": [
+    2450,
+    2452,
+    3371
+   ]
+  },
+  "2460": {
+   "recipe_item_ids": [
+    2556
+   ],
+   "reagent_item_ids": [
+    785,
+    2449,
+    3371
+   ]
+  },
+  "2518": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    4357
+   ]
+  },
+  "2568": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "2569": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    2996
+   ]
+  },
+  "2570": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "2572": {
+   "recipe_item_ids": [
+    2598
+   ],
+   "reagent_item_ids": [
+    2320,
+    2604,
+    2996
+   ]
+  },
+  "2575": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2604,
+    2996
+   ]
+  },
+  "2576": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2324,
+    2996
+   ]
+  },
+  "2577": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996,
+    6260
+   ]
+  },
+  "2578": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2321,
+    2996
+   ]
+  },
+  "2579": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    2996
+   ]
+  },
+  "2580": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "2581": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    18335
+   ]
+  },
+  "2582": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    2997
+   ]
+  },
+  "2583": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2321,
+    2997
+   ]
+  },
+  "2584": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997
+   ]
+  },
+  "2585": {
+   "recipe_item_ids": [
+    2601
+   ],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    4340
+   ]
+  },
+  "2587": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    4340
+   ]
+  },
+  "2679": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2672
+   ]
+  },
+  "2680": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2672,
+    2678
+   ]
+  },
+  "2681": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    769
+   ]
+  },
+  "2682": {
+   "recipe_item_ids": [
+    2698
+   ],
+   "reagent_item_ids": [
+    2675,
+    2678
+   ]
+  },
+  "2683": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2674,
+    2678
+   ]
+  },
+  "2684": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2673
+   ]
+  },
+  "2685": {
+   "recipe_item_ids": [
+    2700
+   ],
+   "reagent_item_ids": [
+    2677,
+    2692
+   ]
+  },
+  "2687": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2677,
+    2678
+   ]
+  },
+  "2756": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "2757": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "2758": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "2759": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "2840": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2770
+   ]
+  },
+  "2841": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    3576
+   ]
+  },
+  "2842": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2775
+   ]
+  },
+  "2844": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    2840,
+    2880
+   ]
+  },
+  "2845": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    2840,
+    2880
+   ]
+  },
+  "2847": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    2840,
+    2880
+   ]
+  },
+  "2848": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2841,
+    2880
+   ]
+  },
+  "2849": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2841,
+    2880
+   ]
+  },
+  "2850": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2841,
+    2880
+   ]
+  },
+  "2851": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "2852": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "2853": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "2854": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    3470
+   ]
+  },
+  "2857": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "2862": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2835
+   ]
+  },
+  "2863": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2836
+   ]
+  },
+  "2864": {
+   "recipe_item_ids": [
+    2881
+   ],
+   "reagent_item_ids": [
+    1210,
+    2840,
+    3470
+   ]
+  },
+  "2865": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841
+   ]
+  },
+  "2866": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841
+   ]
+  },
+  "2867": {
+   "recipe_item_ids": [
+    5577
+   ],
+   "reagent_item_ids": [
+    2841
+   ]
+  },
+  "2868": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    3478
+   ]
+  },
+  "2869": {
+   "recipe_item_ids": [
+    5578
+   ],
+   "reagent_item_ids": [
+    1705,
+    2841,
+    2842,
+    3478
+   ]
+  },
+  "2870": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1206,
+    1705,
+    2841,
+    2842,
+    5500
+   ]
+  },
+  "2871": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2838
+   ]
+  },
+  "2888": {
+   "recipe_item_ids": [
+    2889
+   ],
+   "reagent_item_ids": [
+    2886,
+    2894
+   ]
+  },
+  "2892": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3372,
+    5173
+   ]
+  },
+  "2893": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3372,
+    5173
+   ]
+  },
+  "2895": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2930
+   ]
+  },
+  "2896": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2931,
+    3372
+   ]
+  },
+  "2927": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2932
+   ]
+  },
+  "2996": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589
+   ]
+  },
+  "2997": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592
+   ]
+  },
+  "3034": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575,
+    4377
+   ]
+  },
+  "3220": {
+   "recipe_item_ids": [
+    3679
+   ],
+   "reagent_item_ids": [
+    3172,
+    3173,
+    3174
+   ]
+  },
+  "3239": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    2835
+   ]
+  },
+  "3240": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592,
+    2836
+   ]
+  },
+  "3241": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592,
+    2838
+   ]
+  },
+  "3382": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2447,
+    2449,
+    3371
+   ]
+  },
+  "3383": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    785,
+    2450,
+    3371
+   ]
+  },
+  "3384": {
+   "recipe_item_ids": [
+    3393
+   ],
+   "reagent_item_ids": [
+    785,
+    3355,
+    3371
+   ]
+  },
+  "3385": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    785,
+    3371,
+    3820
+   ]
+  },
+  "3386": {
+   "recipe_item_ids": [
+    3394
+   ],
+   "reagent_item_ids": [
+    1288,
+    2453,
+    3372
+   ]
+  },
+  "3387": {
+   "recipe_item_ids": [
+    3395
+   ],
+   "reagent_item_ids": [
+    8839,
+    8845,
+    8925
+   ]
+  },
+  "3388": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2450,
+    2453,
+    3372
+   ]
+  },
+  "3389": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3355,
+    3372,
+    3820
+   ]
+  },
+  "3390": {
+   "recipe_item_ids": [
+    3396
+   ],
+   "reagent_item_ids": [
+    2452,
+    3355,
+    3372
+   ]
+  },
+  "3391": {
+   "recipe_item_ids": [
+    6211
+   ],
+   "reagent_item_ids": [
+    2449,
+    3356,
+    3372
+   ]
+  },
+  "3469": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "3470": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2835
+   ]
+  },
+  "3471": {
+   "recipe_item_ids": [
+    3609
+   ],
+   "reagent_item_ids": [
+    774,
+    2840,
+    3470
+   ]
+  },
+  "3472": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    3470
+   ]
+  },
+  "3473": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2840,
+    3470
+   ]
+  },
+  "3474": {
+   "recipe_item_ids": [
+    3610
+   ],
+   "reagent_item_ids": [
+    774,
+    818,
+    2840
+   ]
+  },
+  "3478": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2836
+   ]
+  },
+  "3480": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1210,
+    2841,
+    3478
+   ]
+  },
+  "3481": {
+   "recipe_item_ids": [
+    2882
+   ],
+   "reagent_item_ids": [
+    2841,
+    2842,
+    3478
+   ]
+  },
+  "3482": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    2842,
+    3478
+   ]
+  },
+  "3483": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    2842,
+    3478
+   ]
+  },
+  "3484": {
+   "recipe_item_ids": [
+    3611
+   ],
+   "reagent_item_ids": [
+    1705,
+    2605,
+    3478,
+    3575
+   ]
+  },
+  "3485": {
+   "recipe_item_ids": [
+    3612
+   ],
+   "reagent_item_ids": [
+    2605,
+    3478,
+    3575,
+    5498
+   ]
+  },
+  "3486": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2838
+   ]
+  },
+  "3487": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    818,
+    2319,
+    2840,
+    2880
+   ]
+  },
+  "3488": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    774,
+    2318,
+    2840,
+    2880,
+    3470
+   ]
+  },
+  "3489": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2840,
+    2842,
+    2880,
+    3470
+   ]
+  },
+  "3490": {
+   "recipe_item_ids": [
+    2883
+   ],
+   "reagent_item_ids": [
+    1210,
+    2319,
+    2459,
+    2841,
+    3466,
+    3478
+   ]
+  },
+  "3491": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1206,
+    1210,
+    2319,
+    2841,
+    3466,
+    3478
+   ]
+  },
+  "3492": {
+   "recipe_item_ids": [
+    3608
+   ],
+   "reagent_item_ids": [
+    1705,
+    2319,
+    3391,
+    3466,
+    3478,
+    3575
+   ]
+  },
+  "3530": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592
+   ]
+  },
+  "3531": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592
+   ]
+  },
+  "3575": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2772
+   ]
+  },
+  "3576": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2771
+   ]
+  },
+  "3577": {
+   "recipe_item_ids": [
+    9304
+   ],
+   "reagent_item_ids": [
+    2776,
+    3575
+   ]
+  },
+  "3662": {
+   "recipe_item_ids": [
+    3678
+   ],
+   "reagent_item_ids": [
+    2678,
+    2924
+   ]
+  },
+  "3663": {
+   "recipe_item_ids": [
+    3680
+   ],
+   "reagent_item_ids": [
+    1468,
+    2692
+   ]
+  },
+  "3664": {
+   "recipe_item_ids": [
+    3681
+   ],
+   "reagent_item_ids": [
+    2692,
+    3667
+   ]
+  },
+  "3665": {
+   "recipe_item_ids": [
+    3682
+   ],
+   "reagent_item_ids": [
+    2692,
+    3685
+   ]
+  },
+  "3666": {
+   "recipe_item_ids": [
+    3683
+   ],
+   "reagent_item_ids": [
+    2251,
+    2692
+   ]
+  },
+  "3719": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234
+   ]
+  },
+  "3726": {
+   "recipe_item_ids": [
+    3734
+   ],
+   "reagent_item_ids": [
+    2692,
+    3730
+   ]
+  },
+  "3727": {
+   "recipe_item_ids": [
+    3735
+   ],
+   "reagent_item_ids": [
+    2692,
+    3731
+   ]
+  },
+  "3728": {
+   "recipe_item_ids": [
+    3736
+   ],
+   "reagent_item_ids": [
+    3713,
+    3731
+   ]
+  },
+  "3729": {
+   "recipe_item_ids": [
+    3737
+   ],
+   "reagent_item_ids": [
+    3712,
+    3713
+   ]
+  },
+  "3772": {
+   "recipe_item_ids": [
+    4150,
+    8850,
+    8868,
+    8892
+   ],
+   "reagent_item_ids": []
+  },
+  "3775": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2930,
+    3371
+   ]
+  },
+  "3776": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8923,
+    8925
+   ]
+  },
+  "3823": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3355,
+    3372,
+    3818
+   ]
+  },
+  "3824": {
+   "recipe_item_ids": [
+    6068
+   ],
+   "reagent_item_ids": [
+    3369,
+    3372,
+    3818
+   ]
+  },
+  "3825": {
+   "recipe_item_ids": [
+    3830
+   ],
+   "reagent_item_ids": [
+    3355,
+    3372,
+    3821
+   ]
+  },
+  "3826": {
+   "recipe_item_ids": [
+    3831
+   ],
+   "reagent_item_ids": [
+    2453,
+    3357,
+    3372
+   ]
+  },
+  "3827": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3356,
+    3372,
+    3820
+   ]
+  },
+  "3828": {
+   "recipe_item_ids": [
+    3832
+   ],
+   "reagent_item_ids": [
+    3358,
+    3372,
+    3818
+   ]
+  },
+  "3829": {
+   "recipe_item_ids": [
+    14634
+   ],
+   "reagent_item_ids": [
+    3358,
+    3372,
+    3819
+   ]
+  },
+  "3835": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2605,
+    3575
+   ]
+  },
+  "3836": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2605,
+    3575,
+    3864
+   ]
+  },
+  "3837": {
+   "recipe_item_ids": [
+    6047
+   ],
+   "reagent_item_ids": [
+    3486,
+    3577,
+    3859
+   ]
+  },
+  "3840": {
+   "recipe_item_ids": [
+    3870
+   ],
+   "reagent_item_ids": [
+    2605,
+    3486,
+    3575
+   ]
+  },
+  "3841": {
+   "recipe_item_ids": [
+    3871
+   ],
+   "reagent_item_ids": [
+    3486,
+    3577,
+    3859
+   ]
+  },
+  "3842": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2605,
+    3486,
+    3575
+   ]
+  },
+  "3843": {
+   "recipe_item_ids": [
+    3872
+   ],
+   "reagent_item_ids": [
+    3486,
+    3575,
+    3577
+   ]
+  },
+  "3844": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1206,
+    1529,
+    3486,
+    3575,
+    4255
+   ]
+  },
+  "3845": {
+   "recipe_item_ids": [
+    3873
+   ],
+   "reagent_item_ids": [
+    1529,
+    3486,
+    3577,
+    3859
+   ]
+  },
+  "3846": {
+   "recipe_item_ids": [
+    3874
+   ],
+   "reagent_item_ids": [
+    1705,
+    3486,
+    3859,
+    3864
+   ]
+  },
+  "3847": {
+   "recipe_item_ids": [
+    3875
+   ],
+   "reagent_item_ids": [
+    3486,
+    3577,
+    3859,
+    3864
+   ]
+  },
+  "3848": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    818,
+    2319,
+    2841,
+    2880,
+    3470
+   ]
+  },
+  "3849": {
+   "recipe_item_ids": [
+    12162
+   ],
+   "reagent_item_ids": [
+    1705,
+    3466,
+    3486,
+    3575,
+    4234
+   ]
+  },
+  "3850": {
+   "recipe_item_ids": [
+    3866
+   ],
+   "reagent_item_ids": [
+    1529,
+    3466,
+    3486,
+    3575,
+    4234
+   ]
+  },
+  "3851": {
+   "recipe_item_ids": [
+    10858
+   ],
+   "reagent_item_ids": [
+    2842,
+    3466,
+    3486,
+    3575,
+    4234
+   ]
+  },
+  "3852": {
+   "recipe_item_ids": [
+    3867
+   ],
+   "reagent_item_ids": [
+    1705,
+    3466,
+    3486,
+    3575,
+    3577,
+    4234
+   ]
+  },
+  "3853": {
+   "recipe_item_ids": [
+    12163
+   ],
+   "reagent_item_ids": [
+    1705,
+    3466,
+    3486,
+    3859,
+    4234
+   ]
+  },
+  "3854": {
+   "recipe_item_ids": [
+    3868
+   ],
+   "reagent_item_ids": [
+    1529,
+    3466,
+    3486,
+    3829,
+    3859,
+    4234
+   ]
+  },
+  "3855": {
+   "recipe_item_ids": [
+    12164
+   ],
+   "reagent_item_ids": [
+    3466,
+    3486,
+    3575,
+    3577,
+    4234
+   ]
+  },
+  "3856": {
+   "recipe_item_ids": [
+    3869
+   ],
+   "reagent_item_ids": [
+    3466,
+    3486,
+    3824,
+    3859,
+    3864,
+    4234
+   ]
+  },
+  "3859": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575,
+    3857
+   ]
+  },
+  "3860": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3858
+   ]
+  },
+  "3928": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3358,
+    8838,
+    8925
+   ]
+  },
+  "4231": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    783,
+    4289
+   ]
+  },
+  "4233": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4232,
+    4289
+   ]
+  },
+  "4234": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319
+   ]
+  },
+  "4236": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4235,
+    4289
+   ]
+  },
+  "4237": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "4238": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "4239": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "4240": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997
+   ]
+  },
+  "4241": {
+   "recipe_item_ids": [
+    4292
+   ],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    2997
+   ]
+  },
+  "4242": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    4231
+   ]
+  },
+  "4243": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    4231
+   ]
+  },
+  "4244": {
+   "recipe_item_ids": [
+    4293
+   ],
+   "reagent_item_ids": [
+    2320,
+    4231,
+    4243
+   ]
+  },
+  "4245": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4305
+   ]
+  },
+  "4246": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "4247": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321
+   ]
+  },
+  "4248": {
+   "recipe_item_ids": [
+    7360
+   ],
+   "reagent_item_ids": [
+    2312,
+    2321,
+    4233,
+    4340
+   ]
+  },
+  "4249": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4233,
+    4246,
+    4340
+   ]
+  },
+  "4250": {
+   "recipe_item_ids": [
+    4294
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    3383
+   ]
+  },
+  "4251": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4233
+   ]
+  },
+  "4252": {
+   "recipe_item_ids": [
+    4296
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    3390,
+    4340
+   ]
+  },
+  "4253": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    3182,
+    3389,
+    4233
+   ]
+  },
+  "4254": {
+   "recipe_item_ids": [
+    4297
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    5637
+   ]
+  },
+  "4255": {
+   "recipe_item_ids": [
+    7613
+   ],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    4234
+   ]
+  },
+  "4256": {
+   "recipe_item_ids": [
+    4299
+   ],
+   "reagent_item_ids": [
+    2321,
+    3824,
+    4234,
+    4236
+   ]
+  },
+  "4257": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    4234,
+    4236,
+    7071
+   ]
+  },
+  "4258": {
+   "recipe_item_ids": [
+    4298
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4236,
+    7071
+   ]
+  },
+  "4259": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    4234,
+    4236
+   ]
+  },
+  "4260": {
+   "recipe_item_ids": [
+    4300
+   ],
+   "reagent_item_ids": [
+    4234,
+    4236,
+    4291
+   ]
+  },
+  "4262": {
+   "recipe_item_ids": [
+    14635
+   ],
+   "reagent_item_ids": [
+    1529,
+    2321,
+    3864,
+    4236,
+    5500
+   ]
+  },
+  "4264": {
+   "recipe_item_ids": [
+    4301
+   ],
+   "reagent_item_ids": [
+    4096,
+    4234,
+    4236,
+    4291,
+    5633,
+    7071
+   ]
+  },
+  "4265": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234
+   ]
+  },
+  "4304": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4234
+   ]
+  },
+  "4305": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4306
+   ]
+  },
+  "4307": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "4308": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2605,
+    2996
+   ]
+  },
+  "4309": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2996
+   ]
+  },
+  "4310": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997
+   ]
+  },
+  "4311": {
+   "recipe_item_ids": [
+    4346
+   ],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    5498
+   ]
+  },
+  "4312": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2321,
+    2996
+   ]
+  },
+  "4313": {
+   "recipe_item_ids": [
+    4345
+   ],
+   "reagent_item_ids": [
+    2318,
+    2321,
+    2604,
+    2997
+   ]
+  },
+  "4314": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997
+   ]
+  },
+  "4315": {
+   "recipe_item_ids": [
+    4347
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    2997
+   ]
+  },
+  "4316": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997
+   ]
+  },
+  "4317": {
+   "recipe_item_ids": [
+    4349
+   ],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    5500
+   ]
+  },
+  "4318": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    3383
+   ]
+  },
+  "4319": {
+   "recipe_item_ids": [
+    7114
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4305,
+    6260
+   ]
+  },
+  "4320": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    3182,
+    4305,
+    5500
+   ]
+  },
+  "4321": {
+   "recipe_item_ids": [
+    4350
+   ],
+   "reagent_item_ids": [
+    2321,
+    3182,
+    4305
+   ]
+  },
+  "4322": {
+   "recipe_item_ids": [
+    14630
+   ],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    4337
+   ]
+  },
+  "4323": {
+   "recipe_item_ids": [
+    4351
+   ],
+   "reagent_item_ids": [
+    3824,
+    4291,
+    4305
+   ]
+  },
+  "4324": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4305,
+    6260
+   ]
+  },
+  "4325": {
+   "recipe_item_ids": [
+    4352
+   ],
+   "reagent_item_ids": [
+    4291,
+    4305,
+    4337
+   ]
+  },
+  "4326": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3827,
+    4291,
+    4305
+   ]
+  },
+  "4327": {
+   "recipe_item_ids": [
+    4355
+   ],
+   "reagent_item_ids": [
+    3829,
+    4291,
+    4337,
+    4339
+   ]
+  },
+  "4328": {
+   "recipe_item_ids": [
+    4353
+   ],
+   "reagent_item_ids": [
+    4305,
+    4337,
+    7071
+   ]
+  },
+  "4329": {
+   "recipe_item_ids": [
+    4356
+   ],
+   "reagent_item_ids": [
+    3864,
+    4234,
+    4291,
+    4339,
+    7071
+   ]
+  },
+  "4330": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2604,
+    2997
+   ]
+  },
+  "4331": {
+   "recipe_item_ids": [
+    4348
+   ],
+   "reagent_item_ids": [
+    2321,
+    2324,
+    2997,
+    5500
+   ]
+  },
+  "4332": {
+   "recipe_item_ids": [
+    14627
+   ],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    4341
+   ]
+  },
+  "4333": {
+   "recipe_item_ids": [
+    6401
+   ],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    4340
+   ]
+  },
+  "4334": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2324,
+    4305
+   ]
+  },
+  "4335": {
+   "recipe_item_ids": [
+    4354
+   ],
+   "reagent_item_ids": [
+    4291,
+    4305,
+    4342
+   ]
+  },
+  "4336": {
+   "recipe_item_ids": [
+    10728
+   ],
+   "reagent_item_ids": [
+    2325,
+    4291,
+    4305
+   ]
+  },
+  "4339": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4338
+   ]
+  },
+  "4343": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "4344": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "4357": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2835
+   ]
+  },
+  "4358": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    4357
+   ]
+  },
+  "4359": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "4360": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    2840,
+    4357,
+    4359
+   ]
+  },
+  "4361": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    2880
+   ]
+  },
+  "4362": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4359,
+    4361,
+    4399
+   ]
+  },
+  "4363": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    2840,
+    4359
+   ]
+  },
+  "4364": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2836
+   ]
+  },
+  "4365": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2589,
+    4364
+   ]
+  },
+  "4366": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592,
+    2841,
+    4359,
+    4363
+   ]
+  },
+  "4367": {
+   "recipe_item_ids": [
+    4409
+   ],
+   "reagent_item_ids": [
+    159,
+    2318,
+    4363,
+    4364
+   ]
+  },
+  "4368": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    818,
+    2318
+   ]
+  },
+  "4369": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    4359,
+    4361,
+    4399
+   ]
+  },
+  "4370": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    4364,
+    4404
+   ]
+  },
+  "4371": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    2880
+   ]
+  },
+  "4372": {
+   "recipe_item_ids": [
+    13309
+   ],
+   "reagent_item_ids": [
+    1206,
+    4359,
+    4371,
+    4400
+   ]
+  },
+  "4373": {
+   "recipe_item_ids": [
+    4410
+   ],
+   "reagent_item_ids": [
+    1210,
+    2319
+   ]
+  },
+  "4374": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592,
+    2841,
+    4364,
+    4404
+   ]
+  },
+  "4375": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592,
+    2841
+   ]
+  },
+  "4376": {
+   "recipe_item_ids": [
+    4411
+   ],
+   "reagent_item_ids": [
+    4375,
+    4402
+   ]
+  },
+  "4377": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2838
+   ]
+  },
+  "4378": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592,
+    4377
+   ]
+  },
+  "4379": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2842,
+    4371,
+    4375,
+    4400
+   ]
+  },
+  "4380": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    4377,
+    4404
+   ]
+  },
+  "4381": {
+   "recipe_item_ids": [
+    14639
+   ],
+   "reagent_item_ids": [
+    1206,
+    2319,
+    4371,
+    4375
+   ]
+  },
+  "4382": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2592,
+    2841
+   ]
+  },
+  "4383": {
+   "recipe_item_ids": [
+    4412
+   ],
+   "reagent_item_ids": [
+    1705,
+    4371,
+    4375,
+    4400
+   ]
+  },
+  "4384": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2592,
+    4375,
+    4377,
+    4382
+   ]
+  },
+  "4385": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1206,
+    2319,
+    4368
+   ]
+  },
+  "4386": {
+   "recipe_item_ids": [
+    13308
+   ],
+   "reagent_item_ids": [
+    3829,
+    4375
+   ]
+  },
+  "4387": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575
+   ]
+  },
+  "4388": {
+   "recipe_item_ids": [
+    4413
+   ],
+   "reagent_item_ids": [
+    1529,
+    4306,
+    4371,
+    4375
+   ]
+  },
+  "4389": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575,
+    10558
+   ]
+  },
+  "4390": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575,
+    4306,
+    4377
+   ]
+  },
+  "4391": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4234,
+    4382,
+    4387,
+    4389
+   ]
+  },
+  "4392": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4234,
+    4382,
+    4387,
+    4389
+   ]
+  },
+  "4393": {
+   "recipe_item_ids": [
+    4415
+   ],
+   "reagent_item_ids": [
+    3864,
+    4234
+   ]
+  },
+  "4394": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575,
+    4377,
+    4404
+   ]
+  },
+  "4395": {
+   "recipe_item_ids": [
+    4416
+   ],
+   "reagent_item_ids": [
+    3575,
+    4377,
+    4389
+   ]
+  },
+  "4396": {
+   "recipe_item_ids": [
+    13311
+   ],
+   "reagent_item_ids": [
+    3864,
+    4382,
+    4387,
+    4389,
+    7191
+   ]
+  },
+  "4397": {
+   "recipe_item_ids": [
+    7742
+   ],
+   "reagent_item_ids": [
+    1529,
+    1705,
+    3864,
+    4389,
+    7191
+   ]
+  },
+  "4398": {
+   "recipe_item_ids": [
+    4417
+   ],
+   "reagent_item_ids": [
+    159,
+    4234,
+    10505
+   ]
+  },
+  "4401": {
+   "recipe_item_ids": [
+    4408
+   ],
+   "reagent_item_ids": [
+    774,
+    2840,
+    4359,
+    4363
+   ]
+  },
+  "4403": {
+   "recipe_item_ids": [
+    4414
+   ],
+   "reagent_item_ids": [
+    2319,
+    4371,
+    4377,
+    4387
+   ]
+  },
+  "4404": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2842
+   ]
+  },
+  "4405": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    774,
+    4359,
+    4361
+   ]
+  },
+  "4406": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1206,
+    4371
+   ]
+  },
+  "4407": {
+   "recipe_item_ids": [
+    13310
+   ],
+   "reagent_item_ids": [
+    1529,
+    3864,
+    4371
+   ]
+  },
+  "4455": {
+   "recipe_item_ids": [
+    13287
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4461
+   ]
+  },
+  "4456": {
+   "recipe_item_ids": [
+    13288
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4461
+   ]
+  },
+  "4457": {
+   "recipe_item_ids": [
+    4609
+   ],
+   "reagent_item_ids": [
+    2692,
+    3404
+   ]
+  },
+  "4592": {
+   "recipe_item_ids": [
+    6328
+   ],
+   "reagent_item_ids": [
+    6289
+   ]
+  },
+  "4593": {
+   "recipe_item_ids": [
+    6330
+   ],
+   "reagent_item_ids": [
+    6308
+   ]
+  },
+  "4594": {
+   "recipe_item_ids": [
+    6369
+   ],
+   "reagent_item_ids": [
+    6362
+   ]
+  },
+  "4596": {
+   "recipe_item_ids": [
+    4597
+   ],
+   "reagent_item_ids": [
+    2447,
+    3164,
+    3371
+   ]
+  },
+  "4623": {
+   "recipe_item_ids": [
+    4624
+   ],
+   "reagent_item_ids": [
+    3372,
+    3821,
+    3858
+   ]
+  },
+  "4703": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "4852": {
+   "recipe_item_ids": [
+    6672
+   ],
+   "reagent_item_ids": [
+    4306,
+    4377,
+    4611
+   ]
+  },
+  "5060": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5081": {
+   "recipe_item_ids": [
+    5083
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    5082
+   ]
+  },
+  "5095": {
+   "recipe_item_ids": [
+    6368
+   ],
+   "reagent_item_ids": [
+    6361
+   ]
+  },
+  "5105": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    4364
+   ]
+  },
+  "5172": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5184": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5232": {
+   "recipe_item_ids": [
+    1229,
+    9202
+   ],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "5237": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2928,
+    2930,
+    3371
+   ]
+  },
+  "5349": {
+   "recipe_item_ids": [
+    4141
+   ],
+   "reagent_item_ids": []
+  },
+  "5350": {
+   "recipe_item_ids": [
+    5644
+   ],
+   "reagent_item_ids": []
+  },
+  "5455": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12220
+   ]
+  },
+  "5462": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5472": {
+   "recipe_item_ids": [
+    5482
+   ],
+   "reagent_item_ids": [
+    5465
+   ]
+  },
+  "5473": {
+   "recipe_item_ids": [
+    5483
+   ],
+   "reagent_item_ids": [
+    5466
+   ]
+  },
+  "5474": {
+   "recipe_item_ids": [
+    5484
+   ],
+   "reagent_item_ids": [
+    2678,
+    5467
+   ]
+  },
+  "5476": {
+   "recipe_item_ids": [
+    5485
+   ],
+   "reagent_item_ids": [
+    2678,
+    5468
+   ]
+  },
+  "5477": {
+   "recipe_item_ids": [
+    5486
+   ],
+   "reagent_item_ids": [
+    4536,
+    5469
+   ]
+  },
+  "5478": {
+   "recipe_item_ids": [
+    5487
+   ],
+   "reagent_item_ids": [
+    5051
+   ]
+  },
+  "5479": {
+   "recipe_item_ids": [
+    5488
+   ],
+   "reagent_item_ids": [
+    2692,
+    5470
+   ]
+  },
+  "5480": {
+   "recipe_item_ids": [
+    5489
+   ],
+   "reagent_item_ids": [
+    2678,
+    5471
+   ]
+  },
+  "5507": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1206,
+    4363,
+    4371,
+    4375
+   ]
+  },
+  "5509": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5510": {
+   "recipe_item_ids": [
+    5726
+   ],
+   "reagent_item_ids": []
+  },
+  "5511": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5512": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5513": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5514": {
+   "recipe_item_ids": [
+    4145,
+    8840,
+    8861,
+    8889
+   ],
+   "reagent_item_ids": []
+  },
+  "5517": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841
+   ]
+  },
+  "5518": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575
+   ]
+  },
+  "5522": {
+   "recipe_item_ids": [
+    5721
+   ],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "5525": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    159,
+    5503
+   ]
+  },
+  "5526": {
+   "recipe_item_ids": [
+    5528
+   ],
+   "reagent_item_ids": [
+    1179,
+    2678,
+    5503
+   ]
+  },
+  "5527": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2692,
+    5504
+   ]
+  },
+  "5530": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3818
+   ]
+  },
+  "5540": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    3466,
+    3478,
+    5498
+   ]
+  },
+  "5541": {
+   "recipe_item_ids": [
+    5543
+   ],
+   "reagent_item_ids": [
+    2319,
+    2841,
+    3466,
+    3478,
+    5500
+   ]
+  },
+  "5542": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    5498
+   ]
+  },
+  "5631": {
+   "recipe_item_ids": [
+    5640
+   ],
+   "reagent_item_ids": [
+    2450,
+    3371,
+    5635
+   ]
+  },
+  "5632": {
+   "recipe_item_ids": [
+    5641
+   ],
+   "reagent_item_ids": [
+    3356,
+    3372,
+    5636
+   ]
+  },
+  "5633": {
+   "recipe_item_ids": [
+    5643
+   ],
+   "reagent_item_ids": [
+    3356,
+    3372,
+    5637
+   ]
+  },
+  "5634": {
+   "recipe_item_ids": [
+    5642
+   ],
+   "reagent_item_ids": [
+    3372,
+    3820,
+    6370
+   ]
+  },
+  "5639": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5645": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5646": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5654": {
+   "recipe_item_ids": [
+    5657
+   ],
+   "reagent_item_ids": [
+    1288,
+    3372
+   ]
+  },
+  "5739": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    7071
+   ]
+  },
+  "5762": {
+   "recipe_item_ids": [
+    5771
+   ],
+   "reagent_item_ids": [
+    2321,
+    2604,
+    2996
+   ]
+  },
+  "5763": {
+   "recipe_item_ids": [
+    5772
+   ],
+   "reagent_item_ids": [
+    2321,
+    2604,
+    2997
+   ]
+  },
+  "5764": {
+   "recipe_item_ids": [
+    5774
+   ],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    4234,
+    4305
+   ]
+  },
+  "5765": {
+   "recipe_item_ids": [
+    5775
+   ],
+   "reagent_item_ids": [
+    2321,
+    2325,
+    4305
+   ]
+  },
+  "5766": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    3182,
+    4305
+   ]
+  },
+  "5770": {
+   "recipe_item_ids": [
+    5773
+   ],
+   "reagent_item_ids": [
+    2321,
+    3182,
+    4305
+   ]
+  },
+  "5780": {
+   "recipe_item_ids": [
+    5786
+   ],
+   "reagent_item_ids": [
+    2318,
+    2321,
+    5784
+   ]
+  },
+  "5781": {
+   "recipe_item_ids": [
+    5787
+   ],
+   "reagent_item_ids": [
+    2318,
+    2321,
+    4231,
+    5784
+   ]
+  },
+  "5782": {
+   "recipe_item_ids": [
+    5788
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4236,
+    5785
+   ]
+  },
+  "5783": {
+   "recipe_item_ids": [
+    5789
+   ],
+   "reagent_item_ids": [
+    4234,
+    4236,
+    4291,
+    5785
+   ]
+  },
+  "5868": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "5957": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "5958": {
+   "recipe_item_ids": [
+    5972
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    2997
+   ]
+  },
+  "5961": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4340
+   ]
+  },
+  "5962": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4305
+   ]
+  },
+  "5963": {
+   "recipe_item_ids": [
+    5973
+   ],
+   "reagent_item_ids": [
+    1206,
+    2321,
+    4234
+   ]
+  },
+  "5964": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4236
+   ]
+  },
+  "5965": {
+   "recipe_item_ids": [
+    4295,
+    5974
+   ],
+   "reagent_item_ids": [
+    4234,
+    4291,
+    4305
+   ]
+  },
+  "5966": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4234,
+    4236,
+    4291
+   ]
+  },
+  "5996": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3371,
+    3820,
+    6370
+   ]
+  },
+  "5997": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    765,
+    3371
+   ]
+  },
+  "6037": {
+   "recipe_item_ids": [
+    9305
+   ],
+   "reagent_item_ids": [
+    3860,
+    7911
+   ]
+  },
+  "6038": {
+   "recipe_item_ids": [
+    6039
+   ],
+   "reagent_item_ids": [
+    2692,
+    4655
+   ]
+  },
+  "6040": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3486,
+    3859
+   ]
+  },
+  "6041": {
+   "recipe_item_ids": [
+    6046
+   ],
+   "reagent_item_ids": [
+    3486,
+    3859,
+    4234
+   ]
+  },
+  "6042": {
+   "recipe_item_ids": [
+    6044
+   ],
+   "reagent_item_ids": [
+    3478,
+    3575
+   ]
+  },
+  "6043": {
+   "recipe_item_ids": [
+    6045
+   ],
+   "reagent_item_ids": [
+    1705,
+    3478,
+    3575
+   ]
+  },
+  "6048": {
+   "recipe_item_ids": [
+    6054
+   ],
+   "reagent_item_ids": [
+    3356,
+    3369,
+    3372
+   ]
+  },
+  "6049": {
+   "recipe_item_ids": [
+    6055
+   ],
+   "reagent_item_ids": [
+    3372,
+    4402,
+    6371
+   ]
+  },
+  "6050": {
+   "recipe_item_ids": [
+    6056
+   ],
+   "reagent_item_ids": [
+    3372,
+    3819,
+    3821
+   ]
+  },
+  "6051": {
+   "recipe_item_ids": [
+    6053
+   ],
+   "reagent_item_ids": [
+    2452,
+    2453,
+    3371
+   ]
+  },
+  "6052": {
+   "recipe_item_ids": [
+    6057
+   ],
+   "reagent_item_ids": [
+    3357,
+    3372,
+    3820
+   ]
+  },
+  "6149": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3358,
+    3372,
+    3821
+   ]
+  },
+  "6182": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "6214": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2840,
+    2880
+   ]
+  },
+  "6218": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6217,
+    10938,
+    10940
+   ]
+  },
+  "6219": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "6238": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "6239": {
+   "recipe_item_ids": [
+    6271
+   ],
+   "reagent_item_ids": [
+    2320,
+    2604,
+    2996
+   ]
+  },
+  "6240": {
+   "recipe_item_ids": [
+    6270
+   ],
+   "reagent_item_ids": [
+    2320,
+    2996,
+    6260
+   ]
+  },
+  "6241": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2324,
+    2996
+   ]
+  },
+  "6242": {
+   "recipe_item_ids": [
+    6272
+   ],
+   "reagent_item_ids": [
+    2320,
+    2996,
+    6260
+   ]
+  },
+  "6243": {
+   "recipe_item_ids": [
+    6273
+   ],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    2997
+   ]
+  },
+  "6263": {
+   "recipe_item_ids": [
+    6274
+   ],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    6260
+   ]
+  },
+  "6264": {
+   "recipe_item_ids": [
+    6275
+   ],
+   "reagent_item_ids": [
+    2321,
+    2604,
+    2997
+   ]
+  },
+  "6265": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "6290": {
+   "recipe_item_ids": [
+    6325
+   ],
+   "reagent_item_ids": [
+    6291
+   ]
+  },
+  "6316": {
+   "recipe_item_ids": [
+    6329
+   ],
+   "reagent_item_ids": [
+    2678,
+    6317
+   ]
+  },
+  "6338": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2842,
+    3470
+   ]
+  },
+  "6339": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1210,
+    6338,
+    10939,
+    10940
+   ]
+  },
+  "6350": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    3470
+   ]
+  },
+  "6370": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3371,
+    6358
+   ]
+  },
+  "6371": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3371,
+    6359
+   ]
+  },
+  "6372": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2452,
+    3371,
+    6370
+   ]
+  },
+  "6373": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3356,
+    3372,
+    6371
+   ]
+  },
+  "6384": {
+   "recipe_item_ids": [
+    6390
+   ],
+   "reagent_item_ids": [
+    2321,
+    2997,
+    4340,
+    6260
+   ]
+  },
+  "6385": {
+   "recipe_item_ids": [
+    6391
+   ],
+   "reagent_item_ids": [
+    2321,
+    2605,
+    2997,
+    4340
+   ]
+  },
+  "6450": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4306
+   ]
+  },
+  "6451": {
+   "recipe_item_ids": [
+    16112
+   ],
+   "reagent_item_ids": [
+    4306
+   ]
+  },
+  "6452": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1475
+   ]
+  },
+  "6453": {
+   "recipe_item_ids": [
+    6454
+   ],
+   "reagent_item_ids": [
+    1288
+   ]
+  },
+  "6466": {
+   "recipe_item_ids": [
+    6474
+   ],
+   "reagent_item_ids": [
+    2321,
+    4231,
+    6470
+   ]
+  },
+  "6467": {
+   "recipe_item_ids": [
+    6475
+   ],
+   "reagent_item_ids": [
+    2321,
+    6470,
+    6471
+   ]
+  },
+  "6468": {
+   "recipe_item_ids": [
+    6476
+   ],
+   "reagent_item_ids": [
+    2321,
+    6470,
+    6471
+   ]
+  },
+  "6533": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    4364,
+    6530
+   ]
+  },
+  "6657": {
+   "recipe_item_ids": [
+    6661
+   ],
+   "reagent_item_ids": [
+    2678,
+    6522
+   ]
+  },
+  "6662": {
+   "recipe_item_ids": [
+    6663
+   ],
+   "reagent_item_ids": [
+    2449,
+    3371,
+    6522
+   ]
+  },
+  "6709": {
+   "recipe_item_ids": [
+    6710
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    4231,
+    5498
+   ]
+  },
+  "6712": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    2880,
+    4359
+   ]
+  },
+  "6714": {
+   "recipe_item_ids": [
+    6716
+   ],
+   "reagent_item_ids": [
+    2592,
+    4364
+   ]
+  },
+  "6730": {
+   "recipe_item_ids": [
+    6734
+   ],
+   "reagent_item_ids": [
+    774,
+    2840,
+    3470
+   ]
+  },
+  "6731": {
+   "recipe_item_ids": [
+    6735
+   ],
+   "reagent_item_ids": [
+    818,
+    2840,
+    3470
+   ]
+  },
+  "6733": {
+   "recipe_item_ids": [
+    6736
+   ],
+   "reagent_item_ids": [
+    1210,
+    2841,
+    3478
+   ]
+  },
+  "6786": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2324,
+    2996,
+    6260
+   ]
+  },
+  "6787": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2324,
+    2997
+   ]
+  },
+  "6795": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2324,
+    4291,
+    4305
+   ]
+  },
+  "6796": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2604,
+    4291,
+    4305
+   ]
+  },
+  "6887": {
+   "recipe_item_ids": [
+    13939
+   ],
+   "reagent_item_ids": [
+    4603
+   ]
+  },
+  "6888": {
+   "recipe_item_ids": [
+    6891
+   ],
+   "reagent_item_ids": [
+    2678,
+    6889
+   ]
+  },
+  "6890": {
+   "recipe_item_ids": [
+    6892
+   ],
+   "reagent_item_ids": [
+    3173
+   ]
+  },
+  "6947": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2928,
+    3371
+   ]
+  },
+  "6948": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "6949": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2928,
+    3372
+   ]
+  },
+  "6950": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3372,
+    8924
+   ]
+  },
+  "6951": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2928,
+    2930,
+    3372
+   ]
+  },
+  "7026": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "7027": {
+   "recipe_item_ids": [
+    7093
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4305,
+    6048
+   ]
+  },
+  "7046": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    6260
+   ]
+  },
+  "7047": {
+   "recipe_item_ids": [
+    7092
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    4305,
+    6048
+   ]
+  },
+  "7048": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    6260
+   ]
+  },
+  "7049": {
+   "recipe_item_ids": [
+    7091
+   ],
+   "reagent_item_ids": [
+    929,
+    2321,
+    4234,
+    4305
+   ]
+  },
+  "7050": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4305
+   ]
+  },
+  "7051": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    7067
+   ]
+  },
+  "7052": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    6260,
+    7070,
+    7071
+   ]
+  },
+  "7053": {
+   "recipe_item_ids": [
+    7089
+   ],
+   "reagent_item_ids": [
+    2321,
+    4305,
+    6260
+   ]
+  },
+  "7054": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4339,
+    7067,
+    7068,
+    7069,
+    7070
+   ]
+  },
+  "7055": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2604,
+    4291,
+    4305,
+    7071
+   ]
+  },
+  "7056": {
+   "recipe_item_ids": [
+    7087
+   ],
+   "reagent_item_ids": [
+    2604,
+    4291,
+    4305,
+    6371
+   ]
+  },
+  "7057": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4305
+   ]
+  },
+  "7058": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2604,
+    4305
+   ]
+  },
+  "7059": {
+   "recipe_item_ids": [
+    7084
+   ],
+   "reagent_item_ids": [
+    2604,
+    4291,
+    4305,
+    6371
+   ]
+  },
+  "7060": {
+   "recipe_item_ids": [
+    7085
+   ],
+   "reagent_item_ids": [
+    4291,
+    4305,
+    6260,
+    7072
+   ]
+  },
+  "7061": {
+   "recipe_item_ids": [
+    7086
+   ],
+   "reagent_item_ids": [
+    4234,
+    4291,
+    4305,
+    7067,
+    7071
+   ]
+  },
+  "7062": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2604,
+    4291,
+    4305
+   ]
+  },
+  "7063": {
+   "recipe_item_ids": [
+    7088
+   ],
+   "reagent_item_ids": [
+    2604,
+    3827,
+    4291,
+    4305,
+    7068
+   ]
+  },
+  "7064": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2604,
+    4291,
+    4304,
+    4305,
+    6371,
+    7068
+   ]
+  },
+  "7065": {
+   "recipe_item_ids": [
+    7090
+   ],
+   "reagent_item_ids": [
+    2605,
+    4291,
+    4305
+   ]
+  },
+  "7068": {
+   "recipe_item_ids": [
+    20761
+   ],
+   "reagent_item_ids": [
+    7077
+   ]
+  },
+  "7071": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3575
+   ]
+  },
+  "7076": {
+   "recipe_item_ids": [
+    13483,
+    13488
+   ],
+   "reagent_item_ids": [
+    7078,
+    12803
+   ]
+  },
+  "7078": {
+   "recipe_item_ids": [
+    13482
+   ],
+   "reagent_item_ids": [
+    7082
+   ]
+  },
+  "7080": {
+   "recipe_item_ids": [
+    13484,
+    13486
+   ],
+   "reagent_item_ids": [
+    7076,
+    12808
+   ]
+  },
+  "7082": {
+   "recipe_item_ids": [
+    13485
+   ],
+   "reagent_item_ids": [
+    7080
+   ]
+  },
+  "7134": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7135": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7148": {
+   "recipe_item_ids": [
+    7561
+   ],
+   "reagent_item_ids": [
+    814,
+    1210,
+    3575,
+    4306,
+    4375,
+    7191
+   ]
+  },
+  "7166": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2840,
+    2880,
+    3470
+   ]
+  },
+  "7189": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4234,
+    9061,
+    10026,
+    10559,
+    10560
+   ]
+  },
+  "7190": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7206": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7268": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7276": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "7277": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "7278": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "7279": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "7280": {
+   "recipe_item_ids": [
+    7288
+   ],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "7281": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320
+   ]
+  },
+  "7282": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2321,
+    4231
+   ]
+  },
+  "7283": {
+   "recipe_item_ids": [
+    7289
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    7286
+   ]
+  },
+  "7284": {
+   "recipe_item_ids": [
+    7290
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    7287
+   ]
+  },
+  "7285": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    2457
+   ]
+  },
+  "7348": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    5116
+   ]
+  },
+  "7349": {
+   "recipe_item_ids": [
+    7361
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    3356
+   ]
+  },
+  "7352": {
+   "recipe_item_ids": [
+    7362
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    7067
+   ]
+  },
+  "7358": {
+   "recipe_item_ids": [
+    7363
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    5373
+   ]
+  },
+  "7359": {
+   "recipe_item_ids": [
+    7364
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    2997,
+    7067
+   ]
+  },
+  "7371": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234
+   ]
+  },
+  "7372": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234
+   ]
+  },
+  "7373": {
+   "recipe_item_ids": [
+    7449
+   ],
+   "reagent_item_ids": [
+    2321,
+    2325,
+    4234
+   ]
+  },
+  "7374": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    3824,
+    4234
+   ]
+  },
+  "7375": {
+   "recipe_item_ids": [
+    7450
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    7392
+   ]
+  },
+  "7377": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    4234,
+    7067,
+    7070
+   ]
+  },
+  "7378": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2325,
+    4234,
+    4291
+   ]
+  },
+  "7386": {
+   "recipe_item_ids": [
+    7451
+   ],
+   "reagent_item_ids": [
+    4234,
+    4291,
+    7392
+   ]
+  },
+  "7387": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2325,
+    4234,
+    4305,
+    7071
+   ]
+  },
+  "7390": {
+   "recipe_item_ids": [
+    7452
+   ],
+   "reagent_item_ids": [
+    3824,
+    4234,
+    4291,
+    7428
+   ]
+  },
+  "7391": {
+   "recipe_item_ids": [
+    7453
+   ],
+   "reagent_item_ids": [
+    2459,
+    4234,
+    4291,
+    4337
+   ]
+  },
+  "7506": {
+   "recipe_item_ids": [
+    7560
+   ],
+   "reagent_item_ids": [
+    774,
+    814,
+    818,
+    2841,
+    4375
+   ]
+  },
+  "7586": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7676": {
+   "recipe_item_ids": [
+    7678,
+    18160
+   ],
+   "reagent_item_ids": [
+    159,
+    2452
+   ]
+  },
+  "7733": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7740,
+    7741
+   ]
+  },
+  "7769": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7770": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7771": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "7867": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7866
+   ]
+  },
+  "7913": {
+   "recipe_item_ids": [
+    7978
+   ],
+   "reagent_item_ids": [
+    1210,
+    3486,
+    3575,
+    5635
+   ]
+  },
+  "7914": {
+   "recipe_item_ids": [
+    7979
+   ],
+   "reagent_item_ids": [
+    3486,
+    3575
+   ]
+  },
+  "7915": {
+   "recipe_item_ids": [
+    7980
+   ],
+   "reagent_item_ids": [
+    3575,
+    5635,
+    5637
+   ]
+  },
+  "7916": {
+   "recipe_item_ids": [
+    7981
+   ],
+   "reagent_item_ids": [
+    818,
+    3486,
+    3575,
+    5637
+   ]
+  },
+  "7917": {
+   "recipe_item_ids": [
+    7982
+   ],
+   "reagent_item_ids": [
+    3486,
+    3575,
+    5637
+   ]
+  },
+  "7918": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4234
+   ]
+  },
+  "7919": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4338
+   ]
+  },
+  "7920": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860
+   ]
+  },
+  "7921": {
+   "recipe_item_ids": [
+    7975
+   ],
+   "reagent_item_ids": [
+    1705,
+    3860
+   ]
+  },
+  "7922": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3859,
+    7966
+   ]
+  },
+  "7924": {
+   "recipe_item_ids": [
+    7995
+   ],
+   "reagent_item_ids": [
+    3860,
+    3864
+   ]
+  },
+  "7925": {
+   "recipe_item_ids": [
+    7977
+   ],
+   "reagent_item_ids": [
+    3860,
+    4234,
+    4338
+   ]
+  },
+  "7926": {
+   "recipe_item_ids": [
+    7983
+   ],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    7909,
+    7966
+   ]
+  },
+  "7927": {
+   "recipe_item_ids": [
+    7984
+   ],
+   "reagent_item_ids": [
+    3860,
+    4338,
+    6037,
+    7966
+   ]
+  },
+  "7928": {
+   "recipe_item_ids": [
+    7985
+   ],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    6037
+   ]
+  },
+  "7929": {
+   "recipe_item_ids": [
+    7994
+   ],
+   "reagent_item_ids": [
+    3860,
+    7067
+   ]
+  },
+  "7930": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860
+   ]
+  },
+  "7931": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4338
+   ]
+  },
+  "7932": {
+   "recipe_item_ids": [
+    7991
+   ],
+   "reagent_item_ids": [
+    3860,
+    3864,
+    4304
+   ]
+  },
+  "7933": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4304
+   ]
+  },
+  "7934": {
+   "recipe_item_ids": [
+    7990
+   ],
+   "reagent_item_ids": [
+    3860,
+    7909
+   ]
+  },
+  "7935": {
+   "recipe_item_ids": [
+    7986
+   ],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    7077,
+    7966
+   ]
+  },
+  "7936": {
+   "recipe_item_ids": [
+    7988
+   ],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    6037,
+    7909,
+    7966
+   ]
+  },
+  "7937": {
+   "recipe_item_ids": [
+    7987
+   ],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    7966,
+    7971
+   ]
+  },
+  "7938": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    3864,
+    5966,
+    6037,
+    7909,
+    7966
+   ]
+  },
+  "7939": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    7910,
+    7966,
+    7971
+   ]
+  },
+  "7941": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    3864,
+    4234,
+    7966
+   ]
+  },
+  "7942": {
+   "recipe_item_ids": [
+    7992
+   ],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    7909,
+    7966
+   ]
+  },
+  "7943": {
+   "recipe_item_ids": [
+    8029
+   ],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    6037,
+    7966
+   ]
+  },
+  "7944": {
+   "recipe_item_ids": [
+    7993
+   ],
+   "reagent_item_ids": [
+    1206,
+    1705,
+    3860,
+    4338,
+    7909,
+    7966
+   ]
+  },
+  "7945": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1210,
+    3860,
+    4304,
+    7966,
+    7971
+   ]
+  },
+  "7946": {
+   "recipe_item_ids": [
+    8028
+   ],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    7075,
+    7966
+   ]
+  },
+  "7947": {
+   "recipe_item_ids": [
+    8030
+   ],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    6037,
+    7910,
+    7966
+   ]
+  },
+  "7954": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1529,
+    3860,
+    3864,
+    4304,
+    6037,
+    7075,
+    7966
+   ]
+  },
+  "7955": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2840,
+    2880,
+    3470
+   ]
+  },
+  "7956": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2841,
+    3466
+   ]
+  },
+  "7957": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2841,
+    3466
+   ]
+  },
+  "7958": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2319,
+    2841,
+    3466
+   ]
+  },
+  "7959": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    6037,
+    7966,
+    7972
+   ]
+  },
+  "7960": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4304,
+    6037,
+    7081,
+    7910,
+    7966
+   ]
+  },
+  "7961": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3823,
+    3860,
+    4304,
+    6037,
+    7081,
+    7909,
+    7966
+   ]
+  },
+  "7963": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3486,
+    3859
+   ]
+  },
+  "7964": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7912
+   ]
+  },
+  "7965": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4306,
+    7912
+   ]
+  },
+  "7966": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7912
+   ]
+  },
+  "7967": {
+   "recipe_item_ids": [
+    7976
+   ],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    7966
+   ]
+  },
+  "7969": {
+   "recipe_item_ids": [
+    7989
+   ],
+   "reagent_item_ids": [
+    3860,
+    7966
+   ]
+  },
+  "7970": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8007": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8008": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8051": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8067": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    4357
+   ]
+  },
+  "8068": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840,
+    4364
+   ]
+  },
+  "8069": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2841,
+    4377
+   ]
+  },
+  "8075": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8076": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8077": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8078": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8079": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8095": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8170": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304
+   ]
+  },
+  "8172": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8150,
+    8169
+   ]
+  },
+  "8173": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4304
+   ]
+  },
+  "8174": {
+   "recipe_item_ids": [
+    8384
+   ],
+   "reagent_item_ids": [
+    4234,
+    4236,
+    4291
+   ]
+  },
+  "8175": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4304
+   ]
+  },
+  "8176": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4304
+   ]
+  },
+  "8185": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8167,
+    8343
+   ]
+  },
+  "8187": {
+   "recipe_item_ids": [
+    8385
+   ],
+   "reagent_item_ids": [
+    4304,
+    8167,
+    8343
+   ]
+  },
+  "8189": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8167,
+    8343
+   ]
+  },
+  "8191": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8167,
+    8343
+   ]
+  },
+  "8192": {
+   "recipe_item_ids": [
+    8409
+   ],
+   "reagent_item_ids": [
+    4291,
+    4304,
+    4338
+   ]
+  },
+  "8193": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4304
+   ]
+  },
+  "8195": {
+   "recipe_item_ids": [
+    8388
+   ],
+   "reagent_item_ids": [
+    4291,
+    4304
+   ]
+  },
+  "8197": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8343
+   ]
+  },
+  "8198": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8167,
+    8343
+   ]
+  },
+  "8200": {
+   "recipe_item_ids": [
+    8386
+   ],
+   "reagent_item_ids": [
+    4304,
+    8151,
+    8343
+   ]
+  },
+  "8201": {
+   "recipe_item_ids": [
+    8387
+   ],
+   "reagent_item_ids": [
+    4304,
+    8151,
+    8343
+   ]
+  },
+  "8202": {
+   "recipe_item_ids": [
+    8389
+   ],
+   "reagent_item_ids": [
+    4304,
+    8152,
+    8343
+   ]
+  },
+  "8203": {
+   "recipe_item_ids": [
+    8395
+   ],
+   "reagent_item_ids": [
+    4291,
+    4304,
+    8154
+   ]
+  },
+  "8204": {
+   "recipe_item_ids": [
+    8398
+   ],
+   "reagent_item_ids": [
+    4291,
+    4304,
+    8154
+   ]
+  },
+  "8205": {
+   "recipe_item_ids": [
+    8397
+   ],
+   "reagent_item_ids": [
+    4291,
+    4304,
+    8154
+   ]
+  },
+  "8206": {
+   "recipe_item_ids": [
+    8401
+   ],
+   "reagent_item_ids": [
+    4304,
+    8154,
+    8343
+   ]
+  },
+  "8207": {
+   "recipe_item_ids": [
+    8400
+   ],
+   "reagent_item_ids": [
+    4304,
+    8154,
+    8343
+   ]
+  },
+  "8208": {
+   "recipe_item_ids": [
+    8402
+   ],
+   "reagent_item_ids": [
+    4304,
+    8154,
+    8343
+   ]
+  },
+  "8209": {
+   "recipe_item_ids": [
+    8399
+   ],
+   "reagent_item_ids": [
+    4291,
+    4304,
+    8154
+   ]
+  },
+  "8210": {
+   "recipe_item_ids": [
+    8403
+   ],
+   "reagent_item_ids": [
+    4304,
+    8153,
+    8172
+   ]
+  },
+  "8211": {
+   "recipe_item_ids": [
+    8404
+   ],
+   "reagent_item_ids": [
+    4304,
+    8153,
+    8172
+   ]
+  },
+  "8212": {
+   "recipe_item_ids": [
+    8407
+   ],
+   "reagent_item_ids": [
+    4304,
+    8153,
+    8172
+   ]
+  },
+  "8213": {
+   "recipe_item_ids": [
+    8406
+   ],
+   "reagent_item_ids": [
+    4304,
+    8153,
+    8172
+   ]
+  },
+  "8214": {
+   "recipe_item_ids": [
+    8405
+   ],
+   "reagent_item_ids": [
+    4304,
+    8153,
+    8172
+   ]
+  },
+  "8215": {
+   "recipe_item_ids": [
+    8408
+   ],
+   "reagent_item_ids": [
+    4304,
+    8153,
+    8172
+   ]
+  },
+  "8216": {
+   "recipe_item_ids": [
+    8390
+   ],
+   "reagent_item_ids": [
+    4304,
+    8152,
+    8343
+   ]
+  },
+  "8217": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4304,
+    8172,
+    8949
+   ]
+  },
+  "8218": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4304,
+    8172,
+    8951
+   ]
+  },
+  "8345": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8146,
+    8172,
+    8343,
+    8368
+   ]
+  },
+  "8346": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    7075,
+    7079,
+    8172,
+    8343
+   ]
+  },
+  "8347": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8165,
+    8172,
+    8343
+   ]
+  },
+  "8348": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    7075,
+    7077,
+    8172,
+    8343
+   ]
+  },
+  "8349": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    7971,
+    8168,
+    8172,
+    8343
+   ]
+  },
+  "8364": {
+   "recipe_item_ids": [
+    17062
+   ],
+   "reagent_item_ids": [
+    8365
+   ]
+  },
+  "8367": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    8165,
+    8172,
+    8343
+   ]
+  },
+  "8432": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8544": {
+   "recipe_item_ids": [
+    16113
+   ],
+   "reagent_item_ids": [
+    4338
+   ]
+  },
+  "8545": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4338
+   ]
+  },
+  "8546": {
+   "recipe_item_ids": [
+    8547
+   ],
+   "reagent_item_ids": [
+    8150
+   ]
+  },
+  "8585": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8708": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "8827": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3357,
+    3372,
+    6370
+   ]
+  },
+  "8926": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8924,
+    8925
+   ]
+  },
+  "8927": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8924,
+    8925
+   ]
+  },
+  "8928": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8924,
+    8925
+   ]
+  },
+  "8949": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3372,
+    3820,
+    3821
+   ]
+  },
+  "8951": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3355,
+    3372,
+    3821
+   ]
+  },
+  "8956": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3821,
+    4625,
+    8925
+   ]
+  },
+  "8984": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    5173,
+    8925
+   ]
+  },
+  "8985": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    5173,
+    8925
+   ]
+  },
+  "9030": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3821,
+    7067,
+    8925
+   ]
+  },
+  "9036": {
+   "recipe_item_ids": [
+    9293
+   ],
+   "reagent_item_ids": [
+    3358,
+    8831,
+    8925
+   ]
+  },
+  "9060": {
+   "recipe_item_ids": [
+    10713
+   ],
+   "reagent_item_ids": [
+    3577,
+    3860,
+    6037
+   ]
+  },
+  "9061": {
+   "recipe_item_ids": [
+    10644
+   ],
+   "reagent_item_ids": [
+    3372,
+    4625,
+    9260
+   ]
+  },
+  "9088": {
+   "recipe_item_ids": [
+    9296
+   ],
+   "reagent_item_ids": [
+    8836,
+    8839,
+    8925
+   ]
+  },
+  "9144": {
+   "recipe_item_ids": [
+    9294
+   ],
+   "reagent_item_ids": [
+    8153,
+    8831,
+    8925
+   ]
+  },
+  "9149": {
+   "recipe_item_ids": [
+    9303
+   ],
+   "reagent_item_ids": [
+    3575,
+    4625,
+    8831,
+    9262
+   ]
+  },
+  "9154": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8836,
+    8925
+   ]
+  },
+  "9155": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3821,
+    8839,
+    8925
+   ]
+  },
+  "9172": {
+   "recipe_item_ids": [
+    9295
+   ],
+   "reagent_item_ids": [
+    8838,
+    8845,
+    8925
+   ]
+  },
+  "9173": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9179": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3358,
+    8839,
+    8925
+   ]
+  },
+  "9186": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8923,
+    8924,
+    8925
+   ]
+  },
+  "9187": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3821,
+    8838,
+    8925
+   ]
+  },
+  "9197": {
+   "recipe_item_ids": [
+    9297
+   ],
+   "reagent_item_ids": [
+    8831,
+    8925
+   ]
+  },
+  "9206": {
+   "recipe_item_ids": [
+    9298
+   ],
+   "reagent_item_ids": [
+    8838,
+    8846,
+    8925
+   ]
+  },
+  "9210": {
+   "recipe_item_ids": [
+    9302
+   ],
+   "reagent_item_ids": [
+    4342,
+    8845,
+    8925
+   ]
+  },
+  "9224": {
+   "recipe_item_ids": [
+    9300
+   ],
+   "reagent_item_ids": [
+    8845,
+    8846,
+    8925
+   ]
+  },
+  "9233": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8846,
+    8925
+   ]
+  },
+  "9240": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9254": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9251,
+    9252,
+    9253
+   ]
+  },
+  "9264": {
+   "recipe_item_ids": [
+    9301
+   ],
+   "reagent_item_ids": [
+    8845,
+    8925
+   ]
+  },
+  "9280": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9279
+   ]
+  },
+  "9281": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "9282": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9280
+   ]
+  },
+  "9284": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9306": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9255,
+    9256,
+    9257,
+    9258
+   ]
+  },
+  "9307": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9312": {
+   "recipe_item_ids": [
+    18649
+   ],
+   "reagent_item_ids": [
+    4234,
+    4377
+   ]
+  },
+  "9313": {
+   "recipe_item_ids": [
+    18648
+   ],
+   "reagent_item_ids": [
+    4234,
+    4377
+   ]
+  },
+  "9316": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9281
+   ]
+  },
+  "9318": {
+   "recipe_item_ids": [
+    18647
+   ],
+   "reagent_item_ids": [
+    4234,
+    4377
+   ]
+  },
+  "9319": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9320
+   ]
+  },
+  "9330": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9365": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9366": {
+   "recipe_item_ids": [
+    9367
+   ],
+   "reagent_item_ids": [
+    3486,
+    3577,
+    3859,
+    3864
+   ]
+  },
+  "9372": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9379
+   ]
+  },
+  "9379": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9380": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9372
+   ]
+  },
+  "9421": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9438": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9440": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9441": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9593": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9594": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9595": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9596": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9597": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "9718": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3466,
+    3486,
+    3859,
+    7068,
+    9719
+   ]
+  },
+  "9998": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4339
+   ]
+  },
+  "9999": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4339
+   ]
+  },
+  "10001": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343
+   ]
+  },
+  "10002": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343,
+    10285
+   ]
+  },
+  "10003": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343
+   ]
+  },
+  "10004": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343,
+    10285
+   ]
+  },
+  "10007": {
+   "recipe_item_ids": [
+    10300
+   ],
+   "reagent_item_ids": [
+    2604,
+    4339,
+    8343
+   ]
+  },
+  "10008": {
+   "recipe_item_ids": [
+    10301
+   ],
+   "reagent_item_ids": [
+    2324,
+    4339,
+    8343
+   ]
+  },
+  "10009": {
+   "recipe_item_ids": [
+    10302
+   ],
+   "reagent_item_ids": [
+    2604,
+    4339,
+    8343
+   ]
+  },
+  "10010": {
+   "recipe_item_ids": [
+    10303
+   ],
+   "reagent_item_ids": [
+    4339,
+    7079,
+    8343
+   ]
+  },
+  "10011": {
+   "recipe_item_ids": [
+    10304
+   ],
+   "reagent_item_ids": [
+    4339,
+    7079,
+    8343
+   ]
+  },
+  "10018": {
+   "recipe_item_ids": [
+    10312
+   ],
+   "reagent_item_ids": [
+    2604,
+    4339,
+    8343
+   ]
+  },
+  "10019": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8153,
+    8343,
+    10286
+   ]
+  },
+  "10020": {
+   "recipe_item_ids": [
+    10313
+   ],
+   "reagent_item_ids": [
+    4339,
+    7079,
+    8343
+   ]
+  },
+  "10021": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8153,
+    8343,
+    10286
+   ]
+  },
+  "10023": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343,
+    10285
+   ]
+  },
+  "10024": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343
+   ]
+  },
+  "10025": {
+   "recipe_item_ids": [
+    10463
+   ],
+   "reagent_item_ids": [
+    4339,
+    8343,
+    10285
+   ]
+  },
+  "10026": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    4339,
+    8343
+   ]
+  },
+  "10027": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343
+   ]
+  },
+  "10028": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    8343,
+    10285
+   ]
+  },
+  "10029": {
+   "recipe_item_ids": [
+    10315
+   ],
+   "reagent_item_ids": [
+    2604,
+    4339,
+    8343
+   ]
+  },
+  "10030": {
+   "recipe_item_ids": [
+    10318
+   ],
+   "reagent_item_ids": [
+    4339,
+    4589,
+    8343
+   ]
+  },
+  "10031": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    4339,
+    8343,
+    10285
+   ]
+  },
+  "10032": {
+   "recipe_item_ids": [
+    10319
+   ],
+   "reagent_item_ids": [
+    4339,
+    7079,
+    8343
+   ]
+  },
+  "10033": {
+   "recipe_item_ids": [
+    10320
+   ],
+   "reagent_item_ids": [
+    2604,
+    4339,
+    8343
+   ]
+  },
+  "10034": {
+   "recipe_item_ids": [
+    10321
+   ],
+   "reagent_item_ids": [
+    4339,
+    8343
+   ]
+  },
+  "10035": {
+   "recipe_item_ids": [
+    10323
+   ],
+   "reagent_item_ids": [
+    4339,
+    8343
+   ]
+  },
+  "10036": {
+   "recipe_item_ids": [
+    10326
+   ],
+   "reagent_item_ids": [
+    4339,
+    8343
+   ]
+  },
+  "10038": {
+   "recipe_item_ids": [
+    10322
+   ],
+   "reagent_item_ids": [
+    4339,
+    7079,
+    8343
+   ]
+  },
+  "10039": {
+   "recipe_item_ids": [
+    10324
+   ],
+   "reagent_item_ids": [
+    4304,
+    4339,
+    7079,
+    8343
+   ]
+  },
+  "10040": {
+   "recipe_item_ids": [
+    10325
+   ],
+   "reagent_item_ids": [
+    2324,
+    4339,
+    8343
+   ]
+  },
+  "10041": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1529,
+    4339,
+    6037,
+    8153,
+    8343,
+    10286
+   ]
+  },
+  "10042": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    7077,
+    8343
+   ]
+  },
+  "10044": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    4339,
+    7077,
+    8343
+   ]
+  },
+  "10045": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2320,
+    2996
+   ]
+  },
+  "10046": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2318,
+    2320,
+    2996
+   ]
+  },
+  "10047": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2321,
+    2996
+   ]
+  },
+  "10048": {
+   "recipe_item_ids": [
+    10316
+   ],
+   "reagent_item_ids": [
+    2321,
+    2604,
+    2997
+   ]
+  },
+  "10050": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4291,
+    4339
+   ]
+  },
+  "10051": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2604,
+    4339,
+    8343
+   ]
+  },
+  "10052": {
+   "recipe_item_ids": [
+    10311
+   ],
+   "reagent_item_ids": [
+    4339,
+    6261,
+    8343
+   ]
+  },
+  "10053": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2324,
+    2325,
+    4339,
+    8343
+   ]
+  },
+  "10054": {
+   "recipe_item_ids": [
+    10314
+   ],
+   "reagent_item_ids": [
+    4339,
+    4342,
+    8343
+   ]
+  },
+  "10055": {
+   "recipe_item_ids": [
+    10317
+   ],
+   "reagent_item_ids": [
+    4339,
+    8343,
+    10290
+   ]
+  },
+  "10056": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4339,
+    6261,
+    8343
+   ]
+  },
+  "10421": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2840
+   ]
+  },
+  "10423": {
+   "recipe_item_ids": [
+    10424
+   ],
+   "reagent_item_ids": [
+    2841,
+    2842,
+    3478
+   ]
+  },
+  "10464": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10498": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3859
+   ]
+  },
+  "10499": {
+   "recipe_item_ids": [
+    10601
+   ],
+   "reagent_item_ids": [
+    3864,
+    4234
+   ]
+  },
+  "10500": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3864,
+    4234,
+    4385,
+    7068
+   ]
+  },
+  "10501": {
+   "recipe_item_ids": [
+    10603
+   ],
+   "reagent_item_ids": [
+    4304,
+    7909,
+    10592
+   ]
+  },
+  "10502": {
+   "recipe_item_ids": [
+    10605
+   ],
+   "reagent_item_ids": [
+    4304,
+    7910
+   ]
+  },
+  "10503": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4304,
+    7910
+   ]
+  },
+  "10504": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1529,
+    4304,
+    7909,
+    8153,
+    10286
+   ]
+  },
+  "10505": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7912
+   ]
+  },
+  "10506": {
+   "recipe_item_ids": [
+    10607
+   ],
+   "reagent_item_ids": [
+    774,
+    818,
+    3860,
+    6037,
+    10561
+   ]
+  },
+  "10507": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4306,
+    10505
+   ]
+  },
+  "10508": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4400,
+    7068,
+    10559,
+    10560
+   ]
+  },
+  "10510": {
+   "recipe_item_ids": [
+    10604
+   ],
+   "reagent_item_ids": [
+    3860,
+    3864,
+    4400,
+    10559,
+    10560
+   ]
+  },
+  "10512": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    10505
+   ]
+  },
+  "10513": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    10505
+   ]
+  },
+  "10514": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10505,
+    10560,
+    10561
+   ]
+  },
+  "10515": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10518": {
+   "recipe_item_ids": [
+    10606
+   ],
+   "reagent_item_ids": [
+    4339,
+    10285,
+    10505,
+    10560
+   ]
+  },
+  "10542": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    3864,
+    7067
+   ]
+  },
+  "10543": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    3864,
+    7068
+   ]
+  },
+  "10545": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4234,
+    8151,
+    10500,
+    10558,
+    10559
+   ]
+  },
+  "10546": {
+   "recipe_item_ids": [
+    10602
+   ],
+   "reagent_item_ids": [
+    4304,
+    7909,
+    10559
+   ]
+  },
+  "10548": {
+   "recipe_item_ids": [
+    10608
+   ],
+   "reagent_item_ids": [
+    6037,
+    7910,
+    10559
+   ]
+  },
+  "10558": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3577
+   ]
+  },
+  "10559": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860
+   ]
+  },
+  "10560": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4338,
+    10505
+   ]
+  },
+  "10561": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860
+   ]
+  },
+  "10562": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10505,
+    10560,
+    10561
+   ]
+  },
+  "10576": {
+   "recipe_item_ids": [
+    10609
+   ],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    7077,
+    7910,
+    9060,
+    9061
+   ]
+  },
+  "10577": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    7068,
+    10505,
+    10558,
+    10559,
+    10577
+   ]
+  },
+  "10579": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3030,
+    3860,
+    10505
+   ]
+  },
+  "10580": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    10505,
+    10558,
+    10561
+   ]
+  },
+  "10585": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4389,
+    10560,
+    10561
+   ]
+  },
+  "10586": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9061,
+    10507,
+    10560,
+    10561
+   ]
+  },
+  "10587": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4407,
+    6037,
+    10505,
+    10560,
+    10561
+   ]
+  },
+  "10588": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    9061,
+    10543,
+    10560
+   ]
+  },
+  "10589": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10592": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3372,
+    3818,
+    3821
+   ]
+  },
+  "10644": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10647,
+    10648
+   ]
+  },
+  "10645": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7972,
+    9060,
+    10559,
+    10560,
+    12808
+   ]
+  },
+  "10646": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4338,
+    10505,
+    10560
+   ]
+  },
+  "10662": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10465,
+    10663
+   ]
+  },
+  "10691": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10692": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10693": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10694": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10713": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10647,
+    10648
+   ]
+  },
+  "10716": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1529,
+    3860,
+    8151,
+    10559,
+    10560
+   ]
+  },
+  "10719": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    10559,
+    10560
+   ]
+  },
+  "10720": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4337,
+    10285,
+    10505,
+    10559
+   ]
+  },
+  "10721": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    7387,
+    7909,
+    10560
+   ]
+  },
+  "10723": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4389,
+    10560,
+    10561
+   ]
+  },
+  "10724": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4234,
+    4389,
+    10026,
+    10505,
+    10559
+   ]
+  },
+  "10725": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1529,
+    3860,
+    6037,
+    9060,
+    10558,
+    10561
+   ]
+  },
+  "10726": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4338,
+    6037,
+    7910,
+    10558
+   ]
+  },
+  "10727": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    6037,
+    9061,
+    10559,
+    10560
+   ]
+  },
+  "10818": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10841": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    159,
+    3821
+   ]
+  },
+  "10918": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2930,
+    3372,
+    5173
+   ]
+  },
+  "10920": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2930,
+    3372,
+    5173
+   ]
+  },
+  "10921": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    5173,
+    8923,
+    8925
+   ]
+  },
+  "10922": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    5173,
+    8923,
+    8925
+   ]
+  },
+  "10938": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "10939": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10938
+   ]
+  },
+  "10998": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11024": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11018,
+    11022
+   ]
+  },
+  "11082": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10998
+   ]
+  },
+  "11128": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3478,
+    3577
+   ]
+  },
+  "11130": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    5500,
+    11082,
+    11083,
+    11128
+   ]
+  },
+  "11131": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11134": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11135": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11134
+   ]
+  },
+  "11144": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3486,
+    6037
+   ]
+  },
+  "11145": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7971,
+    11135,
+    11137,
+    11144
+   ]
+  },
+  "11149": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11147,
+    11148,
+    11613,
+    11616
+   ]
+  },
+  "11174": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11175": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11174
+   ]
+  },
+  "11230": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11270": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11282": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11283": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11286": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11287": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4470,
+    10938
+   ]
+  },
+  "11288": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4470,
+    10939
+   ]
+  },
+  "11289": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11083,
+    11134,
+    11291
+   ]
+  },
+  "11290": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11135,
+    11137,
+    11291
+   ]
+  },
+  "11320": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11371": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11370
+   ]
+  },
+  "11413": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11470": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11482": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11511": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11522": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11172,
+    11173
+   ]
+  },
+  "11582": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11590": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    4338,
+    10505
+   ]
+  },
+  "11604": {
+   "recipe_item_ids": [
+    11612
+   ],
+   "reagent_item_ids": [
+    7077,
+    11371
+   ]
+  },
+  "11605": {
+   "recipe_item_ids": [
+    11615
+   ],
+   "reagent_item_ids": [
+    7077,
+    11371
+   ]
+  },
+  "11606": {
+   "recipe_item_ids": [
+    11614
+   ],
+   "reagent_item_ids": [
+    7077,
+    11371
+   ]
+  },
+  "11607": {
+   "recipe_item_ids": [
+    11611
+   ],
+   "reagent_item_ids": [
+    7077,
+    11371
+   ]
+  },
+  "11608": {
+   "recipe_item_ids": [
+    11610
+   ],
+   "reagent_item_ids": [
+    7077,
+    11371
+   ]
+  },
+  "11811": {
+   "recipe_item_ids": [
+    11813
+   ],
+   "reagent_item_ids": [
+    7078,
+    11382,
+    14343
+   ]
+  },
+  "11825": {
+   "recipe_item_ids": [
+    11828
+   ],
+   "reagent_item_ids": [
+    3860,
+    4394,
+    7077,
+    7191
+   ]
+  },
+  "11826": {
+   "recipe_item_ids": [
+    11827
+   ],
+   "reagent_item_ids": [
+    3860,
+    4389,
+    6037,
+    7075,
+    7191
+   ]
+  },
+  "11947": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11949": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11950": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11951": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11952": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "11954": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12144": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9280
+   ]
+  },
+  "12190": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8831,
+    8925
+   ]
+  },
+  "12209": {
+   "recipe_item_ids": [
+    12227
+   ],
+   "reagent_item_ids": [
+    1015,
+    2678
+   ]
+  },
+  "12210": {
+   "recipe_item_ids": [
+    12228
+   ],
+   "reagent_item_ids": [
+    2692,
+    12184
+   ]
+  },
+  "12212": {
+   "recipe_item_ids": [
+    12231
+   ],
+   "reagent_item_ids": [
+    159,
+    4536,
+    12202
+   ]
+  },
+  "12213": {
+   "recipe_item_ids": [
+    12232
+   ],
+   "reagent_item_ids": [
+    2692,
+    12037
+   ]
+  },
+  "12214": {
+   "recipe_item_ids": [
+    12233
+   ],
+   "reagent_item_ids": [
+    2596,
+    12037
+   ]
+  },
+  "12215": {
+   "recipe_item_ids": [
+    12240
+   ],
+   "reagent_item_ids": [
+    159,
+    3713,
+    12204
+   ]
+  },
+  "12216": {
+   "recipe_item_ids": [
+    16111
+   ],
+   "reagent_item_ids": [
+    2692,
+    12206
+   ]
+  },
+  "12217": {
+   "recipe_item_ids": [
+    12239
+   ],
+   "reagent_item_ids": [
+    2692,
+    4402,
+    12037
+   ]
+  },
+  "12218": {
+   "recipe_item_ids": [
+    16110
+   ],
+   "reagent_item_ids": [
+    3713,
+    12207
+   ]
+  },
+  "12224": {
+   "recipe_item_ids": [
+    12226
+   ],
+   "reagent_item_ids": [
+    2678,
+    12223
+   ]
+  },
+  "12241": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12259": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    1206,
+    3466,
+    3859,
+    4234,
+    7067
+   ]
+  },
+  "12260": {
+   "recipe_item_ids": [
+    12261
+   ],
+   "reagent_item_ids": [
+    3577,
+    3859,
+    4234,
+    7068
+   ]
+  },
+  "12263": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12347": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12349": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12359": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10620
+   ]
+  },
+  "12360": {
+   "recipe_item_ids": [
+    12958
+   ],
+   "reagent_item_ids": [
+    12359,
+    12363
+   ]
+  },
+  "12368": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12384": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12404": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12365
+   ]
+  },
+  "12405": {
+   "recipe_item_ids": [
+    12682
+   ],
+   "reagent_item_ids": [
+    11188,
+    12359,
+    12361
+   ]
+  },
+  "12406": {
+   "recipe_item_ids": [
+    12683
+   ],
+   "reagent_item_ids": [
+    11186,
+    12359
+   ]
+  },
+  "12408": {
+   "recipe_item_ids": [
+    12684
+   ],
+   "reagent_item_ids": [
+    11184,
+    12359
+   ]
+  },
+  "12409": {
+   "recipe_item_ids": [
+    12693
+   ],
+   "reagent_item_ids": [
+    8170,
+    11185,
+    12359
+   ]
+  },
+  "12410": {
+   "recipe_item_ids": [
+    12694
+   ],
+   "reagent_item_ids": [
+    7910,
+    11188,
+    12359
+   ]
+  },
+  "12414": {
+   "recipe_item_ids": [
+    12704
+   ],
+   "reagent_item_ids": [
+    11186,
+    12359
+   ]
+  },
+  "12415": {
+   "recipe_item_ids": [
+    12689
+   ],
+   "reagent_item_ids": [
+    7077,
+    7910,
+    12359
+   ]
+  },
+  "12416": {
+   "recipe_item_ids": [
+    12685
+   ],
+   "reagent_item_ids": [
+    7077,
+    12359
+   ]
+  },
+  "12417": {
+   "recipe_item_ids": [
+    12702
+   ],
+   "reagent_item_ids": [
+    7077,
+    12359
+   ]
+  },
+  "12418": {
+   "recipe_item_ids": [
+    12695
+   ],
+   "reagent_item_ids": [
+    7077,
+    12359
+   ]
+  },
+  "12419": {
+   "recipe_item_ids": [
+    12697
+   ],
+   "reagent_item_ids": [
+    7077,
+    12359
+   ]
+  },
+  "12420": {
+   "recipe_item_ids": [
+    12713
+   ],
+   "reagent_item_ids": [
+    7077,
+    12359
+   ]
+  },
+  "12422": {
+   "recipe_item_ids": [
+    12705
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359
+   ]
+  },
+  "12424": {
+   "recipe_item_ids": [
+    12688
+   ],
+   "reagent_item_ids": [
+    7909,
+    8170,
+    12359
+   ]
+  },
+  "12425": {
+   "recipe_item_ids": [
+    12690
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359
+   ]
+  },
+  "12426": {
+   "recipe_item_ids": [
+    12700
+   ],
+   "reagent_item_ids": [
+    7909,
+    7910,
+    12359
+   ]
+  },
+  "12427": {
+   "recipe_item_ids": [
+    12701
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359
+   ]
+  },
+  "12428": {
+   "recipe_item_ids": [
+    12687
+   ],
+   "reagent_item_ids": [
+    3864,
+    8170,
+    12359
+   ]
+  },
+  "12429": {
+   "recipe_item_ids": [
+    12715
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359
+   ]
+  },
+  "12442": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12443": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12440,
+    12442
+   ]
+  },
+  "12563": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12567": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12610": {
+   "recipe_item_ids": [
+    12706
+   ],
+   "reagent_item_ids": [
+    3577,
+    12359,
+    12360
+   ]
+  },
+  "12611": {
+   "recipe_item_ids": [
+    12707
+   ],
+   "reagent_item_ids": [
+    2842,
+    12359,
+    12360
+   ]
+  },
+  "12612": {
+   "recipe_item_ids": [
+    12714
+   ],
+   "reagent_item_ids": [
+    6037,
+    12359,
+    12360,
+    12364
+   ]
+  },
+  "12613": {
+   "recipe_item_ids": [
+    12718
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359,
+    12360
+   ]
+  },
+  "12614": {
+   "recipe_item_ids": [
+    12719
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359,
+    12360
+   ]
+  },
+  "12618": {
+   "recipe_item_ids": [
+    12727
+   ],
+   "reagent_item_ids": [
+    7076,
+    7080,
+    12360,
+    12364,
+    12655,
+    12800
+   ]
+  },
+  "12619": {
+   "recipe_item_ids": [
+    12726
+   ],
+   "reagent_item_ids": [
+    7080,
+    12360,
+    12361,
+    12364,
+    12655
+   ]
+  },
+  "12620": {
+   "recipe_item_ids": [
+    12725
+   ],
+   "reagent_item_ids": [
+    7076,
+    12360,
+    12655,
+    12799,
+    12800
+   ]
+  },
+  "12624": {
+   "recipe_item_ids": [
+    12691
+   ],
+   "reagent_item_ids": [
+    8153,
+    12359,
+    12364,
+    12655,
+    12803
+   ]
+  },
+  "12625": {
+   "recipe_item_ids": [
+    12698
+   ],
+   "reagent_item_ids": [
+    7080,
+    12359,
+    12360,
+    12364
+   ]
+  },
+  "12628": {
+   "recipe_item_ids": [
+    12696
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359,
+    12361,
+    12662
+   ]
+  },
+  "12631": {
+   "recipe_item_ids": [
+    12699
+   ],
+   "reagent_item_ids": [
+    7078,
+    7910,
+    12359,
+    12655
+   ]
+  },
+  "12632": {
+   "recipe_item_ids": [
+    12703
+   ],
+   "reagent_item_ids": [
+    7080,
+    12359,
+    12361,
+    12655
+   ]
+  },
+  "12633": {
+   "recipe_item_ids": [
+    12711
+   ],
+   "reagent_item_ids": [
+    3577,
+    6037,
+    12359,
+    12655,
+    12800
+   ]
+  },
+  "12636": {
+   "recipe_item_ids": [
+    12716
+   ],
+   "reagent_item_ids": [
+    8168,
+    12359,
+    12364,
+    12655,
+    12799
+   ]
+  },
+  "12639": {
+   "recipe_item_ids": [
+    12720
+   ],
+   "reagent_item_ids": [
+    7076,
+    12360,
+    12361,
+    12655,
+    12799
+   ]
+  },
+  "12640": {
+   "recipe_item_ids": [
+    12717
+   ],
+   "reagent_item_ids": [
+    8146,
+    12359,
+    12360,
+    12361,
+    12800
+   ]
+  },
+  "12641": {
+   "recipe_item_ids": [
+    12728
+   ],
+   "reagent_item_ids": [
+    12360,
+    12364,
+    12655,
+    12800
+   ]
+  },
+  "12643": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12365,
+    14047
+   ]
+  },
+  "12644": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12365
+   ]
+  },
+  "12645": {
+   "recipe_item_ids": [
+    12692
+   ],
+   "reagent_item_ids": [
+    7076,
+    12359,
+    12644
+   ]
+  },
+  "12655": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11176,
+    12359
+   ]
+  },
+  "12723": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12721
+   ]
+  },
+  "12764": {
+   "recipe_item_ids": [
+    12816
+   ],
+   "reagent_item_ids": [
+    8170,
+    12359,
+    12644
+   ]
+  },
+  "12769": {
+   "recipe_item_ids": [
+    12817
+   ],
+   "reagent_item_ids": [
+    8153,
+    8170,
+    12359,
+    12644,
+    12799,
+    12803
+   ]
+  },
+  "12772": {
+   "recipe_item_ids": [
+    12818
+   ],
+   "reagent_item_ids": [
+    3577,
+    6037,
+    8170,
+    12359,
+    12361
+   ]
+  },
+  "12773": {
+   "recipe_item_ids": [
+    12819
+   ],
+   "reagent_item_ids": [
+    8170,
+    12359,
+    12644,
+    12799
+   ]
+  },
+  "12774": {
+   "recipe_item_ids": [
+    12821
+   ],
+   "reagent_item_ids": [
+    7910,
+    8170,
+    12359,
+    12361,
+    12644,
+    12655
+   ]
+  },
+  "12775": {
+   "recipe_item_ids": [
+    12823
+   ],
+   "reagent_item_ids": [
+    8170,
+    12359,
+    12644
+   ]
+  },
+  "12776": {
+   "recipe_item_ids": [
+    12824
+   ],
+   "reagent_item_ids": [
+    8170,
+    12359,
+    12364,
+    12655,
+    12804
+   ]
+  },
+  "12777": {
+   "recipe_item_ids": [
+    12825
+   ],
+   "reagent_item_ids": [
+    7077,
+    7078,
+    12644,
+    12655,
+    12800
+   ]
+  },
+  "12779": {
+   "recipe_item_ids": [
+    12826
+   ],
+   "reagent_item_ids": [
+    8170,
+    12359,
+    12644,
+    12799
+   ]
+  },
+  "12781": {
+   "recipe_item_ids": [
+    12827
+   ],
+   "reagent_item_ids": [
+    12360,
+    12361,
+    12364,
+    12655,
+    12799,
+    12804
+   ]
+  },
+  "12782": {
+   "recipe_item_ids": [
+    12830
+   ],
+   "reagent_item_ids": [
+    8170,
+    12359,
+    12360,
+    12361,
+    12644,
+    12662,
+    12808
+   ]
+  },
+  "12783": {
+   "recipe_item_ids": [
+    12839
+   ],
+   "reagent_item_ids": [
+    7910,
+    12360,
+    12644,
+    12655,
+    12799,
+    12800,
+    12810
+   ]
+  },
+  "12784": {
+   "recipe_item_ids": [
+    12838
+   ],
+   "reagent_item_ids": [
+    12360,
+    12644,
+    12810
+   ]
+  },
+  "12790": {
+   "recipe_item_ids": [
+    12834
+   ],
+   "reagent_item_ids": [
+    12360,
+    12644,
+    12799,
+    12800,
+    12810,
+    12811
+   ]
+  },
+  "12792": {
+   "recipe_item_ids": [
+    12828
+   ],
+   "reagent_item_ids": [
+    7077,
+    7910,
+    8170,
+    12359
+   ]
+  },
+  "12794": {
+   "recipe_item_ids": [
+    12837
+   ],
+   "reagent_item_ids": [
+    7076,
+    12364,
+    12655,
+    12799,
+    12810
+   ]
+  },
+  "12795": {
+   "recipe_item_ids": [
+    12831
+   ],
+   "reagent_item_ids": [
+    7910,
+    12360,
+    12644,
+    12655,
+    12662
+   ]
+  },
+  "12796": {
+   "recipe_item_ids": [
+    12833
+   ],
+   "reagent_item_ids": [
+    7076,
+    12359,
+    12360,
+    12809,
+    12810
+   ]
+  },
+  "12797": {
+   "recipe_item_ids": [
+    12836
+   ],
+   "reagent_item_ids": [
+    7080,
+    12360,
+    12361,
+    12644,
+    12800,
+    12810
+   ]
+  },
+  "12798": {
+   "recipe_item_ids": [
+    12835
+   ],
+   "reagent_item_ids": [
+    12359,
+    12360,
+    12364,
+    12644,
+    12808,
+    12810
+   ]
+  },
+  "12802": {
+   "recipe_item_ids": [
+    12832
+   ],
+   "reagent_item_ids": [
+    12364,
+    12644,
+    12655,
+    12800,
+    12804
+   ]
+  },
+  "12803": {
+   "recipe_item_ids": [
+    13489
+   ],
+   "reagent_item_ids": [
+    7076
+   ]
+  },
+  "12808": {
+   "recipe_item_ids": [
+    13487
+   ],
+   "reagent_item_ids": [
+    7080
+   ]
+  },
+  "12810": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8170,
+    16202
+   ]
+  },
+  "12846": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12847": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "12885": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12886,
+    12887,
+    12888
+   ]
+  },
+  "12907": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13155": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13159": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13209": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13370": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13423": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3372,
+    13422
+   ]
+  },
+  "13442": {
+   "recipe_item_ids": [
+    13476
+   ],
+   "reagent_item_ids": [
+    8846,
+    8925
+   ]
+  },
+  "13443": {
+   "recipe_item_ids": [
+    13477
+   ],
+   "reagent_item_ids": [
+    8838,
+    8839,
+    8925
+   ]
+  },
+  "13444": {
+   "recipe_item_ids": [
+    13501
+   ],
+   "reagent_item_ids": [
+    8925,
+    13463,
+    13467
+   ]
+  },
+  "13445": {
+   "recipe_item_ids": [
+    13478
+   ],
+   "reagent_item_ids": [
+    8838,
+    8925,
+    13423
+   ]
+  },
+  "13446": {
+   "recipe_item_ids": [
+    13480
+   ],
+   "reagent_item_ids": [
+    8925,
+    13464,
+    13465
+   ]
+  },
+  "13447": {
+   "recipe_item_ids": [
+    13479
+   ],
+   "reagent_item_ids": [
+    8925,
+    13463,
+    13466
+   ]
+  },
+  "13452": {
+   "recipe_item_ids": [
+    13491
+   ],
+   "reagent_item_ids": [
+    8925,
+    13465,
+    13466
+   ]
+  },
+  "13453": {
+   "recipe_item_ids": [
+    13481
+   ],
+   "reagent_item_ids": [
+    8846,
+    8925,
+    13466
+   ]
+  },
+  "13454": {
+   "recipe_item_ids": [
+    13493
+   ],
+   "reagent_item_ids": [
+    8925,
+    13463,
+    13465
+   ]
+  },
+  "13455": {
+   "recipe_item_ids": [
+    13490
+   ],
+   "reagent_item_ids": [
+    8925,
+    10620,
+    13423
+   ]
+  },
+  "13456": {
+   "recipe_item_ids": [
+    13495
+   ],
+   "reagent_item_ids": [
+    7070,
+    8925,
+    13463
+   ]
+  },
+  "13457": {
+   "recipe_item_ids": [
+    13494
+   ],
+   "reagent_item_ids": [
+    7068,
+    8925,
+    13463
+   ]
+  },
+  "13458": {
+   "recipe_item_ids": [
+    13496
+   ],
+   "reagent_item_ids": [
+    7067,
+    8925,
+    13463
+   ]
+  },
+  "13459": {
+   "recipe_item_ids": [
+    13499
+   ],
+   "reagent_item_ids": [
+    3824,
+    8925,
+    13463
+   ]
+  },
+  "13460": {
+   "recipe_item_ids": [
+    13500
+   ],
+   "reagent_item_ids": [
+    7069,
+    8925,
+    13463
+   ]
+  },
+  "13461": {
+   "recipe_item_ids": [
+    13497
+   ],
+   "reagent_item_ids": [
+    8925,
+    11176,
+    13463
+   ]
+  },
+  "13462": {
+   "recipe_item_ids": [
+    13492
+   ],
+   "reagent_item_ids": [
+    8925,
+    13466,
+    13467
+   ]
+  },
+  "13503": {
+   "recipe_item_ids": [
+    13517
+   ],
+   "reagent_item_ids": [
+    7076,
+    7078,
+    7080,
+    7082,
+    9262,
+    12803,
+    13468
+   ]
+  },
+  "13506": {
+   "recipe_item_ids": [
+    13518
+   ],
+   "reagent_item_ids": [
+    8925,
+    13423,
+    13465,
+    13468
+   ]
+  },
+  "13510": {
+   "recipe_item_ids": [
+    13519
+   ],
+   "reagent_item_ids": [
+    8846,
+    8925,
+    13423,
+    13468
+   ]
+  },
+  "13511": {
+   "recipe_item_ids": [
+    13520
+   ],
+   "reagent_item_ids": [
+    8925,
+    13463,
+    13467,
+    13468
+   ]
+  },
+  "13512": {
+   "recipe_item_ids": [
+    13521
+   ],
+   "reagent_item_ids": [
+    8925,
+    13463,
+    13465,
+    13468
+   ]
+  },
+  "13513": {
+   "recipe_item_ids": [
+    13522
+   ],
+   "reagent_item_ids": [
+    8925,
+    13465,
+    13467,
+    13468
+   ]
+  },
+  "13544": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13582": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13583": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "13602": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "13603": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "13699": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "13700": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "13701": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "13851": {
+   "recipe_item_ids": [
+    12229
+   ],
+   "reagent_item_ids": [
+    2692,
+    12203
+   ]
+  },
+  "13856": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    14048,
+    14341
+   ]
+  },
+  "13857": {
+   "recipe_item_ids": [
+    14470
+   ],
+   "reagent_item_ids": [
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "13858": {
+   "recipe_item_ids": [
+    14469
+   ],
+   "reagent_item_ids": [
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "13860": {
+   "recipe_item_ids": [
+    14472
+   ],
+   "reagent_item_ids": [
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "13863": {
+   "recipe_item_ids": [
+    14481
+   ],
+   "reagent_item_ids": [
+    8170,
+    14048,
+    14341
+   ]
+  },
+  "13864": {
+   "recipe_item_ids": [
+    14488
+   ],
+   "reagent_item_ids": [
+    8170,
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "13865": {
+   "recipe_item_ids": [
+    14491
+   ],
+   "reagent_item_ids": [
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "13866": {
+   "recipe_item_ids": [
+    14498
+   ],
+   "reagent_item_ids": [
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "13867": {
+   "recipe_item_ids": [
+    14504
+   ],
+   "reagent_item_ids": [
+    8170,
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "13868": {
+   "recipe_item_ids": [
+    14467
+   ],
+   "reagent_item_ids": [
+    7079,
+    14048,
+    14341
+   ]
+  },
+  "13869": {
+   "recipe_item_ids": [
+    14466
+   ],
+   "reagent_item_ids": [
+    7079,
+    14048,
+    14341
+   ]
+  },
+  "13870": {
+   "recipe_item_ids": [
+    14474
+   ],
+   "reagent_item_ids": [
+    7080,
+    14048,
+    14341
+   ]
+  },
+  "13871": {
+   "recipe_item_ids": [
+    14489
+   ],
+   "reagent_item_ids": [
+    7080,
+    14048,
+    14341
+   ]
+  },
+  "13927": {
+   "recipe_item_ids": [
+    13940
+   ],
+   "reagent_item_ids": [
+    3713,
+    13754
+   ]
+  },
+  "13928": {
+   "recipe_item_ids": [
+    13942
+   ],
+   "reagent_item_ids": [
+    3713,
+    13755
+   ]
+  },
+  "13929": {
+   "recipe_item_ids": [
+    13943
+   ],
+   "reagent_item_ids": [
+    2692,
+    13756
+   ]
+  },
+  "13930": {
+   "recipe_item_ids": [
+    13941
+   ],
+   "reagent_item_ids": [
+    13758
+   ]
+  },
+  "13931": {
+   "recipe_item_ids": [
+    13945
+   ],
+   "reagent_item_ids": [
+    159,
+    13759
+   ]
+  },
+  "13932": {
+   "recipe_item_ids": [
+    13946
+   ],
+   "reagent_item_ids": [
+    13760
+   ]
+  },
+  "13933": {
+   "recipe_item_ids": [
+    13947
+   ],
+   "reagent_item_ids": [
+    159,
+    13888
+   ]
+  },
+  "13934": {
+   "recipe_item_ids": [
+    13948
+   ],
+   "reagent_item_ids": [
+    2692,
+    3713,
+    13893
+   ]
+  },
+  "13935": {
+   "recipe_item_ids": [
+    13949
+   ],
+   "reagent_item_ids": [
+    3713,
+    13889
+   ]
+  },
+  "14042": {
+   "recipe_item_ids": [
+    14471
+   ],
+   "reagent_item_ids": [
+    7077,
+    14048,
+    14341
+   ]
+  },
+  "14043": {
+   "recipe_item_ids": [
+    14476
+   ],
+   "reagent_item_ids": [
+    7077,
+    14048,
+    14341
+   ]
+  },
+  "14044": {
+   "recipe_item_ids": [
+    14482
+   ],
+   "reagent_item_ids": [
+    7078,
+    14048,
+    14341
+   ]
+  },
+  "14045": {
+   "recipe_item_ids": [
+    14490
+   ],
+   "reagent_item_ids": [
+    7078,
+    14048,
+    14341
+   ]
+  },
+  "14046": {
+   "recipe_item_ids": [
+    14468
+   ],
+   "reagent_item_ids": [
+    8170,
+    14048,
+    14341
+   ]
+  },
+  "14048": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    14047
+   ]
+  },
+  "14100": {
+   "recipe_item_ids": [
+    14478
+   ],
+   "reagent_item_ids": [
+    3577,
+    14048,
+    14341
+   ]
+  },
+  "14101": {
+   "recipe_item_ids": [
+    14479
+   ],
+   "reagent_item_ids": [
+    3577,
+    14048,
+    14341
+   ]
+  },
+  "14103": {
+   "recipe_item_ids": [
+    14484
+   ],
+   "reagent_item_ids": [
+    3577,
+    14048,
+    14341
+   ]
+  },
+  "14104": {
+   "recipe_item_ids": [
+    14494
+   ],
+   "reagent_item_ids": [
+    3577,
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "14106": {
+   "recipe_item_ids": [
+    14506
+   ],
+   "reagent_item_ids": [
+    12662,
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "14107": {
+   "recipe_item_ids": [
+    14483
+   ],
+   "reagent_item_ids": [
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "14108": {
+   "recipe_item_ids": [
+    14492
+   ],
+   "reagent_item_ids": [
+    8170,
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "14111": {
+   "recipe_item_ids": [
+    14496
+   ],
+   "reagent_item_ids": [
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "14112": {
+   "recipe_item_ids": [
+    14508
+   ],
+   "reagent_item_ids": [
+    8170,
+    12662,
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "14128": {
+   "recipe_item_ids": [
+    14500
+   ],
+   "reagent_item_ids": [
+    11176,
+    14048,
+    14341
+   ]
+  },
+  "14130": {
+   "recipe_item_ids": [
+    14505
+   ],
+   "reagent_item_ids": [
+    7910,
+    11176,
+    14048,
+    14341
+   ]
+  },
+  "14132": {
+   "recipe_item_ids": [
+    14485
+   ],
+   "reagent_item_ids": [
+    11176,
+    14048,
+    14341
+   ]
+  },
+  "14134": {
+   "recipe_item_ids": [
+    14486
+   ],
+   "reagent_item_ids": [
+    7068,
+    7077,
+    7078,
+    14048,
+    14341
+   ]
+  },
+  "14136": {
+   "recipe_item_ids": [
+    14493
+   ],
+   "reagent_item_ids": [
+    7080,
+    12808,
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "14137": {
+   "recipe_item_ids": [
+    14497
+   ],
+   "reagent_item_ids": [
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "14138": {
+   "recipe_item_ids": [
+    14501
+   ],
+   "reagent_item_ids": [
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "14139": {
+   "recipe_item_ids": [
+    14507
+   ],
+   "reagent_item_ids": [
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "14140": {
+   "recipe_item_ids": [
+    14509
+   ],
+   "reagent_item_ids": [
+    12800,
+    12810,
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "14141": {
+   "recipe_item_ids": [
+    14480
+   ],
+   "reagent_item_ids": [
+    9210,
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "14142": {
+   "recipe_item_ids": [
+    14477
+   ],
+   "reagent_item_ids": [
+    9210,
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "14143": {
+   "recipe_item_ids": [
+    14473
+   ],
+   "reagent_item_ids": [
+    9210,
+    14048,
+    14227,
+    14341
+   ]
+  },
+  "14144": {
+   "recipe_item_ids": [
+    14495
+   ],
+   "reagent_item_ids": [
+    9210,
+    14048,
+    14341
+   ]
+  },
+  "14146": {
+   "recipe_item_ids": [
+    14511
+   ],
+   "reagent_item_ids": [
+    9210,
+    12364,
+    12810,
+    13926,
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "14152": {
+   "recipe_item_ids": [
+    14513
+   ],
+   "reagent_item_ids": [
+    7076,
+    7078,
+    7080,
+    7082,
+    14048,
+    14341
+   ]
+  },
+  "14153": {
+   "recipe_item_ids": [
+    14514
+   ],
+   "reagent_item_ids": [
+    7078,
+    12662,
+    12808,
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "14154": {
+   "recipe_item_ids": [
+    14512
+   ],
+   "reagent_item_ids": [
+    9210,
+    12811,
+    13926,
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "14155": {
+   "recipe_item_ids": [
+    14499
+   ],
+   "reagent_item_ids": [
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "14156": {
+   "recipe_item_ids": [
+    14510
+   ],
+   "reagent_item_ids": [
+    14048,
+    14341,
+    14342,
+    14344,
+    17012
+   ]
+  },
+  "14339": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "14342": {
+   "recipe_item_ids": [
+    14526
+   ],
+   "reagent_item_ids": [
+    14256
+   ]
+  },
+  "14529": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    14047
+   ]
+  },
+  "14530": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    14047
+   ]
+  },
+  "14645": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12359
+   ]
+  },
+  "14894": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "15045": {
+   "recipe_item_ids": [
+    15726
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15412
+   ]
+  },
+  "15046": {
+   "recipe_item_ids": [
+    15733
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15412
+   ]
+  },
+  "15047": {
+   "recipe_item_ids": [
+    15730
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15414
+   ]
+  },
+  "15048": {
+   "recipe_item_ids": [
+    15751
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15415
+   ]
+  },
+  "15049": {
+   "recipe_item_ids": [
+    15763
+   ],
+   "reagent_item_ids": [
+    8170,
+    12810,
+    14341,
+    15407,
+    15415
+   ]
+  },
+  "15050": {
+   "recipe_item_ids": [
+    15759
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15416
+   ]
+  },
+  "15051": {
+   "recipe_item_ids": [
+    15770
+   ],
+   "reagent_item_ids": [
+    8170,
+    12810,
+    14341,
+    15407,
+    15416
+   ]
+  },
+  "15052": {
+   "recipe_item_ids": [
+    15781
+   ],
+   "reagent_item_ids": [
+    8170,
+    12810,
+    14341,
+    15407,
+    15416
+   ]
+  },
+  "15053": {
+   "recipe_item_ids": [
+    15749
+   ],
+   "reagent_item_ids": [
+    7076,
+    7078,
+    8170,
+    14341
+   ]
+  },
+  "15054": {
+   "recipe_item_ids": [
+    15732
+   ],
+   "reagent_item_ids": [
+    7075,
+    7078,
+    8170,
+    14341
+   ]
+  },
+  "15055": {
+   "recipe_item_ids": [
+    15775
+   ],
+   "reagent_item_ids": [
+    7076,
+    7078,
+    8170,
+    14341
+   ]
+  },
+  "15056": {
+   "recipe_item_ids": [
+    15753
+   ],
+   "reagent_item_ids": [
+    7080,
+    7082,
+    8170,
+    14341,
+    15407
+   ]
+  },
+  "15057": {
+   "recipe_item_ids": [
+    15741
+   ],
+   "reagent_item_ids": [
+    7080,
+    7082,
+    8170,
+    14341
+   ]
+  },
+  "15058": {
+   "recipe_item_ids": [
+    15764
+   ],
+   "reagent_item_ids": [
+    7080,
+    7082,
+    8170,
+    12810,
+    14341
+   ]
+  },
+  "15059": {
+   "recipe_item_ids": [
+    15771
+   ],
+   "reagent_item_ids": [
+    8170,
+    12803,
+    14341,
+    14342,
+    15407
+   ]
+  },
+  "15060": {
+   "recipe_item_ids": [
+    15752
+   ],
+   "reagent_item_ids": [
+    8170,
+    12803,
+    14341,
+    15407
+   ]
+  },
+  "15061": {
+   "recipe_item_ids": [
+    15734
+   ],
+   "reagent_item_ids": [
+    8170,
+    12803,
+    14341
+   ]
+  },
+  "15062": {
+   "recipe_item_ids": [
+    15772
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15417
+   ]
+  },
+  "15063": {
+   "recipe_item_ids": [
+    15758
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15417
+   ]
+  },
+  "15064": {
+   "recipe_item_ids": [
+    15742,
+    20253
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15419
+   ]
+  },
+  "15065": {
+   "recipe_item_ids": [
+    15754,
+    20254
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15419
+   ]
+  },
+  "15066": {
+   "recipe_item_ids": [
+    15760
+   ],
+   "reagent_item_ids": [
+    1529,
+    8170,
+    14341,
+    15407,
+    15420
+   ]
+  },
+  "15067": {
+   "recipe_item_ids": [
+    15735
+   ],
+   "reagent_item_ids": [
+    1529,
+    8170,
+    14341,
+    15420
+   ]
+  },
+  "15068": {
+   "recipe_item_ids": [
+    15779
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15422
+   ]
+  },
+  "15069": {
+   "recipe_item_ids": [
+    15747
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15422
+   ]
+  },
+  "15070": {
+   "recipe_item_ids": [
+    15761
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15422
+   ]
+  },
+  "15071": {
+   "recipe_item_ids": [
+    15740
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15422
+   ]
+  },
+  "15072": {
+   "recipe_item_ids": [
+    15746
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15423
+   ]
+  },
+  "15073": {
+   "recipe_item_ids": [
+    15737
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15423
+   ]
+  },
+  "15074": {
+   "recipe_item_ids": [
+    15729
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15423
+   ]
+  },
+  "15075": {
+   "recipe_item_ids": [
+    15755
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15423
+   ]
+  },
+  "15076": {
+   "recipe_item_ids": [
+    15727
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15408
+   ]
+  },
+  "15077": {
+   "recipe_item_ids": [
+    15724
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15408
+   ]
+  },
+  "15078": {
+   "recipe_item_ids": [
+    15738
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15408
+   ]
+  },
+  "15079": {
+   "recipe_item_ids": [
+    15748
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15408
+   ]
+  },
+  "15080": {
+   "recipe_item_ids": [
+    15762
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15408
+   ]
+  },
+  "15081": {
+   "recipe_item_ids": [
+    15774
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15408
+   ]
+  },
+  "15082": {
+   "recipe_item_ids": [
+    15743
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15408
+   ]
+  },
+  "15083": {
+   "recipe_item_ids": [
+    15725
+   ],
+   "reagent_item_ids": [
+    2325,
+    8170,
+    14341
+   ]
+  },
+  "15084": {
+   "recipe_item_ids": [
+    15728
+   ],
+   "reagent_item_ids": [
+    2325,
+    8170,
+    14341
+   ]
+  },
+  "15085": {
+   "recipe_item_ids": [
+    15773
+   ],
+   "reagent_item_ids": [
+    2325,
+    8170,
+    14256,
+    14341,
+    15407
+   ]
+  },
+  "15086": {
+   "recipe_item_ids": [
+    15744
+   ],
+   "reagent_item_ids": [
+    2325,
+    8170,
+    14341
+   ]
+  },
+  "15087": {
+   "recipe_item_ids": [
+    15757
+   ],
+   "reagent_item_ids": [
+    2325,
+    8170,
+    14341,
+    15407
+   ]
+  },
+  "15088": {
+   "recipe_item_ids": [
+    15768
+   ],
+   "reagent_item_ids": [
+    2325,
+    8170,
+    14341
+   ]
+  },
+  "15090": {
+   "recipe_item_ids": [
+    15776
+   ],
+   "reagent_item_ids": [
+    8170,
+    12810,
+    14047,
+    14341,
+    15407
+   ]
+  },
+  "15091": {
+   "recipe_item_ids": [
+    15731
+   ],
+   "reagent_item_ids": [
+    8170,
+    14047,
+    14341
+   ]
+  },
+  "15092": {
+   "recipe_item_ids": [
+    15739
+   ],
+   "reagent_item_ids": [
+    7971,
+    8170,
+    14047,
+    14341
+   ]
+  },
+  "15093": {
+   "recipe_item_ids": [
+    15745
+   ],
+   "reagent_item_ids": [
+    8170,
+    14047,
+    14341
+   ]
+  },
+  "15094": {
+   "recipe_item_ids": [
+    15756
+   ],
+   "reagent_item_ids": [
+    8170,
+    14047,
+    14341
+   ]
+  },
+  "15095": {
+   "recipe_item_ids": [
+    15765
+   ],
+   "reagent_item_ids": [
+    8170,
+    12810,
+    14047,
+    14341
+   ]
+  },
+  "15096": {
+   "recipe_item_ids": [
+    15777
+   ],
+   "reagent_item_ids": [
+    8170,
+    12810,
+    14047,
+    14341,
+    15407
+   ]
+  },
+  "15138": {
+   "recipe_item_ids": [
+    15769
+   ],
+   "reagent_item_ids": [
+    14044,
+    14341,
+    15410
+   ]
+  },
+  "15141": {
+   "recipe_item_ids": [
+    15780
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15410,
+    15416
+   ]
+  },
+  "15209": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "15407": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8171,
+    15409
+   ]
+  },
+  "15409": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8150
+   ]
+  },
+  "15448": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    15447
+   ]
+  },
+  "15564": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8170
+   ]
+  },
+  "15802": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7971,
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "15843": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "15845": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "15846": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    10558,
+    10560,
+    10561,
+    12359
+   ]
+  },
+  "15869": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    2842,
+    3470
+   ]
+  },
+  "15870": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3486,
+    3577
+   ]
+  },
+  "15871": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6037,
+    7966
+   ]
+  },
+  "15872": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12360,
+    12644
+   ]
+  },
+  "15875": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "15885": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    15882
+   ]
+  },
+  "15992": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12365
+   ]
+  },
+  "15993": {
+   "recipe_item_ids": [
+    16041
+   ],
+   "reagent_item_ids": [
+    12359,
+    14047,
+    15992,
+    15994
+   ]
+  },
+  "15994": {
+   "recipe_item_ids": [
+    16042
+   ],
+   "reagent_item_ids": [
+    12359,
+    14047
+   ]
+  },
+  "15995": {
+   "recipe_item_ids": [
+    16043
+   ],
+   "reagent_item_ids": [
+    10546,
+    10559,
+    10561,
+    12359,
+    15994
+   ]
+  },
+  "15996": {
+   "recipe_item_ids": [
+    16044
+   ],
+   "reagent_item_ids": [
+    8170,
+    10558,
+    12803,
+    15994
+   ]
+  },
+  "15997": {
+   "recipe_item_ids": [
+    16051
+   ],
+   "reagent_item_ids": [
+    12359,
+    15992
+   ]
+  },
+  "15999": {
+   "recipe_item_ids": [
+    16045
+   ],
+   "reagent_item_ids": [
+    7910,
+    10502,
+    12810,
+    14047
+   ]
+  },
+  "16000": {
+   "recipe_item_ids": [
+    16047
+   ],
+   "reagent_item_ids": [
+    12359
+   ]
+  },
+  "16004": {
+   "recipe_item_ids": [
+    16048
+   ],
+   "reagent_item_ids": [
+    8170,
+    10546,
+    11371,
+    12361,
+    12799,
+    16000
+   ]
+  },
+  "16005": {
+   "recipe_item_ids": [
+    16049
+   ],
+   "reagent_item_ids": [
+    11371,
+    14047,
+    15992,
+    15994
+   ]
+  },
+  "16006": {
+   "recipe_item_ids": [
+    16050
+   ],
+   "reagent_item_ids": [
+    12360,
+    14227
+   ]
+  },
+  "16007": {
+   "recipe_item_ids": [
+    16056
+   ],
+   "reagent_item_ids": [
+    7076,
+    7078,
+    12360,
+    12800,
+    12810,
+    16000
+   ]
+  },
+  "16008": {
+   "recipe_item_ids": [
+    16053
+   ],
+   "reagent_item_ids": [
+    10500,
+    12364,
+    12810
+   ]
+  },
+  "16009": {
+   "recipe_item_ids": [
+    16052
+   ],
+   "reagent_item_ids": [
+    10558,
+    12799,
+    15994,
+    16006
+   ]
+  },
+  "16022": {
+   "recipe_item_ids": [
+    16054
+   ],
+   "reagent_item_ids": [
+    10558,
+    10576,
+    12655,
+    12810,
+    15994,
+    16006
+   ]
+  },
+  "16023": {
+   "recipe_item_ids": [
+    16046
+   ],
+   "reagent_item_ids": [
+    6037,
+    8170,
+    10561,
+    14047,
+    15994,
+    16000
+   ]
+  },
+  "16040": {
+   "recipe_item_ids": [
+    16055
+   ],
+   "reagent_item_ids": [
+    12359,
+    14047,
+    16006
+   ]
+  },
+  "16202": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "16203": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    16202
+   ]
+  },
+  "16206": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12360,
+    12644
+   ]
+  },
+  "16207": {
+   "recipe_item_ids": [
+    16243
+   ],
+   "reagent_item_ids": [
+    13926,
+    14343,
+    14344,
+    16203,
+    16204,
+    16206
+   ]
+  },
+  "16309": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "16642": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    16645,
+    16646,
+    16647,
+    16648
+   ]
+  },
+  "16643": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    16649,
+    16650,
+    16651,
+    16652
+   ]
+  },
+  "16644": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    16653,
+    16654,
+    16655,
+    16656
+   ]
+  },
+  "16766": {
+   "recipe_item_ids": [
+    16767
+   ],
+   "reagent_item_ids": [
+    1179,
+    2692,
+    7974
+   ]
+  },
+  "16787": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "16892": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "16893": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "16895": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "16896": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    6265
+   ]
+  },
+  "16973": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "16979": {
+   "recipe_item_ids": [
+    17018
+   ],
+   "reagent_item_ids": [
+    7078,
+    12810,
+    14048,
+    14341,
+    17010
+   ]
+  },
+  "16980": {
+   "recipe_item_ids": [
+    17017
+   ],
+   "reagent_item_ids": [
+    12810,
+    14048,
+    14341,
+    17010,
+    17011
+   ]
+  },
+  "16982": {
+   "recipe_item_ids": [
+    17022
+   ],
+   "reagent_item_ids": [
+    14341,
+    17010,
+    17011,
+    17012
+   ]
+  },
+  "16983": {
+   "recipe_item_ids": [
+    17023
+   ],
+   "reagent_item_ids": [
+    14341,
+    17010,
+    17011,
+    17012
+   ]
+  },
+  "16984": {
+   "recipe_item_ids": [
+    17025
+   ],
+   "reagent_item_ids": [
+    12810,
+    14341,
+    15416,
+    17010,
+    17011
+   ]
+  },
+  "16988": {
+   "recipe_item_ids": [
+    17053
+   ],
+   "reagent_item_ids": [
+    11371,
+    17010,
+    17011
+   ]
+  },
+  "16989": {
+   "recipe_item_ids": [
+    17049
+   ],
+   "reagent_item_ids": [
+    11371,
+    17010,
+    17011
+   ]
+  },
+  "17013": {
+   "recipe_item_ids": [
+    17052
+   ],
+   "reagent_item_ids": [
+    11371,
+    17010,
+    17011
+   ]
+  },
+  "17014": {
+   "recipe_item_ids": [
+    17051
+   ],
+   "reagent_item_ids": [
+    11371,
+    17010,
+    17011
+   ]
+  },
+  "17015": {
+   "recipe_item_ids": [
+    17059
+   ],
+   "reagent_item_ids": [
+    11371,
+    11382,
+    12810,
+    17010
+   ]
+  },
+  "17016": {
+   "recipe_item_ids": [
+    17060
+   ],
+   "reagent_item_ids": [
+    11371,
+    11382,
+    12810,
+    17011
+   ]
+  },
+  "17126": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17182": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    17193,
+    17204
+   ]
+  },
+  "17191": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17193": {
+   "recipe_item_ids": [
+    18592
+   ],
+   "reagent_item_ids": [
+    7078,
+    11371,
+    11382,
+    12360,
+    17010,
+    17011,
+    17203
+   ]
+  },
+  "17197": {
+   "recipe_item_ids": [
+    17200
+   ],
+   "reagent_item_ids": [
+    6889,
+    17194
+   ]
+  },
+  "17198": {
+   "recipe_item_ids": [
+    17201
+   ],
+   "reagent_item_ids": [
+    1179,
+    6889,
+    17194,
+    17196
+   ]
+  },
+  "17202": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    159
+   ]
+  },
+  "17222": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12205
+   ]
+  },
+  "17224": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17323": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17324": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17325": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17333": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "17353": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "17362": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17363": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17364": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17442": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "17505": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17506": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17507": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17690": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17691": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17696": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17704": {
+   "recipe_item_ids": [
+    17706
+   ],
+   "reagent_item_ids": [
+    3829,
+    3859,
+    4234,
+    7069,
+    7070
+   ]
+  },
+  "17708": {
+   "recipe_item_ids": [
+    17709
+   ],
+   "reagent_item_ids": [
+    3358,
+    3372,
+    3819
+   ]
+  },
+  "17716": {
+   "recipe_item_ids": [
+    17720
+   ],
+   "reagent_item_ids": [
+    3829,
+    3860,
+    4389,
+    17202
+   ]
+  },
+  "17721": {
+   "recipe_item_ids": [
+    17722
+   ],
+   "reagent_item_ids": [
+    4234,
+    4291,
+    7067
+   ]
+  },
+  "17723": {
+   "recipe_item_ids": [
+    17724
+   ],
+   "reagent_item_ids": [
+    2605,
+    4291,
+    4305
+   ]
+  },
+  "17735": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17758": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    17757,
+    17761,
+    17762,
+    17763,
+    17764,
+    17765
+   ]
+  },
+  "17771": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12360,
+    17010,
+    18562,
+    18567
+   ]
+  },
+  "17781": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17900": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17901": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17902": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17903": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17904": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17905": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17906": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17907": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17908": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17909": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "17967": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    15410
+   ]
+  },
+  "17968": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    16203,
+    16204,
+    17967
+   ]
+  },
+  "18045": {
+   "recipe_item_ids": [
+    18046
+   ],
+   "reagent_item_ids": [
+    3713,
+    12208
+   ]
+  },
+  "18151": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18168": {
+   "recipe_item_ids": [
+    18291
+   ],
+   "reagent_item_ids": [
+    7076,
+    7082,
+    12360,
+    12803,
+    16006
+   ]
+  },
+  "18232": {
+   "recipe_item_ids": [
+    18235
+   ],
+   "reagent_item_ids": [
+    7067,
+    7068,
+    7191,
+    8170,
+    12359
+   ]
+  },
+  "18238": {
+   "recipe_item_ids": [
+    18239
+   ],
+   "reagent_item_ids": [
+    1210,
+    4236,
+    4304,
+    7428,
+    7971,
+    8343
+   ]
+  },
+  "18251": {
+   "recipe_item_ids": [
+    18252
+   ],
+   "reagent_item_ids": [
+    14341,
+    17012
+   ]
+  },
+  "18253": {
+   "recipe_item_ids": [
+    18257
+   ],
+   "reagent_item_ids": [
+    10286,
+    13463,
+    13464,
+    18256
+   ]
+  },
+  "18254": {
+   "recipe_item_ids": [
+    18267
+   ],
+   "reagent_item_ids": [
+    3713,
+    18255
+   ]
+  },
+  "18258": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8170,
+    14048,
+    14341,
+    18240
+   ]
+  },
+  "18262": {
+   "recipe_item_ids": [
+    18264
+   ],
+   "reagent_item_ids": [
+    7067,
+    12365
+   ]
+  },
+  "18263": {
+   "recipe_item_ids": [
+    18265
+   ],
+   "reagent_item_ids": [
+    7078,
+    12810,
+    14341,
+    14342,
+    17010
+   ]
+  },
+  "18282": {
+   "recipe_item_ids": [
+    18292
+   ],
+   "reagent_item_ids": [
+    12360,
+    16000,
+    16006,
+    17010,
+    17011
+   ]
+  },
+  "18283": {
+   "recipe_item_ids": [
+    18290
+   ],
+   "reagent_item_ids": [
+    7076,
+    11371,
+    16000,
+    16006,
+    17011
+   ]
+  },
+  "18294": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7972,
+    8831,
+    8925
+   ]
+  },
+  "18405": {
+   "recipe_item_ids": [
+    18414
+   ],
+   "reagent_item_ids": [
+    7078,
+    7080,
+    9210,
+    14048,
+    14341,
+    14342,
+    14344
+   ]
+  },
+  "18407": {
+   "recipe_item_ids": [
+    18415
+   ],
+   "reagent_item_ids": [
+    12662,
+    12808,
+    14048,
+    14256,
+    14341
+   ]
+  },
+  "18408": {
+   "recipe_item_ids": [
+    18416
+   ],
+   "reagent_item_ids": [
+    7078,
+    7910,
+    14048,
+    14341
+   ]
+  },
+  "18409": {
+   "recipe_item_ids": [
+    18417
+   ],
+   "reagent_item_ids": [
+    13926,
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "18413": {
+   "recipe_item_ids": [
+    18418
+   ],
+   "reagent_item_ids": [
+    12360,
+    12809,
+    14048,
+    14341
+   ]
+  },
+  "18486": {
+   "recipe_item_ids": [
+    18487
+   ],
+   "reagent_item_ids": [
+    13926,
+    14048,
+    14341,
+    14342
+   ]
+  },
+  "18492": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18504": {
+   "recipe_item_ids": [
+    18514
+   ],
+   "reagent_item_ids": [
+    8170,
+    12804,
+    14341,
+    15407
+   ]
+  },
+  "18506": {
+   "recipe_item_ids": [
+    18515
+   ],
+   "reagent_item_ids": [
+    7082,
+    8170,
+    11754,
+    14341,
+    15407
+   ]
+  },
+  "18508": {
+   "recipe_item_ids": [
+    18516
+   ],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15420,
+    18512
+   ]
+  },
+  "18509": {
+   "recipe_item_ids": [
+    18517
+   ],
+   "reagent_item_ids": [
+    8170,
+    12607,
+    14341,
+    15407,
+    15414,
+    15416
+   ]
+  },
+  "18510": {
+   "recipe_item_ids": [
+    18518
+   ],
+   "reagent_item_ids": [
+    7080,
+    8170,
+    12803,
+    14341,
+    15407,
+    18512
+   ]
+  },
+  "18511": {
+   "recipe_item_ids": [
+    18519
+   ],
+   "reagent_item_ids": [
+    7082,
+    8170,
+    12753,
+    12809,
+    14341,
+    15407
+   ]
+  },
+  "18513": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18540": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18501
+   ]
+  },
+  "18582": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18583,
+    18584
+   ]
+  },
+  "18583": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18582
+   ]
+  },
+  "18584": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18582
+   ]
+  },
+  "18587": {
+   "recipe_item_ids": [
+    18653
+   ],
+   "reagent_item_ids": [
+    7191,
+    7910,
+    14227,
+    15994,
+    18631
+   ]
+  },
+  "18588": {
+   "recipe_item_ids": [
+    18650
+   ],
+   "reagent_item_ids": [
+    4338,
+    10505
+   ]
+  },
+  "18594": {
+   "recipe_item_ids": [
+    18656
+   ],
+   "reagent_item_ids": [
+    159,
+    8170,
+    15992,
+    15994
+   ]
+  },
+  "18597": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18598": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18608": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18646,
+    18659,
+    18665
+   ]
+  },
+  "18628": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18631": {
+   "recipe_item_ids": [
+    18651
+   ],
+   "reagent_item_ids": [
+    6037,
+    7067,
+    7069
+   ]
+  },
+  "18634": {
+   "recipe_item_ids": [
+    18652
+   ],
+   "reagent_item_ids": [
+    3829,
+    7078,
+    12361,
+    13467,
+    15994,
+    18631
+   ]
+  },
+  "18637": {
+   "recipe_item_ids": [
+    18655
+   ],
+   "reagent_item_ids": [
+    14047,
+    16000,
+    18631
+   ]
+  },
+  "18638": {
+   "recipe_item_ids": [
+    18657
+   ],
+   "reagent_item_ids": [
+    7080,
+    7910,
+    11371,
+    12800,
+    18631
+   ]
+  },
+  "18639": {
+   "recipe_item_ids": [
+    18658
+   ],
+   "reagent_item_ids": [
+    11371,
+    12799,
+    12800,
+    12803,
+    12808,
+    18631
+   ]
+  },
+  "18640": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18641": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    14047,
+    15992
+   ]
+  },
+  "18642": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18643": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18645": {
+   "recipe_item_ids": [
+    18654
+   ],
+   "reagent_item_ids": [
+    7191,
+    7910,
+    8170,
+    12359,
+    15994
+   ]
+  },
+  "18660": {
+   "recipe_item_ids": [
+    18661
+   ],
+   "reagent_item_ids": [
+    3864,
+    10558,
+    10560,
+    10561,
+    15994
+   ]
+  },
+  "18662": {
+   "recipe_item_ids": [
+    18731
+   ],
+   "reagent_item_ids": [
+    2321,
+    4234
+   ]
+  },
+  "18713": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18707,
+    18724
+   ]
+  },
+  "18715": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18769": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18779,
+    18780
+   ]
+  },
+  "18770": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18781,
+    18782
+   ]
+  },
+  "18771": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18783,
+    18784
+   ]
+  },
+  "18775": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18799": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "18948": {
+   "recipe_item_ids": [
+    18949
+   ],
+   "reagent_item_ids": [
+    4234,
+    4236,
+    4461,
+    5498,
+    5637
+   ]
+  },
+  "18984": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    7077,
+    7910,
+    10586,
+    18631
+   ]
+  },
+  "18986": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3860,
+    7075,
+    7079,
+    7909,
+    9060,
+    18631
+   ]
+  },
+  "19004": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19005": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19006": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19007": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19008": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19009": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19010": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19011": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19012": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19013": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19016": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19026": {
+   "recipe_item_ids": [
+    19027
+   ],
+   "reagent_item_ids": [
+    8150,
+    14047,
+    15992
+   ]
+  },
+  "19043": {
+   "recipe_item_ids": [
+    19202
+   ],
+   "reagent_item_ids": [
+    7076,
+    12359,
+    12803
+   ]
+  },
+  "19044": {
+   "recipe_item_ids": [
+    19326
+   ],
+   "reagent_item_ids": [
+    8170,
+    12803,
+    12804,
+    14341,
+    15407
+   ]
+  },
+  "19047": {
+   "recipe_item_ids": [
+    19215
+   ],
+   "reagent_item_ids": [
+    7076,
+    12803,
+    14048,
+    14227
+   ]
+  },
+  "19048": {
+   "recipe_item_ids": [
+    19204
+   ],
+   "reagent_item_ids": [
+    7076,
+    12360,
+    12803
+   ]
+  },
+  "19049": {
+   "recipe_item_ids": [
+    19327
+   ],
+   "reagent_item_ids": [
+    12803,
+    12804,
+    12810,
+    14227,
+    15407
+   ]
+  },
+  "19050": {
+   "recipe_item_ids": [
+    19218
+   ],
+   "reagent_item_ids": [
+    7076,
+    12803,
+    14227,
+    14342
+   ]
+  },
+  "19051": {
+   "recipe_item_ids": [
+    19203
+   ],
+   "reagent_item_ids": [
+    6037,
+    12359,
+    12811
+   ]
+  },
+  "19052": {
+   "recipe_item_ids": [
+    19328
+   ],
+   "reagent_item_ids": [
+    7080,
+    8170,
+    12809,
+    14341,
+    15407
+   ]
+  },
+  "19056": {
+   "recipe_item_ids": [
+    19216
+   ],
+   "reagent_item_ids": [
+    12809,
+    12810,
+    13926,
+    14048,
+    14227
+   ]
+  },
+  "19057": {
+   "recipe_item_ids": [
+    19205
+   ],
+   "reagent_item_ids": [
+    6037,
+    12360,
+    12811
+   ]
+  },
+  "19058": {
+   "recipe_item_ids": [
+    19329
+   ],
+   "reagent_item_ids": [
+    12803,
+    12809,
+    12810,
+    14341,
+    15407
+   ]
+  },
+  "19059": {
+   "recipe_item_ids": [
+    19217
+   ],
+   "reagent_item_ids": [
+    12809,
+    14227,
+    14342
+   ]
+  },
+  "19148": {
+   "recipe_item_ids": [
+    19206
+   ],
+   "reagent_item_ids": [
+    11371,
+    17010,
+    17011
+   ]
+  },
+  "19149": {
+   "recipe_item_ids": [
+    19330
+   ],
+   "reagent_item_ids": [
+    14227,
+    15407,
+    17011
+   ]
+  },
+  "19156": {
+   "recipe_item_ids": [
+    19219
+   ],
+   "reagent_item_ids": [
+    7078,
+    14227,
+    14342,
+    17010,
+    17011
+   ]
+  },
+  "19157": {
+   "recipe_item_ids": [
+    19331
+   ],
+   "reagent_item_ids": [
+    12607,
+    14227,
+    15407,
+    17010,
+    17011,
+    17012
+   ]
+  },
+  "19162": {
+   "recipe_item_ids": [
+    19332
+   ],
+   "reagent_item_ids": [
+    12810,
+    14227,
+    15407,
+    17010,
+    17012
+   ]
+  },
+  "19163": {
+   "recipe_item_ids": [
+    19333
+   ],
+   "reagent_item_ids": [
+    7076,
+    14227,
+    15407,
+    17010,
+    17011
+   ]
+  },
+  "19164": {
+   "recipe_item_ids": [
+    19207
+   ],
+   "reagent_item_ids": [
+    11371,
+    11382,
+    17010,
+    17011,
+    17012
+   ]
+  },
+  "19165": {
+   "recipe_item_ids": [
+    19220
+   ],
+   "reagent_item_ids": [
+    7078,
+    14227,
+    14342,
+    17010,
+    17011
+   ]
+  },
+  "19166": {
+   "recipe_item_ids": [
+    19208
+   ],
+   "reagent_item_ids": [
+    11371,
+    11382,
+    12360,
+    17010,
+    17011
+   ]
+  },
+  "19167": {
+   "recipe_item_ids": [
+    19209
+   ],
+   "reagent_item_ids": [
+    11371,
+    12360,
+    17010,
+    17011
+   ]
+  },
+  "19168": {
+   "recipe_item_ids": [
+    19211
+   ],
+   "reagent_item_ids": [
+    11371,
+    12360,
+    12809,
+    17010,
+    17011
+   ]
+  },
+  "19169": {
+   "recipe_item_ids": [
+    19212
+   ],
+   "reagent_item_ids": [
+    11371,
+    12360,
+    12364,
+    17010,
+    17011
+   ]
+  },
+  "19170": {
+   "recipe_item_ids": [
+    19210
+   ],
+   "reagent_item_ids": [
+    11371,
+    12360,
+    12800,
+    17010,
+    17011
+   ]
+  },
+  "19213": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19228": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19227,
+    19230,
+    19231,
+    19232,
+    19233,
+    19234,
+    19235,
+    19236
+   ]
+  },
+  "19257": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19258,
+    19259,
+    19260,
+    19261,
+    19262,
+    19263,
+    19264,
+    19265
+   ]
+  },
+  "19267": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19268,
+    19269,
+    19270,
+    19271,
+    19272,
+    19273,
+    19274,
+    19275
+   ]
+  },
+  "19277": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19276,
+    19278,
+    19279,
+    19280,
+    19281,
+    19282,
+    19283,
+    19284
+   ]
+  },
+  "19322": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19422": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19440": {
+   "recipe_item_ids": [
+    19442
+   ],
+   "reagent_item_ids": [
+    19441
+   ]
+  },
+  "19450": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19574": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19575": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19576": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19577": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19579": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19585": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19586": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19588": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19591": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19592": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19593": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19594": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19598": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19599": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19600": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19601": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19602": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19603": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19604": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19605": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19606": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19607": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19608": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19609": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19610": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19611": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19612": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19613": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19614": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19615": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19616": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19617": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19618": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19619": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19620": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19621": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19642": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19682": {
+   "recipe_item_ids": [
+    19764
+   ],
+   "reagent_item_ids": [
+    12804,
+    14048,
+    14227,
+    14342,
+    19726
+   ]
+  },
+  "19683": {
+   "recipe_item_ids": [
+    19765
+   ],
+   "reagent_item_ids": [
+    12804,
+    14048,
+    14227,
+    14342,
+    19726
+   ]
+  },
+  "19684": {
+   "recipe_item_ids": [
+    19766
+   ],
+   "reagent_item_ids": [
+    12810,
+    14048,
+    14227,
+    14342,
+    19726
+   ]
+  },
+  "19685": {
+   "recipe_item_ids": [
+    19769
+   ],
+   "reagent_item_ids": [
+    12803,
+    14341,
+    15407,
+    19767
+   ]
+  },
+  "19686": {
+   "recipe_item_ids": [
+    19770
+   ],
+   "reagent_item_ids": [
+    12803,
+    14341,
+    15407,
+    19767
+   ]
+  },
+  "19687": {
+   "recipe_item_ids": [
+    19771
+   ],
+   "reagent_item_ids": [
+    12803,
+    14341,
+    15407,
+    19767
+   ]
+  },
+  "19688": {
+   "recipe_item_ids": [
+    19772
+   ],
+   "reagent_item_ids": [
+    14341,
+    15407,
+    19726,
+    19768
+   ]
+  },
+  "19689": {
+   "recipe_item_ids": [
+    19773
+   ],
+   "reagent_item_ids": [
+    14341,
+    15407,
+    19726,
+    19768
+   ]
+  },
+  "19690": {
+   "recipe_item_ids": [
+    19776
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359,
+    19726,
+    19774
+   ]
+  },
+  "19691": {
+   "recipe_item_ids": [
+    19777
+   ],
+   "reagent_item_ids": [
+    7910,
+    12359,
+    19726,
+    19774
+   ]
+  },
+  "19692": {
+   "recipe_item_ids": [
+    19778
+   ],
+   "reagent_item_ids": [
+    12359,
+    12810,
+    19726,
+    19774
+   ]
+  },
+  "19693": {
+   "recipe_item_ids": [
+    19779
+   ],
+   "reagent_item_ids": [
+    12359,
+    12799,
+    19774
+   ]
+  },
+  "19694": {
+   "recipe_item_ids": [
+    19780
+   ],
+   "reagent_item_ids": [
+    12359,
+    12799,
+    19774
+   ]
+  },
+  "19695": {
+   "recipe_item_ids": [
+    19781
+   ],
+   "reagent_item_ids": [
+    12359,
+    12799,
+    19774
+   ]
+  },
+  "19696": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19725": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19812": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19822": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19823": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19824": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19825": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19826": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19827": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19828": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19829": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19830": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19831": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19832": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19833": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19834": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19835": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19836": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19838": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19839": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19840": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19841": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19842": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19843": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19845": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19846": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19848": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19849": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19858": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19880": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19881
+   ]
+  },
+  "19931": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12804,
+    12938,
+    13468,
+    19943
+   ]
+  },
+  "19932": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3826
+   ]
+  },
+  "19951": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19952": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19953": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19954": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19955": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19956": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19957": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19958": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19959": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    19939,
+    19940,
+    19941,
+    19942
+   ]
+  },
+  "19974": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "19998": {
+   "recipe_item_ids": [
+    20001
+   ],
+   "reagent_item_ids": [
+    12804,
+    12810,
+    16006,
+    19726,
+    19774
+   ]
+  },
+  "19999": {
+   "recipe_item_ids": [
+    20000
+   ],
+   "reagent_item_ids": [
+    12804,
+    12810,
+    16006,
+    19726,
+    19774
+   ]
+  },
+  "20002": {
+   "recipe_item_ids": [
+    20012
+   ],
+   "reagent_item_ids": [
+    8925,
+    13463,
+    13464
+   ]
+  },
+  "20004": {
+   "recipe_item_ids": [
+    20014
+   ],
+   "reagent_item_ids": [
+    8846,
+    8925,
+    13466
+   ]
+  },
+  "20007": {
+   "recipe_item_ids": [
+    20011
+   ],
+   "reagent_item_ids": [
+    8925,
+    13463,
+    13466
+   ]
+  },
+  "20008": {
+   "recipe_item_ids": [
+    20013
+   ],
+   "reagent_item_ids": [
+    8925,
+    10286,
+    13465,
+    13467
+   ]
+  },
+  "20033": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20034": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20039": {
+   "recipe_item_ids": [
+    20040
+   ],
+   "reagent_item_ids": [
+    11371,
+    17010,
+    17011,
+    17012
+   ]
+  },
+  "20074": {
+   "recipe_item_ids": [
+    20075
+   ],
+   "reagent_item_ids": [
+    3667,
+    3713
+   ]
+  },
+  "20256": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20295": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15415
+   ]
+  },
+  "20296": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8170,
+    14341,
+    15407,
+    15412
+   ]
+  },
+  "20371": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20380": {
+   "recipe_item_ids": [
+    20382
+   ],
+   "reagent_item_ids": [
+    12803,
+    12810,
+    14227,
+    15407,
+    20381
+   ]
+  },
+  "20393": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20402": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20416": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4625,
+    8170
+   ]
+  },
+  "20418": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7069,
+    8170
+   ]
+  },
+  "20419": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    8170,
+    12365
+   ]
+  },
+  "20420": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4791,
+    8170
+   ]
+  },
+  "20432": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4625,
+    20520
+   ]
+  },
+  "20433": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7069,
+    20520
+   ]
+  },
+  "20435": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    12365,
+    20520
+   ]
+  },
+  "20436": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4791,
+    20520
+   ]
+  },
+  "20447": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4625,
+    11144
+   ]
+  },
+  "20448": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7069,
+    11144
+   ]
+  },
+  "20449": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    11144,
+    12365
+   ]
+  },
+  "20450": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    4791,
+    11144
+   ]
+  },
+  "20452": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    3713,
+    20424
+   ]
+  },
+  "20454": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20455": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20456": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20476": {
+   "recipe_item_ids": [
+    20509
+   ],
+   "reagent_item_ids": [
+    18512,
+    20498,
+    20501
+   ]
+  },
+  "20477": {
+   "recipe_item_ids": [
+    20510
+   ],
+   "reagent_item_ids": [
+    15407,
+    18512,
+    20498,
+    20501
+   ]
+  },
+  "20478": {
+   "recipe_item_ids": [
+    20511
+   ],
+   "reagent_item_ids": [
+    15407,
+    18512,
+    20498,
+    20501
+   ]
+  },
+  "20479": {
+   "recipe_item_ids": [
+    20508
+   ],
+   "reagent_item_ids": [
+    7078,
+    15407,
+    20498,
+    20500
+   ]
+  },
+  "20480": {
+   "recipe_item_ids": [
+    20507
+   ],
+   "reagent_item_ids": [
+    7078,
+    15407,
+    20498,
+    20500
+   ]
+  },
+  "20481": {
+   "recipe_item_ids": [
+    20506
+   ],
+   "reagent_item_ids": [
+    7078,
+    20498,
+    20500
+   ]
+  },
+  "20487": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18713
+   ]
+  },
+  "20488": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    18715
+   ]
+  },
+  "20537": {
+   "recipe_item_ids": [
+    20547
+   ],
+   "reagent_item_ids": [
+    12810,
+    14048,
+    14227,
+    14256,
+    20520
+   ]
+  },
+  "20538": {
+   "recipe_item_ids": [
+    20546
+   ],
+   "reagent_item_ids": [
+    14048,
+    14227,
+    14256,
+    20520
+   ]
+  },
+  "20539": {
+   "recipe_item_ids": [
+    20548
+   ],
+   "reagent_item_ids": [
+    12810,
+    14048,
+    14227,
+    14256,
+    20520
+   ]
+  },
+  "20549": {
+   "recipe_item_ids": [
+    20553
+   ],
+   "reagent_item_ids": [
+    6037,
+    12359,
+    12810,
+    20520
+   ]
+  },
+  "20550": {
+   "recipe_item_ids": [
+    20554
+   ],
+   "reagent_item_ids": [
+    6037,
+    12359,
+    20520
+   ]
+  },
+  "20551": {
+   "recipe_item_ids": [
+    20555
+   ],
+   "reagent_item_ids": [
+    6037,
+    11754,
+    12359,
+    20520
+   ]
+  },
+  "20558": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20559": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20560": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "20575": {
+   "recipe_item_ids": [
+    20576
+   ],
+   "reagent_item_ids": [
+    2319,
+    2321,
+    4231,
+    7286
+   ]
+  },
+  "20744": {
+   "recipe_item_ids": [
+    20758
+   ],
+   "reagent_item_ids": [
+    3371,
+    10940,
+    17034
+   ]
+  },
+  "20745": {
+   "recipe_item_ids": [
+    20752
+   ],
+   "reagent_item_ids": [
+    3372,
+    11083,
+    17034
+   ]
+  },
+  "20746": {
+   "recipe_item_ids": [
+    20753
+   ],
+   "reagent_item_ids": [
+    3372,
+    11137,
+    17035
+   ]
+  },
+  "20747": {
+   "recipe_item_ids": [
+    20754
+   ],
+   "reagent_item_ids": [
+    8831,
+    8925,
+    11176
+   ]
+  },
+  "20748": {
+   "recipe_item_ids": [
+    20757
+   ],
+   "reagent_item_ids": [
+    8831,
+    14344,
+    18256
+   ]
+  },
+  "20749": {
+   "recipe_item_ids": [
+    20756
+   ],
+   "reagent_item_ids": [
+    4625,
+    14344,
+    18256
+   ]
+  },
+  "20750": {
+   "recipe_item_ids": [
+    20755
+   ],
+   "reagent_item_ids": [
+    4625,
+    8925,
+    16204
+   ]
+  },
+  "20844": {
+   "recipe_item_ids": [
+    21302
+   ],
+   "reagent_item_ids": [
+    5173,
+    8925
+   ]
+  },
+  "20949": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21023": {
+   "recipe_item_ids": [
+    21025
+   ],
+   "reagent_item_ids": [
+    2692,
+    3713,
+    8150,
+    9061,
+    12207,
+    21024
+   ]
+  },
+  "21042": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21072": {
+   "recipe_item_ids": [
+    21099
+   ],
+   "reagent_item_ids": [
+    2678,
+    21071
+   ]
+  },
+  "21106": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21107": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21109": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21111": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    21103,
+    21104,
+    21105,
+    21106,
+    21107,
+    21108,
+    21109,
+    21110
+   ]
+  },
+  "21136": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21154": {
+   "recipe_item_ids": [
+    21722
+   ],
+   "reagent_item_ids": [
+    2604,
+    4625,
+    14048,
+    14341
+   ]
+  },
+  "21158": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21160": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21161": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21171": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21174": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    21171
+   ]
+  },
+  "21175": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21196": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21197": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21198": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21199": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21200": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21201": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21202": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21203": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21204": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21205": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21206": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21207": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21208": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21209": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21210": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21212": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21217": {
+   "recipe_item_ids": [
+    21219
+   ],
+   "reagent_item_ids": [
+    2692,
+    21153
+   ]
+  },
+  "21277": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7079,
+    10558,
+    15407,
+    15994,
+    18631
+   ]
+  },
+  "21278": {
+   "recipe_item_ids": [
+    21548
+   ],
+   "reagent_item_ids": [
+    7080,
+    7082,
+    12810,
+    14227,
+    15407
+   ]
+  },
+  "21340": {
+   "recipe_item_ids": [
+    21358
+   ],
+   "reagent_item_ids": [
+    7972,
+    8170,
+    14048,
+    14341
+   ]
+  },
+  "21341": {
+   "recipe_item_ids": [
+    21369
+   ],
+   "reagent_item_ids": [
+    12810,
+    14227,
+    14256,
+    20520
+   ]
+  },
+  "21342": {
+   "recipe_item_ids": [
+    21371
+   ],
+   "reagent_item_ids": [
+    7078,
+    14227,
+    14256,
+    17012,
+    19726
+   ]
+  },
+  "21392": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21393": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21394": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21395": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21396": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21397": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21398": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21399": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21400": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21401": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21402": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21403": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21404": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21405": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21406": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21407": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21408": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21409": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21410": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21411": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21412": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21413": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21414": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21415": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21416": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21417": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21418": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21519": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21536": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    7912
+   ]
+  },
+  "21542": {
+   "recipe_item_ids": [
+    21723
+   ],
+   "reagent_item_ids": [
+    2604,
+    4625,
+    14048,
+    14341
+   ]
+  },
+  "21546": {
+   "recipe_item_ids": [
+    21547
+   ],
+   "reagent_item_ids": [
+    4625,
+    6371,
+    8925
+   ]
+  },
+  "21557": {
+   "recipe_item_ids": [
+    21726
+   ],
+   "reagent_item_ids": [
+    2319,
+    4364
+   ]
+  },
+  "21558": {
+   "recipe_item_ids": [
+    21724
+   ],
+   "reagent_item_ids": [
+    2319,
+    4364
+   ]
+  },
+  "21559": {
+   "recipe_item_ids": [
+    21725
+   ],
+   "reagent_item_ids": [
+    2319,
+    4364
+   ]
+  },
+  "21569": {
+   "recipe_item_ids": [
+    21738
+   ],
+   "reagent_item_ids": [
+    9060,
+    9061,
+    10560,
+    10561
+   ]
+  },
+  "21570": {
+   "recipe_item_ids": [
+    21737
+   ],
+   "reagent_item_ids": [
+    9060,
+    9061,
+    10561,
+    18631
+   ]
+  },
+  "21571": {
+   "recipe_item_ids": [
+    21730
+   ],
+   "reagent_item_ids": [
+    4304,
+    10505
+   ]
+  },
+  "21574": {
+   "recipe_item_ids": [
+    21731
+   ],
+   "reagent_item_ids": [
+    4304,
+    10505
+   ]
+  },
+  "21576": {
+   "recipe_item_ids": [
+    21732
+   ],
+   "reagent_item_ids": [
+    4304,
+    10505
+   ]
+  },
+  "21589": {
+   "recipe_item_ids": [
+    21727
+   ],
+   "reagent_item_ids": [
+    4234,
+    4377
+   ]
+  },
+  "21590": {
+   "recipe_item_ids": [
+    21728
+   ],
+   "reagent_item_ids": [
+    4234,
+    4377
+   ]
+  },
+  "21592": {
+   "recipe_item_ids": [
+    21729
+   ],
+   "reagent_item_ids": [
+    4234,
+    4377
+   ]
+  },
+  "21711": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21714": {
+   "recipe_item_ids": [
+    21733
+   ],
+   "reagent_item_ids": [
+    8170,
+    15992
+   ]
+  },
+  "21716": {
+   "recipe_item_ids": [
+    21734
+   ],
+   "reagent_item_ids": [
+    8170,
+    15992
+   ]
+  },
+  "21718": {
+   "recipe_item_ids": [
+    21735
+   ],
+   "reagent_item_ids": [
+    8170,
+    15992
+   ]
+  },
+  "21816": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21817": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21818": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21819": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21820": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21821": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21822": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21823": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21946": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "21975": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21979": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21980": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21981": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21983": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "21984": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "21986": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "22046": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22047": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22048": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    21984,
+    22046,
+    22047
+   ]
+  },
+  "22049": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22050": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22051": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22052": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22056": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22114": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22115": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "22131": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22283,
+    22284,
+    22285
+   ]
+  },
+  "22132": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22286,
+    22287,
+    22288
+   ]
+  },
+  "22133": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22289,
+    22290,
+    22291
+   ]
+  },
+  "22134": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22298,
+    22299,
+    22300
+   ]
+  },
+  "22135": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22295,
+    22296,
+    22297
+   ]
+  },
+  "22136": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22292,
+    22293,
+    22294
+   ]
+  },
+  "22154": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22155": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22156": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22157": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22158": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22159": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22160": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22161": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22162": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22163": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22164": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22165": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22166": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22167": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22168": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22169": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22170": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22171": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22172": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22178": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22191": {
+   "recipe_item_ids": [
+    22221
+   ],
+   "reagent_item_ids": [
+    12800,
+    12809,
+    12810,
+    22202,
+    22203
+   ]
+  },
+  "22194": {
+   "recipe_item_ids": [
+    22220
+   ],
+   "reagent_item_ids": [
+    12810,
+    13512,
+    22202,
+    22203
+   ]
+  },
+  "22195": {
+   "recipe_item_ids": [
+    22214
+   ],
+   "reagent_item_ids": [
+    12810,
+    22202
+   ]
+  },
+  "22196": {
+   "recipe_item_ids": [
+    22222
+   ],
+   "reagent_item_ids": [
+    7076,
+    12364,
+    12655,
+    22202,
+    22203
+   ]
+  },
+  "22197": {
+   "recipe_item_ids": [
+    22209
+   ],
+   "reagent_item_ids": [
+    7076,
+    12655,
+    22202
+   ]
+  },
+  "22198": {
+   "recipe_item_ids": [
+    22219
+   ],
+   "reagent_item_ids": [
+    7076,
+    12655,
+    22202,
+    22203
+   ]
+  },
+  "22246": {
+   "recipe_item_ids": [
+    22307
+   ],
+   "reagent_item_ids": [
+    4339,
+    8343,
+    11137
+   ]
+  },
+  "22248": {
+   "recipe_item_ids": [
+    22308
+   ],
+   "reagent_item_ids": [
+    14048,
+    14341,
+    16203
+   ]
+  },
+  "22249": {
+   "recipe_item_ids": [
+    22309
+   ],
+   "reagent_item_ids": [
+    12810,
+    14048,
+    14227,
+    14344
+   ]
+  },
+  "22251": {
+   "recipe_item_ids": [
+    22310
+   ],
+   "reagent_item_ids": [
+    8831,
+    11040,
+    14048,
+    14341
+   ]
+  },
+  "22252": {
+   "recipe_item_ids": [
+    22312
+   ],
+   "reagent_item_ids": [
+    13468,
+    14048,
+    14227,
+    14342
+   ]
+  },
+  "22260": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22262": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22131,
+    22132,
+    22133
+   ]
+  },
+  "22263": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22134,
+    22135,
+    22136
+   ]
+  },
+  "22283": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22176
+   ]
+  },
+  "22284": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22143
+   ]
+  },
+  "22285": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22117
+   ]
+  },
+  "22286": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22119
+   ]
+  },
+  "22287": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22141
+   ]
+  },
+  "22288": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22173
+   ]
+  },
+  "22289": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22140
+   ]
+  },
+  "22290": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22120
+   ]
+  },
+  "22291": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    21960
+   ]
+  },
+  "22292": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22175
+   ]
+  },
+  "22293": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22142
+   ]
+  },
+  "22294": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22123
+   ]
+  },
+  "22295": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22144
+   ]
+  },
+  "22296": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22177
+   ]
+  },
+  "22297": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22122
+   ]
+  },
+  "22298": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22174
+   ]
+  },
+  "22299": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22145
+   ]
+  },
+  "22300": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22121
+   ]
+  },
+  "22383": {
+   "recipe_item_ids": [
+    22389
+   ],
+   "reagent_item_ids": [
+    12360,
+    12810,
+    13512,
+    20725
+   ]
+  },
+  "22384": {
+   "recipe_item_ids": [
+    22390
+   ],
+   "reagent_item_ids": [
+    11371,
+    12360,
+    12753,
+    12808,
+    15417,
+    20520
+   ]
+  },
+  "22385": {
+   "recipe_item_ids": [
+    22388
+   ],
+   "reagent_item_ids": [
+    7076,
+    12360,
+    12655,
+    13510
+   ]
+  },
+  "22484": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22652": {
+   "recipe_item_ids": [
+    22686
+   ],
+   "reagent_item_ids": [
+    7080,
+    14048,
+    14227,
+    22682
+   ]
+  },
+  "22654": {
+   "recipe_item_ids": [
+    22684
+   ],
+   "reagent_item_ids": [
+    7080,
+    14048,
+    14227,
+    22682
+   ]
+  },
+  "22655": {
+   "recipe_item_ids": [
+    22687
+   ],
+   "reagent_item_ids": [
+    7080,
+    14048,
+    14227,
+    22682
+   ]
+  },
+  "22658": {
+   "recipe_item_ids": [
+    22685
+   ],
+   "reagent_item_ids": [
+    7080,
+    14048,
+    14227,
+    22682
+   ]
+  },
+  "22660": {
+   "recipe_item_ids": [
+    22683
+   ],
+   "reagent_item_ids": [
+    12803,
+    14227,
+    14342,
+    19726
+   ]
+  },
+  "22661": {
+   "recipe_item_ids": [
+    22692
+   ],
+   "reagent_item_ids": [
+    7080,
+    12810,
+    14227,
+    15407,
+    22682
+   ]
+  },
+  "22662": {
+   "recipe_item_ids": [
+    22694
+   ],
+   "reagent_item_ids": [
+    7080,
+    12810,
+    14227,
+    15407,
+    22682
+   ]
+  },
+  "22663": {
+   "recipe_item_ids": [
+    22695
+   ],
+   "reagent_item_ids": [
+    7080,
+    12810,
+    14227,
+    15407,
+    22682
+   ]
+  },
+  "22664": {
+   "recipe_item_ids": [
+    22696
+   ],
+   "reagent_item_ids": [
+    7080,
+    14227,
+    15407,
+    15408,
+    22682
+   ]
+  },
+  "22665": {
+   "recipe_item_ids": [
+    22698
+   ],
+   "reagent_item_ids": [
+    7080,
+    14227,
+    15407,
+    15408,
+    22682
+   ]
+  },
+  "22666": {
+   "recipe_item_ids": [
+    22697
+   ],
+   "reagent_item_ids": [
+    7080,
+    14227,
+    15407,
+    15408,
+    22682
+   ]
+  },
+  "22669": {
+   "recipe_item_ids": [
+    22703
+   ],
+   "reagent_item_ids": [
+    7080,
+    12359,
+    12360,
+    22682
+   ]
+  },
+  "22670": {
+   "recipe_item_ids": [
+    22704
+   ],
+   "reagent_item_ids": [
+    7080,
+    12359,
+    12360,
+    22682
+   ]
+  },
+  "22671": {
+   "recipe_item_ids": [
+    22705
+   ],
+   "reagent_item_ids": [
+    7080,
+    12359,
+    12360,
+    22682
+   ]
+  },
+  "22719": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22727": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    22726
+   ]
+  },
+  "22728": {
+   "recipe_item_ids": [
+    22729
+   ],
+   "reagent_item_ids": [
+    10558,
+    10561,
+    15994
+   ]
+  },
+  "22754": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": [
+    9282
+   ]
+  },
+  "22756": {
+   "recipe_item_ids": [
+    22774
+   ],
+   "reagent_item_ids": [
+    12803,
+    14048,
+    14227,
+    19726
+   ]
+  },
+  "22757": {
+   "recipe_item_ids": [
+    22773
+   ],
+   "reagent_item_ids": [
+    12803,
+    14048,
+    14227,
+    14342
+   ]
+  },
+  "22758": {
+   "recipe_item_ids": [
+    22772
+   ],
+   "reagent_item_ids": [
+    12803,
+    14048,
+    14227
+   ]
+  },
+  "22759": {
+   "recipe_item_ids": [
+    22771
+   ],
+   "reagent_item_ids": [
+    12803,
+    12810,
+    15407,
+    19726
+   ]
+  },
+  "22760": {
+   "recipe_item_ids": [
+    22770
+   ],
+   "reagent_item_ids": [
+    12803,
+    12810,
+    15407,
+    18512
+   ]
+  },
+  "22761": {
+   "recipe_item_ids": [
+    22769
+   ],
+   "reagent_item_ids": [
+    12803,
+    12810,
+    15407
+   ]
+  },
+  "22762": {
+   "recipe_item_ids": [
+    22766
+   ],
+   "reagent_item_ids": [
+    12360,
+    12655,
+    12803,
+    19726
+   ]
+  },
+  "22763": {
+   "recipe_item_ids": [
+    22767
+   ],
+   "reagent_item_ids": [
+    12655,
+    12803,
+    19726
+   ]
+  },
+  "22764": {
+   "recipe_item_ids": [
+    22768
+   ],
+   "reagent_item_ids": [
+    12655,
+    12803
+   ]
+  },
+  "22822": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "22895": {
+   "recipe_item_ids": [
+    22897
+   ],
+   "reagent_item_ids": []
+  },
+  "23024": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23179": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23180": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23181": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23182": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23183": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23184": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23194": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23195": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23196": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23211": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23227": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23683": {
+   "recipe_item_ids": [
+    23690
+   ],
+   "reagent_item_ids": [
+    8150,
+    23567
+   ]
+  },
+  "23684": {
+   "recipe_item_ids": [
+    23689
+   ],
+   "reagent_item_ids": [
+    14047,
+    23567
+   ]
+  },
+  "23705": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23709": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23710": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23712": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23713": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23714": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23716": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  },
+  "23720": {
+   "recipe_item_ids": [],
+   "reagent_item_ids": []
+  }
+ }
+}

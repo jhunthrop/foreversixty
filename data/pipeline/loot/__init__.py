@@ -39,6 +39,7 @@ import logging
 from pathlib import Path
 
 from pipeline.classic_sources import load_classic_sources
+from pipeline.classicdb_crafted import load_extract as load_classic_crafted_recipes
 from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.item_sources import load_item_sources
@@ -61,7 +62,13 @@ from pipeline.loot.gear import (
 from pipeline.loot.overlay import apply_overlays, load_overlays
 from pipeline.loot.pvp_faction import split_pvp_sources_by_faction
 from pipeline.loot.reitemise import apply_reitemisation
-from pipeline.loot.sources import apply_quest_opens_gate, build_loot, instance_types, pvp_ranks
+from pipeline.loot.sources import (
+    apply_crafted_opens_gate,
+    apply_quest_opens_gate,
+    build_loot,
+    instance_types,
+    pvp_ranks,
+)
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.normalize import write_document, write_records
@@ -148,6 +155,13 @@ def write_loot_files(
     # two: applied after the fork's own sources, before wowhead's.
     classic_sources = load_classic_sources(build_dir)
 
+    # data-followups-3 lane, 2026-09-30, item 1: the committed recipe/
+    # reagent chain (pipeline.classicdb_crafted's own doc) --
+    # apply_crafted_opens_gate reads it after every other gate (raid
+    # overlay, quest) has resolved, same offline-in-CI contract as every
+    # other classic-db cache above.
+    classic_crafted = load_classic_crafted_recipes(build_dir)
+
     # Contract 10.4's build filter happens inside build_loot, and its
     # pruning sweep with it -- so this runs BEFORE the overlay, which is
     # what lets a curated source with a deliberately empty item list (the
@@ -188,6 +202,11 @@ def write_loot_files(
     # gate's own doc for why any earlier placement finds nothing to gate
     # a quest's turn-in item on.
     document = apply_quest_opens_gate(document, classic_sources)
+    # data-followups-3 lane, 2026-09-30, item 1: AFTER apply_quest_opens_
+    # gate, which is what resolves a QuestSource.opens a recipe item
+    # taught by a quest itself needs already settled -- see
+    # apply_crafted_opens_gate's own doc.
+    document = apply_crafted_opens_gate(document, classic_crafted)
 
     enchants = build_enchants(fork)
     suffixes = build_suffixes(fork)
@@ -403,6 +422,7 @@ def merge_loot_files(
     quest_levels = load_quest_levels(build_dir)
     item_sources = load_item_sources(build_dir)
     classic_sources = load_classic_sources(build_dir)
+    classic_crafted = load_classic_crafted_recipes(build_dir)
 
     document, stats = build_loot(
         fork,
@@ -423,6 +443,7 @@ def merge_loot_files(
     document, reitemised = apply_reitemisation(document, item_rows)
     document = apply_overlays(document, load_overlays(overlay_dir))
     document = apply_quest_opens_gate(document, classic_sources)
+    document = apply_crafted_opens_gate(document, classic_crafted)
     write_document(document, build_dir / LOOT)
     logger.info(
         "loot-merge: %d sources naming %d items (%d from classic-db, %d from wowhead, %d "

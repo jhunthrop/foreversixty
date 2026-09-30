@@ -20,7 +20,12 @@ NOT_FOUND_FIXTURE = Path(__file__).parent / "fixtures" / "wowhead-quest-notfound
 def test_parse_quest_page_reads_reqlevel_and_level():
     html = FIXTURE.read_text(encoding="utf-8")
     quest = wq.parse_quest_page(53, html)
-    assert quest == wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)
+    # data-followups-3 lane, 2026-09-30, item 2: `faction` joins
+    # min_level/level off the SAME `g_quests[53]` payload -- this
+    # fixture's own `side` is 1 (alliance), see QUEST_SIDE_FACTION.
+    assert quest == wq.QuestPageLevel(
+        quest_id=53, name="Sweet Amber", min_level=40, level=44, faction="alliance"
+    )
 
 
 def test_parse_quest_page_raises_when_the_page_has_no_g_quests_row():
@@ -44,7 +49,7 @@ def test_load_cached_quest_levels_reads_only_what_is_already_cached(tmp_path: Pa
     cache_path.write_text(FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
 
     result = wq.load_cached_quest_levels("1.60.1.70009", [53, 999], root=tmp_path)
-    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}  # noqa: E501
+    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44, faction="alliance")}  # noqa: E501
     assert result.missing == {999}
 
 
@@ -67,7 +72,7 @@ def test_fetch_quest_levels_retries_a_throttled_response_with_backoff(tmp_path: 
     client = httpx.Client(transport=httpx.MockTransport(handler))
     result = wq.fetch_quest_levels("1.60.1.70009", [53], root=tmp_path, client=client, delay=0)
 
-    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}  # noqa: E501
+    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44, faction="alliance")}  # noqa: E501
     assert result.missing == set()
     assert attempts["n"] == 3  # two throttled, one success -- same id retried, not skipped
     # Backoff doubled between the two throttled attempts: 30s, then 60s.
@@ -191,7 +196,7 @@ def test_fetch_quest_levels_caches_a_live_fetch_and_skips_a_cache_hit(tmp_path: 
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
     result = wq.fetch_quest_levels("1.60.1.70009", [53, 999], root=tmp_path, client=client, delay=0)
-    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}  # noqa: E501
+    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44, faction="alliance")}  # noqa: E501
     assert result.missing == {999}
     assert calls == [53, 999]
     assert wq.raw_path(tmp_path / "1.60.1.70009", 53).exists()

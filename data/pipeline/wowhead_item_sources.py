@@ -131,8 +131,13 @@ SKILL_LINE_PROFESSIONS: dict[int, str] = {
 #: wowhead's `side` field on a quest row: 1 Alliance, 2 Horde, 3 both.
 #: Matches `pipeline.loot.sources.QUEST_FACTION_BY_RESTRICTION`'s own
 #: vocabulary (minus the numbering, which is wowhead's own and unrelated
-#: to the fork's `factionRestriction` column).
-_QUEST_SIDE_FACTION = {1: "alliance", 2: "horde", 3: "both"}
+#: to the fork's `factionRestriction` column). Public (not `_`-prefixed):
+#: data-followups-3 lane, 2026-09-30, item 2: `pipeline.wowhead_quests`
+#: reads the SAME `side` field off the quest PAGE's own `g_quests[<id>]`
+#: payload (not this module's `reward-from-q` listview row, a different
+#: place on a different page wowhead states the identical fact), so this
+#: is shared rather than duplicated.
+QUEST_SIDE_FACTION = {1: "alliance", 2: "horde", 3: "both"}
 
 
 class NpcSource(BaseModel):
@@ -173,7 +178,7 @@ class QuestRewardSource(BaseModel):
     min_level: int
     level: int
     #: "alliance", "horde" or "both" -- wowhead's own `side` field, see
-    #: `_QUEST_SIDE_FACTION`.
+    #: `QUEST_SIDE_FACTION`.
     faction: str
 
 
@@ -271,7 +276,7 @@ def _quest_reward_rows(html: str) -> list[QuestRewardSource]:
             name=str(row.get("name") or ""),
             min_level=int(row.get("reqlevel") or 0),
             level=int(row.get("level") or 0),
-            faction=_QUEST_SIDE_FACTION.get(int(row.get("side") or 3), "both"),
+            faction=QUEST_SIDE_FACTION.get(int(row.get("side") or 3), "both"),
         )
         for row in rows
     ]

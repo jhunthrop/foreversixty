@@ -1147,10 +1147,15 @@ def fetch_and_write_classic_sources(
 
     Also writes `raw/classicdb/item_template.json` (catalogue-universe lane,
     2026-09-30), the committed extract `pipeline.normalize.classicdb` reads
-    at every `normalize` run -- the same one download, since this command
-    already owns the only network fetch of this dump `normalize` itself is
-    never allowed to make.
+    at every `normalize` run, and `raw/classicdb/crafted-recipes.json`
+    (data-followups-3 lane, 2026-09-30, item 1), the committed extract
+    `pipeline.loot.sources.apply_crafted_opens_gate` reads at every
+    `loot`/`loot-merge` run -- the same one download, since this command
+    already owns the only network fetch of this dump `normalize`/`loot`
+    are never allowed to make.
     """
+    from pipeline.classicdb_crafted import extract_records as extract_crafted_records
+    from pipeline.classicdb_crafted import write_extract as write_crafted_extract
     from pipeline.classicdb_items import extract_records
     from pipeline.classicdb_items import write_extract as write_item_template_extract
 
@@ -1179,5 +1184,14 @@ def fetch_and_write_classic_sources(
         len(item_template_records),
         len(referenced_spells),
         item_template_path,
+    )
+    crafted_records = extract_crafted_records(sql_text)
+    crafted_path = write_crafted_extract(
+        build_dir, crafted_records, source_commit=_source_commit()
+    )
+    logger.info(
+        "classic-sources: extracted %d crafted-item recipe/reagent chains; wrote %s",
+        len(crafted_records),
+        crafted_path,
     )
     return path

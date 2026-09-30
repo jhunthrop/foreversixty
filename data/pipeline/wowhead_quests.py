@@ -45,6 +45,7 @@ from pydantic import BaseModel
 
 from pipeline.classic_quest_levels import ClassicQuestLevel
 from pipeline.wago import USER_AGENT
+from pipeline.wowhead_item_sources import QUEST_SIDE_FACTION
 
 logger = logging.getLogger(__name__)
 
@@ -94,6 +95,21 @@ class QuestPageLevel(BaseModel):
     #: wowhead's `level`: the level the quest (and its rewards) are
     #: written for.
     level: int
+    #: "alliance", "horde" or "both" -- wowhead's own `side` field on the
+    #: SAME `g_quests[<id>]` payload `min_level`/`level` already come
+    #: from (`QUEST_SIDE_FACTION`'s own doc: `pipeline.
+    #: wowhead_item_sources`'s `reward-from-q` listview row states the
+    #: identical fact on a different page). data-followups-3 lane,
+    #: 2026-09-30, item 2: the quest's own client-side race/faction DB2
+    #: table (`QuestV2`/`QuestInfo`'s own allowable-races mask, whichever
+    #: names it -- not fetched by this pipeline; no build under
+    #: `data/builds/<build>/raw/quests/` carries it) is the PRIMARY
+    #: source `pipeline.loot.sources.build_loot`'s own doc calls for;
+    #: this is the fallback for a Forever-new quest neither that table
+    #: nor classic-db's `quest_template.RequiredRaces` covers -- see
+    #: `pipeline.quest_levels.QuestLevelEntry.faction`'s own doc for the
+    #: third fallback (`"unknown"`) when this is absent too.
+    faction: str | None = None
 
 
 class QuestPageNotFound(Exception):
@@ -125,11 +141,13 @@ def parse_quest_page(quest_id: int, html: str) -> QuestPageLevel:
         raise QuestPageNotFound(f"quest {quest_id}: unparseable g_quests payload: {exc}") from exc
     if not isinstance(data, dict):
         raise QuestPageNotFound(f"quest {quest_id}: g_quests payload is not an object")
+    raw_side = data.get("side")
     return QuestPageLevel(
         quest_id=quest_id,
         name=str(data.get("name", "")),
         min_level=int(data.get("reqlevel") or 0),
         level=int(data.get("level") or 0),
+        faction=QUEST_SIDE_FACTION.get(int(raw_side)) if raw_side is not None else None,
     )
 
 
