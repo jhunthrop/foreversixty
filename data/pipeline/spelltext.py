@@ -30,12 +30,15 @@ nobody can source.
 from __future__ import annotations
 
 import ast
+import logging
 import operator
 import re
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field, replace
 
 from pipeline.csvio import populated
+
+logger = logging.getLogger(__name__)
 
 
 class SpellTextError(ValueError):
@@ -278,9 +281,9 @@ def _base_points(row: dict[str, str]) -> int:
     still satisfies: the integer column is genuinely absent from that test's beta
     fixture, not merely empty). Preferring the int column when both are populated is
     the same rule `pipeline/normalize/item_curves.py`'s `_budget` uses for
-    RandPropPoints; if the two ever populated the same row with different numbers,
-    that would mean the "only one is ever real" premise this whole function rests on
-    is false, so this raises rather than silently pick a side.
+    RandPropPoints. When both are populated and differ (first seen 2026-09-30 on
+    spell 370100, where wowhead's live-client value matches the integer column) the
+    integer column wins and the row is logged -- see the inline note below.
 
     Era's EffectBasePointsF padding is the literal string "0", which `populated`
     (correctly) still reports as present -- a column being non-empty is not the same
@@ -288,17 +291,26 @@ def _base_points(row: dict[str, str]) -> int:
     EffectBasePoints made this raise on the vast majority of Era's own SpellEffect
     rows rather than only on a genuine disagreement, so a literal "0" float column is
     treated as Era's padding (not populated, for comparison purposes) whenever the int
-    column is also populated. Any other float value is still compared and still raises
-    on a mismatch -- see test_base_points_columns_that_disagree_are_an_error_not_a_guess.
+    column is also populated. Any other float value is still compared, and a mismatch
+    is logged with the integer column winning -- see
+    test_base_points_columns_that_disagree_prefer_the_integer_column.
     """
     raw, float_raw = populated(row, "EffectBasePoints"), populated(row, "EffectBasePointsF")
     if raw is not None and float_raw is not None and float_raw != "0":
         int_value, float_value = int(raw), round(float(float_raw))
         if int_value != float_value:
-            raise SpellTextError(
-                f"spell {row.get('SpellID')} effect {row.get('EffectIndex')} has both "
-                f"EffectBasePoints ({int_value}) and EffectBasePointsF ({float_value}) "
-                "populated and disagreeing"
+            # 2026-09-30: the "only one column is ever real" premise broke on
+            # wago.tools' fresh 1.60.1.70009 export -- spell 370100 (Illusionary
+            # Rot) effect 0 carries EffectBasePoints 1 and EffectBasePointsF 4.
+            # wowhead's live-client rendering of that effect is "2%": the Era
+            # convention (integer column plus its one die side), not the float.
+            # So the integer column wins a disagreement, the same precedence
+            # `pipeline/normalize/item_curves.py`'s `_budget` already applies,
+            # and every such row is logged so the count is visible in the run.
+            logger.warning(
+                "spell %s effect %s: EffectBasePoints %d and EffectBasePointsF %d disagree; "
+                "using the integer column (wowhead corroborates it for spell 370100)",
+                row.get("SpellID"), row.get("EffectIndex"), int_value, float_value,
             )
         return int_value
     if raw is not None:

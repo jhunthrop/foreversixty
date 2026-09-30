@@ -18,7 +18,7 @@ from pipeline.normalize.gear import (
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.normalize.weapon_curves import load_weapon_curves
 from pipeline.proficiency import WEAPON
-from pipeline.spelltext import SpellTextError, load_spell_text
+from pipeline.spelltext import load_spell_text
 
 HERE = Path(__file__).parent
 
@@ -1072,15 +1072,17 @@ def test_the_float_column_is_used_when_only_it_is_populated():
     assert load_spell_text(spell, misc, [row], []).describe(10) == "41 dmg"
 
 
-def test_base_points_columns_that_disagree_are_an_error_not_a_guess():
-    """The whole premise of preferring one column over the other is that only
-    one is ever real on a given build; a row where both are populated and
-    disagree means that premise is false for this build, so this must not
-    silently pick a side."""
+def test_base_points_columns_that_disagree_prefer_the_integer_column(caplog):
+    """wago.tools' fresh 1.60.1.70009 export populates both columns on some rows
+    with different numbers (spell 370100 Illusionary Rot: 1 vs 4, where wowhead's
+    live-client value is the integer column's 2%). The integer column wins and
+    the row is logged so the run's count of such rows is visible."""
     spell, misc = _spell_and_misc()
     row = _effect_row(EffectBasePoints="41", EffectBasePointsF="99.0")
-    with pytest.raises(SpellTextError, match="disagreeing"):
-        load_spell_text(spell, misc, [row], [])
+    with caplog.at_level("WARNING", logger="pipeline.spelltext"):
+        text = load_spell_text(spell, misc, [row], [])
+    assert text.describe(10) == "41 dmg"
+    assert any("disagree" in record.message for record in caplog.records)
 
 
 def test_a_literal_zero_float_column_is_eras_padding_not_a_disagreement():
