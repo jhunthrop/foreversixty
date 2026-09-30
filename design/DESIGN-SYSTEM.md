@@ -7,7 +7,7 @@ Derived from the approved "Cinematic" direction and the live-game homepage mocku
 1. **Helper, not pitch.** The site exists to make one character play better. Every page leads with the player's class or character and the next thing that improves it; no marketing hero, no feature-list pitch. The front door is "pick your class" (the nine crests) or "your character", under the one line the site is allowed to say about itself: "Play your class better." Reference facts (dates, sources, the changelog) stay, one level down.
 7. **The game's own icons, high definition.** Class crests, spec icons and item icons are the client's own art, upscaled 4x, bezel cropped, framed by us (rounded square with a 1px line, or the circle crest: the whole icon at an 80% fit over a disc made from the icon itself, blurred and darkened, with a class ring). Never redrawn, never restyled; the Forever Sixty design system artifact carries the sets and the rules.
 2. **Second screen first.** Dark by default, high contrast, 44px minimum hit targets, pages that paint before the player alt-tabs back.
-3. **Every fact is dated and sourced.** Source pills (Blizzard, Datamined, Community, This site) and "updated" stamps are part of the UI, not an afterthought. Single-source claims say so.
+3. **Every fact is dated and sourced, quietly.** A page header carries one "Updated" stamp and nothing else about provenance. Source pills (Blizzard, Datamined, Community, This site) live where the source changes what a player does: on a feed row (a datamined change is not a confirmed one), in the Sources footer of a content page, and beside a single-source claim in prose. Never in a page header, hero or title line; the player came for the answer, and the sites players actually use (Wowhead, Icy Veins) put provenance under the content, not over it.
 4. **The game's own colors do the wayfinding.** WoW class colors and item-rarity colors are used consistently and never repurposed.
 5. **Atmosphere in the header only.** The night-sky band lives at the top of a page. Content areas are flat, calm, and dense enough to be useful.
 6. **Ornament stays out.** Warmth comes from Cinzel at small sizes, gold accents, and the sky. No stone frames, no parchment textures, no beveled buttons.
@@ -48,6 +48,8 @@ Derived from the approved "Cinematic" direction and the live-game homepage mocku
 Gold text is a gradient (`#fbe7a1` → `#e5b955` → `#a8762a`, top to bottom) clipped to text. Use it for section titles only; the wordmark is flat `--text-strong`.
 
 ### Source pills
+
+Placement: feed rows, the Sources footer, and single-source claims in prose. Never in a page header (principle 3). The band header of a class page shows "Updated <date>" only.
 
 | Pill | Text | Background | Border |
 |---|---|---|---|
