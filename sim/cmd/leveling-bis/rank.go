@@ -18,16 +18,48 @@ package main
 import (
 	"sort"
 
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // hasImplementedEffect reports whether c carries an on-hit/on-use/proc
-// effect the engine actually implements. A candidate with no
-// effect_text at all (most gear) is never "implemented" in this
-// sense -- it has nothing for a verify pass to value beyond what
-// score() already sees in its Stats.
+// effect the engine's source claims to implement (effectids_generated.go).
+// A candidate with no effect_text at all (most gear) is never
+// "implemented" in this sense -- it has nothing for a verify pass to
+// value beyond what score() already sees in its Stats. This is the
+// GATING predicate: it decides whether a candidate is worth spending a
+// real sim on (trinketShortlist, slotsNeedingEffectVerification,
+// rankSlotWithEffects's own candidate pool below) -- it does not by
+// itself mean a sim of c actually measured that effect; see
+// effectVerifiedInSim for that stricter question.
 func hasImplementedEffect(c candidate) bool {
 	return c.EffectText != "" && effectImplemented(c.ID)
+}
+
+// effectVerifiedInSim reports whether a real sim of c can actually be
+// trusted to have exercised its effect: the engine claims to implement
+// it (hasImplementedEffect) AND this build's own embedded item
+// database (simdb.Known) actually carries c's id. The two can and do
+// disagree: simdb.Attach's UnequipUnknown strips any equipped item the
+// embedded database does not know before every single sim this
+// command runs, silently -- a candidate the engine truly implements
+// but this build's client export never carried (Hand of Justice
+// 11815, absent from this build's ItemSparse export -- see
+// data/pipeline/simdb/items.py's "present in both tables" filter, and
+// the lane report for the check that found it) is invisible to every
+// verify/rank pass: a real sim of it still runs and still returns a
+// real number, but that number is the set's DPS with the item simply
+// not worn, bit-identical to the no-item baseline. Reading that as "the
+// engine modelled this effect and it measured zero" is the false tie
+// this lane's brief calls the tenet-8 violation -- effectVerifiedInSim
+// is the one place both trinkets.go's margin/tie logic and report.go's
+// EffectUnmodelled flag ask instead, so a stripped candidate gets the
+// same honest "not modelled" label an effect the engine has never
+// implemented at all already gets, without also pulling it out of the
+// candidate pool a sim still runs (hasImplementedEffect's own gating
+// callers are untouched).
+func effectVerifiedInSim(c candidate) bool {
+	return hasImplementedEffect(c) && simdb.Known(int32(c.ID))
 }
 
 // slotsNeedingEffectVerification returns every slot, other than

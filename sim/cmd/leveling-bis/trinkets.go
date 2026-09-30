@@ -204,14 +204,18 @@ func trinketShortlist(list []scored, excludeID int, excludeName string, weights 
 
 // trinketEffectUnmodelled reports whether c's own effect is exactly the
 // case report.go's EffectUnmodelled flag publishes: a real, named
-// on-hit/on-use/proc effect (EffectText non-empty) the engine does NOT
-// actually implement (rank.go's effectImplemented) - Serenity Field's
-// own Spirit self-buff, for one. A candidate with no effect at all
-// (EffectText == "") is NOT unmodelled in this sense: its whole value
-// is stats, which this tournament's own real sim already measures
-// exactly as faithfully as any other stat-only trinket.
+// on-hit/on-use/proc effect (EffectText non-empty) this tournament's
+// own sim could not actually verify (rank.go's effectVerifiedInSim) -
+// either because the engine does not implement it at all (Serenity
+// Field's own Spirit self-buff, for one) or because it does, but this
+// build's own simdb silently stripped the item before the sim ever ran
+// (rank.go's effectVerifiedInSim doc: Hand of Justice 11815). A
+// candidate with no effect at all (EffectText == "") is NOT unmodelled
+// in this sense: its whole value is stats, which this tournament's own
+// real sim already measures exactly as faithfully as any other
+// stat-only trinket.
 func trinketEffectUnmodelled(c candidate) bool {
-	return c.EffectText != "" && !hasImplementedEffect(c)
+	return c.EffectText != "" && !effectVerifiedInSim(c)
 }
 
 // rankTrinketSlot replaces picks[slot] with the engine-verified best of
