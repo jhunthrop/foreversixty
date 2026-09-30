@@ -71,6 +71,12 @@ def test_gear_item_carries_weapon_damage_set_and_uniqueness() -> None:
     # "wowhead" branch, not "client", even though the number itself (17) is
     # unchanged (normalize-levels lane, 2026-09-29).
     assert (gear.required_level, gear.required_level_source) == (17, "wowhead")
+    # Every field on this row -- not just required_level -- is wowhead's own
+    # scrape: the client has no row for this id at all (catalogue-completeness
+    # lane, 2026-09-29). The planner and the simulator's Top Gear need this to
+    # know armor/stats/damage here are unverified against the client, the same
+    # way required_level_source already flags one field.
+    assert gear.stats_source == "wowhead"
     flat = wh.to_item(sword)
     assert isinstance(flat, Item)
     assert (flat.class_id, flat.subclass_id, flat.inventory_type) == (2, 7, 13)

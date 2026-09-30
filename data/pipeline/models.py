@@ -173,6 +173,22 @@ class GearItem(BaseModel):
     #: The use or proc description, token-substituted the way talent text
     #: is. Empty for an item whose value is entirely in its stats.
     effect_text: str = ""
+    #: `"wowhead"` when every field above but `id`/`name`/`slot` came from
+    #: `pipeline.wowhead_items.to_gear_item` -- the client's own ItemSparse/
+    #: Item carries no row for this id at all (raid gear the beta character
+    #: has never seen drop, so it never reached the shipped or hotfix
+    #: export), and wowhead's Forever gear-planner payload is the only
+    #: source for its armor/stats/damage. `None` (the default) for a row the
+    #: client itself states, same as `required_level_source`'s `"client"` --
+    #: the two fields differ because a client row can still have its
+    #: `required_level` alone resolved from wowhead (source `"wowhead"`)
+    #: while every other field is the client's own; `stats_source` is only
+    #: ever set when the *entire* row -- not just one field -- has no client
+    #: counterpart (catalogue-completeness lane, 2026-09-29). The planner and
+    #: the simulator's Top Gear both need this to know a number here is
+    #: wowhead's scrape, not the client's own table, the same way the site
+    #: already shows `required_level_source`.
+    stats_source: Literal["wowhead"] | None = None
     set_id: int | None
     unique: bool
 

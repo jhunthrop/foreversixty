@@ -543,12 +543,13 @@ def is_junk_name(name: str) -> bool:
 
 
 def _has_gear_value(
-    armor: int, stats: dict[str, int], item_class_id: int, subclass_id: int
+    armor: int, stats: dict[str, int], item_class_id: int, subclass_id: int, effect_text: str
 ) -> bool:
     """True when the item carries something the planner can compare.
 
-    An item with no armour and no non-zero stat gives the planner nothing to
-    reason about, so it is dropped -- for armour and for every other item class.
+    An item with no armour, no non-zero stat and no effect text gives the
+    planner nothing to reason about, so it is dropped -- for armour and for
+    every other item class.
 
     Weapons (`Item.ClassID` 2) are exempt. A weapon's value is its damage,
     which lives in `weapon_fields`/`is_weapon_row` output the caller checks
@@ -570,10 +571,30 @@ def _has_gear_value(
     the quality and junk-name clauses alone, same as a weapon; whether its
     effect is one the simulator can model at all is judged downstream by
     `sim/cmd/leveling-bis`'s ranker, not here.
+
+    An `effect_text` (`EffectIndex.text`, a use or proc description this
+    build's build_class_items resolves before this call) also exempts any
+    item class: a trinket or off-hand rod whose whole value is a use/proc
+    effect and no plain stat -- Carrot on a Stick (11122, "Use: dismounts
+    ... increases speed"), Six Demon Bag (7734), Tidal Charm (1404),
+    Antipodean Rod/Gossamer Rod/Abjurer's Crystal (off-hand rods whose
+    effect is a ranged spell attack) -- carries nothing in `armor`/`stats`
+    at all, only its effect. Missing this exemption dropped 85 such items
+    from every items/<class>.json on the full rebuild at commit a4194d05
+    (catalogue-completeness lane, 2026-09-29): a client-shaped row's
+    `effect_text` was only ever populated after this gate ran, so every one
+    of these real, effect-bearing items looked indistinguishable from a
+    genuinely valueless row and was dropped. A relic or weapon still does
+    not need this clause -- their own exemptions above already cover the
+    case where they also happen to carry no effect text -- but a trinket,
+    ring, off-hand rod or any other slot with an effect and nothing else
+    now survives here too.
     """
     if item_class_id == WEAPON:
         return True
     if item_class_id == ARMOR and subclass_id in RELIC_SUBCLASSES:
+        return True
+    if effect_text:
         return True
     return armor != 0 or any(stats.values())
 
@@ -787,7 +808,8 @@ def build_class_items(
         if effects is not None:
             _merge_effect_stats(stats, item_id, display_name, effects)
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
-        if not _has_gear_value(armor, stats, item_class_id, subclass_id):
+        effect_text = "" if effects is None else effects.text(item_id)
+        if not _has_gear_value(armor, stats, item_class_id, subclass_id, effect_text):
             continue
         weapon = (
             weapon_fields(row, subclass_id, weapon_curves)
@@ -813,7 +835,7 @@ def build_class_items(
             speed=weapon.speed,
             dps=weapon.dps,
             two_hand=weapon.two_hand,
-            effect_text="" if effects is None else effects.text(item_id),
+            effect_text=effect_text,
             set_id=int_column(row, "ItemSet") or None,
             unique=int_column(row, "MaxCount") == 1,
         )

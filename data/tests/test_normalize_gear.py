@@ -256,6 +256,11 @@ def test_armour_and_resistances_come_from_the_resistance_columns():
     helm = {i.id: i for i in by_slug()["warrior"].items}[16866]
     assert helm.armor == 608
     assert helm.stats == {"stamina": 35, "strength": 15, "fire_res": 10}
+    # A client-shaped row's whole value is the client's own -- stats_source is
+    # only ever set for a wowhead-supplement row with no client counterpart
+    # at all (pipeline.wowhead_items.to_gear_item; see test_wowhead_items.py's
+    # test_gear_item_carries_weapon_damage_set_and_uniqueness for that side).
+    assert helm.stats_source is None
 
 
 def test_unique_is_max_count_one():
@@ -490,6 +495,99 @@ def test_a_stat_less_armour_piece_is_still_dropped():
     the clause still drops it."""
     ids = {i.id for record in build_all() for i in record.items}
     assert 99002 not in ids
+
+
+def _effect_only_trinket_row(item_id: str, name: str) -> dict:
+    """An all-zero-stat ItemSparse row shaped like a real effect-bearing
+    trinket -- Carrot on a Stick (11122) and Six Demon Bag (7734) both carry
+    this exact shape on build 1.60.1.70009 (class_id 4/ARMOR, subclass_id 0
+    Miscellaneous, InventoryType 12 trinket): no armour, no stat, their
+    entire value is a use effect. See
+    test_an_effect_only_trinket_with_no_stats_survives_the_gear_value_clause.
+    """
+    row = {
+        "ID": item_id,
+        "Display_lang": name,
+        "OverallQualityID": "2",
+        "ItemLevel": "50",
+        "RequiredLevel": "40",
+        "InventoryType": "12",
+        "MaxCount": "1",
+        "ItemSet": "0",
+        "AllowableClass": "-1",
+        "ItemDelay": "0",
+        "DmgVariance": "0",
+        "MinDamage_0": "0",
+        "MaxDamage_0": "0",
+    }
+    for n in range(7):
+        row[f"Resistances_{n}"] = "0"
+    for n in STAT_COLUMNS:
+        row[f"StatModifier_bonusStat_{n}"] = "-1"
+        row[f"StatModifier_bonusAmount_{n}"] = "0"
+    return row
+
+
+def test_an_effect_only_trinket_with_no_stats_survives_the_gear_value_clause():
+    """Carrot on a Stick (11122) and Six Demon Bag (7734) -- two of the 85 ids
+    the full rebuild at commit a4194d05 dropped from every items/<class>.json
+    (catalogue-completeness lane, 2026-09-29) -- carry no armour and no stat
+    at all; their whole value is a use effect. `_has_gear_value`'s weapon and
+    relic exemptions do not cover a trinket, so before the `effect_text`
+    clause was added both were indistinguishable from a genuinely valueless
+    row (test_a_stat_less_armour_piece_is_still_dropped's Featureless Cloth
+    Vest) and were dropped. A third, otherwise-identical row with NO item
+    effect at all proves the exemption is the effect, not merely being a
+    trinket: it must still be dropped, same as before.
+    """
+    sparse_rows = [
+        _effect_only_trinket_row("11122", "Carrot on a Stick"),
+        _effect_only_trinket_row("7734", "Six Demon Bag"),
+        _effect_only_trinket_row("30201", "Featureless Trinket"),
+    ]
+    item_rows = [
+        {"ID": "11122", "ClassID": "4", "SubclassID": "0", "IconFileDataID": "0"},
+        {"ID": "7734", "ClassID": "4", "SubclassID": "0", "IconFileDataID": "0"},
+        {"ID": "30201", "ClassID": "4", "SubclassID": "0", "IconFileDataID": "0"},
+    ]
+    effects = EffectIndex(
+        [
+            {"ID": "500", "SpellID": "900", "TriggerType": "2"},
+            {"ID": "501", "SpellID": "901", "TriggerType": "2"},
+        ],
+        [
+            {"ItemID": "11122", "ItemEffectID": "500"},
+            {"ItemID": "7734", "ItemEffectID": "501"},
+        ],
+        [],
+        load_spell_text(
+            [
+                {"ID": "900", "Description_lang": "Use: Dismount and gain speed."},
+                {"ID": "901", "Description_lang": "Use: Summon a random effect."},
+            ],
+            [],
+            [],
+            [],
+        ),
+    )
+    records = build_class_items(
+        sparse_rows,
+        item_rows,
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+        effects=effects,
+    )
+    items = {i.id: i for record in records for i in record.items}
+    carrot = items[11122]
+    assert carrot.armor == 0
+    assert carrot.stats == {}
+    assert carrot.effect_text == "Use: Dismount and gain speed."
+    bag = items[7734]
+    assert bag.armor == 0
+    assert bag.stats == {}
+    assert bag.effect_text == "Use: Summon a random effect."
+    assert 30201 not in items  # no effect and no stats: still dropped
 
 
 def test_only_weapons_may_be_emitted_with_neither_armour_nor_stats():
