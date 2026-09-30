@@ -43,7 +43,12 @@ export interface PlaceSourceCell {
 
 export interface CraftedSourceCell {
   kind: 'crafted';
-  profession: string;
+  /** The crafted source's own display name (`LootSource.name`, e.g. "Blacksmithing"). */
+  name: string;
+  /** `LootSource.profession` -- the raw profession slug (e.g. "blacksmithing"), same word
+   *  as `name` for every crafted source today. See `bisCopy.craftedSourceLabel`'s own doc
+   *  for why both are carried through rather than just one. */
+  profession?: string;
 }
 
 export interface VendorSourceCell {
@@ -204,7 +209,9 @@ export function resolveSourceCell(
 
   if (slot.source_kind === 'crafted') {
     const source = findSource(loot.sources, 'crafted', itemId);
-    return source === undefined ? fallback : { kind: 'crafted', profession: source.name };
+    return source === undefined
+      ? fallback
+      : { kind: 'crafted', name: source.name, profession: source.profession };
   }
 
   if (slot.source_kind === 'vendor') {
@@ -289,7 +296,7 @@ export function describeSourceCell(cell: SourceCell): string {
         ? bisCopy.dungeonSourceLabel(cell.instance, cell.boss)
         : bisCopy.dropChanceLabel(cell.dropChance, cell.boss ?? `${cell.instance} trash`);
     case 'crafted':
-      return bisCopy.craftedSourceLabel(cell.profession);
+      return bisCopy.craftedSourceLabel(cell.name, cell.profession);
     case 'vendor':
       return bisCopy.vendorSourceLabel(cell.npc);
     case 'rep':

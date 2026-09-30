@@ -156,7 +156,9 @@ describe('itemTooltipModel', () => {
     const sources: ItemTooltipSources = { loot, sets: [] };
     expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['Molten Core — Ragnaros']);
     expect(itemTooltipModel(item({ id: 2 }), sources).sourceLines).toEqual(['Some Vendor']);
-    expect(itemTooltipModel(item({ id: 3 }), sources).sourceLines).toEqual(['Made item (blacksmithing)']);
+    expect(itemTooltipModel(item({ id: 3 }), sources).sourceLines).toEqual([
+      'Crafted: Blacksmithing · Made item',
+    ]);
     expect(itemTooltipModel(item({ id: 4 }), sources).sourceLines).toEqual(['Argent Dawn — Exalted']);
     // Rank 10 is Blizzard's client RequiredPVPRank; Horde's own in-game title for it is
     // "Stone Guard" (pvpRankTitle(horde, 10) === HORDE_PVP_TITLES[5]).
@@ -187,6 +189,22 @@ describe('itemTooltipModel', () => {
     expect(itemTooltipModel(item({ id: 6 }), sources).sourceLines).toEqual([
       'PvP rank 18 · Grand Marshal · Alliance',
     ]);
+  });
+
+  it('reads "Crafted: Blacksmithing", never "Blacksmithing (blacksmithing)", when the source name is the profession (every real crafted source today)', () => {
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'crafted:blacksmithing',
+          kind: 'crafted',
+          name: 'Blacksmithing',
+          profession: 'blacksmithing',
+          items: [8],
+        },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 8 }), sources).sourceLines).toEqual(['Crafted: Blacksmithing']);
   });
 
   it('still names an ordinary vendor with no matching pvp source', () => {

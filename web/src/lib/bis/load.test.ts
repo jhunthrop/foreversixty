@@ -232,10 +232,8 @@ describe('normaliseBisFile', () => {
       {
         item_id: 2,
         item_name: 'Runner Up',
-        score: 8,
         source_kind: 'quest',
         source: 'A Quest',
-        score_delta: -45,
         dps_delta: -2,
         verified: true,
       },

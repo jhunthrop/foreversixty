@@ -283,7 +283,7 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                               <p class="aside-label">{bisCopy.statWeightsLabel}</p>
                               <p class="weights-reference-line">{referenceSentenceLine}</p>
                               <ul class="weight-bars" data-testid={`bis-weights-${faction}-${band}`}>
-                                {weightBars.map(({ row, barPercent, dpsPerPoint }) => (
+                                {weightBars.map(({ row, barPercent, dpsPerPoint, valueText }) => (
                                   <li
                                     class:list={[
                                       'weight-bar-row',
@@ -305,13 +305,7 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                                     ) : (
                                       <span class="weight-bar-top">
                                         <span class="weight-bar-label">{row.label}</span>
-                                        <span class="weight-bar-value tabular">
-                                          {row.isReference
-                                            ? '= 1'
-                                            : !row.significant
-                                              ? bisCopy.weightsNoEffect
-                                              : row.weight.toFixed(2)}
-                                        </span>
+                                        <span class="weight-bar-value tabular">{valueText}</span>
                                       </span>
                                     )}
                                     {row.significant && (

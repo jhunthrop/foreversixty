@@ -213,7 +213,10 @@ function sourceLinesFor(itemId: number, loot: LootFile): string[] {
     const chance = source.item_chances?.[String(itemId)];
     if (source.kind === 'crafted') {
       lines.push({
-        text: source.profession !== undefined ? `${source.name} (${source.profession})` : source.name,
+        // Shares bisCopy.craftedSourceLabel with the BiS panel's source cell
+        // (bis/source-cell.ts) so this line and the panel row read identically for the
+        // same source, never "Blacksmithing (blacksmithing)" (bis-web-polish, 2026-09-30).
+        text: bisCopy.craftedSourceLabel(source.name, source.profession),
         priority: 1,
         chance: undefined,
         order: order++,

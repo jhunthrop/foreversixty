@@ -53,7 +53,18 @@ export const bisCopy = {
   itemLevelShort: (level: number): string => `ilvl ${level}`,
   dungeonSourceLabel: (instance: string, boss?: string): string =>
     boss === undefined ? instance : `${instance} · ${boss}`,
-  craftedSourceLabel: (profession: string): string => `Crafted: ${profession}`,
+  /** "Crafted: Blacksmithing" when the source's own name already IS the profession --
+   *  every real crafted source today (`loot.json`'s `name` "Blacksmithing" and `profession`
+   *  "blacksmithing") is the same word, differently cased, so this must never print the
+   *  "Blacksmithing (blacksmithing)" a bare `${name} (${profession})` used to (bis-web-
+   *  polish, 2026-09-30). "Crafted: <Profession> · <name>" only when they genuinely differ,
+   *  for a future crafted source named by something other than its own profession (a
+   *  specific recipe, say). Shared by the panel's source cell (`source-cell.ts`) and the
+   *  item tooltip (`items/tooltip.ts`) so both say the same thing for the same source. */
+  craftedSourceLabel: (name: string, profession?: string): string =>
+    profession === undefined || profession.toLowerCase() === name.toLowerCase()
+      ? `Crafted: ${name}`
+      : `Crafted: ${capitalise(profession)} · ${name}`,
   vendorSourceLabel: (npc: string): string => `Vendor: ${npc}`,
   repSourceLabel: (factionName: string, standing?: string): string =>
     standing === undefined ? factionName : `${factionName} (${standing})`,
@@ -137,6 +148,12 @@ export const bisCopy = {
   weightsRowDpsLine: (label: string, weight: number, refAbbrev: string, dpsPerPoint: number): string =>
     `${label} ${weight.toFixed(2)} ${refAbbrev} · ${dpsPerPoint.toFixed(2)} DPS per point`,
   weightsNoEffect: 'No effect',
+  /** The reference stat's own row in the weight rail's plain value column -- never a
+   *  tautological "1 Attack power = 1.00 Attack power" or a bare "1.00" (the rail's own
+   *  first line, `weightsReferenceDpsLine`, already states the real "1 <reference> = <n>
+   *  DPS" conversion; this row exists only to anchor the bar chart, and reads as what it
+   *  is). */
+  weightsReferenceRowValue: 'reference',
   /** The empty off-hand row when the main hand is a two-hander -- never
    *  `noKnownSourceForSlot`, which would read as a data gap rather than the game rule it
    *  actually is (wow-player fix 4). */

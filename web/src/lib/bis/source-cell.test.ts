@@ -221,7 +221,7 @@ describe('resolveSourceCell', () => {
       LOOT,
       'fallback',
     );
-    expect(cell).toEqual({ kind: 'crafted', profession: 'Tailoring' });
+    expect(cell).toEqual({ kind: 'crafted', name: 'Tailoring', profession: 'tailoring' });
   });
 
   it('resolves a vendor item to the npc', () => {
@@ -351,7 +351,12 @@ describe('describeSourceCell', () => {
       'Molten Core · Ragnaros',
     );
     expect(describeSourceCell({ kind: 'dungeon', instance: 'The Deadmines' })).toBe('The Deadmines');
-    expect(describeSourceCell({ kind: 'crafted', profession: 'Tailoring' })).toBe('Crafted: Tailoring');
+    expect(describeSourceCell({ kind: 'crafted', name: 'Tailoring', profession: 'tailoring' })).toBe(
+      'Crafted: Tailoring',
+    );
+    expect(
+      describeSourceCell({ kind: 'crafted', name: 'Runeforged Hammer', profession: 'blacksmithing' }),
+    ).toBe('Crafted: Blacksmithing · Runeforged Hammer');
     expect(describeSourceCell({ kind: 'vendor', npc: 'Gorn One Eye' })).toBe('Vendor: Gorn One Eye');
     expect(describeSourceCell({ kind: 'rep', faction: 'Timbermaw Hold', standing: 'friendly' })).toBe(
       'Timbermaw Hold (friendly)',

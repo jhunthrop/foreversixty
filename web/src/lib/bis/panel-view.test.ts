@@ -126,10 +126,8 @@ describe('bandInfosFor: alternatives', () => {
   const alt: BisAlternative = {
     item_id: 42,
     item_name: 'Runner-up Cap',
-    score: 20,
     source_kind: 'vendor',
     source: 'Vendor: Someone Else',
-    score_delta: -13.3,
     dps_delta: -0.8,
   };
 
@@ -236,10 +234,8 @@ describe('collectModelsInto', () => {
     const alt: BisAlternative = {
       item_id: 42,
       item_name: 'Runner-up Cap',
-      score: 20,
       source_kind: 'vendor',
       source: 'Vendor: Someone Else',
-      score_delta: 0,
       dps_delta: 0,
     };
     const file = fileWith([band({ slots: [slot({ alternatives: [alt] })] })]);
@@ -275,11 +271,24 @@ describe('bandInfosFor: weight rail', () => {
     expect(meleeHaste?.dpsPerPoint).toBeUndefined();
   });
 
-  it('never computes a dpsPerPoint for the reference row itself (always "= 1")', () => {
+  it('never computes a dpsPerPoint for the reference row itself, and never restates it as a tautological equality', () => {
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: 2.5 })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     const reference = infos[0].weightBars.find((bar) => bar.row.isReference);
     expect(reference?.dpsPerPoint).toBeUndefined();
+    // The rail's first line (referenceSentenceLine) already states "1 Ranged attack power =
+    // 2.50 DPS" -- the reference row itself must never restate that as "= 1" or "1.00"
+    // (bis-web-polish, 2026-09-30): its own value column reads the plain word instead.
+    expect(reference?.valueText).toBe('reference');
+  });
+
+  it('gives every significant, non-reference row its weight to two decimals as valueText, and an insignificant row "No effect"', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const agility = infos[0].weightBars.find((bar) => bar.row.stat === 'agility');
+    const meleeHaste = infos[0].weightBars.find((bar) => bar.row.stat === 'melee_haste');
+    expect(agility?.valueText).toBe(agility?.row.weight.toFixed(2));
+    expect(meleeHaste?.valueText).toBe('No effect');
   });
 });
 

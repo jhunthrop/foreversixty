@@ -68,20 +68,15 @@ export interface BisSlot {
 export interface BisAlternative {
   item_id: number;
   item_name: string;
-  /** See `BisSlot.score`: absent when the row was sim-decided (then `sim_dps` may be set). */
-  score?: number;
   sim_dps?: number;
   source_kind: string;
   source: string;
-  /** `score` minus the pick's own `score`, in the band's score unit -- the raw number
-   *  `dps_delta` is converted from, kept here for a consumer that wants the un-converted
-   *  figure. Exactly 0 for a tie. */
-  score_delta?: number;
-  /** `score_delta` converted to real DPS (`score_delta * BisBand.reference_dps_per_point`) --
-   *  owner review, tenet 8 (2026-09-29): the first cut of this field published the raw
-   *  score-unit delta under this same name with nothing saying it was not DPS. Usually
+  /** The row's own DPS gap against the pick, always in real DPS -- the ranker
+   *  (`sim/cmd/leveling-bis/report.go`'s `alternativeRow.DPSDelta`) never publishes a raw
+   *  score-unit figure here (bis-ranker-integrity-3, 2026-09-29: that was this field's
+   *  first cut and read as a positive DPS gap when it was really score points). Usually
    *  negative. For the one alternative `verified` is true on, this is instead the real,
-   *  sim-measured delta (not a score conversion at all) -- see `verified`'s own doc. */
+   *  sim-measured delta -- see `verified`'s own doc. */
   dps_delta: number;
   /** True for at most one alternative per slot: the runner-up the ranker's own verify pass
    *  actually simmed against the pick, whose `dps_delta` above is that sim's real measured

@@ -263,9 +263,16 @@ export interface WeightBarRow {
   barPercent: number;
   /** 1 point of this stat in raw DPS (`weight * band.reference_dps_per_point`) -- undefined
    *  when the band carries no `reference_dps_per_point` (never fabricated), for the
-   *  reference row itself (always "= 1", never a DPS clause), or for an insignificant row
-   *  (its value slot is `weightsNoEffect` instead). */
+   *  reference row itself (it never gets its own DPS clause -- see `valueText`), or for an
+   *  insignificant row (its value slot is `weightsNoEffect` instead). */
   dpsPerPoint?: number;
+  /** The plain value column's text for whenever this row does NOT show the "<w> <ref> ·
+   *  <dps> DPS per point" clause (`dpsPerPoint === undefined`, which is always true for the
+   *  reference row): `bisCopy.weightsReferenceRowValue` ("reference") for the reference
+   *  row -- never a tautological "= 1.00" restating what the rail's own first line
+   *  (`referenceSentenceLine`) already says as real DPS -- `bisCopy.weightsNoEffect` for an
+   *  insignificant row, else the raw weight to two decimal places. */
+  valueText: string;
 }
 
 function weightBarsFor(
@@ -292,6 +299,11 @@ function weightBarsFor(
       referenceDpsPerPoint === null || row.isReference || !row.significant
         ? undefined
         : row.weight * referenceDpsPerPoint,
+    valueText: row.isReference
+      ? bisCopy.weightsReferenceRowValue
+      : !row.significant
+        ? bisCopy.weightsNoEffect
+        : row.weight.toFixed(2),
   }));
 }
 
