@@ -188,6 +188,31 @@ describe('normaliseBisFile', () => {
     expect(normalised.bands[0].reference_dps_per_point).toBe(0.0714);
   });
 
+  it('defaults a missing weights_reason to null (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [baseBand],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].weights_reason).toBeNull();
+  });
+
+  it('keeps a real weights_reason unchanged', () => {
+    const reason = 'reference stat spell_power measured -0.1893 ± 0.6199 DPS per point';
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, weights_reason: reason }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].weights_reason).toBe(reason);
+  });
+
   const slotWithoutAlternatives: BisSlot = {
     slot: 'head',
     item_id: 1,

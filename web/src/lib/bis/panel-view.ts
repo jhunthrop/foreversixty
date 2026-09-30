@@ -386,12 +386,18 @@ export function bandInfosFor(
     const previousSetDps =
       previousBand === undefined ? undefined : bandEntry(file, previousBand, faction)?.set_dps;
     const referenceDpsPerPoint = bandData.reference_dps_per_point ?? null;
-    const weightBars = weightBarsFor(bandData.weights, deps.referenceStat, deps.spec, referenceDpsPerPoint);
+    const weightsReason = bandData.weights_reason ?? null;
+    const weightBars =
+      weightsReason !== null
+        ? []
+        : weightBarsFor(bandData.weights, deps.referenceStat, deps.spec, referenceDpsPerPoint);
     const referenceLabel = weightBars[0]?.row.label ?? statLabelForSpec(deps.referenceStat, deps.spec);
     const referenceSentenceLine =
-      referenceDpsPerPoint === null
-        ? (weightBars[0]?.row.sentence ?? referenceLabel)
-        : bisCopy.weightsReferenceDpsLine(referenceLabel, referenceDpsPerPoint);
+      weightsReason !== null
+        ? bisCopy.weightsUnmeasuredLine
+        : referenceDpsPerPoint === null
+          ? (weightBars[0]?.row.sentence ?? referenceLabel)
+          : bisCopy.weightsReferenceDpsLine(referenceLabel, referenceDpsPerPoint);
     return [
       {
         band,

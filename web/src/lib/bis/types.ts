@@ -131,6 +131,16 @@ export interface BisBand {
    *  (`normaliseBisFile`, `load.ts`): a file published before this field existed carries no
    *  `reference_dps_per_point` key at all. */
   reference_dps_per_point?: number | null;
+  /** Set only when this band's whole weights sweep could not be trusted
+   *  (`sim/cmd/leveling-bis/report.go`'s own `bandReport.WeightsReason`,
+   *  `referenceMeasurementReason`) -- when present, `reference_dps_per_point` is absent and
+   *  every entry in `weights` carries `insignificant: true`. Pipeline prose, never rendered
+   *  verbatim (tenet 7): `panel-view.ts`'s `bandInfosFor` maps any non-empty value to the
+   *  single `bisCopy.weightsUnmeasuredLine`, the same way `empty_reason` is mapped through
+   *  `emptyReasonLabel` rather than printed as-is. Optional and defaults to `null`
+   *  (`normaliseBisFile`, `load.ts`): a file published before this field existed carries no
+   *  `weights_reason` key at all. */
+  weights_reason?: string | null;
   /** The unit every stat-weight `score` on this band is in (`"reference_stat_points"`);
    *  a sim-decided row carries `sim_dps` instead of a score. */
   score_unit?: string;

@@ -174,6 +174,15 @@ export interface Item {
    */
   suffixes?: number[];
   /**
+   * True for an item classic-db's 1.12 tables supplied because the client's own shipped
+   * ItemSparse and the beta box's hotfix cache both lack it (catalogue-universe lane,
+   * `data/pipeline/classicdb_items.py`'s own `client_unconfirmed`): its stats are real 1.12
+   * values, just not yet corroborated by Forever's own client. Absent (never fabricated
+   * `false`) on a build the data lane has not regenerated with this field, and on every
+   * item the client or wowhead already names.
+   */
+  client_unconfirmed?: boolean;
+  /**
    * Weapon fields ([data] Tasks 5 and 6): min and max weapon damage, speed in seconds, and
    * the derived DPS. Optional the same way `suffixes` is above -- absent on a build the
    * data lane has not regenerated, and on every item that is not a weapon.

@@ -35,6 +35,14 @@ describe('itemTooltipModel', () => {
     expect(model.unique).toBe(false);
   });
 
+  it('defaults clientUnconfirmed to false when the row carries no such field', () => {
+    expect(itemTooltipModel(item(), NO_SOURCES).clientUnconfirmed).toBe(false);
+  });
+
+  it('carries clientUnconfirmed straight off the row when the row is a classic-db-only item', () => {
+    expect(itemTooltipModel(item({ client_unconfirmed: true }), NO_SOURCES).clientUnconfirmed).toBe(true);
+  });
+
   it('labels a known slot and falls back to the alias table for finger/trinket', () => {
     expect(itemTooltipModel(item({ slot: 'chest' }), NO_SOURCES).slotLabel).toBe('Chest');
     expect(itemTooltipModel(item({ slot: 'finger' }), NO_SOURCES).slotLabel).toBe('Finger');

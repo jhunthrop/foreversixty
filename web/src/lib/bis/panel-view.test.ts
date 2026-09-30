@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { LootFile } from '../sim/loot';
+import { bisCopy } from './copy';
 import { bandInfosFor, collectModelsInto, parseSwapNote, type PanelViewDeps } from './panel-view';
 import type { BisAlternative, BisBand, BisFile, BisSlot, ItemDetail, LootQuestsFile } from './types';
 
@@ -99,6 +100,7 @@ describe('bandInfosFor: empty slots', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const file = fileWith([
       band({ slots: [slot({ slot: 'main_hand', item_id: 99 }), missingSlot('off_hand')] }),
@@ -194,6 +196,7 @@ describe('bandInfosFor: alternatives', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const aboveBandModel: ItemTooltipModel = { ...belowBandModel, id: 43, requiredLevel: 25 };
     const file = fileWith([band({ slots: [slot({ alternatives: [alt, { ...alt, item_id: 43 }] })] })]);
@@ -230,6 +233,7 @@ describe('collectModelsInto', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const alt: BisAlternative = {
       item_id: 42,
@@ -289,6 +293,25 @@ describe('bandInfosFor: weight rail', () => {
     const meleeHaste = infos[0].weightBars.find((bar) => bar.row.stat === 'melee_haste');
     expect(agility?.valueText).toBe(agility?.row.weight.toFixed(2));
     expect(meleeHaste?.valueText).toBe('No effect');
+  });
+
+  it('renders no bar list and the unmeasured-weights line when the band carries weights_reason, even with a real reference_dps_per_point', () => {
+    const file = fileWith([
+      band({
+        slots: [slot()],
+        reference_dps_per_point: 2.5,
+        weights_reason: 'reference stat spell_power measured -0.1893 ± 0.6199 DPS per point',
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].weightBars).toEqual([]);
+    expect(infos[0].referenceSentenceLine).toBe(bisCopy.weightsUnmeasuredLine);
+  });
+
+  it('never shows the unmeasured-weights line when weights_reason is absent', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: 2.5 })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].referenceSentenceLine).not.toBe(bisCopy.weightsUnmeasuredLine);
   });
 });
 
@@ -487,6 +510,7 @@ describe('bandInfosFor: empty_reason copy', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const file = fileWith([
       band({
