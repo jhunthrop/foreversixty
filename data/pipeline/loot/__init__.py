@@ -258,7 +258,9 @@ def _load_committed_loot(build_dir: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def types_from_committed_loot(build_dir: Path) -> dict[int, int]:
+def types_from_committed_loot(
+    build_dir: Path, zone_rows: list[dict] | None = None
+) -> dict[int, int]:
     """zone id -> a `Map.InstanceType`-equivalent code (1 dungeon, 2
     raid), recovered from the CURRENTLY COMMITTED `loot.json`'s own
     dungeon/raid sources -- `merge_loot_files`' raw-free substitute for
@@ -274,14 +276,64 @@ def types_from_committed_loot(build_dir: Path) -> dict[int, int]:
     every zone a full run would have found stays found here too, as
     long as at least one of its items already made it into the last full
     `loot.json`.
+
+    loot-parity lane, 2026-09-30: a published `LootSource.zone_id` is
+    only ever the fork's OWN AtlasLoot-era zone id for that instance
+    (`_drop_sources`' own `drop.zoneId`) -- never the second, unpublished
+    `zones.json` row `instance_types()`'s docstring describes for the
+    SAME instance (its real DB2 `Map.ID`-joined zone, e.g. Blackrock
+    Depths' `id: 17803, map_id: 230` next to the published `id: 1584,
+    map_id: 0`). `pipeline.loot.classicdb.instance_zone_by_map` needs
+    THAT second id -- keyed by its real `map_id`, not the published one's
+    `map_id: 0`, which it deliberately never resolves -- to place a
+    classic-db-only trash mob (one the fork's own drop table never names
+    at all, so `fork_instance_npc_zones` cannot rescue it either) inside
+    its dungeon/raid instead of a flat `world:<npc>` bucket. Recovered
+    here by NAME: any `zone_rows` entry sharing its name with a zone id
+    this function already recovered above gets the same instance code --
+    the same "prefer the row `types` already recognizes" rule
+    `instance_zone_by_map` itself applies, extended to zone ids that
+    never became a `LootSource.zone_id` in the first place. Measured
+    regression this closes: Blackrock Depths 292 -> 143 items, Blackrock
+    Spire 296 -> 106, on build 1.60.1.70009 (loot-parity lane's own
+    report).
     """
     kind_code = {"dungeon": 1, "raid": 2}
     types: dict[int, int] = {}
+    names: dict[int, str] = {}
     for source in _load_committed_loot(build_dir).get("sources", []):
         code = kind_code.get(source.get("kind", ""))
         zone_id = source.get("zone_id")
         if code and zone_id:
             types[int(zone_id)] = code
+            names[int(zone_id)] = source.get("name", "")
+    if zone_rows:
+        kind_by_name = {
+            name: code for zone_id, code in types.items() if (name := names.get(zone_id))
+        }
+        for zone in zone_rows:
+            zone_id = int(zone["id"])
+            if zone_id in types:
+                continue
+            # Same exclusion `instance_zone_by_map` itself applies to a
+            # candidate row's `map_id` (a bare continent id can never be
+            # a real instance map, whatever `types` says about the zone
+            # id carrying it) -- skipped here too, not just there,
+            # because `types` feeds callers besides `instance_zone_by_
+            # map` (`_drop_sources`' own `INSTANCE_KIND.get(types.get(
+            # zone_id))` among them) that have no `map_id` filter of
+            # their own. Without this a same-named OPEN-WORLD zone (this
+            # build's own `zones.json` names Westfall's real zone id 40,
+            # map_id 0, next to The Deadmines' map_id-36 duplicate id 206
+            # -- both literally "Westfall") would be promoted to
+            # "dungeon" too, folding every one of the fork's own
+            # open-world Westfall drops into `dungeon:westfall` --
+            # measured while fixing this lane's own BRD/BRS regression.
+            if int(zone.get("map_id") or 0) in (0, 1):
+                continue
+            code = kind_by_name.get(zone.get("name", ""))
+            if code:
+                types[zone_id] = code
     return types
 
 
@@ -355,7 +407,7 @@ def merge_loot_files(
     document, stats = build_loot(
         fork,
         {int(row["id"]): row["name"] for row in zone_rows},
-        types_from_committed_loot(build_dir),
+        types_from_committed_loot(build_dir, zone_rows),
         pvp_ranks_from_committed_loot(build_dir),
         build_items,
         item_inventory_types,
