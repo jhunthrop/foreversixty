@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:57:36Z",
+  "generated_at": "2026-09-30T14:58:13Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -454,8 +454,8 @@
             {
               "item_id": 1300,
               "item_name": "Lesser Staff of the Spire",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Blackrock Shadowcaster",
               "dps_delta": -0.20090435586150074
             },
             {
@@ -540,8 +540,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.458474067,
-      "verify_run_seconds": 1.233374102,
+      "weights_run_seconds": 1.145295086,
+      "verify_run_seconds": 0.967079627,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1078,8 +1078,8 @@
             {
               "item_id": 1300,
               "item_name": "Lesser Staff of the Spire",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Blackrock Shadowcaster",
               "dps_delta": -0.20090435586150074
             }
           ]
@@ -1157,8 +1157,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.458474067,
-      "verify_run_seconds": 1.236906967,
+      "weights_run_seconds": 1.145295086,
+      "verify_run_seconds": 0.995319371,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1854,8 +1854,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.4677481399999999,
-      "verify_run_seconds": 1.256536018,
+      "weights_run_seconds": 1.2160866,
+      "verify_run_seconds": 0.964187226,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2548,8 +2548,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.4677481399999999,
-      "verify_run_seconds": 1.17520721,
+      "weights_run_seconds": 1.2160866,
+      "verify_run_seconds": 0.91402795,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2739,8 +2739,8 @@
             {
               "item_id": 1714,
               "item_name": "Necklace of Calisea",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Witch Doctor's Chest",
               "dps_delta": -0.5135552472819703
             },
             {
@@ -2872,8 +2872,8 @@
             {
               "item_id": 4045,
               "item_name": "Mistscape Bracers",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.1104724042245806,
               "verified": true
             },
@@ -3065,8 +3065,8 @@
           "slot": "finger2",
           "item_id": 1996,
           "item_name": "Voodoo Band",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "source": "Bloodscalp Witch Doctor",
+          "source_kind": "world",
           "score": 9.14309707639792,
           "verified": true,
           "ties": [
@@ -3133,8 +3133,8 @@
             {
               "item_id": 1664,
               "item_name": "Spellforce Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor",
               "dps_delta": -0.02273906137252507
             },
             {
@@ -3171,8 +3171,8 @@
             {
               "item_id": 5216,
               "item_name": "Umbral Wand",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": 0,
               "verified": true
             },
@@ -3194,7 +3194,7 @@
         }
       ],
       "set_dps": 107.48081558193465,
-      "no_source_count": 329,
+      "no_source_count": 328,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3227,8 +3227,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.3837967,
-      "verify_run_seconds": 1.0531075,
+      "weights_run_seconds": 1.126134133,
+      "verify_run_seconds": 0.892083866,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3284,11 +3284,11 @@
         },
         "trinket1": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "trinket2": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "waist": {
           "eligible": 98,
@@ -3418,8 +3418,8 @@
             {
               "item_id": 1714,
               "item_name": "Necklace of Calisea",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Witch Doctor's Chest",
               "dps_delta": -0.5135552472819703
             },
             {
@@ -3551,8 +3551,8 @@
             {
               "item_id": 4045,
               "item_name": "Mistscape Bracers",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.36077933479823954
             },
             {
@@ -3744,8 +3744,8 @@
           "slot": "finger2",
           "item_id": 1996,
           "item_name": "Voodoo Band",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "source": "Bloodscalp Witch Doctor",
+          "source_kind": "world",
           "score": 9.14309707639792,
           "verified": true,
           "ties": [
@@ -3812,8 +3812,8 @@
             {
               "item_id": 1664,
               "item_name": "Spellforce Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor",
               "dps_delta": -0.02273906137252507
             },
             {
@@ -3850,8 +3850,8 @@
             {
               "item_id": 5216,
               "item_name": "Umbral Wand",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
               "dps_delta": 0,
               "verified": true
             },
@@ -3873,7 +3873,7 @@
         }
       ],
       "set_dps": 107.40606690016358,
-      "no_source_count": 320,
+      "no_source_count": 319,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3906,8 +3906,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.3837967,
-      "verify_run_seconds": 1.051321756,
+      "weights_run_seconds": 1.126134133,
+      "verify_run_seconds": 0.902155286,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3963,11 +3963,11 @@
         },
         "trinket1": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "trinket2": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "waist": {
           "eligible": 99,
@@ -4564,7 +4564,7 @@
         }
       ],
       "set_dps": 152.9608162838731,
-      "no_source_count": 419,
+      "no_source_count": 417,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4599,8 +4599,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.380347146,
-      "verify_run_seconds": 1.159494395,
+      "weights_run_seconds": 1.094693112,
+      "verify_run_seconds": 0.913225066,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4656,11 +4656,11 @@
         },
         "trinket1": {
           "eligible": 81,
-          "sourced": 49
+          "sourced": 50
         },
         "trinket2": {
           "eligible": 81,
-          "sourced": 49
+          "sourced": 50
         },
         "waist": {
           "eligible": 130,
@@ -4668,7 +4668,7 @@
         },
         "wrist": {
           "eligible": 101,
-          "sourced": 82
+          "sourced": 83
         }
       },
       "reference_dps_per_point": 0.1549368070681816,
@@ -5283,7 +5283,7 @@
         }
       ],
       "set_dps": 147.2951578644752,
-      "no_source_count": 410,
+      "no_source_count": 408,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5318,8 +5318,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.380347146,
-      "verify_run_seconds": 1.178430566,
+      "weights_run_seconds": 1.094693112,
+      "verify_run_seconds": 0.943364476,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5375,11 +5375,11 @@
         },
         "trinket1": {
           "eligible": 81,
-          "sourced": 49
+          "sourced": 50
         },
         "trinket2": {
           "eligible": 81,
-          "sourced": 49
+          "sourced": 50
         },
         "waist": {
           "eligible": 131,
@@ -5387,7 +5387,7 @@
         },
         "wrist": {
           "eligible": 103,
-          "sourced": 87
+          "sourced": 88
         }
       },
       "reference_dps_per_point": 0.1549368070681816,
@@ -5470,15 +5470,15 @@
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +26.9 DPS over it",
-          "dps_delta": 26.92535626325423,
+          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +28.3 DPS over it",
+          "dps_delta": 28.273236775376972,
           "alternatives": [
             {
               "item_id": 208424,
               "item_name": "Sun Shades",
               "source_kind": "vendor",
               "source": "Rix Xizzix",
-              "dps_delta": -26.92535626325423,
+              "dps_delta": -28.273236775376972,
               "verified": true
             }
           ]
@@ -5495,8 +5495,1388 @@
         },
         {
           "slot": "back",
-          "verified": false,
-          "empty_reason": "no_dps_value"
+          "item_id": 3475,
+          "item_name": "Cloak of Flames",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "verified": true,
+          "effect_unmodelled": true,
+          "ties": [
+            {
+              "item_id": 20073,
+              "item_name": "Cloak of the Honor Guard"
+            },
+            {
+              "item_id": 20691,
+              "item_name": "Windshear Cape"
+            },
+            {
+              "item_id": 272411,
+              "item_name": "Arcanoweave Cloak"
+            },
+            {
+              "item_id": 272413,
+              "item_name": "Drape of Recovery"
+            },
+            {
+              "item_id": 272414,
+              "item_name": "Howler's Furs"
+            },
+            {
+              "item_id": 272415,
+              "item_name": "Stalwart Cloak"
+            },
+            {
+              "item_id": 279269,
+              "item_name": "Fel Cape"
+            },
+            {
+              "item_id": 12967,
+              "item_name": "Bloodmoon Cloak"
+            },
+            {
+              "item_id": 12968,
+              "item_name": "Frostweaver Cape"
+            },
+            {
+              "item_id": 13340,
+              "item_name": "Cape of the Black Baron"
+            },
+            {
+              "item_id": 15421,
+              "item_name": "Shroud of the Exile"
+            },
+            {
+              "item_id": 16342,
+              "item_name": "Sergeant's Cape"
+            },
+            {
+              "item_id": 18495,
+              "item_name": "Redoubt Cloak"
+            },
+            {
+              "item_id": 19530,
+              "item_name": "Caretaker's Cape"
+            },
+            {
+              "item_id": 20697,
+              "item_name": "Crystalline Threaded Cape"
+            },
+            {
+              "item_id": 22269,
+              "item_name": "Shadow Prowler's Cloak"
+            },
+            {
+              "item_id": 22337,
+              "item_name": "Shroud of Domination"
+            },
+            {
+              "item_id": 23127,
+              "item_name": "Cloak of Revanchion"
+            },
+            {
+              "item_id": 272063,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 18382,
+              "item_name": "Fluctuating Cloak"
+            },
+            {
+              "item_id": 18389,
+              "item_name": "Cloak of the Cosmos"
+            },
+            {
+              "item_id": 18413,
+              "item_name": "Cloak of Warding"
+            },
+            {
+              "item_id": 18509,
+              "item_name": "Chromatic Cloak"
+            },
+            {
+              "item_id": 18510,
+              "item_name": "Hide of the Wild"
+            },
+            {
+              "item_id": 18511,
+              "item_name": "Shifting Cloak"
+            },
+            {
+              "item_id": 18689,
+              "item_name": "Phantasmal Cloak"
+            },
+            {
+              "item_id": 18734,
+              "item_name": "Pale Moon Cloak"
+            },
+            {
+              "item_id": 10249,
+              "item_name": "Master's Cloak"
+            },
+            {
+              "item_id": 10267,
+              "item_name": "Masterwork Cape"
+            },
+            {
+              "item_id": 12905,
+              "item_name": "Wildfire Cape"
+            },
+            {
+              "item_id": 13386,
+              "item_name": "Archivist Cape"
+            },
+            {
+              "item_id": 13397,
+              "item_name": "Stoneskin Gargoyle Cape"
+            },
+            {
+              "item_id": 15437,
+              "item_name": "Supreme Cape"
+            },
+            {
+              "item_id": 18350,
+              "item_name": "Amplifying Cloak"
+            },
+            {
+              "item_id": 18677,
+              "item_name": "Zephyr Cloak"
+            },
+            {
+              "item_id": 22330,
+              "item_name": "Shroud of Arcane Mastery"
+            },
+            {
+              "item_id": 10258,
+              "item_name": "Adventurer's Cape"
+            },
+            {
+              "item_id": 11930,
+              "item_name": "The Emperor's New Cape"
+            },
+            {
+              "item_id": 13203,
+              "item_name": "Armswake Cloak"
+            },
+            {
+              "item_id": 15815,
+              "item_name": "Hameya's Cloak"
+            },
+            {
+              "item_id": 16337,
+              "item_name": "Sergeant Major's Cape"
+            },
+            {
+              "item_id": 18496,
+              "item_name": "Heliotrope Cloak"
+            },
+            {
+              "item_id": 19084,
+              "item_name": "Stormpike Soldier's Cloak"
+            },
+            {
+              "item_id": 19086,
+              "item_name": "Stormpike Sage's Cloak"
+            },
+            {
+              "item_id": 10138,
+              "item_name": "High Councillor's Cloak"
+            },
+            {
+              "item_id": 10159,
+              "item_name": "Mercurial Cloak"
+            },
+            {
+              "item_id": 13376,
+              "item_name": "Royal Tribunal Cloak"
+            },
+            {
+              "item_id": 14683,
+              "item_name": "Indomitable Cloak"
+            },
+            {
+              "item_id": 18328,
+              "item_name": "Shadewood Cloak"
+            },
+            {
+              "item_id": 18339,
+              "item_name": "Eidolon Cloak"
+            },
+            {
+              "item_id": 18743,
+              "item_name": "Gracious Cape"
+            },
+            {
+              "item_id": 20218,
+              "item_name": "Faded Hakkari Cloak"
+            },
+            {
+              "item_id": 20219,
+              "item_name": "Tattered Hakkari Cape"
+            },
+            {
+              "item_id": 10148,
+              "item_name": "Mighty Cloak"
+            },
+            {
+              "item_id": 11812,
+              "item_name": "Cape of the Fire Salamander"
+            },
+            {
+              "item_id": 12066,
+              "item_name": "Shaleskin Cape"
+            },
+            {
+              "item_id": 12608,
+              "item_name": "Butcher's Apron"
+            },
+            {
+              "item_id": 13007,
+              "item_name": "Mageflame Cloak"
+            },
+            {
+              "item_id": 14331,
+              "item_name": "Eternal Cloak"
+            },
+            {
+              "item_id": 15681,
+              "item_name": "Triumphant Cloak"
+            },
+            {
+              "item_id": 17061,
+              "item_name": "Juno's Shadow"
+            },
+            {
+              "item_id": 17523,
+              "item_name": "Smokey's Drape"
+            },
+            {
+              "item_id": 8304,
+              "item_name": "Hero's Cape"
+            },
+            {
+              "item_id": 10212,
+              "item_name": "Elegant Cloak"
+            },
+            {
+              "item_id": 10224,
+              "item_name": "Nightshade Cloak"
+            },
+            {
+              "item_id": 14459,
+              "item_name": "Elunarian Cloak"
+            },
+            {
+              "item_id": 14813,
+              "item_name": "Warstrike Cape"
+            },
+            {
+              "item_id": 11873,
+              "item_name": "Ethereal Mist Cape"
+            },
+            {
+              "item_id": 12113,
+              "item_name": "Sunborne Cape"
+            },
+            {
+              "item_id": 12551,
+              "item_name": "Stoneshield Cloak"
+            },
+            {
+              "item_id": 15671,
+              "item_name": "Magnificent Cloak"
+            },
+            {
+              "item_id": 15789,
+              "item_name": "Deep River Cloak"
+            },
+            {
+              "item_id": 15804,
+              "item_name": "Cerise Drape"
+            },
+            {
+              "item_id": 8286,
+              "item_name": "Arcane Cloak"
+            },
+            {
+              "item_id": 8297,
+              "item_name": "Traveler's Cloak"
+            },
+            {
+              "item_id": 10231,
+              "item_name": "Engraved Cape"
+            },
+            {
+              "item_id": 11677,
+              "item_name": "Graverot Cape"
+            },
+            {
+              "item_id": 12552,
+              "item_name": "Blisterbane Wrap"
+            },
+            {
+              "item_id": 13122,
+              "item_name": "Dark Phantom Cape"
+            },
+            {
+              "item_id": 14044,
+              "item_name": "Cindercloth Cloak"
+            },
+            {
+              "item_id": 14103,
+              "item_name": "Brightcloth Cloak"
+            },
+            {
+              "item_id": 14134,
+              "item_name": "Cloak of Fire"
+            },
+            {
+              "item_id": 14321,
+              "item_name": "Resplendent Cloak"
+            },
+            {
+              "item_id": 15190,
+              "item_name": "Grand Cloak"
+            },
+            {
+              "item_id": 10843,
+              "item_name": "Featherskin Cape"
+            },
+            {
+              "item_id": 14313,
+              "item_name": "Celestial Cape"
+            },
+            {
+              "item_id": 15427,
+              "item_name": "Peerless Cloak"
+            },
+            {
+              "item_id": 15661,
+              "item_name": "Impenetrable Cloak"
+            },
+            {
+              "item_id": 10098,
+              "item_name": "Councillor's Cloak"
+            },
+            {
+              "item_id": 10108,
+              "item_name": "Wanderer's Cloak"
+            },
+            {
+              "item_id": 10120,
+              "item_name": "Ornate Cloak"
+            },
+            {
+              "item_id": 11626,
+              "item_name": "Blackveil Cape"
+            },
+            {
+              "item_id": 12465,
+              "item_name": "Nightfall Drape"
+            },
+            {
+              "item_id": 13860,
+              "item_name": "Runecloth Cloak"
+            },
+            {
+              "item_id": 19531,
+              "item_name": "Caretaker's Cape"
+            },
+            {
+              "item_id": 272076,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 10174,
+              "item_name": "Mystical Cape"
+            },
+            {
+              "item_id": 10802,
+              "item_name": "Wingveil Cloak"
+            },
+            {
+              "item_id": 11623,
+              "item_name": "Spritecaster Cape"
+            },
+            {
+              "item_id": 14300,
+              "item_name": "Bonecaster's Cape"
+            },
+            {
+              "item_id": 14673,
+              "item_name": "Pridelord Cape"
+            },
+            {
+              "item_id": 14801,
+              "item_name": "Bloodlust Cape"
+            },
+            {
+              "item_id": 17739,
+              "item_name": "Grovekeeper's Drape"
+            },
+            {
+              "item_id": 19982,
+              "item_name": "Duskbat Drape"
+            },
+            {
+              "item_id": 8266,
+              "item_name": "Ebonhold Cloak"
+            },
+            {
+              "item_id": 10185,
+              "item_name": "Swashbuckler's Cape"
+            },
+            {
+              "item_id": 14450,
+              "item_name": "Highborne Cloak"
+            },
+            {
+              "item_id": 15652,
+              "item_name": "Merciless Cloak"
+            },
+            {
+              "item_id": 8215,
+              "item_name": "Wild Leather Cloak"
+            },
+            {
+              "item_id": 8248,
+              "item_name": "Imperial Red Cloak"
+            },
+            {
+              "item_id": 8259,
+              "item_name": "Serpentskin Cloak"
+            },
+            {
+              "item_id": 10194,
+              "item_name": "Crusader's Cloak"
+            },
+            {
+              "item_id": 15183,
+              "item_name": "Praetorian Cloak"
+            },
+            {
+              "item_id": 18441,
+              "item_name": "Sergeant's Cape"
+            },
+            {
+              "item_id": 10060,
+              "item_name": "Duskwoven Cape"
+            },
+            {
+              "item_id": 10071,
+              "item_name": "Righteous Cloak"
+            },
+            {
+              "item_id": 13109,
+              "item_name": "Blackflame Cape"
+            },
+            {
+              "item_id": 14292,
+              "item_name": "Arachnidian Cape"
+            },
+            {
+              "item_id": 15392,
+              "item_name": "Jadefire Cloak"
+            },
+            {
+              "item_id": 15643,
+              "item_name": "Ironhide Cloak"
+            },
+            {
+              "item_id": 8216,
+              "item_name": "Big Voodoo Cloak"
+            },
+            {
+              "item_id": 9648,
+              "item_name": "Chainlink Towel"
+            },
+            {
+              "item_id": 9938,
+              "item_name": "Abjurer's Cloak"
+            },
+            {
+              "item_id": 10079,
+              "item_name": "Lord's Cape"
+            },
+            {
+              "item_id": 14280,
+              "item_name": "Opulent Cape"
+            },
+            {
+              "item_id": 14665,
+              "item_name": "Keeper's Cloak"
+            },
+            {
+              "item_id": 14791,
+              "item_name": "Protector Cape"
+            },
+            {
+              "item_id": 8127,
+              "item_name": "Myrmidon's Cape"
+            },
+            {
+              "item_id": 9951,
+              "item_name": "Chieftain's Cloak"
+            },
+            {
+              "item_id": 8109,
+              "item_name": "Hibernal Cloak"
+            },
+            {
+              "item_id": 8195,
+              "item_name": "Nightscape Cloak"
+            },
+            {
+              "item_id": 9512,
+              "item_name": "Blackmetal Cape"
+            },
+            {
+              "item_id": 11311,
+              "item_name": "Emberscale Cape"
+            },
+            {
+              "item_id": 14440,
+              "item_name": "Venomshroud Cape"
+            },
+            {
+              "item_id": 15173,
+              "item_name": "Potent Cape"
+            },
+            {
+              "item_id": 15632,
+              "item_name": "Formidable Cape"
+            },
+            {
+              "item_id": 4113,
+              "item_name": "Medicine Blanket"
+            },
+            {
+              "item_id": 8120,
+              "item_name": "Heraldic Cloak"
+            },
+            {
+              "item_id": 9959,
+              "item_name": "Warmonger's Cloak"
+            },
+            {
+              "item_id": 10518,
+              "item_name": "Parachute Cloak"
+            },
+            {
+              "item_id": 14270,
+              "item_name": "Gaea's Cloak"
+            },
+            {
+              "item_id": 15382,
+              "item_name": "Rageclaw Cloak"
+            },
+            {
+              "item_id": 15624,
+              "item_name": "Gryphon Cloak"
+            },
+            {
+              "item_id": 16336,
+              "item_name": "Sergeant Major's Cape"
+            },
+            {
+              "item_id": 274752,
+              "item_name": "Sandstorm Cover"
+            },
+            {
+              "item_id": 7524,
+              "item_name": "Gossamer Cape"
+            },
+            {
+              "item_id": 7533,
+              "item_name": "Cabalist Cloak"
+            },
+            {
+              "item_id": 7544,
+              "item_name": "Champion's Cape"
+            },
+            {
+              "item_id": 12254,
+              "item_name": "Well Oiled Cloak"
+            },
+            {
+              "item_id": 14656,
+              "item_name": "Scorpashi Cape"
+            },
+            {
+              "item_id": 14781,
+              "item_name": "Khan's Cloak"
+            },
+            {
+              "item_id": 9908,
+              "item_name": "Royal Cape"
+            },
+            {
+              "item_id": 9919,
+              "item_name": "Tracker's Cloak"
+            },
+            {
+              "item_id": 14261,
+              "item_name": "Bloodwoven Cloak"
+            },
+            {
+              "item_id": 15611,
+              "item_name": "Bonelink Cape"
+            },
+            {
+              "item_id": 19532,
+              "item_name": "Caretaker's Cape"
+            },
+            {
+              "item_id": 272077,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 4114,
+              "item_name": "Darktide Cape"
+            },
+            {
+              "item_id": 6424,
+              "item_name": "Blackforge Cape"
+            },
+            {
+              "item_id": 6789,
+              "item_name": "Ceremonial Centaur Blanket"
+            },
+            {
+              "item_id": 10776,
+              "item_name": "Silky Spider Cape"
+            },
+            {
+              "item_id": 14430,
+              "item_name": "Windchaser Cloak"
+            },
+            {
+              "item_id": 15165,
+              "item_name": "Imposing Cape"
+            },
+            {
+              "item_id": 4735,
+              "item_name": "Mistscape Cloak"
+            },
+            {
+              "item_id": 6432,
+              "item_name": "Imperial Cloak"
+            },
+            {
+              "item_id": 9929,
+              "item_name": "Brigade Cloak"
+            },
+            {
+              "item_id": 12253,
+              "item_name": "Brilliant Red Cloak"
+            },
+            {
+              "item_id": 15371,
+              "item_name": "Wolf Rider's Cloak"
+            },
+            {
+              "item_id": 15603,
+              "item_name": "Ancient Cloak"
+            },
+            {
+              "item_id": 23178,
+              "item_name": "Mantle of Lady Falther'ess"
+            },
+            {
+              "item_id": 4327,
+              "item_name": "Icy Cloak"
+            },
+            {
+              "item_id": 7474,
+              "item_name": "Regal Cloak"
+            },
+            {
+              "item_id": 7483,
+              "item_name": "Ranger Cloak"
+            },
+            {
+              "item_id": 14251,
+              "item_name": "Lunar Cloak"
+            },
+            {
+              "item_id": 7492,
+              "item_name": "Captain's Cloak"
+            },
+            {
+              "item_id": 9397,
+              "item_name": "Energy Cloak"
+            },
+            {
+              "item_id": 14239,
+              "item_name": "Darkmist Cape"
+            },
+            {
+              "item_id": 14602,
+              "item_name": "Warden's Cloak"
+            },
+            {
+              "item_id": 14771,
+              "item_name": "Ravager's Cloak"
+            },
+            {
+              "item_id": 9877,
+              "item_name": "Sorcerer Cloak"
+            },
+            {
+              "item_id": 9890,
+              "item_name": "Huntsman's Cape"
+            },
+            {
+              "item_id": 9898,
+              "item_name": "Jazeraint Cloak"
+            },
+            {
+              "item_id": 13121,
+              "item_name": "Wing of the Whelpling"
+            },
+            {
+              "item_id": 14420,
+              "item_name": "Silksand Cape"
+            },
+            {
+              "item_id": 4326,
+              "item_name": "Long Silken Cloak"
+            },
+            {
+              "item_id": 4732,
+              "item_name": "Glyphed Cloak"
+            },
+            {
+              "item_id": 5257,
+              "item_name": "Dark Hooded Cape"
+            },
+            {
+              "item_id": 5965,
+              "item_name": "Guardian Cloak"
+            },
+            {
+              "item_id": 6417,
+              "item_name": "Aurora Cloak"
+            },
+            {
+              "item_id": 15153,
+              "item_name": "Nocturnal Cloak"
+            },
+            {
+              "item_id": 15594,
+              "item_name": "Steadfast Cloak"
+            },
+            {
+              "item_id": 4726,
+              "item_name": "Chief Brigadier Cloak"
+            },
+            {
+              "item_id": 5181,
+              "item_name": "Vibrant Silk Cape"
+            },
+            {
+              "item_id": 7056,
+              "item_name": "Crimson Silk Cloak"
+            },
+            {
+              "item_id": 7377,
+              "item_name": "Frost Leather Cloak"
+            },
+            {
+              "item_id": 7446,
+              "item_name": "Sentinel Cloak"
+            },
+            {
+              "item_id": 14229,
+              "item_name": "Embersilk Cloak"
+            },
+            {
+              "item_id": 15364,
+              "item_name": "Trickster's Cloak"
+            },
+            {
+              "item_id": 7053,
+              "item_name": "Azure Silk Cloak"
+            },
+            {
+              "item_id": 7436,
+              "item_name": "Twilight Cape"
+            },
+            {
+              "item_id": 14593,
+              "item_name": "Hawkeye's Cloak"
+            },
+            {
+              "item_id": 15579,
+              "item_name": "Sparkleshell Cloak"
+            },
+            {
+              "item_id": 18440,
+              "item_name": "Sergeant's Cape"
+            },
+            {
+              "item_id": 2805,
+              "item_name": "Yeti Fur Cloak"
+            },
+            {
+              "item_id": 7460,
+              "item_name": "Knight's Cloak"
+            },
+            {
+              "item_id": 9860,
+              "item_name": "Archer's Cloak"
+            },
+            {
+              "item_id": 13108,
+              "item_name": "Tigerstrike Mantle"
+            },
+            {
+              "item_id": 14219,
+              "item_name": "Geomancer's Cloak"
+            },
+            {
+              "item_id": 2953,
+              "item_name": "Watch Master's Cloak"
+            },
+            {
+              "item_id": 4462,
+              "item_name": "Cloak of Rot"
+            },
+            {
+              "item_id": 9699,
+              "item_name": "Garrison Cloak"
+            },
+            {
+              "item_id": 9847,
+              "item_name": "Conjurer's Cloak"
+            },
+            {
+              "item_id": 9867,
+              "item_name": "Renegade Cloak"
+            },
+            {
+              "item_id": 14409,
+              "item_name": "Stonecloth Cape"
+            },
+            {
+              "item_id": 15147,
+              "item_name": "Ghostwalker Cloak"
+            },
+            {
+              "item_id": 15568,
+              "item_name": "Marauder's Cloak"
+            },
+            {
+              "item_id": 19533,
+              "item_name": "Caretaker's Cape"
+            },
+            {
+              "item_id": 272078,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 4716,
+              "item_name": "Combat Cloak"
+            },
+            {
+              "item_id": 4719,
+              "item_name": "Nightsky Cloak"
+            },
+            {
+              "item_id": 4722,
+              "item_name": "Insignia Cloak"
+            },
+            {
+              "item_id": 9605,
+              "item_name": "Repairman's Cape"
+            },
+            {
+              "item_id": 14210,
+              "item_name": "Vital Cape"
+            },
+            {
+              "item_id": 14763,
+              "item_name": "Enduring Cape"
+            },
+            {
+              "item_id": 15354,
+              "item_name": "Headhunter's Cloak"
+            },
+            {
+              "item_id": 4504,
+              "item_name": "Dwarven Guard Cloak"
+            },
+            {
+              "item_id": 7411,
+              "item_name": "Infiltrator Cloak"
+            },
+            {
+              "item_id": 14198,
+              "item_name": "Thistlefur Cloak"
+            },
+            {
+              "item_id": 15559,
+              "item_name": "Pillager's Cloak"
+            },
+            {
+              "item_id": 2902,
+              "item_name": "Cloak of the Faith"
+            },
+            {
+              "item_id": 3719,
+              "item_name": "Hillman's Cloak"
+            },
+            {
+              "item_id": 6751,
+              "item_name": "Mourning Shawl"
+            },
+            {
+              "item_id": 7356,
+              "item_name": "Elder's Cloak"
+            },
+            {
+              "item_id": 7419,
+              "item_name": "Phalanx Cloak"
+            },
+            {
+              "item_id": 15135,
+              "item_name": "Cutthroat's Cape"
+            },
+            {
+              "item_id": 16315,
+              "item_name": "Sergeant Major's Cape"
+            },
+            {
+              "item_id": 6901,
+              "item_name": "Glowing Thresher Cape"
+            },
+            {
+              "item_id": 9822,
+              "item_name": "Durable Cape"
+            },
+            {
+              "item_id": 9831,
+              "item_name": "Scaled Cloak"
+            },
+            {
+              "item_id": 9838,
+              "item_name": "Banded Cloak"
+            },
+            {
+              "item_id": 14400,
+              "item_name": "Resilient Cape"
+            },
+            {
+              "item_id": 15547,
+              "item_name": "Thick Scale Cloak"
+            },
+            {
+              "item_id": 4447,
+              "item_name": "Cloak of Night"
+            },
+            {
+              "item_id": 4711,
+              "item_name": "Glimmering Cloak"
+            },
+            {
+              "item_id": 6614,
+              "item_name": "Sage's Cloak"
+            },
+            {
+              "item_id": 13005,
+              "item_name": "Amy's Blanket"
+            },
+            {
+              "item_id": 14582,
+              "item_name": "Dokebi Cape"
+            },
+            {
+              "item_id": 15537,
+              "item_name": "Wicked Chain Cloak"
+            },
+            {
+              "item_id": 4715,
+              "item_name": "Emblazoned Cloak"
+            },
+            {
+              "item_id": 5751,
+              "item_name": "Webwing Cloak"
+            },
+            {
+              "item_id": 6314,
+              "item_name": "Wolfmaster Cape"
+            },
+            {
+              "item_id": 6340,
+              "item_name": "Fenrus' Hide"
+            },
+            {
+              "item_id": 6667,
+              "item_name": "Engineer's Cloak"
+            },
+            {
+              "item_id": 14188,
+              "item_name": "Raincaller Cloak"
+            },
+            {
+              "item_id": 14752,
+              "item_name": "Slayer's Cape"
+            },
+            {
+              "item_id": 15340,
+              "item_name": "Pathfinder Cloak"
+            },
+            {
+              "item_id": 3561,
+              "item_name": "Resilient Poncho"
+            },
+            {
+              "item_id": 4713,
+              "item_name": "Silver-thread Cloak"
+            },
+            {
+              "item_id": 6593,
+              "item_name": "Battleforge Cloak"
+            },
+            {
+              "item_id": 6604,
+              "item_name": "Dervish Cape"
+            },
+            {
+              "item_id": 7004,
+              "item_name": "Prelacy Cape"
+            },
+            {
+              "item_id": 3018,
+              "item_name": "Hide of Lupos"
+            },
+            {
+              "item_id": 4790,
+              "item_name": "Inferno Cloak"
+            },
+            {
+              "item_id": 9794,
+              "item_name": "Ivycloth Cloak"
+            },
+            {
+              "item_id": 15124,
+              "item_name": "Robust Cloak"
+            },
+            {
+              "item_id": 274740,
+              "item_name": "Quilted Cloak"
+            },
+            {
+              "item_id": 2059,
+              "item_name": "Sentry Cloak"
+            },
+            {
+              "item_id": 4706,
+              "item_name": "Lambent Scale Cloak"
+            },
+            {
+              "item_id": 4793,
+              "item_name": "Sylvan Cloak"
+            },
+            {
+              "item_id": 5193,
+              "item_name": "Cape of the Brotherhood"
+            },
+            {
+              "item_id": 5969,
+              "item_name": "Regent's Cloak"
+            },
+            {
+              "item_id": 9805,
+              "item_name": "Superior Cloak"
+            },
+            {
+              "item_id": 14179,
+              "item_name": "Watcher's Cape"
+            },
+            {
+              "item_id": 15526,
+              "item_name": "Sentry's Cape"
+            },
+            {
+              "item_id": 2241,
+              "item_name": "Desperado Cape"
+            },
+            {
+              "item_id": 4792,
+              "item_name": "Spirit Cloak"
+            },
+            {
+              "item_id": 6381,
+              "item_name": "Bright Cloak"
+            },
+            {
+              "item_id": 6449,
+              "item_name": "Glowing Lizardscale Cloak"
+            },
+            {
+              "item_id": 15519,
+              "item_name": "Spiked Chain Cloak"
+            },
+            {
+              "item_id": 20428,
+              "item_name": "Caretaker's Cape"
+            },
+            {
+              "item_id": 279865,
+              "item_name": "Grave Shroud"
+            },
+            {
+              "item_id": 2316,
+              "item_name": "Dark Leather Cloak"
+            },
+            {
+              "item_id": 4710,
+              "item_name": "Forest Cloak"
+            },
+            {
+              "item_id": 5444,
+              "item_name": "Miner's Cape"
+            },
+            {
+              "item_id": 6629,
+              "item_name": "Sporid Cape"
+            },
+            {
+              "item_id": 9812,
+              "item_name": "Fortified Cloak"
+            },
+            {
+              "item_id": 14376,
+              "item_name": "Sanguine Cape"
+            },
+            {
+              "item_id": 15333,
+              "item_name": "Wrangler's Cloak"
+            },
+            {
+              "item_id": 4311,
+              "item_name": "Heavy Woolen Cloak"
+            },
+            {
+              "item_id": 6179,
+              "item_name": "Privateer's Cape"
+            },
+            {
+              "item_id": 6564,
+              "item_name": "Shimmering Cloak"
+            },
+            {
+              "item_id": 6632,
+              "item_name": "Feyscale Cloak"
+            },
+            {
+              "item_id": 12979,
+              "item_name": "Firebane Cloak"
+            },
+            {
+              "item_id": 14571,
+              "item_name": "Bristlebark Cape"
+            },
+            {
+              "item_id": 285329,
+              "item_name": "Raptor Hide Cloak"
+            },
+            {
+              "item_id": 1190,
+              "item_name": "Overseer's Cloak"
+            },
+            {
+              "item_id": 5387,
+              "item_name": "Enchanted Moonstalker Cloak"
+            },
+            {
+              "item_id": 6575,
+              "item_name": "Defender Cloak"
+            },
+            {
+              "item_id": 6585,
+              "item_name": "Scouting Cloak"
+            },
+            {
+              "item_id": 7283,
+              "item_name": "Black Whelp Cloak"
+            },
+            {
+              "item_id": 9770,
+              "item_name": "Greenweave Cloak"
+            },
+            {
+              "item_id": 14745,
+              "item_name": "Hulking Cloak"
+            },
+            {
+              "item_id": 5542,
+              "item_name": "Pearl-clasped Cloak"
+            },
+            {
+              "item_id": 14167,
+              "item_name": "Buccaneer's Cape"
+            },
+            {
+              "item_id": 15114,
+              "item_name": "Rigid Cape"
+            },
+            {
+              "item_id": 15508,
+              "item_name": "Grunt's Cape"
+            },
+            {
+              "item_id": 1930,
+              "item_name": "Stonemason Cloak"
+            },
+            {
+              "item_id": 4695,
+              "item_name": "Burnished Cloak"
+            },
+            {
+              "item_id": 5343,
+              "item_name": "Barkeeper's Cloak"
+            },
+            {
+              "item_id": 6466,
+              "item_name": "Deviate Scale Cloak"
+            },
+            {
+              "item_id": 7739,
+              "item_name": "Timberland Cape"
+            },
+            {
+              "item_id": 9779,
+              "item_name": "Bandit Cloak"
+            },
+            {
+              "item_id": 14161,
+              "item_name": "Pagan Cape"
+            },
+            {
+              "item_id": 1355,
+              "item_name": "Buckskin Cape"
+            },
+            {
+              "item_id": 2284,
+              "item_name": "Rat Cloth Cloak"
+            },
+            {
+              "item_id": 4771,
+              "item_name": "Harvest Cloak"
+            },
+            {
+              "item_id": 5111,
+              "item_name": "Rathorian's Cape"
+            },
+            {
+              "item_id": 6378,
+              "item_name": "Seer's Cape"
+            },
+            {
+              "item_id": 14123,
+              "item_name": "Ritual Cape"
+            },
+            {
+              "item_id": 14563,
+              "item_name": "Prospector's Cloak"
+            },
+            {
+              "item_id": 15501,
+              "item_name": "Outrunner's Cloak"
+            },
+            {
+              "item_id": 279899,
+              "item_name": "Catacomb Cloak"
+            },
+            {
+              "item_id": 2584,
+              "item_name": "Woolen Cape"
+            },
+            {
+              "item_id": 4701,
+              "item_name": "Inscribed Cloak"
+            },
+            {
+              "item_id": 9786,
+              "item_name": "Raider's Cloak"
+            },
+            {
+              "item_id": 14724,
+              "item_name": "War Paint Cloak"
+            },
+            {
+              "item_id": 1270,
+              "item_name": "Finely Woven Cloak"
+            },
+            {
+              "item_id": 2308,
+              "item_name": "Fine Leather Cloak"
+            },
+            {
+              "item_id": 3511,
+              "item_name": "Cloak of the People's Militia"
+            },
+            {
+              "item_id": 5610,
+              "item_name": "Gustweald Cloak"
+            },
+            {
+              "item_id": 6542,
+              "item_name": "Willow Cape"
+            },
+            {
+              "item_id": 14365,
+              "item_name": "Mystic's Cape"
+            },
+            {
+              "item_id": 15309,
+              "item_name": "Feral Cloak"
+            },
+            {
+              "item_id": 285228,
+              "item_name": "Mystmane's Pelt"
+            },
+            {
+              "item_id": 286427,
+              "item_name": "Cloak of the Honored Guest"
+            },
+            {
+              "item_id": 2310,
+              "item_name": "Embossed Leather Cloak"
+            },
+            {
+              "item_id": 4772,
+              "item_name": "Warm Cloak"
+            },
+            {
+              "item_id": 281289,
+              "item_name": "Swordfeather Cloak"
+            },
+            {
+              "item_id": 2580,
+              "item_name": "Reinforced Linen Cape"
+            },
+            {
+              "item_id": 281250,
+              "item_name": "Forest Oracle's Cloak"
+            },
+            {
+              "item_id": 257943,
+              "item_name": "Hunter's Simple Cloak"
+            }
+          ],
+          "alternatives": [
+            {
+              "item_id": 20073,
+              "item_name": "Cloak of the Honor Guard",
+              "source_kind": "rep",
+              "source": "The League of Arathor",
+              "dps_delta": 0,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "chest",
@@ -5548,10 +6928,10 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19140,
-          "item_name": "Cauterizing Band",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "item_id": 22725,
+          "item_name": "Band of Cenarius",
+          "source": "A Humble Offering",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -5559,27 +6939,27 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -10.32575123904138,
+              "dps_delta": 0,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 22678,
-          "item_name": "Talisman of Ascendance",
-          "source": "Epic Armaments of Battle - Friend of the Dawn",
-          "source_kind": "quest",
-          "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +10.2 DPS over it",
-          "dps_delta": 10.150524018790918
-        },
-        {
-          "slot": "trinket2",
           "item_id": 22268,
           "item_name": "Draconic Infused Emblem",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
+          "verified": true,
+          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +7.8 DPS over it",
+          "dps_delta": 7.8359781866071785
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 22678,
+          "item_name": "Talisman of Ascendance",
+          "source": "Epic Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -5587,7 +6967,7 @@
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -3.301390005664871,
+              "dps_delta": -3.325157173567618,
               "verified": true
             }
           ]
@@ -5617,15 +6997,15 @@
           "source": "Stormpike Guard",
           "source_kind": "rep",
           "verified": true,
-          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: +8.4 DPS over it",
-          "dps_delta": 8.371638778447107,
+          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: +9.1 DPS over it",
+          "dps_delta": 9.116918310155143,
           "alternatives": [
             {
               "item_id": 19310,
               "item_name": "Tome of the Ice Lord",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -8.371638778447107,
+              "dps_delta": -9.116918310155143,
               "verified": true
             }
           ]
@@ -5637,8 +7017,8 @@
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +4.9 DPS over it",
-          "dps_delta": 4.922016542182746,
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +8.3 DPS over it",
+          "dps_delta": 8.349358335206034,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -5646,14 +7026,14 @@
               "item_name": "Torch of Light",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -4.922016542182746,
+              "dps_delta": -8.349358335206034,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 328.56141230928347,
-      "no_source_count": 1007,
+      "set_dps": 317.04455293320734,
+      "no_source_count": 1027,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5673,52 +7053,53 @@
       ],
       "new_at_band": [
         "head: Heretic Cowl",
+        "back: Cloak of Flames",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Cauterizing Band",
-        "trinket1: Talisman of Ascendance",
-        "trinket2: Draconic Infused Emblem",
+        "finger2: Band of Cenarius",
+        "trinket1: Draconic Infused Emblem",
+        "trinket2: Talisman of Ascendance",
         "main_hand: Runesword of the Red",
         "off_hand: Lei of the Lifegiver",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.3844644480000001,
-      "verify_run_seconds": 1.3122425039999999,
+      "weights_run_seconds": 1.101638312,
+      "verify_run_seconds": 1.041607242,
       "coverage": {
         "back": {
           "eligible": 445,
-          "sourced": 344
+          "sourced": 342
         },
         "chest": {
-          "eligible": 325,
-          "sourced": 270
+          "eligible": 329,
+          "sourced": 271
         },
         "feet": {
-          "eligible": 208,
-          "sourced": 174
+          "eligible": 212,
+          "sourced": 176
         },
         "finger1": {
           "eligible": 376,
-          "sourced": 213
+          "sourced": 212
         },
         "finger2": {
           "eligible": 376,
-          "sourced": 213
+          "sourced": 212
         },
         "hands": {
-          "eligible": 216,
+          "eligible": 220,
           "sourced": 175
         },
         "head": {
-          "eligible": 188,
-          "sourced": 146
+          "eligible": 192,
+          "sourced": 148
         },
         "legs": {
-          "eligible": 208,
-          "sourced": 167
+          "eligible": 212,
+          "sourced": 168
         },
         "main_hand": {
           "eligible": 574,
-          "sourced": 385
+          "sourced": 384
         },
         "neck": {
           "eligible": 193,
@@ -5733,20 +7114,20 @@
           "sourced": 81
         },
         "shoulder": {
-          "eligible": 161,
-          "sourced": 130
+          "eligible": 165,
+          "sourced": 132
         },
         "trinket1": {
           "eligible": 186,
-          "sourced": 110
+          "sourced": 111
         },
         "trinket2": {
           "eligible": 186,
-          "sourced": 110
+          "sourced": 111
         },
         "waist": {
           "eligible": 197,
-          "sourced": 163
+          "sourced": 162
         },
         "wrist": {
           "eligible": 162,
@@ -5833,15 +7214,15 @@
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +27.8 DPS over it",
-          "dps_delta": 27.84141947709486,
+          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +26.5 DPS over it",
+          "dps_delta": 26.54783604215237,
           "alternatives": [
             {
               "item_id": 208424,
               "item_name": "Sun Shades",
               "source_kind": "vendor",
               "source": "Rix Xizzix",
-              "dps_delta": -27.84141947709486,
+              "dps_delta": -26.54783604215237,
               "verified": true
             }
           ]
@@ -5858,8 +7239,1416 @@
         },
         {
           "slot": "back",
-          "verified": false,
-          "empty_reason": "no_dps_value"
+          "item_id": 3475,
+          "item_name": "Cloak of Flames",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "verified": true,
+          "effect_unmodelled": true,
+          "ties": [
+            {
+              "item_id": 20068,
+              "item_name": "Deathguard's Cloak"
+            },
+            {
+              "item_id": 20691,
+              "item_name": "Windshear Cape"
+            },
+            {
+              "item_id": 272411,
+              "item_name": "Arcanoweave Cloak"
+            },
+            {
+              "item_id": 272413,
+              "item_name": "Drape of Recovery"
+            },
+            {
+              "item_id": 272414,
+              "item_name": "Howler's Furs"
+            },
+            {
+              "item_id": 272415,
+              "item_name": "Stalwart Cloak"
+            },
+            {
+              "item_id": 279269,
+              "item_name": "Fel Cape"
+            },
+            {
+              "item_id": 12967,
+              "item_name": "Bloodmoon Cloak"
+            },
+            {
+              "item_id": 12968,
+              "item_name": "Frostweaver Cape"
+            },
+            {
+              "item_id": 13340,
+              "item_name": "Cape of the Black Baron"
+            },
+            {
+              "item_id": 15421,
+              "item_name": "Shroud of the Exile"
+            },
+            {
+              "item_id": 18461,
+              "item_name": "Sergeant's Cloak"
+            },
+            {
+              "item_id": 18495,
+              "item_name": "Redoubt Cloak"
+            },
+            {
+              "item_id": 19526,
+              "item_name": "Battle Healer's Cloak"
+            },
+            {
+              "item_id": 20697,
+              "item_name": "Crystalline Threaded Cape"
+            },
+            {
+              "item_id": 22269,
+              "item_name": "Shadow Prowler's Cloak"
+            },
+            {
+              "item_id": 22337,
+              "item_name": "Shroud of Domination"
+            },
+            {
+              "item_id": 23127,
+              "item_name": "Cloak of Revanchion"
+            },
+            {
+              "item_id": 272063,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 18382,
+              "item_name": "Fluctuating Cloak"
+            },
+            {
+              "item_id": 18389,
+              "item_name": "Cloak of the Cosmos"
+            },
+            {
+              "item_id": 18413,
+              "item_name": "Cloak of Warding"
+            },
+            {
+              "item_id": 18509,
+              "item_name": "Chromatic Cloak"
+            },
+            {
+              "item_id": 18510,
+              "item_name": "Hide of the Wild"
+            },
+            {
+              "item_id": 18511,
+              "item_name": "Shifting Cloak"
+            },
+            {
+              "item_id": 18689,
+              "item_name": "Phantasmal Cloak"
+            },
+            {
+              "item_id": 18734,
+              "item_name": "Pale Moon Cloak"
+            },
+            {
+              "item_id": 10249,
+              "item_name": "Master's Cloak"
+            },
+            {
+              "item_id": 10267,
+              "item_name": "Masterwork Cape"
+            },
+            {
+              "item_id": 12905,
+              "item_name": "Wildfire Cape"
+            },
+            {
+              "item_id": 13386,
+              "item_name": "Archivist Cape"
+            },
+            {
+              "item_id": 13397,
+              "item_name": "Stoneskin Gargoyle Cape"
+            },
+            {
+              "item_id": 15437,
+              "item_name": "Supreme Cape"
+            },
+            {
+              "item_id": 18350,
+              "item_name": "Amplifying Cloak"
+            },
+            {
+              "item_id": 18677,
+              "item_name": "Zephyr Cloak"
+            },
+            {
+              "item_id": 22330,
+              "item_name": "Shroud of Arcane Mastery"
+            },
+            {
+              "item_id": 10258,
+              "item_name": "Adventurer's Cape"
+            },
+            {
+              "item_id": 11930,
+              "item_name": "The Emperor's New Cape"
+            },
+            {
+              "item_id": 13203,
+              "item_name": "Armswake Cloak"
+            },
+            {
+              "item_id": 15815,
+              "item_name": "Hameya's Cloak"
+            },
+            {
+              "item_id": 18496,
+              "item_name": "Heliotrope Cloak"
+            },
+            {
+              "item_id": 19083,
+              "item_name": "Frostwolf Legionnaire's Cloak"
+            },
+            {
+              "item_id": 19085,
+              "item_name": "Frostwolf Advisor's Cloak"
+            },
+            {
+              "item_id": 10138,
+              "item_name": "High Councillor's Cloak"
+            },
+            {
+              "item_id": 10159,
+              "item_name": "Mercurial Cloak"
+            },
+            {
+              "item_id": 13376,
+              "item_name": "Royal Tribunal Cloak"
+            },
+            {
+              "item_id": 14683,
+              "item_name": "Indomitable Cloak"
+            },
+            {
+              "item_id": 18328,
+              "item_name": "Shadewood Cloak"
+            },
+            {
+              "item_id": 18339,
+              "item_name": "Eidolon Cloak"
+            },
+            {
+              "item_id": 18743,
+              "item_name": "Gracious Cape"
+            },
+            {
+              "item_id": 20218,
+              "item_name": "Faded Hakkari Cloak"
+            },
+            {
+              "item_id": 20219,
+              "item_name": "Tattered Hakkari Cape"
+            },
+            {
+              "item_id": 10148,
+              "item_name": "Mighty Cloak"
+            },
+            {
+              "item_id": 11812,
+              "item_name": "Cape of the Fire Salamander"
+            },
+            {
+              "item_id": 12066,
+              "item_name": "Shaleskin Cape"
+            },
+            {
+              "item_id": 12110,
+              "item_name": "Raincaster Drape"
+            },
+            {
+              "item_id": 12608,
+              "item_name": "Butcher's Apron"
+            },
+            {
+              "item_id": 13007,
+              "item_name": "Mageflame Cloak"
+            },
+            {
+              "item_id": 14331,
+              "item_name": "Eternal Cloak"
+            },
+            {
+              "item_id": 15681,
+              "item_name": "Triumphant Cloak"
+            },
+            {
+              "item_id": 17061,
+              "item_name": "Juno's Shadow"
+            },
+            {
+              "item_id": 17523,
+              "item_name": "Smokey's Drape"
+            },
+            {
+              "item_id": 8304,
+              "item_name": "Hero's Cape"
+            },
+            {
+              "item_id": 10212,
+              "item_name": "Elegant Cloak"
+            },
+            {
+              "item_id": 10224,
+              "item_name": "Nightshade Cloak"
+            },
+            {
+              "item_id": 14459,
+              "item_name": "Elunarian Cloak"
+            },
+            {
+              "item_id": 14813,
+              "item_name": "Warstrike Cape"
+            },
+            {
+              "item_id": 12113,
+              "item_name": "Sunborne Cape"
+            },
+            {
+              "item_id": 12551,
+              "item_name": "Stoneshield Cloak"
+            },
+            {
+              "item_id": 15671,
+              "item_name": "Magnificent Cloak"
+            },
+            {
+              "item_id": 15789,
+              "item_name": "Deep River Cloak"
+            },
+            {
+              "item_id": 15804,
+              "item_name": "Cerise Drape"
+            },
+            {
+              "item_id": 8286,
+              "item_name": "Arcane Cloak"
+            },
+            {
+              "item_id": 8297,
+              "item_name": "Traveler's Cloak"
+            },
+            {
+              "item_id": 10231,
+              "item_name": "Engraved Cape"
+            },
+            {
+              "item_id": 11677,
+              "item_name": "Graverot Cape"
+            },
+            {
+              "item_id": 12552,
+              "item_name": "Blisterbane Wrap"
+            },
+            {
+              "item_id": 13122,
+              "item_name": "Dark Phantom Cape"
+            },
+            {
+              "item_id": 14044,
+              "item_name": "Cindercloth Cloak"
+            },
+            {
+              "item_id": 14103,
+              "item_name": "Brightcloth Cloak"
+            },
+            {
+              "item_id": 14134,
+              "item_name": "Cloak of Fire"
+            },
+            {
+              "item_id": 14321,
+              "item_name": "Resplendent Cloak"
+            },
+            {
+              "item_id": 15190,
+              "item_name": "Grand Cloak"
+            },
+            {
+              "item_id": 15703,
+              "item_name": "Chemist's Smock"
+            },
+            {
+              "item_id": 10843,
+              "item_name": "Featherskin Cape"
+            },
+            {
+              "item_id": 14313,
+              "item_name": "Celestial Cape"
+            },
+            {
+              "item_id": 15427,
+              "item_name": "Peerless Cloak"
+            },
+            {
+              "item_id": 15661,
+              "item_name": "Impenetrable Cloak"
+            },
+            {
+              "item_id": 10098,
+              "item_name": "Councillor's Cloak"
+            },
+            {
+              "item_id": 10108,
+              "item_name": "Wanderer's Cloak"
+            },
+            {
+              "item_id": 10120,
+              "item_name": "Ornate Cloak"
+            },
+            {
+              "item_id": 11626,
+              "item_name": "Blackveil Cape"
+            },
+            {
+              "item_id": 12465,
+              "item_name": "Nightfall Drape"
+            },
+            {
+              "item_id": 13860,
+              "item_name": "Runecloth Cloak"
+            },
+            {
+              "item_id": 19527,
+              "item_name": "Battle Healer's Cloak"
+            },
+            {
+              "item_id": 272076,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 10174,
+              "item_name": "Mystical Cape"
+            },
+            {
+              "item_id": 10802,
+              "item_name": "Wingveil Cloak"
+            },
+            {
+              "item_id": 11623,
+              "item_name": "Spritecaster Cape"
+            },
+            {
+              "item_id": 14300,
+              "item_name": "Bonecaster's Cape"
+            },
+            {
+              "item_id": 14673,
+              "item_name": "Pridelord Cape"
+            },
+            {
+              "item_id": 14801,
+              "item_name": "Bloodlust Cape"
+            },
+            {
+              "item_id": 17739,
+              "item_name": "Grovekeeper's Drape"
+            },
+            {
+              "item_id": 19982,
+              "item_name": "Duskbat Drape"
+            },
+            {
+              "item_id": 8266,
+              "item_name": "Ebonhold Cloak"
+            },
+            {
+              "item_id": 10185,
+              "item_name": "Swashbuckler's Cape"
+            },
+            {
+              "item_id": 14450,
+              "item_name": "Highborne Cloak"
+            },
+            {
+              "item_id": 15652,
+              "item_name": "Merciless Cloak"
+            },
+            {
+              "item_id": 19121,
+              "item_name": "Deep Woodlands Cloak"
+            },
+            {
+              "item_id": 8215,
+              "item_name": "Wild Leather Cloak"
+            },
+            {
+              "item_id": 8248,
+              "item_name": "Imperial Red Cloak"
+            },
+            {
+              "item_id": 8259,
+              "item_name": "Serpentskin Cloak"
+            },
+            {
+              "item_id": 10194,
+              "item_name": "Crusader's Cloak"
+            },
+            {
+              "item_id": 15183,
+              "item_name": "Praetorian Cloak"
+            },
+            {
+              "item_id": 16341,
+              "item_name": "Sergeant's Cloak"
+            },
+            {
+              "item_id": 10060,
+              "item_name": "Duskwoven Cape"
+            },
+            {
+              "item_id": 10071,
+              "item_name": "Righteous Cloak"
+            },
+            {
+              "item_id": 13109,
+              "item_name": "Blackflame Cape"
+            },
+            {
+              "item_id": 14292,
+              "item_name": "Arachnidian Cape"
+            },
+            {
+              "item_id": 15392,
+              "item_name": "Jadefire Cloak"
+            },
+            {
+              "item_id": 15643,
+              "item_name": "Ironhide Cloak"
+            },
+            {
+              "item_id": 8216,
+              "item_name": "Big Voodoo Cloak"
+            },
+            {
+              "item_id": 9648,
+              "item_name": "Chainlink Towel"
+            },
+            {
+              "item_id": 9938,
+              "item_name": "Abjurer's Cloak"
+            },
+            {
+              "item_id": 10079,
+              "item_name": "Lord's Cape"
+            },
+            {
+              "item_id": 14280,
+              "item_name": "Opulent Cape"
+            },
+            {
+              "item_id": 14665,
+              "item_name": "Keeper's Cloak"
+            },
+            {
+              "item_id": 14791,
+              "item_name": "Protector Cape"
+            },
+            {
+              "item_id": 8127,
+              "item_name": "Myrmidon's Cape"
+            },
+            {
+              "item_id": 9951,
+              "item_name": "Chieftain's Cloak"
+            },
+            {
+              "item_id": 8109,
+              "item_name": "Hibernal Cloak"
+            },
+            {
+              "item_id": 8195,
+              "item_name": "Nightscape Cloak"
+            },
+            {
+              "item_id": 9512,
+              "item_name": "Blackmetal Cape"
+            },
+            {
+              "item_id": 11311,
+              "item_name": "Emberscale Cape"
+            },
+            {
+              "item_id": 14440,
+              "item_name": "Venomshroud Cape"
+            },
+            {
+              "item_id": 15173,
+              "item_name": "Potent Cape"
+            },
+            {
+              "item_id": 15632,
+              "item_name": "Formidable Cape"
+            },
+            {
+              "item_id": 4113,
+              "item_name": "Medicine Blanket"
+            },
+            {
+              "item_id": 8120,
+              "item_name": "Heraldic Cloak"
+            },
+            {
+              "item_id": 9635,
+              "item_name": "Master Apothecary Cape"
+            },
+            {
+              "item_id": 9959,
+              "item_name": "Warmonger's Cloak"
+            },
+            {
+              "item_id": 10518,
+              "item_name": "Parachute Cloak"
+            },
+            {
+              "item_id": 11858,
+              "item_name": "Battlehard Cape"
+            },
+            {
+              "item_id": 14270,
+              "item_name": "Gaea's Cloak"
+            },
+            {
+              "item_id": 15382,
+              "item_name": "Rageclaw Cloak"
+            },
+            {
+              "item_id": 15624,
+              "item_name": "Gryphon Cloak"
+            },
+            {
+              "item_id": 274752,
+              "item_name": "Sandstorm Cover"
+            },
+            {
+              "item_id": 7524,
+              "item_name": "Gossamer Cape"
+            },
+            {
+              "item_id": 7533,
+              "item_name": "Cabalist Cloak"
+            },
+            {
+              "item_id": 7544,
+              "item_name": "Champion's Cape"
+            },
+            {
+              "item_id": 12254,
+              "item_name": "Well Oiled Cloak"
+            },
+            {
+              "item_id": 14656,
+              "item_name": "Scorpashi Cape"
+            },
+            {
+              "item_id": 14781,
+              "item_name": "Khan's Cloak"
+            },
+            {
+              "item_id": 9660,
+              "item_name": "Stargazer Cloak"
+            },
+            {
+              "item_id": 9703,
+              "item_name": "Scorched Cape"
+            },
+            {
+              "item_id": 9908,
+              "item_name": "Royal Cape"
+            },
+            {
+              "item_id": 9919,
+              "item_name": "Tracker's Cloak"
+            },
+            {
+              "item_id": 14261,
+              "item_name": "Bloodwoven Cloak"
+            },
+            {
+              "item_id": 15611,
+              "item_name": "Bonelink Cape"
+            },
+            {
+              "item_id": 19528,
+              "item_name": "Battle Healer's Cloak"
+            },
+            {
+              "item_id": 272077,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 4114,
+              "item_name": "Darktide Cape"
+            },
+            {
+              "item_id": 6424,
+              "item_name": "Blackforge Cape"
+            },
+            {
+              "item_id": 6789,
+              "item_name": "Ceremonial Centaur Blanket"
+            },
+            {
+              "item_id": 6832,
+              "item_name": "Cloak of Blight"
+            },
+            {
+              "item_id": 10776,
+              "item_name": "Silky Spider Cape"
+            },
+            {
+              "item_id": 14430,
+              "item_name": "Windchaser Cloak"
+            },
+            {
+              "item_id": 15165,
+              "item_name": "Imposing Cape"
+            },
+            {
+              "item_id": 4735,
+              "item_name": "Mistscape Cloak"
+            },
+            {
+              "item_id": 6432,
+              "item_name": "Imperial Cloak"
+            },
+            {
+              "item_id": 9929,
+              "item_name": "Brigade Cloak"
+            },
+            {
+              "item_id": 12253,
+              "item_name": "Brilliant Red Cloak"
+            },
+            {
+              "item_id": 15371,
+              "item_name": "Wolf Rider's Cloak"
+            },
+            {
+              "item_id": 15603,
+              "item_name": "Ancient Cloak"
+            },
+            {
+              "item_id": 23178,
+              "item_name": "Mantle of Lady Falther'ess"
+            },
+            {
+              "item_id": 4327,
+              "item_name": "Icy Cloak"
+            },
+            {
+              "item_id": 7474,
+              "item_name": "Regal Cloak"
+            },
+            {
+              "item_id": 7483,
+              "item_name": "Ranger Cloak"
+            },
+            {
+              "item_id": 14251,
+              "item_name": "Lunar Cloak"
+            },
+            {
+              "item_id": 7492,
+              "item_name": "Captain's Cloak"
+            },
+            {
+              "item_id": 9397,
+              "item_name": "Energy Cloak"
+            },
+            {
+              "item_id": 14239,
+              "item_name": "Darkmist Cape"
+            },
+            {
+              "item_id": 14602,
+              "item_name": "Warden's Cloak"
+            },
+            {
+              "item_id": 14771,
+              "item_name": "Ravager's Cloak"
+            },
+            {
+              "item_id": 9877,
+              "item_name": "Sorcerer Cloak"
+            },
+            {
+              "item_id": 9890,
+              "item_name": "Huntsman's Cape"
+            },
+            {
+              "item_id": 9898,
+              "item_name": "Jazeraint Cloak"
+            },
+            {
+              "item_id": 13121,
+              "item_name": "Wing of the Whelpling"
+            },
+            {
+              "item_id": 14420,
+              "item_name": "Silksand Cape"
+            },
+            {
+              "item_id": 4326,
+              "item_name": "Long Silken Cloak"
+            },
+            {
+              "item_id": 4732,
+              "item_name": "Glyphed Cloak"
+            },
+            {
+              "item_id": 5257,
+              "item_name": "Dark Hooded Cape"
+            },
+            {
+              "item_id": 5965,
+              "item_name": "Guardian Cloak"
+            },
+            {
+              "item_id": 6417,
+              "item_name": "Aurora Cloak"
+            },
+            {
+              "item_id": 15153,
+              "item_name": "Nocturnal Cloak"
+            },
+            {
+              "item_id": 15594,
+              "item_name": "Steadfast Cloak"
+            },
+            {
+              "item_id": 4726,
+              "item_name": "Chief Brigadier Cloak"
+            },
+            {
+              "item_id": 5181,
+              "item_name": "Vibrant Silk Cape"
+            },
+            {
+              "item_id": 7056,
+              "item_name": "Crimson Silk Cloak"
+            },
+            {
+              "item_id": 7377,
+              "item_name": "Frost Leather Cloak"
+            },
+            {
+              "item_id": 7446,
+              "item_name": "Sentinel Cloak"
+            },
+            {
+              "item_id": 14229,
+              "item_name": "Embersilk Cloak"
+            },
+            {
+              "item_id": 15364,
+              "item_name": "Trickster's Cloak"
+            },
+            {
+              "item_id": 7053,
+              "item_name": "Azure Silk Cloak"
+            },
+            {
+              "item_id": 7436,
+              "item_name": "Twilight Cape"
+            },
+            {
+              "item_id": 14593,
+              "item_name": "Hawkeye's Cloak"
+            },
+            {
+              "item_id": 15579,
+              "item_name": "Sparkleshell Cloak"
+            },
+            {
+              "item_id": 18427,
+              "item_name": "Sergeant's Cloak"
+            },
+            {
+              "item_id": 7460,
+              "item_name": "Knight's Cloak"
+            },
+            {
+              "item_id": 9860,
+              "item_name": "Archer's Cloak"
+            },
+            {
+              "item_id": 13108,
+              "item_name": "Tigerstrike Mantle"
+            },
+            {
+              "item_id": 14219,
+              "item_name": "Geomancer's Cloak"
+            },
+            {
+              "item_id": 4462,
+              "item_name": "Cloak of Rot"
+            },
+            {
+              "item_id": 4643,
+              "item_name": "Grimsteel Cape"
+            },
+            {
+              "item_id": 6745,
+              "item_name": "Swiftrunner Cape"
+            },
+            {
+              "item_id": 9847,
+              "item_name": "Conjurer's Cloak"
+            },
+            {
+              "item_id": 9867,
+              "item_name": "Renegade Cloak"
+            },
+            {
+              "item_id": 14409,
+              "item_name": "Stonecloth Cape"
+            },
+            {
+              "item_id": 15147,
+              "item_name": "Ghostwalker Cloak"
+            },
+            {
+              "item_id": 15568,
+              "item_name": "Marauder's Cloak"
+            },
+            {
+              "item_id": 19529,
+              "item_name": "Battle Healer's Cloak"
+            },
+            {
+              "item_id": 272078,
+              "item_name": "Darkspear Raider's Cloak"
+            },
+            {
+              "item_id": 4716,
+              "item_name": "Combat Cloak"
+            },
+            {
+              "item_id": 4719,
+              "item_name": "Nightsky Cloak"
+            },
+            {
+              "item_id": 4722,
+              "item_name": "Insignia Cloak"
+            },
+            {
+              "item_id": 14210,
+              "item_name": "Vital Cape"
+            },
+            {
+              "item_id": 14763,
+              "item_name": "Enduring Cape"
+            },
+            {
+              "item_id": 15354,
+              "item_name": "Headhunter's Cloak"
+            },
+            {
+              "item_id": 16658,
+              "item_name": "Wildhunter Cloak"
+            },
+            {
+              "item_id": 7411,
+              "item_name": "Infiltrator Cloak"
+            },
+            {
+              "item_id": 14198,
+              "item_name": "Thistlefur Cloak"
+            },
+            {
+              "item_id": 15559,
+              "item_name": "Pillager's Cloak"
+            },
+            {
+              "item_id": 3719,
+              "item_name": "Hillman's Cloak"
+            },
+            {
+              "item_id": 3749,
+              "item_name": "High Apothecary Cloak"
+            },
+            {
+              "item_id": 7356,
+              "item_name": "Elder's Cloak"
+            },
+            {
+              "item_id": 7419,
+              "item_name": "Phalanx Cloak"
+            },
+            {
+              "item_id": 15135,
+              "item_name": "Cutthroat's Cape"
+            },
+            {
+              "item_id": 6901,
+              "item_name": "Glowing Thresher Cape"
+            },
+            {
+              "item_id": 9822,
+              "item_name": "Durable Cape"
+            },
+            {
+              "item_id": 9831,
+              "item_name": "Scaled Cloak"
+            },
+            {
+              "item_id": 9838,
+              "item_name": "Banded Cloak"
+            },
+            {
+              "item_id": 14400,
+              "item_name": "Resilient Cape"
+            },
+            {
+              "item_id": 15468,
+              "item_name": "Windsong Drape"
+            },
+            {
+              "item_id": 15547,
+              "item_name": "Thick Scale Cloak"
+            },
+            {
+              "item_id": 4447,
+              "item_name": "Cloak of Night"
+            },
+            {
+              "item_id": 4711,
+              "item_name": "Glimmering Cloak"
+            },
+            {
+              "item_id": 6614,
+              "item_name": "Sage's Cloak"
+            },
+            {
+              "item_id": 13005,
+              "item_name": "Amy's Blanket"
+            },
+            {
+              "item_id": 14582,
+              "item_name": "Dokebi Cape"
+            },
+            {
+              "item_id": 15537,
+              "item_name": "Wicked Chain Cloak"
+            },
+            {
+              "item_id": 4715,
+              "item_name": "Emblazoned Cloak"
+            },
+            {
+              "item_id": 5751,
+              "item_name": "Webwing Cloak"
+            },
+            {
+              "item_id": 6314,
+              "item_name": "Wolfmaster Cape"
+            },
+            {
+              "item_id": 6340,
+              "item_name": "Fenrus' Hide"
+            },
+            {
+              "item_id": 6667,
+              "item_name": "Engineer's Cloak"
+            },
+            {
+              "item_id": 14188,
+              "item_name": "Raincaller Cloak"
+            },
+            {
+              "item_id": 14752,
+              "item_name": "Slayer's Cape"
+            },
+            {
+              "item_id": 15340,
+              "item_name": "Pathfinder Cloak"
+            },
+            {
+              "item_id": 16661,
+              "item_name": "Soft Willow Cape"
+            },
+            {
+              "item_id": 16990,
+              "item_name": "Spritekin Cloak"
+            },
+            {
+              "item_id": 4713,
+              "item_name": "Silver-thread Cloak"
+            },
+            {
+              "item_id": 6593,
+              "item_name": "Battleforge Cloak"
+            },
+            {
+              "item_id": 6604,
+              "item_name": "Dervish Cape"
+            },
+            {
+              "item_id": 3018,
+              "item_name": "Hide of Lupos"
+            },
+            {
+              "item_id": 4790,
+              "item_name": "Inferno Cloak"
+            },
+            {
+              "item_id": 4797,
+              "item_name": "Fiery Cloak"
+            },
+            {
+              "item_id": 4798,
+              "item_name": "Heavy Runed Cloak"
+            },
+            {
+              "item_id": 9794,
+              "item_name": "Ivycloth Cloak"
+            },
+            {
+              "item_id": 15124,
+              "item_name": "Robust Cloak"
+            },
+            {
+              "item_id": 274740,
+              "item_name": "Quilted Cloak"
+            },
+            {
+              "item_id": 2059,
+              "item_name": "Sentry Cloak"
+            },
+            {
+              "item_id": 4706,
+              "item_name": "Lambent Scale Cloak"
+            },
+            {
+              "item_id": 4793,
+              "item_name": "Sylvan Cloak"
+            },
+            {
+              "item_id": 5193,
+              "item_name": "Cape of the Brotherhood"
+            },
+            {
+              "item_id": 5969,
+              "item_name": "Regent's Cloak"
+            },
+            {
+              "item_id": 9805,
+              "item_name": "Superior Cloak"
+            },
+            {
+              "item_id": 14179,
+              "item_name": "Watcher's Cape"
+            },
+            {
+              "item_id": 15526,
+              "item_name": "Sentry's Cape"
+            },
+            {
+              "item_id": 2241,
+              "item_name": "Desperado Cape"
+            },
+            {
+              "item_id": 4792,
+              "item_name": "Spirit Cloak"
+            },
+            {
+              "item_id": 4799,
+              "item_name": "Antiquated Cloak"
+            },
+            {
+              "item_id": 6381,
+              "item_name": "Bright Cloak"
+            },
+            {
+              "item_id": 6449,
+              "item_name": "Glowing Lizardscale Cloak"
+            },
+            {
+              "item_id": 15519,
+              "item_name": "Spiked Chain Cloak"
+            },
+            {
+              "item_id": 20427,
+              "item_name": "Battle Healer's Cloak"
+            },
+            {
+              "item_id": 277289,
+              "item_name": "Traveler's Shawl"
+            },
+            {
+              "item_id": 279865,
+              "item_name": "Grave Shroud"
+            },
+            {
+              "item_id": 2316,
+              "item_name": "Dark Leather Cloak"
+            },
+            {
+              "item_id": 4710,
+              "item_name": "Forest Cloak"
+            },
+            {
+              "item_id": 5444,
+              "item_name": "Miner's Cape"
+            },
+            {
+              "item_id": 6629,
+              "item_name": "Sporid Cape"
+            },
+            {
+              "item_id": 9812,
+              "item_name": "Fortified Cloak"
+            },
+            {
+              "item_id": 14376,
+              "item_name": "Sanguine Cape"
+            },
+            {
+              "item_id": 15333,
+              "item_name": "Wrangler's Cloak"
+            },
+            {
+              "item_id": 4311,
+              "item_name": "Heavy Woolen Cloak"
+            },
+            {
+              "item_id": 6179,
+              "item_name": "Privateer's Cape"
+            },
+            {
+              "item_id": 6564,
+              "item_name": "Shimmering Cloak"
+            },
+            {
+              "item_id": 6632,
+              "item_name": "Feyscale Cloak"
+            },
+            {
+              "item_id": 12979,
+              "item_name": "Firebane Cloak"
+            },
+            {
+              "item_id": 14571,
+              "item_name": "Bristlebark Cape"
+            },
+            {
+              "item_id": 285329,
+              "item_name": "Raptor Hide Cloak"
+            },
+            {
+              "item_id": 1190,
+              "item_name": "Overseer's Cloak"
+            },
+            {
+              "item_id": 5314,
+              "item_name": "Boar Hunter's Cape"
+            },
+            {
+              "item_id": 5387,
+              "item_name": "Enchanted Moonstalker Cloak"
+            },
+            {
+              "item_id": 6575,
+              "item_name": "Defender Cloak"
+            },
+            {
+              "item_id": 6585,
+              "item_name": "Scouting Cloak"
+            },
+            {
+              "item_id": 7283,
+              "item_name": "Black Whelp Cloak"
+            },
+            {
+              "item_id": 9770,
+              "item_name": "Greenweave Cloak"
+            },
+            {
+              "item_id": 14745,
+              "item_name": "Hulking Cloak"
+            },
+            {
+              "item_id": 5542,
+              "item_name": "Pearl-clasped Cloak"
+            },
+            {
+              "item_id": 14167,
+              "item_name": "Buccaneer's Cape"
+            },
+            {
+              "item_id": 15114,
+              "item_name": "Rigid Cape"
+            },
+            {
+              "item_id": 15508,
+              "item_name": "Grunt's Cape"
+            },
+            {
+              "item_id": 1930,
+              "item_name": "Stonemason Cloak"
+            },
+            {
+              "item_id": 3582,
+              "item_name": "Acidproof Cloak"
+            },
+            {
+              "item_id": 4695,
+              "item_name": "Burnished Cloak"
+            },
+            {
+              "item_id": 5343,
+              "item_name": "Barkeeper's Cloak"
+            },
+            {
+              "item_id": 6466,
+              "item_name": "Deviate Scale Cloak"
+            },
+            {
+              "item_id": 9779,
+              "item_name": "Bandit Cloak"
+            },
+            {
+              "item_id": 14149,
+              "item_name": "Subterranean Cape"
+            },
+            {
+              "item_id": 14161,
+              "item_name": "Pagan Cape"
+            },
+            {
+              "item_id": 1355,
+              "item_name": "Buckskin Cape"
+            },
+            {
+              "item_id": 2284,
+              "item_name": "Rat Cloth Cloak"
+            },
+            {
+              "item_id": 4771,
+              "item_name": "Harvest Cloak"
+            },
+            {
+              "item_id": 5111,
+              "item_name": "Rathorian's Cape"
+            },
+            {
+              "item_id": 6378,
+              "item_name": "Seer's Cape"
+            },
+            {
+              "item_id": 14123,
+              "item_name": "Ritual Cape"
+            },
+            {
+              "item_id": 14563,
+              "item_name": "Prospector's Cloak"
+            },
+            {
+              "item_id": 15501,
+              "item_name": "Outrunner's Cloak"
+            },
+            {
+              "item_id": 279899,
+              "item_name": "Catacomb Cloak"
+            },
+            {
+              "item_id": 2584,
+              "item_name": "Woolen Cape"
+            },
+            {
+              "item_id": 4701,
+              "item_name": "Inscribed Cloak"
+            },
+            {
+              "item_id": 9786,
+              "item_name": "Raider's Cloak"
+            },
+            {
+              "item_id": 14724,
+              "item_name": "War Paint Cloak"
+            },
+            {
+              "item_id": 2308,
+              "item_name": "Fine Leather Cloak"
+            },
+            {
+              "item_id": 3449,
+              "item_name": "Mystic Shawl"
+            },
+            {
+              "item_id": 6542,
+              "item_name": "Willow Cape"
+            },
+            {
+              "item_id": 10638,
+              "item_name": "Long Draping Cape"
+            },
+            {
+              "item_id": 10821,
+              "item_name": "Sower's Cloak"
+            },
+            {
+              "item_id": 14365,
+              "item_name": "Mystic's Cape"
+            },
+            {
+              "item_id": 15309,
+              "item_name": "Feral Cloak"
+            },
+            {
+              "item_id": 285228,
+              "item_name": "Mystmane's Pelt"
+            },
+            {
+              "item_id": 286426,
+              "item_name": "Honorbound Cloak"
+            },
+            {
+              "item_id": 2310,
+              "item_name": "Embossed Leather Cloak"
+            },
+            {
+              "item_id": 4772,
+              "item_name": "Warm Cloak"
+            },
+            {
+              "item_id": 286744,
+              "item_name": "Thrice-Stitched Flesh"
+            },
+            {
+              "item_id": 2580,
+              "item_name": "Reinforced Linen Cape"
+            },
+            {
+              "item_id": 257943,
+              "item_name": "Hunter's Simple Cloak"
+            }
+          ],
+          "alternatives": [
+            {
+              "item_id": 20068,
+              "item_name": "Deathguard's Cloak",
+              "source_kind": "rep",
+              "source": "The Defilers",
+              "dps_delta": 0,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "chest",
@@ -5911,10 +8700,10 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19140,
-          "item_name": "Cauterizing Band",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "item_id": 22725,
+          "item_name": "Band of Cenarius",
+          "source": "A Humble Offering",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -5922,27 +8711,27 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -10.83700453529491,
+              "dps_delta": 0,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "verified": true,
-          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +9.4 DPS over it",
-          "dps_delta": 9.366437389724524
-        },
-        {
-          "slot": "trinket2",
           "item_id": 22678,
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
+          "verified": true,
+          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +7.2 DPS over it",
+          "dps_delta": 7.152350787955754
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 22268,
+          "item_name": "Draconic Infused Emblem",
+          "source": "Blackrock Spire: General Drakkisath",
+          "source_kind": "dungeon",
           "verified": true,
           "alternatives": [
             {
@@ -5950,7 +8739,7 @@
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -4.013451218061448,
+              "dps_delta": -2.9516221264365186,
               "verified": true
             }
           ]
@@ -5981,14 +8770,14 @@
           "source_kind": "rep",
           "verified": true,
           "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: +7.4 DPS over it",
-          "dps_delta": 7.362597349153589,
+          "dps_delta": 7.4227263718707945,
           "alternatives": [
             {
               "item_id": 19310,
               "item_name": "Tome of the Ice Lord",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -7.362597349153589,
+              "dps_delta": -7.4227263718707945,
               "verified": true
             }
           ]
@@ -6000,8 +8789,8 @@
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +7.4 DPS over it",
-          "dps_delta": 7.394286328374619,
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +5.9 DPS over it",
+          "dps_delta": 5.890544185692306,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -6009,14 +8798,14 @@
               "item_name": "Torch of Light",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -7.394286328374619,
+              "dps_delta": -5.890544185692306,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 327.404095060729,
-      "no_source_count": 998,
+      "set_dps": 313.5793620000791,
+      "no_source_count": 1018,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6036,52 +8825,53 @@
       ],
       "new_at_band": [
         "head: Heretic Cowl",
+        "back: Cloak of Flames",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Cauterizing Band",
-        "trinket1: Draconic Infused Emblem",
-        "trinket2: Talisman of Ascendance",
+        "finger2: Band of Cenarius",
+        "trinket1: Talisman of Ascendance",
+        "trinket2: Draconic Infused Emblem",
         "main_hand: Runesword of the Red",
         "off_hand: Lei of the Lifegiver",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.3844644480000001,
-      "verify_run_seconds": 1.316344664,
+      "weights_run_seconds": 1.101638312,
+      "verify_run_seconds": 1.032370339,
       "coverage": {
         "back": {
           "eligible": 451,
-          "sourced": 351
+          "sourced": 349
         },
         "chest": {
-          "eligible": 323,
-          "sourced": 266
+          "eligible": 327,
+          "sourced": 267
         },
         "feet": {
-          "eligible": 208,
-          "sourced": 173
+          "eligible": 212,
+          "sourced": 175
         },
         "finger1": {
           "eligible": 379,
-          "sourced": 218
+          "sourced": 217
         },
         "finger2": {
           "eligible": 379,
-          "sourced": 218
+          "sourced": 217
         },
         "hands": {
-          "eligible": 219,
+          "eligible": 223,
           "sourced": 177
         },
         "head": {
-          "eligible": 188,
-          "sourced": 145
+          "eligible": 192,
+          "sourced": 147
         },
         "legs": {
-          "eligible": 207,
-          "sourced": 167
+          "eligible": 211,
+          "sourced": 168
         },
         "main_hand": {
           "eligible": 577,
-          "sourced": 398
+          "sourced": 397
         },
         "neck": {
           "eligible": 197,
@@ -6096,20 +8886,20 @@
           "sourced": 77
         },
         "shoulder": {
-          "eligible": 160,
-          "sourced": 129
+          "eligible": 164,
+          "sourced": 131
         },
         "trinket1": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 110
         },
         "trinket2": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 110
         },
         "waist": {
           "eligible": 197,
-          "sourced": 161
+          "sourced": 160
         },
         "wrist": {
           "eligible": 163,

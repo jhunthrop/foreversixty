@@ -8264,8 +8264,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             }
           }
         },
@@ -9542,9 +9542,9 @@
               "source": "Voodoo Feathers"
             },
             "main_hand": {
-              "item_id": 18803,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "ranged": {
               "item_id": 23197,
@@ -9624,9 +9624,9 @@
               "source": "Voodoo Feathers"
             },
             "main_hand": {
-              "item_id": 18803,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "ranged": {
               "item_id": 23197,
@@ -9651,7 +9651,7 @@
             19514,
             19289,
             20130,
-            18803,
+            19323,
             23197
           ],
           "horde": [
@@ -9669,7 +9669,7 @@
             19510,
             19289,
             20130,
-            18803,
+            19323,
             23197
           ]
         },
@@ -11155,8 +11155,8 @@
             },
             "finger2": {
               "item_id": 7552,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "main_hand": {
               "item_id": 10823,
@@ -11232,8 +11232,8 @@
             },
             "finger2": {
               "item_id": 7552,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "main_hand": {
               "item_id": 10823,
@@ -12176,8 +12176,8 @@
             },
             "feet": {
               "item_id": 6423,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "finger1": {
               "item_id": 13095,
@@ -12253,8 +12253,8 @@
             },
             "feet": {
               "item_id": 6423,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "finger1": {
               "item_id": 13095,
@@ -13222,8 +13222,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -13294,8 +13294,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -13418,8 +13418,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 11748,
@@ -13500,8 +13500,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 11748,
@@ -14199,8 +14199,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -14271,8 +14271,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -15200,8 +15200,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -15272,8 +15272,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -16133,8 +16133,8 @@
             },
             "chest": {
               "item_id": 8157,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "wrist": {
               "item_id": 19508,
@@ -16200,8 +16200,8 @@
             },
             "chest": {
               "item_id": 8157,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "wrist": {
               "item_id": 19508,
@@ -16550,19 +16550,19 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
+            },
+            "trinket2": {
               "item_id": 22268,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath"
             },
-            "trinket2": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
-            },
             "main_hand": {
-              "item_id": 18803,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 12592,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             }
           },
           "horde": {
@@ -16637,9 +16637,9 @@
               "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
-              "item_id": 18803,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             }
           }
         },
@@ -16657,9 +16657,9 @@
             240029,
             234034,
             19325,
+            11819,
             22268,
-            19289,
-            18803
+            12592
           ],
           "horde": [
             240027,
@@ -16676,7 +16676,7 @@
             19325,
             11832,
             22268,
-            18803
+            19323
           ]
         },
         "weights": {
@@ -17146,8 +17146,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -17218,8 +17218,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -17497,7 +17497,7 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 231621,
+              "item_id": 17604,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer"
             },
@@ -17579,7 +17579,7 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 231611,
+              "item_id": 17622,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -17654,7 +17654,7 @@
           "alliance": [
             231616,
             22657,
-            231621,
+            17604,
             272411,
             239591,
             239588,
@@ -17672,7 +17672,7 @@
           "horde": [
             231615,
             22657,
-            231611,
+            17622,
             272411,
             239591,
             239588,
@@ -20689,9 +20689,9 @@
               "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 18805,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 12590,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "ranged": {
               "item_id": 12653,
@@ -20776,9 +20776,9 @@
               "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 18805,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 12590,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "ranged": {
               "item_id": 12653,
@@ -20804,7 +20804,7 @@
             19289,
             11815,
             21522,
-            18805,
+            12590,
             12653
           ],
           "horde": [
@@ -20823,7 +20823,7 @@
             19289,
             19120,
             21522,
-            18805,
+            12590,
             12653
           ]
         },
@@ -21320,8 +21320,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             }
           }
         },
@@ -22629,14 +22629,14 @@
               "source": "General Drakkisath's Demise"
             },
             "main_hand": {
-              "item_id": 2243,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 21522,
+              "source_kind": "quest",
+              "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 18805,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 279261,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             }
           },
           "horde": {
@@ -22716,9 +22716,9 @@
               "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 18805,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 279261,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             }
           }
         },
@@ -22738,8 +22738,8 @@
             19325,
             19289,
             13965,
-            2243,
-            18805
+            21522,
+            279261
           ],
           "horde": [
             240131,
@@ -22757,7 +22757,7 @@
             19289,
             19120,
             21522,
-            18805
+            279261
           ]
         },
         "weights": {
@@ -23217,8 +23217,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -23289,8 +23289,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -23414,8 +23414,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 17745,
@@ -23496,8 +23496,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 17745,
@@ -23564,8 +23564,8 @@
             },
             "back": {
               "item_id": 20697,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Chillwind Ravager"
             },
             "chest": {
               "item_id": 240138,
@@ -23646,8 +23646,8 @@
             },
             "back": {
               "item_id": 20697,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Chillwind Ravager"
             },
             "chest": {
               "item_id": 240138,
@@ -24205,8 +24205,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -24277,8 +24277,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 13064,
@@ -24400,8 +24400,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 17745,
@@ -24482,8 +24482,8 @@
             },
             "main_hand": {
               "item_id": 1664,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
             },
             "ranged": {
               "item_id": 11748,
@@ -25189,8 +25189,8 @@
             },
             "finger2": {
               "item_id": 1996,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Bloodscalp Witch Doctor"
             },
             "main_hand": {
               "item_id": 15106,
@@ -25261,8 +25261,8 @@
             },
             "finger2": {
               "item_id": 1996,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "world",
+              "source": "Bloodscalp Witch Doctor"
             },
             "main_hand": {
               "item_id": 15106,
@@ -25537,25 +25537,30 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
+            "back": {
+              "item_id": 3475,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
             "finger1": {
               "item_id": 21200,
               "source_kind": "quest",
               "source": "The Protector of Kalimdor"
             },
             "finger2": {
-              "item_id": 19140,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 22725,
+              "source_kind": "quest",
+              "source": "A Humble Offering"
             },
             "trinket1": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "trinket2": {
               "item_id": 22268,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath"
+            },
+            "trinket2": {
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "main_hand": {
               "item_id": 21521,
@@ -25579,25 +25584,30 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
+            "back": {
+              "item_id": 3475,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
             "finger1": {
               "item_id": 21200,
               "source_kind": "quest",
               "source": "The Protector of Kalimdor"
             },
             "finger2": {
-              "item_id": 19140,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 22725,
+              "source_kind": "quest",
+              "source": "A Humble Offering"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
-            },
-            "trinket2": {
               "item_id": 22678,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "trinket2": {
+              "item_id": 22268,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 21521,
@@ -25619,20 +25629,22 @@
         "new_at_band": {
           "alliance": [
             240141,
+            3475,
             21200,
-            19140,
-            22678,
+            22725,
             22268,
+            22678,
             21521,
             19312,
             22408
           ],
           "horde": [
             240141,
+            3475,
             21200,
-            19140,
-            22268,
+            22725,
             22678,
+            22268,
             21521,
             19312,
             22408
@@ -26035,8 +26047,8 @@
             },
             "chest": {
               "item_id": 8157,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "wrist": {
               "item_id": 19508,
@@ -26107,8 +26119,8 @@
             },
             "chest": {
               "item_id": 8157,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "wrist": {
               "item_id": 19508,

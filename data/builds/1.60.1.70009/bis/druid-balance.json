@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:49:14Z",
+  "generated_at": "2026-09-30T14:51:40Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -477,8 +477,8 @@
             {
               "item_id": 1300,
               "item_name": "Lesser Staff of the Spire",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Blackrock Shadowcaster",
               "dps_delta": -0.5110870451242547
             }
           ]
@@ -528,8 +528,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.606955067,
-      "verify_run_seconds": 0.882932311,
+      "weights_run_seconds": 1.217770603,
+      "verify_run_seconds": 0.694284546,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1133,8 +1133,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.606955067,
-      "verify_run_seconds": 0.906346982,
+      "weights_run_seconds": 1.217770603,
+      "verify_run_seconds": 0.735200299,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1770,8 +1770,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.771524068,
-      "verify_run_seconds": 1.159388979,
+      "weights_run_seconds": 1.407611508,
+      "verify_run_seconds": 0.816608003,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2408,8 +2408,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.771524068,
-      "verify_run_seconds": 1.052549697,
+      "weights_run_seconds": 1.407611508,
+      "verify_run_seconds": 0.827035331,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2606,8 +2606,8 @@
             {
               "item_id": 1714,
               "item_name": "Necklace of Calisea",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Witch Doctor's Chest",
               "dps_delta": -0.7973644840123815
             },
             {
@@ -2974,8 +2974,8 @@
             {
               "item_id": 1664,
               "item_name": "Spellforce Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor",
               "dps_delta": -0.35051522904635174
             },
             {
@@ -3008,7 +3008,7 @@
         }
       ],
       "set_dps": 71.98625391896311,
-      "no_source_count": 435,
+      "no_source_count": 434,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3039,8 +3039,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.8715468240000002,
-      "verify_run_seconds": 1.121783522,
+      "weights_run_seconds": 1.470242676,
+      "verify_run_seconds": 0.87821749,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3096,11 +3096,11 @@
         },
         "trinket1": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "trinket2": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "waist": {
           "eligible": 205,
@@ -3238,8 +3238,8 @@
             {
               "item_id": 1714,
               "item_name": "Necklace of Calisea",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Witch Doctor's Chest",
               "dps_delta": -0.7973644840123815
             },
             {
@@ -3545,8 +3545,8 @@
             {
               "item_id": 1996,
               "item_name": "Voodoo Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "source_kind": "world",
+              "source": "Bloodscalp Witch Doctor",
               "dps_delta": -1.1800707471689926
             }
           ]
@@ -3598,8 +3598,8 @@
           "slot": "main_hand",
           "item_id": 1664,
           "item_name": "Spellforce Rod",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "source": "Venture Co. Surveyor",
+          "source_kind": "world",
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -3640,7 +3640,7 @@
         }
       ],
       "set_dps": 72.02885122129125,
-      "no_source_count": 436,
+      "no_source_count": 435,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3672,8 +3672,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.8715468240000002,
-      "verify_run_seconds": 1.159957781,
+      "weights_run_seconds": 1.470242676,
+      "verify_run_seconds": 0.887551075,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3729,11 +3729,11 @@
         },
         "trinket1": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "trinket2": {
           "eligible": 33,
-          "sourced": 16
+          "sourced": 17
         },
         "waist": {
           "eligible": 209,
@@ -4072,7 +4072,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.525318334164254
+              "dps_delta": -0.5253183341642544
             },
             {
               "item_id": 12466,
@@ -4301,7 +4301,7 @@
         }
       ],
       "set_dps": 102.29239863476495,
-      "no_source_count": 578,
+      "no_source_count": 575,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4336,8 +4336,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.932622964,
-      "verify_run_seconds": 1.294006303,
+      "weights_run_seconds": 1.612503743,
+      "verify_run_seconds": 0.990956644,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4393,11 +4393,11 @@
         },
         "trinket1": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "trinket2": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "waist": {
           "eligible": 267,
@@ -4405,7 +4405,7 @@
         },
         "wrist": {
           "eligible": 219,
-          "sourced": 178
+          "sourced": 180
         }
       },
       "reference_dps_per_point": 0.11451619190710521,
@@ -4966,7 +4966,7 @@
         }
       ],
       "set_dps": 103.16507187744698,
-      "no_source_count": 579,
+      "no_source_count": 576,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5001,8 +5001,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.932622964,
-      "verify_run_seconds": 1.256764759,
+      "weights_run_seconds": 1.612503743,
+      "verify_run_seconds": 1.004938934,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5058,11 +5058,11 @@
         },
         "trinket1": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "trinket2": {
           "eligible": 80,
-          "sourced": 48
+          "sourced": 49
         },
         "waist": {
           "eligible": 271,
@@ -5070,7 +5070,7 @@
         },
         "wrist": {
           "eligible": 223,
-          "sourced": 184
+          "sourced": 186
         }
       },
       "reference_dps_per_point": 0.11451619190710521,
@@ -5251,7 +5251,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.599091006201114,
+          "score": 30.59909100620111,
           "verified": true,
           "alternatives": [
             {
@@ -5265,16 +5265,16 @@
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.6702785051381239
+              "source_kind": "world",
+              "source": "Chillwind Ravager",
+              "dps_delta": -0.6702785051381236
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.0828616773596413
+              "dps_delta": -1.082861677359641
             }
           ]
         },
@@ -5470,7 +5470,7 @@
             {
               "item_id": 231698,
               "item_name": "Marshal's Dragonhide Boots",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
               "dps_delta": -2.338358937812372
             }
@@ -5491,7 +5491,7 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "vendor",
               "source": "Anachronos",
-              "dps_delta": -0.3465203381131586
+              "dps_delta": -0.34652033811315935
             },
             {
               "item_id": 234436,
@@ -5520,11 +5520,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19140,
-              "item_name": "Cauterizing Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.6485411254898927
+              "item_id": 12543,
+              "item_name": "Songstone of Ironforge",
+              "source_kind": "quest",
+              "source": "The Princess's Surprise",
+              "dps_delta": -0.9438318130735021
             },
             {
               "item_id": 13001,
@@ -5622,7 +5622,7 @@
             {
               "item_id": 234571,
               "item_name": "Grand Marshal's Stave",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
               "dps_delta": 0
             },
@@ -5739,7 +5739,7 @@
         }
       ],
       "set_dps": 196.12723141173535,
-      "no_source_count": 1362,
+      "no_source_count": 1391,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5775,44 +5775,44 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.953205728,
-      "verify_run_seconds": 1.21032664,
+      "weights_run_seconds": 1.510643481,
+      "verify_run_seconds": 0.98156957,
       "coverage": {
         "back": {
           "eligible": 446,
-          "sourced": 345
+          "sourced": 343
         },
         "chest": {
-          "eligible": 545,
-          "sourced": 448
+          "eligible": 548,
+          "sourced": 447
         },
         "feet": {
-          "eligible": 432,
-          "sourced": 352
+          "eligible": 437,
+          "sourced": 354
         },
         "finger1": {
           "eligible": 371,
-          "sourced": 208
+          "sourced": 207
         },
         "finger2": {
           "eligible": 371,
-          "sourced": 208
+          "sourced": 207
         },
         "hands": {
-          "eligible": 448,
-          "sourced": 362
+          "eligible": 454,
+          "sourced": 361
         },
         "head": {
-          "eligible": 351,
-          "sourced": 268
+          "eligible": 354,
+          "sourced": 269
         },
         "legs": {
-          "eligible": 448,
-          "sourced": 356
+          "eligible": 451,
+          "sourced": 355
         },
         "main_hand": {
           "eligible": 725,
-          "sourced": 485
+          "sourced": 483
         },
         "neck": {
           "eligible": 193,
@@ -5827,20 +5827,20 @@
           "sourced": 18
         },
         "shoulder": {
-          "eligible": 333,
+          "eligible": 337,
           "sourced": 264
         },
         "trinket1": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 110
         },
         "trinket2": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 110
         },
         "waist": {
           "eligible": 403,
-          "sourced": 335
+          "sourced": 334
         },
         "wrist": {
           "eligible": 329,
@@ -6025,7 +6025,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.599091006201114,
+          "score": 30.59909100620111,
           "verified": true,
           "alternatives": [
             {
@@ -6039,16 +6039,16 @@
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.6702785051381239
+              "source_kind": "world",
+              "source": "Chillwind Ravager",
+              "dps_delta": -0.6702785051381236
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -0.9277997417784324
+              "dps_delta": -0.927799741778432
             }
           ]
         },
@@ -6145,7 +6145,7 @@
             {
               "item_id": 231677,
               "item_name": "General's Dragonhide Gloves",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
               "dps_delta": -4.255688931116993
             }
@@ -6244,7 +6244,7 @@
             {
               "item_id": 231682,
               "item_name": "General's Dragonhide Boots",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
               "dps_delta": -2.338358937812372
             }
@@ -6294,11 +6294,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19140,
-              "item_name": "Cauterizing Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.6485411254898927
+              "item_id": 12545,
+              "item_name": "Eye of Orgrimmar",
+              "source_kind": "quest",
+              "source": "The Princess Saved?",
+              "dps_delta": -0.9438318130735021
             },
             {
               "item_id": 13001,
@@ -6396,7 +6396,7 @@
             {
               "item_id": 234549,
               "item_name": "High Warlord's War Staff",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
               "dps_delta": 0
             },
@@ -6513,7 +6513,7 @@
         }
       ],
       "set_dps": 193.11344709276196,
-      "no_source_count": 1364,
+      "no_source_count": 1393,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6549,44 +6549,44 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.953205728,
-      "verify_run_seconds": 1.219417654,
+      "weights_run_seconds": 1.510643481,
+      "verify_run_seconds": 1.018040443,
       "coverage": {
         "back": {
           "eligible": 452,
-          "sourced": 352
+          "sourced": 350
         },
         "chest": {
-          "eligible": 543,
-          "sourced": 445
+          "eligible": 546,
+          "sourced": 444
         },
         "feet": {
-          "eligible": 437,
-          "sourced": 351
+          "eligible": 442,
+          "sourced": 353
         },
         "finger1": {
           "eligible": 374,
-          "sourced": 213
+          "sourced": 212
         },
         "finger2": {
           "eligible": 374,
-          "sourced": 213
+          "sourced": 212
         },
         "hands": {
-          "eligible": 448,
-          "sourced": 360
+          "eligible": 454,
+          "sourced": 359
         },
         "head": {
-          "eligible": 352,
-          "sourced": 268
+          "eligible": 355,
+          "sourced": 269
         },
         "legs": {
-          "eligible": 443,
+          "eligible": 446,
           "sourced": 349
         },
         "main_hand": {
           "eligible": 730,
-          "sourced": 498
+          "sourced": 496
         },
         "neck": {
           "eligible": 197,
@@ -6601,20 +6601,20 @@
           "sourced": 18
         },
         "shoulder": {
-          "eligible": 331,
-          "sourced": 262
+          "eligible": 335,
+          "sourced": 261
         },
         "trinket1": {
           "eligible": 184,
-          "sourced": 108
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 184,
-          "sourced": 108
+          "sourced": 109
         },
         "waist": {
           "eligible": 406,
-          "sourced": 335
+          "sourced": 334
         },
         "wrist": {
           "eligible": 332,
