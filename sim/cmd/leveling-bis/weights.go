@@ -270,3 +270,97 @@ func effectiveWeights(weights map[string]api.StatWeight) map[string]float64 {
 	}
 	return out
 }
+
+// normalizeScaleFactors is this lane's brief (bis-weights-simc, owner:
+// "we need to make the stat weights align with simcraft stat weights
+// output - that's what people are familiar with"): it turns rows'
+// already-published Weight/Error (report.go's weightRow, already per
+// point - publishWeightRatingUnits has already converted every
+// rating-family row to per rating point by the time main.go calls
+// this, right after it) into the SimulationCraft-familiar convention:
+// per point of stat, normalized so the single highest-weighted
+// PER-POINT stat reads 1.00, not this engine's own reference stat
+// (RangedAttackPower/SpellPower, whatever the spec).
+//
+// Returns a NEW []weightRow (this package's immutability rule), same
+// order as the input (weightOrder's own order - this JSON's row order
+// is unchanged by this lane; a table sorted by ScaleFactor, with haste
+// excluded from the table entirely, is the SITE's own presentation
+// choice - see web/src/lib/bis/panel-view.ts), and the stat id
+// ScaleFactor was normalized against ("" when no row qualifies - see
+// below).
+//
+// isHasteStat rows (melee_haste/spell_haste) are excluded from the
+// SEARCH for that anchor stat - vanilla haste is a flat 1%-per-point
+// stat with no rating conversion in this ruleset, not comparable
+// point-for-point against a primary/rating stat, so letting a haste
+// row's own (often much larger) Weight become the anchor would
+// silently misrepresent every OTHER row's scale factor. A haste row
+// still receives its own ScaleFactor/ScaleError on the same divisor as
+// every other row (hasteScaleFactorFromRows, below, reads it back out
+// for bandReport.HasteScaleFactor) - it is simply never eligible to
+// SET that divisor.
+//
+// The anchor is the significant row (Insignificant == false) with the
+// largest positive Weight; a band with no such row (every row
+// insignificant, or weightsReason forced every row insignificant -
+// weightRow's own Insignificant doc) returns every row's ScaleFactor/
+// ScaleError as 0 rather than divide by zero or invent an anchor from
+// noise - DPSPerPoint alone still publishes on every row regardless,
+// since it needs no anchor (see weightRow.DPSPerPoint's own doc).
+func normalizeScaleFactors(rows []weightRow, referenceDPSPerPoint *float64) ([]weightRow, string) {
+	anchor := ""
+	anchorWeight := 0.0
+	for _, row := range rows {
+		if row.Insignificant || isHasteStat(row.Stat) {
+			continue
+		}
+		if row.Weight > anchorWeight {
+			anchorWeight = row.Weight
+			anchor = row.Stat
+		}
+	}
+
+	out := make([]weightRow, len(rows))
+	for i, row := range rows {
+		if referenceDPSPerPoint != nil {
+			row.DPSPerPoint = row.Weight * (*referenceDPSPerPoint)
+		}
+		if anchor != "" {
+			row.ScaleFactor = row.Weight / anchorWeight
+			row.ScaleError = row.Error / anchorWeight
+		}
+		out[i] = row
+	}
+	return out, anchor
+}
+
+// hasteScaleFactorFromRows is bandReport.HasteScaleFactor's own
+// builder (owner correction, 2026-09-30, after player review: "haste
+// is not a table row... add haste_scale_factor at band level... so the
+// site can print the caption without recomputing"): the first
+// isHasteStat row's own ScaleFactor, already computed by
+// normalizeScaleFactors above on the exact same divisor (anchor) every
+// per-point row's own ScaleFactor uses - reading it back out here
+// rather than recomputing it a second way keeps the two numbers
+// (this one, and a haste row's own published weights[i].scale_factor)
+// identical by construction, never merely close.
+//
+// nil when anchor is "" (normalizeScaleFactors found no per-point stat
+// to divide by - every haste row's own ScaleFactor is 0 in that case,
+// which would read as a false "haste is worth nothing" rather than
+// "unknown") or when this spec carries no haste weight_stat at all (a
+// caster spec has none - data/curated/specs.json's own weight_stats
+// lists never mix melee_haste/spell_haste into the same spec).
+func hasteScaleFactorFromRows(rows []weightRow, anchor string) *float64 {
+	if anchor == "" {
+		return nil
+	}
+	for _, row := range rows {
+		if isHasteStat(row.Stat) {
+			v := row.ScaleFactor
+			return &v
+		}
+	}
+	return nil
+}

@@ -94,11 +94,12 @@ export function loadBisFile(spec: string, build: string): BisFile | null {
  *
  *  Also defaults each slot's `alternatives` (`sim/cmd/leveling-bis/report.go`'s own
  *  `slotRow.Alternatives`) to `[]`, each slot's `dps_delta` to `null`, each band's
- *  `reference_dps_per_point` to `null`, each band's `weights_reason` to `null`, and each
- *  band's `set_dps_partial` to `false` -- all new, optional fields a file published before
+ *  `reference_dps_per_point` to `null`, each band's `weights_reason` to `null`, each band's
+ *  `set_dps_partial` to `false`, each band's `scale_reference_stat` to `null`, and each
+ *  band's `haste_scale_factor` to `null` -- all new, optional fields a file published before
  *  the lane that added them landed carries none of, and a Go nil slice/omitted float/
  *  omitted string/omitted bool likewise reach here as `undefined` rather than
- *  `[]`/`null`/`null`/`false`. */
+ *  `[]`/`null`/`null`/`false`/`null`/`null`. */
 export function normaliseBisFile(file: BisFile): BisFile {
   return {
     ...file,
@@ -109,6 +110,8 @@ export function normaliseBisFile(file: BisFile): BisFile {
       reference_dps_per_point: band.reference_dps_per_point ?? null,
       weights_reason: band.weights_reason ?? null,
       set_dps_partial: band.set_dps_partial ?? false,
+      scale_reference_stat: band.scale_reference_stat ?? null,
+      haste_scale_factor: band.haste_scale_factor ?? null,
       slots: band.slots.map((slot) => ({
         ...slot,
         alternatives: slot.alternatives ?? [],

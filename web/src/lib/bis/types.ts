@@ -31,6 +31,21 @@ export interface BisStatWeight {
    *  number this surface wasn't asked to explain). Equal to `weight` for a non-rating-
    *  family stat. */
   weight_per_percent?: number;
+  /** `weight` (already per point) divided by this band's `scale_reference_stat`'s own
+   *  `weight` -- the SimulationCraft-familiar convention this lane's brief asks for
+   *  (`sim/cmd/leveling-bis/report.go`'s own `normalizeScaleFactors`): the single
+   *  highest-weighted PER-POINT stat reads exactly `1`, every other stat a fraction of it.
+   *  Absent on a file published before this lane -- `panel-view.ts`'s `scaleRowsFor`
+   *  computes it client-side from `weight`/`error`/the band's own `reference_dps_per_point`
+   *  when missing, so the rail never breaks on an older file. */
+  scale_factor?: number;
+  /** Absolute DPS per point of `stat`: `weight * reference_dps_per_point`. Independent of
+   *  `scale_factor` -- needs no anchor, only this row's own `weight` and the band's own
+   *  `reference_dps_per_point`. */
+  dps_per_point?: number;
+  /** `error`, divided by the same divisor `scale_factor` uses -- so a reader comparing two
+   *  rows' "±" compares the same normalized units the rows' own `scale_factor` is in. */
+  scale_error?: number;
 }
 
 /**
@@ -191,6 +206,21 @@ export interface BisBand {
    *  `weights_reason`'s own default: a file published before this field existed carries no
    *  `set_dps_partial` key at all. */
   set_dps_partial?: boolean;
+  /** The `weights` id every row's `scale_factor` was normalized against (the single
+   *  highest-weighted PER-POINT stat -- never a haste stat, see `BisStatWeight.scale_factor`'s
+   *  own doc) -- `sim/cmd/leveling-bis/report.go`'s own `normalizeScaleFactors`. `""`/absent
+   *  when no row qualified (every row insignificant, or `weights_reason` is set); optional
+   *  and defaults to `null` (`normaliseBisFile`, `load.ts`) the same way `weights_reason`
+   *  does, for a file published before this lane. */
+  scale_reference_stat?: string | null;
+  /** A haste weight_stat's (`melee_haste`/`spell_haste`) own `scale_factor`, republished
+   *  here at band level (owner correction, 2026-09-30, after player review: haste is not a
+   *  per-point stat and the rail shows it as a one-line caption, never a table row) so the
+   *  page never has to find and re-read the haste entry out of `weights` itself. `null`
+   *  when this spec carries no haste weight_stat, or when `scale_reference_stat` itself is
+   *  empty (no per-point anchor this band's own sweep trusted). Optional and defaults to
+   *  `null` (`normaliseBisFile`, `load.ts`), same pattern as `weights_reason`. */
+  haste_scale_factor?: number | null;
 }
 
 export interface BisFile {

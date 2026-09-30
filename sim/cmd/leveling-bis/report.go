@@ -1002,6 +1002,25 @@ type bandReport struct {
 	// from ordinary sweep noise. Empty on every ordinary band (the
 	// overwhelming majority).
 	WeightsReason string `json:"weights_reason,omitempty"`
+	// ScaleReferenceStat is normalizeScaleFactors' own return
+	// (weights.go): the weight_stats id whose own Weight every row's
+	// ScaleFactor in Weights is divided by (the SimulationCraft-
+	// familiar "top stat = 1.00" convention this lane's brief asks
+	// for) - "" when no row qualified (see normalizeScaleFactors' own
+	// doc for exactly when that is). Never a haste stat
+	// (isHasteStat) - see that function's own doc for why.
+	ScaleReferenceStat string `json:"scale_reference_stat,omitempty"`
+	// HasteScaleFactor is hasteScaleFactorFromRows' own return
+	// (weights.go) - owner correction, 2026-09-30, after player review:
+	// haste is not a per-point stat (isHasteStat) and this lane's
+	// weight rail no longer shows it as a table row at all, only as a
+	// one-line caption ("Haste: 1.58 per 1%..."), so the site needs
+	// this one number without having to find and re-read the haste
+	// entry out of Weights itself. nil when this spec carries no haste
+	// weight_stat, or when ScaleReferenceStat is "" (no per-point
+	// anchor this band's own sweep trusted - see that field's own
+	// doc).
+	HasteScaleFactor *float64 `json:"haste_scale_factor,omitempty"`
 }
 
 // scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value
@@ -1065,6 +1084,60 @@ type weightRow struct {
 	// rating-family row. Equal to Weight for every non-rating-family
 	// stat (RatingFactor unset).
 	WeightPerPercent float64 `json:"weight_per_percent"`
+	// ScaleFactor, DPSPerPoint and ScaleError are this lane's brief
+	// (bis-weights-simc, owner: "we need to make the stat weights
+	// align with simcraft stat weights output - that's what people
+	// are familiar with"): normalizeScaleFactors (weights.go) fills
+	// these on every row, alongside the existing Weight/Error/
+	// WeightPerPercent fields above, which stay published unchanged.
+	//
+	// ScaleFactor is Weight (already per-point: per rating point for
+	// a rating-family row, per 1% for a haste row, per plain point for
+	// everything else) divided by this band's ScaleReferenceStat's own
+	// Weight - the convention SimulationCraft's own scale-factor table
+	// uses: the single highest-weighted PER-POINT stat prints as
+	// exactly 1.00, every other stat as a fraction of it. A haste row
+	// (isHasteStat) is never the anchor (vanilla haste is a flat
+	// 1%-per-point stat, not comparable point-for-point against a
+	// primary/rating stat - owner correction, 2026-09-30) but still
+	// publishes its own ScaleFactor on the same divisor, so a reader
+	// can see "haste is worth about 1.6x what top-stat is worth per
+	// point" even though haste itself never sets that scale. The site's
+	// own weight rail (web/src/lib/bis/panel-view.ts) does not render a
+	// haste row in its table at all (second owner correction, same
+	// date, after player review) - it reads this same number back out
+	// of bandReport.HasteScaleFactor instead, for a one-line caption.
+	ScaleFactor float64 `json:"scale_factor"`
+	// DPSPerPoint is absolute DPS per point of Stat: Weight (per-point,
+	// same units as ScaleFactor's own numerator) times this band's own
+	// ReferenceDPSPerPoint (bandReport's own field - the measured DPS
+	// for one point of the OLD, engine reference stat). Independent of
+	// ScaleFactor/ScaleReferenceStat - it needs no anchor, only the raw
+	// per-point weight and the band's own DPS-per-reference-point
+	// measurement - so it still publishes even on a band with no
+	// significant per-point stat to normalize against (ScaleFactor
+	// would be 0 there; DPSPerPoint is not).
+	DPSPerPoint float64 `json:"dps_per_point"`
+	// ScaleError is Error on the same ScaleReferenceStat divisor as
+	// ScaleFactor, so a reader comparing two rows' "±" is comparing the
+	// same normalized units the rows' own ScaleFactor values are in,
+	// not raw sim-unit error against a normalized value.
+	ScaleError float64 `json:"scale_error"`
+}
+
+// isHasteStat is normalizeScaleFactors' own carve-out (owner
+// correction, 2026-09-30): this command's two haste ids (data.go's
+// convertRatingStats never touches either - haste has no
+// gametables/combatratings.txt rating column in this ruleset, see
+// ratingStatColumns's own doc) are always published per 1% of haste,
+// never per rating point like crit/hit, so a haste row's own Weight is
+// not directly comparable point-for-point against a primary stat's
+// Weight - including it in the search for ScaleReferenceStat would let
+// a haste row become the top-stat anchor and silently misrepresent
+// every OTHER row's own scale factor (exactly what the mock's first,
+// wrong draft did).
+func isHasteStat(stat string) bool {
+	return stat == "melee_haste" || stat == "spell_haste"
 }
 
 // significanceErrorFraction and isWeightSignificant now live in

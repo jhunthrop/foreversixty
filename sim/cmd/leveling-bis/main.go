@@ -641,6 +641,20 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// once per band+faction, rather than inside buildReport
 			// itself - see that function's own doc for why.
 			report.Weights = publishWeightRatingUnits(report.Weights, ratingFactorsForBuild)
+			// This lane's brief (bis-weights-simc): republish the same
+			// rows again, this time in the SimulationCraft/Pawn-
+			// familiar scale-factor convention (per point, normalized
+			// to the top PER-POINT stat = 1.00) - see
+			// normalizeScaleFactors' own doc (weights.go) for why this
+			// runs after, not instead of, publishWeightRatingUnits
+			// above (it needs the already-converted per-rating-point
+			// Weight, not the raw per-percent one).
+			report.Weights, report.ScaleReferenceStat = normalizeScaleFactors(report.Weights, report.ReferenceDPSPerPoint)
+			// Owner correction, 2026-09-30, after player review: haste
+			// is not a table row on the site's own weight rail any
+			// more, only a one-line caption built from this one number
+			// - see bandReport.HasteScaleFactor's own doc.
+			report.HasteScaleFactor = hasteScaleFactorFromRows(report.Weights, report.ScaleReferenceStat)
 			reports = append(reports, report)
 			previous[f.name] = picks
 

@@ -150,22 +150,11 @@ export const bisCopy = {
    *  every time would be noise, not information. */
   alternativeMetaLabel: (itemLevel: number, requiredLevel: number, band: number): string =>
     requiredLevel > band ? `ilvl ${itemLevel} · needs ${requiredLevel}` : `ilvl ${itemLevel}`,
-  weightsReferenceDpsLine: (label: string, dpsPerPoint: number): string =>
-    `1 ${label} = ${dpsPerPoint.toFixed(2)} DPS`,
-  weightsRowDpsLine: (label: string, weight: number, refAbbrev: string, dpsPerPoint: number): string =>
-    `${label} ${weight.toFixed(2)} ${refAbbrev} · ${dpsPerPoint.toFixed(2)} DPS per point`,
   /** A rating-family row's native `title` hover (spec addendum 2, §C(2)): the client's own
    *  rating-per-percent conversion, so "Crit rating" doesn't leave a player guessing what
    *  "rating" means -- `14 Crit rating = 1% Crit`. */
   weightsRatingFactorLine: (label: string, ratingFactor: number): string =>
     `${ratingFactor} ${label} rating = 1% ${label}`,
-  weightsNoEffect: 'No effect',
-  /** The reference stat's own row in the weight rail's plain value column -- never a
-   *  tautological "1 Attack power = 1.00 Attack power" or a bare "1.00" (the rail's own
-   *  first line, `weightsReferenceDpsLine`, already states the real "1 <reference> = <n>
-   *  DPS" conversion; this row exists only to anchor the bar chart, and reads as what it
-   *  is). */
-  weightsReferenceRowValue: 'Reference',
   /** The whole weight rail's line when the band carries `weights_reason` (spec addendum
    *  §A): a band whose reference measurement was not positive beyond its own error never
    *  gets a bar list at all (`panel-view.ts`'s `bandInfosFor` picks this over both of the
@@ -175,6 +164,36 @@ export const bisCopy = {
    *  line only when a person writes one, never a fabricated one in the meantime. */
   weightsUnmeasuredLine:
     "Weights couldn't be measured for this gear set. The picks below are still real sim results.",
+  /** The scale rail's own first line (this lane's brief, bis-weights-simc, owner: "we need
+   *  to make the stat weights align with simcraft stat weights output"): `topLabel` is
+   *  `scale_reference_stat`'s own display label -- the single highest-weighted PER-POINT
+   *  stat every other row's `scale_factor` is normalized against (never a haste stat). */
+  weightsScaleNote: (topLabel: string): string =>
+    `Per point of stat, normalized to ${topLabel} = 1.00, with DPS per point and the sim error.`,
+  /** Haste's own one-line caption (owner correction, 2026-09-30, after player review: haste
+   *  is not a per-point stat and never appears as a table row) -- `scaleFactor` is the same
+   *  number `band.haste_scale_factor` (or its client-side fallback) publishes; `noItemAtBand`
+   *  is true when the haste row measured `insignificant` (this band's own gear carries
+   *  nothing that grants it, so the sweep could not measure it against real items). */
+  weightsHasteCaption: (scaleFactor: number, noItemAtBand: boolean): string =>
+    `Haste: ${scaleFactor.toFixed(2)} per 1%${
+      noItemAtBand ? ', not in the table because no item at this band has it' : ', per 1%'
+    }`,
+  /** A per-point row's own `scale_factor`/`dps_per_point`/`scale_error` the sweep's own 25%-
+   *  of-value error bar could not clear (`weight.insignificant`) -- greyed on the page
+   *  (`weight-bar-row-faint`), but the row itself is never dropped (tenet 4). */
+  weightsNotSignificant: 'Not significant',
+  /** The crit/hit rating-per-percent conversion, stated once as a standing caption rather
+   *  than only in each row's own hover (`weightsRatingFactorLine`) -- this ruleset's own
+   *  `gametables/combatratings.txt` conversion is fixed at level 60 regardless of the band a
+   *  page is showing (`sim/cmd/leveling-bis/data.go`'s own `loadRatingFactors` doc), so one
+   *  note for the whole rail, not per band. */
+  weightsRatingConversionNote: 'At level 60, 1% crit = 14 rating and 1% hit = 10 rating.',
+  /** The addon cross-sell under the rail (owner correction, 2026-09-30: "no Pawn anywhere...
+   *  under the rail, replace the string box with one secondary button"). The addon feature
+   *  itself is a separate lane; `weightsAddonButton`'s own link is `/addon` until it lands. */
+  weightsAddonBlurb: 'The Forever Sixty addon rates every item in your bags and tooltips with these weights.',
+  weightsAddonButton: 'Use these weights in the addon',
   /** The empty off-hand row when the main hand is a two-hander -- never
    *  `noKnownSourceForSlot`, which would read as a data gap rather than the game rule it
    *  actually is (wow-player fix 4). */

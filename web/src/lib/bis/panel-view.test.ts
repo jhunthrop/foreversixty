@@ -68,7 +68,6 @@ function depsWith(overrides: Partial<PanelViewDeps> = {}): PanelViewDeps {
     itemDetails: new Map<number, ItemDetail>(),
     loot: EMPTY_LOOT,
     tooltipFor: () => undefined,
-    referenceStat: 'ranged_attack_power',
     spec: 'hunter-marksmanship',
     ...overrides,
   };
@@ -251,51 +250,95 @@ describe('collectModelsInto', () => {
   });
 });
 
-describe('bandInfosFor: weight rail', () => {
+describe('bandInfosFor: scale rail', () => {
+  // band()'s own default weights: ranged_attack_power weight 1, agility weight 2 (the
+  // largest per-point row -> the anchor), melee_haste weight 10 insignificant -- none of
+  // them publish `scale_factor` (the fixture predates this lane), so every assertion below
+  // exercises the client-side fallback (`computeScaleFactors`'s own "no published fields"
+  // branch), the exact case this lane's brief calls out: "the rail must fall back
+  // gracefully on a JSON that lacks the new fields".
+
   it('leaves every dpsPerPoint undefined when the band carries no reference_dps_per_point (never fabricated)', () => {
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    expect(infos[0].weightBars.every((bar) => bar.dpsPerPoint === undefined)).toBe(true);
-    expect(infos[0].referenceSentenceLine.toLowerCase()).toContain('reference');
+    expect(infos[0].scaleRows.every((row) => row.dpsPerPoint === undefined)).toBe(true);
   });
 
-  it('computes a significant row’s dpsPerPoint as weight * reference_dps_per_point when present', () => {
+  it('computes a row’s dpsPerPoint as weight * reference_dps_per_point when present, regardless of significance', () => {
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: 2.5 })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    const agility = infos[0].weightBars.find((bar) => bar.row.stat === 'agility');
+    const agility = infos[0].scaleRows.find((row) => row.stat === 'agility');
     expect(agility?.dpsPerPoint).toBeCloseTo(2 * 2.5);
-    expect(infos[0].referenceSentenceLine).toBe('1 Ranged attack power = 2.50 DPS');
   });
 
-  it('never computes a dpsPerPoint for an insignificant row, which shows "No effect" instead', () => {
-    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: 2.5 })]);
-    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    const meleeHaste = infos[0].weightBars.find((bar) => bar.row.stat === 'melee_haste');
-    expect(meleeHaste?.row.significant).toBe(false);
-    expect(meleeHaste?.dpsPerPoint).toBeUndefined();
-  });
-
-  it('never computes a dpsPerPoint for the reference row itself, and never restates it as a tautological equality', () => {
-    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: 2.5 })]);
-    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    const reference = infos[0].weightBars.find((bar) => bar.row.isReference);
-    expect(reference?.dpsPerPoint).toBeUndefined();
-    // The rail's first line (referenceSentenceLine) already states "1 Ranged attack power =
-    // 2.50 DPS" -- the reference row itself must never restate that as "= 1" or "1.00"
-    // (bis-web-polish, 2026-09-30): its own value column reads the plain word instead.
-    expect(reference?.valueText).toBe('Reference');
-  });
-
-  it('gives every significant, non-reference row its weight to two decimals as valueText, and an insignificant row "No effect"', () => {
+  it('normalizes every scale factor against the band’s own top per-point stat (agility, weight 2 here), never the engine’s old reference stat', () => {
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    const agility = infos[0].weightBars.find((bar) => bar.row.stat === 'agility');
-    const meleeHaste = infos[0].weightBars.find((bar) => bar.row.stat === 'melee_haste');
-    expect(agility?.valueText).toBe(agility?.row.weight.toFixed(2));
-    expect(meleeHaste?.valueText).toBe('No effect');
+    const agility = infos[0].scaleRows.find((row) => row.stat === 'agility');
+    const rap = infos[0].scaleRows.find((row) => row.stat === 'ranged_attack_power');
+    expect(agility?.scaleFactor).toBe(1);
+    expect(rap?.scaleFactor).toBeCloseTo(0.5);
   });
 
-  it('renders no bar list and the unmeasured-weights line when the band carries weights_reason, even with a real reference_dps_per_point', () => {
+  it('sorts the table strictly descending by scaleFactor', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].scaleRows.map((row) => row.stat)).toEqual(['agility', 'ranged_attack_power']);
+  });
+
+  it('never puts a haste stat in the table (owner correction, 2026-09-30, after player review)', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].scaleRows.some((row) => row.stat === 'melee_haste')).toBe(false);
+  });
+
+  it('gives haste its own one-line caption instead, with the "not in the table" clause when the row is insignificant', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    // melee_haste weight 10 / agility's own anchor weight 2 = 5.00.
+    expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(5, true));
+    expect(infos[0].hasteCaptionLine).toContain('not in the table because no item at this band has it');
+  });
+
+  it('gives haste the plain ", per 1%" clause when its own row is significant', () => {
+    const file = fileWith([
+      band({
+        weights: [
+          { stat: 'ranged_attack_power', weight: 1, error: 0 },
+          { stat: 'agility', weight: 2, error: 0.1 },
+          { stat: 'melee_haste', weight: 3, error: 0.2 },
+        ],
+        slots: [slot()],
+        reference_dps_per_point: null,
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(1.5, false));
+    expect(infos[0].hasteCaptionLine).toBe('Haste: 1.50 per 1%, per 1%');
+  });
+
+  it('gives no haste caption when the spec carries no haste weight_stat at all', () => {
+    const file = fileWith([
+      band({
+        weights: [
+          { stat: 'spell_power', weight: 1, error: 0 },
+          { stat: 'intellect', weight: 0.5, error: 0.02 },
+        ],
+        slots: [slot()],
+        reference_dps_per_point: null,
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].hasteCaptionLine).toBeUndefined();
+  });
+
+  it('states the band’s own top stat in scaleNoteLine', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].scaleNoteLine).toBe(bisCopy.weightsScaleNote('Agility'));
+  });
+
+  it('renders an empty table and the unmeasured-weights line when the band carries weights_reason, even with a real reference_dps_per_point', () => {
     const file = fileWith([
       band({
         slots: [slot()],
@@ -304,21 +347,42 @@ describe('bandInfosFor: weight rail', () => {
       }),
     ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    expect(infos[0].weightBars).toEqual([]);
-    expect(infos[0].referenceSentenceLine).toBe(bisCopy.weightsUnmeasuredLine);
+    expect(infos[0].scaleRows).toEqual([]);
+    expect(infos[0].scaleNoteLine).toBe(bisCopy.weightsUnmeasuredLine);
+    expect(infos[0].hasteCaptionLine).toBeUndefined();
   });
 
   it('never shows the unmeasured-weights line when weights_reason is absent', () => {
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: 2.5 })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    expect(infos[0].referenceSentenceLine).not.toBe(bisCopy.weightsUnmeasuredLine);
+    expect(infos[0].scaleNoteLine).not.toBe(bisCopy.weightsUnmeasuredLine);
   });
 
-  // Spec addendum 2 (weight rail rows go per rating point): a `unit: 'rating'` row's
-  // display label gains a quiet " rating" suffix and its native `title` reads the client's
-  // own rating-per-percent conversion, while a plain, non-rating row (e.g. Agility here)
-  // keeps today's label and its own `row.sentence` as its title, unchanged.
-  it('gives a rating-family row a " rating" display label and its rating-factor title', () => {
+  it('reads the ranker’s own published scale_factor/dps_per_point/scale_error instead of recomputing them when present', () => {
+    const file = fileWith([
+      band({
+        weights: [
+          { stat: 'ranged_attack_power', weight: 1, error: 0, scale_factor: 0.5, dps_per_point: 1.25, scale_error: 0 },
+          { stat: 'agility', weight: 2, error: 0.1, scale_factor: 1, dps_per_point: 2.5, scale_error: 0.05 },
+        ],
+        slots: [slot()],
+        reference_dps_per_point: 2.5,
+        scale_reference_stat: 'agility',
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const agility = infos[0].scaleRows.find((row) => row.stat === 'agility');
+    expect(agility?.scaleFactor).toBe(1);
+    expect(agility?.dpsPerPoint).toBe(2.5);
+    expect(agility?.scaleError).toBe(0.05);
+    expect(infos[0].scaleNoteLine).toBe(bisCopy.weightsScaleNote('Agility'));
+  });
+
+  // Spec addendum 2 (weight rail rows go per rating point): a `unit: 'rating'` row's label
+  // gains a quiet " rating" suffix and its native `title` reads the client's own
+  // rating-per-percent conversion, while a plain, non-rating row (e.g. Agility here) keeps
+  // its plain label and no title override.
+  it('gives a rating-family row a " rating" label and its rating-factor title', () => {
     const file = fileWith([
       band({
         weights: [
@@ -338,12 +402,12 @@ describe('bandInfosFor: weight rail', () => {
       }),
     ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    const crit = infos[0].weightBars.find((bar) => bar.row.stat === 'crit');
-    expect(crit?.displayLabel).toBe('Crit rating');
+    const crit = infos[0].scaleRows.find((row) => row.stat === 'crit');
+    expect(crit?.label).toBe('Crit rating');
     expect(crit?.ratingFactorTitle).toBe('14 Crit rating = 1% Crit');
   });
 
-  it('leaves a non-rating row’s display label and title untouched (no suffix, no override)', () => {
+  it('leaves a non-rating row’s label and title untouched (no suffix, no override)', () => {
     const file = fileWith([
       band({
         weights: [
@@ -363,17 +427,18 @@ describe('bandInfosFor: weight rail', () => {
       }),
     ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    const agility = infos[0].weightBars.find((bar) => bar.row.stat === 'agility');
-    expect(agility?.displayLabel).toBe(agility?.row.label);
-    expect(agility?.displayLabel).not.toContain('rating');
+    const agility = infos[0].scaleRows.find((row) => row.stat === 'agility');
+    expect(agility?.label).toBe('Agility');
+    expect(agility?.label).not.toContain('rating');
     expect(agility?.ratingFactorTitle).toBeUndefined();
   });
 
-  it('marks an insignificant rating row "No effect" the same as any other insignificant row, just with the " rating" label', () => {
+  it('keeps an insignificant rating row in the table, marked significant: false, with the " rating" label', () => {
     const file = fileWith([
       band({
         weights: [
           { stat: 'ranged_attack_power', weight: 1, error: 0 },
+          { stat: 'agility', weight: 2, error: 0.1 },
           {
             stat: 'hit',
             weight: 0.06,
@@ -389,10 +454,10 @@ describe('bandInfosFor: weight rail', () => {
       }),
     ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    const hit = infos[0].weightBars.find((bar) => bar.row.stat === 'hit');
-    expect(hit?.displayLabel).toBe('Hit rating');
-    expect(hit?.valueText).toBe(bisCopy.weightsNoEffect);
-    expect(hit?.dpsPerPoint).toBeUndefined();
+    const hit = infos[0].scaleRows.find((row) => row.stat === 'hit');
+    expect(hit?.label).toBe('Hit rating');
+    expect(hit?.significant).toBe(false);
+    expect(hit?.dpsPerPoint).toBeCloseTo(0.06 * 2.5);
   });
 });
 

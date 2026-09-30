@@ -210,3 +210,199 @@ func TestTrinketGainSignificantRejectsAZeroNoiseZeroGain(t *testing.T) {
 		t.Error("trinketGainSignificant(0, 0) = true, want false")
 	}
 }
+
+// TestNormalizeScaleFactorsMatchesTheHunterMarksmanshipBand20HordeRepro
+// is this lane's brief (bis-weights-simc, owner: "we need to make the
+// stat weights align with simcraft stat weights output"), dogfooded
+// against the exact numbers data/builds/1.60.1.70009/bis/
+// hunter-marksmanship.json band 20 horde publishes under the OLD
+// convention (weight_per_percent/weight, already per point -
+// crit/hit already converted to per rating point by
+// publishWeightRatingUnits, as they would be by the time main.go
+// calls this): agility (2.1854711765790866) outweighs the engine's
+// own reference stat ranged_attack_power (1.0), so agility - not
+// ranged_attack_power - becomes ScaleReferenceStat, and every row's
+// ScaleFactor is that row's Weight/2.1854711765790866. The owner's
+// own worked example (this lane's brief) names the same rounded
+// numbers: Agility 1.00, RangedAttackPower 0.46, CritRating 0.22,
+// HitRating 0.08.
+func TestNormalizeScaleFactorsMatchesTheHunterMarksmanshipBand20HordeRepro(t *testing.T) {
+	refDPS := 0.059705486370807484
+	rows := []weightRow{
+		{Stat: "ranged_attack_power", Weight: 1, Error: 0.0011319794676315806},
+		{Stat: "agility", Weight: 2.1854711765790866, Error: 0.0449420005182475},
+		{Stat: "crit", Weight: 0.47696496204125644, Error: 0.01911906801183958, Unit: "rating", RatingFactor: 14},
+		{Stat: "hit", Weight: 0.16484224055820915, Error: 0.00650145788377175, Unit: "rating", RatingFactor: 10},
+		{Stat: "melee_haste", Weight: 3.4622848496697465, Error: 0.7954150946864297},
+	}
+
+	out, anchor := normalizeScaleFactors(rows, &refDPS)
+
+	if anchor != "agility" {
+		t.Fatalf("anchor = %q, want %q (agility's own weight 2.19 beats ranged_attack_power's 1.0)", anchor, "agility")
+	}
+
+	byStat := make(map[string]weightRow, len(out))
+	for _, row := range out {
+		byStat[row.Stat] = row
+	}
+
+	wantScale := map[string]float64{
+		"agility":             1.0,
+		"ranged_attack_power": 0.46,
+		"crit":                0.22,
+		"hit":                 0.08,
+	}
+	for stat, want := range wantScale {
+		got := byStat[stat].ScaleFactor
+		if diff := got - want; diff < -0.005 || diff > 0.005 {
+			t.Errorf("%s ScaleFactor = %.4f, want ~%.2f (owner's own worked example)", stat, got, want)
+		}
+	}
+
+	// Haste is excluded from the anchor SEARCH (isHasteStat) but still
+	// publishes a ScaleFactor on the same divisor - the owner's own
+	// worked example: "haste is first at 1.58" (the caption the site
+	// builds from bandReport.HasteScaleFactor, not a table row - see
+	// that field's own doc).
+	if got, want := byStat["melee_haste"].ScaleFactor, 1.58; got < want-0.01 || got > want+0.01 {
+		t.Errorf("melee_haste ScaleFactor = %.4f, want ~%.2f", got, want)
+	}
+
+	// Row order is unchanged from the input (weightOrder's own order) -
+	// owner correction, 2026-09-30: "keep haste in weights as today".
+	// Sorting the per-point stats for display is the SITE's own concern
+	// (web/src/lib/bis/panel-view.ts), not this JSON's.
+	wantOrder := []string{"ranged_attack_power", "agility", "crit", "hit", "melee_haste"}
+	for i, stat := range wantOrder {
+		if out[i].Stat != stat {
+			t.Errorf("out[%d].Stat = %q, want %q (row order must match the input, unchanged)", i, out[i].Stat, stat)
+		}
+	}
+
+	// DPSPerPoint = Weight * referenceDPSPerPoint, independent of the
+	// anchor - the absolute DPS a point of this stat is worth.
+	if got, want := byStat["agility"].DPSPerPoint, 2.1854711765790866*refDPS; got != want {
+		t.Errorf("agility DPSPerPoint = %v, want %v", got, want)
+	}
+
+	// hasteScaleFactorFromRows reads the SAME number back out for
+	// bandReport.HasteScaleFactor (owner correction, 2026-09-30, after
+	// player review) - identical by construction, never merely close.
+	haste := hasteScaleFactorFromRows(out, anchor)
+	if haste == nil {
+		t.Fatal("hasteScaleFactorFromRows(...) = nil, want a value (this band has a haste weight_stat and a trustworthy anchor)")
+	}
+	if *haste != byStat["melee_haste"].ScaleFactor {
+		t.Errorf("hasteScaleFactorFromRows(...) = %v, want %v (melee_haste's own published ScaleFactor)", *haste, byStat["melee_haste"].ScaleFactor)
+	}
+}
+
+// TestNormalizeScaleFactorsNeverLetsHasteBecomeTheAnchor is the
+// owner's own correction (2026-09-30) in isolation: a band where
+// haste's own raw weight dwarfs every per-point stat's must still
+// normalize against the largest PER-POINT stat, not haste, because
+// vanilla haste has no rating conversion in this ruleset and is not
+// comparable point-for-point against a primary/rating stat (see
+// isHasteStat's own doc).
+func TestNormalizeScaleFactorsNeverLetsHasteBecomeTheAnchor(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "spell_power", Weight: 1, Error: 0.01},
+		{Stat: "intellect", Weight: 0.5, Error: 0.02},
+		{Stat: "spell_haste", Weight: 50, Error: 1},
+	}
+
+	out, anchor := normalizeScaleFactors(rows, nil)
+
+	if anchor != "spell_power" {
+		t.Fatalf("anchor = %q, want %q (the largest PER-POINT stat, never a haste row)", anchor, "spell_power")
+	}
+	byStat := make(map[string]weightRow, len(out))
+	for _, row := range out {
+		byStat[row.Stat] = row
+	}
+	if got, want := byStat["spell_power"].ScaleFactor, 1.0; got != want {
+		t.Errorf("spell_power ScaleFactor = %v, want %v", got, want)
+	}
+	if got, want := byStat["spell_haste"].ScaleFactor, 50.0; got != want {
+		t.Errorf("spell_haste ScaleFactor = %v, want %v (still published on the same divisor, just never eligible to SET it)", got, want)
+	}
+	// Row order is unchanged from the input - see the band-20 repro
+	// test's own doc for why sorting is the site's concern, not this
+	// function's.
+	if out[0].Stat != "spell_power" || out[2].Stat != "spell_haste" {
+		t.Errorf("row order changed from the input: got %q, %q, %q", out[0].Stat, out[1].Stat, out[2].Stat)
+	}
+}
+
+// TestHasteScaleFactorFromRowsIsNilWithNoTrustworthyAnchor is
+// hasteScaleFactorFromRows' own doc: publishing 0 for
+// bandReport.HasteScaleFactor when this band's sweep found no
+// trustworthy per-point anchor would read as a false "haste is worth
+// nothing" rather than "unknown" - nil (omitted from the JSON) is the
+// honest value.
+func TestHasteScaleFactorFromRowsIsNilWithNoTrustworthyAnchor(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "ranged_attack_power", Weight: 1, Insignificant: true},
+		{Stat: "melee_haste", Weight: 5, Insignificant: true},
+	}
+	if got := hasteScaleFactorFromRows(rows, ""); got != nil {
+		t.Errorf("hasteScaleFactorFromRows(rows, \"\") = %v, want nil", *got)
+	}
+}
+
+// TestHasteScaleFactorFromRowsIsNilWithNoHasteStat covers a caster
+// spec whose weight_stats carries spell_haste but this particular
+// rows slice (a hand-built test case, standing in for a melee spec
+// with no haste weight_stat at all) has neither haste id.
+func TestHasteScaleFactorFromRowsIsNilWithNoHasteStat(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "spell_power", Weight: 1, ScaleFactor: 1},
+		{Stat: "intellect", Weight: 0.5, ScaleFactor: 0.5},
+	}
+	if got := hasteScaleFactorFromRows(rows, "spell_power"); got != nil {
+		t.Errorf("hasteScaleFactorFromRows(rows, \"spell_power\") = %v, want nil (no haste stat in rows)", *got)
+	}
+}
+
+// TestNormalizeScaleFactorsWithNoSignificantStatPublishesZeroScale is
+// the graceful-degradation case (weightRow's own ScaleFactor doc):
+// every row is insignificant (or the only non-haste row is), so there
+// is no trustworthy anchor - every row's ScaleFactor/ScaleError must
+// publish 0 rather than divide by zero or invent an anchor from
+// noise, and normalizeScaleFactors must report "" as the anchor stat.
+func TestNormalizeScaleFactorsWithNoSignificantStatPublishesZeroScale(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "spell_power", Weight: 1, Error: 0.9, Insignificant: true},
+		{Stat: "intellect", Weight: -0.2, Error: 0.5, Insignificant: true},
+	}
+
+	out, anchor := normalizeScaleFactors(rows, nil)
+
+	if anchor != "" {
+		t.Errorf("anchor = %q, want %q (no significant, non-haste row to normalize against)", anchor, "")
+	}
+	for _, row := range out {
+		if row.ScaleFactor != 0 {
+			t.Errorf("%s ScaleFactor = %v, want 0", row.Stat, row.ScaleFactor)
+		}
+		if row.ScaleError != 0 {
+			t.Errorf("%s ScaleError = %v, want 0", row.Stat, row.ScaleError)
+		}
+	}
+}
+
+// TestIsHasteStat pins the exact two ids normalizeScaleFactors carves
+// out of the anchor search - see that function's own doc.
+func TestIsHasteStat(t *testing.T) {
+	for _, stat := range []string{"melee_haste", "spell_haste"} {
+		if !isHasteStat(stat) {
+			t.Errorf("isHasteStat(%q) = false, want true", stat)
+		}
+	}
+	for _, stat := range []string{"agility", "crit", "hit", "spell_power"} {
+		if isHasteStat(stat) {
+			t.Errorf("isHasteStat(%q) = true, want false", stat)
+		}
+	}
+}

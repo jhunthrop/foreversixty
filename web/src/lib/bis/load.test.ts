@@ -237,6 +237,54 @@ describe('normaliseBisFile', () => {
     expect(normalised.bands[0].set_dps_partial).toBe(true);
   });
 
+  it('defaults a missing scale_reference_stat to null (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [baseBand],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].scale_reference_stat).toBeNull();
+  });
+
+  it('keeps a real scale_reference_stat unchanged', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, scale_reference_stat: 'agility' }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].scale_reference_stat).toBe('agility');
+  });
+
+  it('defaults a missing haste_scale_factor to null (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [baseBand],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].haste_scale_factor).toBeNull();
+  });
+
+  it('keeps a real haste_scale_factor unchanged', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, haste_scale_factor: 1.58 }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].haste_scale_factor).toBe(1.58);
+  });
+
   const slotWithoutAlternatives: BisSlot = {
     slot: 'head',
     item_id: 1,
