@@ -120,9 +120,16 @@ particular Forever facts, so regenerating `data/builds/` cannot turn it red on i
 CI's verify job — run it before a deploy.
 
 `npm run build` (and CI's deploy job, which adds `CF_PAGES=1`) uses real data: `FOREVER_DATA` is unset
-there, and `real` is the default. CI's verify job runs `npm run build` for the real build and then
-`npm run test:e2e`, whose `webServer` rebuilds `dist/` on the fixture; `npm run lhci` audits that
-fixture build, which is the build the Lighthouse budgets below were measured against.
+there, and `real` is the default. CI's `build` job (`.github/workflows/web.yml`) runs `npm run build`
+for the real build first -- the only place a pull request exercises its `postbuild` checks before
+`deploy`'s own real build repeats them on `main` -- then builds again with `FOREVER_DATA=fixture` and
+uploads that `dist/` as an artifact. The `e2e` and `lhci` jobs both download it instead of rebuilding:
+`e2e` sets `E2E_SKIP_BUILD` so `playwright.config.ts`'s `webServer` runs `npm run preview` alone, and
+`lhci`'s `staticDistDir` mode never rebuilds at all. That fixture build is the one the Lighthouse
+budgets below were measured against. `e2e` shards the suite four ways (`--shard=N/4`, matrix job);
+`lhci` audits 7 of the 16 URLs on every push/PR -- one per distinct `assertMatrix` rule, see
+`lighthouserc.push.cjs`'s comment -- and the full 16-URL list runs nightly instead (`lhci-nightly`,
+schedule trigger), same budgets, same `numberOfRuns`.
 
 ## The planner island
 
