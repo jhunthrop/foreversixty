@@ -200,8 +200,8 @@ def _faction_from_required_races(races: int) -> Literal["alliance", "horde", "bo
 
 
 ClassicDbSourceKind = Literal[
-    "creature_drop", "object_drop", "vendor", "quest_reward", "skinning", "pickpocketing", "fishing",
-    "world_drop",
+    "creature_drop", "object_drop", "vendor", "quest_reward", "skinning", "pickpocketing",
+    "fishing", "world_drop",
 ]  # fmt: skip
 
 
