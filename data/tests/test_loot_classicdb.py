@@ -26,6 +26,7 @@ from pipeline.loot import types_from_committed_loot
 from pipeline.loot.classicdb import (
     _CREATURE_KINDS,
     _item_instance_zone_consensus,
+    classic_db_npc_names,
     classicdb_additions,
     fork_instance_npc_zones,
     instance_zone_by_map,
@@ -188,6 +189,13 @@ def _creature(npc_id, name, map_id, chance):
     )
 
 
+def _object(object_id, name, map_id, chance=None, is_reward_chest=True):
+    return ClassicDbSourceRecord(
+        kind="object_drop", object_id=object_id, name=name, map_id=map_id, chance=chance,
+        is_reward_chest=is_reward_chest,
+    )  # fmt: skip
+
+
 def test_item_instance_zone_consensus_resolves_an_unmapped_npc_from_its_siblings():
     """Firelord's own shape for Fiery Core (17010): its own record states
     no map, but the item's other four creature records all resolve to
@@ -220,6 +228,33 @@ def test_item_instance_zone_consensus_is_none_without_a_single_agreeing_zone():
 def test_item_instance_zone_consensus_falls_back_to_fork_instance_npcs_too():
     records = [_creature(11668, "Firelord", None, 1.0), _creature(1853, "Gandling", None, 1.0)]
     assert _item_instance_zone_consensus(records, {}, {1853: 2717}) == 2717
+
+
+def test_item_instance_zone_consensus_counts_a_resolvable_object_drop_sibling():
+    """day3 data-followups-6 lane, 2026-09-30, this lane's brief item (c):
+    Cache of the Firelord's own shape -- two Flamewaker creature records
+    with no static spawn map at all, and no OTHER creature-kind sibling
+    to agree with -- but the item's own chest `object_drop` record DOES
+    resolve to Molten Core once `map_id` is correct (this lane's brief
+    item a), and that alone must be enough for the two creature rows to
+    reach consensus."""
+    records = [
+        _creature(11663, "Flamewaker Healer", None, 0.44),
+        _creature(11664, "Flamewaker Elite", None, 0.64),
+        _object(179703, "Cache of the Firelord", 409, 50.0),
+    ]
+    assert _item_instance_zone_consensus(records, _MC_ZONE_BY_MAP, {}) == 2717
+
+
+def test_item_instance_zone_consensus_ignores_an_object_drop_with_no_map():
+    """An object_drop record contributes nothing to consensus when ITS
+    OWN map is unresolved either -- the fallback only ever reaches a real
+    fact, never invents one from an equally-unmapped sibling."""
+    records = [
+        _creature(11663, "Flamewaker Healer", None, 0.44),
+        _object(179703, "Cache of the Firelord", None, 50.0),
+    ]
+    assert _item_instance_zone_consensus(records, _MC_ZONE_BY_MAP, {}) is None
 
 
 _MC_TYPES = {2717: 2}  # raid
@@ -312,3 +347,87 @@ def test_an_unmapped_npc_with_no_resolving_sibling_still_reads_as_open_world():
     sources, _, _ = _classicdb_additions(classic_sources)
     assert unrelated_item in _world_items(sources)
     assert unrelated_item not in _raid_boss_items(sources, 11668)
+
+
+def _boss(sources, npc_or_object_id):
+    for source in sources:
+        for boss in source.bosses or []:
+            if boss.npc_id == npc_or_object_id:
+                return source, boss
+    return None, None
+
+
+def _trash_items(sources, zone_id):
+    for source in sources:
+        if source.zone_id == zone_id:
+            return set(source.trash or [])
+    return set()
+
+
+def test_a_named_reward_chest_in_an_instance_becomes_a_boss_not_anonymous_trash():
+    """day3 data-followups-6 lane, 2026-09-30, this lane's brief item (b):
+    Cache of the Firelord's own shape once `pipeline.classic_sources.
+    _parse_object_drops` resolves `data1` to the owning gameobject
+    (this lane's brief item a) -- a named, `is_reward_chest` object_drop
+    record in Molten Core becomes a boss entry keyed by the object's own
+    entry, carrying the chest's real name, not `trash[zone_id]`."""
+    cache_item = 18803
+    classic_sources = {
+        cache_item: [
+            _creature(11663, "Flamewaker Healer", None, 0.14),
+            _creature(11664, "Flamewaker Elite", None, 0.54),
+            _object(179703, "Cache of the Firelord", 409, 0.0),
+        ]
+    }
+    sources, _, _ = _classicdb_additions(classic_sources)
+    source, boss = _boss(sources, 179703)
+    assert source is not None and source.kind == "raid"
+    assert boss.name == "Cache of the Firelord"
+    assert cache_item in boss.items
+    assert cache_item not in _trash_items(sources, 2717)
+    assert cache_item not in _world_drop_items(sources)
+    assert cache_item not in _world_items(sources)
+
+
+def test_an_ordinary_instance_object_with_no_data1_redirect_stays_trash():
+    """The negative case `is_reward_chest`'s own doc names: an ore vein or
+    a generic chest whose own entry IS its own loot key (`data1` unset)
+    stays anonymous trash even though it is named -- `record.name`'s own
+    truthiness is never the signal, `is_reward_chest` is."""
+    ore = 90013
+    classic_sources = {
+        ore: [_object(50001, "Rich Thorium Vein", 409, 100.0, is_reward_chest=False)]
+    }
+    sources, _, _ = _classicdb_additions(classic_sources)
+    assert ore in _trash_items(sources, 2717)
+    source, boss = _boss(sources, 50001)
+    assert boss is None
+
+
+def test_classic_db_npc_names_resolves_a_gameobject_id_in_the_npc_slot_too():
+    """day3 data-followups-6 lane, 2026-09-30, this lane's brief item (b):
+    the fork puts a reward chest's own GAMEOBJECT entry in `drop.npcId`
+    (Cache of the Firelord, Four Horsemen Chest, Father Flame) --
+    `_resolve_or_drop_unnamed_bosses` looks that same numeric id up in
+    this dict, so an `object_drop` record's own `object_id`/`name` must
+    resolve it too, not just a real `npc_id`."""
+    classic_sources = {
+        18803: [
+            _creature(11663, "Flamewaker Healer", None, 0.14),
+            _object(179703, "Cache of the Firelord", 409, 0.0),
+        ]
+    }
+    names = classic_db_npc_names(classic_sources)
+    assert names[11663] == "Flamewaker Healer"
+    assert names[179703] == "Cache of the Firelord"
+
+
+def test_classic_db_npc_names_prefers_a_real_npc_name_over_an_object_one():
+    """`setdefault`, npc pass first: an id that happens to be both a real
+    creature_template entry AND an unrelated gameobject entry keeps the
+    npc's own name -- the more direct fact of the two."""
+    classic_sources = {
+        1: [_creature(500, "Real Creature", None, 1.0)],
+        2: [_object(500, "Unrelated Object", None, 1.0)],
+    }
+    assert classic_db_npc_names(classic_sources)[500] == "Real Creature"

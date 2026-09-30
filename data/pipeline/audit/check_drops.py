@@ -26,12 +26,21 @@ gameobject_chest_loot`/`object_spawn_map`), which also needs
 
 from __future__ import annotations
 
-from collections import Counter
+from collections import Counter, defaultdict
 
 from pipeline.audit.context import AuditContext
 from pipeline.audit.dumpdb import ClassicDbDump
 from pipeline.audit.findings import CategoryResult
+from pipeline.classic_sources import CREATURE_DROP_KINDS
+from pipeline.loot.constants import is_confirmed_boss_drop
 from pipeline.loot.wowhead import FOREVER_NEW_ID_THRESHOLD
+
+#: Every `ClassicDbSourceRecord.kind` this new check reads a `map_id`
+#: off -- `CREATURE_DROP_KINDS` (creature_drop/skinning/pickpocketing)
+#: plus `object_drop`, the same union `pipeline.loot.classicdb.
+#: _item_instance_zone_consensus` reads (day3 data-followups-6 lane,
+#: 2026-09-30's own item c).
+_DROP_ZONE_KINDS = CREATURE_DROP_KINDS | {"object_drop"}
 
 CODE = "C"
 LABEL = "Drops vs classic-db"
@@ -311,6 +320,158 @@ def _over_attributed(loot: dict, result: CategoryResult) -> None:
             )
 
 
+def _known_instance_zone_ids(loot: dict) -> set[int]:
+    """Every zone id `loot.json`'s OWN raid/dungeon sources already
+    publish -- reused here rather than re-reading `Map.csv`'s own
+    instance-type column a second time (`ctx` carries no `types` dict at
+    all; every other check in this module that needs one is handed a
+    zone id it already trusts is an instance)."""
+    return {
+        int(source["zone_id"])
+        for source in loot.get("sources", [])
+        if source.get("kind") in ("raid", "dungeon") and source.get("zone_id") is not None
+    }
+
+
+def _item_ids_outside_world_buckets(loot: dict) -> set[int]:
+    """Every item id `loot.json` names under any source OTHER than a
+    `world`/`world_drop` kind -- boss items, trash and every other flat
+    `items` list alike."""
+    ids: set[int] = set()
+    for source in loot.get("sources", []):
+        if source.get("kind") in ("world", "world_drop"):
+            continue
+        ids.update(source.get("items") or [])
+        ids.update(source.get("trash") or [])
+        for boss in source.get("bosses") or []:
+            ids.update(boss.get("items") or [])
+    return ids
+
+
+def _classic_db_instance_drop_items(
+    classic_sources_by_item: dict[int, list], map_to_instance_zone: dict[int, int]
+) -> set[int]:
+    """Every item id classic-db's OWN creature/object drop rows resolve to
+    a known instance zone for (`map_to_instance_zone`, itself keyed off
+    `_known_instance_zone_ids`) AND `pipeline.loot.constants.
+    is_confirmed_boss_drop` -- the SAME rule `pipeline.loot.classicdb.
+    classicdb_additions` itself uses to decide whether a resolved row
+    keeps its own boss attribution -- says should be confirmed, not
+    folded into a pool. Independent of whatever `loot.json` itself
+    actually ended up publishing; the corroborating fact `_bis_world_
+    drop_leak` cross-checks a picked item's published sources against.
+
+    Reusing `is_confirmed_boss_drop` (not a bare "does any row resolve to
+    an instance map" check) matters: an item legitimately carries BOTH a
+    resolvable instance-zone `creature_drop` row AND an explicit
+    `world_drop` record when it is one of cmangos' own "(Boss Loot)"
+    equal-weight BoE-green pools (`is_confirmed_boss_drop`'s own doc,
+    the pooled-boss-greens lane's measured case -- Princess Theradras'
+    own 265-row reference group is the real one) -- publishing THAT item
+    only under `world_drop` is the CORRECT, already-verified outcome, not
+    a leak, and a naive "any resolvable row at all" signal false-positived
+    on it (measured while building this check: item 14672, Maraudon's
+    Princess Theradras AND Sunken Temple's Spawn of Hakkar both resolve,
+    both at cmangos' own `chance` 0.0 sentinel, both correctly un-
+    confirmed because the item already carries its own `world_drop`
+    record).
+    """
+    items: set[int] = set()
+    for item_id, records in classic_sources_by_item.items():
+        has_world_drop_record = any(record.kind == "world_drop" for record in records)
+        for record in records:
+            if record.kind not in _DROP_ZONE_KINDS:
+                continue
+            zone_id = map_to_instance_zone.get(record.map_id) if record.map_id else None
+            if zone_id is None:
+                continue
+            if is_confirmed_boss_drop(True, has_world_drop_record, record.chance or None):
+                items.add(item_id)
+                break
+    return items
+
+
+def _bis_picked_items(ctx: AuditContext) -> dict[int, list[str]]:
+    """item id -> every `"<spec> band <level> <faction> <slot>[ alternative]"`
+    label it is picked under, across every `bis/*.json` this build has --
+    the only items this new check bothers cross-referencing at all (this
+    lane's brief: "any published BiS pick", not every item `loot.json`
+    names)."""
+    picks: dict[int, list[str]] = defaultdict(list)
+    for spec, doc in ctx.bis_by_spec.items():
+        for band in doc.get("bands", []):
+            label = f"{spec} band {band.get('band')} {band.get('faction')}"
+            for slot_entry in band.get("slots", []):
+                item_id = slot_entry.get("item_id")
+                if item_id is not None:
+                    picks[item_id].append(f"{label} {slot_entry['slot']}")
+                for alt in slot_entry.get("alternatives", []):
+                    alt_id = alt.get("item_id")
+                    if alt_id is not None:
+                        picks[alt_id].append(f"{label} {slot_entry['slot']} alternative")
+    return dict(picks)
+
+
+def _bis_world_drop_leak(ctx: AuditContext, result: CategoryResult) -> None:
+    """day3 data-followups-6 lane, 2026-09-30: a MAJOR finding for any
+    published BiS pick whose OWN drop data independently resolves to a
+    dungeon/raid instance zone, while `loot.json`'s own published source
+    list carries the item under NOTHING but a `world`/`world_drop`
+    bucket -- the exact shape Molten Core's Cache of the Firelord items
+    had before this lane's fix: classic-db plainly places every one of
+    them in Molten Core (once `data1` resolves to the owning chest,
+    `pipeline.classic_sources._parse_object_drops`'s own doc), but the
+    boss got silently dropped for having no name in either database and
+    the items' only remaining `loot.json` entry was `world_drop:60-62`
+    -- invisible to every one of this audit's other seven categories:
+    check F's own `_source_name_index` only verifies a pick's `source`
+    STRING against `loot.json`'s own index, which a `world_drop` pick
+    passes fine, since it names a real, if wrong, source.
+
+    Substitutes classic-db's own drop rows for "the engine fork's own
+    drop data" (closer to this lane's brief's literal wording, a fork
+    `drop.zoneId`/`drop.npcId`) -- `AuditContext` loads no
+    `ForkDatabase` at all (`ctx.engine` is reserved for a future check
+    and unused by every check module here, this one included), and
+    classic-db's rows are the SAME primary source `pipeline.loot.
+    classicdb.classicdb_additions` itself reads to place an item in an
+    instance in the first place, so this is not a weaker check, just a
+    differently-sourced one -- labelled here, per tenet 8, rather than
+    silently assumed identical to the fork's own facts.
+    """
+    classic_sources_by_item = ctx.classic_sources_by_item
+    if not classic_sources_by_item or not ctx.bis_by_spec:
+        return
+    loot = ctx.loot
+    instance_zone_ids = _known_instance_zone_ids(loot)
+    if not instance_zone_ids:
+        return
+    map_to_zone = {
+        map_id: zone_id
+        for zone_id, map_id in ctx.zone_map_id.items()
+        if zone_id in instance_zone_ids and map_id not in (0, 1)
+    }
+    if not map_to_zone:
+        return
+    instance_items = _classic_db_instance_drop_items(classic_sources_by_item, map_to_zone)
+    if not instance_items:
+        return
+    outside_world = _item_ids_outside_world_buckets(loot)
+    for item_id, labels in _bis_picked_items(ctx).items():
+        if item_id not in instance_items or item_id in outside_world:
+            continue
+        for label in labels:
+            result.add(
+                "major",
+                item_id,
+                f"{label}: item {item_id} is picked, and classic-db's own drop data places "
+                "it in a dungeon/raid instance, but loot.json publishes it only under a "
+                "world/world_drop source -- a dropped or misattributed boss, not a real "
+                "world drop",
+                source="raw/classicdb/sources.json (creature/object drop map_id) vs loot.json",
+            )
+
+
 def check(ctx: AuditContext) -> CategoryResult:
     result = CategoryResult(code=CODE, label=LABEL, primary_source=PRIMARY_SOURCE)
     if not ctx.classic_sources_by_item:
@@ -333,4 +494,5 @@ def check(ctx: AuditContext) -> CategoryResult:
             _boss_items(ctx, source, boss, result)
         _trash(ctx, source, result)
     _over_attributed(loot, result)
+    _bis_world_drop_leak(ctx, result)
     return result

@@ -115,14 +115,27 @@ def classic_db_npc_names(classic_sources: dict[int, list[ClassicDbSourceRecord]]
     database does not name (35/67 raid bosses, 39/230 dungeon bosses on
     the pinned fork) -- classic-db drops loot for the SAME npc far more
     often than the fork's own AtlasLoot-derived table names it, so this
-    covers 55 of the 58 empty names measured on build 1.60.1.70009
-    (the remaining 3 -- npc 179703, 181366, 175245 -- have no name in
-    classic-db's own dump either, and `build_loot` drops those bosses
-    rather than publish one empty).
+    covers 55 of the 58 empty names measured on build 1.60.1.70009.
 
-    Keyed by whichever record names each npc_id FIRST across every
-    item's own list (`setdefault`) -- classic-db's own dump never
-    disagrees with itself about one npc's name, so which record wins is
+    day3 data-followups-6 lane, 2026-09-30's own addendum: the remaining
+    3 (npc 179703, 181366, 175245) are not really npcs at all -- the fork
+    assigns a GAMEOBJECT's own entry to `drop.npcId` for a "boss" that is
+    really a reward CHEST (Cache of the Firelord, Four Horsemen Chest,
+    Father Flame; `pipeline.classic_sources._parse_object_drops`'s own
+    doc), so `_resolve_or_drop_unnamed_bosses` looks up exactly this same
+    numeric id -- it is simply never in the npc-only dict above. A second
+    pass over every `object_drop` record's own `object_id`/`name` (never
+    `npc_id`, which the first pass already covers) fills that gap: every
+    one of the three DOES have a real classic-db name, just under
+    `gameobject_template.name`, not `creature_template.Name`. Run strictly
+    AFTER the npc pass (`setdefault`, so an npc id already named there
+    always wins) -- an accidental numeric collision between a real npc id
+    and an unrelated gameobject entry has never been observed on the
+    pinned dump, but the npc fact is the more direct one either way.
+
+    Keyed by whichever record names each id FIRST across every item's own
+    list (`setdefault`) -- classic-db's own dump never disagrees with
+    itself about one npc's or object's name, so which record wins is
     never ambiguous in practice.
     """
     names: dict[int, str] = {}
@@ -130,6 +143,10 @@ def classic_db_npc_names(classic_sources: dict[int, list[ClassicDbSourceRecord]]
         for record in records:
             if record.npc_id and record.name:
                 names.setdefault(record.npc_id, record.name)
+    for records in classic_sources.values():
+        for record in records:
+            if record.object_id and record.name:
+                names.setdefault(record.object_id, record.name)
     return names
 
 
@@ -180,14 +197,30 @@ def _item_instance_zone_consensus(
     would have zero or more than one member for those, so this returns
     `None` and they are left exactly as before. Only an item whose
     resolvable creature-kind siblings agree on ONE zone counts.
+
+    day3 data-followups-6 lane, 2026-09-30's own addendum: an
+    `object_drop` sibling counts toward consensus too, resolved the exact
+    same way (`zone_by_map`, never `fork_instance_npcs`, which is an
+    npc-only fallback) -- Cache of the Firelord's own two Flamewaker
+    creature rows (npc 11663/11664, both `map_id: null`, the SAME "no
+    static spawn row" shape Firelord/Lava Annihilator's own case above
+    already documents) have no OTHER creature-kind sibling to agree with
+    at all, but every Cache item also carries the chest's own `object_drop`
+    record, which (once `pipeline.classic_sources._parse_object_drops`
+    resolves `data1` to the chest's real spawn map, this lane's brief item
+    a) DOES resolve to Molten Core on its own -- exactly the single
+    resolvable sibling this fallback needs.
     """
     zones: set[int] = set()
     for record in records:
-        if record.kind not in _CREATURE_KINDS:
+        if record.kind in _CREATURE_KINDS:
+            zone_id = zone_by_map.get(record.map_id) if record.map_id else None
+            if zone_id is None and record.npc_id:
+                zone_id = fork_instance_npcs.get(record.npc_id)
+        elif record.kind == "object_drop":
+            zone_id = zone_by_map.get(record.map_id) if record.map_id else None
+        else:
             continue
-        zone_id = zone_by_map.get(record.map_id) if record.map_id else None
-        if zone_id is None and record.npc_id:
-            zone_id = fork_instance_npcs.get(record.npc_id)
         if zone_id is not None:
             zones.add(zone_id)
     return next(iter(zones)) if len(zones) == 1 else None
@@ -422,7 +455,30 @@ def classicdb_additions(
             elif record.kind == "object_drop":
                 zone_id = zone_by_map.get(record.map_id) if record.map_id else None
                 object_id = record.object_id or 0
-                if zone_id is not None:
+                if zone_id is not None and object_id and record.is_reward_chest and record.name:
+                    # A named, `data1`-curated reward chest (Cache of the
+                    # Firelord, Father Flame, Four Horsemen Chest --
+                    # `ClassicDbSourceRecord.is_reward_chest`'s own doc)
+                    # spawning in an instance IS the boss: the fork's own
+                    # `_drop_sources` already keys the identical chest as a
+                    # "boss" by this SAME object entry in its own `drop.
+                    # npcId` slot (day3 data-followups-6 lane, 2026-09-30's
+                    # own measurement), so this merges into that one entry
+                    # rather than publishing an anonymous trash line
+                    # alongside it.
+                    bosses[(zone_id, object_id)].add(item_id)
+                    boss_names[object_id] = record.name
+                    if record.chance:
+                        boss_chances[(zone_id, object_id)][item_id] = record.chance
+                elif zone_id is not None:
+                    # An ORDINARY instance object -- an ore vein, or a
+                    # generic chest whose own entry IS its own loot key
+                    # because `gameobject_template.data1` is unset --
+                    # stays anonymous trash exactly as before, whatever its
+                    # own name: `is_reward_chest` is what tells the two
+                    # apart, not `record.name`'s own truthiness (130 type-3
+                    # rows on the pinned dump are named AND `data1`-less,
+                    # `ClassicDbSourceRecord.is_reward_chest`'s own doc).
                     trash[zone_id].add(item_id)
                 elif object_id and record.name:
                     key = ("object", object_id)

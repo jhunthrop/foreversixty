@@ -241,6 +241,109 @@ def test_gameobject_drop_reads_the_chest_name_and_spawn_map():
     assert records[0].chance == 6.0
 
 
+#: day3 data-followups-6 lane, 2026-09-30, this lane's brief item (a): a
+#: `_GAMEOBJECT_TYPE_CHEST` row (179703, "Cache of the Firelord") whose
+#: own `data1` (16719) differs from its own entry -- the real shape
+#: `gameobject_loot_template` is keyed by `data1`, not the chest's own
+#: entry, the exact defect this lane's report measured on the pinned
+#: dump. A second row (400, "Locked Chest") has NO `data1` at all (an
+#: ordinary instance object whose own entry IS its own loot key) --
+#: `_parse_object_drops` must resolve the first through `chest_owner` and
+#: leave the second exactly as before.
+_CHEST_OWNER_LOOT_COLUMNS = (
+    "\n  `entry` mediumint,\n  `item` mediumint,\n  `ChanceOrQuestChance` float,\n"
+    "  `groupid` tinyint,\n  `mincountOrRef` mediumint,\n  `maxcount` tinyint,\n"
+    "  `condition_id` mediumint,\n  `comments` varchar(300)\n"
+)
+
+_CHEST_OWNER_SQL = f"""
+CREATE TABLE `creature_template` (
+  `Entry` mediumint,
+  `Name` char(100),
+  `VendorTemplateId` mediumint
+) ENGINE=MyISAM;
+CREATE TABLE `creature` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+CREATE TABLE `creature_loot_template` ({_CHEST_OWNER_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `reference_loot_template` ({_CHEST_OWNER_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `skinning_loot_template` ({_CHEST_OWNER_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `pickpocketing_loot_template` ({_CHEST_OWNER_LOOT_COLUMNS}) ENGINE=MyISAM;
+CREATE TABLE `fishing_loot_template` ({_CHEST_OWNER_LOOT_COLUMNS}) ENGINE=MyISAM;
+
+CREATE TABLE `gameobject_template` (
+  `entry` mediumint,
+  `type` tinyint,
+  `name` varchar(100),
+  `data1` int
+) ENGINE=MyISAM;
+INSERT INTO `gameobject_template` VALUES
+  (179703,3,'Cache of the Firelord',16719),
+  (400,3,'Locked Chest',0);
+
+CREATE TABLE `gameobject` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+INSERT INTO `gameobject` VALUES (1,179703,409),(2,400,409);
+
+CREATE TABLE `gameobject_loot_template` ({_CHEST_OWNER_LOOT_COLUMNS}) ENGINE=MyISAM;
+INSERT INTO `gameobject_loot_template` VALUES
+  (16719,18803,0,0,1,1,0,'Cache loot'),
+  (400,90050,50,0,1,1,0,'Chest loot');
+
+CREATE TABLE `npc_vendor` (
+  `entry` mediumint, `item` mediumint, `maxcount` tinyint, `incrtime` int,
+  `slot` tinyint, `condition_id` mediumint, `comments` text
+) ENGINE=MyISAM;
+CREATE TABLE `npc_vendor_template` (
+  `entry` mediumint, `item` mediumint, `maxcount` tinyint, `incrtime` int,
+  `slot` tinyint, `condition_id` mediumint, `comments` text
+) ENGINE=MyISAM;
+CREATE TABLE `conditions` (
+  `condition_entry` mediumint, `type` tinyint, `value1` mediumint,
+  `value2` mediumint, `value3` mediumint, `value4` mediumint,
+  `flags` tinyint, `comments` varchar(500)
+) ENGINE=MyISAM;
+CREATE TABLE `quest_template` (
+  `entry` mediumint, `MinLevel` tinyint, `QuestLevel` smallint,
+  `RequiredRaces` smallint, `Title` text,
+  `RewChoiceItemId1` mediumint, `RewChoiceItemId2` mediumint,
+  `RewChoiceItemId3` mediumint, `RewChoiceItemId4` mediumint,
+  `RewChoiceItemId5` mediumint, `RewChoiceItemId6` mediumint,
+  `RewItemId1` mediumint, `RewItemId2` mediumint,
+  `RewItemId3` mediumint, `RewItemId4` mediumint
+) ENGINE=MyISAM;
+"""
+
+
+def test_a_chest_whose_data1_differs_from_its_entry_is_named_and_mapped():
+    items = cs.parse_classic_db_sources(_CHEST_OWNER_SQL)
+    record = items[18803][0]
+    assert record.kind == "object_drop"
+    assert record.object_id == 179703
+    assert record.name == "Cache of the Firelord"
+    assert record.map_id == 409
+    assert record.is_reward_chest is True
+
+
+def test_an_ordinary_chest_with_no_data1_keeps_its_own_entry_and_is_not_a_reward_chest():
+    items = cs.parse_classic_db_sources(_CHEST_OWNER_SQL)
+    record = items[90050][0]
+    assert record.object_id == 400
+    assert record.name == "Locked Chest"
+    assert record.is_reward_chest is False
+
+
+def test_chest_owner_by_loot_id_inverts_data1_to_the_owning_entry():
+    owner = cs.chest_owner_by_loot_id(_CHEST_OWNER_SQL)
+    assert owner[16719] == 179703
+    assert 400 not in owner  # data1 unset -- never in the domain at all
+
+
 def test_skinning_and_pickpocketing_are_kept_distinct_from_a_plain_drop():
     items = cs.parse_classic_db_sources(SAMPLE_SQL)
     assert items[2934][0].kind == "skinning"
@@ -741,6 +844,47 @@ def test_a_direct_creature_loot_row_still_carries_the_npcs_own_level_range():
 def test_direct_row_world_drop_items_flags_the_item_six_creatures_two_maps_name_directly():
     items = cs.parse_classic_db_sources(_DIRECT_WORLD_DROP_SQL)
     assert cs.direct_row_world_drop_items(items) == {9700}
+
+
+#: day3 data-followups-6 lane, 2026-09-30, this lane's brief item (d):
+#: Molten Core's Cache of the Firelord's own real shape -- exactly two
+#: creatures (Flamewaker Healer/Elite), no static spawn map for either,
+#: every stated chance under 1%. `WORLD_DROP_CHANCE_SIGNAL_MIN_CREATURES`
+#: (3) must keep this OFF the "every known chance is low" signal --
+#: two creatures is a rare drop off two specific mobs, never a pool.
+_TWO_CREATURE_LOW_CHANCE_SQL = f"""
+CREATE TABLE `creature_template` (
+  `Entry` mediumint,
+  `Name` char(100),
+  `VendorTemplateId` mediumint
+) ENGINE=MyISAM;
+INSERT INTO `creature_template` VALUES (11663,'Flamewaker Healer',0),(11664,'Flamewaker Elite',0);
+CREATE TABLE `creature` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+CREATE TABLE `creature_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+INSERT INTO `creature_loot_template` VALUES
+  (11663,18803,0.14,0,1,1,0,'x'),(11664,18803,0.54,0,1,1,0,'x');
+CREATE TABLE `reference_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+{_EMPTY_SUPPORTING_TABLES}"""
+
+
+def test_direct_row_world_drop_items_does_not_flag_a_two_creature_low_chance_item():
+    items = cs.parse_classic_db_sources(_TWO_CREATURE_LOW_CHANCE_SQL)
+    assert cs.direct_row_world_drop_items(items) == set()
+
+
+def test_is_world_drop_pattern_still_flags_three_distinct_low_chance_creatures():
+    """The floor sits AT 3, not above it -- three unrelated creatures all
+    under the chance ceiling is still a real generic pool (item 3829's own
+    shape on the pinned dump: Tar Creeper/Deadwood Gardener/Vilebranch
+    Witch Doctor, three unrelated trash mobs, each under 1%)."""
+    from pipeline.loot.constants import is_world_drop_pattern
+
+    assert is_world_drop_pattern([(1, None, 0.02), (2, None, 0.06), (3, None, 0.02)]) is True
+    assert is_world_drop_pattern([(1, None, 0.14), (2, None, 0.54)]) is False
 
 
 def test_direct_row_world_drop_items_does_not_flag_an_ordinary_single_boss_drop():

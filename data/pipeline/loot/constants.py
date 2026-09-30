@@ -39,6 +39,23 @@ WORLD_DROP_MIN_CREATURES = 6
 WORLD_DROP_MIN_ZONES = 2
 WORLD_DROP_MAX_CHANCE_PERCENT = 1.0
 
+#: day3 data-followups-6 lane, 2026-09-30: below this many distinct
+#: creatures, "every known chance is low" is not, on its own, a signal
+#: that an item's own direct rows are a generic pool -- a rare drop off
+#: one or two specific creatures is simply a rare kill, however low its
+#: own stated chance is. Measured on build 1.60.1.70009: 339 items this
+#: signal alone (no `WORLD_DROP_MIN_CREATURES`/`WORLD_DROP_MIN_ZONES`
+#: signal firing too) flags, of which 281 name exactly ONE creature and
+#: 36 name exactly two -- Molten Core's own Cache of the Firelord (every
+#: one of its 12 items) is in the two-creature group, both its own known
+#: droppers Flamewaker Healer/Elite, the ONLY two classic-db's dump ever
+#: names for it at all. The next-smallest group, 8 items naming exactly
+#: three, is a real generic pool every time this lane checked (item 3829:
+#: Tar Creeper, Deadwood Gardener and Vilebranch Witch Doctor, three
+#: unrelated trash mobs in three different zones, each under 1%) -- the
+#: floor sits just below that group, not at it.
+WORLD_DROP_CHANCE_SIGNAL_MIN_CREATURES = 3
+
 #: raid-loot-regression lane, 2026-09-29: `WORLD_DROP_BOSS_MIN_CHANCE_
 #: PERCENT` (a >= 5% floor a dungeon/raid row also had to clear to keep
 #: its own attribution) is retired. Tier armour in cmangos routinely
@@ -60,7 +77,9 @@ def is_world_drop_pattern(
     """Whether one item's own (creature_id, zone_or_map_id, chance)
     triples read as a generic world-drop pool rather than a set of real,
     individually-sourced kills -- `WORLD_DROP_MIN_CREATURES`'s own doc
-    for the three signals. `pipeline.loot.wowhead` calls this with a
+    for the three signals, `WORLD_DROP_CHANCE_SIGNAL_MIN_CREATURES`'s own
+    doc for the floor the third (chance-alone) signal needs before it
+    counts on its own. `pipeline.loot.wowhead` calls this with a
     wowhead `dropped-by` row's `(npc_id, zone_ids[0], chance)`;
     `pipeline.loot.classicdb` calls it with a classic-db direct
     `creature_loot_template` row's `(npc_id, map_id, chance)` -- the
@@ -73,7 +92,8 @@ def is_world_drop_pattern(
         return False
     distinct_creatures = len({creature_id for creature_id, _, _ in rows if creature_id})
     distinct_zones = len({zone_id for _, zone_id, _ in rows if zone_id})
-    every_chance_known_and_low = all(
+    enough_creatures = distinct_creatures >= WORLD_DROP_CHANCE_SIGNAL_MIN_CREATURES
+    every_chance_known_and_low = enough_creatures and all(
         chance is not None and chance < WORLD_DROP_MAX_CHANCE_PERCENT for _, _, chance in rows
     )
     return (
