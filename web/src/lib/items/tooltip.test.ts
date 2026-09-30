@@ -165,6 +165,38 @@ describe('itemTooltipModel', () => {
     ]);
   });
 
+  it('skips a rank quartermaster vendor line when a pvp source already names the same item', () => {
+    // Fourth wow-player sweep, item 2: Captain O'Neal's own vendor row
+    // duplicates pvp:rank-18:alliance's item list verbatim -- the tooltip
+    // must say "PvP rank 18 · Grand Marshal · Alliance" once, not that AND
+    // a redundant bare "Captain O'Neal" line for the same purchase.
+    const loot: LootFile = {
+      sources: [
+        { id: 'vendor:12782', kind: 'vendor', name: "Captain O'Neal", items: [6] },
+        {
+          id: 'pvp:rank-18:alliance',
+          kind: 'pvp',
+          name: 'Rank 18 (Alliance)',
+          rank: 18,
+          faction: 'alliance',
+          items: [6],
+        },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 6 }), sources).sourceLines).toEqual([
+      'PvP rank 18 · Grand Marshal · Alliance',
+    ]);
+  });
+
+  it('still names an ordinary vendor with no matching pvp source', () => {
+    const loot: LootFile = {
+      sources: [{ id: 'vendor:some-vendor', kind: 'vendor', name: 'Some Vendor', items: [7] }],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 7 }), sources).sourceLines).toEqual(['Some Vendor']);
+  });
+
   it('falls back to the source name for a pvp source missing rank or faction (should not happen on real data)', () => {
     const loot: LootFile = {
       sources: [{ id: 'pvp:rank-10', kind: 'pvp', name: 'Rank 10', items: [5] }],
