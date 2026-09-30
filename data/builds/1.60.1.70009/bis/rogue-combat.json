@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:39:59Z",
+  "generated_at": "2026-09-30T02:20:51Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -684,8 +684,8 @@
         "off_hand: Cruel Barb",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.064527557,
-      "verify_run_seconds": 1.214147785,
+      "weights_run_seconds": 1.058823257,
+      "verify_run_seconds": 1.202088454,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1445,8 +1445,8 @@
         "off_hand: Cruel Barb",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.064527557,
-      "verify_run_seconds": 1.263095087,
+      "weights_run_seconds": 1.058823257,
+      "verify_run_seconds": 1.253374137,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2241,8 +2241,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.037067807,
-      "verify_run_seconds": 1.564048042,
+      "weights_run_seconds": 1.026658653,
+      "verify_run_seconds": 1.601106915,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3043,8 +3043,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.037067807,
-      "verify_run_seconds": 1.591334978,
+      "weights_run_seconds": 1.026658653,
+      "verify_run_seconds": 1.598564323,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3830,8 +3830,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.1180722,
-      "verify_run_seconds": 1.533452226,
+      "weights_run_seconds": 1.129110061,
+      "verify_run_seconds": 1.528599976,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4624,8 +4624,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.1180722,
-      "verify_run_seconds": 1.525507137,
+      "weights_run_seconds": 1.129110061,
+      "verify_run_seconds": 1.5423534349999999,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -5398,7 +5398,7 @@
         }
       ],
       "set_dps": 108.77606567497287,
-      "no_source_count": 1108,
+      "no_source_count": 1107,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5432,8 +5432,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.135860197,
-      "verify_run_seconds": 1.390228176,
+      "weights_run_seconds": 1.121665969,
+      "verify_run_seconds": 1.401813911,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5457,7 +5457,7 @@
         },
         "hands": {
           "eligible": 284,
-          "sourced": 202
+          "sourced": 203
         },
         "head": {
           "eligible": 188,
@@ -6209,7 +6209,7 @@
         }
       ],
       "set_dps": 110.05915385085409,
-      "no_source_count": 1118,
+      "no_source_count": 1117,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6243,8 +6243,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.135860197,
-      "verify_run_seconds": 1.322954711,
+      "weights_run_seconds": 1.121665969,
+      "verify_run_seconds": 1.366542892,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6268,7 +6268,7 @@
         },
         "hands": {
           "eligible": 283,
-          "sourced": 198
+          "sourced": 199
         },
         "head": {
           "eligible": 189,
@@ -6453,7 +6453,7 @@
               "dps_delta": -0.46717204689441993
             },
             {
-              "item_id": 23313,
+              "item_id": 227054,
               "item_name": "Lieutenant Commander's Leather Shoulders",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
@@ -6517,7 +6517,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Bonescythe Breastplate",
           "source_kind": "quest",
-          "score": 354.20899390352173,
+          "score": 354.2089939035218,
           "verified": true,
           "alternatives": [
             {
@@ -6535,17 +6535,17 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score": 230.2352663835603,
-              "score_delta": -123.97372751996144,
-              "dps_delta": -6.6375642506806685
+              "score_delta": -123.9737275199615,
+              "dps_delta": -6.637564250680672
             },
             {
-              "item_id": 21364,
-              "item_name": "Deathdealer's Vest",
-              "source_kind": "quest",
-              "source": "Deathdealer's Vest",
+              "item_id": 252483,
+              "item_name": "Dawn Armor",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "score": 210.7663169072906,
-              "score_delta": -143.44267699623114,
-              "dps_delta": -7.679933514129561
+              "score_delta": -143.4426769962312,
+              "dps_delta": -7.679933514129564
             }
           ]
         },
@@ -6688,8 +6688,8 @@
               "item_name": "General's Leather Legguards",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score": 240.77384005007661,
-              "score_delta": 36.990625331373735,
+              "score": 240.77384005007664,
+              "score_delta": 36.990625331373764,
               "dps_delta": 0
             },
             {
@@ -6709,7 +6709,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Bonescythe Sabatons",
           "source_kind": "quest",
-          "score": 223.09136071174163,
+          "score": 223.0913607117416,
           "verified": true,
           "alternatives": [
             {
@@ -6736,8 +6736,8 @@
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
               "score": 42.52114744805678,
-              "score_delta": -180.57021326368485,
-              "dps_delta": -9.667745064000247
+              "score_delta": -180.57021326368482,
+              "dps_delta": -9.667745064000245
             }
           ]
         },
@@ -7002,7 +7002,7 @@
         }
       ],
       "set_dps": 263.5232008653696,
-      "no_source_count": 1658,
+      "no_source_count": 1657,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7038,8 +7038,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.150901595,
-      "verify_run_seconds": 1.707622993,
+      "weights_run_seconds": 1.102879482,
+      "verify_run_seconds": 1.717041952,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7063,7 +7063,7 @@
         },
         "hands": {
           "eligible": 380,
-          "sourced": 259
+          "sourced": 260
         },
         "head": {
           "eligible": 287,
@@ -7159,7 +7159,7 @@
           "item_name": "Bonescythe Helmet",
           "source": "Bonescythe Helmet",
           "source_kind": "quest",
-          "score": 316.1076070350479,
+          "score": 316.107607035048,
           "verified": true,
           "alternatives": [
             {
@@ -7168,8 +7168,8 @@
               "source_kind": "crafted",
               "source": "Engineering",
               "score": 230.2352663835603,
-              "score_delta": -85.87234065148763,
-              "dps_delta": -4.597612654171519
+              "score_delta": -85.87234065148769,
+              "dps_delta": -4.597612654171522
             },
             {
               "item_id": 13404,
@@ -7177,8 +7177,8 @@
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
               "score": 203.06508823170304,
-              "score_delta": -113.04251880334488,
-              "dps_delta": -6.052306376729428
+              "score_delta": -113.04251880334493,
+              "dps_delta": -6.052306376729431
             },
             {
               "item_id": 11735,
@@ -7261,9 +7261,9 @@
               "item_name": "Lieutenant Commander's Leather Shoulders",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score": 181.0913607117416,
-              "score_delta": -8.725649629785863,
-              "dps_delta": -0.4671720468944215
+              "score": 181.09136071174163,
+              "score_delta": -8.725649629785835,
+              "dps_delta": -0.46717204689441993
             }
           ]
         },
@@ -7312,7 +7312,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Bonescythe Breastplate",
           "source_kind": "quest",
-          "score": 354.20899390352173,
+          "score": 354.2089939035218,
           "verified": true,
           "alternatives": [
             {
@@ -7330,17 +7330,17 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score": 230.2352663835603,
-              "score_delta": -123.97372751996144,
-              "dps_delta": -6.6375642506806685
+              "score_delta": -123.9737275199615,
+              "dps_delta": -6.637564250680672
             },
             {
               "item_id": 21364,
               "item_name": "Deathdealer's Vest",
               "source_kind": "quest",
               "source": "Deathdealer's Vest",
-              "score": 210.7663169072906,
-              "score_delta": -143.44267699623114,
-              "dps_delta": -7.679933514129561
+              "score": 210.76631690729056,
+              "score_delta": -143.44267699623123,
+              "dps_delta": -7.679933514129566
             }
           ]
         },
@@ -7492,8 +7492,8 @@
               "item_name": "Marshal's Leather Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score": 240.77384005007661,
-              "score_delta": 36.990625331373735,
+              "score": 240.77384005007664,
+              "score_delta": 36.990625331373764,
               "dps_delta": 0
             }
           ]
@@ -7504,7 +7504,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Bonescythe Sabatons",
           "source_kind": "quest",
-          "score": 223.0913607117416,
+          "score": 223.09136071174163,
           "verified": true,
           "alternatives": [
             {
@@ -7531,8 +7531,8 @@
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
               "score": 42.52114744805678,
-              "score_delta": -180.57021326368482,
-              "dps_delta": -9.667745064000245
+              "score_delta": -180.57021326368485,
+              "dps_delta": -9.667745064000247
             }
           ]
         },
@@ -7542,7 +7542,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "score": 175.09136071174163,
+          "score": 175.0913607117416,
           "verified": true,
           "alternatives": [
             {
@@ -7551,8 +7551,8 @@
               "source_kind": "quest",
               "source": "Houses of the Holy",
               "score": 115.11763319178014,
-              "score_delta": -59.973727519961486,
-              "dps_delta": -3.2109986343877868
+              "score_delta": -59.97372751996146,
+              "dps_delta": -3.210998634387785
             },
             {
               "item_id": 18403,
@@ -7560,8 +7560,8 @@
               "source_kind": "quest",
               "source": "For All To See",
               "score": 115.11763319178014,
-              "score_delta": -59.973727519961486,
-              "dps_delta": -3.2109986343877868
+              "score_delta": -59.97372751996146,
+              "dps_delta": -3.210998634387785
             },
             {
               "item_id": 18543,
@@ -7569,8 +7569,8 @@
               "source_kind": "world",
               "source": "Lord Kazzak",
               "score": 115.11763319178014,
-              "score_delta": -59.973727519961486,
-              "dps_delta": -3.2109986343877868
+              "score_delta": -59.97372751996146,
+              "dps_delta": -3.210998634387785
             }
           ]
         },
@@ -7799,7 +7799,7 @@
         }
       ],
       "set_dps": 266.5087254664627,
-      "no_source_count": 1667,
+      "no_source_count": 1666,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7834,8 +7834,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.150901595,
-      "verify_run_seconds": 1.739510508,
+      "weights_run_seconds": 1.102879482,
+      "verify_run_seconds": 1.699674398,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7859,7 +7859,7 @@
         },
         "hands": {
           "eligible": 380,
-          "sourced": 256
+          "sourced": 257
         },
         "head": {
           "eligible": 288,

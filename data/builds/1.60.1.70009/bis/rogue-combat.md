@@ -98,7 +98,7 @@ No-known-source sample (15 of 858, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32500000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 108.8. Weights run: 1.1s. Verify run: 1.4s. 1108 eligible items had no known source.
+Set DPS (verified): 108.8. Weights run: 1.1s. Verify run: 1.4s. 1107 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.123 ± 0.020, crit=6.578 ± 0.398, hit=not significant (5.130 ± 1.364), melee_haste=not significant (-2.593 ± 2.550)
 
@@ -124,11 +124,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Serpentskin Cloak; chest: Knight's Leather Armor; waist: Highlander's Leather Girdle; legs: Knight's Leather Pants; feet: Albino Crocscale Boots; finger1: Blackstone Ring; finger2: Pyrewood Signet Ring; trinket1: Frozen Heart of the Mountain; trinket2: Smoking Heart of the Mountain; main_hand: Inventor's Focal Sword; off_hand: Hammer of the Northern Wind; ranged: Arcanite Blacksmith Hammer
 
-No-known-source sample (15 of 1108, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1107, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ### Band 60 (night-elf, 32531000000000000-32531300000515201-5100000000000000000)
 
-Set DPS (verified): 263.5. Weights run: 1.2s. Verify run: 1.7s. 1658 eligible items had no known source.
+Set DPS (verified): 263.5. Weights run: 1.1s. Verify run: 1.7s. 1657 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.397 ± 0.131, crit=8.223 ± 0.549, hit=not significant (4.397 ± 2.027), melee_haste=not significant (4.644 ± 4.093)
 
@@ -136,9 +136,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Bonescythe Helmet (22478) | Bonescythe Helmet [quest] | 316.1 | yes | Bloodvine Lens (19998, -4.60 DPS) [crafted]; Mask of the Unforgiven (13404, -6.05 DPS) [dungeon]; Ragefury Eyepatch (11735, -9.80 DPS, sim-verified) [dungeon] |
 | neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | 0.0 | yes | Medallion of the Dawn (22659, -1.59 DPS) [quest]; Beads of Ogre Might (22150, -5.40 DPS) [quest]; Choker of the Shifting Sands (21505, -6.79 DPS) [quest] |
-| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 189.8 | yes | Champion's Leather Shoulders (23258, -0.47 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (23313, -0.47 DPS) [vendor]; Champion's Leather Shoulders (227056, -0.47 DPS) [vendor] |
+| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 189.8 | yes | Champion's Leather Shoulders (23258, -0.47 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.47 DPS) [vendor]; Champion's Leather Shoulders (227056, -0.47 DPS) [vendor] |
 | back | Cloak of Veiled Shadows (21406) | Cloak of Veiled Shadows [quest] | 0.0 | yes | Earthweave Cloak (21187, -0.22 DPS) [quest]; Cloak of the Honor Guard (20073, -1.51 DPS) [rep]; Chromatic Cloak (18509, -2.69 DPS, sim-verified) [crafted] |
-| chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 354.2 | yes | Zandalar Madcap's Tunic (19834, -6.53 DPS, sim-verified) [quest]; Stormshroud Armor (15056, -6.64 DPS) [crafted]; Deathdealer's Vest (21364, -7.68 DPS) [quest] |
+| chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 354.2 | yes | Zandalar Madcap's Tunic (19834, -6.53 DPS, sim-verified) [quest]; Stormshroud Armor (15056, -6.64 DPS) [crafted]; Dawn Armor (252483, -7.68 DPS) [crafted] |
 | wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 151.4 | yes | Primal Batskin Bracers (19687, -2.87 DPS, sim-verified) [crafted]; Rockfury Bracers (21186, -5.75 DPS) [quest]; Marshal's Leather Armsplints (16460, -6.69 DPS) [pvp] |
 | hands | Bonescythe Gauntlets (22481) | Bonescythe Gauntlets [quest] | 225.1 | yes | Devilsaur Gauntlets (15063, -4.39 DPS) [crafted]; Marshal's Leather Handgrips (16454, -4.39 DPS) [vendor]; Stormshroud Gloves (21278, -7.80 DPS, sim-verified) [crafted] |
 | waist | Bonescythe Waistguard (22482) | Bonescythe Waistguard [quest] | 0.0 | yes | Highlander's Leather Girdle (20115, -0.72 DPS) [rep]; Belt of the Archmage (18405, -1.79 DPS) [crafted]; Highlander's Leather Girdle (20045, -3.28 DPS, sim-verified) [rep] |
@@ -154,7 +154,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Bonescythe Helmet; neck: Onyxia Tooth Pendant; shoulder: Bonescythe Pauldrons; back: Cloak of Veiled Shadows; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Bonescythe Waistguard; legs: Bonescythe Legplates; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: Shadowsong's Sorrow; off_hand: Ravencrest's Legacy; ranged: The Purifier
 
-No-known-source sample (15 of 1658, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1657, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ## Horde
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 868, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 32500000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 110.1. Weights run: 1.1s. Verify run: 1.3s. 1118 eligible items had no known source.
+Set DPS (verified): 110.1. Weights run: 1.1s. Verify run: 1.4s. 1117 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.123 ± 0.020, crit=6.578 ± 0.398, hit=not significant (5.130 ± 1.364), melee_haste=not significant (-2.593 ± 2.550)
 
@@ -276,11 +276,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Serpentskin Cloak; chest: Knight's Leather Armor; waist: Defiler's Leather Girdle; legs: Stormshroud Pants; feet: Albino Crocscale Boots; finger1: Blackstone Ring; finger2: Pyrewood Signet Ring; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Inventor's Focal Sword; off_hand: Hammer of the Northern Wind; ranged: Arcanite Blacksmith Hammer
 
-No-known-source sample (15 of 1118, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 1117, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ### Band 60 (troll, 32531000000000000-32531300000515201-5100000000000000000)
 
-Set DPS (verified): 266.5. Weights run: 1.2s. Verify run: 1.7s. 1667 eligible items had no known source.
+Set DPS (verified): 266.5. Weights run: 1.1s. Verify run: 1.7s. 1666 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.397 ± 0.131, crit=8.223 ± 0.549, hit=not significant (4.397 ± 2.027), melee_haste=not significant (4.644 ± 4.093)
 
@@ -306,5 +306,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Bonescythe Helmet; neck: Onyxia Tooth Pendant; shoulder: Bonescythe Pauldrons; back: Cloak of Veiled Shadows; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Bonescythe Waistguard; legs: Bonescythe Legplates; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: Shadowsong's Sorrow; off_hand: Ravencrest's Legacy; ranged: The Purifier
 
-No-known-source sample (15 of 1667, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 1666, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 

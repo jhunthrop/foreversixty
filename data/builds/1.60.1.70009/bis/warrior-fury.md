@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 00000000000000000-353000000000000000-000000000000000000)
 
-Set DPS (verified): 32.3. Weights run: 1.5s. Verify run: 1.6s. 438 eligible items had no known source.
+Set DPS (verified): 32.3. Weights run: 1.5s. Verify run: 1.5s. 438 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.036, strength=2.009 ± 0.045, agility=0.098 ± 0.015, crit=2.375 ± 0.071, hit=not significant (0.000 ± 0.000), melee_haste=1.740 ± 0.046
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 438, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-353211005010000000-000000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 1.6s. Verify run: 1.8s. 891 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 1.6s. Verify run: 1.7s. 891 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.218, strength=2.528 ± 0.266, agility=not significant (0.203 ± 0.078), crit=4.156 ± 0.307, hit=not significant (0.000 ± 0.000), melee_haste=2.879 ± 0.352
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 1330, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (human, 35100000000000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 93.3. Weights run: 2.0s. Verify run: 2.0s. 1763 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 2.0s. Verify run: 1.9s. 1762 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.214, strength=1.584 ± 0.298, agility=not significant (0.351 ± 0.116), crit=4.668 ± 0.389, hit=not significant (0.000 ± 0.000), melee_haste=2.879 ± 0.401
 
@@ -124,11 +124,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Blood Guard's Plate Helm; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; waist: Highlander's Chain Girdle; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger1: Blackstone Ring; finger2: Protector's Band; trinket1: Frozen Heart of the Mountain; trinket2: Smoking Heart of the Mountain; main_hand: Dawn's Edge; off_hand: Hammer of the Northern Wind; ranged: Arcanite Blacksmith Hammer
 
-No-known-source sample (15 of 1763, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ### Band 60 (human, 35311103002000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 232.6. Weights run: 2.1s. Verify run: 2.3s. 2598 eligible items had no known source.
+Set DPS (verified): 232.6. Weights run: 2.0s. Verify run: 2.3s. 2597 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.427), strength=not significant (2.344 ± 0.596), agility=not significant (0.450 ± 0.239), crit=13.060 ± 0.873, hit=not significant (0.000 ± 0.000), melee_haste=6.782 ± 0.884
 
@@ -154,7 +154,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; back: Drape of Unyielding Strength; chest: Bloodsoul Breastplate; wrist: Vambraces of the Sadist; hands: Chromatic Gauntlets; waist: Zandalar Vindicator's Belt; legs: Knight-Captain's Plate Leggings; feet: Conqueror's Greaves; finger1: Signet of Unyielding Strength; finger2: Don Julio's Band; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: Ravencrest's Legacy; off_hand: Shadowsong's Sorrow; ranged: The Purifier
 
-No-known-source sample (15 of 2598, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2597, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ## Horde
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 1333, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (troll, 35100000000000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 97.3. Weights run: 2.0s. Verify run: 2.0s. 1766 eligible items had no known source.
+Set DPS (verified): 97.3. Weights run: 2.0s. Verify run: 2.0s. 1765 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.214, strength=1.584 ± 0.298, agility=not significant (0.351 ± 0.116), crit=4.668 ± 0.389, hit=not significant (0.000 ± 0.000), melee_haste=2.879 ± 0.401
 
@@ -276,11 +276,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Blood Guard's Plate Helm; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; waist: Defiler's Chain Girdle; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger1: White Bone Band; finger2: Blackstone Ring; trinket1: Rune of the Guard Captain; trinket2: Smoking Heart of the Mountain; main_hand: Dawn's Edge; off_hand: Hammer of the Northern Wind; ranged: Arcanite Blacksmith Hammer
 
-No-known-source sample (15 of 1766, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 1765, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ### Band 60 (troll, 35311103002000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 225.1. Weights run: 2.1s. Verify run: 2.4s. 2601 eligible items had no known source.
+Set DPS (verified): 225.1. Weights run: 2.0s. Verify run: 2.3s. 2600 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.427), strength=not significant (2.344 ± 0.596), agility=not significant (0.450 ± 0.239), crit=13.060 ± 0.873, hit=not significant (0.000 ± 0.000), melee_haste=6.782 ± 0.884
 
@@ -306,5 +306,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; back: Drape of Unyielding Strength; chest: Bloodsoul Breastplate; wrist: Vambraces of the Sadist; hands: Chromatic Gauntlets; waist: Zandalar Vindicator's Belt; legs: Knight-Captain's Plate Leggings; feet: Conqueror's Greaves; finger1: Signet of Unyielding Strength; finger2: Don Julio's Band; trinket2: Onyxia Blood Talisman; main_hand: Ravencrest's Legacy; off_hand: Shadowsong's Sorrow; ranged: The Purifier
 
-No-known-source sample (15 of 2601, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2600, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 

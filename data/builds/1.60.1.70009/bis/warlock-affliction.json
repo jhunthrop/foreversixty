@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:41:59Z",
+  "generated_at": "2026-09-30T02:22:51Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -606,8 +606,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.290778121,
-      "verify_run_seconds": 1.026192166,
+      "weights_run_seconds": 1.236697785,
+      "verify_run_seconds": 1.024171681,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1281,8 +1281,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.290778121,
-      "verify_run_seconds": 1.0320186709999999,
+      "weights_run_seconds": 1.236697785,
+      "verify_run_seconds": 1.031453803,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2057,8 +2057,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.288006673,
-      "verify_run_seconds": 1.175149757,
+      "weights_run_seconds": 1.2560942339999999,
+      "verify_run_seconds": 1.127481903,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2839,8 +2839,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.288006673,
-      "verify_run_seconds": 1.159359404,
+      "weights_run_seconds": 1.2560942339999999,
+      "verify_run_seconds": 1.152198813,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3619,8 +3619,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.107420275,
-      "verify_run_seconds": 1.052548587,
+      "weights_run_seconds": 1.109745766,
+      "verify_run_seconds": 1.047063801,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4393,8 +4393,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.107420275,
-      "verify_run_seconds": 1.038419008,
+      "weights_run_seconds": 1.109745766,
+      "verify_run_seconds": 1.032643938,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4543,9 +4543,9 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score": 22.774516667568857,
-              "score_delta": -4.225483332431143,
-              "dps_delta": -1.1846242860417446
+              "score": 22.774516667568854,
+              "score_delta": -4.225483332431146,
+              "dps_delta": -1.1846242860417455
             },
             {
               "item_id": 10041,
@@ -4832,18 +4832,24 @@
         },
         {
           "slot": "legs",
-          "item_id": 220906,
-          "item_name": "Stone Guard's Dreadweave Leggings",
-          "source": "Lady Palanseer",
+          "item_id": 220888,
+          "item_name": "Knight's Dreadweave Leggings",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 20.774516667568857,
+          "score": 20.774516667568854,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 220906,
+              "item_name": "Stone Guard's Dreadweave Leggings"
+            }
+          ],
           "alternatives": [
             {
-              "item_id": 220888,
-              "item_name": "Knight's Dreadweave Leggings",
+              "item_id": 220906,
+              "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 176.18060541921727
@@ -4854,8 +4860,8 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "score": 19,
-              "score_delta": -1.7745166675688573,
-              "dps_delta": -0.4974899615042297
+              "score_delta": -1.7745166675688537,
+              "dps_delta": -0.4974899615042287
             },
             {
               "item_id": 10009,
@@ -4863,8 +4869,8 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "score": 16.383242214158887,
-              "score_delta": -4.39127445340997,
-              "dps_delta": -1.231104220494262
+              "score_delta": -4.391274453409967,
+              "dps_delta": -1.2311042204942608
             }
           ]
         },
@@ -5168,7 +5174,7 @@
         "shoulder: Rotgrip Mantle",
         "back: Spritecaster Cape",
         "waist: Highlander's Cloth Girdle",
-        "legs: Stone Guard's Dreadweave Leggings",
+        "legs: Knight's Dreadweave Leggings",
         "feet: Sergeant Major's Dreadweave Boots",
         "finger1: Blackstone Ring",
         "finger2: Lorekeeper's Ring",
@@ -5177,8 +5183,8 @@
         "main_hand: Soul Harvester",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.21575525,
-      "verify_run_seconds": 1.171622337,
+      "weights_run_seconds": 1.225820127,
+      "verify_run_seconds": 1.152030597,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5323,13 +5329,13 @@
               "dps_delta": -1.1292396401197227
             },
             {
-              "item_id": 220889,
-              "item_name": "Knight-Lieutenant's Dreadweave Hat",
+              "item_id": 220907,
+              "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "score": 22.774516667568854,
-              "score_delta": -4.225483332431146,
-              "dps_delta": -1.1846242860417455
+              "source": "Lady Palanseer",
+              "score": 22.774516667568857,
+              "score_delta": -4.225483332431143,
+              "dps_delta": -1.1846242860417446
             },
             {
               "item_id": 10041,
@@ -5610,24 +5616,18 @@
         },
         {
           "slot": "legs",
-          "item_id": 220888,
-          "item_name": "Knight's Dreadweave Leggings",
-          "source": "Captain Dirgehammer",
+          "item_id": 220906,
+          "item_name": "Stone Guard's Dreadweave Leggings",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 20.774516667568854,
+          "score": 20.774516667568857,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220906,
-              "item_name": "Stone Guard's Dreadweave Leggings"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 220906,
-              "item_name": "Stone Guard's Dreadweave Leggings",
+              "item_id": 220888,
+              "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 174.02002112498764
@@ -5638,8 +5638,8 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "score": 19,
-              "score_delta": -1.7745166675688537,
-              "dps_delta": -0.4974899615042287
+              "score_delta": -1.7745166675688573,
+              "dps_delta": -0.4974899615042297
             },
             {
               "item_id": 10009,
@@ -5647,8 +5647,8 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "score": 16.383242214158887,
-              "score_delta": -4.391274453409967,
-              "dps_delta": -1.2311042204942608
+              "score_delta": -4.39127445340997,
+              "dps_delta": -1.231104220494262
             }
           ]
         },
@@ -5955,7 +5955,7 @@
         "back: Spritecaster Cape",
         "wrist: Spidertank Oilrag",
         "waist: Defiler's Cloth Girdle",
-        "legs: Knight's Dreadweave Leggings",
+        "legs: Stone Guard's Dreadweave Leggings",
         "feet: Sergeant Major's Dreadweave Boots",
         "finger1: Blackstone Ring",
         "finger2: Advisor's Ring",
@@ -5964,8 +5964,8 @@
         "main_hand: Soul Harvester",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.21575525,
-      "verify_run_seconds": 1.160094019,
+      "weights_run_seconds": 1.225820127,
+      "verify_run_seconds": 1.164748266,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6745,8 +6745,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 1.259619961,
-      "verify_run_seconds": 1.180276741,
+      "weights_run_seconds": 1.220649515,
+      "verify_run_seconds": 1.153692234,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7528,8 +7528,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 1.259619961,
-      "verify_run_seconds": 1.194369361,
+      "weights_run_seconds": 1.220649515,
+      "verify_run_seconds": 1.155211198,
       "coverage": {
         "back": {
           "eligible": 375,

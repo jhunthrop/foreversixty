@@ -8444,9 +8444,9 @@
               "source": "Leatherworking"
             },
             "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 226777,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20097,
@@ -8454,9 +8454,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 220864,
+              "item_id": 220865,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "feet": {
               "item_id": 220862,
@@ -8526,9 +8526,9 @@
               "source": "Leatherworking"
             },
             "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 226777,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20165,
@@ -8556,9 +8556,9 @@
               "source": "Greater Friend of the Library"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "trinket2": {
               "item_id": 19120,
@@ -8566,9 +8566,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 9449,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Crowd Pummeler 9-60"
+              "item_id": 250613,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "ranged": {
               "item_id": 227444,
@@ -8584,9 +8584,9 @@
             11623,
             220854,
             15092,
-            867,
+            226777,
             20097,
-            220864,
+            220865,
             220862,
             17713,
             281635,
@@ -8599,13 +8599,15 @@
             19121,
             220854,
             15092,
-            867,
+            226777,
             20165,
             220864,
             220862,
             17713,
             281635,
-            19120
+            11302,
+            19120,
+            250613
           ]
         },
         "weights": {
@@ -8794,6 +8796,7 @@
             21186,
             19686,
             18405,
+            220864,
             19684,
             21709,
             19325,
@@ -8813,6 +8816,7 @@
             19684,
             21709,
             19325,
+            1713,
             21188,
             23197
           ]
@@ -13888,9 +13892,9 @@
               "source": "Wanted! Marez Cowl"
             },
             "hands": {
-              "item_id": 10019,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20097,
@@ -13970,9 +13974,9 @@
               "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
-              "item_id": 10019,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20165,
@@ -13985,9 +13989,9 @@
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 220909,
+              "item_id": 220891,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 17713,
@@ -14027,6 +14031,7 @@
             220887,
             11623,
             220886,
+            226930,
             20097,
             220888,
             220891,
@@ -14042,9 +14047,10 @@
             220887,
             11623,
             220886,
+            226930,
             20165,
             220888,
-            220909,
+            220891,
             17713,
             19519,
             249469,
@@ -14934,9 +14940,9 @@
               "source": "Tailoring"
             },
             "hands": {
-              "item_id": 272098,
+              "item_id": 226930,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20097,
@@ -14964,9 +14970,9 @@
               "source": "Greater Friend of the Library"
             },
             "trinket1": {
-              "item_id": 744,
-              "source_kind": "quest",
-              "source": "Sweet Amber"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
               "item_id": 11302,
@@ -15016,9 +15022,9 @@
               "source": "The Captain's Chest"
             },
             "hands": {
-              "item_id": 272098,
+              "item_id": 226930,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20165,
@@ -15075,13 +15081,13 @@
             11623,
             220886,
             254061,
-            272098,
+            226930,
             20097,
             220888,
             220891,
             17713,
             281635,
-            744,
+            249469,
             11302,
             11750,
             11748
@@ -15093,7 +15099,7 @@
             19121,
             220886,
             11469,
-            272098,
+            226930,
             20165,
             220888,
             220891,
@@ -15986,9 +15992,9 @@
               "source": "Tailoring"
             },
             "hands": {
-              "item_id": 272098,
+              "item_id": 226930,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20097,
@@ -16021,9 +16027,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 11302,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "main_hand": {
               "item_id": 11750,
@@ -16063,14 +16069,14 @@
               "source": "Captain Dirgehammer"
             },
             "wrist": {
-              "item_id": 11469,
-              "source_kind": "quest",
-              "source": "The Captain's Chest"
+              "item_id": 254061,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "hands": {
-              "item_id": 272098,
+              "item_id": 226930,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20165,
@@ -16127,14 +16133,14 @@
             11623,
             220886,
             254061,
-            272098,
+            226930,
             20097,
             220888,
             220891,
             17713,
             281635,
             249469,
-            1713,
+            11302,
             11750,
             11748
           ],
@@ -16144,8 +16150,8 @@
             220887,
             19121,
             220886,
-            11469,
-            272098,
+            254061,
+            226930,
             20165,
             220888,
             220891,
@@ -16346,7 +16352,6 @@
             21344,
             19325,
             21709,
-            11302,
             20069,
             19108
           ],
@@ -16884,9 +16889,9 @@
               "source": "Gnomeregan: Crowd Pummeler 9-60"
             },
             "ranged": {
-              "item_id": 211472,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -16966,9 +16971,9 @@
               "source": "Gnomeregan: Crowd Pummeler 9-60"
             },
             "ranged": {
-              "item_id": 211472,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -16986,7 +16991,8 @@
             19515,
             274754,
             1713,
-            21565
+            21565,
+            249442
           ],
           "horde": [
             7719,
@@ -17001,7 +17007,8 @@
             19512,
             274754,
             1713,
-            21565
+            21565,
+            249442
           ]
         },
         "weights": {
@@ -17018,9 +17025,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 220803,
+              "item_id": 220804,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 7731,
@@ -17093,16 +17100,16 @@
               "source": "Blacksmithing"
             },
             "ranged": {
-              "item_id": 211472,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
             "head": {
-              "item_id": 220804,
+              "item_id": 220803,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 19159,
@@ -17175,15 +17182,15 @@
               "source": "Blacksmithing"
             },
             "ranged": {
-              "item_id": 211472,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            220803,
+            220804,
             220795,
             14801,
             220794,
@@ -17197,7 +17204,7 @@
             250613
           ],
           "horde": [
-            220804,
+            220803,
             19159,
             220795,
             14801,
@@ -22314,9 +22321,9 @@
               "source": "Gnomeregan: Crowd Pummeler 9-60"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -22396,9 +22403,9 @@
               "source": "Gnomeregan: Crowd Pummeler 9-60"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -22416,7 +22423,8 @@
             281635,
             19524,
             1713,
-            21565
+            21565,
+            249443
           ],
           "horde": [
             10502,
@@ -22431,7 +22439,8 @@
             281635,
             19520,
             1713,
-            21565
+            21565,
+            249443
           ]
         },
         "weights": {
@@ -22461,9 +22470,9 @@
               "source": "Leatherworking"
             },
             "back": {
-              "item_id": 8248,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 272076,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 220844,
@@ -22471,14 +22480,14 @@
               "source": "Lady Palanseer"
             },
             "wrist": {
-              "item_id": 11917,
-              "source_kind": "quest",
-              "source": "Shizzle's Flyer"
+              "item_id": 15092,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "hands": {
-              "item_id": 272098,
+              "item_id": 227022,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20103,
@@ -22521,9 +22530,9 @@
               "source": "World drop"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -22543,9 +22552,9 @@
               "source": "Leatherworking"
             },
             "back": {
-              "item_id": 272076,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 19121,
+              "source_kind": "quest",
+              "source": "Wanted: Vile Priestess Hexx and Her Minions"
             },
             "chest": {
               "item_id": 220844,
@@ -22558,9 +22567,9 @@
               "source": "Leatherworking"
             },
             "hands": {
-              "item_id": 272098,
+              "item_id": 227022,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20118,
@@ -22603,9 +22612,9 @@
               "source": "Gnomeregan: Crowd Pummeler 9-60"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -22614,10 +22623,10 @@
             17715,
             13085,
             15067,
-            8248,
+            272076,
             220844,
-            11917,
-            272098,
+            15092,
+            227022,
             20103,
             220847,
             22240,
@@ -22630,10 +22639,10 @@
             17715,
             13085,
             15067,
-            272076,
+            19121,
             220844,
             15092,
-            272098,
+            227022,
             20118,
             220847,
             22240,
@@ -23399,9 +23408,9 @@
               "source": "Rettrick"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -23486,9 +23495,9 @@
               "source": "World drop"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -23508,7 +23517,8 @@
             1713,
             21565,
             868,
-            274753
+            274753,
+            249443
           ],
           "horde": [
             7719,
@@ -23525,7 +23535,8 @@
             1713,
             21565,
             868,
-            2815
+            2815,
+            249443
           ]
         },
         "weights": {
@@ -23572,9 +23583,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 227022,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20088,
@@ -23622,9 +23633,9 @@
               "source": "World drop"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -23659,9 +23670,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 227022,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 20151,
@@ -23709,9 +23720,9 @@
               "source": "World drop"
             },
             "ranged": {
-              "item_id": 206387,
-              "source_kind": "vendor",
-              "source": "Rune Broker"
+              "item_id": 249443,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -23721,6 +23732,7 @@
             14801,
             220826,
             17714,
+            227022,
             20088,
             220834,
             22240,
@@ -23737,6 +23749,7 @@
             14801,
             220826,
             17714,
+            227022,
             20151,
             220834,
             22240,
@@ -24655,9 +24668,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 220906,
+              "item_id": 220888,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 220891,
@@ -24737,9 +24750,9 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 220888,
+              "item_id": 220906,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "feet": {
               "item_id": 220891,
@@ -24784,7 +24797,7 @@
             17732,
             11623,
             20097,
-            220906,
+            220888,
             220891,
             17713,
             19523,
@@ -24799,7 +24812,7 @@
             11623,
             9448,
             20165,
-            220888,
+            220906,
             220891,
             17713,
             19519,

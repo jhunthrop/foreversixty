@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:39:01Z",
+  "generated_at": "2026-09-30T02:19:55Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -605,8 +605,8 @@
         "main_hand: Living Root",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.881259415,
-      "verify_run_seconds": 0.869377175,
+      "weights_run_seconds": 0.871087197,
+      "verify_run_seconds": 0.878302647,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1310,8 +1310,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.881259415,
-      "verify_run_seconds": 0.77425155,
+      "weights_run_seconds": 0.871087197,
+      "verify_run_seconds": 0.74761018,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2097,8 +2097,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.702386839,
-      "verify_run_seconds": 0.692371445,
+      "weights_run_seconds": 0.717294613,
+      "verify_run_seconds": 0.673301539,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2884,8 +2884,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.702386839,
-      "verify_run_seconds": 0.715052725,
+      "weights_run_seconds": 0.717294613,
+      "verify_run_seconds": 0.692799546,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3654,8 +3654,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 0.733512894,
-      "verify_run_seconds": 0.679792087,
+      "weights_run_seconds": 0.714223889,
+      "verify_run_seconds": 0.660396006,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4418,8 +4418,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 0.733512894,
-      "verify_run_seconds": 0.650874731,
+      "weights_run_seconds": 0.714223889,
+      "verify_run_seconds": 0.663208504,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4789,13 +4789,22 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 226958,
+              "item_name": "Virtuous Hands",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -0.2995137534518477,
+              "verified": true,
+              "sim_dps": 124.35927748082788
+            },
+            {
               "item_id": 220890,
               "item_name": "Sergeant Major's Dreadweave Gloves",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.9856765198585862,
-              "verified": true,
-              "sim_dps": 122.67311471442115
+              "score": 30.658529769032757,
+              "score_delta": -19.506765221936202,
+              "dps_delta": -2.032650447424136
             },
             {
               "item_id": 220908,
@@ -4805,15 +4814,6 @@
               "score": 30.658529769032757,
               "score_delta": -19.506765221936202,
               "dps_delta": -2.032650447424136
-            },
-            {
-              "item_id": 10018,
-              "item_name": "Red Mageweave Gloves",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "score": 30.620588632258617,
-              "score_delta": -19.544706358710343,
-              "dps_delta": -2.036604002396593
             }
           ]
         },
@@ -5176,7 +5176,7 @@
         }
       ],
       "set_dps": 124.65879123427973,
-      "no_source_count": 724,
+      "no_source_count": 722,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5212,8 +5212,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.678489244,
-      "verify_run_seconds": 0.655833934,
+      "weights_run_seconds": 0.69056478,
+      "verify_run_seconds": 0.650911449,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5237,7 +5237,7 @@
         },
         "hands": {
           "eligible": 141,
-          "sourced": 99
+          "sourced": 101
         },
         "head": {
           "eligible": 107,
@@ -5583,6 +5583,24 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 226958,
+              "item_name": "Virtuous Hands",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -1.2095666845139164,
+              "verified": true,
+              "sim_dps": 111.74395689096569
+            },
+            {
+              "item_id": 220890,
+              "item_name": "Sergeant Major's Dreadweave Gloves",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "score": 30.658529769032757,
+              "score_delta": -19.506765221936202,
+              "dps_delta": -2.032650447424136
+            },
+            {
               "item_id": 220908,
               "item_name": "First Sergeant's Dreadweave Gloves",
               "source_kind": "vendor",
@@ -5590,24 +5608,6 @@
               "score": 30.658529769032757,
               "score_delta": -19.506765221936202,
               "dps_delta": -2.032650447424136
-            },
-            {
-              "item_id": 10018,
-              "item_name": "Red Mageweave Gloves",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "score": 30.620588632258617,
-              "score_delta": -19.544706358710343,
-              "dps_delta": -2.036604002396593
-            },
-            {
-              "item_id": 220890,
-              "item_name": "Sergeant Major's Dreadweave Gloves",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -4.629753348355678,
-              "verified": true,
-              "sim_dps": 108.32377022712393
             }
           ]
         },
@@ -5969,7 +5969,7 @@
         }
       ],
       "set_dps": 112.95352357547961,
-      "no_source_count": 725,
+      "no_source_count": 723,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6005,8 +6005,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.678489244,
-      "verify_run_seconds": 0.685758079,
+      "weights_run_seconds": 0.69056478,
+      "verify_run_seconds": 0.676108434,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6030,7 +6030,7 @@
         },
         "hands": {
           "eligible": 143,
-          "sourced": 99
+          "sourced": 101
         },
         "head": {
           "eligible": 107,
@@ -6486,19 +6486,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 220909,
-              "item_name": "First Sergeant's Dreadweave Boots",
+              "item_id": 220891,
+              "item_name": "Sergeant Major's Dreadweave Boots",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "score": 139.22107043559913,
               "score_delta": -16.068750801294783,
               "dps_delta": -1.8465516006770497
             },
             {
-              "item_id": 220891,
-              "item_name": "Sergeant Major's Dreadweave Boots",
+              "item_id": 220909,
+              "item_name": "First Sergeant's Dreadweave Boots",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source": "Lady Palanseer",
               "dps_delta": -4.145096467887953,
               "verified": true,
               "sim_dps": 191.36271923867454
@@ -6754,7 +6754,7 @@
         }
       ],
       "set_dps": 212.34930512571853,
-      "no_source_count": 1225,
+      "no_source_count": 1223,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6790,8 +6790,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Stormrager"
       ],
-      "weights_run_seconds": 0.777852523,
-      "verify_run_seconds": 0.73836008,
+      "weights_run_seconds": 0.759794519,
+      "verify_run_seconds": 0.716439383,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -6815,7 +6815,7 @@
         },
         "hands": {
           "eligible": 209,
-          "sourced": 135
+          "sourced": 137
         },
         "head": {
           "eligible": 176,
@@ -7085,9 +7085,9 @@
               "item_name": "Earthpower Vest",
               "source_kind": "quest",
               "source": "Veteran's Battlegear",
-              "score": 81.27748728490728,
-              "score_delta": -13.896429029311307,
-              "dps_delta": -1.5969177433321171
+              "score": 81.27748728490727,
+              "score_delta": -13.89642902931132,
+              "dps_delta": -1.5969177433321187
             },
             {
               "item_id": 226945,
@@ -7540,7 +7540,7 @@
         }
       ],
       "set_dps": 199.68148611399917,
-      "no_source_count": 1226,
+      "no_source_count": 1224,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7576,8 +7576,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 0.777852523,
-      "verify_run_seconds": 0.71642255,
+      "weights_run_seconds": 0.759794519,
+      "verify_run_seconds": 0.693877626,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7601,7 +7601,7 @@
         },
         "hands": {
           "eligible": 211,
-          "sourced": 135
+          "sourced": 137
         },
         "head": {
           "eligible": 176,

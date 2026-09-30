@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:41:36Z",
+  "generated_at": "2026-09-30T02:22:28Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -702,8 +702,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Kajaric Icon"
       ],
-      "weights_run_seconds": 1.429424485,
-      "verify_run_seconds": 1.497531762,
+      "weights_run_seconds": 1.46658742,
+      "verify_run_seconds": 1.489020267,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1475,8 +1475,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Kajaric Icon"
       ],
-      "weights_run_seconds": 1.429424485,
-      "verify_run_seconds": 1.409997243,
+      "weights_run_seconds": 1.46658742,
+      "verify_run_seconds": 1.420444624,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2293,8 +2293,8 @@
         "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.5636536049999998,
-      "verify_run_seconds": 1.7997469659999998,
+      "weights_run_seconds": 1.530699289,
+      "verify_run_seconds": 1.7661550849999998,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3118,8 +3118,8 @@
         "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.5636536049999998,
-      "verify_run_seconds": 1.725761128,
+      "weights_run_seconds": 1.530699289,
+      "verify_run_seconds": 1.712491183,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3840,13 +3840,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 206387,
-          "item_name": "Kajaric Icon",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249443,
+          "item_name": "Totem of Ancestral Protection",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon"
+            },
             {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon"
@@ -3874,13 +3878,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 206381,
-              "item_name": "Dyadic Icon",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 206382,
               "item_name": "Tempest Icon",
               "source_kind": "vendor",
@@ -3888,19 +3885,26 @@
               "dps_delta": 0
             },
             {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon",
+              "source_kind": "vendor",
+              "source": "Rune Broker",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 78.61861999269618
+            },
+            {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 78.61861999269618
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 93.29542999539362,
-      "no_source_count": 1153,
+      "no_source_count": 1152,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -3933,10 +3937,11 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection",
         "main_hand: Ardent Custodian",
-        "off_hand: Jhordy's Misplaced Screwdriver"
+        "off_hand: Jhordy's Misplaced Screwdriver",
+        "ranged: Totem of Ancestral Protection"
       ],
-      "weights_run_seconds": 1.825324346,
-      "verify_run_seconds": 1.932523812,
+      "weights_run_seconds": 1.745224487,
+      "verify_run_seconds": 1.9379830839999999,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -3984,7 +3989,7 @@
         },
         "ranged": {
           "eligible": 16,
-          "sourced": 7
+          "sourced": 8
         },
         "shoulder": {
           "eligible": 174,
@@ -4655,13 +4660,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 206387,
-          "item_name": "Kajaric Icon",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249443,
+          "item_name": "Totem of Ancestral Protection",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon"
+            },
             {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon"
@@ -4689,13 +4698,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 206381,
-              "item_name": "Dyadic Icon",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 206382,
               "item_name": "Tempest Icon",
               "source_kind": "vendor",
@@ -4703,19 +4705,26 @@
               "dps_delta": 0
             },
             {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon",
+              "source_kind": "vendor",
+              "source": "Rune Broker",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 87.20882289265376
+            },
+            {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 87.20882289265376
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 87.20882289265376,
-      "no_source_count": 1157,
+      "no_source_count": 1156,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4748,10 +4757,11 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection",
         "main_hand: Ardent Custodian",
-        "off_hand: Curve-bladed Ripper"
+        "off_hand: Curve-bladed Ripper",
+        "ranged: Totem of Ancestral Protection"
       ],
-      "weights_run_seconds": 1.825324346,
-      "verify_run_seconds": 1.744617428,
+      "weights_run_seconds": 1.745224487,
+      "verify_run_seconds": 1.712622299,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4799,7 +4809,7 @@
         },
         "ranged": {
           "eligible": 16,
-          "sourced": 7
+          "sourced": 8
         },
         "shoulder": {
           "eligible": 172,
@@ -5113,39 +5123,40 @@
         },
         {
           "slot": "hands",
-          "item_id": 867,
-          "item_name": "Gloves of Holy Might",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 159.0694164332746,
+          "item_id": 227022,
+          "item_name": "Fists of The Five Thunders",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 122.73495567325013,
           "verified": true,
+          "swap_note": "beat the scored pick Gloves of Holy Might (id 867) in the sim: 122.7 vs 121.3 set DPS",
           "alternatives": [
+            {
+              "item_id": 220831,
+              "item_name": "First Sergeant's Mail Gauntlets",
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "score": 155.0694164332695,
+              "score_delta": -1.9999999999993747,
+              "dps_delta": -0.07236229110333718
+            },
             {
               "item_id": 223076,
               "item_name": "Sergeant Major's Mail Gauntlets",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score": 155.0694164332695,
-              "score_delta": -4.0000000000050875,
-              "dps_delta": -0.14472458220690368
+              "score_delta": -1.9999999999993747,
+              "dps_delta": -0.07236229110333718
             },
             {
-              "item_id": 220831,
-              "item_name": "First Sergeant's Mail Gauntlets",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -0.5073100895801161,
+              "item_id": 867,
+              "item_name": "Gloves of Holy Might",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.4040705972832086,
               "verified": true,
-              "sim_dps": 120.8235749863868
-            },
-            {
-              "item_id": 8347,
-              "item_name": "Dragonscale Gauntlets",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "score": 142.14087194460384,
-              "score_delta": -16.928544488670752,
-              "dps_delta": -0.6124941321226851
+              "sim_dps": 121.33088507596692
             }
           ]
         },
@@ -5494,13 +5505,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 206387,
-          "item_name": "Kajaric Icon",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249443,
+          "item_name": "Totem of Ancestral Protection",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon"
+            },
             {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon"
@@ -5528,13 +5543,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 206381,
-              "item_name": "Dyadic Icon",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 206382,
               "item_name": "Tempest Icon",
               "source_kind": "vendor",
@@ -5542,19 +5550,26 @@
               "dps_delta": 0
             },
             {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon",
+              "source_kind": "vendor",
+              "source": "Rune Broker",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 121.33088507596692
+            },
+            {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 121.33088507596692
+              "dps_delta": 0
             }
           ]
         }
       ],
-      "set_dps": 122.91060446571643,
-      "no_source_count": 1494,
+      "set_dps": 124.37762764519584,
+      "no_source_count": 1491,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5577,6 +5592,7 @@
         "back: Bloodlust Cape",
         "chest: Stone Guard's Mail Armor",
         "wrist: Bracers of the Stone Princess",
+        "hands: Fists of The Five Thunders",
         "waist: Highlander's Chain Girdle",
         "legs: Stone Guard's Mail Legplates",
         "feet: Greaves of Withering Despair",
@@ -5587,8 +5603,8 @@
         "main_hand: Dawn's Edge",
         "off_hand: Hammer of the Northern Wind"
       ],
-      "weights_run_seconds": 1.768072826,
-      "verify_run_seconds": 1.919692152,
+      "weights_run_seconds": 1.823124207,
+      "verify_run_seconds": 1.905177884,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5612,7 +5628,7 @@
         },
         "hands": {
           "eligible": 403,
-          "sourced": 282
+          "sourced": 284
         },
         "head": {
           "eligible": 259,
@@ -5636,7 +5652,7 @@
         },
         "ranged": {
           "eligible": 16,
-          "sourced": 7
+          "sourced": 8
         },
         "shoulder": {
           "eligible": 254,
@@ -5950,21 +5966,22 @@
         },
         {
           "slot": "hands",
-          "item_id": 867,
-          "item_name": "Gloves of Holy Might",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 159.0694164332746,
+          "item_id": 227022,
+          "item_name": "Fists of The Five Thunders",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 117.91535728860437,
           "verified": true,
+          "swap_note": "beat the scored pick Gloves of Holy Might (id 867) in the sim: 117.9 vs 116.0 set DPS",
           "alternatives": [
             {
               "item_id": 220831,
               "item_name": "First Sergeant's Mail Gauntlets",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 116.86601301431322
+              "score": 155.0694164332695,
+              "score_delta": -1.9999999999993747,
+              "dps_delta": -0.07236229110333718
             },
             {
               "item_id": 223076,
@@ -5972,17 +5989,17 @@
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score": 155.0694164332695,
-              "score_delta": -4.0000000000050875,
-              "dps_delta": -0.14472458220690368
+              "score_delta": -1.9999999999993747,
+              "dps_delta": -0.07236229110333718
             },
             {
-              "item_id": 8347,
-              "item_name": "Dragonscale Gauntlets",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "score": 142.14087194460384,
-              "score_delta": -16.928544488670752,
-              "dps_delta": -0.6124941321226851
+              "item_id": 867,
+              "item_name": "Gloves of Holy Might",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.9136748955898923,
+              "verified": true,
+              "sim_dps": 116.00168239301448
             }
           ]
         },
@@ -6333,13 +6350,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 206387,
-          "item_name": "Kajaric Icon",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249443,
+          "item_name": "Totem of Ancestral Protection",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon"
+            },
             {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon"
@@ -6367,13 +6388,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 206381,
-              "item_name": "Dyadic Icon",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 206382,
               "item_name": "Tempest Icon",
               "source_kind": "vendor",
@@ -6381,19 +6395,26 @@
               "dps_delta": 0
             },
             {
+              "item_id": 206387,
+              "item_name": "Kajaric Icon",
+              "source_kind": "vendor",
+              "source": "Rune Broker",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 116.00168239301448
+            },
+            {
               "item_id": 249398,
               "item_name": "Polished Driftwood Icon",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 116.00168239301448
+              "dps_delta": 0
             }
           ]
         }
       ],
-      "set_dps": 118.306693498153,
-      "no_source_count": 1499,
+      "set_dps": 120.98372089021825,
+      "no_source_count": 1496,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6417,6 +6438,7 @@
         "back: Bloodlust Cape",
         "chest: Stone Guard's Mail Armor",
         "wrist: Bracers of the Stone Princess",
+        "hands: Fists of The Five Thunders",
         "waist: Defiler's Chain Girdle",
         "legs: Stone Guard's Mail Legplates",
         "feet: Greaves of Withering Despair",
@@ -6427,8 +6449,8 @@
         "main_hand: Dawn's Edge",
         "off_hand: Hammer of the Northern Wind"
       ],
-      "weights_run_seconds": 1.768072826,
-      "verify_run_seconds": 1.859029822,
+      "weights_run_seconds": 1.823124207,
+      "verify_run_seconds": 1.7942062490000001,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6452,7 +6474,7 @@
         },
         "hands": {
           "eligible": 404,
-          "sourced": 279
+          "sourced": 281
         },
         "head": {
           "eligible": 259,
@@ -6476,7 +6498,7 @@
         },
         "ranged": {
           "eligible": 16,
-          "sourced": 7
+          "sourced": 8
         },
         "shoulder": {
           "eligible": 252,
@@ -7187,6 +7209,10 @@
               "item_name": "Totem of the Storm"
             },
             {
+              "item_id": 249443,
+              "item_name": "Totem of Ancestral Protection"
+            },
+            {
               "item_id": 206387,
               "item_name": "Kajaric Icon"
             },
@@ -7224,8 +7250,8 @@
               "dps_delta": 0
             },
             {
-              "item_id": 249398,
-              "item_name": "Polished Driftwood Icon",
+              "item_id": 249443,
+              "item_name": "Totem of Ancestral Protection",
               "source_kind": "crafted",
               "source": "Enchanting",
               "dps_delta": 0
@@ -7244,7 +7270,7 @@
         }
       ],
       "set_dps": 171.12735435843507,
-      "no_source_count": 2304,
+      "no_source_count": 2301,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7279,8 +7305,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Totem of the Storm"
       ],
-      "weights_run_seconds": 1.9037290869999999,
-      "verify_run_seconds": 2.262879379,
+      "weights_run_seconds": 1.90458184,
+      "verify_run_seconds": 2.205843971,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7304,7 +7330,7 @@
         },
         "hands": {
           "eligible": 550,
-          "sourced": 362
+          "sourced": 364
         },
         "head": {
           "eligible": 397,
@@ -7328,7 +7354,7 @@
         },
         "ranged": {
           "eligible": 24,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 406,
@@ -8043,6 +8069,10 @@
               "item_name": "Totem of the Storm"
             },
             {
+              "item_id": 249443,
+              "item_name": "Totem of Ancestral Protection"
+            },
+            {
               "item_id": 206387,
               "item_name": "Kajaric Icon"
             },
@@ -8080,8 +8110,8 @@
               "dps_delta": 0
             },
             {
-              "item_id": 249398,
-              "item_name": "Polished Driftwood Icon",
+              "item_id": 249443,
+              "item_name": "Totem of Ancestral Protection",
               "source_kind": "crafted",
               "source": "Enchanting",
               "dps_delta": 0
@@ -8100,7 +8130,7 @@
         }
       ],
       "set_dps": 166.6393976152385,
-      "no_source_count": 2300,
+      "no_source_count": 2297,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -8134,8 +8164,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Totem of the Storm"
       ],
-      "weights_run_seconds": 1.9037290869999999,
-      "verify_run_seconds": 2.239109365,
+      "weights_run_seconds": 1.90458184,
+      "verify_run_seconds": 2.216931222,
       "coverage": {
         "back": {
           "eligible": 376,
@@ -8159,7 +8189,7 @@
         },
         "hands": {
           "eligible": 554,
-          "sourced": 363
+          "sourced": 365
         },
         "head": {
           "eligible": 400,
@@ -8183,7 +8213,7 @@
         },
         "ranged": {
           "eligible": 24,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 407,

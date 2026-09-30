@@ -38,7 +38,7 @@ No-known-source sample (15 of 204, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-2352113101200000000-0000000000000000)
 
-Set DPS (verified): 53.9. Weights run: 1.5s. Verify run: 1.1s. 409 eligible items had no known source.
+Set DPS (verified): 53.9. Weights run: 1.4s. Verify run: 1.1s. 409 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.288), intellect=not significant (0.400 ± 0.325), crit=0.845 ± 0.045, hit=2.738 ± 0.165, spell_haste=1.692 ± 0.302, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.288), fire_power=not significant (0.000 ± 0.000)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 409, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 00000000000000000-2352113101200001351-0000000000000000)
 
-Set DPS (verified): 105.8. Weights run: 1.3s. Verify run: 1.0s. 568 eligible items had no known source.
+Set DPS (verified): 105.8. Weights run: 1.2s. Verify run: 1.0s. 568 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.308), intellect=not significant (0.667 ± 0.396), crit=0.836 ± 0.047, hit=3.138 ± 0.219, spell_haste=1.901 ± 0.341, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.308), fire_power=not significant (0.000 ± 0.000)
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-2352113101200000000-0000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 1.5s. Verify run: 1.2s. 410 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 1.4s. Verify run: 1.1s. 410 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.288), intellect=not significant (0.400 ± 0.325), crit=0.845 ± 0.045, hit=2.738 ± 0.165, spell_haste=1.692 ± 0.302, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.288), fire_power=not significant (0.000 ± 0.000)
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 410, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-2352113101200001351-0000000000000000)
 
-Set DPS (verified): 103.2. Weights run: 1.3s. Verify run: 1.0s. 568 eligible items had no known source.
+Set DPS (verified): 103.2. Weights run: 1.2s. Verify run: 1.0s. 568 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.308), intellect=not significant (0.667 ± 0.396), crit=0.836 ± 0.047, hit=3.138 ± 0.219, spell_haste=1.901 ± 0.341, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.308), fire_power=not significant (0.000 ± 0.000)
 

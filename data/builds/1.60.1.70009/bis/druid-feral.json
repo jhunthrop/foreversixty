@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:35:37Z",
+  "generated_at": "2026-09-30T02:16:32Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -675,8 +675,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.851482758,
-      "verify_run_seconds": 1.550457754,
+      "weights_run_seconds": 1.788023218,
+      "verify_run_seconds": 1.493894851,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1421,8 +1421,8 @@
         "main_hand: Hammerbone",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.851482758,
-      "verify_run_seconds": 1.541379589,
+      "weights_run_seconds": 1.788023218,
+      "verify_run_seconds": 1.465741973,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2217,8 +2217,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.09359985,
-      "verify_run_seconds": 2.116179834,
+      "weights_run_seconds": 2.092087032,
+      "verify_run_seconds": 2.063270229,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3013,8 +3013,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.09359985,
-      "verify_run_seconds": 2.096342031,
+      "weights_run_seconds": 2.092087032,
+      "verify_run_seconds": 2.055481171,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3718,6 +3718,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -3748,13 +3752,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -3769,12 +3766,19 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 131.41800293411936
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 131.41800293411936,
-      "no_source_count": 836,
+      "no_source_count": 835,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -3806,8 +3810,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 2.2303875,
-      "verify_run_seconds": 2.233930723,
+      "weights_run_seconds": 2.225435185,
+      "verify_run_seconds": 2.167143554,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -3855,7 +3859,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 118,
@@ -4511,6 +4515,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -4541,13 +4549,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -4562,12 +4563,19 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 129.70986104934386
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 129.70986104934386,
-      "no_source_count": 845,
+      "no_source_count": 844,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4600,8 +4608,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 2.2303875,
-      "verify_run_seconds": 2.197147593,
+      "weights_run_seconds": 2.225435185,
+      "verify_run_seconds": 2.188790492,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4649,7 +4657,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 115,
@@ -5324,6 +5332,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -5354,13 +5366,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -5375,12 +5380,19 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 154.71704479878105
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 154.71704479878105,
-      "no_source_count": 1087,
+      "no_source_count": 1082,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5411,8 +5423,8 @@
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Smoking Heart of the Mountain"
       ],
-      "weights_run_seconds": 2.177696661,
-      "verify_run_seconds": 2.192945448,
+      "weights_run_seconds": 2.202216606,
+      "verify_run_seconds": 2.201483183,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5436,7 +5448,7 @@
         },
         "hands": {
           "eligible": 290,
-          "sourced": 206
+          "sourced": 210
         },
         "head": {
           "eligible": 192,
@@ -5460,7 +5472,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 175,
@@ -6137,6 +6149,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -6167,13 +6183,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -6188,12 +6197,19 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 159.365715963529
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 159.365715963529,
-      "no_source_count": 1096,
+      "no_source_count": 1091,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6225,8 +6241,8 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 2.177696661,
-      "verify_run_seconds": 2.194118254,
+      "weights_run_seconds": 2.202216606,
+      "verify_run_seconds": 2.188147399,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6250,7 +6266,7 @@
         },
         "hands": {
           "eligible": 289,
-          "sourced": 202
+          "sourced": 206
         },
         "head": {
           "eligible": 193,
@@ -6274,7 +6290,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 172,
@@ -6943,6 +6959,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -6973,13 +6993,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 213594,
-              "item_name": "Idol of the Heckler",
-              "source_kind": "world",
-              "source": "Zai'enki",
-              "dps_delta": 0
-            },
-            {
               "item_id": 220915,
               "item_name": "Idol of the Raging Shambler",
               "source_kind": "vendor",
@@ -6994,13 +7007,20 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 162.33862003919518
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ],
           "low_value": true
         }
       ],
       "set_dps": 169.98294655954118,
-      "no_source_count": 1811,
+      "no_source_count": 1806,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7034,8 +7054,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.170249261,
-      "verify_run_seconds": 2.2253399,
+      "weights_run_seconds": 2.215996875,
+      "verify_run_seconds": 2.172535571,
       "coverage": {
         "back": {
           "eligible": 371,
@@ -7059,7 +7079,7 @@
         },
         "hands": {
           "eligible": 407,
-          "sourced": 266
+          "sourced": 270
         },
         "head": {
           "eligible": 312,
@@ -7083,7 +7103,7 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 10
+          "sourced": 11
         },
         "shoulder": {
           "eligible": 305,
@@ -7754,6 +7774,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -7784,13 +7808,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 213594,
-              "item_name": "Idol of the Heckler",
-              "source_kind": "world",
-              "source": "Zai'enki",
-              "dps_delta": 0
-            },
-            {
               "item_id": 220915,
               "item_name": "Idol of the Raging Shambler",
               "source_kind": "vendor",
@@ -7805,13 +7822,20 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 165.40679014757154
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ],
           "low_value": true
         }
       ],
       "set_dps": 173.60008967197797,
-      "no_source_count": 1819,
+      "no_source_count": 1814,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7844,8 +7868,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.170249261,
-      "verify_run_seconds": 2.201856647,
+      "weights_run_seconds": 2.215996875,
+      "verify_run_seconds": 2.201830263,
       "coverage": {
         "back": {
           "eligible": 376,
@@ -7869,7 +7893,7 @@
         },
         "hands": {
           "eligible": 407,
-          "sourced": 263
+          "sourced": 267
         },
         "head": {
           "eligible": 313,
@@ -7893,7 +7917,7 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 10
+          "sourced": 11
         },
         "shoulder": {
           "eligible": 301,

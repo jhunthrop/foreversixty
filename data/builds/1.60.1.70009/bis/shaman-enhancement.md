@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-253100000000000000-0000000000000000)
 
-Set DPS (verified): 43.1. Weights run: 1.4s. Verify run: 1.5s. 399 eligible items had no known source.
+Set DPS (verified): 43.1. Weights run: 1.5s. Verify run: 1.5s. 399 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.025, crit=4.333 ± 0.103, hit=4.241 ± 0.303, melee_haste=2.440 ± 0.609
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 399, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-253130030004000000-0000000000000000)
 
-Set DPS (verified): 70.9. Weights run: 1.6s. Verify run: 1.8s. 821 eligible items had no known source.
+Set DPS (verified): 70.9. Weights run: 1.5s. Verify run: 1.8s. 821 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.432 ± 0.100, crit=7.348 ± 0.337, hit=5.948 ± 0.471, melee_haste=2.835 ± 0.417
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 821, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 93.3. Weights run: 1.8s. Verify run: 1.9s. 1153 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 1.7s. Verify run: 1.9s. 1152 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.386 ± 0.051, crit=7.710 ± 0.213, hit=5.187 ± 0.448, melee_haste=3.244 ± 0.122
 
@@ -90,15 +90,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Talisman of Arathor (21118, +0.00 DPS) [rep] |
 | main_hand | Ardent Custodian (868) | World drop [world_drop] | 460.0 | yes | Bonebiter (6830, +0.00 DPS) [quest]; Illusionary Rod (7713, +0.00 DPS) [dungeon]; Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor] |
 | off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 0.0 | yes | Shoni's Disarming Tool (9608, -7.94 DPS) [quest]; Salbac Shield (4652, -15.59 DPS) [quest]; Combat Shield (4065, -15.74 DPS) [world_drop] |
-| ranged | Kajaric Icon (206387) (or Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Rune Broker [vendor] | 0.0 | yes | Dyadic Icon (206381, +0.00 DPS) [vendor]; Tempest Icon (206382, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Totem of Ancestral Protection (249443) (or Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Enchanting [crafted] | 0.0 | yes | Tempest Icon (206382, +0.00 DPS) [vendor]; Kajaric Icon (206387, +0.00 DPS, sim-verified) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted] |
 
-**New at 40:** head: Raging Berserker's Helm; shoulder: Imperial Leather Spaulders; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Chain Girdle; legs: Scarlet Leggings; feet: Prowler's Leather Shoes; finger1: Protector's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection; main_hand: Ardent Custodian; off_hand: Jhordy's Misplaced Screwdriver
+**New at 40:** head: Raging Berserker's Helm; shoulder: Imperial Leather Spaulders; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Chain Girdle; legs: Scarlet Leggings; feet: Prowler's Leather Shoes; finger1: Protector's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection; main_hand: Ardent Custodian; off_hand: Jhordy's Misplaced Screwdriver; ranged: Totem of Ancestral Protection
 
-No-known-source sample (15 of 1153, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1152, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ### Band 50 (dwarf, 5500000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 122.9. Weights run: 1.8s. Verify run: 1.9s. 1494 eligible items had no known source.
+Set DPS (verified): 124.4. Weights run: 1.8s. Verify run: 1.9s. 1491 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.512 ± 0.061, crit=9.934 ± 0.268, hit=7.977 ± 0.662, melee_haste=3.814 ± 0.090
 
@@ -110,7 +110,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | back | Bloodlust Cape (14801) | Maraudon: Princess Theradras [dungeon] | 18.0 | yes | Sergeant Major's Cape (16336, +0.00 DPS, sim-verified) [pvp]; Pridelord Cape (14673, -0.27 DPS) [dungeon]; Sergeant Major's Cape (16315, -0.29 DPS) [pvp] |
 | chest | Stone Guard's Mail Armor (220826) (or Knight's Mail Armor (223078)) | Lady Palanseer [vendor] | 163.1 | yes | Knight's Mail Armor (223078, +0.00 DPS, sim-verified) [vendor]; Stone Guard's Inscribed Chestpiece (220838, -0.87 DPS) [vendor]; Wildthorn Mail (12624, -3.01 DPS) [crafted] |
 | wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes | Prowler's Leather Bracers (252539, -0.24 DPS, sim-verified) [crafted]; Branded Leather Bracers (19508, -0.29 DPS) [dungeon]; Skulker's Leather Bracers (252540, -0.34 DPS) [crafted] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | 159.1 | yes | Sergeant Major's Mail Gauntlets (223076, -0.14 DPS) [vendor]; First Sergeant's Mail Gauntlets (220831, -0.51 DPS, sim-verified) [vendor]; Dragonscale Gauntlets (8347, -0.61 DPS) [crafted] |
+| hands | Fists of The Five Thunders (227022) | Mokvar [vendor] | 0.0 | yes | First Sergeant's Mail Gauntlets (220831, -0.07 DPS) [vendor]; Sergeant Major's Mail Gauntlets (223076, -0.07 DPS) [vendor]; Gloves of Holy Might (867, -1.40 DPS, sim-verified) [world_drop] |
 | waist | Highlander's Chain Girdle (20088) (or Highlander's Leather Girdle (20115)) | The League of Arathor [rep] | 159.1 | yes | Highlander's Leather Girdle (20115, +0.00 DPS, sim-verified) [rep]; Highlander's Chain Girdle (20089, -0.43 DPS) [rep]; Highlander's Cloth Girdle (20097, -0.72 DPS) [rep] |
 | legs | Stone Guard's Mail Legplates (220834) | Lady Palanseer [vendor] | 0.0 | yes | Knight's Mail Legplates (223074, +0.00 DPS) [vendor]; Stone Guard's Inscribed Legplates (220839, -0.87 DPS) [vendor]; Stormshroud Pants (15057, -1.58 DPS, sim-verified) [crafted] |
 | feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 79.8 | yes | Prowler's Leather Boots (252468, -1.11 DPS, sim-verified) [crafted]; Skulker's Leather Boots (252469, -1.85 DPS) [crafted]; Skirmisher's Mail Sabatons (252578, -1.95 DPS) [crafted] |
@@ -120,15 +120,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -0.40 DPS, sim-verified) [quest] |
 | main_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 0.0 | yes | Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Darkspear Raider's Reaper (272080, +0.00 DPS) [vendor] |
 | off_hand | Hammer of the Northern Wind (810) | World drop [world_drop] | 553.3 | yes | Claw of Celebras (17738, -2.57 DPS) [dungeon]; Shoni's Disarming Tool (9608, -11.89 DPS) [quest]; Shizzle's Drizzle Blocker (11915, -19.08 DPS) [quest] |
-| ranged | Kajaric Icon (206387) (or Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Rune Broker [vendor] | 0.0 | yes | Dyadic Icon (206381, +0.00 DPS) [vendor]; Tempest Icon (206382, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Totem of Ancestral Protection (249443) (or Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Enchanting [crafted] | 0.0 | yes | Tempest Icon (206382, +0.00 DPS) [vendor]; Kajaric Icon (206387, +0.00 DPS, sim-verified) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted] |
 
-**New at 50:** shoulder: Blood Guard's Mail Epaulets; back: Bloodlust Cape; chest: Stone Guard's Mail Armor; wrist: Bracers of the Stone Princess; waist: Highlander's Chain Girdle; legs: Stone Guard's Mail Legplates; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Protector's Band; trinket1: Frozen Heart of the Mountain; trinket2: Ankh of Life; main_hand: Dawn's Edge; off_hand: Hammer of the Northern Wind
+**New at 50:** shoulder: Blood Guard's Mail Epaulets; back: Bloodlust Cape; chest: Stone Guard's Mail Armor; wrist: Bracers of the Stone Princess; hands: Fists of The Five Thunders; waist: Highlander's Chain Girdle; legs: Stone Guard's Mail Legplates; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Protector's Band; trinket1: Frozen Heart of the Mountain; trinket2: Ankh of Life; main_hand: Dawn's Edge; off_hand: Hammer of the Northern Wind
 
-No-known-source sample (15 of 1494, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 1491, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 60 (dwarf, 5533220000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 171.1. Weights run: 1.9s. Verify run: 2.3s. 2304 eligible items had no known source.
+Set DPS (verified): 171.1. Weights run: 1.9s. Verify run: 2.2s. 2301 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.519 ± 0.068, crit=10.313 ± 0.324, hit=11.159 ± 1.127, melee_haste=3.972 ± 0.142
 
@@ -150,17 +150,17 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
 | main_hand | Ebon Hand (19170) | Blacksmithing [crafted] | 0.0 | yes | High Warlord's Battle Axe (234543, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
 | off_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | 0.0 | yes | Grand Marshal's Left Hand Blade (18847, +0.00 DPS) [vendor]; High Warlord's Left Claw (234558, +0.00 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, +0.00 DPS) [vendor] |
-| ranged | Totem of the Storm (23199) (or Totem of the Storm (272432), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Kajaric Icon (206387, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS, sim-verified) [world] |
+| ranged | Totem of the Storm (23199) (or Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Kajaric Icon (206387, +0.00 DPS) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS, sim-verified) [world] |
 
 **New at 60:** head: Mask of the Unforgiven; neck: Onyxia Tooth Pendant; back: Chromatic Cloak; chest: Bloodsoul Breastplate; wrist: Primal Batskin Bracers; hands: Stormshroud Gloves; waist: Highlander's Chain Girdle; legs: Sentinel's Chain Leggings; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Thunderbrew's Boot Flask; main_hand: Ebon Hand; off_hand: Shadowsong's Sorrow; ranged: Totem of the Storm
 
-No-known-source sample (15 of 2304, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2301, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ## Horde
 
 ### Band 20 (orc, 0000000000000000-253100000000000000-0000000000000000)
 
-Set DPS (verified): 45.8. Weights run: 1.4s. Verify run: 1.4s. 401 eligible items had no known source.
+Set DPS (verified): 45.8. Weights run: 1.5s. Verify run: 1.4s. 401 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.025, crit=4.333 ± 0.103, hit=4.241 ± 0.303, melee_haste=2.440 ± 0.609
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 401, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 0000000000000000-253130030004000000-0000000000000000)
 
-Set DPS (verified): 75.1. Weights run: 1.6s. Verify run: 1.7s. 825 eligible items had no known source.
+Set DPS (verified): 75.1. Weights run: 1.5s. Verify run: 1.7s. 825 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.432 ± 0.100, crit=7.348 ± 0.337, hit=5.948 ± 0.471, melee_haste=2.835 ± 0.417
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 825, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 87.2. Weights run: 1.8s. Verify run: 1.7s. 1157 eligible items had no known source.
+Set DPS (verified): 87.2. Weights run: 1.7s. Verify run: 1.7s. 1156 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.386 ± 0.051, crit=7.710 ± 0.213, hit=5.187 ± 0.448, melee_haste=3.244 ± 0.122
 
@@ -242,15 +242,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Rune of Perfection (21565) | Warsong Outriders [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Defiler's Talisman (21116, +0.00 DPS) [rep] |
 | main_hand | Ardent Custodian (868) | World drop [world_drop] | 460.0 | yes | Staff of Jordan (873, +0.00 DPS) [world_drop]; Illusionary Rod (7713, +0.00 DPS) [dungeon]; Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor] |
 | off_hand | Curve-bladed Ripper (2815) | World drop [world_drop] | 439.6 | yes | Pit Fighter's Shield (4507, -15.68 DPS) [quest]; Combat Shield (4065, -15.76 DPS) [world_drop]; Aegis of the Scarlet Commander (7726, -15.76 DPS) [dungeon] |
-| ranged | Kajaric Icon (206387) (or Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Rune Broker [vendor] | 0.0 | yes | Dyadic Icon (206381, +0.00 DPS) [vendor]; Tempest Icon (206382, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Totem of Ancestral Protection (249443) (or Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Enchanting [crafted] | 0.0 | yes | Tempest Icon (206382, +0.00 DPS) [vendor]; Kajaric Icon (206387, +0.00 DPS, sim-verified) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted] |
 
-**New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Chain Girdle; legs: Scarlet Leggings; feet: Prowler's Leather Shoes; finger1: Legionnaire's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection; main_hand: Ardent Custodian; off_hand: Curve-bladed Ripper
+**New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Chain Girdle; legs: Scarlet Leggings; feet: Prowler's Leather Shoes; finger1: Legionnaire's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection; main_hand: Ardent Custodian; off_hand: Curve-bladed Ripper; ranged: Totem of Ancestral Protection
 
-No-known-source sample (15 of 1157, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7470 Regal Wizard Hat
+No-known-source sample (15 of 1156, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7470 Regal Wizard Hat
 
 ### Band 50 (orc, 5500000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 118.3. Weights run: 1.8s. Verify run: 1.9s. 1499 eligible items had no known source.
+Set DPS (verified): 121.0. Weights run: 1.8s. Verify run: 1.8s. 1496 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.512 ± 0.061, crit=9.934 ± 0.268, hit=7.977 ± 0.662, melee_haste=3.814 ± 0.090
 
@@ -262,7 +262,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | back | Bloodlust Cape (14801) | Maraudon: Princess Theradras [dungeon] | 18.0 | yes | Sergeant Major's Cape (16336, +0.00 DPS, sim-verified) [pvp]; Pridelord Cape (14673, -0.27 DPS) [dungeon]; Sergeant Major's Cape (16315, -0.29 DPS) [pvp] |
 | chest | Stone Guard's Mail Armor (220826) (or Knight's Mail Armor (223078)) | Lady Palanseer [vendor] | 163.1 | yes | Knight's Mail Armor (223078, +0.00 DPS, sim-verified) [vendor]; Stone Guard's Inscribed Chestpiece (220838, -0.87 DPS) [vendor]; Wildthorn Mail (12624, -3.01 DPS) [crafted] |
 | wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes | Prowler's Leather Bracers (252539, +0.00 DPS, sim-verified) [crafted]; Branded Leather Bracers (19508, -0.29 DPS) [dungeon]; Skulker's Leather Bracers (252540, -0.34 DPS) [crafted] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | 159.1 | yes | First Sergeant's Mail Gauntlets (220831, +0.00 DPS, sim-verified) [vendor]; Sergeant Major's Mail Gauntlets (223076, -0.14 DPS) [vendor]; Dragonscale Gauntlets (8347, -0.61 DPS) [crafted] |
+| hands | Fists of The Five Thunders (227022) | Mokvar [vendor] | 0.0 | yes | First Sergeant's Mail Gauntlets (220831, -0.07 DPS) [vendor]; Sergeant Major's Mail Gauntlets (223076, -0.07 DPS) [vendor]; Gloves of Holy Might (867, -1.91 DPS, sim-verified) [world_drop] |
 | waist | Defiler's Chain Girdle (20151) (or Defiler's Leather Girdle (20193)) | The Defilers [rep] | 159.1 | yes | Defiler's Leather Girdle (20193, +0.00 DPS, sim-verified) [rep]; Defiler's Chain Girdle (20153, -0.43 DPS) [rep]; Highlander's Mail Girdle (20118, -0.72 DPS) [vendor] |
 | legs | Stone Guard's Mail Legplates (220834) | Lady Palanseer [vendor] | 0.0 | yes | Knight's Mail Legplates (223074, +0.00 DPS) [vendor]; Stone Guard's Inscribed Legplates (220839, -0.87 DPS) [vendor]; Stormshroud Pants (15057, -2.31 DPS, sim-verified) [crafted] |
 | feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 79.8 | yes | Prowler's Leather Boots (252468, -0.46 DPS, sim-verified) [crafted]; Skulker's Leather Boots (252469, -1.85 DPS) [crafted]; Skirmisher's Mail Sabatons (252578, -1.95 DPS) [crafted] |
@@ -272,15 +272,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 0.0 | yes | Ankh of Life (1713, +0.00 DPS, sim-verified) [world_drop]; Guardian Talisman (1490, -2.60 DPS) [quest]; Blazing Emblem (2802, -2.60 DPS) [world_drop] |
 | main_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 0.0 | yes | Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Darkspear Raider's Reaper (272080, +0.00 DPS) [vendor] |
 | off_hand | Hammer of the Northern Wind (810) | World drop [world_drop] | 553.3 | yes | Claw of Celebras (17738, -2.57 DPS) [dungeon]; White Bone Shredder (11863, -3.86 DPS) [quest]; Shizzle's Drizzle Blocker (11915, -19.08 DPS) [quest] |
-| ranged | Kajaric Icon (206387) (or Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Rune Broker [vendor] | 0.0 | yes | Dyadic Icon (206381, +0.00 DPS) [vendor]; Tempest Icon (206382, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Totem of Ancestral Protection (249443) (or Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Enchanting [crafted] | 0.0 | yes | Tempest Icon (206382, +0.00 DPS) [vendor]; Kajaric Icon (206387, +0.00 DPS, sim-verified) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted] |
 
-**New at 50:** neck: Woven Ivy Necklace; shoulder: Blood Guard's Mail Epaulets; back: Bloodlust Cape; chest: Stone Guard's Mail Armor; wrist: Bracers of the Stone Princess; waist: Defiler's Chain Girdle; legs: Stone Guard's Mail Legplates; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Legionnaire's Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Dawn's Edge; off_hand: Hammer of the Northern Wind
+**New at 50:** neck: Woven Ivy Necklace; shoulder: Blood Guard's Mail Epaulets; back: Bloodlust Cape; chest: Stone Guard's Mail Armor; wrist: Bracers of the Stone Princess; hands: Fists of The Five Thunders; waist: Defiler's Chain Girdle; legs: Stone Guard's Mail Legplates; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Legionnaire's Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Dawn's Edge; off_hand: Hammer of the Northern Wind
 
-No-known-source sample (15 of 1499, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 1496, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 60 (orc, 5533220000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 166.6. Weights run: 1.9s. Verify run: 2.2s. 2300 eligible items had no known source.
+Set DPS (verified): 166.6. Weights run: 1.9s. Verify run: 2.2s. 2297 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.519 ± 0.068, crit=10.313 ± 0.324, hit=11.159 ± 1.127, melee_haste=3.972 ± 0.142
 
@@ -302,9 +302,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 0.0 | yes | Ankh of Life (1713, -2.14 DPS, sim-verified) [world_drop]; Guardian Talisman (1490, -3.62 DPS) [quest]; Blazing Emblem (2802, -3.62 DPS) [world_drop] |
 | main_hand | Annihilator (12798) | Blacksmithing [crafted] | 0.0 | yes | High Warlord's Battle Axe (234543, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
 | off_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | 0.0 | yes | Grand Marshal's Left Hand Blade (18847, +0.00 DPS) [vendor]; High Warlord's Left Claw (234558, +0.00 DPS) [vendor]; Grand Marshal's Left Hand Blade (234584, +0.00 DPS) [vendor] |
-| ranged | Totem of the Storm (23199) (or Totem of the Storm (272432), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Kajaric Icon (206387, +0.00 DPS) [vendor]; Polished Driftwood Icon (249398, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS, sim-verified) [world] |
+| ranged | Totem of the Storm (23199) (or Totem of the Storm (272432), Totem of Ancestral Protection (249443), Kajaric Icon (206387), Polished Driftwood Icon (249398), Tempest Icon (206382), Dyadic Icon (206381), Galvanic Icon (206386), Sulfurous Icon (206388), Voltaic Icon (225838)) | Mushgog [world] | 0.0 | yes | Kajaric Icon (206387, +0.00 DPS) [vendor]; Totem of Ancestral Protection (249443, +0.00 DPS) [crafted]; Totem of the Storm (272432, +0.00 DPS, sim-verified) [world] |
 
 **New at 60:** head: Mask of the Unforgiven; neck: Blazefury Medallion; back: Chromatic Cloak; chest: Bloodsoul Breastplate; wrist: Primal Batskin Bracers; hands: Stormshroud Gloves; waist: Defiler's Chain Girdle; legs: Outrider's Chain Leggings; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: Annihilator; off_hand: Shadowsong's Sorrow; ranged: Totem of the Storm
 
-No-known-source sample (15 of 2300, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2297, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 

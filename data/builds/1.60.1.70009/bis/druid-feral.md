@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 62.4. Weights run: 1.9s. Verify run: 1.6s. 285 eligible items had no known source.
+Set DPS (verified): 62.4. Weights run: 1.8s. Verify run: 1.5s. 285 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=8.959 ± 0.224, hit=not significant (0.000 ± 0.000), melee_haste=5.281 ± 0.416
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 589, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 131.4. Weights run: 2.2s. Verify run: 2.2s. 836 eligible items had no known source.
+Set DPS (verified): 131.4. Weights run: 2.2s. Verify run: 2.2s. 835 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.534 ± 0.071, crit=11.632 ± 0.333, hit=not significant (0.000 ± 0.000), melee_haste=7.650 ± 0.975
 
@@ -90,15 +90,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Talisman of Arathor (21118, +0.00 DPS) [rep] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Thornstone Sledgehammer (1722, +0.00 DPS) [world_drop]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Illusionary Rod (7713, -28.96 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 40:** head: White Bandit Mask; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Sergeant Major's Cape; chest: Barbaric Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; legs: Triprunner Dungarees; feet: Prowler's Leather Shoes; finger1: Protector's Band; trinket1: Ankh of Life; trinket2: Rune of Perfection
 
-No-known-source sample (15 of 836, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
+No-known-source sample (15 of 835, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
 
 ### Band 50 (night-elf, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 154.7. Weights run: 2.2s. Verify run: 2.2s. 1087 eligible items had no known source.
+Set DPS (verified): 154.7. Weights run: 2.2s. Verify run: 2.2s. 1082 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.597 ± 0.077, crit=12.908 ± 0.369, hit=not significant (0.000 ± 0.000), melee_haste=7.662 ± 1.230
 
@@ -120,15 +120,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Smoking Heart of the Mountain (11811) | Enchanting [crafted] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Illusionary Rod (7713, +0.00 DPS) [dungeon]; Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 50:** head: Knight-Lieutenant's Leather Headband; neck: Sentinel's Medallion; shoulder: Knight-Lieutenant's Leather Shoulders; chest: Knight's Leather Armor; wrist: Deepfury Bracers; waist: Highlander's Leather Girdle; legs: Stormshroud Pants; feet: Prowler's Leather Boots; finger1: Protector's Band; trinket1: Frozen Heart of the Mountain; trinket2: Smoking Heart of the Mountain
 
-No-known-source sample (15 of 1087, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1082, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 
 ### Band 60 (night-elf, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 170.0. Weights run: 2.2s. Verify run: 2.2s. 1811 eligible items had no known source.
+Set DPS (verified): 170.0. Weights run: 2.2s. Verify run: 2.2s. 1806 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.760 ± 0.098, crit=13.720 ± 0.409, hit=not significant (0.000 ± 0.000), melee_haste=not significant (7.156 ± 1.916)
 
@@ -150,17 +150,17 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Talisman of Arathor (20071) | The League of Arathor [rep] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop] |
 | main_hand | The Unstoppable Force (19323) | Stormpike Guard [rep] | 0.0 | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Glaive (234569, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 60:** head: Ragefury Eyepatch; neck: Blazefury Medallion; back: Cloak of the Fallen God; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Devilsaur Gauntlets; waist: Highlander's Leather Girdle; feet: Drudge Boots; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: The Unstoppable Force; ranged: Idol of the Moon
 
-No-known-source sample (15 of 1811, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1806, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 
 ## Horde
 
 ### Band 20 (tauren, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 61.0. Weights run: 1.9s. Verify run: 1.5s. 290 eligible items had no known source.
+Set DPS (verified): 61.0. Weights run: 1.8s. Verify run: 1.5s. 290 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=8.959 ± 0.224, hit=not significant (0.000 ± 0.000), melee_haste=5.281 ± 0.416
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 599, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 129.7. Weights run: 2.2s. Verify run: 2.2s. 845 eligible items had no known source.
+Set DPS (verified): 129.7. Weights run: 2.2s. Verify run: 2.2s. 844 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.534 ± 0.071, crit=11.632 ± 0.333, hit=not significant (0.000 ± 0.000), melee_haste=7.650 ± 0.975
 
@@ -242,15 +242,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Rune of Perfection (21565) | Warsong Outriders [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Defiler's Talisman (21116, +0.00 DPS) [rep] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Thornstone Sledgehammer (1722, +0.00 DPS) [world_drop]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Illusionary Rod (7713, -28.36 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 40:** head: White Bandit Mask; neck: Ethereal Talisman; shoulder: Sunburn Spaulders; back: Sergeant Major's Cape; chest: Barbaric Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Tharg's Shoelace; legs: Triprunner Dungarees; feet: Prowler's Leather Shoes; finger1: Legionnaire's Band; trinket1: Ankh of Life; trinket2: Rune of Perfection
 
-No-known-source sample (15 of 845, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
+No-known-source sample (15 of 844, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
 
 ### Band 50 (tauren, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 159.4. Weights run: 2.2s. Verify run: 2.2s. 1096 eligible items had no known source.
+Set DPS (verified): 159.4. Weights run: 2.2s. Verify run: 2.2s. 1091 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.597 ± 0.077, crit=12.908 ± 0.369, hit=not significant (0.000 ± 0.000), melee_haste=7.662 ± 1.230
 
@@ -272,15 +272,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Illusionary Rod (7713, +0.00 DPS) [dungeon]; Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, +0.00 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 50:** head: Knight-Lieutenant's Leather Headband; neck: Woven Ivy Necklace; shoulder: Knight-Lieutenant's Leather Shoulders; chest: Knight's Leather Armor; wrist: Deepfury Bracers; waist: Defiler's Leather Girdle; legs: Stormshroud Pants; feet: Prowler's Leather Boots; finger1: Legionnaire's Band; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain
 
-No-known-source sample (15 of 1096, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1091, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 
 ### Band 60 (tauren, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 173.6. Weights run: 2.2s. Verify run: 2.2s. 1819 eligible items had no known source.
+Set DPS (verified): 173.6. Weights run: 2.2s. Verify run: 2.2s. 1814 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.760 ± 0.098, crit=13.720 ± 0.409, hit=not significant (0.000 ± 0.000), melee_haste=not significant (7.156 ± 1.916)
 
@@ -302,9 +302,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Onyxia Blood Talisman (18406) | For All To See [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Ankh of Life (1713, +0.00 DPS) [world_drop]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
 | main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | 0.0 | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Glaive (234569, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 60:** head: Ragefury Eyepatch; neck: Blazefury Medallion; back: Cloak of the Fallen God; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Devilsaur Gauntlets; waist: Defiler's Leather Girdle; feet: Drudge Boots; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: The Unstoppable Force; ranged: Idol of the Moon
 
-No-known-source sample (15 of 1819, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1814, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 

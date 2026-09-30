@@ -68,7 +68,7 @@ No-known-source sample (15 of 589, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 5222211015401050-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 85.2. Weights run: 1.9s. Verify run: 1.3s. 836 eligible items had no known source.
+Set DPS (verified): 85.2. Weights run: 1.8s. Verify run: 1.3s. 835 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.703 ± 0.150, crit=1.236 ± 0.144, hit=2.985 ± 0.232, spell_haste=not significant (0.153 ± 0.061), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.483 ± 0.001, arcane_power=0.517 ± 0.004
 
@@ -90,15 +90,15 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Talisman of Arathor (21118, +0.00 DPS) [rep] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Mograine's Might (7723, +0.00 DPS) [dungeon]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Staff of Jordan (873, -4.95 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 40:** head: Spellpower Goggles Xtreme; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Guardian Leather Bracers; hands: Gloves of the Greatfather; waist: Deathmage Sash; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Lorekeeper's Ring; trinket1: Ankh of Life; trinket2: Rune of Perfection
 
-No-known-source sample (15 of 836, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
+No-known-source sample (15 of 835, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
 
 ### Band 50 (night-elf, 5222211015401051-0000000000000000000-5400000000000000)
 
-Set DPS (verified): 96.8. Weights run: 1.9s. Verify run: 1.2s. 1087 eligible items had no known source.
+Set DPS (verified): 101.5. Weights run: 1.9s. Verify run: 1.2s. 1082 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.737 ± 0.179, crit=1.945 ± 0.234, hit=4.782 ± 0.380, spell_haste=not significant (0.344 ± 0.118), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.548 ± 0.002, arcane_power=0.452 ± 0.004
 
@@ -107,28 +107,28 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | head | Knight-Lieutenant's Leather Headband (220850) (or Blood Guard's Leather Headband (220851)) | Captain Dirgehammer [vendor] | 75.0 | yes | Blood Guard's Leather Headband (220851, +0.00 DPS, sim-verified) [vendor]; Eye of Theradras (17715, -3.87 DPS) [dungeon]; Soothsayer's Headdress (17740, -4.69 DPS) [dungeon] |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 11.4 | yes | Mindburst Medallion (11196, +0.00 DPS, sim-verified) [quest]; Horizon Choker (13085, -0.13 DPS) [world]; Darkspear Warding Pendant (272073, -0.55 DPS) [vendor] |
 | shoulder | Knight-Lieutenant's Leather Shoulders (220852) (or Blood Guard's Leather Shoulders (220853)) | Captain Dirgehammer [vendor] | 75.0 | yes | Blood Guard's Leather Shoulders (220853, +0.00 DPS, sim-verified) [vendor]; Knight-Lieutenant's Crackling Leather Spaulders (220870, -0.90 DPS) [vendor]; Blood Guard's Crackling Leather Spaulders (220871, -0.90 DPS) [vendor] |
-| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 18.4 | yes | Big Voodoo Cloak (8216, -0.78 DPS) [crafted]; Darkspear Raider's Cloak (272076, -0.93 DPS) [vendor]; Runecloth Cloak (13860, -1.32 DPS, sim-verified) [crafted] |
+| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 18.4 | yes | Big Voodoo Cloak (8216, -0.78 DPS) [crafted]; Darkspear Raider's Cloak (272076, -0.93 DPS) [vendor]; Runecloth Cloak (13860, -1.36 DPS, sim-verified) [crafted] |
 | chest | Knight's Leather Armor (220854) (or Stone Guard's Leather Armor (220855)) | Captain Dirgehammer [vendor] | 75.0 | yes | Stone Guard's Leather Armor (220855, +0.00 DPS, sim-verified) [vendor]; Knight's Crackling Leather Tunic (220868, -3.12 DPS) [vendor]; Stone Guard's Crackling Leather Tunic (220869, -3.12 DPS) [vendor] |
-| wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 17.4 | yes | Skycaller's Leather Bracers (252542, +0.00 DPS, sim-verified) [crafted]; Nethergeld Cuffs (254061, -0.60 DPS) [crafted]; Bloodband Bracers (11469, -0.66 DPS) [quest] |
-| hands | Gloves of Holy Might (867) (or Fletcher's Gloves (7348), Shadowskin Gloves (18238), Sergeant Major's Leather Gauntlets (220856), First Sergeant's Leather Gauntlets (220857)) | World drop [world_drop] | 27.2 | yes | Shadowskin Gloves (18238, +0.00 DPS) [crafted]; Sergeant Major's Leather Gauntlets (220856, +0.00 DPS) [vendor]; Fletcher's Gloves (7348, -0.58 DPS, sim-verified) [crafted] |
-| waist | Highlander's Cloth Girdle (20097) | The League of Arathor [rep] | 39.9 | yes | Highlander's Lizardhide Girdle (20103, -1.07 DPS, sim-verified) [rep]; Highlander's Leather Girdle (20115, -1.45 DPS) [rep]; Skycaller's Leather Waistguard (252476, -1.73 DPS) [crafted] |
-| legs | Knight's Crackling Leather Leggings (220864) (or Stone Guard's Crackling Leather Leggings (220865)) | Captain Dirgehammer [vendor] | 94.4 | yes | Stone Guard's Crackling Leather Leggings (220865, +0.00 DPS, sim-verified) [vendor]; Knight's Leather Pants (220858, -2.22 DPS) [vendor]; Stone Guard's Leather Pants (220859, -2.22 DPS) [vendor] |
+| wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 17.4 | yes | Skycaller's Leather Bracers (252542, -0.15 DPS, sim-verified) [crafted]; Nethergeld Cuffs (254061, -0.60 DPS) [crafted]; Bloodband Bracers (11469, -0.66 DPS) [quest] |
+| hands | Feralheart Hands (226777) | Mokvar [vendor] | 28.6 | yes | Fletcher's Gloves (7348, -0.16 DPS) [crafted]; Shadowskin Gloves (18238, -0.16 DPS) [crafted]; Gloves of Holy Might (867, -4.70 DPS, sim-verified) [world_drop] |
+| waist | Highlander's Cloth Girdle (20097) | The League of Arathor [rep] | 39.9 | yes | Highlander's Lizardhide Girdle (20103, -0.93 DPS, sim-verified) [rep]; Highlander's Leather Girdle (20115, -1.45 DPS) [rep]; Skycaller's Leather Waistguard (252476, -1.73 DPS) [crafted] |
+| legs | Stone Guard's Crackling Leather Leggings (220865) | Lady Palanseer [vendor] | 94.4 | yes | Knight's Crackling Leather Leggings (220864, +0.00 DPS, sim-verified) [vendor]; Knight's Leather Pants (220858, -2.22 DPS) [vendor]; Stone Guard's Leather Pants (220859, -2.22 DPS) [vendor] |
 | feet | Sergeant Major's Crackling Leather Boots (220862) (or First Sergeant's Crackling Leather Boots (220863)) | Captain Dirgehammer [vendor] | 66.2 | yes | First Sergeant's Crackling Leather Boots (220863, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -4.83 DPS) [crafted]; Skycaller's Leather Boots (252471, -4.93 DPS) [crafted] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 47.8 | yes | Lorekeeper's Ring (19523, -4.10 DPS) [rep]; Lorekeeper's Ring (19524, -4.45 DPS) [rep]; Ring of Forlorn Spirits (2043, -4.56 DPS) [quest] |
-| finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 14.4 | yes | Lorekeeper's Ring (19523, +0.00 DPS, sim-verified) [rep]; Lorekeeper's Ring (19524, -0.62 DPS) [rep]; Ring of Forlorn Spirits (2043, -0.74 DPS) [quest] |
+| finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 14.4 | yes | Lorekeeper's Ring (19523, -0.04 DPS, sim-verified) [rep]; Lorekeeper's Ring (19524, -0.62 DPS) [rep]; Ring of Forlorn Spirits (2043, -0.74 DPS) [quest] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.37 DPS, sim-verified) [world] |
+| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -0.15 DPS, sim-verified) [world] |
 | main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | 0.0 | yes | Kindling Stave (11750, -0.00 DPS) [dungeon]; Soulkeeper (1607, -2.49 DPS) [world_drop]; Dark Iron Pulverizer (11608, -2.56 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
-**New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Spritecaster Cape; chest: Knight's Leather Armor; wrist: Runic Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Cloth Girdle; legs: Knight's Crackling Leather Leggings; feet: Sergeant Major's Crackling Leather Boots; finger1: Blackstone Ring; finger2: Philanthropist's Ring; trinket2: Thunderbrew's Boot Flask; main_hand: Thorium Greatmace
+**New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Spritecaster Cape; chest: Knight's Leather Armor; wrist: Runic Leather Bracers; hands: Feralheart Hands; waist: Highlander's Cloth Girdle; legs: Stone Guard's Crackling Leather Leggings; feet: Sergeant Major's Crackling Leather Boots; finger1: Blackstone Ring; finger2: Philanthropist's Ring; trinket2: Thunderbrew's Boot Flask; main_hand: Thorium Greatmace
 
-No-known-source sample (15 of 1087, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1082, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 
 ### Band 60 (night-elf, 5222211015401051-0000000000000000000-5533300000000000)
 
-Set DPS (verified): 139.5. Weights run: 1.9s. Verify run: 1.4s. 1811 eligible items had no known source.
+Set DPS (verified): 139.5. Weights run: 1.9s. Verify run: 1.3s. 1806 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.620 ± 0.359), crit=2.513 ± 0.320, hit=5.891 ± 0.496, spell_haste=not significant (0.737 ± 0.247), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.562 ± 0.002, arcane_power=0.438 ± 0.004
 
@@ -150,11 +150,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -1.41 DPS, sim-verified) [world] |
 | main_hand | Fist of Cenarius (21188) | Champion's Battlegear [quest] | 0.0 | yes | High Warlord's Destroyer (234546, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
-**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; back: Earthweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Primal Batskin Gloves; waist: Belt of the Archmage; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; trinket1: Thunderbrew's Boot Flask; trinket2: Ankh of Life; main_hand: Fist of Cenarius; ranged: Idol of the Moon
+**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; back: Earthweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Primal Batskin Gloves; waist: Belt of the Archmage; legs: Knight's Crackling Leather Leggings; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; trinket1: Thunderbrew's Boot Flask; trinket2: Ankh of Life; main_hand: Fist of Cenarius; ranged: Idol of the Moon
 
-No-known-source sample (15 of 1811, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1806, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 
 ## Horde
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 290, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 5222211015000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 64.1. Weights run: 1.8s. Verify run: 1.3s. 599 eligible items had no known source.
+Set DPS (verified): 64.1. Weights run: 1.8s. Verify run: 1.4s. 599 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.428 ± 0.116), crit=0.886 ± 0.077, hit=1.971 ± 0.152, spell_haste=not significant (0.055 ± 0.093), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.429 ± 0.001, arcane_power=0.571 ± 0.004
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 599, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 5222211015401050-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 84.9. Weights run: 1.9s. Verify run: 1.4s. 845 eligible items had no known source.
+Set DPS (verified): 84.9. Weights run: 1.8s. Verify run: 1.3s. 844 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.703 ± 0.150, crit=1.236 ± 0.144, hit=2.985 ± 0.232, spell_haste=not significant (0.153 ± 0.061), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.483 ± 0.001, arcane_power=0.517 ± 0.004
 
@@ -242,15 +242,15 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Rune of Perfection (21565) | Warsong Outriders [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Defiler's Talisman (21116, +0.00 DPS) [rep] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Mograine's Might (7723, +0.00 DPS) [dungeon]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Staff of Jordan (873, -4.64 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
 **New at 40:** head: Spellpower Goggles Xtreme; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Guardian Leather Bracers; hands: Gloves of the Greatfather; waist: Deathmage Sash; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Advisor's Ring; trinket1: Ankh of Life; trinket2: Rune of Perfection
 
-No-known-source sample (15 of 845, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
+No-known-source sample (15 of 844, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots
 
 ### Band 50 (tauren, 5222211015401051-0000000000000000000-5400000000000000)
 
-Set DPS (verified): 97.5. Weights run: 1.9s. Verify run: 1.4s. 1096 eligible items had no known source.
+Set DPS (verified): 100.8. Weights run: 1.9s. Verify run: 1.2s. 1091 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.737 ± 0.179, crit=1.945 ± 0.234, hit=4.782 ± 0.380, spell_haste=not significant (0.344 ± 0.118), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.548 ± 0.002, arcane_power=0.452 ± 0.004
 
@@ -262,25 +262,25 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | back | Deep Woodlands Cloak (19121) | Wanted: Vile Priestess Hexx and Her Minions [quest] | 18.6 | yes | Spritecaster Cape (11623, +0.00 DPS, sim-verified) [dungeon]; Runecloth Cloak (13860, -0.43 DPS) [crafted]; Big Voodoo Cloak (8216, -0.80 DPS) [crafted] |
 | chest | Knight's Leather Armor (220854) (or Stone Guard's Leather Armor (220855)) | Captain Dirgehammer [vendor] | 75.0 | yes | Stone Guard's Leather Armor (220855, +0.00 DPS, sim-verified) [vendor]; Knight's Crackling Leather Tunic (220868, -3.12 DPS) [vendor]; Stone Guard's Crackling Leather Tunic (220869, -3.12 DPS) [vendor] |
 | wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 17.4 | yes | Skycaller's Leather Bracers (252542, +0.00 DPS, sim-verified) [crafted]; Nethergeld Cuffs (254061, -0.60 DPS) [crafted]; Bloodband Bracers (11469, -0.66 DPS) [quest] |
-| hands | Gloves of Holy Might (867) (or Fletcher's Gloves (7348), Shadowskin Gloves (18238), Sergeant Major's Leather Gauntlets (220856), First Sergeant's Leather Gauntlets (220857)) | World drop [world_drop] | 27.2 | yes | Shadowskin Gloves (18238, +0.00 DPS) [crafted]; Sergeant Major's Leather Gauntlets (220856, +0.00 DPS) [vendor]; Fletcher's Gloves (7348, -0.95 DPS, sim-verified) [crafted] |
-| waist | Defiler's Cloth Girdle (20165) | The Defilers [rep] | 39.9 | yes | Defiler's Lizardhide Girdle (20174, -1.44 DPS, sim-verified) [rep]; Defiler's Leather Girdle (20193, -1.45 DPS) [rep]; Skycaller's Leather Waistguard (252476, -1.73 DPS) [crafted] |
+| hands | Feralheart Hands (226777) | Mokvar [vendor] | 28.6 | yes | Fletcher's Gloves (7348, -0.16 DPS) [crafted]; Shadowskin Gloves (18238, -0.16 DPS) [crafted]; Gloves of Holy Might (867, -4.94 DPS, sim-verified) [world_drop] |
+| waist | Defiler's Cloth Girdle (20165) | The Defilers [rep] | 39.9 | yes | Defiler's Lizardhide Girdle (20174, -0.49 DPS, sim-verified) [rep]; Defiler's Leather Girdle (20193, -1.45 DPS) [rep]; Skycaller's Leather Waistguard (252476, -1.73 DPS) [crafted] |
 | legs | Knight's Crackling Leather Leggings (220864) (or Stone Guard's Crackling Leather Leggings (220865)) | Captain Dirgehammer [vendor] | 94.4 | yes | Stone Guard's Crackling Leather Leggings (220865, +0.00 DPS, sim-verified) [vendor]; Knight's Leather Pants (220858, -2.22 DPS) [vendor]; Stone Guard's Leather Pants (220859, -2.22 DPS) [vendor] |
 | feet | Sergeant Major's Crackling Leather Boots (220862) (or First Sergeant's Crackling Leather Boots (220863)) | Captain Dirgehammer [vendor] | 66.2 | yes | First Sergeant's Crackling Leather Boots (220863, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -4.83 DPS) [crafted]; Skycaller's Leather Boots (252471, -4.93 DPS) [crafted] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 47.8 | yes | Advisor's Ring (19519, -4.10 DPS) [rep]; Advisor's Ring (19520, -4.45 DPS) [rep]; Reedknot Ring (9622, -4.67 DPS) [quest] |
 | finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 14.4 | yes | Advisor's Ring (19519, +0.00 DPS, sim-verified) [rep]; Advisor's Ring (19520, -0.62 DPS) [rep]; Reedknot Ring (9622, -0.85 DPS) [quest] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world]; Frozen Heart of the Mountain (249469, -0.52 DPS, sim-verified) [crafted] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, -1.73 DPS, sim-verified) [crafted]; Uther's Strength (11302, -3.15 DPS) [world]; Guardian Talisman (1490, -3.83 DPS) [quest] |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Soulkeeper (1607, +0.00 DPS) [world_drop]; Kindling Stave (11750, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, -1.03 DPS, sim-verified) [crafted] |
+| trinket1 | Uther's Strength (11302) | Azuregos [world] | 0.0 | yes | Ankh of Life (1713, +0.00 DPS, sim-verified) [world_drop]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Guardian Talisman (1490, -0.69 DPS) [quest] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, -1.05 DPS, sim-verified) [crafted]; Guardian Talisman (1490, -3.83 DPS) [quest]; Ankh of Life (1713, -3.83 DPS) [world_drop] |
+| main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | 0.0 | yes | Kindling Stave (11750, -0.00 DPS) [dungeon]; Soulkeeper (1607, -2.49 DPS) [world_drop]; Dark Iron Pulverizer (11608, -2.56 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Wild (210534, +0.00 DPS) [vendor]; Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Huntress (227444) (or Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Rune Broker [vendor] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
-**New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Deep Woodlands Cloak; chest: Knight's Leather Armor; wrist: Runic Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Cloth Girdle; legs: Knight's Crackling Leather Leggings; feet: Sergeant Major's Crackling Leather Boots; finger1: Blackstone Ring; finger2: Philanthropist's Ring; trinket2: Rune of the Guard Captain
+**New at 50:** head: Knight-Lieutenant's Leather Headband; shoulder: Knight-Lieutenant's Leather Shoulders; back: Deep Woodlands Cloak; chest: Knight's Leather Armor; wrist: Runic Leather Bracers; hands: Feralheart Hands; waist: Defiler's Cloth Girdle; legs: Knight's Crackling Leather Leggings; feet: Sergeant Major's Crackling Leather Boots; finger1: Blackstone Ring; finger2: Philanthropist's Ring; trinket1: Uther's Strength; trinket2: Rune of the Guard Captain; main_hand: Thorium Greatmace
 
-No-known-source sample (15 of 1096, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1091, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 
 ### Band 60 (tauren, 5222211015401051-0000000000000000000-5533300000000000)
 
-Set DPS (verified): 138.2. Weights run: 1.9s. Verify run: 1.4s. 1819 eligible items had no known source.
+Set DPS (verified): 138.2. Weights run: 1.9s. Verify run: 1.3s. 1814 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.620 ± 0.359), crit=2.513 ± 0.320, hit=5.891 ± 0.496, spell_haste=not significant (0.737 ± 0.247), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.562 ± 0.002, arcane_power=0.438 ± 0.004
 
@@ -302,9 +302,9 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 0.0 | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Uther's Strength (11302, -1.13 DPS, sim-verified) [world]; Guardian Talisman (1490, -4.56 DPS) [quest] |
 | main_hand | Fist of Cenarius (21188) | Champion's Battlegear [quest] | 0.0 | yes | High Warlord's Destroyer (234546, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Grand Marshal's Stave (234571, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Heckler (213594, +0.00 DPS) [world]; Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Moon (23197) (or Idol of the Huntress (227444), Idol of the Raging Shambler (220915), Talons of Wrath (249441), Idol of the Heckler (213594), Idol of the Wild (210534), Mystic Mushroom (249396), Ferocious Idol (208689), Idol of Ursine Rage (206954), Unbalanced Idol (210195), Lunar Idol (208414)) | Mushgog [world] | 0.0 | yes | Idol of the Raging Shambler (220915, +0.00 DPS) [vendor]; Idol of the Huntress (227444, +0.00 DPS, sim-verified) [vendor]; Talons of Wrath (249441, +0.00 DPS) [crafted] |
 
-**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; back: Earthweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Primal Batskin Gloves; waist: Belt of the Archmage; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; main_hand: Fist of Cenarius; ranged: Idol of the Moon
+**New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; back: Earthweave Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Primal Batskin Gloves; waist: Belt of the Archmage; feet: Bloodvine Boots; finger1: Ring of the Fallen God; finger2: Don Julio's Band; trinket1: Ankh of Life; main_hand: Fist of Cenarius; ranged: Idol of the Moon
 
-No-known-source sample (15 of 1819, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1814, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 

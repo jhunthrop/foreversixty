@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:42:45Z",
+  "generated_at": "2026-09-30T02:23:37Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -611,8 +611,8 @@
         "main_hand: Living Root",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.466510959,
-      "verify_run_seconds": 1.080252556,
+      "weights_run_seconds": 1.434417549,
+      "verify_run_seconds": 1.036544753,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1294,8 +1294,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.466510959,
-      "verify_run_seconds": 1.134935598,
+      "weights_run_seconds": 1.434417549,
+      "verify_run_seconds": 1.085564155,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2068,8 +2068,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.501836347,
-      "verify_run_seconds": 1.137667787,
+      "weights_run_seconds": 1.417360937,
+      "verify_run_seconds": 1.104102937,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2848,8 +2848,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.501836347,
-      "verify_run_seconds": 1.136313816,
+      "weights_run_seconds": 1.417360937,
+      "verify_run_seconds": 1.147101769,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3650,8 +3650,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.397831719,
-      "verify_run_seconds": 1.123200773,
+      "weights_run_seconds": 1.383668097,
+      "verify_run_seconds": 1.112448006,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4442,8 +4442,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.397831719,
-      "verify_run_seconds": 1.168594107,
+      "weights_run_seconds": 1.383668097,
+      "verify_run_seconds": 1.148980858,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -5256,8 +5256,8 @@
         "main_hand: Soul Harvester",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.313730467,
-      "verify_run_seconds": 1.1032158970000001,
+      "weights_run_seconds": 1.300688048,
+      "verify_run_seconds": 1.093357495,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -6066,8 +6066,8 @@
         "main_hand: Soul Harvester",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.313730467,
-      "verify_run_seconds": 1.121484675,
+      "weights_run_seconds": 1.300688048,
+      "verify_run_seconds": 1.0864992,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6222,9 +6222,9 @@
               "item_name": "Doomcaller's Circlet",
               "source_kind": "quest",
               "source": "Doomcaller's Circlet",
-              "score": 259.2977962450516,
-              "score_delta": -85.19472946720794,
-              "dps_delta": -10.748270811418118
+              "score": 259.29779624505153,
+              "score_delta": -85.19472946720799,
+              "dps_delta": -10.748270811418125
             },
             {
               "item_id": 226909,
@@ -6853,8 +6853,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Stormrager"
       ],
-      "weights_run_seconds": 1.346325684,
-      "verify_run_seconds": 1.093740899,
+      "weights_run_seconds": 1.311991764,
+      "verify_run_seconds": 1.095058933,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7641,8 +7641,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Stormrager"
       ],
-      "weights_run_seconds": 1.346325684,
-      "verify_run_seconds": 1.102024221,
+      "weights_run_seconds": 1.311991764,
+      "verify_run_seconds": 1.090291273,
       "coverage": {
         "back": {
           "eligible": 375,

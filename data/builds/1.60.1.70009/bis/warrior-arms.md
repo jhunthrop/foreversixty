@@ -98,7 +98,7 @@ No-known-source sample (15 of 1330, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (human, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 117.7. Weights run: 2.1s. Verify run: 1.9s. 1763 eligible items had no known source.
+Set DPS (verified): 117.7. Weights run: 2.1s. Verify run: 1.8s. 1762 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.275), strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=6.161 ± 0.515, hit=not significant (0.000 ± 0.000), melee_haste=3.257 ± 0.606
 
@@ -124,11 +124,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Blood Guard's Plate Helm; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; hands: Gloves of Holy Might; waist: Highlander's Chain Girdle; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger1: Blackstone Ring; finger2: Protector's Band; trinket1: Frozen Heart of the Mountain; trinket2: Smoking Heart of the Mountain; main_hand: Blight; ranged: Arcanite Blacksmith Hammer
 
-No-known-source sample (15 of 1763, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ### Band 60 (human, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 181.9. Weights run: 2.1s. Verify run: 1.8s. 2598 eligible items had no known source.
+Set DPS (verified): 181.9. Weights run: 2.1s. Verify run: 1.8s. 2597 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=not significant (0.000 ± 0.000), melee_haste=9.244 ± 1.838
 
@@ -154,7 +154,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; back: Cloak of the Fallen God; chest: Bloodsoul Breastplate; wrist: Vambraces of the Sadist; hands: Gauntlets of Heroism; waist: Zandalar Vindicator's Belt; legs: Knight-Captain's Plate Leggings; feet: Conqueror's Greaves; finger1: Signet of Unyielding Strength; finger2: Band of Earthen Might; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: Arcanite Champion; ranged: The Purifier
 
-No-known-source sample (15 of 2598, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2597, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ## Horde
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 1333, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (orc, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 126.8. Weights run: 2.1s. Verify run: 1.9s. 1766 eligible items had no known source.
+Set DPS (verified): 126.8. Weights run: 2.1s. Verify run: 1.9s. 1765 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.275), strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=6.161 ± 0.515, hit=not significant (0.000 ± 0.000), melee_haste=3.257 ± 0.606
 
@@ -276,11 +276,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Blood Guard's Plate Helm; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; hands: Gloves of Holy Might; waist: Defiler's Chain Girdle; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger1: White Bone Band; finger2: Blackstone Ring; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Fiery War Axe; ranged: Arcanite Blacksmith Hammer
 
-No-known-source sample (15 of 1766, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 1765, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ### Band 60 (orc, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 197.0. Weights run: 2.1s. Verify run: 1.8s. 2601 eligible items had no known source.
+Set DPS (verified): 197.0. Weights run: 2.1s. Verify run: 1.8s. 2600 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=not significant (0.000 ± 0.000), melee_haste=9.244 ± 1.838
 
@@ -306,5 +306,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; back: Cloak of the Fallen God; chest: Bloodsoul Breastplate; wrist: Vambraces of the Sadist; hands: Gauntlets of Heroism; waist: Zandalar Vindicator's Belt; legs: Knight-Captain's Plate Leggings; feet: Conqueror's Greaves; finger1: Signet of Unyielding Strength; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: Nightfall; ranged: The Purifier
 
-No-known-source sample (15 of 2601, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2600, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 

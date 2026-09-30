@@ -68,7 +68,7 @@ No-known-source sample (15 of 828, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 00000000000000000-0000000000000000-55223331211000210)
 
-Set DPS (verified): 85.1. Weights run: 1.3s. Verify run: 1.4s. 1235 eligible items had no known source.
+Set DPS (verified): 85.1. Weights run: 1.3s. Verify run: 1.4s. 1234 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.228 ± 0.031, crit=4.287 ± 0.122, hit=2.725 ± 0.232, melee_haste=2.170 ± 0.198
 
@@ -90,21 +90,21 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Talisman of Arathor (21118, +0.00 DPS) [rep] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Bonebiter (6830, +0.00 DPS) [quest]; Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Libram of Banishment (211472) (or Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Rune Broker [vendor] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Justice (208851, +0.00 DPS) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Libram of Invocation (249442) (or Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Enchanting [crafted] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Banishment (211472, +0.00 DPS, sim-verified) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted] |
 
-**New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Chain Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Protector's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection
+**New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Chain Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Protector's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection; ranged: Libram of Invocation
 
-No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1234, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ### Band 50 (human, 00000000000000000-5500000000000000-55223331211000210)
 
-Set DPS (verified): 100.4. Weights run: 1.4s. Verify run: 1.2s. 1645 eligible items had no known source.
+Set DPS (verified): 100.4. Weights run: 1.4s. Verify run: 1.2s. 1642 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.231 ± 0.026, crit=5.537 ± 0.167, hit=3.474 ± 0.300, melee_haste=2.628 ± 0.325
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Blood Guard's Plate Helm (220803) (or Knight-Lieutenant's Plate Helm (220804)) | Lady Palanseer [vendor] | 138.3 | yes | Knight-Lieutenant's Plate Helm (220804, +0.00 DPS, sim-verified) [vendor]; Raging Berserker's Helm (7719, -1.49 DPS) [dungeon]; Ornate Mithril Helm (7937, -1.75 DPS) [crafted] |
+| head | Knight-Lieutenant's Plate Helm (220804) | Captain Dirgehammer [vendor] | 138.3 | yes | Blood Guard's Plate Helm (220803, +0.00 DPS, sim-verified) [vendor]; Raging Berserker's Helm (7719, -1.49 DPS) [dungeon]; Ornate Mithril Helm (7937, -1.75 DPS) [crafted] |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes | Sentinel's Medallion (19539, -0.48 DPS) [rep]; Sentinel's Medallion (19540, -0.49 DPS) [rep]; Talisman of the Naga Lord (5029, -0.60 DPS, sim-verified) [world] |
 | shoulder | Knight-Lieutenant's Plate Pauldrons (220795) (or Blood Guard's Plate Pauldrons (220796)) | Captain Dirgehammer [vendor] | 99.5 | yes | Blood Guard's Plate Pauldrons (220796, +0.00 DPS, sim-verified) [vendor]; Officer's Pauldrons (250576, -3.08 DPS) [crafted]; Earthslag Shoulders (11632, -3.16 DPS) [dungeon] |
 | back | Bloodlust Cape (14801) | Maraudon: Princess Theradras [dungeon] | 18.0 | yes | Sergeant Major's Cape (16336, +0.00 DPS, sim-verified) [pvp]; Wolfmaster Cape (6314, -0.34 DPS) [dungeon]; Sergeant Major's Cape (16315, -0.39 DPS) [pvp] |
@@ -120,15 +120,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 0.0 | yes | Thunderbrew's Boot Flask (744, -0.83 DPS, sim-verified) [quest]; Guardian Talisman (1490, -1.34 DPS) [quest]; Blazing Emblem (2802, -1.34 DPS) [world_drop] |
 | main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | 0.0 | yes | Darkspear Raider's Reaper (272080, -0.42 DPS) [vendor]; Bleakwood Hew (12769, -1.39 DPS) [crafted]; Dark Iron Pulverizer (11608, -1.76 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Libram of Banishment (211472) (or Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Rune Broker [vendor] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Justice (208851, +0.00 DPS) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Libram of Invocation (249442) (or Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Enchanting [crafted] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Banishment (211472, +0.00 DPS, sim-verified) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted] |
 
-**New at 50:** head: Blood Guard's Plate Helm; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; waist: Highlander's Lamellar Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Protector's Band; trinket2: Frozen Heart of the Mountain; main_hand: Thorium Greatmace
+**New at 50:** head: Knight-Lieutenant's Plate Helm; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; waist: Highlander's Lamellar Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Protector's Band; trinket2: Frozen Heart of the Mountain; main_hand: Thorium Greatmace
 
-No-known-source sample (15 of 1645, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 1642, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 60 (human, 00000000000000000-5532500000000000-55223331211000210)
 
-Set DPS (verified): 145.0. Weights run: 1.5s. Verify run: 1.4s. 2488 eligible items had no known source.
+Set DPS (verified): 145.0. Weights run: 1.4s. Verify run: 1.3s. 2485 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.339 ± 0.051, crit=7.362 ± 0.238, hit=9.891 ± 0.551, melee_haste=3.638 ± 0.629
 
@@ -150,11 +150,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
 | main_hand | Arcanite Champion (12790) | Blacksmithing [crafted] | 0.0 | yes | High Warlord's Greatsword (234542, +0.00 DPS) [vendor]; High Warlord's Pig Sticker (234547, +0.00 DPS) [vendor]; Grand Marshal's Glaive (234569, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Libram of Fervor (23203) (or Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Mushgog [world] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Banishment (211472, +0.00 DPS, sim-verified) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted] |
+| ranged | Libram of Fervor (23203) (or Libram of Invocation (249442), Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Mushgog [world] | 0.0 | yes | Libram of Banishment (211472, +0.00 DPS) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted]; Libram of Invocation (249442, +0.00 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Lionheart Helm; neck: Blazefury Medallion; back: Earthweave Cloak; chest: Dawn Armor; wrist: Vambraces of the Sadist; hands: Stormshroud Gloves; waist: Highlander's Plate Girdle; legs: Titanic Leggings; feet: Redemption Boots; finger1: Don Julio's Band; finger2: Master Dragonslayer's Ring; trinket1: Frozen Heart of the Mountain; trinket2: Ankh of Life; main_hand: Arcanite Champion; ranged: Libram of Fervor
 
-No-known-source sample (15 of 2488, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2485, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ## Horde
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 402, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-0000000000000000-55223310000000000)
 
-Set DPS (verified): 70.3. Weights run: 1.3s. Verify run: 1.4s. 832 eligible items had no known source.
+Set DPS (verified): 70.3. Weights run: 1.3s. Verify run: 1.5s. 832 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.118 ± 0.014, crit=3.235 ± 0.092, hit=1.979 ± 0.168, melee_haste=1.778 ± 0.112
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 832, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 00000000000000000-0000000000000000-55223331211000210)
 
-Set DPS (verified): 84.6. Weights run: 1.3s. Verify run: 1.4s. 1238 eligible items had no known source.
+Set DPS (verified): 84.6. Weights run: 1.3s. Verify run: 1.4s. 1237 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.228 ± 0.031, crit=4.287 ± 0.122, hit=2.725 ± 0.232, melee_haste=2.170 ± 0.198
 
@@ -242,21 +242,21 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Rune of Perfection (21565) | Warsong Outriders [rep] | 0.0 | yes | Blazing Emblem (2802, +0.00 DPS) [world_drop]; Cold Basilisk Eye (5079, +0.00 DPS) [world]; Defiler's Talisman (21116, +0.00 DPS) [rep] |
 | main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | 0.0 | yes | Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Fiery War Axe (870, -10.40 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Libram of Banishment (211472) (or Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Rune Broker [vendor] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Justice (208851, +0.00 DPS) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Libram of Invocation (249442) (or Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Enchanting [crafted] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Banishment (211472, +0.00 DPS, sim-verified) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted] |
 
-**New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Chain Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Legionnaire's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection
+**New at 40:** head: Raging Berserker's Helm; shoulder: Hard Gold Pauldrons; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Chain Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Legionnaire's Band; finger2: Suspicious Spare Part; trinket1: Ankh of Life; trinket2: Rune of Perfection; ranged: Libram of Invocation
 
-No-known-source sample (15 of 1238, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7470 Regal Wizard Hat
+No-known-source sample (15 of 1237, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7470 Regal Wizard Hat
 
 ### Band 50 (undead, 00000000000000000-5500000000000000-55223331211000210)
 
-Set DPS (verified): 100.1. Weights run: 1.4s. Verify run: 1.2s. 1648 eligible items had no known source.
+Set DPS (verified): 100.1. Weights run: 1.4s. Verify run: 1.2s. 1645 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.231 ± 0.026, crit=5.537 ± 0.167, hit=3.474 ± 0.300, melee_haste=2.628 ± 0.325
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Knight-Lieutenant's Plate Helm (220804) | Captain Dirgehammer [vendor] | 138.3 | yes | Blood Guard's Plate Helm (220803, +0.00 DPS, sim-verified) [vendor]; Raging Berserker's Helm (7719, -1.49 DPS) [dungeon]; Ornate Mithril Helm (7937, -1.75 DPS) [crafted] |
+| head | Blood Guard's Plate Helm (220803) | Lady Palanseer [vendor] | 138.3 | yes | Knight-Lieutenant's Plate Helm (220804, +0.00 DPS, sim-verified) [vendor]; Raging Berserker's Helm (7719, -1.49 DPS) [dungeon]; Ornate Mithril Helm (7937, -1.75 DPS) [crafted] |
 | neck | Woven Ivy Necklace (19159) | Wanted: Vile Priestess Hexx and Her Minions [quest] | 14.1 | yes | Ethereal Talisman (4430, -0.14 DPS) [quest]; Ghostshard Talisman (7731, -0.37 DPS, sim-verified) [dungeon]; Talisman of the Naga Lord (5029, -0.43 DPS) [world] |
 | shoulder | Knight-Lieutenant's Plate Pauldrons (220795) (or Blood Guard's Plate Pauldrons (220796)) | Captain Dirgehammer [vendor] | 99.5 | yes | Blood Guard's Plate Pauldrons (220796, +0.00 DPS, sim-verified) [vendor]; Officer's Pauldrons (250576, -3.08 DPS) [crafted]; Earthslag Shoulders (11632, -3.16 DPS) [dungeon] |
 | back | Bloodlust Cape (14801) | Maraudon: Princess Theradras [dungeon] | 18.0 | yes | Sergeant Major's Cape (16336, +0.00 DPS, sim-verified) [pvp]; Wolfmaster Cape (6314, -0.34 DPS) [dungeon]; Battlehard Cape (11858, -0.34 DPS) [quest] |
@@ -272,15 +272,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop]; Frozen Heart of the Mountain (249469, +0.00 DPS, sim-verified) [crafted] |
 | main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | 0.0 | yes | Darkspear Raider's Reaper (272080, -0.42 DPS) [vendor]; Bleakwood Hew (12769, -1.39 DPS) [crafted]; Dark Iron Pulverizer (11608, -1.76 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Libram of Banishment (211472) (or Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Rune Broker [vendor] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Justice (208851, +0.00 DPS) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS, sim-verified) [crafted] |
+| ranged | Libram of Invocation (249442) (or Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Enchanting [crafted] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Banishment (211472, +0.00 DPS, sim-verified) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted] |
 
-**New at 50:** head: Knight-Lieutenant's Plate Helm; neck: Woven Ivy Necklace; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; waist: Defiler's Chain Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Ankh of Life; main_hand: Thorium Greatmace
+**New at 50:** head: Blood Guard's Plate Helm; neck: Woven Ivy Necklace; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Knight's Plate Hauberk; wrist: Bracers of the Stone Princess; waist: Defiler's Chain Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Ankh of Life; main_hand: Thorium Greatmace
 
-No-known-source sample (15 of 1648, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 1645, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 60 (undead, 00000000000000000-5532500000000000-55223331211000210)
 
-Set DPS (verified): 142.1. Weights run: 1.5s. Verify run: 1.3s. 2497 eligible items had no known source.
+Set DPS (verified): 142.1. Weights run: 1.4s. Verify run: 1.3s. 2494 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.339 ± 0.051, crit=7.362 ± 0.238, hit=9.891 ± 0.551, melee_haste=3.638 ± 0.629
 
@@ -302,9 +302,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop]; Frozen Heart of the Mountain (249469, +0.00 DPS, sim-verified) [crafted] |
 | main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | 0.0 | yes | High Warlord's Greatsword (234542, +0.00 DPS) [vendor]; High Warlord's Pig Sticker (234547, +0.00 DPS) [vendor]; Grand Marshal's Glaive (234569, +0.00 DPS) [vendor] |
 | off_hand | - | - |  |  |  |
-| ranged | Libram of Fervor (23203) (or Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Mushgog [world] | 0.0 | yes | Libram of Blessings (208849, +0.00 DPS) [vendor]; Libram of Banishment (211472, +0.00 DPS, sim-verified) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted] |
+| ranged | Libram of Fervor (23203) (or Libram of Invocation (249442), Libram of Banishment (211472), Tenets of the Silver Hand (249397), Libram of Blessings (208849), Libram of Justice (208851), Libram of Judgement (205420)) | Mushgog [world] | 0.0 | yes | Libram of Banishment (211472, +0.00 DPS) [vendor]; Tenets of the Silver Hand (249397, +0.00 DPS) [crafted]; Libram of Invocation (249442, +0.00 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Lionheart Helm; neck: Blazefury Medallion; back: Earthweave Cloak; chest: Dawn Armor; wrist: Vambraces of the Sadist; hands: Stormshroud Gloves; waist: Defiler's Plate Girdle; legs: Titanic Leggings; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: The Unstoppable Force; ranged: Libram of Fervor
 
-No-known-source sample (15 of 2497, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2494, see the JSON for more): 1189 Overseer's Ring; 1447 Ring of Saviors; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 

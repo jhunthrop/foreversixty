@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:37:32Z",
+  "generated_at": "2026-09-30T02:18:26Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -675,8 +675,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.895103748,
-      "verify_run_seconds": 1.735108377,
+      "weights_run_seconds": 1.863163328,
+      "verify_run_seconds": 1.6835953799999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1422,8 +1422,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.895103748,
-      "verify_run_seconds": 1.634903922,
+      "weights_run_seconds": 1.863163328,
+      "verify_run_seconds": 1.610131601,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2224,8 +2224,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.949452055,
-      "verify_run_seconds": 2.017941361,
+      "weights_run_seconds": 1.950208648,
+      "verify_run_seconds": 2.005933742,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3032,8 +3032,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.949452055,
-      "verify_run_seconds": 1.964802437,
+      "weights_run_seconds": 1.950208648,
+      "verify_run_seconds": 1.922789158,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3830,8 +3830,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.9684449590000002,
-      "verify_run_seconds": 1.9987556309999999,
+      "weights_run_seconds": 1.9476113339999999,
+      "verify_run_seconds": 1.9676907209999999,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4628,8 +4628,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.9684449590000002,
-      "verify_run_seconds": 1.941112146,
+      "weights_run_seconds": 1.9476113339999999,
+      "verify_run_seconds": 1.945566977,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -5420,7 +5420,7 @@
         }
       ],
       "set_dps": 153.24077896264424,
-      "no_source_count": 1479,
+      "no_source_count": 1478,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5455,8 +5455,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.956403931,
-      "verify_run_seconds": 1.914971172,
+      "weights_run_seconds": 1.9622072350000002,
+      "verify_run_seconds": 1.9457206120000001,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5480,7 +5480,7 @@
         },
         "hands": {
           "eligible": 402,
-          "sourced": 282
+          "sourced": 283
         },
         "head": {
           "eligible": 259,
@@ -6248,7 +6248,7 @@
         }
       ],
       "set_dps": 159.1203157021283,
-      "no_source_count": 1484,
+      "no_source_count": 1483,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6283,8 +6283,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.956403931,
-      "verify_run_seconds": 1.893089282,
+      "weights_run_seconds": 1.9622072350000002,
+      "verify_run_seconds": 1.896903352,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6308,7 +6308,7 @@
         },
         "hands": {
           "eligible": 403,
-          "sourced": 279
+          "sourced": 280
         },
         "head": {
           "eligible": 259,
@@ -7067,7 +7067,7 @@
         }
       ],
       "set_dps": 231.72284968899336,
-      "no_source_count": 2163,
+      "no_source_count": 2162,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7102,8 +7102,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Core Marksman Rifle"
       ],
-      "weights_run_seconds": 1.955890782,
-      "verify_run_seconds": 2.180962709,
+      "weights_run_seconds": 1.9496407329999998,
+      "verify_run_seconds": 2.184638119,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7127,7 +7127,7 @@
         },
         "hands": {
           "eligible": 541,
-          "sourced": 366
+          "sourced": 367
         },
         "head": {
           "eligible": 388,
@@ -7410,9 +7410,9 @@
               "item_name": "Cryptstalker Tunic",
               "source_kind": "quest",
               "source": "Cryptstalker Tunic",
-              "score": 202.66074635203816,
-              "score_delta": -17.641284002102964,
-              "dps_delta": -0.8889844028068187
+              "score": 202.6607463520382,
+              "score_delta": -17.641284002102935,
+              "dps_delta": -0.8889844028068172
             },
             {
               "item_id": 22874,
@@ -7886,7 +7886,7 @@
         }
       ],
       "set_dps": 235.53493394996207,
-      "no_source_count": 2166,
+      "no_source_count": 2165,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7922,8 +7922,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Core Marksman Rifle"
       ],
-      "weights_run_seconds": 1.955890782,
-      "verify_run_seconds": 2.116824032,
+      "weights_run_seconds": 1.9496407329999998,
+      "verify_run_seconds": 2.094378397,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7947,7 +7947,7 @@
         },
         "hands": {
           "eligible": 545,
-          "sourced": 366
+          "sourced": 367
         },
         "head": {
           "eligible": 390,

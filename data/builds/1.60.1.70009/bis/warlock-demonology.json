@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:42:22Z",
+  "generated_at": "2026-09-30T02:23:13Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -610,8 +610,8 @@
         "main_hand: Living Root",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.394099512,
-      "verify_run_seconds": 1.039788909,
+      "weights_run_seconds": 1.402539398,
+      "verify_run_seconds": 1.019150537,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1291,8 +1291,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.394099512,
-      "verify_run_seconds": 1.036916388,
+      "weights_run_seconds": 1.402539398,
+      "verify_run_seconds": 1.016060283,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2064,8 +2064,8 @@
         "main_hand: Gnarled Ash Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.488055107,
-      "verify_run_seconds": 1.081293627,
+      "weights_run_seconds": 1.3928971350000001,
+      "verify_run_seconds": 1.125457914,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2844,8 +2844,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.488055107,
-      "verify_run_seconds": 1.169701159,
+      "weights_run_seconds": 1.3928971350000001,
+      "verify_run_seconds": 1.133276898,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3630,8 +3630,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.26862321,
-      "verify_run_seconds": 1.025780809,
+      "weights_run_seconds": 1.228368301,
+      "verify_run_seconds": 1.026561214,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4410,8 +4410,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.26862321,
-      "verify_run_seconds": 1.032256867,
+      "weights_run_seconds": 1.228368301,
+      "verify_run_seconds": 1.007918021,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -5210,8 +5210,8 @@
         "main_hand: Soul Harvester",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.220549497,
-      "verify_run_seconds": 1.020562593,
+      "weights_run_seconds": 1.232497543,
+      "verify_run_seconds": 1.012881009,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -6005,8 +6005,8 @@
         "main_hand: Soul Harvester",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.220549497,
-      "verify_run_seconds": 0.970979219,
+      "weights_run_seconds": 1.232497543,
+      "verify_run_seconds": 0.959603423,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6788,8 +6788,8 @@
         "main_hand: Crackling Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.252266025,
-      "verify_run_seconds": 1.030160848,
+      "weights_run_seconds": 1.264752557,
+      "verify_run_seconds": 1.035512058,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7570,8 +7570,8 @@
         "main_hand: Staff of Hale Magefire",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.252266025,
-      "verify_run_seconds": 1.039696668,
+      "weights_run_seconds": 1.264752557,
+      "verify_run_seconds": 1.047160936,
       "coverage": {
         "back": {
           "eligible": 375,

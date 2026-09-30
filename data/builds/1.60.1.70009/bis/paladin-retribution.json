@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:38:46Z",
+  "generated_at": "2026-09-30T02:19:39Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -660,8 +660,8 @@
         "main_hand: Verigan's Fist",
         "ranged: Libram of Banishment"
       ],
-      "weights_run_seconds": 1.341008966,
-      "verify_run_seconds": 1.001282785,
+      "weights_run_seconds": 1.349680996,
+      "verify_run_seconds": 0.98217144,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1391,8 +1391,8 @@
         "main_hand: Hammerbone",
         "ranged: Libram of Banishment"
       ],
-      "weights_run_seconds": 1.341008966,
-      "verify_run_seconds": 0.991148244,
+      "weights_run_seconds": 1.349680996,
+      "verify_run_seconds": 0.987549239,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2177,8 +2177,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.340009461,
-      "verify_run_seconds": 1.4330310960000001,
+      "weights_run_seconds": 1.324371854,
+      "verify_run_seconds": 1.443824796,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2963,8 +2963,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.340009461,
-      "verify_run_seconds": 1.448320058,
+      "weights_run_seconds": 1.324371854,
+      "verify_run_seconds": 1.481381962,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3650,13 +3650,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 211472,
-          "item_name": "Libram of Banishment",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249442,
+          "item_name": "Libram of Invocation",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 211472,
+              "item_name": "Libram of Banishment"
+            },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand"
@@ -3683,26 +3687,26 @@
               "dps_delta": 0
             },
             {
-              "item_id": 208851,
-              "item_name": "Libram of Justice",
+              "item_id": 211472,
+              "item_name": "Libram of Banishment",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 85.13200570194473
             },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 85.13200570194473
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 85.13200570194473,
-      "no_source_count": 1235,
+      "no_source_count": 1234,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -3733,10 +3737,11 @@
         "finger1: Protector's Band",
         "finger2: Suspicious Spare Part",
         "trinket1: Ankh of Life",
-        "trinket2: Rune of Perfection"
+        "trinket2: Rune of Perfection",
+        "ranged: Libram of Invocation"
       ],
-      "weights_run_seconds": 1.339477301,
-      "verify_run_seconds": 1.385477939,
+      "weights_run_seconds": 1.326054,
+      "verify_run_seconds": 1.393703411,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -3784,7 +3789,7 @@
         },
         "ranged": {
           "eligible": 8,
-          "sourced": 5
+          "sourced": 6
         },
         "shoulder": {
           "eligible": 188,
@@ -4422,13 +4427,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 211472,
-          "item_name": "Libram of Banishment",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249442,
+          "item_name": "Libram of Invocation",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 211472,
+              "item_name": "Libram of Banishment"
+            },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand"
@@ -4455,26 +4464,26 @@
               "dps_delta": 0
             },
             {
-              "item_id": 208851,
-              "item_name": "Libram of Justice",
+              "item_id": 211472,
+              "item_name": "Libram of Banishment",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 84.63213505253663
             },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 84.63213505253663
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 84.63213505253663,
-      "no_source_count": 1238,
+      "no_source_count": 1237,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4505,10 +4514,11 @@
         "finger1: Legionnaire's Band",
         "finger2: Suspicious Spare Part",
         "trinket1: Ankh of Life",
-        "trinket2: Rune of Perfection"
+        "trinket2: Rune of Perfection",
+        "ranged: Libram of Invocation"
       ],
-      "weights_run_seconds": 1.339477301,
-      "verify_run_seconds": 1.4123281300000001,
+      "weights_run_seconds": 1.326054,
+      "verify_run_seconds": 1.419179097,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4556,7 +4566,7 @@
         },
         "ranged": {
           "eligible": 8,
-          "sourced": 5
+          "sourced": 6
         },
         "shoulder": {
           "eligible": 186,
@@ -4630,24 +4640,18 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 220803,
-          "item_name": "Blood Guard's Plate Helm",
-          "source": "Lady Palanseer",
+          "item_id": 220804,
+          "item_name": "Knight-Lieutenant's Plate Helm",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 138.262318245411,
+          "score": 138.26231824541102,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220804,
-              "item_name": "Knight-Lieutenant's Plate Helm"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 220804,
-              "item_name": "Knight-Lieutenant's Plate Helm",
+              "item_id": 220803,
+              "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 100.43420804491501
@@ -4658,8 +4662,8 @@
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
               "score": 103.51757171348083,
-              "score_delta": -34.74474653193016,
-              "dps_delta": -1.4929064588322958
+              "score_delta": -34.74474653193019,
+              "dps_delta": -1.4929064588322971
             },
             {
               "item_id": 7937,
@@ -4667,8 +4671,8 @@
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "score": 97.51757171348328,
-              "score_delta": -40.74474653192772,
-              "dps_delta": -1.7507134554888495
+              "score_delta": -40.744746531927746,
+              "dps_delta": -1.7507134554888508
             }
           ]
         },
@@ -5217,13 +5221,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 211472,
-          "item_name": "Libram of Banishment",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249442,
+          "item_name": "Libram of Invocation",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 211472,
+              "item_name": "Libram of Banishment"
+            },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand"
@@ -5250,26 +5258,26 @@
               "dps_delta": 0
             },
             {
-              "item_id": 208851,
-              "item_name": "Libram of Justice",
+              "item_id": 211472,
+              "item_name": "Libram of Banishment",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 100.43420804491501
             },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 100.43420804491501
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 100.43420804491501,
-      "no_source_count": 1645,
+      "no_source_count": 1642,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5288,7 +5296,7 @@
         "5971 Feathered Cape"
       ],
       "new_at_band": [
-        "head: Blood Guard's Plate Helm",
+        "head: Knight-Lieutenant's Plate Helm",
         "shoulder: Knight-Lieutenant's Plate Pauldrons",
         "back: Bloodlust Cape",
         "chest: Knight's Plate Hauberk",
@@ -5301,8 +5309,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.424924586,
-      "verify_run_seconds": 1.232427124,
+      "weights_run_seconds": 1.42636927,
+      "verify_run_seconds": 1.2417137839999999,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5326,7 +5334,7 @@
         },
         "hands": {
           "eligible": 445,
-          "sourced": 306
+          "sourced": 308
         },
         "head": {
           "eligible": 290,
@@ -5350,7 +5358,7 @@
         },
         "ranged": {
           "eligible": 8,
-          "sourced": 5
+          "sourced": 6
         },
         "shoulder": {
           "eligible": 293,
@@ -5424,18 +5432,18 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 220804,
-          "item_name": "Knight-Lieutenant's Plate Helm",
-          "source": "Captain Dirgehammer",
+          "item_id": 220803,
+          "item_name": "Blood Guard's Plate Helm",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
           "score": 138.26231824541102,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 220803,
-              "item_name": "Blood Guard's Plate Helm",
+              "item_id": 220804,
+              "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 100.12383491619113
@@ -5767,9 +5775,9 @@
               "item_name": "Stone Guard's Plate Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score": 103.8292232326242,
-              "score_delta": -51.20592019435853,
-              "dps_delta": -2.2002074160580207
+              "score": 103.82922323262422,
+              "score_delta": -51.20592019435851,
+              "dps_delta": -2.20020741605802
             },
             {
               "item_id": 10330,
@@ -6012,13 +6020,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 211472,
-          "item_name": "Libram of Banishment",
-          "source": "Rune Broker",
-          "source_kind": "vendor",
+          "item_id": 249442,
+          "item_name": "Libram of Invocation",
+          "source": "Enchanting",
+          "source_kind": "crafted",
           "verified": true,
           "effect_unmodelled": true,
           "ties": [
+            {
+              "item_id": 211472,
+              "item_name": "Libram of Banishment"
+            },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand"
@@ -6045,26 +6057,26 @@
               "dps_delta": 0
             },
             {
-              "item_id": 208851,
-              "item_name": "Libram of Justice",
+              "item_id": 211472,
+              "item_name": "Libram of Banishment",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 100.12383491619113
             },
             {
               "item_id": 249397,
               "item_name": "Tenets of the Silver Hand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 100.12383491619113
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 100.12383491619113,
-      "no_source_count": 1648,
+      "no_source_count": 1645,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6083,7 +6095,7 @@
         "5971 Feathered Cape"
       ],
       "new_at_band": [
-        "head: Knight-Lieutenant's Plate Helm",
+        "head: Blood Guard's Plate Helm",
         "neck: Woven Ivy Necklace",
         "shoulder: Knight-Lieutenant's Plate Pauldrons",
         "back: Bloodlust Cape",
@@ -6098,8 +6110,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.424924586,
-      "verify_run_seconds": 1.219463557,
+      "weights_run_seconds": 1.42636927,
+      "verify_run_seconds": 1.197785735,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6123,7 +6135,7 @@
         },
         "hands": {
           "eligible": 445,
-          "sourced": 302
+          "sourced": 304
         },
         "head": {
           "eligible": 289,
@@ -6147,7 +6159,7 @@
         },
         "ranged": {
           "eligible": 8,
-          "sourced": 5
+          "sourced": 6
         },
         "shoulder": {
           "eligible": 291,
@@ -6805,6 +6817,10 @@
           "effect_unmodelled": true,
           "ties": [
             {
+              "item_id": 249442,
+              "item_name": "Libram of Invocation"
+            },
+            {
               "item_id": 211472,
               "item_name": "Libram of Banishment"
             },
@@ -6827,20 +6843,11 @@
           ],
           "alternatives": [
             {
-              "item_id": 208849,
-              "item_name": "Libram of Blessings",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 211472,
               "item_name": "Libram of Banishment",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 140.01856139412303
+              "dps_delta": 0
             },
             {
               "item_id": 249397,
@@ -6848,12 +6855,21 @@
               "source_kind": "crafted",
               "source": "Enchanting",
               "dps_delta": 0
+            },
+            {
+              "item_id": 249442,
+              "item_name": "Libram of Invocation",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 140.01856139412303
             }
           ]
         }
       ],
       "set_dps": 145.04609333610864,
-      "no_source_count": 2488,
+      "no_source_count": 2485,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6888,8 +6904,8 @@
         "main_hand: Arcanite Champion",
         "ranged: Libram of Fervor"
       ],
-      "weights_run_seconds": 1.46687184,
-      "verify_run_seconds": 1.375284044,
+      "weights_run_seconds": 1.411709896,
+      "verify_run_seconds": 1.343934835,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -6913,7 +6929,7 @@
         },
         "hands": {
           "eligible": 629,
-          "sourced": 413
+          "sourced": 415
         },
         "head": {
           "eligible": 454,
@@ -6937,7 +6953,7 @@
         },
         "ranged": {
           "eligible": 17,
-          "sourced": 6
+          "sourced": 7
         },
         "shoulder": {
           "eligible": 476,
@@ -7041,8 +7057,8 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score": 227.97831763596452,
-              "score_delta": -211.97831763596173,
+              "score": 227.9783176359645,
+              "score_delta": -211.97831763596176,
               "dps_delta": -9.266590846267112
             }
           ]
@@ -7596,6 +7612,10 @@
           "effect_unmodelled": true,
           "ties": [
             {
+              "item_id": 249442,
+              "item_name": "Libram of Invocation"
+            },
+            {
               "item_id": 211472,
               "item_name": "Libram of Banishment"
             },
@@ -7618,20 +7638,11 @@
           ],
           "alternatives": [
             {
-              "item_id": 208849,
-              "item_name": "Libram of Blessings",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 211472,
               "item_name": "Libram of Banishment",
               "source_kind": "vendor",
               "source": "Rune Broker",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 140.2522287947122
+              "dps_delta": 0
             },
             {
               "item_id": 249397,
@@ -7639,12 +7650,21 @@
               "source_kind": "crafted",
               "source": "Enchanting",
               "dps_delta": 0
+            },
+            {
+              "item_id": 249442,
+              "item_name": "Libram of Invocation",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 140.2522287947122
             }
           ]
         }
       ],
       "set_dps": 142.11909879106702,
-      "no_source_count": 2497,
+      "no_source_count": 2494,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7677,8 +7697,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Fervor"
       ],
-      "weights_run_seconds": 1.46687184,
-      "verify_run_seconds": 1.3221290319999999,
+      "weights_run_seconds": 1.411709896,
+      "verify_run_seconds": 1.327615083,
       "coverage": {
         "back": {
           "eligible": 374,
@@ -7702,7 +7722,7 @@
         },
         "hands": {
           "eligible": 629,
-          "sourced": 408
+          "sourced": 410
         },
         "head": {
           "eligible": 453,
@@ -7726,7 +7746,7 @@
         },
         "ranged": {
           "eligible": 17,
-          "sourced": 6
+          "sourced": 7
         },
         "shoulder": {
           "eligible": 472,

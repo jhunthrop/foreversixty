@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:43:58Z",
+  "generated_at": "2026-09-30T02:24:48Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -682,8 +682,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.492960425,
-      "verify_run_seconds": 1.566487762,
+      "weights_run_seconds": 1.5022620519999998,
+      "verify_run_seconds": 1.5440533680000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1434,8 +1434,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.492960425,
-      "verify_run_seconds": 1.4724070280000001,
+      "weights_run_seconds": 1.5022620519999998,
+      "verify_run_seconds": 1.452683038,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2240,8 +2240,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.6212661879999999,
-      "verify_run_seconds": 1.780391941,
+      "weights_run_seconds": 1.6152091450000001,
+      "verify_run_seconds": 1.7322661780000002,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3044,8 +3044,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.6212661879999999,
-      "verify_run_seconds": 1.714527482,
+      "weights_run_seconds": 1.6152091450000001,
+      "verify_run_seconds": 1.678608572,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3844,8 +3844,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.882415018,
-      "verify_run_seconds": 1.933371071,
+      "weights_run_seconds": 1.852684467,
+      "verify_run_seconds": 1.914373372,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4644,8 +4644,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.882415018,
-      "verify_run_seconds": 1.987666417,
+      "weights_run_seconds": 1.852684467,
+      "verify_run_seconds": 1.9772117200000001,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -5423,7 +5423,7 @@
         }
       ],
       "set_dps": 93.33425534754375,
-      "no_source_count": 1763,
+      "no_source_count": 1762,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5458,8 +5458,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.027878566,
-      "verify_run_seconds": 1.969906535,
+      "weights_run_seconds": 2.042759298,
+      "verify_run_seconds": 1.925894938,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5483,7 +5483,7 @@
         },
         "hands": {
           "eligible": 443,
-          "sourced": 305
+          "sourced": 306
         },
         "head": {
           "eligible": 289,
@@ -6239,7 +6239,7 @@
         }
       ],
       "set_dps": 97.31523658952948,
-      "no_source_count": 1766,
+      "no_source_count": 1765,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6274,8 +6274,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.027878566,
-      "verify_run_seconds": 2.040658323,
+      "weights_run_seconds": 2.042759298,
+      "verify_run_seconds": 1.9531978639999998,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6299,7 +6299,7 @@
         },
         "hands": {
           "eligible": 443,
-          "sourced": 301
+          "sourced": 302
         },
         "head": {
           "eligible": 288,
@@ -6956,8 +6956,8 @@
               "item_name": "Grand Marshal's Glaive",
               "source_kind": "vendor",
               "source": "Captain O'Neal",
-              "score": 1727.768103640423,
-              "score_delta": 889.925368764874,
+              "score": 1727.7681036404229,
+              "score_delta": 889.9253687648737,
               "dps_delta": 0
             }
           ]
@@ -7040,7 +7040,7 @@
         }
       ],
       "set_dps": 232.57597212598753,
-      "no_source_count": 2598,
+      "no_source_count": 2597,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7076,8 +7076,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.096771402,
-      "verify_run_seconds": 2.326997573,
+      "weights_run_seconds": 2.043224111,
+      "verify_run_seconds": 2.298637605,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7101,7 +7101,7 @@
         },
         "hands": {
           "eligible": 623,
-          "sourced": 416
+          "sourced": 417
         },
         "head": {
           "eligible": 451,
@@ -7742,8 +7742,8 @@
               "item_name": "High Warlord's Pig Sticker",
               "source_kind": "vendor",
               "source": "Sergeant Thunderhorn",
-              "score": 1727.768103640423,
-              "score_delta": 889.925368764874,
+              "score": 1727.7681036404229,
+              "score_delta": 889.9253687648737,
               "dps_delta": 0
             },
             {
@@ -7760,8 +7760,8 @@
               "item_name": "Grand Marshal's Glaive",
               "source_kind": "vendor",
               "source": "Captain O'Neal",
-              "score": 1727.768103640423,
-              "score_delta": 889.925368764874,
+              "score": 1727.7681036404229,
+              "score_delta": 889.9253687648737,
               "dps_delta": 0
             }
           ]
@@ -7844,7 +7844,7 @@
         }
       ],
       "set_dps": 225.0701098456447,
-      "no_source_count": 2601,
+      "no_source_count": 2600,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7879,8 +7879,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.096771402,
-      "verify_run_seconds": 2.41733726,
+      "weights_run_seconds": 2.043224111,
+      "verify_run_seconds": 2.3291034919999998,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7904,7 +7904,7 @@
         },
         "hands": {
           "eligible": 623,
-          "sourced": 412
+          "sourced": 413
         },
         "head": {
           "eligible": 451,

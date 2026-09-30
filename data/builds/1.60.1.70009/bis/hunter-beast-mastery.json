@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:36:17Z",
+  "generated_at": "2026-09-30T02:17:11Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -670,8 +670,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.460591849,
-      "verify_run_seconds": 1.726882118,
+      "weights_run_seconds": 1.514658091,
+      "verify_run_seconds": 1.676162384,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1419,8 +1419,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.460591849,
-      "verify_run_seconds": 1.666428818,
+      "weights_run_seconds": 1.514658091,
+      "verify_run_seconds": 1.6571827300000002,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2238,8 +2238,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.595095623,
-      "verify_run_seconds": 2.177725742,
+      "weights_run_seconds": 1.630406055,
+      "verify_run_seconds": 2.152807646,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3062,8 +3062,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.595095623,
-      "verify_run_seconds": 2.083552815,
+      "weights_run_seconds": 1.630406055,
+      "verify_run_seconds": 2.085983797,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3861,8 +3861,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.752294639,
-      "verify_run_seconds": 2.366632797,
+      "weights_run_seconds": 1.746041975,
+      "verify_run_seconds": 2.356691266,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4659,8 +4659,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.752294639,
-      "verify_run_seconds": 2.334188316,
+      "weights_run_seconds": 1.746041975,
+      "verify_run_seconds": 2.299194253,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -5437,7 +5437,7 @@
         }
       ],
       "set_dps": 152.14015530039836,
-      "no_source_count": 1479,
+      "no_source_count": 1478,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5472,8 +5472,8 @@
         "off_hand: Inventor's Focal Sword",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.781352827,
-      "verify_run_seconds": 2.310000554,
+      "weights_run_seconds": 1.76464168,
+      "verify_run_seconds": 2.304153733,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5497,7 +5497,7 @@
         },
         "hands": {
           "eligible": 402,
-          "sourced": 282
+          "sourced": 283
         },
         "head": {
           "eligible": 259,
@@ -6255,7 +6255,7 @@
         }
       ],
       "set_dps": 156.60310238921124,
-      "no_source_count": 1484,
+      "no_source_count": 1483,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6291,8 +6291,8 @@
         "off_hand: Inventor's Focal Sword",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.781352827,
-      "verify_run_seconds": 2.27189597,
+      "weights_run_seconds": 1.76464168,
+      "verify_run_seconds": 2.273491585,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6316,7 +6316,7 @@
         },
         "hands": {
           "eligible": 403,
-          "sourced": 279
+          "sourced": 280
         },
         "head": {
           "eligible": 259,
@@ -7089,7 +7089,7 @@
         }
       ],
       "set_dps": 199.2264020246637,
-      "no_source_count": 2163,
+      "no_source_count": 2162,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7126,8 +7126,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.781847317,
-      "verify_run_seconds": 2.347959936,
+      "weights_run_seconds": 1.75582091,
+      "verify_run_seconds": 2.342908369,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -7151,7 +7151,7 @@
         },
         "hands": {
           "eligible": 541,
-          "sourced": 366
+          "sourced": 367
         },
         "head": {
           "eligible": 388,
@@ -7926,7 +7926,7 @@
         }
       ],
       "set_dps": 206.00823920571608,
-      "no_source_count": 2166,
+      "no_source_count": 2165,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7962,8 +7962,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.781847317,
-      "verify_run_seconds": 2.2943927029999998,
+      "weights_run_seconds": 1.75582091,
+      "verify_run_seconds": 2.254769739,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7987,7 +7987,7 @@
         },
         "hands": {
           "eligible": 545,
-          "sourced": 366
+          "sourced": 367
         },
         "head": {
           "eligible": 390,

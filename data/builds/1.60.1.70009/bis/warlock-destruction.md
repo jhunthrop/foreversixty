@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 42.8. Weights run: 1.5s. Verify run: 1.1s. 204 eligible items had no known source.
+Set DPS (verified): 42.8. Weights run: 1.4s. Verify run: 1.0s. 204 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.092, intellect=not significant (0.400 ± 0.102), crit=0.478 ± 0.022, hit=1.278 ± 0.062, spell_haste=not significant (0.104 ± 0.089), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.749 ± 0.092, fire_power=0.252 ± 0.000
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 204, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 64.9. Weights run: 1.5s. Verify run: 1.1s. 409 eligible items had no known source.
+Set DPS (verified): 64.9. Weights run: 1.4s. Verify run: 1.1s. 409 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.099, intellect=not significant (0.303 ± 0.115), crit=0.576 ± 0.031, hit=0.934 ± 0.062, spell_haste=not significant (0.340 ± 0.110), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.869 ± 0.099, fire_power=0.131 ± 0.000
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1147, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 41.9. Weights run: 1.5s. Verify run: 1.1s. 203 eligible items had no known source.
+Set DPS (verified): 41.9. Weights run: 1.4s. Verify run: 1.1s. 203 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.092, intellect=not significant (0.400 ± 0.102), crit=0.478 ± 0.022, hit=1.278 ± 0.062, spell_haste=not significant (0.104 ± 0.089), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.749 ± 0.092, fire_power=0.252 ± 0.000
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 63.1. Weights run: 1.5s. Verify run: 1.1s. 410 eligible items had no known source.
+Set DPS (verified): 63.1. Weights run: 1.4s. Verify run: 1.1s. 410 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.099, intellect=not significant (0.303 ± 0.115), crit=0.576 ± 0.031, hit=0.934 ± 0.062, spell_haste=not significant (0.340 ± 0.110), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.869 ± 0.099, fire_power=0.131 ± 0.000
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 410, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 108.0. Weights run: 1.4s. Verify run: 1.2s. 568 eligible items had no known source.
+Set DPS (verified): 108.0. Weights run: 1.4s. Verify run: 1.1s. 568 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.273), intellect=1.317 ± 0.307, crit=1.241 ± 0.061, hit=2.170 ± 0.167, spell_haste=not significant (0.432 ± 0.175), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.422 ± 0.273), fire_power=0.574 ± 0.002
 

@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:43:21Z",
+  "generated_at": "2026-09-30T02:24:11Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -625,8 +625,8 @@
         "main_hand: Forsaken Greataxe",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.480950816,
-      "verify_run_seconds": 1.126154154,
+      "weights_run_seconds": 1.494309504,
+      "verify_run_seconds": 1.141533816,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1331,8 +1331,8 @@
         "main_hand: Forsaken Greataxe",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.480950816,
-      "verify_run_seconds": 1.205851602,
+      "weights_run_seconds": 1.494309504,
+      "verify_run_seconds": 1.197559946,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2108,8 +2108,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.622534562,
-      "verify_run_seconds": 1.5987066269999999,
+      "weights_run_seconds": 1.622585859,
+      "verify_run_seconds": 1.6021713480000002,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2891,8 +2891,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.622534562,
-      "verify_run_seconds": 1.555044866,
+      "weights_run_seconds": 1.622585859,
+      "verify_run_seconds": 1.598560146,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3656,8 +3656,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 2.04262985,
-      "verify_run_seconds": 1.860885652,
+      "weights_run_seconds": 1.9946095879999999,
+      "verify_run_seconds": 1.850094258,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4421,8 +4421,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 2.04262985,
-      "verify_run_seconds": 1.850845699,
+      "weights_run_seconds": 1.9946095879999999,
+      "verify_run_seconds": 1.862013799,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -5166,7 +5166,7 @@
         }
       ],
       "set_dps": 117.69859997713232,
-      "no_source_count": 1763,
+      "no_source_count": 1762,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5201,8 +5201,8 @@
         "main_hand: Blight",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.124357972,
-      "verify_run_seconds": 1.8667184730000002,
+      "weights_run_seconds": 2.13491207,
+      "verify_run_seconds": 1.8342141010000002,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5226,7 +5226,7 @@
         },
         "hands": {
           "eligible": 443,
-          "sourced": 305
+          "sourced": 306
         },
         "head": {
           "eligible": 289,
@@ -5948,7 +5948,7 @@
         }
       ],
       "set_dps": 126.75556613970207,
-      "no_source_count": 1766,
+      "no_source_count": 1765,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5983,8 +5983,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.124357972,
-      "verify_run_seconds": 1.882280503,
+      "weights_run_seconds": 2.13491207,
+      "verify_run_seconds": 1.874814191,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6008,7 +6008,7 @@
         },
         "hands": {
           "eligible": 443,
-          "sourced": 301
+          "sourced": 302
         },
         "head": {
           "eligible": 288,
@@ -6722,7 +6722,7 @@
         }
       ],
       "set_dps": 181.93213720215377,
-      "no_source_count": 2598,
+      "no_source_count": 2597,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6757,8 +6757,8 @@
         "main_hand: Arcanite Champion",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.1238025130000002,
-      "verify_run_seconds": 1.817969575,
+      "weights_run_seconds": 2.139549638,
+      "verify_run_seconds": 1.796759397,
       "coverage": {
         "back": {
           "eligible": 370,
@@ -6782,7 +6782,7 @@
         },
         "hands": {
           "eligible": 623,
-          "sourced": 416
+          "sourced": 417
         },
         "head": {
           "eligible": 451,
@@ -7498,7 +7498,7 @@
         }
       ],
       "set_dps": 196.99839059266344,
-      "no_source_count": 2601,
+      "no_source_count": 2600,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7532,8 +7532,8 @@
         "main_hand: Nightfall",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.1238025130000002,
-      "verify_run_seconds": 1.839523882,
+      "weights_run_seconds": 2.139549638,
+      "verify_run_seconds": 1.7963938179999999,
       "coverage": {
         "back": {
           "eligible": 375,
@@ -7557,7 +7557,7 @@
         },
         "hands": {
           "eligible": 623,
-          "sourced": 412
+          "sourced": 413
         },
         "head": {
           "eligible": 451,

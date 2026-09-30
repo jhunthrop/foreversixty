@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T01:34:57Z",
+  "generated_at": "2026-09-30T02:15:52Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -649,8 +649,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.659896148,
-      "verify_run_seconds": 0.899804158,
+      "weights_run_seconds": 1.655975719,
+      "verify_run_seconds": 0.87728096,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1369,8 +1369,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Idol of the Huntress"
       ],
-      "weights_run_seconds": 1.659896148,
-      "verify_run_seconds": 0.897444436,
+      "weights_run_seconds": 1.655975719,
+      "verify_run_seconds": 0.867745172,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2173,8 +2173,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.769554705,
-      "verify_run_seconds": 1.337224975,
+      "weights_run_seconds": 1.7560540709999999,
+      "verify_run_seconds": 1.284980031,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -2983,8 +2983,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.769554705,
-      "verify_run_seconds": 1.281552724,
+      "weights_run_seconds": 1.7560540709999999,
+      "verify_run_seconds": 1.439086863,
       "coverage": {
         "back": {
           "eligible": 174,
@@ -3700,6 +3700,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -3730,13 +3734,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -3751,12 +3748,19 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 85.16004963017286
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 85.16004963017286,
-      "no_source_count": 836,
+      "no_source_count": 835,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -3789,8 +3793,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.861569641,
-      "verify_run_seconds": 1.339221776,
+      "weights_run_seconds": 1.8348206569999999,
+      "verify_run_seconds": 1.324914724,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -3838,7 +3842,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 118,
@@ -4506,6 +4510,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -4536,13 +4544,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -4557,12 +4558,19 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 84.86504679084176
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
       "set_dps": 84.86504679084176,
-      "no_source_count": 845,
+      "no_source_count": 844,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4595,8 +4603,8 @@
         "trinket1: Ankh of Life",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.861569641,
-      "verify_run_seconds": 1.35147406,
+      "weights_run_seconds": 1.8348206569999999,
+      "verify_run_seconds": 1.304413997,
       "coverage": {
         "back": {
           "eligible": 238,
@@ -4644,7 +4652,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 115,
@@ -4750,7 +4758,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 96.79463010734817
+              "sim_dps": 101.49156197401824
             },
             {
               "item_id": 17715,
@@ -4788,7 +4796,7 @@
               "source": "Tremors of the Earth",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 96.8201114375834
+              "sim_dps": 101.5206139575856
             },
             {
               "item_id": 13085,
@@ -4832,7 +4840,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 96.79463010734817
+              "sim_dps": 101.49156197401824
             },
             {
               "item_id": 220870,
@@ -4886,9 +4894,9 @@
               "item_name": "Runecloth Cloak",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.316750628041163,
+              "dps_delta": -1.3555646704324005,
               "verified": true,
-              "sim_dps": 95.477879479307
+              "sim_dps": 100.13599730358584
             }
           ]
         },
@@ -4914,7 +4922,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 96.79463010734817
+              "sim_dps": 101.49156197401824
             },
             {
               "item_id": 220868,
@@ -4950,9 +4958,9 @@
               "item_name": "Skycaller's Leather Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": 0,
+              "dps_delta": -0.15253090717173734,
               "verified": true,
-              "sim_dps": 96.83653345634349
+              "sim_dps": 101.3390310668465
             },
             {
               "item_id": 254061,
@@ -4976,55 +4984,39 @@
         },
         {
           "slot": "hands",
-          "item_id": 867,
-          "item_name": "Gloves of Holy Might",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 27.223506512476785,
+          "item_id": 226777,
+          "item_name": "Feralheart Hands",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "score": 28.58097644627138,
           "verified": true,
-          "ties": [
+          "alternatives": [
             {
               "item_id": 7348,
-              "item_name": "Fletcher's Gloves"
+              "item_name": "Fletcher's Gloves",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score": 27.223506512476785,
+              "score_delta": -1.3574699337945937,
+              "dps_delta": -0.1554522874465471
             },
-            {
-              "item_id": 18238,
-              "item_name": "Shadowskin Gloves"
-            },
-            {
-              "item_id": 220856,
-              "item_name": "Sergeant Major's Leather Gauntlets"
-            },
-            {
-              "item_id": 220857,
-              "item_name": "First Sergeant's Leather Gauntlets"
-            }
-          ],
-          "alternatives": [
             {
               "item_id": 18238,
               "item_name": "Shadowskin Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score": 27.223506512476785,
-              "dps_delta": 0
+              "score_delta": -1.3574699337945937,
+              "dps_delta": -0.1554522874465471
             },
             {
-              "item_id": 220856,
-              "item_name": "Sergeant Major's Leather Gauntlets",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "score": 27.223506512476785,
-              "dps_delta": 0
-            },
-            {
-              "item_id": 7348,
-              "item_name": "Fletcher's Gloves",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.5807138244647518,
+              "item_id": 867,
+              "item_name": "Gloves of Holy Might",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.69693186667007,
               "verified": true,
-              "sim_dps": 96.21391628288342
+              "sim_dps": 96.79463010734817
             }
           ]
         },
@@ -5042,9 +5034,9 @@
               "item_name": "Highlander's Lizardhide Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -1.0726849937997827,
+              "dps_delta": -0.9274560382133359,
               "verified": true,
-              "sim_dps": 95.72194511354839
+              "sim_dps": 100.5641059358049
             },
             {
               "item_id": 20115,
@@ -5068,27 +5060,21 @@
         },
         {
           "slot": "legs",
-          "item_id": 220864,
-          "item_name": "Knight's Crackling Leather Leggings",
-          "source": "Captain Dirgehammer",
+          "item_id": 220865,
+          "item_name": "Stone Guard's Crackling Leather Leggings",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 94.40945687189803,
+          "score": 94.40945687189804,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220865,
-              "item_name": "Stone Guard's Crackling Leather Leggings"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 220865,
-              "item_name": "Stone Guard's Crackling Leather Leggings",
+              "item_id": 220864,
+              "item_name": "Knight's Crackling Leather Leggings",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 96.79463010734817
+              "sim_dps": 101.49156197401824
             },
             {
               "item_id": 220858,
@@ -5096,8 +5082,8 @@
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score": 75.03947499015082,
-              "score_delta": -19.369981881747208,
-              "dps_delta": -2.218176562407314
+              "score_delta": -19.369981881747222,
+              "dps_delta": -2.218176562407316
             },
             {
               "item_id": 220859,
@@ -5105,8 +5091,8 @@
               "source_kind": "vendor",
               "source": "Lady Palanseer",
               "score": 75.03947499015082,
-              "score_delta": -19.369981881747208,
-              "dps_delta": -2.218176562407314
+              "score_delta": -19.369981881747222,
+              "dps_delta": -2.218176562407316
             }
           ]
         },
@@ -5132,7 +5118,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 96.79463010734817
+              "sim_dps": 101.49156197401824
             },
             {
               "item_id": 254013,
@@ -5206,9 +5192,9 @@
               "item_name": "Lorekeeper's Ring",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": 0,
+              "dps_delta": -0.04160059861793286,
               "verified": true,
-              "sim_dps": 96.85260288369709
+              "sim_dps": 101.4499613754003
             },
             {
               "item_id": 19524,
@@ -5236,7 +5222,7 @@
           "item_name": "Ankh of Life",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 96.53823174475392,
+          "sim_dps": 102.29449129449314,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5273,7 +5259,7 @@
           "item_name": "Thunderbrew's Boot Flask",
           "source": "Sweet Amber",
           "source_kind": "quest",
-          "sim_dps": 96.66771214357799,
+          "sim_dps": 102.53707527693444,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5298,9 +5284,9 @@
               "item_name": "Uther's Strength",
               "source_kind": "world",
               "source": "Azuregos",
-              "dps_delta": -0.37245680761661504,
+              "dps_delta": -0.1522121065666937,
               "verified": true,
-              "sim_dps": 96.42217329973155
+              "sim_dps": 101.33934986745155
             }
           ]
         },
@@ -5310,7 +5296,7 @@
           "item_name": "Thorium Greatmace",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 96.66771214357799,
+          "sim_dps": 102.53707527693444,
           "verified": true,
           "alternatives": [
             {
@@ -5361,6 +5347,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -5391,13 +5381,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -5411,13 +5394,20 @@
               "source": "Rune Broker",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 96.79463010734817
+              "sim_dps": 101.49156197401824
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
-      "set_dps": 96.79463010734817,
-      "no_source_count": 1087,
+      "set_dps": 101.49156197401824,
+      "no_source_count": 1082,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -5441,17 +5431,17 @@
         "back: Spritecaster Cape",
         "chest: Knight's Leather Armor",
         "wrist: Runic Leather Bracers",
-        "hands: Gloves of Holy Might",
+        "hands: Feralheart Hands",
         "waist: Highlander's Cloth Girdle",
-        "legs: Knight's Crackling Leather Leggings",
+        "legs: Stone Guard's Crackling Leather Leggings",
         "feet: Sergeant Major's Crackling Leather Boots",
         "finger1: Blackstone Ring",
         "finger2: Philanthropist's Ring",
         "trinket2: Thunderbrew's Boot Flask",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.912073908,
-      "verify_run_seconds": 1.244208853,
+      "weights_run_seconds": 1.8732127520000001,
+      "verify_run_seconds": 1.207084859,
       "coverage": {
         "back": {
           "eligible": 301,
@@ -5475,7 +5465,7 @@
         },
         "hands": {
           "eligible": 290,
-          "sourced": 206
+          "sourced": 210
         },
         "head": {
           "eligible": 192,
@@ -5499,7 +5489,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 175,
@@ -5605,7 +5595,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.54939478277562
+              "sim_dps": 100.83321250720155
             },
             {
               "item_id": 17715,
@@ -5643,7 +5633,7 @@
               "source": "Broken Alliances",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.90555303423972
+              "sim_dps": 101.43654151450079
             },
             {
               "item_id": 13085,
@@ -5687,7 +5677,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.54939478277562
+              "sim_dps": 100.83321250720155
             },
             {
               "item_id": 220870,
@@ -5725,7 +5715,7 @@
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.86054306123597
+              "sim_dps": 101.47861708087454
             },
             {
               "item_id": 13860,
@@ -5769,7 +5759,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.54939478277562
+              "sim_dps": 100.83321250720155
             },
             {
               "item_id": 220868,
@@ -5807,7 +5797,7 @@
               "source": "Leatherworking",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.6774689226873
+              "sim_dps": 101.14217737334955
             },
             {
               "item_id": 254061,
@@ -5831,55 +5821,39 @@
         },
         {
           "slot": "hands",
-          "item_id": 867,
-          "item_name": "Gloves of Holy Might",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 27.223506512476785,
+          "item_id": 226777,
+          "item_name": "Feralheart Hands",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "score": 28.58097644627138,
           "verified": true,
-          "ties": [
+          "alternatives": [
             {
               "item_id": 7348,
-              "item_name": "Fletcher's Gloves"
+              "item_name": "Fletcher's Gloves",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score": 27.223506512476785,
+              "score_delta": -1.3574699337945937,
+              "dps_delta": -0.1554522874465471
             },
-            {
-              "item_id": 18238,
-              "item_name": "Shadowskin Gloves"
-            },
-            {
-              "item_id": 220856,
-              "item_name": "Sergeant Major's Leather Gauntlets"
-            },
-            {
-              "item_id": 220857,
-              "item_name": "First Sergeant's Leather Gauntlets"
-            }
-          ],
-          "alternatives": [
             {
               "item_id": 18238,
               "item_name": "Shadowskin Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score": 27.223506512476785,
-              "dps_delta": 0
+              "score_delta": -1.3574699337945937,
+              "dps_delta": -0.1554522874465471
             },
             {
-              "item_id": 220856,
-              "item_name": "Sergeant Major's Leather Gauntlets",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "score": 27.223506512476785,
-              "dps_delta": 0
-            },
-            {
-              "item_id": 7348,
-              "item_name": "Fletcher's Gloves",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.9504611436140493,
+              "item_id": 867,
+              "item_name": "Gloves of Holy Might",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.937423408737459,
               "verified": true,
-              "sim_dps": 96.59893363916157
+              "sim_dps": 95.89578909846409
             }
           ]
         },
@@ -5897,9 +5871,9 @@
               "item_name": "Defiler's Lizardhide Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -1.443288914476753,
+              "dps_delta": -0.4905301302738678,
               "verified": true,
-              "sim_dps": 96.10610586829887
+              "sim_dps": 100.34268237692768
             },
             {
               "item_id": 20193,
@@ -5943,7 +5917,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.54939478277562
+              "sim_dps": 100.83321250720155
             },
             {
               "item_id": 220858,
@@ -5987,7 +5961,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.54939478277562
+              "sim_dps": 100.83321250720155
             },
             {
               "item_id": 254013,
@@ -6063,7 +6037,7 @@
               "source": "Warsong Outriders",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.84203772969896
+              "sim_dps": 101.33069927344381
             },
             {
               "item_id": 19520,
@@ -6087,38 +6061,39 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 1713,
-          "item_name": "Ankh of Life",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "sim_dps": 96.4445887244123,
+          "item_id": 11302,
+          "item_name": "Uther's Strength",
+          "source": "Azuregos",
+          "source_kind": "world",
+          "sim_dps": 101.02774177031324,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 1490,
-              "item_name": "Guardian Talisman",
-              "source_kind": "quest",
-              "source": "The Temple of Atal'Hakkar",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world",
-              "source": "Azuregos",
-              "score": 6,
-              "score_delta": 6,
-              "dps_delta": 0
+              "item_id": 1713,
+              "item_name": "Ankh of Life",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 101.13014878098969
             },
             {
               "item_id": 249469,
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -0.5225406205223067,
-              "verified": true,
-              "sim_dps": 97.02685416225331
+              "score": 43.03437162990663,
+              "score_delta": 37.03437162990663,
+              "dps_delta": 0
+            },
+            {
+              "item_id": 1490,
+              "item_name": "Guardian Talisman",
+              "source_kind": "quest",
+              "source": "The Temple of Atal'Hakkar",
+              "score_delta": -6,
+              "dps_delta": -0.6870971514426313
             }
           ]
         },
@@ -6128,7 +6103,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 96.4445887244123,
+          "sim_dps": 101.02774177031324,
           "verified": true,
           "alternatives": [
             {
@@ -6136,18 +6111,9 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -1.7258735977024884,
+              "dps_delta": -1.0523710439815375,
               "verified": true,
-              "sim_dps": 95.82352118507313
-            },
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world",
-              "source": "Azuregos",
-              "score": 6,
-              "score_delta": -27.471177934371823,
-              "dps_delta": -3.145894684246758
+              "sim_dps": 99.78084146322001
             },
             {
               "item_id": 1490,
@@ -6156,44 +6122,52 @@
               "source": "The Temple of Atal'Hakkar",
               "score_delta": -33.47117793437182,
               "dps_delta": -3.832991835689389
+            },
+            {
+              "item_id": 1713,
+              "item_name": "Ankh of Life",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score_delta": -33.47117793437182,
+              "dps_delta": -3.832991835689389
             }
           ]
         },
         {
           "slot": "main_hand",
-          "item_id": 9449,
-          "item_name": "Manual Crowd Pummeler",
-          "source": "Gnomeregan: Crowd Pummeler 9-60",
-          "source_kind": "dungeon",
-          "sim_dps": 97.67762837396847,
+          "item_id": 250613,
+          "item_name": "Thorium Greatmace",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "sim_dps": 101.02774177031324,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 1607,
-              "item_name": "Soulkeeper",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "score": 414.8616863195446,
-              "score_delta": 161.62238874034628,
-              "dps_delta": 0
-            },
             {
               "item_id": 11750,
               "item_name": "Kindling Stave",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain",
               "score": 436.5348705285747,
-              "score_delta": 183.29557294937635,
-              "dps_delta": 0
+              "score_delta": -0.03109958697126558,
+              "dps_delta": -0.003561406269833158
             },
             {
-              "item_id": 250613,
-              "item_name": "Thorium Greatmace",
+              "item_id": 1607,
+              "item_name": "Soulkeeper",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "score": 414.8616863195446,
+              "score_delta": -21.704283796001334,
+              "dps_delta": -2.485491928389163
+            },
+            {
+              "item_id": 11608,
+              "item_name": "Dark Iron Pulverizer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.0322541700454195,
-              "verified": true,
-              "sim_dps": 96.5171406127302
+              "score": 414.1772373855647,
+              "score_delta": -22.388732729981257,
+              "dps_delta": -2.5638724138634212
             }
           ]
         },
@@ -6214,6 +6188,10 @@
             {
               "item_id": 220915,
               "item_name": "Idol of the Raging Shambler"
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
             },
             {
               "item_id": 213594,
@@ -6246,13 +6224,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild",
-              "source_kind": "vendor",
-              "source": "Rune Broker",
-              "dps_delta": 0
-            },
-            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler",
               "source_kind": "world",
@@ -6266,13 +6237,20 @@
               "source": "Rune Broker",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 97.54939478277562
+              "sim_dps": 100.83321250720155
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         }
       ],
-      "set_dps": 97.54939478277562,
-      "no_source_count": 1096,
+      "set_dps": 100.83321250720155,
+      "no_source_count": 1091,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -6296,16 +6274,18 @@
         "back: Deep Woodlands Cloak",
         "chest: Knight's Leather Armor",
         "wrist: Runic Leather Bracers",
-        "hands: Gloves of Holy Might",
+        "hands: Feralheart Hands",
         "waist: Defiler's Cloth Girdle",
         "legs: Knight's Crackling Leather Leggings",
         "feet: Sergeant Major's Crackling Leather Boots",
         "finger1: Blackstone Ring",
         "finger2: Philanthropist's Ring",
-        "trinket2: Rune of the Guard Captain"
+        "trinket1: Uther's Strength",
+        "trinket2: Rune of the Guard Captain",
+        "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.912073908,
-      "verify_run_seconds": 1.4388370560000001,
+      "weights_run_seconds": 1.8732127520000001,
+      "verify_run_seconds": 1.231294319,
       "coverage": {
         "back": {
           "eligible": 306,
@@ -6329,7 +6309,7 @@
         },
         "hands": {
           "eligible": 289,
-          "sourced": 202
+          "sourced": 206
         },
         "head": {
           "eligible": 193,
@@ -6353,7 +6333,7 @@
         },
         "ranged": {
           "eligible": 11,
-          "sourced": 9
+          "sourced": 10
         },
         "shoulder": {
           "eligible": 172,
@@ -6836,7 +6816,7 @@
           "item_name": "Ring of the Fallen God",
           "source": "The Savior of Kalimdor",
           "source_kind": "quest",
-          "score": 99.63242317480537,
+          "score": 99.63242317480535,
           "verified": true,
           "alternatives": [
             {
@@ -6845,8 +6825,8 @@
               "source_kind": "quest",
               "source": "Veteran's Battlegear",
               "score": 94.09600526487097,
-              "score_delta": -5.5364179099344,
-              "dps_delta": -0.6121195676197194
+              "score_delta": -5.536417909934386,
+              "dps_delta": -0.6121195676197179
             },
             {
               "item_id": 20632,
@@ -6854,8 +6834,8 @@
               "source_kind": "world",
               "source": "Taerar",
               "score": 60.905475098674174,
-              "score_delta": -38.726948076131194,
-              "dps_delta": -4.281743737057168
+              "score_delta": -38.72694807613118,
+              "dps_delta": -4.281743737057166
             },
             {
               "item_id": 21836,
@@ -6863,8 +6843,8 @@
               "source_kind": "world",
               "source": "Qiraji Lasher",
               "score": 60.18452859436989,
-              "score_delta": -39.44789458043548,
-              "dps_delta": -4.3614533019185595
+              "score_delta": -39.44789458043547,
+              "dps_delta": -4.361453301918558
             }
           ]
         },
@@ -7046,6 +7026,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -7076,13 +7060,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 213594,
-              "item_name": "Idol of the Heckler",
-              "source_kind": "world",
-              "source": "Zai'enki",
-              "dps_delta": 0
-            },
-            {
               "item_id": 220915,
               "item_name": "Idol of the Raging Shambler",
               "source_kind": "vendor",
@@ -7097,13 +7074,20 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 136.4390415189777
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ],
           "low_value": true
         }
       ],
       "set_dps": 139.47524987889588,
-      "no_source_count": 1811,
+      "no_source_count": 1806,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7129,6 +7113,7 @@
         "wrist: Rockfury Bracers",
         "hands: Primal Batskin Gloves",
         "waist: Belt of the Archmage",
+        "legs: Knight's Crackling Leather Leggings",
         "feet: Bloodvine Boots",
         "finger1: Ring of the Fallen God",
         "finger2: Don Julio's Band",
@@ -7137,8 +7122,8 @@
         "main_hand: Fist of Cenarius",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.9277958339999999,
-      "verify_run_seconds": 1.356068297,
+      "weights_run_seconds": 1.8997342609999999,
+      "verify_run_seconds": 1.327963093,
       "coverage": {
         "back": {
           "eligible": 371,
@@ -7162,7 +7147,7 @@
         },
         "hands": {
           "eligible": 407,
-          "sourced": 266
+          "sourced": 270
         },
         "head": {
           "eligible": 312,
@@ -7186,7 +7171,7 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 10
+          "sourced": 11
         },
         "shoulder": {
           "eligible": 305,
@@ -7669,7 +7654,7 @@
           "item_name": "Ring of the Fallen God",
           "source": "The Savior of Kalimdor",
           "source_kind": "quest",
-          "score": 99.63242317480537,
+          "score": 99.63242317480535,
           "verified": true,
           "alternatives": [
             {
@@ -7678,8 +7663,8 @@
               "source_kind": "quest",
               "source": "Veteran's Battlegear",
               "score": 94.09600526487097,
-              "score_delta": -5.5364179099344,
-              "dps_delta": -0.6121195676197194
+              "score_delta": -5.536417909934386,
+              "dps_delta": -0.6121195676197179
             },
             {
               "item_id": 20632,
@@ -7687,8 +7672,8 @@
               "source_kind": "world",
               "source": "Taerar",
               "score": 60.905475098674174,
-              "score_delta": -38.726948076131194,
-              "dps_delta": -4.281743737057168
+              "score_delta": -38.72694807613118,
+              "dps_delta": -4.281743737057166
             },
             {
               "item_id": 21836,
@@ -7696,8 +7681,8 @@
               "source_kind": "world",
               "source": "Qiraji Lasher",
               "score": 60.18452859436989,
-              "score_delta": -39.44789458043548,
-              "dps_delta": -4.3614533019185595
+              "score_delta": -39.44789458043547,
+              "dps_delta": -4.361453301918558
             }
           ]
         },
@@ -7879,6 +7864,10 @@
               "item_name": "Idol of the Raging Shambler"
             },
             {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath"
+            },
+            {
               "item_id": 213594,
               "item_name": "Idol of the Heckler"
             },
@@ -7909,13 +7898,6 @@
           ],
           "alternatives": [
             {
-              "item_id": 213594,
-              "item_name": "Idol of the Heckler",
-              "source_kind": "world",
-              "source": "Zai'enki",
-              "dps_delta": 0
-            },
-            {
               "item_id": 220915,
               "item_name": "Idol of the Raging Shambler",
               "source_kind": "vendor",
@@ -7930,13 +7912,20 @@
               "dps_delta": 0,
               "verified": true,
               "sim_dps": 136.00369633633278
+            },
+            {
+              "item_id": 249441,
+              "item_name": "Talons of Wrath",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ],
           "low_value": true
         }
       ],
       "set_dps": 138.18340714843924,
-      "no_source_count": 1819,
+      "no_source_count": 1814,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1447 Ring of Saviors",
@@ -7965,11 +7954,12 @@
         "feet: Bloodvine Boots",
         "finger1: Ring of the Fallen God",
         "finger2: Don Julio's Band",
+        "trinket1: Ankh of Life",
         "main_hand: Fist of Cenarius",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.9277958339999999,
-      "verify_run_seconds": 1.352660943,
+      "weights_run_seconds": 1.8997342609999999,
+      "verify_run_seconds": 1.321191812,
       "coverage": {
         "back": {
           "eligible": 376,
@@ -7993,7 +7983,7 @@
         },
         "hands": {
           "eligible": 407,
-          "sourced": 263
+          "sourced": 267
         },
         "head": {
           "eligible": 313,
@@ -8017,7 +8007,7 @@
         },
         "ranged": {
           "eligible": 21,
-          "sourced": 10
+          "sourced": 11
         },
         "shoulder": {
           "eligible": 301,
