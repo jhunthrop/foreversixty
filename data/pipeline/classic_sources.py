@@ -264,7 +264,13 @@ class ClassicDbSourceRecord(BaseModel):
     name: str
     #: The spawn table's own map id (cmangos `creature.map`/
     #: `gameobject.map`), for `creature_drop`/`object_drop`/`skinning`/
-    #: `pickpocketing` only.
+    #: `pickpocketing` only -- and, pvp-faction lane 2026-09-29, `vendor`
+    #: too: the selling npc's own spawn map, which is how
+    #: `pipeline.loot.pvp_faction.vendor_npc_factions` tells a rank
+    #: quartermaster standing in the Alliance or Horde capital-city PvP
+    #: hall (this build's own `zones.json` names the two maps plainly)
+    #: from one standing on the open continent, where the map alone
+    #: settles nothing.
     map_id: int | None = None
     #: Percent chance (0-100), `abs(ChanceOrQuestChance)` -- cmangos uses
     #: a negative value for "grouped, no other normal loot" bookkeeping
@@ -665,6 +671,7 @@ def _parse_vendors(
     creature_names: dict[int, str],
     vendor_template_id: dict[int, int],
     conditions: dict[int, ClassicDbCondition],
+    npc_map: dict[int, int],
     into: dict[int, list[ClassicDbSourceRecord]],
 ) -> None:
     direct = _rows_by_entry(list(iter_table_records(sql_text, "npc_vendor")))
@@ -688,6 +695,7 @@ def _parse_vendors(
             into[int(row["item"])].append(
                 ClassicDbSourceRecord(
                     kind="vendor", npc_id=npc_id, name=name,
+                    map_id=npc_map.get(npc_id),
                     condition=conditions.get(condition_id) if condition_id else None,
                 )
             )
@@ -902,7 +910,7 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
     )
     _parse_object_drops(sql_text, object_names, object_map, into, excluded_refs)
     conditions = _parse_conditions(sql_text)
-    _parse_vendors(sql_text, creature_names, vendor_template_id, conditions, into)
+    _parse_vendors(sql_text, creature_names, vendor_template_id, conditions, npc_map, into)
     _parse_quest_rewards(sql_text, into)
     _parse_fishing(sql_text, into, fishing_excluded_refs)
     for item_id, record in _world_drop_records(sql_text, world_drop_pools).items():

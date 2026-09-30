@@ -369,6 +369,25 @@ func TestSourceForSkipsAFactionExclusiveDungeonForTheOtherSide(t *testing.T) {
 	}
 }
 
+// pvp-faction lane, 2026-09-29: loot.json's own pvp:rank-N:alliance/
+// pvp:rank-N:horde sources each carry the split's own Faction, which
+// data.go's loadLootIndex now copies onto the itemSource's Side (this
+// lane's own defect: an Alliance-titled rank reward such as
+// Knight-Lieutenant's Pauldrons must never reach a Horde character's
+// list, and vice versa).
+func TestSourceForGatesAPvpRankItemToItsOwnFaction(t *testing.T) {
+	idx := lootIndex{
+		16338: {{Kind: "pvp", Label: "Rank 11 (Alliance)", Side: "alliance", Rank: 11}},
+	}
+	if _, ok := sourceFor(16338, 60, "horde", "", idx); ok {
+		t.Fatal("an Alliance-only pvp rank reward was offered to a horde character")
+	}
+	src, ok := sourceFor(16338, 60, "alliance", "", idx)
+	if !ok || src.Kind != "pvp" || src.Rank != 11 {
+		t.Fatalf("alliance source = %+v, %v; want the pvp rank-11 source", src, ok)
+	}
+}
+
 // Scout's Medallion (item 20442, horde_only) and Sentinel's Medallion
 // (item 20444, alliance_only) are both real Forever items whose mined
 // rep source has the WSG faction backwards versus the item's own

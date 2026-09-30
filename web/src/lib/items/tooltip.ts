@@ -23,6 +23,7 @@
 //     with no documented, verified per-point-to-percent table in this repo -- inventing one
 //     here would put an unverified number on screen, which tenet 5 puts ahead of matching
 //     the client's exact prose.
+import { bisCopy } from '../bis/copy';
 import type { Item, ItemSet } from '../planner/types';
 import { SLOT_LABELS, STAT_KEYS, STAT_LABELS } from '../planner/types';
 import {
@@ -220,12 +221,16 @@ function sourceLinesFor(itemId: number, loot: LootFile): string[] {
     } else if (source.kind === 'rep') {
       lines.push({ text: sourceLabel(source), priority: 1, chance: undefined, order: order++ });
     } else if (source.kind === 'pvp') {
-      lines.push({
-        text: source.rank !== undefined ? `${source.name}, rank ${source.rank}` : source.name,
-        priority: 1,
-        chance: undefined,
-        order: order++,
-      });
+      // Third wow-player sweep defect, 2026-09-29: never the bare bucket name ("Rank 11")
+      // -- `bisCopy.pvpSourceLabel` names the rank, its in-game title and the faction
+      // `pipeline.loot.pvp_faction` split this source into, the same vocabulary
+      // `bis/source-cell.ts`'s own pvp cell reads. Falls back to `source.name` for a
+      // pre-split source missing rank/faction, which should not happen on real data.
+      const text =
+        source.rank !== undefined && (source.faction === 'alliance' || source.faction === 'horde')
+          ? bisCopy.pvpSourceLabel(source.rank, source.faction)
+          : source.name;
+      lines.push({ text, priority: 1, chance: undefined, order: order++ });
     } else {
       lines.push({ text: source.name, priority: 1, chance, order: order++ });
     }

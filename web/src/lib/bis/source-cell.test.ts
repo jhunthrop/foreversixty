@@ -89,6 +89,15 @@ const LOOT: LootFile & LootQuestsFile = {
       level_max: 25,
     },
     { id: 'world_drop:unknown', kind: 'world_drop', name: 'World drop', items: [91] },
+    {
+      id: 'pvp:rank-11:alliance',
+      kind: 'pvp',
+      name: 'Rank 11 (Alliance)',
+      rank: 11,
+      faction: 'alliance',
+      items: [100],
+    },
+    { id: 'pvp:rank-9', kind: 'pvp', name: 'Rank 9', items: [101] },
   ],
   quests: {
     '70': [
@@ -209,6 +218,16 @@ describe('resolveSourceCell', () => {
     expect(cell).toEqual({ kind: 'zone', place: 'Dun Morogh' });
   });
 
+  it('resolves a pvp item to its rank and faction, never the bare source name', () => {
+    const cell = resolveSourceCell(slot({ item_id: 100, source_kind: 'pvp' }), 'alliance', LOOT, 'fallback');
+    expect(cell).toEqual({ kind: 'pvp', rank: 11, faction: 'alliance' });
+  });
+
+  it('falls back for a pvp source missing rank or faction (should not happen on real data)', () => {
+    const cell = resolveSourceCell(slot({ item_id: 101, source_kind: 'pvp' }), 'alliance', LOOT, 'fallback');
+    expect(cell).toEqual({ kind: 'unknown', label: 'fallback' });
+  });
+
   it('falls back for a kind this resolver does not special-case', () => {
     const cell = resolveSourceCell(
       slot({ item_id: 1, source_kind: 'mystery' }),
@@ -291,6 +310,9 @@ describe('describeSourceCell', () => {
       'Timbermaw Hold (friendly)',
     );
     expect(describeSourceCell({ kind: 'zone', place: 'Dun Morogh' })).toBe('Dun Morogh');
+    expect(describeSourceCell({ kind: 'pvp', rank: 11, faction: 'alliance' })).toBe(
+      'PvP rank 11 · Knight-Lieutenant · Alliance',
+    );
     expect(describeSourceCell({ kind: 'unknown', label: 'Vendors' })).toBe('Vendors');
   });
 

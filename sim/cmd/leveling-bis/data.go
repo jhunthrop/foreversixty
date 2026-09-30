@@ -228,13 +228,21 @@ type lootBoss struct {
 // deliberately permissive about which fields are present so a kind this
 // file has never carried yet decodes instead of failing the whole load.
 type lootSource struct {
-	ID          string             `json:"id"`
-	Kind        string             `json:"kind"`
-	Name        string             `json:"name"`
-	Profession  string             `json:"profession"`
-	FactionID   int                `json:"faction_id"`
-	Standing    string             `json:"standing"`
-	Rank        int                `json:"rank"`
+	ID         string `json:"id"`
+	Kind       string `json:"kind"`
+	Name       string `json:"name"`
+	Profession string `json:"profession"`
+	FactionID  int    `json:"faction_id"`
+	Standing   string `json:"standing"`
+	Rank       int    `json:"rank"`
+	// Faction is "alliance" or "horde" for a "pvp" kind source only
+	// (pipeline.loot.pvp_faction's own doc, pvp-faction lane 2026-09-29:
+	// loot.json's own pvp:rank-N sources split into pvp:rank-N:alliance/
+	// pvp:rank-N:horde, one per side, each carrying its own Faction) -
+	// every other kind's own faction fact already reaches this struct a
+	// different way (FactionID for rep, factionExclusiveDungeons for a
+	// dungeon), so this field is empty for them.
+	Faction     string             `json:"faction"`
 	Items       []int              `json:"items"`
 	ItemChances map[string]float64 `json:"item_chances"`
 	Bosses      []lootBoss         `json:"bosses"`
@@ -516,6 +524,14 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 			}
 			if src.Kind == "pvp" {
 				is.Rank = src.Rank
+				// pvp-faction lane, 2026-09-29: loot.json's own
+				// pvp:rank-N:alliance/pvp:rank-N:horde sources each
+				// carry their own Faction now (the module doc above) -
+				// this is what makes sourceObtainable's Side check
+				// actually gate a rank reward to its own side, the
+				// third wow-player sweep's own defect (Alliance-titled
+				// rewards reaching a Horde character's list and back).
+				is.Side = src.Faction
 			}
 			if src.Kind == "rep" {
 				factionID := src.FactionID

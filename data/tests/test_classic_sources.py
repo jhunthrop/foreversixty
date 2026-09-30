@@ -262,6 +262,18 @@ def test_direct_vendor_row_has_no_condition():
     assert record.condition is None
 
 
+def test_a_vendor_record_carries_its_npcs_own_spawn_map():
+    """pvp-faction lane, 2026-09-29: a vendor record's `map_id` is the
+    SAME `creature.map` a creature/skinning/pickpocketing record already
+    reads -- `pipeline.loot.pvp_faction.vendor_npc_factions`' own primary
+    signal for a rank quartermaster's side. Lady Anacondra's own two
+    spawns (guid 1 and 2) are both map 43; Reagent Vendor's one spawn is
+    map 0."""
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    assert next(r for r in items[6260] if r.kind == "vendor").map_id == 43
+    assert next(r for r in items[8925] if r.kind == "vendor").map_id == 0
+
+
 def test_vendor_template_join_resolves_a_rep_gated_slot():
     """Npc 200's own VendorTemplateId (900) pulls in
     npc_vendor_template's row for entry 900 -- item 8925, condition_id 1,

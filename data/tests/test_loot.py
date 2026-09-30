@@ -11,7 +11,13 @@ shared fixtures `tests/test_loot_sources.py`, `test_loot_gear.py`,
 emits for these fixtures: seven sources --
 `raid:molten-core`, `dungeon:the-deadmines`, `world:azuregos`,
 `crafted:blacksmithing`, `rep:argent-dawn:exalted`, `pvp:rank-11`, `quest`
--- which is the baseline every assertion below is checked against.
+-- which is the baseline every assertion below is checked against, EXCEPT
+that `write_loot_files` itself (unlike `build_loot` alone) also runs
+`pipeline.loot.pvp_faction.split_pvp_sources_by_faction`, so the actual
+written file replaces `pvp:rank-11` with `pvp:rank-11:alliance` -- the
+fixture's own item 111, "Knight-Lieutenant's Blade", has no classic-db
+vendor in this build's tiny fixture set and resolves via its own title
+alone.
 """
 
 from __future__ import annotations
@@ -37,8 +43,10 @@ RAW_FILES = ("Map.csv", "ItemSparse.csv", "SpellMisc.csv", "Item.csv",
              "ManifestInterfaceData.csv")
 JSON_FILES = ("zones.json", "items.json", "spells.json")
 
-#: What `build_loot` itself emits for these fixtures, before any overlay --
-#: see `test_loot_sources.py::test_every_kind_is_emitted_once_and_in_the_contracts_order`.
+#: What `write_loot_files` writes for these fixtures, before any overlay --
+#: see `test_loot_sources.py::test_every_kind_is_emitted_once_and_in_the_contracts_order`
+#: for `build_loot`'s OWN pre-split `pvp:rank-11` (this module's own
+#: docstring above explains the difference).
 GENERATED_SOURCE_IDS = [
     "raid:molten-core",
     "dungeon:the-deadmines",
@@ -46,7 +54,7 @@ GENERATED_SOURCE_IDS = [
     "zone:16",
     "crafted:blacksmithing",
     "rep:argent-dawn:exalted",
-    "pvp:rank-11",
+    "pvp:rank-11:alliance",
     "quest",
 ]
 
