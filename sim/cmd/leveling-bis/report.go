@@ -568,6 +568,31 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	return out
 }
 
+// swapDeltaNoiseFloorDPS is how small a real, measured DPS delta must
+// be (in absolute DPS, not swapMargin's relative 1%) before
+// swapMeasuredDelta calls it an honest, exact tie (0) rather than
+// publishing the signed number.
+//
+// Controller direction, bis-ranker-integrity-8, 2026-09-30 (the eighth
+// wow-player sweep, day3/player-review-21/casters.md finding 1):
+// several caster main_hand slots published an exact "dps_delta: 0" for
+// a zero-caster-stat weapon (a rogue dagger, a stat-less epic sword,
+// Teebu's Blazing Longsword) that verify.go's own swap sim (sw) had
+// actually measured a real, small, POSITIVE delta over the picked
+// spell-power staff - it just had not cleared swapMargin's own 1%
+// PROMOTION bar, so no swap happened (sw.Beat == false) and the OLD
+// version of this function (see its history below) clamped EVERY
+// positive delta in that branch to exactly 0 regardless of size,
+// which the web renders as "same DPS" even when the real measured gap
+// was several DPS on a spec whose baseline DPS makes 1% a large
+// absolute number. swapMargin still decides whether a runner-up is
+// good enough to PROMOTE (verify.go's own job, unchanged); this floor
+// decides only whether the ONE candidate this command actually simmed
+// against the pick measured close enough to call an honest, exact tie
+// in the row it publishes - a different question the old clamp
+// wrongly answered by reusing swapMargin's relative bar for it.
+const swapDeltaNoiseFloorDPS = 0.05
+
 // swapMeasuredDelta is the real, sim-measured DPS delta between
 // whichever item verify.go's own swap sim (sw) tried against the pick
 // and the pick's own measured DPS - owner review, tenet 8. sw.SwapDPS
@@ -581,26 +606,34 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 // minus the pick's own measured DPS", negative whenever the pick's own
 // real DPS is the higher of the two - always true when sw.Beat
 // (Beat means the promoted item's SwapDPS beat the demoted item's
-// BaselineDPS by more than swapMargin), but NOT always true when
-// !sw.Beat: swapMargin (verify.go) deliberately keeps the scored pick
-// on a runner-up that measured HIGHER but not by enough to clear the
-// noise margin (verify.go's own Serpent's Shoulders/Mantle of Honor
-// example, 78.7 vs 78.6), which left this branch computing a genuinely
-// positive SwapDPS-BaselineDPS and publishing it as a "verified"
-// alternative's dps_delta - the exact contract violation the
-// controller's own review named (bis-ranker-integrity-2 lane, item 9:
-// "every alternative's dps_delta <= 0 after the swap stage, verified
-// or not"; 55 slots across ret/feral/enhancement, the same item pair
-// flipping sign between factions on a coin-flip-sized margin). Capped
-// at 0 here for exactly that case: a runner-up that did not clear the
-// promotion bar is reported as "at best a tie", never as a positive,
-// sim-measured win the pick was not actually given.
+// BaselineDPS by more than swapMargin, so |delta| here is always at
+// least swapMargin's own 1% of a real spec's DPS, far past
+// swapDeltaNoiseFloorDPS), but NOT always true when !sw.Beat:
+// swapMargin (verify.go) deliberately keeps the scored pick on a
+// runner-up that measured HIGHER but not by enough to clear the noise
+// margin (verify.go's own Serpent's Shoulders/Mantle of Honor example,
+// 78.7 vs 78.6) - a genuinely small, real measurement, not nothing.
+//
+// bis-ranker-integrity-2 (2026-09-29) originally capped every positive
+// delta in that branch at exactly 0, reasoning that "a runner-up that
+// did not clear the promotion bar is reported as at best a tie" - but
+// swapMargin is a RELATIVE bar (1% of baseline) built to decide
+// promotion, not an absolute noise floor on the row's own published
+// number; reusing it to zero out a real measurement made every one of
+// these rows claim an exact tie regardless of how large the actual,
+// measured gap was (bis-ranker-integrity-8's caster finding above).
+// This function now only ever calls an exact tie (0) when the real
+// measured delta itself is smaller than swapDeltaNoiseFloorDPS - an
+// absolute floor on THIS row's own number, answering "is this
+// measurement itself too small to trust" rather than "did it clear an
+// unrelated promotion bar". A negative delta (a genuine, measured
+// loss, however small) was never clamped and still is not.
 func swapMeasuredDelta(sw swapResult) float64 {
 	if sw.Beat {
 		return sw.BaselineDPS - sw.SwapDPS
 	}
 	delta := sw.SwapDPS - sw.BaselineDPS
-	if delta > 0 {
+	if math.Abs(delta) < swapDeltaNoiseFloorDPS {
 		return 0
 	}
 	return delta

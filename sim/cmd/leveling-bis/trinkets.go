@@ -2,6 +2,7 @@ package main
 
 import (
 	"sort"
+	"strings"
 )
 
 // Ranking trinkets by engine-verified DPS instead of score().
@@ -52,6 +53,15 @@ const (
 	// candidate. Same fixed verifySeed as every other sim in this
 	// command, so a report is reproducible.
 	trinketRankIterations = 100
+	// trinketShortlistBound is the generous cap trinketShortlist only
+	// enforces once its QUALIFYING set (hasPositivelyWeightedStat OR
+	// hasImplementedEffect OR hasUseEffect - see trinketShortlist's own
+	// doc) is itself larger than this: an ordinary slot's qualifying
+	// pool (a handful of stat-carrying or effect-carrying trinkets)
+	// never approaches it, so it only ever trims the rare slot whose
+	// real candidate count is unusually large, never the ordinary case
+	// this lane's brief fixes (bis-ranker-integrity-8, 2026-09-30).
+	trinketShortlistBound = 24
 )
 
 // excludePairMate drops a slot's own pair-mate (by id, or by name - a
@@ -88,75 +98,99 @@ func topByItemLevel(list []scored, excludeID int, excludeName string) []scored {
 	return candidates
 }
 
-// trinketShortlist is rankTrinketSlot's real candidate pool: the union
-// of topByItemLevel's top trinketTopN (highest item level - a rough
-// proxy for "how good a trinket this tier of content dropped", the
-// only ranking this file had before this lane), the top trinketTopN
-// BY SCORE (list is already best-score-first - candidatesBySlot's own
-// contract - so this is simply its own head, pair-mate-filtered), and
-// (bis-ranker-integrity-6, item 2) every candidate whose own effect the
-// engine actually implements (implementedEffectTrinkets, below) -
-// deduplicated by item id.
+// hasPositivelyWeightedStat reports whether c carries a positive
+// amount of any stat this spec's own weights (score.go's own units -
+// post rating-to-percent conversion, bis-ranker-integrity-8) actually
+// value (statWeight, score.go's own helper, so an "attack_power"
+// entry is checked the same combined way score() itself weighs it).
 //
-// This lane's brief (bis-ranker-integrity, 2026-09-29), item 1's own
-// mechanism finding: a plain-stat trinket that out-scores everything
-// else in the pool (Neltharion's Tear, spell_power 44 + hit 20, against
-// mage-fire's Naxxramas picks) can sit at a LOWER item level than five
-// higher-ilvl on-use/proc trinkets from the same or a later raid tier,
-// so topByItemLevel alone never gave it a single sim - the real
-// tournament below crowned whichever proc trinket won among candidates
-// that never had to face the best plain stat-stick in the pool at all.
-// bySlot[slot]'s own score() ranking cannot crown the WINNER by itself
-// either (score() has no notion of a proc - trinkets.go's own package
-// doc), but it is exactly the list this file needs to make sure the
-// best stat-based candidate gets a fair, real-sim shot alongside the
-// best item-level-based ones, so whichever axis actually wins the real
-// sim becomes the pick, and the loser becomes an honestly-Verified
-// alternative instead of an unverified score() estimate the pick never
-// actually faced (report.go's buildAlternatives, this lane's other
-// fix).
-// implementedEffectTrinkets returns every candidate in list whose own
-// on-hit/on-use/proc effect the engine actually implements
-// (hasImplementedEffect, rank.go) - this lane's brief
-// (bis-ranker-integrity-6), item 2: Hand of Justice (11815, a real
-// Blackrock Depths drop, effectids_generated.go's own table) never
-// reached a single sim for any melee spec at any band, because its
-// stat block is empty (score() has nothing to rank it by - trinkets.go's
-// own package doc) AND five higher-item-level trinkets (Darkmoon Faire
-// cards among them, ilvl 66-75 at band 60) always filled topByItemLevel
-// first. An item the engine CAN measure a real, implemented effect for
-// must reach the tournament regardless of its structured stats or its
-// item level relative to the rest of the pool - the whole reason this
-// file runs a real sim at all is to value exactly what score() cannot
-// see, and item level is only ever a proxy for that, never a
-// substitute for actually asking the engine. A trinket with no
-// implemented effect (or no effect at all) is untouched by this
-// bucket - Blackhand's Breadth (13965) is a real BRD drop too, but its
-// own crit-chance proc is not in effectids_generated.go, so the engine
-// could not measure it any better than score() already fails to; force-
-// including it here would spend a real sim on a candidate this command
-// still could not value, not fix anything this lane's brief asks for.
-func implementedEffectTrinkets(list []scored) []scored {
-	out := make([]scored, 0, len(list))
-	for _, c := range list {
-		if hasImplementedEffect(c.candidate) {
-			out = append(out, c)
+// This is the regression fix (bis-ranker-integrity-8, 2026-09-30):
+// hunter-marksmanship Alliance band 60's trinket1/trinket2 both
+// published no_dps_value with zero alternatives on nightly 5036d76c
+// (the first nightly after the rating-to-percent conversion, score.go)
+// because that conversion shrank every rating-family stat's score()
+// contribution 10-14x, which silently pushed rating trinkets like
+// Frozen Heart of the Mountain (+9 hit) out of BOTH the old
+// topByItemLevel and topByScore top-5 buckets before either ever ran
+// a sim - the exact "which axis got asked" blind spot this file's own
+// history (above) already named and fixed once for score() itself,
+// just reintroduced at a different scale by the unit change. Ranking
+// by SCORE or ITEM LEVEL was always only ever a proxy for "does this
+// candidate carry real, spec-relevant value" - this function asks
+// that question directly and exactly, so no top-N cut on either proxy
+// axis can ever again silently drop a candidate the spec's own
+// weights say is worth something.
+func hasPositivelyWeightedStat(c candidate, weights map[string]float64) bool {
+	for stat, amount := range c.Stats {
+		if amount > 0 && statWeight(stat, weights) > 0 {
+			return true
 		}
 	}
-	return out
+	return false
 }
 
-func trinketShortlist(list []scored, excludeID int, excludeName string) []scored {
+// hasUseEffect reports whether c's own effect_text is a real on-USE
+// effect - the client's own "Use: ..." tooltip prefix, exactly as
+// data/builds/<build>/items/<class>.json states it (classItem.EffectText,
+// data.go) - regardless of whether the engine actually implements that
+// effect (hasImplementedEffect, rank.go, is a stricter, separate
+// question). This lane's brief's third qualifying condition: an
+// on-use trinket the engine cannot yet fire is still a real item a
+// player can click, and its own passive stats (if any, valued by
+// hasPositivelyWeightedStat already) are never the whole story for an
+// on-use trinket - it deserves a real sim and an honest
+// effect_unmodelled flag (report.go, trinketEffectUnmodelled below),
+// not silent exclusion before either.
+func hasUseEffect(c candidate) bool {
+	return strings.HasPrefix(c.EffectText, "Use:")
+}
+
+// trinketShortlist is rankTrinketSlot's real candidate pool: every
+// pair-mate-filtered candidate that QUALIFIES - carries a positively-
+// weighted stat (hasPositivelyWeightedStat), OR an engine-implemented
+// effect (hasImplementedEffect - a trinket's real value is almost
+// always its proc/on-use effect, invisible to score() entirely, this
+// file's own package doc), OR a real on-use effect_text the engine
+// does not yet implement (hasUseEffect) - is simmed for the
+// tournament. No cap applies to that qualifying set unless it is
+// itself larger than trinketShortlistBound, a generous bound chosen
+// so the ordinary slot (a handful of qualifying candidates) is never
+// trimmed at all: the exact regression this lane fixes
+// (bis-ranker-integrity-8, 2026-09-30) was a top-5-by-score/top-5-by-
+// item-level cap applied BEFORE any relevance check, which silently
+// dropped a real, weighted-stat trinket whose score had simply moved
+// (the rating-to-percent conversion, score.go) without touching its
+// actual DPS value at all.
+//
+// Only when the qualifying set exceeds trinketShortlistBound does
+// this function trim: by SCORE (already post-rating-conversion,
+// list's own best-score-first contract - candidatesBySlot's own doc)
+// down toward the bound, while still keeping the qualifying set's own
+// top-by-item-level candidates (topByItemLevel, trinketTopN) even if
+// their score fell outside that cut - a higher-item-level candidate
+// remains a legitimate, real-world upgrade path this file has always
+// protected (see the union this function used to keep unconditionally,
+// in its history above), it just no longer stands in for "was this
+// candidate worth a sim at all" the way it used to.
+func trinketShortlist(list []scored, excludeID int, excludeName string, weights map[string]float64) []scored {
 	filtered := excludePairMate(list, excludeID, excludeName)
-	byItemLevel := topByItemLevel(filtered, 0, "")
-	byScore := filtered
-	if len(byScore) > trinketTopN {
-		byScore = byScore[:trinketTopN]
+
+	qualifying := make([]scored, 0, len(filtered))
+	for _, c := range filtered {
+		if hasPositivelyWeightedStat(c.candidate, weights) || hasImplementedEffect(c.candidate) || hasUseEffect(c.candidate) {
+			qualifying = append(qualifying, c)
+		}
 	}
-	byImplementedEffect := implementedEffectTrinkets(filtered)
-	seen := make(map[int]bool, len(byItemLevel)+len(byScore)+len(byImplementedEffect))
-	out := make([]scored, 0, len(byItemLevel)+len(byScore)+len(byImplementedEffect))
-	for _, group := range [][]scored{byItemLevel, byScore, byImplementedEffect} {
+	if len(qualifying) <= trinketShortlistBound {
+		return qualifying
+	}
+
+	byScore := qualifying[:trinketShortlistBound]
+	byItemLevel := topByItemLevel(qualifying, 0, "")
+
+	seen := make(map[int]bool, len(byScore)+len(byItemLevel))
+	out := make([]scored, 0, len(byScore)+len(byItemLevel))
+	for _, group := range [][]scored{byScore, byItemLevel} {
 		for _, c := range group {
 			if seen[c.ID] {
 				continue
@@ -181,8 +215,9 @@ func trinketEffectUnmodelled(c candidate) bool {
 }
 
 // rankTrinketSlot replaces picks[slot] with the engine-verified best of
-// its top-item-level candidates (and the runner-up with the second
-// best), leaving every other slot's pick untouched. It returns a new
+// its qualifying candidates (trinketShortlist; and the runner-up with
+// the second best), leaving every other slot's pick untouched. It
+// returns a new
 // map rather than mutating picks (this command's own immutability
 // rule - see the other pick.go/band.go functions, which all return new
 // values instead of editing their input).
@@ -195,7 +230,7 @@ func trinketEffectUnmodelled(c candidate) bool {
 // lowest-id eligible trinket, which the report's swap_note on that row
 // still leaves honestly unverified) and the caller is told so via the
 // returned notes slice, one line per skipped candidate.
-func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored, slot string) (map[string]slotPick, []string) {
+func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored, slot string, weights map[string]float64) (map[string]slotPick, []string) {
 	out := make(map[string]slotPick, len(picks))
 	for k, v := range picks {
 		out[k] = v
@@ -206,7 +241,7 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	if mate, ok := pairSlot[slot]; ok && picks[mate].Item != nil {
 		mateID, mateName = picks[mate].Item.ID, picks[mate].Item.Name
 	}
-	candidates := trinketShortlist(bySlot[slot], mateID, mateName)
+	candidates := trinketShortlist(bySlot[slot], mateID, mateName, weights)
 	if len(candidates) == 0 {
 		return out, nil
 	}

@@ -8,8 +8,22 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
+// trinketTestStat and trinketTestWeights (bis-ranker-integrity-8,
+// 2026-09-30): trinket() sets this stat on every synthetic trinket it
+// builds, and every rankTrinketSlot/trinketShortlist test below passes
+// trinketTestWeights as the weights map, so these plain synthetic
+// trinkets clear trinketShortlist's own qualifying gate
+// (hasPositivelyWeightedStat) exactly the way a real trinket's own
+// stats would - without changing what any of these tests actually
+// assert (the DPS tournament, swap-margin and immutability behaviour
+// downstream of trinketShortlist, not the gate itself, which has its
+// own dedicated tests below).
+const trinketTestStat = "test_stat"
+
+var trinketTestWeights = map[string]float64{trinketTestStat: 1}
+
 func trinket(id int, name string, itemLevel int) scored {
-	return scored{candidate: candidate{ID: id, Name: name, ItemLevel: itemLevel, Slots: []string{"trinket1", "trinket2"}}}
+	return scored{candidate: candidate{ID: id, Name: name, ItemLevel: itemLevel, Slots: []string{"trinket1", "trinket2"}, Stats: map[string]float64{trinketTestStat: 1}}}
 }
 
 // trinketWithEffect is trinket() plus an EffectText, for the hybrid
@@ -46,71 +60,139 @@ func TestTopByItemLevelOrdersHighestFirstAndBoundsToTopN(t *testing.T) {
 }
 
 // trinketScored is trinket() plus an explicit Score, for the score-axis
-// half of trinketShortlist's own test.
+// half of trinketShortlist's own tests.
 func trinketScored(id int, name string, itemLevel int, sc float64) scored {
 	s := trinket(id, name, itemLevel)
 	s.Score = sc
 	return s
 }
 
-// This lane's brief (bis-ranker-integrity, 2026-09-29): a candidate
-// that is far ahead on SCORE but far behind on item level must still
-// enter the real-sim pool, not just the item-level winners -
-// Neltharion's Tear (mage-fire's own dogfood case) is exactly this
-// shape: low item level, by far the best score() in the pool.
-func TestTrinketShortlistUnionsTopByItemLevelAndTopByScore(t *testing.T) {
-	// list is already score-sorted, matching candidatesBySlot's own
-	// contract (trinketShortlist's doc): item 100 is the best SCORE by
-	// far, but its item level (10) would never make topByItemLevel's own
-	// top trinketTopN (5) against items 2-6, all higher item level.
-	list := []scored{
-		trinketScored(100, "Best Score, Low ItemLevel", 10, 999),
-		trinketScored(2, "ItemLevel 90", 90, 5),
-		trinketScored(3, "ItemLevel 85", 85, 4),
-		trinketScored(4, "ItemLevel 83", 83, 3),
-		trinketScored(5, "ItemLevel 80", 80, 2),
-		trinketScored(6, "ItemLevel 78", 78, 1),
-		trinketScored(7, "ItemLevel 70", 70, 0),
+// trinketWithStat is a bare candidate (no dummy trinketTestStat, unlike
+// trinket()) carrying exactly one named stat amount - trinketShortlist's
+// own gating tests below need to control precisely which stat a
+// candidate carries, since trinket()'s own dummy stat would otherwise
+// trivially qualify every candidate under trinketTestWeights.
+func trinketWithStat(id int, name string, itemLevel int, stat string, amount float64) scored {
+	return scored{candidate: candidate{ID: id, Name: name, ItemLevel: itemLevel, Slots: []string{"trinket1", "trinket2"}, Stats: map[string]float64{stat: amount}}}
+}
+
+func TestHasPositivelyWeightedStat(t *testing.T) {
+	weights := map[string]float64{"hit": 1, "crit": 0, "stamina": -1}
+	cases := []struct {
+		name string
+		c    candidate
+		want bool
+	}{
+		{"a positive amount of a positively-weighted stat", candidate{Stats: map[string]float64{"hit": 9}}, true},
+		{"a positive amount of a zero-weighted stat", candidate{Stats: map[string]float64{"crit": 14}}, false},
+		{"a positive amount of a negatively-weighted stat", candidate{Stats: map[string]float64{"stamina": 20}}, false},
+		{"a stat this spec's weights do not mention at all", candidate{Stats: map[string]float64{"spirit": 5}}, false},
+		{"no stats at all", candidate{}, false},
+		{"a zero amount of a positively-weighted stat", candidate{Stats: map[string]float64{"hit": 0}}, false},
 	}
-	got := trinketShortlist(list, 0, "")
+	for _, tc := range cases {
+		if got := hasPositivelyWeightedStat(tc.c, weights); got != tc.want {
+			t.Errorf("%s: hasPositivelyWeightedStat(%+v) = %v, want %v", tc.name, tc.c, got, tc.want)
+		}
+	}
+}
+
+func TestHasUseEffect(t *testing.T) {
+	cases := []struct {
+		name string
+		text string
+		want bool
+	}{
+		{"a real Use: effect", "Use: +150 Attack Power, +2% Hit.", true},
+		{"a passive Equip/proc effect", "Equip: Restores health over time.", false},
+		{"no effect at all", "", false},
+	}
+	for _, tc := range cases {
+		if got := hasUseEffect(candidate{EffectText: tc.text}); got != tc.want {
+			t.Errorf("%s: hasUseEffect(%q) = %v, want %v", tc.name, tc.text, got, tc.want)
+		}
+	}
+}
+
+// This is the regression fix's own repro (bis-ranker-integrity-8,
+// 2026-09-30): hunter-marksmanship Alliance band 60's Frozen Heart of
+// the Mountain shape - a real, positively-weighted hit-rating trinket
+// whose score() total (already run through the rating-to-percent
+// conversion, score.go) sits far below several higher-item-level,
+// higher-score trinkets in the same pool. Neither the old top-5-by-
+// item-level nor top-5-by-score bucket would ever have reached it;
+// hasPositivelyWeightedStat must include it directly, regardless of
+// either axis.
+func TestTrinketShortlistRatingTrinketWithLowPostConversionScoreStillQualifies(t *testing.T) {
+	weights := map[string]float64{"hit": 1}
+	list := []scored{
+		// Five higher-item-level, higher-score candidates that carry no
+		// weighted stat at all (e.g. pure stamina/spirit trinkets) -
+		// exactly the shape that used to fill both top-5 buckets first.
+		trinketWithStat(2, "ItemLevel 90, unweighted stats", 90, "stamina", 40),
+		trinketWithStat(3, "ItemLevel 85, unweighted stats", 85, "stamina", 35),
+		trinketWithStat(4, "ItemLevel 83, unweighted stats", 83, "stamina", 30),
+		trinketWithStat(5, "ItemLevel 80, unweighted stats", 80, "stamina", 25),
+		trinketWithStat(6, "ItemLevel 78, unweighted stats", 78, "stamina", 20),
+		// Frozen Heart of the Mountain's own shape: low item level, a
+		// small rating-derived hit percentage (post-conversion), but a
+		// genuinely positive weighted stat.
+		trinketWithStat(249469, "Frozen Heart of the Mountain", 55, "hit", 0.9),
+	}
+	got := trinketShortlist(list, 0, "", weights)
 	found := false
 	for _, c := range got {
-		if c.ID == 100 {
+		if c.ID == 249469 {
 			found = true
 		}
 	}
 	if !found {
-		t.Fatalf("trinketShortlist = %+v, want item 100 (best score, never top-item-level) included", got)
+		t.Fatalf("trinketShortlist = %+v, want Frozen Heart of the Mountain (249469) included on its own weighted hit stat, off both the item-level and score axes", got)
 	}
-	// Every item-level-top-trinketTopN candidate is still present too -
-	// this is a union, not a replacement.
-	for _, id := range []int{2, 3, 4, 5, 6} {
-		hasIt := false
-		for _, c := range got {
-			if c.ID == id {
-				hasIt = true
-			}
-		}
-		if !hasIt {
-			t.Errorf("trinketShortlist = %+v, want item %d (top-item-level) still included", got, id)
-		}
+}
+
+// The mirror case: a candidate whose only stats are NOT positively
+// weighted by this spec, with no engine-implemented effect and no Use
+// effect either, is genuinely worth nothing here - excluded, no matter
+// how high its item level or how many stat points it carries.
+func TestTrinketShortlistExcludesACandidateOffEveryQualifyingAxis(t *testing.T) {
+	weights := map[string]float64{"hit": 1}
+	list := []scored{
+		trinketWithStat(2, "Frozen Heart of the Mountain", 55, "hit", 0.9),
+		trinketWithStat(999, "High ItemLevel, Unweighted Stats", 90, "stamina", 999),
 	}
-	// item 7 (item level 70, worst score) makes neither top-N: excluded.
+	got := trinketShortlist(list, 0, "", weights)
 	for _, c := range got {
-		if c.ID == 7 {
-			t.Errorf("trinketShortlist = %+v, want item 7 excluded (bottom of both axes)", got)
+		if c.ID == 999 {
+			t.Fatalf("trinketShortlist = %+v, want item 999 excluded: no weighted stat, no implemented effect, no Use effect", got)
 		}
+	}
+}
+
+// No arbitrary top-5 cap applies to the qualifying set as long as it
+// stays at or under trinketShortlistBound - this lane's brief: the OLD
+// top-5-by-score cap, applied before any relevance check, is exactly
+// what dropped Frozen Heart of the Mountain in the first place.
+func TestTrinketShortlistIncludesEveryQualifyingCandidateBelowTheBound(t *testing.T) {
+	weights := map[string]float64{"hit": 1}
+	var list []scored
+	for i := 1; i <= 10; i++ {
+		list = append(list, trinketWithStat(i, "Qualifying", 50+i, "hit", float64(i)))
+	}
+	got := trinketShortlist(list, 0, "", weights)
+	if len(got) != 10 {
+		t.Fatalf("trinketShortlist returned %d candidates, want all 10 qualifying candidates (well under trinketShortlistBound, no cap should apply)", len(got))
 	}
 }
 
 // This lane's brief (bis-ranker-integrity-6), item 2: Hand of Justice's
 // own repro shape - a real, engine-implemented-effect trinket
-// (effectids_generated.go) with an empty stat block (score() has
-// nothing to rank it by, so it never makes the top-N-by-score bucket)
-// and an item level below five OTHER real trinkets in the pool (so it
-// never makes topByItemLevel's bucket either) still had no way to
-// reach a single sim before this lane, even though the engine can
-// measure its real effect. trinketShortlist must include it anyway.
+// (effectids_generated.go) with an empty stat block and an item level
+// below five OTHER real trinkets in the pool still had no way to reach
+// a single sim before this lane, even though the engine can measure
+// its real effect. trinketShortlist must include it anyway - weights
+// is empty here so none of the plain candidates qualify by stat,
+// isolating the effect-based qualification this test is about.
 func TestTrinketShortlistIncludesAnImplementedEffectTrinketOffBothAxes(t *testing.T) {
 	list := []scored{
 		trinketScored(2, "ItemLevel 90, Best Score", 90, 100),
@@ -119,10 +201,10 @@ func TestTrinketShortlistIncludesAnImplementedEffectTrinketOffBothAxes(t *testin
 		trinketScored(5, "ItemLevel 80", 80, 70),
 		trinketScored(6, "ItemLevel 78", 78, 60),
 		// Hand of Justice's own shape: lowest item level in the pool,
-		// score 0 (empty stats), but its effect IS implemented.
+		// no weighted stats, but its effect IS implemented.
 		trinketWithEffect(modelledEffectItemID, "Hand of Justice", 58, "1% chance on Melee hit to gain 1 extra attack."),
 	}
-	got := trinketShortlist(list, 0, "")
+	got := trinketShortlist(list, 0, "", map[string]float64{})
 	found := false
 	for _, c := range got {
 		if c.ID == modelledEffectItemID {
@@ -137,8 +219,8 @@ func TestTrinketShortlistIncludesAnImplementedEffectTrinketOffBothAxes(t *testin
 // The mirror case: a trinket with NO implemented effect (an ordinary
 // candidate, or one whose real proc the engine does not simulate -
 // Blackhand's Breadth's own crit-chance proc, not in
-// effectids_generated.go) gets no such force-include - only a real,
-// measurable effect earns a guaranteed seat in the tournament.
+// effectids_generated.go) and no weighted stat or Use effect gets no
+// force-include.
 func TestTrinketShortlistDoesNotForceIncludeAnUnimplementedEffectTrinket(t *testing.T) {
 	list := []scored{
 		trinketScored(2, "ItemLevel 90, Best Score", 90, 100),
@@ -146,28 +228,105 @@ func TestTrinketShortlistDoesNotForceIncludeAnUnimplementedEffectTrinket(t *test
 		trinketScored(4, "ItemLevel 83", 83, 80),
 		trinketScored(5, "ItemLevel 80", 80, 70),
 		trinketScored(6, "ItemLevel 78", 78, 60),
-		// Blackhand's Breadth's own shape: lowest item level, score 0,
-		// a real effect_text the engine does not implement (999999 is
+		// Blackhand's Breadth's own shape: lowest item level, no
+		// weighted stats, a real effect_text the engine does not
+		// implement and which is not a Use: effect either (999999 is
 		// not a real effectids_generated.go id).
 		trinketWithEffect(999999, "Blackhand's Breadth", 63, "Improves your chance to get a critical strike with melee attacks by 2%."),
 	}
-	got := trinketShortlist(list, 0, "")
+	got := trinketShortlist(list, 0, "", map[string]float64{})
 	for _, c := range got {
 		if c.ID == 999999 {
-			t.Fatalf("trinketShortlist = %+v, want the unimplemented-effect trinket excluded (off both axes, and no implemented effect to force it in)", got)
+			t.Fatalf("trinketShortlist = %+v, want the unimplemented-effect trinket excluded (off every qualifying axis)", got)
+		}
+	}
+}
+
+// An on-USE effect the engine does not implement still qualifies -
+// this lane's brief's third condition, independent of hasImplementedEffect.
+func TestTrinketShortlistIncludesAnUnimplementedUseEffectTrinket(t *testing.T) {
+	list := []scored{
+		trinketScored(2, "ItemLevel 90, Best Score", 90, 100),
+		trinketScored(3, "ItemLevel 85", 85, 90),
+		trinketScored(4, "ItemLevel 83", 83, 80),
+		trinketScored(5, "ItemLevel 80", 80, 70),
+		trinketScored(6, "ItemLevel 78", 78, 60),
+		// A real on-use trinket (client tooltip prefix "Use:") whose own
+		// effect the engine does not implement (999999 is not a real
+		// effectids_generated.go id) - still a click a player can make.
+		trinketWithEffect(999999, "Some On-Use Trinket", 58, "Use: +150 Attack Power for 15 sec."),
+	}
+	got := trinketShortlist(list, 0, "", map[string]float64{})
+	found := false
+	for _, c := range got {
+		if c.ID == 999999 {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("trinketShortlist = %+v, want the unimplemented Use: effect trinket included", got)
+	}
+}
+
+// trinketQualifyingScored is trinketWithStat's own "hit" shape (always
+// qualifies via hasPositivelyWeightedStat against weights {"hit": 1})
+// plus an explicit Score, so a test list can be built already
+// best-score-first (candidatesBySlot's own contract, which
+// trinketShortlist's own score-trim relies on).
+func trinketQualifyingScored(id int, name string, itemLevel int, sc float64) scored {
+	s := trinketWithStat(id, name, itemLevel, "hit", 1)
+	s.Score = sc
+	return s
+}
+
+// Once the qualifying set exceeds trinketShortlistBound, this function
+// trims by score down toward the bound, but still keeps the qualifying
+// set's own top-by-item-level candidates even if their score fell
+// outside that cut.
+func TestTrinketShortlistTrimsToTheBoundByScoreButKeepsTopItemLevel(t *testing.T) {
+	weights := map[string]float64{"hit": 1}
+	// 30 qualifying candidates (over trinketShortlistBound, 24), already
+	// best-score-first (list's own contract): score and item level both
+	// descend together, id 100 highest.
+	var list []scored
+	for i := 0; i < 30; i++ {
+		list = append(list, trinketQualifyingScored(100+i, "Qualifying", 130-i, float64(30-i)))
+	}
+	// One more candidate, appended last (lowest score in the pool, so it
+	// sits outside the top trinketShortlistBound by score) but the
+	// single HIGHEST item level of the whole pool - it must survive the
+	// trim via topByItemLevel.
+	list = append(list, trinketQualifyingScored(999, "Low Score, Highest ItemLevel", 500, -1))
+
+	got := trinketShortlist(list, 0, "", weights)
+	foundHighItemLevel := false
+	for _, c := range got {
+		if c.ID == 999 {
+			foundHighItemLevel = true
+		}
+	}
+	if !foundHighItemLevel {
+		t.Fatalf("trinketShortlist trimmed away item 999 (the pool's own highest item level), want it kept via topByItemLevel")
+	}
+	// The worst-score, worst-item-level of the 30 "ordinary" candidates
+	// (id 129: score 1, item level 101) is outside both the top-24-by-
+	// score cut and topByItemLevel's own top trinketTopN (5) - trimmed.
+	for _, c := range got {
+		if c.ID == 129 {
+			t.Fatalf("trinketShortlist = %+v, want the pool's own worst-score, worst-item-level ordinary candidate trimmed", got)
 		}
 	}
 }
 
 func TestTrinketShortlistExcludesPairMateByIDAndName(t *testing.T) {
 	list := []scored{trinket(1, "Same Name", 10), trinket(2, "Same Name", 20), trinket(3, "Other", 5)}
-	got := trinketShortlist(list, 1, "")
+	got := trinketShortlist(list, 1, "", trinketTestWeights)
 	for _, c := range got {
 		if c.ID == 1 {
 			t.Fatalf("trinketShortlist still carries excluded id 1: %+v", got)
 		}
 	}
-	got2 := trinketShortlist(list, 0, "Same Name")
+	got2 := trinketShortlist(list, 0, "Same Name", trinketTestWeights)
 	for _, c := range got2 {
 		if c.Name == "Same Name" {
 			t.Fatalf("trinketShortlist still carries an item sharing the excluded name: %+v", got2)
@@ -212,7 +371,7 @@ func TestRankTrinketSlotPicksTheHighestMeasuredDPS(t *testing.T) {
 			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 3}}): 200,
 		},
 	}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
@@ -247,7 +406,7 @@ func TestRankTrinketSlotSkipsAFailingCandidateAndKeepsGoing(t *testing.T) {
 		FailGear:  gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}}),
 		DPSByGear: map[string]float64{gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 3}}): 50},
 	}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if len(notes) != 1 {
 		t.Fatalf("notes = %v, want exactly 1 (item 2 failed)", notes)
 	}
@@ -264,7 +423,7 @@ func TestRankTrinketSlotAllCandidatesFailLeavesPicksUnchanged(t *testing.T) {
 	picks := map[string]slotPick{"trinket1": {Item: original}}
 	bySlot := map[string][]scored{"trinket1": {trinket(2, "Fails", 30)}}
 	fake := &fakeEngine{FailGear: gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}})}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if len(notes) != 1 {
 		t.Fatalf("notes = %v, want exactly 1", notes)
 	}
@@ -277,7 +436,7 @@ func TestRankTrinketSlotNoCandidatesReturnsUnchanged(t *testing.T) {
 	original := &scored{candidate: candidate{ID: 1, Name: "Original Pick"}}
 	picks := map[string]slotPick{"trinket1": {Item: original}}
 	fake := &fakeEngine{}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, map[string][]scored{}, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, map[string][]scored{}, "trinket1", trinketTestWeights)
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
@@ -310,7 +469,7 @@ func TestRankTrinketSlotComputesGainAgainstANoTrinketBaseline(t *testing.T) {
 			gearKey(nil): 190,
 		},
 	}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
@@ -344,7 +503,7 @@ func TestRankTrinketSlotLeavesGainUnmeasuredWhenTheBaselineSimFails(t *testing.T
 			return 100, nil
 		},
 	}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if len(notes) != 1 {
 		t.Fatalf("notes = %v, want exactly 1 (the baseline failure)", notes)
 	}
@@ -384,7 +543,7 @@ func TestRankTrinketSlotModelledTrinketKeepsSlotWhenUnmodelledWinIsWithinMargin(
 			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 999999}}): 201,
 		},
 	}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
@@ -419,7 +578,7 @@ func TestRankTrinketSlotUnmodelledTrinketWinsWhenItClearsTheMargin(t *testing.T)
 			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 999999}}): 205,
 		},
 	}
-	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1")
+	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != 999999 {
 		t.Fatalf("trinket1 pick = %+v, want the unmodelled trinket (999999): it cleared the margin", out["trinket1"].Item)
 	}
@@ -446,7 +605,7 @@ func TestRankTrinketSlotPicksHighestWhenEveryCandidateIsUnmodelled(t *testing.T)
 			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 999999}}): 100.5,
 		},
 	}
-	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1")
+	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != 999999 {
 		t.Fatalf("trinket1 pick = %+v, want item 999999 (higher measured dps, no modelled alternative to defer to)", out["trinket1"].Item)
 	}
@@ -493,7 +652,7 @@ func TestRankTrinketSlotDoesNotSkipPastMultipleUnmodelledCandidatesForAWeakModel
 			gearKey([]api.GearSlot{}): 200.00,
 		},
 	}
-	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, "trinket1")
+	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, "trinket1", trinketTestWeights)
 	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != thunderbrewID {
 		t.Fatalf("trinket1 pick = %+v, want Thunderbrew's Boot Flask (%d): the raw highest measured dps, with no genuinely-modelled candidate immediately behind it to defer to", out["trinket1"].Item, thunderbrewID)
 	}
@@ -563,7 +722,7 @@ func TestTrinketLoopDoesNotLetTrinket1ExcludeTrinket2sStalePlaceholder(t *testin
 	var notes []string
 	for _, slot := range []string{"trinket1", "trinket2"} {
 		var slotNotes []string
-		picks, slotNotes = rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 40, "", picks, bySlot, slot)
+		picks, slotNotes = rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 40, "", picks, bySlot, slot, trinketTestWeights)
 		notes = append(notes, slotNotes...)
 	}
 	if len(notes) != 0 {
