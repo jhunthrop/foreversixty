@@ -40,6 +40,8 @@ from pathlib import Path
 
 from pipeline.classic_sources import load_classic_sources
 from pipeline.classicdb_crafted import load_extract as load_classic_crafted_recipes
+from pipeline.classicdb_items import classic_honor_ranks
+from pipeline.classicdb_items import load_extract as load_classic_item_template
 from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.item_sources import load_item_sources
@@ -88,6 +90,31 @@ SUFFIXES = "suffixes.json"
 def _require(path: Path, command: str) -> None:
     if not path.exists():
         raise SystemExit(f"no {path}; run `python -m pipeline {command}` for this build first")
+
+
+def _pvp_ranks_with_classic_db(build_dir: Path, client_ranks: dict[int, int]) -> dict[int, int]:
+    """`client_ranks` (either `pvp_ranks(sparse_rows)` or
+    `pvp_ranks_from_committed_loot`) with `pipeline.classicdb_items.
+    classic_honor_ranks`' own dict merged in for every id `client_ranks`
+    does not already name -- data-followups-10 lane, 2026-09-30: the
+    original Classic honor-rank sets (Lady Palanseer's, Captain
+    Dirgehammer's, ...) carry no `ItemSparse.RequiredPVPRank` at all in
+    this build (that hotfix table only ever covers Forever-new PvP
+    items), so `client_ranks` alone left them with no `pvp:rank-N`
+    source and no gate. Read from the committed `raw/classicdb/
+    item_template.json` extract, so this runs the same in
+    `write_loot_files` and the raw-CSV-free `merge_loot_files` alike.
+    Client wins on an id both name -- none measured on this build, the
+    two tables cover disjoint item sets, but the client is the more
+    authoritative one when they ever do disagree.
+    """
+    extract = load_classic_item_template(build_dir)
+    if extract is None:
+        return client_ranks
+    items, _ = extract
+    merged = classic_honor_ranks(items)
+    merged.update(client_ranks)
+    return merged
 
 
 def write_loot_files(
@@ -173,7 +200,7 @@ def write_loot_files(
         fork,
         {int(row["id"]): row["name"] for row in zone_rows},
         instance_types(read_csv(raw / "Map.csv"), zone_rows),
-        pvp_ranks(sparse_rows),
+        _pvp_ranks_with_classic_db(build_dir, pvp_ranks(sparse_rows)),
         build_items,
         item_inventory_types,
         quest_levels,
@@ -471,7 +498,7 @@ def merge_loot_files(
         fork,
         {int(row["id"]): row["name"] for row in zone_rows},
         types_from_committed_loot(build_dir, zone_rows),
-        pvp_ranks_from_committed_loot(build_dir),
+        _pvp_ranks_with_classic_db(build_dir, pvp_ranks_from_committed_loot(build_dir)),
         build_items,
         item_inventory_types,
         quest_levels,

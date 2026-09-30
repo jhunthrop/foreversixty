@@ -44,10 +44,27 @@ class AddonRotationError(SystemExit):
 
 #: A condition longer than this is cut with an ellipsis rather than left
 #: whole. Data.lua ships to every player on every login; a curated note
-#: written as engine-debugging narration (some run past 2,000 characters)
-#: is not "one line" by any reading of the design, and the addon has no
-#: use for the part a player would never read anyway.
-CONDITION_MAX_CHARS = 160
+#: written as engine-debugging narration (the RAW note some curated files
+#: carry runs past 2,000 characters, even 5,700 on druid-feral's own Claw
+#: line) is not "one line" by any reading of the design, and the addon has
+#: no use for the part a player would never read anyway.
+#:
+#: data-followups-10 lane, 2026-09-30, item 8: this cap used to be 160,
+#: well under the real first-SENTENCE length `_one_line`'s own boundary
+#: search already narrows every curated note down to (measured across
+#: every curated/apl/*.json file on this build: 39 lines, 162-672 real
+#: characters once correctly cut at the sentence boundary) -- the 160
+#: cap was firing on an ordinary, single, complete sentence, not the
+#: pathological run-on paragraph it exists to guard against, and cutting
+#: mid-word (hunter-marksmanship/hunter-beast-mastery's own Arcane Shot
+#: line published "...are the sh…", the "…" landing inside "shots") is
+#: what the player-sweep that opened this lane's brief caught. Raised to
+#: comfortably clear the real maximum (672) with headroom for a future
+#: curated note's own first sentence running a little longer, while
+#: still refusing to publish a multi-thousand-character paragraph
+#: verbatim if one is ever written with no early sentence boundary at
+#: all.
+CONDITION_MAX_CHARS = 700
 
 
 def _one_line(notes: str) -> str:
@@ -57,7 +74,13 @@ def _one_line(notes: str) -> str:
     druid-feral's Claw line). Cut at the first sentence boundary (". " or
     a trailing "."); a note with neither is short enough to keep whole, up
     to CONDITION_MAX_CHARS as a last-resort cap for the rare run-on
-    sentence."""
+    sentence. That last-resort cut itself never splits a WORD in half
+    (data-followups-10 lane, 2026-09-30, item 8 -- the defect a player
+    caught, "...the sh…" mid-word inside "shots"): it backs off to the
+    last whitespace before the cap, keeping whatever whole words fit,
+    and only falls back to a hard character cut when the cap's own
+    window has no whitespace at all (a single unbroken token longer than
+    the cap, which no real curated note today is)."""
     notes = notes.strip()
     if not notes:
         return notes
@@ -67,7 +90,11 @@ def _one_line(notes: str) -> str:
     elif notes.endswith("."):
         pass
     if len(notes) > CONDITION_MAX_CHARS:
-        notes = notes[: CONDITION_MAX_CHARS - 1].rstrip() + "…"
+        cut = notes[: CONDITION_MAX_CHARS - 1]
+        word_boundary = cut.rfind(" ")
+        if word_boundary > 0:
+            cut = cut[:word_boundary]
+        notes = cut.rstrip() + "…"
     return notes
 
 

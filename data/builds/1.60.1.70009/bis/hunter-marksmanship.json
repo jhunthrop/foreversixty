@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T18:39:57Z",
+  "generated_at": "2026-09-30T20:45:10Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -17,14 +17,20 @@
           "weight": 1,
           "error": 0.0011319794676315806,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.4575672334262023,
+          "dps_per_point": 0.059705486370807484,
+          "scale_error": 0.0005179567132994477
         },
         {
           "stat": "agility",
           "weight": 2.1854711765790866,
           "error": 0.0449420005182475,
           "insignificant": false,
-          "weight_per_percent": 2.1854711765790866
+          "weight_per_percent": 2.1854711765790866,
+          "scale_factor": 1,
+          "dps_per_point": 0.13048461954703525,
+          "scale_error": 0.020563986841773463
         },
         {
           "stat": "crit",
@@ -33,7 +39,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 6.67750946857759
+          "weight_per_percent": 6.67750946857759,
+          "scale_factor": 0.2182435381224513,
+          "dps_per_point": 0.028477425040506946,
+          "scale_error": 0.00874825905586484
         },
         {
           "stat": "hit",
@@ -42,14 +51,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 1.6484224055820915
+          "weight_per_percent": 1.6484224055820915,
+          "scale_factor": 0.07542640796399629,
+          "dps_per_point": 0.009841986146981525,
+          "scale_error": 0.002974854097114412
         },
         {
           "stat": "melee_haste",
           "weight": 3.4622848496697465,
           "error": 0.7954150946864297,
           "insignificant": false,
-          "weight_per_percent": 3.4622848496697465
+          "weight_per_percent": 3.4622848496697465,
+          "scale_factor": 1.5842280999968408,
+          "dps_per_point": 0.2067174009038103,
+          "scale_error": 0.3639558843011104
         }
       ],
       "slots": [
@@ -124,9 +139,7 @@
               "item_name": "Cape of the Brotherhood",
               "source_kind": "dungeon",
               "source": "Westfall: Edwin VanCleef",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 75.48307678626615
+              "dps_delta": -0.13048461954703516
             },
             {
               "item_id": 3018,
@@ -187,19 +200,18 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 4794,
+              "item_name": "Wolf Bracers",
+              "source_kind": "vendor",
+              "source": "Bernard Brubaker",
+              "dps_delta": -0.13048461954703527
+            },
+            {
               "item_id": 270015,
               "item_name": "Bravo's Armbands",
               "source_kind": "quest",
               "source": "Underground Assault",
               "dps_delta": -0.13048461954703527
-            },
-            {
-              "item_id": 4794,
-              "item_name": "Wolf Bracers",
-              "source_kind": "vendor",
-              "source": "Bernard Brubaker",
-              "dps_delta": -0.1309991569702902,
-              "verified": true
             },
             {
               "item_id": 274742,
@@ -218,14 +230,19 @@
           "source_kind": "dungeon",
           "score": 13.112827059474519,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 10413,
+              "item_name": "Gloves of the Fang"
+            }
+          ],
           "alternatives": [
             {
               "item_id": 10413,
               "item_name": "Gloves of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": -0.08335938776143337,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 3058,
@@ -389,8 +406,7 @@
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
               "source": "Westfall: Gilnid",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.2609692390940705
             },
             {
               "item_id": 8350,
@@ -425,8 +441,7 @@
               "item_name": "Impaling Harpoon",
               "source_kind": "dungeon",
               "source": "Westfall: Captain Greenskin",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.22774829867780974
             },
             {
               "item_id": 5749,
@@ -518,8 +533,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.518305424,
-      "verify_run_seconds": 1.6331207760000002,
+      "weights_run_seconds": 1.122668521,
+      "verify_run_seconds": 1.209664992,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -591,7 +606,10 @@
         }
       },
       "reference_dps_per_point": 0.059705486370807484,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 1.5842280999968408,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -606,14 +624,20 @@
           "weight": 1,
           "error": 0.0011319794676315806,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.4575672334262023,
+          "dps_per_point": 0.059705486370807484,
+          "scale_error": 0.0005179567132994477
         },
         {
           "stat": "agility",
           "weight": 2.1854711765790866,
           "error": 0.0449420005182475,
           "insignificant": false,
-          "weight_per_percent": 2.1854711765790866
+          "weight_per_percent": 2.1854711765790866,
+          "scale_factor": 1,
+          "dps_per_point": 0.13048461954703525,
+          "scale_error": 0.020563986841773463
         },
         {
           "stat": "crit",
@@ -622,7 +646,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 6.67750946857759
+          "weight_per_percent": 6.67750946857759,
+          "scale_factor": 0.2182435381224513,
+          "dps_per_point": 0.028477425040506946,
+          "scale_error": 0.00874825905586484
         },
         {
           "stat": "hit",
@@ -631,14 +658,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 1.6484224055820915
+          "weight_per_percent": 1.6484224055820915,
+          "scale_factor": 0.07542640796399629,
+          "dps_per_point": 0.009841986146981525,
+          "scale_error": 0.002974854097114412
         },
         {
           "stat": "melee_haste",
           "weight": 3.4622848496697465,
           "error": 0.7954150946864297,
           "insignificant": false,
-          "weight_per_percent": 3.4622848496697465
+          "weight_per_percent": 3.4622848496697465,
+          "scale_factor": 1.5842280999968408,
+          "dps_per_point": 0.2067174009038103,
+          "scale_error": 0.3639558843011104
         }
       ],
       "slots": [
@@ -785,8 +818,7 @@
               "item_name": "Wolf Bracers",
               "source_kind": "vendor",
               "source": "Bernard Brubaker",
-              "dps_delta": -0.12725950976835065,
-              "verified": true
+              "dps_delta": -0.13048461954703527
             },
             {
               "item_id": 14569,
@@ -812,14 +844,19 @@
           "source_kind": "dungeon",
           "score": 13.112827059474519,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 10413,
+              "item_name": "Gloves of the Fang"
+            }
+          ],
           "alternatives": [
             {
               "item_id": 10413,
               "item_name": "Gloves of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": -0.07795790426025917,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 3058,
@@ -894,8 +931,7 @@
               "item_name": "Brawler's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 252501,
@@ -994,8 +1030,7 @@
               "item_name": "Bounty Hunter's Ring",
               "source_kind": "quest",
               "source": "Hezrul Bloodmark",
-              "dps_delta": -0.12725950976835065,
-              "verified": true
+              "dps_delta": -0.13048461954703527
             },
             {
               "item_id": 1156,
@@ -1130,8 +1165,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.518305424,
-      "verify_run_seconds": 1.612004531,
+      "weights_run_seconds": 1.122668521,
+      "verify_run_seconds": 1.177800218,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1203,7 +1238,10 @@
         }
       },
       "reference_dps_per_point": 0.059705486370807484,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 1.5842280999968408,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -1218,14 +1256,20 @@
           "weight": 1,
           "error": 0.0011725461778687408,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.4587441880062679,
+          "dps_per_point": 0.059028903846584505,
+          "scale_error": 0.0005378987442662484
         },
         {
           "stat": "agility",
           "weight": 2.179864129387808,
           "error": 0.048117146688256195,
           "insignificant": false,
-          "weight_per_percent": 2.179864129387808
+          "weight_per_percent": 2.179864129387808,
+          "scale_factor": 1,
+          "dps_per_point": 0.12867499009225156,
+          "scale_error": 0.02207346138668257
         },
         {
           "stat": "crit",
@@ -1234,7 +1278,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 8.213801306786495
+          "weight_per_percent": 8.213801306786495,
+          "scale_factor": 0.26914525792332805,
+          "dps_per_point": 0.03463226339666073,
+          "scale_error": 0.010366699163397405
         },
         {
           "stat": "hit",
@@ -1243,14 +1290,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 1.8438960755107279
+          "weight_per_percent": 1.8438960755107279,
+          "scale_factor": 0.08458766079281128,
+          "dps_per_point": 0.010884316414441727,
+          "scale_error": 0.0033420958641998525
         },
         {
           "stat": "melee_haste",
           "weight": 7.177934747753565,
           "error": 0.8646574911442912,
           "insignificant": false,
-          "weight_per_percent": 7.177934747753565
+          "weight_per_percent": 7.177934747753565,
+          "scale_factor": 3.292835847420185,
+          "dps_per_point": 0.423705620042203,
+          "scale_error": 0.39665659867852465
         }
       ],
       "slots": [
@@ -1301,8 +1354,7 @@
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.20306589525023355,
-              "verified": true
+              "dps_delta": -0.20299526688582933
             },
             {
               "item_id": 13084,
@@ -1334,8 +1386,7 @@
               "item_name": "Mantle of Thieves",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.12867499009225164
             },
             {
               "item_id": 4252,
@@ -1367,8 +1418,7 @@
               "item_name": "Hawkeye's Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.13915208781520505,
-              "verified": true
+              "dps_delta": -0.12867499009225153
             },
             {
               "item_id": 4447,
@@ -1443,9 +1493,7 @@
               "item_name": "Jurassic Wristguards",
               "source_kind": "world",
               "source": "Razormaw Matriarch",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 89.32905572843634
+              "dps_delta": 0
             },
             {
               "item_id": 6410,
@@ -1477,8 +1525,7 @@
               "item_name": "Heavy Earthen Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.08226506566062142,
-              "verified": true
+              "dps_delta": -0.08493745919266034
             },
             {
               "item_id": 5970,
@@ -1516,9 +1563,7 @@
               "item_name": "Highlander's Leather Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 89.32905572843634
+              "dps_delta": 0
             },
             {
               "item_id": 252520,
@@ -1607,9 +1652,7 @@
               "item_name": "Highlander's Mail Greaves",
               "source_kind": "vendor",
               "source": "Samuel Hawke",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 89.32905572843634
+              "dps_delta": 0
             },
             {
               "item_id": 6752,
@@ -1668,8 +1711,7 @@
               "item_name": "Ring of Precision",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
-              "dps_delta": -0.09469403321330105,
-              "verified": true
+              "dps_delta": -0.12867499009225153
             },
             {
               "item_id": 19517,
@@ -1759,9 +1801,7 @@
               "item_name": "Prison Shank",
               "source_kind": "dungeon",
               "source": "The Stockade: Bruegal Ironknuckle",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 89.32905572843634
+              "dps_delta": 0
             },
             {
               "item_id": 4454,
@@ -1850,8 +1890,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.618767814,
-      "verify_run_seconds": 1.80924263,
+      "weights_run_seconds": 1.196998467,
+      "verify_run_seconds": 1.332305806,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1923,7 +1963,10 @@
         }
       },
       "reference_dps_per_point": 0.059028903846584505,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 3.292835847420185,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -1938,14 +1981,20 @@
           "weight": 1,
           "error": 0.0011725461778687408,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.4587441880062679,
+          "dps_per_point": 0.059028903846584505,
+          "scale_error": 0.0005378987442662484
         },
         {
           "stat": "agility",
           "weight": 2.179864129387808,
           "error": 0.048117146688256195,
           "insignificant": false,
-          "weight_per_percent": 2.179864129387808
+          "weight_per_percent": 2.179864129387808,
+          "scale_factor": 1,
+          "dps_per_point": 0.12867499009225156,
+          "scale_error": 0.02207346138668257
         },
         {
           "stat": "crit",
@@ -1954,7 +2003,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 8.213801306786495
+          "weight_per_percent": 8.213801306786495,
+          "scale_factor": 0.26914525792332805,
+          "dps_per_point": 0.03463226339666073,
+          "scale_error": 0.010366699163397405
         },
         {
           "stat": "hit",
@@ -1963,14 +2015,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 1.8438960755107279
+          "weight_per_percent": 1.8438960755107279,
+          "scale_factor": 0.08458766079281128,
+          "dps_per_point": 0.010884316414441727,
+          "scale_error": 0.0033420958641998525
         },
         {
           "stat": "melee_haste",
           "weight": 7.177934747753565,
           "error": 0.8646574911442912,
           "insignificant": false,
-          "weight_per_percent": 7.177934747753565
+          "weight_per_percent": 7.177934747753565,
+          "scale_factor": 3.292835847420185,
+          "dps_per_point": 0.423705620042203,
+          "scale_error": 0.39665659867852465
         }
       ],
       "slots": [
@@ -2054,8 +2112,7 @@
               "item_name": "Mantle of Thieves",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.12867499009225164
             },
             {
               "item_id": 4252,
@@ -2087,8 +2144,7 @@
               "item_name": "Hawkeye's Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.13444072860339418,
-              "verified": true
+              "dps_delta": -0.12867499009225153
             },
             {
               "item_id": 4447,
@@ -2163,9 +2219,7 @@
               "item_name": "Jurassic Wristguards",
               "source_kind": "world",
               "source": "Razormaw Matriarch",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 90.02391327810606
+              "dps_delta": 0
             },
             {
               "item_id": 6410,
@@ -2197,8 +2251,7 @@
               "item_name": "Heavy Earthen Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.11303224836831305,
-              "verified": true
+              "dps_delta": -0.08493745919266034
             },
             {
               "item_id": 6784,
@@ -2236,9 +2289,7 @@
               "item_name": "Defiler's Leather Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 90.02391327810606
+              "dps_delta": 0
             },
             {
               "item_id": 16659,
@@ -2342,9 +2393,7 @@
               "item_name": "Highlander's Mail Greaves",
               "source_kind": "vendor",
               "source": "Samuel Hawke",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 90.02391327810606
+              "dps_delta": 0
             }
           ]
         },
@@ -2473,8 +2522,7 @@
               "item_name": "Vendetta",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
-              "dps_delta": -0.10750225501489297,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 15962,
@@ -2556,8 +2604,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.618767814,
-      "verify_run_seconds": 1.813014763,
+      "weights_run_seconds": 1.196998467,
+      "verify_run_seconds": 1.318886254,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2629,7 +2677,10 @@
         }
       },
       "reference_dps_per_point": 0.059028903846584505,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 3.292835847420185,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -2644,14 +2695,20 @@
           "weight": 1,
           "error": 0.0012747433714165128,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.4499984741122172,
+          "dps_per_point": 0.05866327362425716,
+          "scale_error": 0.0005736325720220942
         },
         {
           "stat": "agility",
           "weight": 2.222229757496083,
           "error": 0.06253047410373698,
           "insignificant": false,
-          "weight_per_percent": 2.222229757496083
+          "weight_per_percent": 2.222229757496083,
+          "scale_factor": 1,
+          "dps_per_point": 0.13036327231995937,
+          "scale_error": 0.028138617932195156
         },
         {
           "stat": "crit",
@@ -2660,7 +2717,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 11.681387236692665
+          "weight_per_percent": 11.681387236692665,
+          "scale_factor": 0.3754718880018307,
+          "dps_per_point": 0.04894774398407193,
+          "scale_error": 0.015208775105315101
         },
         {
           "stat": "hit",
@@ -2669,14 +2729,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 2.0429633636362063
+          "weight_per_percent": 2.0429633636362063,
+          "scale_factor": 0.09193303963034556,
+          "dps_per_point": 0.011984691880532356,
+          "scale_error": 0.003667250427536179
         },
         {
           "stat": "melee_haste",
           "weight": 3.4374251947817642,
           "error": 0.9709158774425046,
           "insignificant": true,
-          "weight_per_percent": 3.4374251947817642
+          "weight_per_percent": 3.4374251947817642,
+          "scale_factor": 1.546836092526685,
+          "dps_per_point": 0.2016506147643981,
+          "scale_error": 0.4369106633404516
         }
       ],
       "slots": [
@@ -2855,18 +2921,17 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7378,
-              "item_name": "Dusky Bracers",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.0676951231579892,
-              "verified": true
-            },
-            {
               "item_id": 4061,
               "item_name": "Imperial Leather Bracers",
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.1303592939254683
+            },
+            {
+              "item_id": 7378,
+              "item_name": "Dusky Bracers",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "dps_delta": -0.1303592939254683
             },
             {
@@ -2892,8 +2957,7 @@
               "item_name": "Gloves of Holy Might",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.018690867714078904
             },
             {
               "item_id": 8347,
@@ -2958,8 +3022,7 @@
               "item_name": "Triprunner Dungarees",
               "source_kind": "quest",
               "source": "The Grand Betrayal",
-              "dps_delta": -0.13510187917572125,
-              "verified": true
+              "dps_delta": -0.39108981695987804
             },
             {
               "item_id": 9509,
@@ -3064,9 +3127,7 @@
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 110.38199436648348
+              "dps_delta": 0
             },
             {
               "item_id": 2262,
@@ -3141,8 +3202,7 @@
               "item_name": "Blue Glittering Axe",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 15962,
@@ -3223,8 +3283,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.610114423,
-      "verify_run_seconds": 1.7990341619999999,
+      "weights_run_seconds": 1.206202972,
+      "verify_run_seconds": 1.384857241,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3296,7 +3356,10 @@
         }
       },
       "reference_dps_per_point": 0.05866327362425716,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 1.546836092526685,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -3311,14 +3374,20 @@
           "weight": 1,
           "error": 0.0012747433714165128,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.4499984741122172,
+          "dps_per_point": 0.05866327362425716,
+          "scale_error": 0.0005736325720220942
         },
         {
           "stat": "agility",
           "weight": 2.222229757496083,
           "error": 0.06253047410373698,
           "insignificant": false,
-          "weight_per_percent": 2.222229757496083
+          "weight_per_percent": 2.222229757496083,
+          "scale_factor": 1,
+          "dps_per_point": 0.13036327231995937,
+          "scale_error": 0.028138617932195156
         },
         {
           "stat": "crit",
@@ -3327,7 +3396,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 11.681387236692665
+          "weight_per_percent": 11.681387236692665,
+          "scale_factor": 0.3754718880018307,
+          "dps_per_point": 0.04894774398407193,
+          "scale_error": 0.015208775105315101
         },
         {
           "stat": "hit",
@@ -3336,14 +3408,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 2.0429633636362063
+          "weight_per_percent": 2.0429633636362063,
+          "scale_factor": 0.09193303963034556,
+          "dps_per_point": 0.011984691880532356,
+          "scale_error": 0.003667250427536179
         },
         {
           "stat": "melee_haste",
           "weight": 3.4374251947817642,
           "error": 0.9709158774425046,
           "insignificant": true,
-          "weight_per_percent": 3.4374251947817642
+          "weight_per_percent": 3.4374251947817642,
+          "scale_factor": 1.546836092526685,
+          "dps_per_point": 0.2016506147643981,
+          "scale_error": 0.4369106633404516
         }
       ],
       "slots": [
@@ -3361,8 +3439,7 @@
               "item_name": "Nightscape Headband",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.13036327231995942
             },
             {
               "item_id": 250499,
@@ -3463,19 +3540,18 @@
               "dps_delta": -0.26072654463991884
             },
             {
+              "item_id": 10518,
+              "item_name": "Parachute Cloak",
+              "source_kind": "crafted",
+              "source": "Engineering",
+              "dps_delta": -0.26072654463991884
+            },
+            {
               "item_id": 13108,
               "item_name": "Tigerstrike Mantle",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.26072654463991884
-            },
-            {
-              "item_id": 10518,
-              "item_name": "Parachute Cloak",
-              "source_kind": "crafted",
-              "source": "Engineering",
-              "dps_delta": -0.2696215356958618,
-              "verified": true
             }
           ]
         },
@@ -3522,18 +3598,17 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7378,
-              "item_name": "Dusky Bracers",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.09248399384770778,
-              "verified": true
-            },
-            {
               "item_id": 4061,
               "item_name": "Imperial Leather Bracers",
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.1303592939254683
+            },
+            {
+              "item_id": 7378,
+              "item_name": "Dusky Bracers",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "dps_delta": -0.1303592939254683
             },
             {
@@ -3559,8 +3634,7 @@
               "item_name": "Gloves of Holy Might",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.018690867714078904
             },
             {
               "item_id": 8347,
@@ -3654,6 +3728,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 6431,
+              "item_name": "Imperial Leather Boots",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.26072654463991884
+            },
+            {
               "item_id": 7390,
               "item_name": "Dusky Boots",
               "source_kind": "crafted",
@@ -3666,14 +3747,6 @@
               "source_kind": "dungeon",
               "source": "Uldaman: Eric \\\"The Swift\\\"",
               "dps_delta": -0.26072654463991884
-            },
-            {
-              "item_id": 6431,
-              "item_name": "Imperial Leather Boots",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.2696215356958618,
-              "verified": true
             }
           ]
         },
@@ -3731,9 +3804,7 @@
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 110.56258299724576
+              "dps_delta": 0
             },
             {
               "item_id": 2262,
@@ -3808,9 +3879,7 @@
               "item_name": "Blue Glittering Axe",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 110.57224133282838
+              "dps_delta": 0
             },
             {
               "item_id": 15962,
@@ -3891,8 +3960,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.610114423,
-      "verify_run_seconds": 1.812393026,
+      "weights_run_seconds": 1.206202972,
+      "verify_run_seconds": 1.378404993,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3964,7 +4033,10 @@
         }
       },
       "reference_dps_per_point": 0.05866327362425716,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 1.546836092526685,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -3979,14 +4051,20 @@
           "weight": 1,
           "error": 0.0014274669713010227,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.43338892978413196,
+          "dps_per_point": 0.05843659602400745,
+          "scale_error": 0.0006186483829943465
         },
         {
           "stat": "agility",
           "weight": 2.307396269900325,
           "error": 0.07736300495346651,
           "insignificant": false,
-          "weight_per_percent": 2.307396269900325
+          "weight_per_percent": 2.307396269900325,
+          "scale_factor": 1,
+          "dps_per_point": 0.13483638369146694,
+          "scale_error": 0.03352826992166735
         },
         {
           "stat": "crit",
@@ -3995,7 +4073,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 13.494056252132971
+          "weight_per_percent": 13.494056252132971,
+          "scale_factor": 0.4177267569684845,
+          "dps_per_point": 0.05632476528079474,
+          "scale_error": 0.01653249372178553
         },
         {
           "stat": "hit",
@@ -4004,14 +4085,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 2.404346039448902
+          "weight_per_percent": 2.404346039448902,
+          "scale_factor": 0.1042016956867476,
+          "dps_per_point": 0.014050179820919776,
+          "scale_error": 0.004191332151768014
         },
         {
           "stat": "melee_haste",
           "weight": 13.785763614906097,
           "error": 1.193927619787032,
           "insignificant": false,
-          "weight_per_percent": 13.785763614906097
+          "weight_per_percent": 13.785763614906097,
+          "scale_factor": 5.97459733932118,
+          "dps_per_point": 0.8055930992467282,
+          "scale_error": 0.5174350133792179
         }
       ],
       "slots": [
@@ -4155,8 +4242,7 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.30575444723911005,
-              "verified": true
+              "dps_delta": -0.26967276738293366
             },
             {
               "item_id": 220828,
@@ -4254,8 +4340,7 @@
               "item_name": "Sagebrush Girdle",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.7596757483120968
             },
             {
               "item_id": 20088,
@@ -4287,8 +4372,7 @@
               "item_name": "Infernal Trickster Leggings",
               "source_kind": "dungeon",
               "source": "Maraudon: Lord Vyletongue",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.13483638369146683
             },
             {
               "item_id": 220832,
@@ -4387,8 +4471,7 @@
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.03913011822532268
             },
             {
               "item_id": 7552,
@@ -4440,10 +4523,10 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -0.16619571542926792,
-              "verified": true
+              "dps_delta": 0
             }
-          ]
+          ],
+          "faction_note": "Devilsaur Eye (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 0.71 vs 0.41 ± 0.16 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -4554,8 +4637,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.636738451,
-      "verify_run_seconds": 1.9526582879999999,
+      "weights_run_seconds": 1.250453876,
+      "verify_run_seconds": 1.469508352,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4627,7 +4710,10 @@
         }
       },
       "reference_dps_per_point": 0.05843659602400745,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 5.97459733932118,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -4642,14 +4728,20 @@
           "weight": 1,
           "error": 0.0014274669713010227,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.43338892978413196,
+          "dps_per_point": 0.05843659602400745,
+          "scale_error": 0.0006186483829943465
         },
         {
           "stat": "agility",
           "weight": 2.307396269900325,
           "error": 0.07736300495346651,
           "insignificant": false,
-          "weight_per_percent": 2.307396269900325
+          "weight_per_percent": 2.307396269900325,
+          "scale_factor": 1,
+          "dps_per_point": 0.13483638369146694,
+          "scale_error": 0.03352826992166735
         },
         {
           "stat": "crit",
@@ -4658,7 +4750,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 13.494056252132971
+          "weight_per_percent": 13.494056252132971,
+          "scale_factor": 0.4177267569684845,
+          "dps_per_point": 0.05632476528079474,
+          "scale_error": 0.01653249372178553
         },
         {
           "stat": "hit",
@@ -4667,14 +4762,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 2.404346039448902
+          "weight_per_percent": 2.404346039448902,
+          "scale_factor": 0.1042016956867476,
+          "dps_per_point": 0.014050179820919776,
+          "scale_error": 0.004191332151768014
         },
         {
           "stat": "melee_haste",
           "weight": 13.785763614906097,
           "error": 1.193927619787032,
           "insignificant": false,
-          "weight_per_percent": 13.785763614906097
+          "weight_per_percent": 13.785763614906097,
+          "scale_factor": 5.97459733932118,
+          "dps_per_point": 0.8055930992467282,
+          "scale_error": 0.5174350133792179
         }
       ],
       "slots": [
@@ -4725,8 +4826,7 @@
               "item_name": "Scout's Medallion",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.055118513993789975,
-              "verified": true
+              "dps_delta": -0.13483638369146683
             },
             {
               "item_id": 19159,
@@ -4778,21 +4878,26 @@
           "source_kind": "world_drop",
           "score": 34.61094404850488,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 12552,
+              "item_name": "Blisterbane Wrap"
+            }
+          ],
           "alternatives": [
+            {
+              "item_id": 12552,
+              "item_name": "Blisterbane Wrap",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anvilrage Overseer",
+              "dps_delta": 0
+            },
             {
               "item_id": 11626,
               "item_name": "Blackveil Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
               "dps_delta": -0.13483638369146683
-            },
-            {
-              "item_id": 12552,
-              "item_name": "Blisterbane Wrap",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.35693545046729014,
-              "verified": true
             },
             {
               "item_id": 9512,
@@ -4817,8 +4922,7 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Broken Alliances",
-              "dps_delta": -0.3011180312965678,
-              "verified": true
+              "dps_delta": -0.26967276738293366
             },
             {
               "item_id": 220827,
@@ -4916,8 +5020,7 @@
               "item_name": "Sagebrush Girdle",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.7596757483120968
             },
             {
               "item_id": 20151,
@@ -4949,8 +5052,7 @@
               "item_name": "Infernal Trickster Leggings",
               "source_kind": "dungeon",
               "source": "Maraudon: Lord Vyletongue",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.13483638369146683
             },
             {
               "item_id": 220833,
@@ -4982,8 +5084,7 @@
               "item_name": "Fleetfoot Greaves",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Houndmaster Grebmar",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.13483638369146683
             },
             {
               "item_id": 13125,
@@ -5049,8 +5150,7 @@
               "item_name": "Ring of the Underwood",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.054114467661509284
             },
             {
               "item_id": 17713,
@@ -5223,8 +5323,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.636738451,
-      "verify_run_seconds": 1.8750756549999998,
+      "weights_run_seconds": 1.250453876,
+      "verify_run_seconds": 1.404948581,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5296,7 +5396,10 @@
         }
       },
       "reference_dps_per_point": 0.05843659602400745,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 5.97459733932118,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -5311,14 +5414,20 @@
           "weight": 1,
           "error": 0.0012342308119988351,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.42762055705831,
+          "dps_per_point": 0.05675774103359904,
+          "scale_error": 0.0005277824673654721
         },
         {
           "stat": "agility",
           "weight": 2.3385218121392626,
           "error": 0.09402244238333618,
           "insignificant": false,
-          "weight_per_percent": 2.3385218121392626
+          "weight_per_percent": 2.3385218121392626,
+          "scale_factor": 1,
+          "dps_per_point": 0.13272921541482302,
+          "scale_error": 0.04020592918794507
         },
         {
           "stat": "crit",
@@ -5327,7 +5436,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 20.134773112091587
+          "weight_per_percent": 20.134773112091587,
+          "scale_factor": 0.6150030638882347,
+          "dps_per_point": 0.08162887414759766,
+          "scale_error": 0.023495674296794368
         },
         {
           "stat": "hit",
@@ -5336,47 +5448,53 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 3.4341704305636456
+          "weight_per_percent": 3.4341704305636456,
+          "scale_factor": 0.14685218725508023,
+          "dps_per_point": 0.01949157559631747,
+          "scale_error": 0.005841378067768056
         },
         {
           "stat": "melee_haste",
           "weight": 10.524759406157607,
           "error": 1.6567324559153893,
           "insignificant": false,
-          "weight_per_percent": 10.524759406157607
+          "weight_per_percent": 10.524759406157607,
+          "scale_factor": 4.500603480165804,
+          "dps_per_point": 0.5973615688156291,
+          "scale_error": 0.7084528556951207
         }
       ],
       "slots": [
         {
           "slot": "head",
-          "item_id": 16465,
-          "item_name": "Field Marshal's Chain Helm",
+          "item_id": 231562,
+          "item_name": "Field Marshal's Chain Greathelm",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 99.64451472482651,
+          "score": 95.88964391845906,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 231562,
-              "item_name": "Field Marshal's Chain Greathelm",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -0.41442071793559876,
-              "verified": true
+              "item_id": 231580,
+              "item_name": "Field Marshal's Chain Helm",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 227066,
+              "item_name": "Lieutenant Commander's Chain Helm",
+              "source_kind": "pvp",
+              "source": "PvP rank 14 · Lieutenant Commander · Alliance",
+              "dps_delta": -0.7677452237283755
             },
             {
               "item_id": 227086,
               "item_name": "Lieutenant Commander's Chain Greathelm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.5477819316681846
-            },
-            {
-              "item_id": 23306,
-              "item_name": "Lieutenant Commander's Chain Helm",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -0.9808632085708004
+              "dps_delta": -1.9929083529049763,
+              "verified": true
             }
           ]
         },
@@ -5394,8 +5512,7 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.016865070008892924
             },
             {
               "item_id": 22340,
@@ -5433,9 +5550,7 @@
               "item_name": "Darkspear Epaulets",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 187.25161322970501
+              "dps_delta": 0
             },
             {
               "item_id": 20059,
@@ -5467,7 +5582,7 @@
               "item_name": "Cloak of the Honor Guard",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -0.7789163195650417,
+              "dps_delta": -0.7218671507248757,
               "verified": true
             },
             {
@@ -5492,7 +5607,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
           "alternatives": [
             {
@@ -5514,7 +5629,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -9.853342348008113,
+              "dps_delta": -9.740313714365271,
               "verified": true
             }
           ]
@@ -5525,7 +5640,7 @@
           "item_name": "Bracers of the Eclipse",
           "source": "Dire Maul: Prince Tortheldrin",
           "source_kind": "dungeon",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
           "alternatives": [
             {
@@ -5547,40 +5662,41 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.5262090867001916,
+              "dps_delta": -3.4435122651470635,
               "verified": true
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 16463,
-          "item_name": "Marshal's Chain Grips",
+          "item_id": 231578,
+          "item_name": "Marshal's Chain Vices",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 187.25161322970501,
+          "score": 69.24373116701611,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 231578,
-              "item_name": "Marshal's Chain Vices",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": 0
+              "item_id": 231560,
+              "item_name": "Marshal's Chain Grips",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": -0.21135106682387503
+            },
+            {
+              "item_id": 22410,
+              "item_name": "Gauntlets of Deftness",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare",
+              "dps_delta": -0.8773458072367217
             },
             {
               "item_id": 272099,
               "item_name": "Raider Gloves",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.34642894557742965
-            },
-            {
-              "item_id": 23279,
-              "item_name": "Knight-Lieutenant's Chain Vices",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -2.6451809604356527,
+              "dps_delta": -1.1488606219932365,
               "verified": true
             }
           ]
@@ -5626,8 +5742,8 @@
           "source_kind": "vendor",
           "score": 125.551980079621,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (id 22748): kept the pick, +1.7 DPS (187.3 vs 185.6 set DPS)",
-          "dps_delta": 1.6944670424972799,
+          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (id 22748): kept the pick, +1.7 DPS (186.0 vs 184.4 set DPS)",
+          "dps_delta": 1.6765475694931808,
           "alternatives": [
             {
               "item_id": 237818,
@@ -5642,6 +5758,13 @@
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
               "dps_delta": -1.470449209444365
+            },
+            {
+              "item_id": 231558,
+              "item_name": "Marshal's Chain Legplates",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -1.68356719428679
             }
           ]
         },
@@ -5666,8 +5789,7 @@
               "item_name": "Marshal's Chain Sabatons",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.2997616318000951,
-              "verified": true
+              "dps_delta": -0.1362630514519256
             },
             {
               "item_id": 275618,
@@ -5684,7 +5806,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Changing of Paths - Protector No More",
           "source_kind": "quest",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
           "alternatives": [
             {
@@ -5706,7 +5828,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.999976676981902,
+              "dps_delta": -5.939787363080768,
               "verified": true
             }
           ]
@@ -5717,7 +5839,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
           "alternatives": [
             {
@@ -5739,7 +5861,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.647317511660873,
+              "dps_delta": -4.612627619096003,
               "verified": true
             }
           ]
@@ -5750,10 +5872,10 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +6.0 DPS (187.3 vs 181.3 set DPS)",
-          "dps_delta": 5.995291214116605,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +6.0 DPS (186.0 vs 180.1 set DPS)",
+          "dps_delta": 5.983975914467067,
           "alternatives": [
             {
               "item_id": 11815,
@@ -5784,7 +5906,7 @@
           "item_name": "Second Wind",
           "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
           "alternatives": [
             {
@@ -5806,7 +5928,7 @@
               "item_name": "Devilsaur Eye",
               "source_kind": "quest",
               "source": "The Green Drake",
-              "dps_delta": -1.0337421611731372,
+              "dps_delta": -0.9783489967091441,
               "verified": true
             }
           ]
@@ -5817,7 +5939,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
           "alternatives": [
             {
@@ -5839,7 +5961,7 @@
               "item_name": "Electrified Dagger",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -6.835777776974254,
+              "dps_delta": -6.670880343303736,
               "verified": true
             }
           ]
@@ -5855,7 +5977,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 187.25161322970501,
+          "sim_dps": 186.0468358548472,
           "verified": true,
           "alternatives": [
             {
@@ -5877,14 +5999,14 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -7.99182470974435,
+              "dps_delta": -8.068170404605723,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 187.25161322970501,
-      "no_source_count": 1638,
+      "set_dps": 186.0468358548472,
+      "no_source_count": 1627,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5903,13 +6025,13 @@
         "4110 Master Hunter's Bow"
       ],
       "new_at_band": [
-        "head: Field Marshal's Chain Helm",
+        "head: Field Marshal's Chain Greathelm",
         "neck: Amulet of the Darkmoon",
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
         "wrist: Bracers of the Eclipse",
-        "hands: Marshal's Chain Grips",
+        "hands: Marshal's Chain Vices",
         "waist: Dense Timbermaw Belt",
         "legs: Sentinel's Chain Leggings",
         "feet: Marshal's Chain Greaves",
@@ -5920,20 +6042,20 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.5974435649999998,
-      "verify_run_seconds": 1.958397704,
+      "weights_run_seconds": 1.195162123,
+      "verify_run_seconds": 1.522457555,
       "coverage": {
         "back": {
           "eligible": 444,
           "sourced": 341
         },
         "chest": {
-          "eligible": 704,
+          "eligible": 703,
           "sourced": 596
         },
         "feet": {
-          "eligible": 578,
-          "sourced": 486
+          "eligible": 575,
+          "sourced": 485
         },
         "finger1": {
           "eligible": 364,
@@ -5944,16 +6066,16 @@
           "sourced": 200
         },
         "hands": {
-          "eligible": 597,
-          "sourced": 498
+          "eligible": 594,
+          "sourced": 496
         },
         "head": {
-          "eligible": 437,
-          "sourced": 353
+          "eligible": 434,
+          "sourced": 351
         },
         "legs": {
-          "eligible": 593,
-          "sourced": 481
+          "eligible": 589,
+          "sourced": 479
         },
         "main_hand": {
           "eligible": 1010,
@@ -5972,8 +6094,8 @@
           "sourced": 141
         },
         "shoulder": {
-          "eligible": 443,
-          "sourced": 355
+          "eligible": 438,
+          "sourced": 354
         },
         "trinket1": {
           "eligible": 181,
@@ -5993,7 +6115,10 @@
         }
       },
       "reference_dps_per_point": 0.05675774103359904,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 4.500603480165804,
+      "haste_on_items": false
     },
     {
       "spec": "hunter-marksmanship",
@@ -6008,14 +6133,20 @@
           "weight": 1,
           "error": 0.0012342308119988351,
           "insignificant": false,
-          "weight_per_percent": 1
+          "weight_per_percent": 1,
+          "scale_factor": 0.42762055705831,
+          "dps_per_point": 0.05675774103359904,
+          "scale_error": 0.0005277824673654721
         },
         {
           "stat": "agility",
           "weight": 2.3385218121392626,
           "error": 0.09402244238333618,
           "insignificant": false,
-          "weight_per_percent": 2.3385218121392626
+          "weight_per_percent": 2.3385218121392626,
+          "scale_factor": 1,
+          "dps_per_point": 0.13272921541482302,
+          "scale_error": 0.04020592918794507
         },
         {
           "stat": "crit",
@@ -6024,7 +6155,10 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 20.134773112091587
+          "weight_per_percent": 20.134773112091587,
+          "scale_factor": 0.6150030638882347,
+          "dps_per_point": 0.08162887414759766,
+          "scale_error": 0.023495674296794368
         },
         {
           "stat": "hit",
@@ -6033,14 +6167,20 @@
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 3.4341704305636456
+          "weight_per_percent": 3.4341704305636456,
+          "scale_factor": 0.14685218725508023,
+          "dps_per_point": 0.01949157559631747,
+          "scale_error": 0.005841378067768056
         },
         {
           "stat": "melee_haste",
           "weight": 10.524759406157607,
           "error": 1.6567324559153893,
           "insignificant": false,
-          "weight_per_percent": 10.524759406157607
+          "weight_per_percent": 10.524759406157607,
+          "scale_factor": 4.500603480165804,
+          "dps_per_point": 0.5973615688156291,
+          "scale_error": 0.7084528556951207
         }
       ],
       "slots": [
@@ -6065,8 +6205,7 @@
               "item_name": "Warlord's Chain Greathelm",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.5065145034839134,
-              "verified": true
+              "dps_delta": -0.21311798484242492
             },
             {
               "item_id": 227080,
@@ -6091,8 +6230,7 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.016865070008892924
             },
             {
               "item_id": 22340,
@@ -6130,9 +6268,7 @@
               "item_name": "Darkspear Epaulets",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 188.14867667379596
+              "dps_delta": 0
             },
             {
               "item_id": 20194,
@@ -6142,10 +6278,10 @@
               "dps_delta": -0.6346349457918036
             },
             {
-              "item_id": 16568,
+              "item_id": 231572,
               "item_name": "Warlord's Chain Shoulders",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Warlord · Horde",
               "dps_delta": -1.0806176975180164
             }
           ]
@@ -6255,7 +6391,7 @@
           "item_name": "General's Chain Vices",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "sim_dps": 188.14867667379596,
+          "score": 69.24373116701611,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6274,12 +6410,11 @@
               "dps_delta": -0.21135106682387503
             },
             {
-              "item_id": 22862,
-              "item_name": "Blood Guard's Chain Vices",
+              "item_id": 272099,
+              "item_name": "Raider Gloves",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -1.8722419793140546,
-              "verified": true
+              "source": "Creeg Bothunk",
+              "dps_delta": -0.34642894557742965
             }
           ]
         },
@@ -6333,10 +6468,10 @@
               "dps_delta": -1.2567494792817584
             },
             {
-              "item_id": 16567,
+              "item_id": 231574,
               "item_name": "General's Chain Legguards",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · General · Horde",
               "dps_delta": -1.470449209444365
             },
             {
@@ -6351,34 +6486,19 @@
         },
         {
           "slot": "feet",
-          "item_id": 16569,
-          "item_name": "General's Chain Sabatons",
+          "item_id": 231570,
+          "item_name": "General's Chain Greaves",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
           "score": 64.23573754618447,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 231570,
-              "item_name": "General's Chain Greaves"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 231570,
-              "item_name": "General's Chain Greaves",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 188.14867667379596
-            },
-            {
-              "item_id": 275618,
-              "item_name": "Scalegut Treaders",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.42724747415322506
+              "item_id": 231564,
+              "item_name": "General's Chain Sabatons",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": -0.1362630514519256
             },
             {
               "item_id": 22061,
@@ -6386,6 +6506,14 @@
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
               "dps_delta": -0.4603741867928204
+            },
+            {
+              "item_id": 275618,
+              "item_name": "Scalegut Treaders",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -2.4376167707884804,
+              "verified": true
             }
           ]
         },
@@ -6520,7 +6648,8 @@
               "dps_delta": -0.9376165834908932,
               "verified": true
             }
-          ]
+          ],
+          "faction_note": "Second Wind (from alliance) and horde's own pick Burst of Knowledge measure statistically indistinguishable on troll (5.32 ± 1.03 vs 6.80 ± 1.07 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -6595,7 +6724,7 @@
         }
       ],
       "set_dps": 188.14867667379596,
-      "no_source_count": 1626,
+      "no_source_count": 1615,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6623,27 +6752,27 @@
         "hands: General's Chain Vices",
         "waist: Dense Timbermaw Belt",
         "legs: Sentinel's Chain Leggings",
-        "feet: General's Chain Sabatons",
+        "feet: General's Chain Greaves",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
         "trinket2: Burst of Knowledge",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.5974435649999998,
-      "verify_run_seconds": 1.917656316,
+      "weights_run_seconds": 1.195162123,
+      "verify_run_seconds": 1.467084842,
       "coverage": {
         "back": {
           "eligible": 450,
           "sourced": 348
         },
         "chest": {
-          "eligible": 700,
-          "sourced": 589
+          "eligible": 699,
+          "sourced": 588
         },
         "feet": {
-          "eligible": 581,
-          "sourced": 485
+          "eligible": 578,
+          "sourced": 483
         },
         "finger1": {
           "eligible": 367,
@@ -6654,16 +6783,16 @@
           "sourced": 206
         },
         "hands": {
-          "eligible": 598,
-          "sourced": 496
+          "eligible": 595,
+          "sourced": 495
         },
         "head": {
-          "eligible": 437,
+          "eligible": 434,
           "sourced": 352
         },
         "legs": {
-          "eligible": 588,
-          "sourced": 478
+          "eligible": 584,
+          "sourced": 476
         },
         "main_hand": {
           "eligible": 1008,
@@ -6682,8 +6811,8 @@
           "sourced": 140
         },
         "shoulder": {
-          "eligible": 443,
-          "sourced": 356
+          "eligible": 438,
+          "sourced": 354
         },
         "trinket1": {
           "eligible": 180,
@@ -6703,7 +6832,10 @@
         }
       },
       "reference_dps_per_point": 0.05675774103359904,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "agility",
+      "haste_scale_factor": 4.500603480165804,
+      "haste_on_items": false
     }
   ]
 }
