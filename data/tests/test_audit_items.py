@@ -54,6 +54,14 @@ def _write_build(root: Path, build: str) -> Path:
             "effect_text": "", "set_id": None, "unique": False,
         },
         {
+            "id": 107, "name": "Classic-DB Only Trinket", "icon": "inv_trinket_01",
+            "slot": "trinket", "quality": 3, "required_level": 53,
+            "required_level_source": "classic-db", "stats_source": "classic-db",
+            "client_unconfirmed": True, "item_level": 58, "armor": 0, "stats": {},
+            "damage_min": 0, "damage_max": 0, "speed": 0.0, "dps": 0.0, "two_hand": False,
+            "effect_text": "", "set_id": None, "unique": False,
+        },
+        {
             "id": 105, "name": "Proxy-Estimated Wristguard", "icon": "inv_bracer_01",
             "slot": "wrist", "quality": 2, "required_level": 15,
             "required_level_source": "item_level_proxy", "item_level": 20, "armor": 0,
@@ -160,6 +168,20 @@ def test_missing_from_raw_is_minor_when_source_is_wowhead(tmp_path):
     assert len(findings) == 1
     assert findings[0].severity == "minor"
     assert "not in the build's own raw" in findings[0].message
+
+
+def test_missing_from_raw_is_minor_for_a_classic_db_row(tmp_path):
+    """A classic-db 1.12 row (catalogue-universe, `client_unconfirmed`) has no
+    client row by construction and says so on the site; it is unverifiable
+    here, not a missing client id."""
+    root = tmp_path / "builds"
+    _write_build(root, "testbuild")
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_items.check(ctx)
+    findings = [f for f in result.findings if f.subject == "107"]
+    assert len(findings) == 1
+    assert findings[0].severity == "minor"
+    assert "classic-db 1.12 row" in findings[0].message
 
 
 def test_missing_from_raw_stays_major_when_source_is_not_wowhead(tmp_path):

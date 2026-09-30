@@ -97,11 +97,23 @@ def _compare_against_raw(ctx: AuditContext, result: CategoryResult) -> None:
                 # what makes it a supplement, not a defect the way a real
                 # client id going missing would be. Downgraded to "minor"
                 # ("unverified against the client") rather than "major".
+                # catalogue-universe, 2026-09-30: a classic-db row (stats_source
+                # "classic-db", client_unconfirmed) is 1.12 data the client has
+                # not shown yet -- unverifiable here by construction, the same
+                # way a wowhead supplement is, and labelled as such on the site.
+                supplement = ours.get("required_level_source") == "wowhead" or (
+                    ours.get("stats_source") == "classic-db"
+                )
                 result.add(
-                    "minor" if ours.get("required_level_source") == "wowhead" else "major",
+                    "minor" if supplement else "major",
                     item_id,
                     f"{ours['name']!r} ({class_slug}) is in items/{class_slug}.json but not in "
-                    "the build's own raw ItemSparse.csv/Item.csv",
+                    "the build's own raw ItemSparse.csv/Item.csv"
+                    + (
+                        " (classic-db 1.12 row, not yet seen in the client)"
+                        if ours.get("stats_source") == "classic-db"
+                        else ""
+                    ),
                 )
                 continue
             result.checked += 1

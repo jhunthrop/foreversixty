@@ -368,6 +368,8 @@ def test_resolve_required_level_is_none_for_an_item_level_one_row():
         "[DNT] Crafted Tier Piece Placeholder",  # id 273878
         "Magic Knucklebone (DND)",
         "zzOLDCodex of Prayer of Fortitude",
+        "ZZZZZ sword 2",  # classic-db QA rows 5031-5039
+        "ZZZZZZZZ",
     ],
 )
 def test_the_junk_name_matcher_catches_every_pattern_class(name: str):

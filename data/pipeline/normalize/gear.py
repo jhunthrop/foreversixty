@@ -80,7 +80,10 @@ PLANNER_QUALITIES = frozenset({2, 3, 4, 5})
 JUNK_NAME_PATTERN = re.compile(
     r"\bgamemaster\b|\bgm\b|\btest\b|\btesting\b|\bqatest\b"
     r"|\bdeprecated\b|\bmonster\b|\bunused\b|\bplaceholder\b|\bdnd\b"
-    r"|\(old\)|zzold|\[ph\]|\[dnt\]",
+    r"|\(old\)|zzold|\[ph\]|\[dnt\]"
+    # catalogue-universe follow-up, 2026-09-30: classic-db's own QA rows
+    # 5031-5039 are named "ZZZZZ", "ZZZZZZZZ", "ZZZZZ sword N".
+    r"|\bz{4,}",
     re.IGNORECASE,
 )
 
