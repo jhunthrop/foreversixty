@@ -125,6 +125,7 @@ def test_tables_cover_every_pipeline_input():
         "ChrRaces",
         "Talent",
         "TalentTab",
+        "SkillLineAbility",
         "SkillLine",
         "SkillLineXTraitTree",
         "TraitNode",

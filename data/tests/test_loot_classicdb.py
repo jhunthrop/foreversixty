@@ -20,11 +20,12 @@ from pathlib import Path
 
 import pytest
 
-from pipeline.classic_sources import load_classic_sources
+from pipeline.classic_sources import ClassicDbSourceRecord, load_classic_sources
 from pipeline.forkdb import ForkDatabase, load_fork_database
 from pipeline.loot import types_from_committed_loot
 from pipeline.loot.classicdb import (
     _CREATURE_KINDS,
+    _item_instance_zone_consensus,
     classicdb_additions,
     fork_instance_npc_zones,
     instance_zone_by_map,
@@ -173,3 +174,141 @@ def test_every_fork_known_instance_boss_lands_in_its_own_instance_from_classic_d
         f"npc ids the fork places in an instance still fall through to world:, formerly "
         f"resolved via classic-db's own spawn map alone -- {sorted(still_world)}"
     )
+
+
+# --- `_item_instance_zone_consensus` and the Molten Core Firelord/Lava
+# Annihilator finding it fixes (day3 data-followups-5 lane, 2026-09-30) ---
+
+_MC_ZONE_BY_MAP = {409: 2717}
+
+
+def _creature(npc_id, name, map_id, chance):
+    return ClassicDbSourceRecord(
+        kind="creature_drop", npc_id=npc_id, name=name, map_id=map_id, chance=chance
+    )
+
+
+def test_item_instance_zone_consensus_resolves_an_unmapped_npc_from_its_siblings():
+    """Firelord's own shape for Fiery Core (17010): its own record states
+    no map, but the item's other four creature records all resolve to
+    Molten Core (2717) alone."""
+    records = [
+        _creature(11666, "Firewalker", 409, 42.2),
+        _creature(11667, "Flameguard", 409, 34.7),
+        _creature(11668, "Firelord", None, 23.4),
+        _creature(12056, "Baron Geddon", 409, 14.0),
+    ]
+    assert _item_instance_zone_consensus(records, _MC_ZONE_BY_MAP, {}) == 2717
+
+
+def test_item_instance_zone_consensus_is_none_without_a_single_agreeing_zone():
+    """No fallback when the item's OTHER creature records don't themselves
+    agree on one zone (a real cross-instance/world item) or resolve none
+    at all -- Firelord's own OTHER 68 items are exactly this shape."""
+    unresolved_only = [_creature(11668, "Firelord", None, 1.0), _creature(1, "Rat", 0, 1.0)]
+    assert _item_instance_zone_consensus(unresolved_only, _MC_ZONE_BY_MAP, {}) is None
+
+    two_zones = [
+        _creature(11668, "Firelord", None, 1.0),
+        _creature(2, "Deadmines Rat", 36, 1.0),
+        _creature(3, "Blackrock Ogre", 230, 1.0),
+    ]
+    zone_by_map = {**_MC_ZONE_BY_MAP, 36: 1581, 230: 1584}
+    assert _item_instance_zone_consensus(two_zones, zone_by_map, {}) is None
+
+
+def test_item_instance_zone_consensus_falls_back_to_fork_instance_npcs_too():
+    records = [_creature(11668, "Firelord", None, 1.0), _creature(1853, "Gandling", None, 1.0)]
+    assert _item_instance_zone_consensus(records, {}, {1853: 2717}) == 2717
+
+
+_MC_TYPES = {2717: 2}  # raid
+_MC_ZONE_ROWS = [{"id": 2717, "name": "Molten Core", "map_id": 409}]
+
+
+def _classicdb_additions(classic_sources):
+    return classicdb_additions(
+        classic_sources,
+        build_items=set(classic_sources),
+        equippable=set(),
+        zone_names={2717: "Molten Core"},
+        types=_MC_TYPES,
+        zone_rows=_MC_ZONE_ROWS,
+        quest_levels={},
+        item_factions={},
+    )
+
+
+def _raid_boss_items(sources, npc_id):
+    for source in sources:
+        if source.kind == "raid":
+            for boss in source.bosses or []:
+                if boss.npc_id == npc_id:
+                    return set(boss.items)
+    return set()
+
+
+def _world_items(sources):
+    return {item_id for source in sources if source.kind == "world" for item_id in source.items}
+
+
+def _world_drop_items(sources):
+    return {
+        item_id for source in sources if source.kind == "world_drop" for item_id in source.items
+    }
+
+
+def test_fiery_core_s_firelord_lands_in_raid_trash_not_a_world_bucket():
+    """Regression for the exact bug the 9th wow-player sweep found
+    (day3/player-review-24): Fiery Core (item id below) named `world:
+    firelord` beside `raid:molten-core`, which let a reagent-gate check
+    see an open source and leave Nightfall/Ebon Hand/Blackfury ungated."""
+    fiery_core = 90010
+    classic_sources = {
+        fiery_core: [
+            _creature(11666, "Firewalker", 409, 42.2),
+            _creature(11667, "Flameguard", 409, 34.7),
+            _creature(11668, "Firelord", None, 23.4),
+            _creature(11659, "Molten Destroyer", 409, 14.9),
+            _creature(12056, "Baron Geddon", 409, 14.0),
+        ]
+    }
+    sources, _, _ = _classicdb_additions(classic_sources)
+    assert fiery_core in _raid_boss_items(sources, 11668)
+    assert fiery_core not in _world_items(sources)
+
+
+def test_lava_core_s_lava_annihilator_lands_in_raid_trash_not_a_world_drop_pool():
+    """Regression for Lava Core: 7 creature-kind records for one item
+    clears `is_world_drop_pattern`'s creature-count floor on its own, so
+    Lava Annihilator's unmapped record used to fold into a synthetic
+    `world_drop:<range>` pool instead of Molten Core's own trash."""
+    lava_core = 90011
+    classic_sources = {
+        lava_core: [
+            _creature(11665, "Lava Annihilator", None, 12.5),
+            _creature(12076, "Lava Elemental", 409, 23.8),
+            _creature(12101, "Lava Surger", 409, 3.5),
+            _creature(12100, "Lava Reaver", 409, 22.1),
+            _creature(11659, "Molten Destroyer", 409, 15.4),
+            _creature(11988, "Golemagg the Incinerator", 409, 14.0),
+            _creature(12057, "Garr", 409, 14.0),
+        ]
+    }
+    sources, _, _ = _classicdb_additions(classic_sources)
+    assert lava_core in _raid_boss_items(sources, 11665)
+    assert lava_core not in _world_drop_items(sources)
+
+
+def test_an_unmapped_npc_with_no_resolving_sibling_still_reads_as_open_world():
+    """The consensus fallback must not fire when there is nothing to reach
+    consensus WITH -- Firelord's own OTHER 68 items on the real dump are
+    typically shared with hundreds of other creatures that themselves
+    never resolve to one zone either; the simplest such shape is a lone
+    unmapped npc with no creature-kind sibling at all, which must still
+    read as `world:<name>`, exactly as before this fallback existed."""
+    unrelated_item = 90012
+    classic_sources = {unrelated_item: [_creature(11668, "Firelord", None, 1.0)]}
+    sources, _, _ = _classicdb_additions(classic_sources)
+    assert unrelated_item in _world_items(sources)
+    assert unrelated_item not in _raid_boss_items(sources, 11668)

@@ -8,6 +8,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from pipeline import proficiency
+
 logger = logging.getLogger(__name__)
 
 
@@ -157,6 +159,11 @@ def normalize_build(
     raw = build_dir / "raw"
     if not raw.exists():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
+    # Weapon proficiency: client tables when `fetch` downloaded them, else the
+    # hardcoded 1.x-plus-Forever's-changes fallback -- see
+    # pipeline.proficiency's own docstring.
+    weapon_proficiency_source = proficiency.configure(raw)
+    logger.info("weapon proficiency source: %s", weapon_proficiency_source)
     # ItemSparse/Item are merged with any `raw/hotfixes/*.csv`
     # (`python -m pipeline hotfixes`, hotfix-cache lane 2026-09-29) before
     # anything -- including the completeness gate -- reads them, so a row
