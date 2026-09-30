@@ -205,19 +205,20 @@ CRAFTED_ITEMS = {
 }
 QUEST_ITEMS = 2114
 PVP_ITEMS_PER_RANK = {
-    5: 4,
+    # floors, re-based 2026-10-01 after superseded legacy ids left the pvp sources
+    5: 2,
     6: 16,
     7: 6,
     8: 6,
     9: 23,
-    10: 4,
-    11: 98,
-    12: 122,
-    14: 97,
+    10: 2,
+    11: 66,
+    12: 93,
+    14: 63,
     15: 2,
-    16: 117,
-    17: 82,
-    18: 82,
+    16: 80,
+    17: 48,
+    18: 54,
 }
 
 #: Every distinct item id the file names. Contract 10.4: all of them are
@@ -791,7 +792,10 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     below the same way `opens` already is."""
     quests = loot()["quests"]
     assert len(quests) >= QUEST_DETAIL_ITEMS
-    assert set(quests) == {str(i) for i in by_id()["quest"]["items"]}
+    # data-followups-4, 2026-09-30: a superseded legacy id leaves the `quest` source but
+    # the committed `quests` map only follows on the next regen (data.yml tests first).
+    superseded = {str(row["id"]) for row in items() if row.get("superseded_by")}
+    assert set(quests) - superseded == {str(i) for i in by_id()["quest"]["items"]}
     counts = {"alliance": 0, "horde": 0, "both": 0, "unknown": 0}
     optional_keys = {"opens", "required_rep_faction", "required_rep_standing"}
     for item_id, entries in quests.items():

@@ -129,9 +129,7 @@ def _dedup_source(source: LootSource, superseded: dict[int, int]) -> tuple[LootS
     return source.model_copy(update=update), removed
 
 
-def apply_supersession(
-    document: LootFile, superseded: dict[int, int]
-) -> tuple[LootFile, int]:
+def apply_supersession(document: LootFile, superseded: dict[int, int]) -> tuple[LootFile, int]:
     """`document` with every legacy id in `superseded` (classic id -> new
     id) dropped from any source bucket that lists both it and its
     replacement. Returns the new document and how many (bucket, id)
@@ -144,7 +142,21 @@ def apply_supersession(
         new_source, removed = _dedup_source(source, superseded)
         sources.append(new_source)
         removed_total += removed
-    return document.model_copy(update={"sources": sources}), removed_total
+    # A legacy id that no source lists any more must leave the `quests`
+    # map too: `quests` only ever names items the `quest` source carries
+    # (the loot contracts pin the two as equal sets), so a superseded
+    # quest reward (Beastmaster's Tunic 22060 -> 226886) drops from both.
+    still_listed: set[int] = set()
+    for source in sources:
+        still_listed.update(source.items or [])
+        for boss in source.bosses or []:
+            still_listed.update(boss.items)
+    quests = {
+        item_id: entries
+        for item_id, entries in document.quests.items()
+        if int(item_id) not in superseded or int(item_id) in still_listed
+    }
+    return document.model_copy(update={"sources": sources, "quests": quests}), removed_total
 
 
 def mark_superseded_items(build_dir: Path, superseded: dict[int, int]) -> int:
