@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:44:52Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:50:45Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -521,8 +521,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.195960246,
-      "verify_run_seconds": 0.81416603,
+      "weights_run_seconds": 1.209744165,
+      "verify_run_seconds": 0.868905751,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1130,8 +1130,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.195960246,
-      "verify_run_seconds": 0.772593947,
+      "weights_run_seconds": 1.209744165,
+      "verify_run_seconds": 0.817447326,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1760,8 +1760,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.20970024,
-      "verify_run_seconds": 0.858511948,
+      "weights_run_seconds": 1.310039528,
+      "verify_run_seconds": 0.916365806,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2419,8 +2419,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 1.20970024,
-      "verify_run_seconds": 0.841645633,
+      "weights_run_seconds": 1.310039528,
+      "verify_run_seconds": 0.849358524,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3041,8 +3041,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.289188183,
-      "verify_run_seconds": 0.834948921,
+      "weights_run_seconds": 1.428849946,
+      "verify_run_seconds": 0.885929298,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3665,8 +3665,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.289188183,
-      "verify_run_seconds": 0.808931854,
+      "weights_run_seconds": 1.428849946,
+      "verify_run_seconds": 0.966797422,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3864,7 +3864,7 @@
               "item_name": "Scorn's Icy Choker",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Scorn",
-              "dps_delta": -2.3545055625420446,
+              "dps_delta": -2.3226749965643165,
               "verified": true
             }
           ]
@@ -3890,7 +3890,7 @@
               "item_name": "Rotgrip Mantle",
               "source_kind": "dungeon",
               "source": "Maraudon: Rotgrip",
-              "dps_delta": -0.6805969186761871,
+              "dps_delta": -0.6866355013279701,
               "verified": true
             },
             {
@@ -3963,7 +3963,7 @@
               "item_name": "Runecloth Robe",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.1032159950926825,
+              "dps_delta": -2.092047646209963,
               "verified": true
             }
           ]
@@ -4029,7 +4029,7 @@
               "item_name": "Raider Handguards",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -2.262124321970063,
+              "dps_delta": -2.2437021343490073,
               "verified": true
             }
           ]
@@ -4056,7 +4056,7 @@
               "source": "Leatherworking",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 87.37867264982938
+              "sim_dps": 86.55312649399947
             },
             {
               "item_id": 12466,
@@ -4102,7 +4102,7 @@
               "item_name": "Red Mageweave Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.0284082540880917,
+              "dps_delta": -2.028877877196294,
               "verified": true
             }
           ]
@@ -4129,7 +4129,7 @@
               "source": "Leatherworking",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 87.37867264982938
+              "sim_dps": 86.55312649399947
             },
             {
               "item_id": 22240,
@@ -4155,8 +4155,8 @@
           "source_kind": "dungeon",
           "score": 18.239248281886496,
           "verified": true,
-          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, +3.1 DPS (87.4 vs 84.3 set DPS)",
-          "dps_delta": 3.052342528042331,
+          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, +3.0 DPS (86.6 vs 83.5 set DPS)",
+          "dps_delta": 3.0225384489229867,
           "alternatives": [
             {
               "item_id": 281635,
@@ -4209,31 +4209,44 @@
               "item_name": "Philanthropist's Ring",
               "source_kind": "quest",
               "source": "Greater Friend of the Library",
-              "dps_delta": -1.209228365155667,
+              "dps_delta": -1.199366694654259,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 11302,
-          "item_name": "Uther's Strength",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "sim_dps": 87.37867264982938,
-          "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +0.8 DPS (87.4 vs 86.6 set DPS)",
-          "dps_delta": 0.8255461558299118,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "trinket2",
           "item_id": 249469,
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 86.55312649399947,
           "verified": true,
-          "effect_unmodelled": true
+          "alternatives": [
+            {
+              "item_id": 11302,
+              "item_name": "Uther's Strength",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.20758588602471661,
+              "verified": true
+            }
+          ]
+        },
+        {
+          "slot": "trinket2",
+          "verified": false,
+          "alternatives": [
+            {
+              "item_id": 11302,
+              "item_name": "Uther's Strength",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "verified": true
+            }
+          ],
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4241,7 +4254,7 @@
           "item_name": "Glowing Brightwood Staff",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 87.37867264982938,
+          "sim_dps": 86.55312649399947,
           "verified": true,
           "alternatives": [
             {
@@ -4263,7 +4276,7 @@
               "item_name": "Blade of Eternal Darkness",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -1.7430669351711998,
+              "dps_delta": -1.7251297890260275,
               "verified": true
             }
           ]
@@ -4280,7 +4293,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 87.37867264982938,
+      "set_dps": 86.55312649399947,
       "no_source_count": 752,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -4312,12 +4325,11 @@
         "feet: Skycaller's Leather Boots",
         "finger1: Brainlash",
         "finger2: Cyclopean Band",
-        "trinket1: Uther's Strength",
-        "trinket2: Frozen Heart of the Mountain",
+        "trinket1: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.388608687,
-      "verify_run_seconds": 0.928766656,
+      "weights_run_seconds": 1.451762412,
+      "verify_run_seconds": 1.100869276,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4872,7 +4884,6 @@
           "source": "Enchanting",
           "source_kind": "crafted",
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 11302,
@@ -4982,8 +4993,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.388608687,
-      "verify_run_seconds": 1.068170924,
+      "weights_run_seconds": 1.451762412,
+      "verify_run_seconds": 1.077108526,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5142,7 +5153,7 @@
               "item_name": "Blue Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.3691278141767635
+              "dps_delta": -3.369127814176763
             },
             {
               "item_id": 252605,
@@ -5274,7 +5285,7 @@
               "item_name": "Soulcrusher Chestguard",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.778973983634995
+              "dps_delta": -2.778973983634994
             },
             {
               "item_id": 23089,
@@ -5660,8 +5671,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 1.334924524,
-      "verify_run_seconds": 0.93079741,
+      "weights_run_seconds": 1.479167545,
+      "verify_run_seconds": 0.985526312,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6035,7 +6046,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 58.383983026262534,
+          "score": 58.38398302626254,
           "verified": true,
           "alternatives": [
             {
@@ -6043,7 +6054,7 @@
               "item_name": "Soulcrusher Girdle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.28237903618467436
+              "dps_delta": -0.28237903618467497
             },
             {
               "item_id": 240126,
@@ -6058,7 +6069,7 @@
               "item_name": "Soulcrusher Waistguard",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.095722705917353
+              "dps_delta": -1.0957227059173538
             }
           ]
         },
@@ -6343,8 +6354,8 @@
         "trinket2: Second Wind",
         "main_hand: Hammer of Divine Might"
       ],
-      "weights_run_seconds": 1.334924524,
-      "verify_run_seconds": 0.837504949,
+      "weights_run_seconds": 1.479167545,
+      "verify_run_seconds": 0.941837293,
       "coverage": {
         "back": {
           "eligible": 451,

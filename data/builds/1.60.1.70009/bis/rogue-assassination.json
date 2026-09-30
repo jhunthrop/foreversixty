@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:43:39Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:49:20Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -556,8 +556,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.020149251,
-      "verify_run_seconds": 0.969990057,
+      "weights_run_seconds": 0.996999068,
+      "verify_run_seconds": 1.0481692439999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1190,8 +1190,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.020149251,
-      "verify_run_seconds": 0.936750319,
+      "weights_run_seconds": 0.996999068,
+      "verify_run_seconds": 0.991523825,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1859,8 +1859,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.949274882,
-      "verify_run_seconds": 0.955175703,
+      "weights_run_seconds": 1.063139168,
+      "verify_run_seconds": 1.013021949,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2534,8 +2534,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.949274882,
-      "verify_run_seconds": 0.989233686,
+      "weights_run_seconds": 1.063139168,
+      "verify_run_seconds": 1.03158997,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3207,8 +3207,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.002031612,
-      "verify_run_seconds": 1.041185145,
+      "weights_run_seconds": 1.056893932,
+      "verify_run_seconds": 1.103376518,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3887,8 +3887,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.002031612,
-      "verify_run_seconds": 1.026282138,
+      "weights_run_seconds": 1.056893932,
+      "verify_run_seconds": 1.124026546,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4112,7 +4112,7 @@
               "item_name": "Skulker's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.18404187731388788,
+              "dps_delta": -0.1840418773139021,
               "verified": true
             }
           ]
@@ -4145,7 +4145,7 @@
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.2578362249911379,
+              "dps_delta": -0.2576455106771931,
               "verified": true
             }
           ]
@@ -4178,7 +4178,7 @@
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -0.2837138684241296,
+              "dps_delta": -0.2846924247656233,
               "verified": true
             }
           ]
@@ -4211,7 +4211,7 @@
               "item_name": "Branded Leather Bracers",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-              "dps_delta": -0.5717109131453526,
+              "dps_delta": -0.5740142930317518,
               "verified": true
             }
           ]
@@ -4230,7 +4230,7 @@
               "item_name": "Darkmantle Grips",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.1583698186305753,
+              "dps_delta": -0.1583698186305469,
               "verified": true
             },
             {
@@ -4277,7 +4277,7 @@
               "item_name": "Highlander's Leather Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -0.49077833950371996,
+              "dps_delta": -0.4907783395037768,
               "verified": true
             }
           ]
@@ -4336,7 +4336,7 @@
               "item_name": "Prowler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.06595815069493938,
+              "dps_delta": -0.06605733040683504,
               "verified": true
             },
             {
@@ -4356,8 +4356,8 @@
           "source_kind": "dungeon",
           "score": 20.677814125939463,
           "verified": true,
-          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +3.1 DPS (123.8 vs 120.7 set DPS)",
-          "dps_delta": 3.0852812386342094,
+          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +3.1 DPS (124.1 vs 121.0 set DPS)",
+          "dps_delta": 3.0857999136364214,
           "alternatives": [
             {
               "item_id": 13095,
@@ -4397,7 +4397,7 @@
               "source": "World drop",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 123.82069849641263
+              "sim_dps": 124.11113950625119
             },
             {
               "item_id": 19516,
@@ -4414,13 +4414,25 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 124.11113950625119,
           "verified": true,
-          "effect_unmodelled": true
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.8 DPS (124.1 vs 122.3 set DPS)",
+          "dps_delta": 1.7802019704903245
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_sourced_item"
+          "alternatives": [
+            {
+              "item_id": 11811,
+              "item_name": "Smoking Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -0.2904410098385597,
+              "verified": true
+            }
+          ],
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4428,7 +4440,7 @@
           "item_name": "Hanzo Sword",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 123.82069849641263,
+          "sim_dps": 124.11113950625119,
           "verified": true,
           "alternatives": [
             {
@@ -4450,7 +4462,7 @@
               "item_name": "Hammer of the Northern Wind",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.7030234582010166,
+              "dps_delta": -1.6998465181964946,
               "verified": true
             }
           ]
@@ -4476,7 +4488,7 @@
               "item_name": "Thorium Cestus",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -4.507220576891953,
+              "dps_delta": -4.493851099937785,
               "verified": true
             },
             {
@@ -4494,7 +4506,7 @@
           "item_name": "Skull Splitting Crossbow",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 123.82069849641263,
+          "sim_dps": 124.11113950625119,
           "verified": true,
           "alternatives": [
             {
@@ -4516,13 +4528,13 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.0429039714454404,
+              "dps_delta": -1.0429039714454547,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 123.82069849641263,
+      "set_dps": 124.11113950625119,
       "no_source_count": 581,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -4557,8 +4569,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.030603779,
-      "verify_run_seconds": 1.178446256,
+      "weights_run_seconds": 1.133486582,
+      "verify_run_seconds": 1.46370244,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5102,8 +5114,18 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 126.74391521581288,
           "verified": true,
-          "effect_unmodelled": true
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -2.3538597073007566,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -5241,8 +5263,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.030603779,
-      "verify_run_seconds": 1.291768539,
+      "weights_run_seconds": 1.133486582,
+      "verify_run_seconds": 1.451913945,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5966,8 +5988,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.043450338,
-      "verify_run_seconds": 1.273256867,
+      "weights_run_seconds": 1.125177805,
+      "verify_run_seconds": 1.366298369,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6690,8 +6712,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.043450338,
-      "verify_run_seconds": 1.347519019,
+      "weights_run_seconds": 1.125177805,
+      "verify_run_seconds": 1.3570106929999999,
       "coverage": {
         "back": {
           "eligible": 451,

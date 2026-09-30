@@ -1,8 +1,8 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:41:18Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:46:52Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -218,12 +218,6 @@
           "source_kind": "dungeon",
           "score": 13.112827059474519,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 10413,
@@ -291,10 +285,6 @@
           "score": 19.66924058921178,
           "verified": true,
           "ties": [
-            {
-              "item_id": 252500,
-              "item_name": "Brawler's Leather Pants"
-            },
             {
               "item_id": 252501,
               "item_name": "Trapper's Leather Pants"
@@ -528,8 +518,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.014272171,
-      "verify_run_seconds": 1.140735414,
+      "weights_run_seconds": 1.112679843,
+      "verify_run_seconds": 1.207975153,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -822,12 +812,6 @@
           "source_kind": "dungeon",
           "score": 13.112827059474519,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 10413,
@@ -1146,8 +1130,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.014272171,
-      "verify_run_seconds": 1.24456304,
+      "weights_run_seconds": 1.112679843,
+      "verify_run_seconds": 1.228725011,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1866,8 +1850,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.134288971,
-      "verify_run_seconds": 1.262063848,
+      "weights_run_seconds": 1.175522306,
+      "verify_run_seconds": 1.3733456880000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2572,8 +2556,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.134288971,
-      "verify_run_seconds": 1.243655674,
+      "weights_run_seconds": 1.175522306,
+      "verify_run_seconds": 1.35727531,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3239,8 +3223,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.119444038,
-      "verify_run_seconds": 1.298306173,
+      "weights_run_seconds": 1.177322615,
+      "verify_run_seconds": 1.380386508,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3907,8 +3891,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.119444038,
-      "verify_run_seconds": 1.29424071,
+      "weights_run_seconds": 1.177322615,
+      "verify_run_seconds": 1.37482438,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4059,7 +4043,7 @@
               "item_name": "Helm of Fire",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.0240352014254768,
+              "dps_delta": -1.9593714979496042,
               "verified": true
             }
           ]
@@ -4072,14 +4056,15 @@
           "source_kind": "world_drop",
           "score": 29.996151508704223,
           "verified": true,
+          "swap_note": "confirmed by the sim against Sentinel's Medallion (id 19539): kept the pick, +0.5 DPS (136.5 vs 136.0 set DPS)",
+          "dps_delta": 0.48633760151213323,
           "alternatives": [
             {
-              "item_id": 19539,
+              "item_id": 19540,
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -0.19994254716547744,
-              "verified": true
+              "dps_delta": -0.26967276738293366
             },
             {
               "item_id": 17772,
@@ -4111,7 +4096,7 @@
               "item_name": "Sunburn Spaulders",
               "source_kind": "vendor",
               "source": "Rettrick",
-              "dps_delta": -0.5659242938592399,
+              "dps_delta": -0.7181352286466733,
               "verified": true
             },
             {
@@ -4131,12 +4116,6 @@
           "source_kind": "world_drop",
           "score": 34.61094404850488,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 12552,
-              "item_name": "Blisterbane Wrap"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 11626,
@@ -4157,7 +4136,7 @@
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.7288098579604707,
+              "dps_delta": -0.7989332364144275,
               "verified": true
             }
           ]
@@ -4176,7 +4155,7 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.30920928938977,
+              "dps_delta": -0.30575444723911005,
               "verified": true
             },
             {
@@ -4216,7 +4195,7 @@
               "item_name": "Arena Bands",
               "source_kind": "world",
               "source": "Arena Treasure Chest",
-              "dps_delta": -0.42837130744774754,
+              "dps_delta": -0.41957542141929594,
               "verified": true
             },
             {
@@ -4249,7 +4228,7 @@
               "item_name": "Sergeant Major's Chain Gauntlets",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.0475011694558134,
+              "dps_delta": -1.0389121561018726,
               "verified": true
             },
             {
@@ -4275,7 +4254,7 @@
               "item_name": "Sagebrush Girdle",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": -0.05018856459381027,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -4341,7 +4320,7 @@
               "item_name": "Fleetfoot Greaves",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Houndmaster Grebmar",
-              "dps_delta": -0.07668321661347477,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -4368,8 +4347,8 @@
           "source_kind": "quest",
           "score": 32.30354777860455,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +2.1 DPS (136.0 vs 133.9 set DPS)",
-          "dps_delta": 2.0884923401595756,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +2.1 DPS (136.5 vs 134.4 set DPS)",
+          "dps_delta": 2.0787277677857503,
           "alternatives": [
             {
               "item_id": 17713,
@@ -4433,7 +4412,27 @@
           "item_name": "Devilsaur Eye",
           "source": "The Green Drake",
           "source_kind": "quest",
-          "sim_dps": 136.02693666618129,
+          "sim_dps": 136.51388443523703,
+          "verified": true,
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +2.8 DPS (136.5 vs 133.7 set DPS)",
+          "dps_delta": 2.7714092840287208,
+          "alternatives": [
+            {
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            }
+          ]
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 249470,
+          "item_name": "Molten Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 136.51388443523703,
           "verified": true,
           "alternatives": [
             {
@@ -4441,25 +4440,10 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -2.5768582582022646,
+              "dps_delta": -0.16619571542926792,
               "verified": true
             }
           ]
-        },
-        {
-          "slot": "trinket2",
-          "verified": false,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ],
-          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4467,7 +4451,7 @@
           "item_name": "Eyegouger",
           "source": "Zul'Farrak: Chief Ukorz Sandscalp",
           "source_kind": "dungeon",
-          "sim_dps": 136.02693666618129,
+          "sim_dps": 136.51388443523703,
           "verified": true,
           "alternatives": [
             {
@@ -4489,7 +4473,7 @@
               "item_name": "Hanzo Sword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.4237539353514705,
+              "dps_delta": -3.414323741961738,
               "verified": true
             }
           ]
@@ -4505,7 +4489,7 @@
           "item_name": "Arcanite Blacksmith Hammer",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 136.02693666618129,
+          "sim_dps": 136.51388443523703,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -4528,13 +4512,13 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.9739168994986755,
+              "dps_delta": -2.051743474201686,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 136.02693666618129,
+      "set_dps": 136.51388443523703,
       "no_source_count": 748,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -4566,11 +4550,12 @@
         "finger1: Masons Fraternity Ring",
         "finger2: Ring of the Underwood",
         "trinket1: Devilsaur Eye",
+        "trinket2: Molten Heart of the Mountain",
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.15920994,
-      "verify_run_seconds": 1.355466416,
+      "weights_run_seconds": 1.2189870329999999,
+      "verify_run_seconds": 1.463187991,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4793,12 +4778,6 @@
           "source_kind": "world_drop",
           "score": 34.61094404850488,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 12552,
-              "item_name": "Blisterbane Wrap"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 11626,
@@ -5244,8 +5223,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.15920994,
-      "verify_run_seconds": 1.342656577,
+      "weights_run_seconds": 1.2189870329999999,
+      "verify_run_seconds": 1.451677461,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5374,7 +5353,7 @@
           "item_name": "Dawnstalker Visor",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 196.26772639232124,
+          "score": 196.26772639232126,
           "verified": true,
           "alternatives": [
             {
@@ -5382,7 +5361,7 @@
               "item_name": "Field Marshal's Chain Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -5.484115225658291
+              "dps_delta": -5.484115225658293
             },
             {
               "item_id": 239540,
@@ -5514,7 +5493,7 @@
               "item_name": "Dawn Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.378526118761021
+              "dps_delta": -5.3785261187610205
             },
             {
               "item_id": 23089,
@@ -5631,7 +5610,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 193.929204580182,
+          "score": 193.92920458018202,
           "verified": true,
           "alternatives": [
             {
@@ -5639,7 +5618,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.880936800799104
+              "dps_delta": -3.8809368007991045
             },
             {
               "item_id": 239541,
@@ -5926,8 +5905,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.078293709,
-      "verify_run_seconds": 1.417334278,
+      "weights_run_seconds": 1.2141291810000001,
+      "verify_run_seconds": 1.473436611,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6320,7 +6299,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 193.92920458018202,
+          "score": 193.929204580182,
           "verified": true,
           "alternatives": [
             {
@@ -6328,14 +6307,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.8809368007991054
+              "dps_delta": -3.880936800799104
             },
             {
               "item_id": 22673,
               "item_name": "Outrider's Chain Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -5.023741038865472
+              "dps_delta": -5.023741038865471
             },
             {
               "item_id": 239541,
@@ -6622,8 +6601,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.078293709,
-      "verify_run_seconds": 1.4271232,
+      "weights_run_seconds": 1.2141291810000001,
+      "verify_run_seconds": 1.4558169460000001,
       "coverage": {
         "back": {
           "eligible": 450,

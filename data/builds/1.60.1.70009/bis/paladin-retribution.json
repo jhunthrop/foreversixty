@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:43:00Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:48:37Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 0.992466717,
-      "verify_run_seconds": 0.796445565,
+      "weights_run_seconds": 1.070003366,
+      "verify_run_seconds": 0.834592256,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1133,8 +1133,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 0.992466717,
-      "verify_run_seconds": 0.808441473,
+      "weights_run_seconds": 1.070003366,
+      "verify_run_seconds": 0.825377483,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1763,8 +1763,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 0.995968554,
-      "verify_run_seconds": 1.080438956,
+      "weights_run_seconds": 1.04935532,
+      "verify_run_seconds": 1.046054103,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2399,8 +2399,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 0.995968554,
-      "verify_run_seconds": 0.994015751,
+      "weights_run_seconds": 1.04935532,
+      "verify_run_seconds": 1.017849838,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3030,8 +3030,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 0.987780347,
-      "verify_run_seconds": 0.927548426,
+      "weights_run_seconds": 1.042360031,
+      "verify_run_seconds": 0.996637742,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3661,8 +3661,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 0.987780347,
-      "verify_run_seconds": 0.962272351,
+      "weights_run_seconds": 1.042360031,
+      "verify_run_seconds": 0.995883387,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3820,7 +3820,7 @@
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -1.0842586490926607,
+              "dps_delta": -1.004209681097251,
               "verified": true
             }
           ]
@@ -3846,7 +3846,7 @@
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.3605233533770331,
+              "dps_delta": -0.36004678032109894,
               "verified": true
             },
             {
@@ -3952,7 +3952,7 @@
               "item_name": "Valorous Chestguard",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6946582641736256,
+              "dps_delta": -0.6288772838964007,
               "verified": true
             }
           ]
@@ -4024,7 +4024,7 @@
               "item_name": "Officer's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.7601108947409756,
+              "dps_delta": -0.754304431631823,
               "verified": true
             }
           ]
@@ -4050,7 +4050,7 @@
               "item_name": "Atal'alarion's Tusk Ring",
               "source_kind": "dungeon",
               "source": "The Temple of Atal'Hakkar: Atal'alarion",
-              "dps_delta": -0.6008722556283743,
+              "dps_delta": -0.6000779672018552,
               "verified": true
             },
             {
@@ -4076,7 +4076,7 @@
               "item_name": "Scarlet Leggings",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.1201744511256777,
+              "dps_delta": -0.12001559344035684,
               "verified": true
             },
             {
@@ -4123,7 +4123,7 @@
               "item_name": "Prowler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.21072932358400465,
+              "dps_delta": -0.20971379792857192,
               "verified": true
             }
           ]
@@ -4136,8 +4136,8 @@
           "source_kind": "dungeon",
           "score": 23.894707944740873,
           "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +2.5 DPS (100.5 vs 98.0 set DPS)",
-          "dps_delta": 2.538584633986872,
+          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +2.5 DPS (100.4 vs 97.9 set DPS)",
+          "dps_delta": 2.5202885539844857,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4190,30 +4190,40 @@
               "item_name": "Mark of Kern",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -0.4335222493752724,
+              "dps_delta": -0.36130298480591705,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 20512,
-          "item_name": "Sanctified Orb",
-          "source": "Forging the Mightstone",
-          "source_kind": "quest",
-          "sim_dps": 100.52044591189744,
-          "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +0.6 DPS (100.5 vs 99.9 set DPS)",
-          "dps_delta": 0.5876826626902982
-        },
-        {
-          "slot": "trinket2",
           "item_id": 249469,
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 100.4099625036186,
           "verified": true,
-          "effect_unmodelled": true
+          "swap_note": "confirmed by the sim against Sanctified Orb (id 20512): kept the pick, +1.1 DPS (100.4 vs 99.3 set DPS)",
+          "dps_delta": 1.1311436398067087
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 20512,
+          "item_name": "Sanctified Orb",
+          "source": "Forging the Mightstone",
+          "source_kind": "quest",
+          "sim_dps": 100.4099625036186,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -0.2353849096425762,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -4221,7 +4231,7 @@
           "item_name": "Nightblade",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 100.52044591189744,
+          "sim_dps": 100.4099625036186,
           "verified": true,
           "alternatives": [
             {
@@ -4243,7 +4253,7 @@
               "item_name": "Thorium Greatmace",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.481930897719394,
+              "dps_delta": -3.4958427681179245,
               "verified": true
             }
           ]
@@ -4260,7 +4270,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 100.52044591189744,
+      "set_dps": 100.4099625036186,
       "no_source_count": 711,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -4291,12 +4301,12 @@
         "feet: Battlechaser's Greaves",
         "finger1: Blackstone Ring",
         "finger2: Protector's Band",
-        "trinket1: Sanctified Orb",
-        "trinket2: Frozen Heart of the Mountain",
+        "trinket1: Frozen Heart of the Mountain",
+        "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.066208503,
-      "verify_run_seconds": 0.969458209,
+      "weights_run_seconds": 1.099126411,
+      "verify_run_seconds": 1.066668267,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4846,8 +4856,18 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 98.41917084121198,
           "verified": true,
-          "effect_unmodelled": true
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -0.8443216866276373,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -4929,8 +4949,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.066208503,
-      "verify_run_seconds": 1.004081024,
+      "weights_run_seconds": 1.099126411,
+      "verify_run_seconds": 1.030054151,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5345,7 +5365,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689437
+              "dps_delta": -2.0108810357689446
             },
             {
               "item_id": 14554,
@@ -5604,8 +5624,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.033402485,
-      "verify_run_seconds": 1.022376054,
+      "weights_run_seconds": 1.139798669,
+      "verify_run_seconds": 1.046200552,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6020,7 +6040,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689437
+              "dps_delta": -2.0108810357689446
             },
             {
               "item_id": 14554,
@@ -6280,8 +6300,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.033402485,
-      "verify_run_seconds": 1.010933417,
+      "weights_run_seconds": 1.139798669,
+      "verify_run_seconds": 1.032749423,
       "coverage": {
         "back": {
           "eligible": 449,

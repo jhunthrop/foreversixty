@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:47:13Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:53:22Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -599,8 +599,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.07327318,
-      "verify_run_seconds": 1.0780315599999999,
+      "weights_run_seconds": 1.176948469,
+      "verify_run_seconds": 1.098158022,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1262,8 +1262,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.07327318,
-      "verify_run_seconds": 1.058922677,
+      "weights_run_seconds": 1.176948469,
+      "verify_run_seconds": 1.116557224,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1952,8 +1952,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.151520761,
-      "verify_run_seconds": 1.121938911,
+      "weights_run_seconds": 1.232544718,
+      "verify_run_seconds": 1.092962223,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2649,8 +2649,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.151520761,
-      "verify_run_seconds": 1.124953224,
+      "weights_run_seconds": 1.232544718,
+      "verify_run_seconds": 1.15300401,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3330,8 +3330,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.2806283299999999,
-      "verify_run_seconds": 1.193275838,
+      "weights_run_seconds": 1.430559986,
+      "verify_run_seconds": 1.308058361,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4011,8 +4011,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.2806283299999999,
-      "verify_run_seconds": 1.194176145,
+      "weights_run_seconds": 1.430559986,
+      "verify_run_seconds": 1.351026399,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4544,8 +4544,16 @@
           "source": "Voodoo Feathers",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +8.6 DPS over it",
-          "dps_delta": 8.606046542535239
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -6.029559896901333,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "trinket2",
@@ -4554,7 +4562,16 @@
           "source": "Enchanting",
           "source_kind": "crafted",
           "verified": true,
-          "effect_unmodelled": true
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -2.9288731993800354,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -4692,8 +4709,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.43048979,
-      "verify_run_seconds": 1.429816421,
+      "weights_run_seconds": 1.5505924549999999,
+      "verify_run_seconds": 1.762552228,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4837,7 +4854,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -1.4898607004997253
+              "dps_delta": -1.4898607004997257
             },
             {
               "item_id": 17767,
@@ -5260,7 +5277,14 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -4.7283230671667695,
+              "dps_delta": 0
+            },
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -4.876593887181656,
               "verified": true
             }
           ]
@@ -5400,8 +5424,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.43048979,
-      "verify_run_seconds": 1.6001855809999999,
+      "weights_run_seconds": 1.5505924549999999,
+      "verify_run_seconds": 1.8019086629999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5596,7 +5620,7 @@
           "item_name": "Lightbreaker Shoulders",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.77938074444339,
+          "score": 101.77938074444337,
           "verified": true,
           "alternatives": [
             {
@@ -5604,7 +5628,7 @@
               "item_name": "Lieutenant Commander's Plate Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -2.8216201130646126
+              "dps_delta": -2.8216201130646117
             },
             {
               "item_id": 239524,
@@ -5696,14 +5720,14 @@
               "item_name": "Berserker Bracers",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.5364675481146628
+              "dps_delta": -1.5364675481146637
             },
             {
               "item_id": 16481,
               "item_name": "Marshal's Plate Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.8331130423840016
+              "dps_delta": -1.8331130423840025
             },
             {
               "item_id": 23090,
@@ -5814,7 +5838,7 @@
           "item_name": "Lightbreaker Greaves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.87264318808613,
+          "score": 101.87264318808612,
           "verified": true,
           "swap_note": "confirmed by the sim against Marshal's Plate Boots (id 16483): kept the pick, +10.9 DPS (329.6 vs 318.8 set DPS)",
           "dps_delta": 10.853548009487213,
@@ -5824,14 +5848,14 @@
               "item_name": "Marshal's Plate Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -3.0026276521407014
+              "dps_delta": -3.0026276521407005
             },
             {
               "item_id": 21995,
               "item_name": "Boots of Heroism",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.04383619524972
+              "dps_delta": -3.0438361952497197
             }
           ]
         },
@@ -6106,8 +6130,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.475478205,
-      "verify_run_seconds": 1.480161531,
+      "weights_run_seconds": 1.57793049,
+      "verify_run_seconds": 1.65103357,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6243,7 +6267,7 @@
           "item_name": "Lightbreaker Greathelm",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 141.62669991064627,
+          "score": 141.6266999106463,
           "verified": true,
           "alternatives": [
             {
@@ -6251,7 +6275,7 @@
               "item_name": "Warlord's Plate Headpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.633590279554547
+              "dps_delta": -3.6335902795545487
             },
             {
               "item_id": 239525,
@@ -6520,7 +6544,7 @@
           "item_name": "Lightbreaker Greaves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.87264318808613,
+          "score": 101.87264318808612,
           "verified": true,
           "swap_note": "confirmed by the sim against General's Plate Boots (id 16545): kept the pick, +10.7 DPS (310.5 vs 299.8 set DPS)",
           "dps_delta": 10.665011087691255,
@@ -6530,14 +6554,14 @@
               "item_name": "General's Plate Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -3.0026276521407014
+              "dps_delta": -3.0026276521407005
             },
             {
               "item_id": 21995,
               "item_name": "Boots of Heroism",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.04383619524972
+              "dps_delta": -3.0438361952497197
             }
           ]
         },
@@ -6812,8 +6836,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.475478205,
-      "verify_run_seconds": 1.586866926,
+      "weights_run_seconds": 1.57793049,
+      "verify_run_seconds": 1.680622025,
       "coverage": {
         "back": {
           "eligible": 450,

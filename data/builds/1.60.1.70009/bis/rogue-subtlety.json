@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:44:27Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:50:18Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -556,8 +556,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.917461829,
-      "verify_run_seconds": 0.978471277,
+      "weights_run_seconds": 0.983064303,
+      "verify_run_seconds": 1.042029312,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.917461829,
-      "verify_run_seconds": 1.032432753,
+      "weights_run_seconds": 0.983064303,
+      "verify_run_seconds": 1.058259734,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1862,8 +1862,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.016796248,
-      "verify_run_seconds": 1.124496953,
+      "weights_run_seconds": 1.086776976,
+      "verify_run_seconds": 1.185264644,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2540,8 +2540,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.016796248,
-      "verify_run_seconds": 1.179098091,
+      "weights_run_seconds": 1.086776976,
+      "verify_run_seconds": 1.221970432,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3213,8 +3213,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.105355339,
-      "verify_run_seconds": 1.115342232,
+      "weights_run_seconds": 1.176137062,
+      "verify_run_seconds": 1.200645631,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3893,8 +3893,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.105355339,
-      "verify_run_seconds": 1.100880749,
+      "weights_run_seconds": 1.176137062,
+      "verify_run_seconds": 1.245777836,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4085,7 +4085,7 @@
               "item_name": "Zealous Shadowshard Pendant",
               "source_kind": "quest",
               "source": "Shadowshard Fragments",
-              "dps_delta": -0.4542492255872048,
+              "dps_delta": -0.4559252614505027,
               "verified": true
             }
           ]
@@ -4118,7 +4118,7 @@
               "item_name": "Skulker's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.227347925175863,
+              "dps_delta": -0.2273479251758772,
               "verified": true
             }
           ]
@@ -4151,7 +4151,7 @@
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.3263351426391097,
+              "dps_delta": -0.3260738531783005,
               "verified": true
             }
           ]
@@ -4184,7 +4184,7 @@
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -0.3038051524508205,
+              "dps_delta": -0.3049662802720263,
               "verified": true
             }
           ]
@@ -4217,7 +4217,7 @@
               "item_name": "Branded Leather Bracers",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-              "dps_delta": -0.6443729848697188,
+              "dps_delta": -0.646297012855058,
               "verified": true
             }
           ]
@@ -4236,7 +4236,7 @@
               "item_name": "Darkmantle Grips",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.18766048613171904,
+              "dps_delta": -0.18775075846713207,
               "verified": true
             },
             {
@@ -4362,8 +4362,8 @@
           "source_kind": "rep",
           "score": 20.962149529013764,
           "verified": true,
-          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +1.8 DPS (118.6 vs 116.7 set DPS)",
-          "dps_delta": 1.8497251383385418,
+          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +1.9 DPS (118.9 vs 117.1 set DPS)",
+          "dps_delta": 1.8510797660225364,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4416,7 +4416,7 @@
               "item_name": "Mark of Kern",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -1.8584379848076225,
+              "dps_delta": -1.8618637197964887,
               "verified": true
             }
           ]
@@ -4427,13 +4427,25 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 118.91883424824154,
           "verified": true,
-          "effect_unmodelled": true
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.7 DPS (118.9 vs 117.2 set DPS)",
+          "dps_delta": 1.7274355259128953
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_sourced_item"
+          "alternatives": [
+            {
+              "item_id": 11811,
+              "item_name": "Smoking Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -0.3339226471893255,
+              "verified": true
+            }
+          ],
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4441,7 +4453,7 @@
           "item_name": "Barman Shanker",
           "source": "Blackrock Depths: Plugger Spazzring",
           "source_kind": "dungeon",
-          "sim_dps": 118.58491160105221,
+          "sim_dps": 118.91883424824154,
           "verified": true,
           "alternatives": [
             {
@@ -4463,7 +4475,7 @@
               "item_name": "Shadowblade",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.916612069857095,
+              "dps_delta": -2.9468871378033015,
               "verified": true
             }
           ]
@@ -4476,8 +4488,8 @@
           "source_kind": "world_drop",
           "score": 511.56,
           "verified": true,
-          "swap_note": "confirmed by the sim against Barman Shanker (id 12791): kept the pick, +16.8 DPS (118.6 vs 101.8 set DPS)",
-          "dps_delta": 16.757814251644774,
+          "swap_note": "confirmed by the sim against Barman Shanker (id 12791): kept the pick, +16.8 DPS (118.9 vs 102.1 set DPS)",
+          "dps_delta": 16.775650777805424,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -4509,7 +4521,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 118.58491160105221,
+          "sim_dps": 118.91883424824154,
           "verified": true,
           "alternatives": [
             {
@@ -4531,13 +4543,13 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.7173417761958376,
+              "dps_delta": -1.7192007095446513,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 118.58491160105221,
+      "set_dps": 118.91883424824154,
       "no_source_count": 581,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -4573,8 +4585,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.081561942,
-      "verify_run_seconds": 1.149776856,
+      "weights_run_seconds": 1.165704225,
+      "verify_run_seconds": 1.469887695,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4989,7 +5001,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.4038560287594646
+              "dps_delta": -0.4038560287594648
             },
             {
               "item_id": 6690,
@@ -5109,8 +5121,16 @@
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +3.7 DPS over it",
-          "dps_delta": 3.713298010348325
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -3.3443566149679924,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "trinket2",
@@ -5119,7 +5139,16 @@
           "source": "Enchanting",
           "source_kind": "crafted",
           "verified": true,
-          "effect_unmodelled": true
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -0.17563671871891984,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -5258,8 +5287,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.081561942,
-      "verify_run_seconds": 1.3332656680000001,
+      "weights_run_seconds": 1.165704225,
+      "verify_run_seconds": 1.56931959,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5527,14 +5556,14 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.1156240642859083
+              "dps_delta": -1.1156240642859092
             },
             {
               "item_id": 252484,
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.9168198502060132
+              "dps_delta": -1.916819850206014
             },
             {
               "item_id": 23089,
@@ -5584,7 +5613,7 @@
           "item_name": "Duskwraith Gauntlets",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 64.90440186674941,
+          "score": 64.90440186674942,
           "verified": true,
           "alternatives": [
             {
@@ -5592,14 +5621,14 @@
               "item_name": "Knight-Lieutenant's Leather Gauntlets",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -1.1213217955255295
+              "dps_delta": -1.1213217955255301
             },
             {
               "item_id": 272099,
               "item_name": "Raider Gloves",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -1.1705618646794356
+              "dps_delta": -1.1705618646794362
             },
             {
               "item_id": 14640,
@@ -5650,7 +5679,7 @@
           "item_name": "Duskwraith Legplates",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 86.07439274922436,
+          "score": 86.07439274922437,
           "verified": true,
           "alternatives": [
             {
@@ -5658,14 +5687,14 @@
               "item_name": "Cadaverous Leggings",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.8111317569949312
+              "dps_delta": -1.811131756994932
             },
             {
               "item_id": 15065,
               "item_name": "Warbear Woolies",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.9570664467853478
+              "dps_delta": -1.9570664467853485
             },
             {
               "item_id": 15062,
@@ -5683,7 +5712,7 @@
           "item_name": "Duskwraith Sabatons",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 67.90440186674942,
+          "score": 67.90440186674941,
           "verified": true,
           "alternatives": [
             {
@@ -5691,14 +5720,14 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.8513364227033293
+              "dps_delta": -1.8513364227033287
             },
             {
               "item_id": 239553,
               "item_name": "Duskwraith Treads",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.8609257363166014
+              "dps_delta": -1.8609257363166003
             },
             {
               "item_id": 13210,
@@ -5723,7 +5752,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.22434510311226116
+              "dps_delta": -0.22434510311226136
             },
             {
               "item_id": 17713,
@@ -5755,7 +5784,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.021920458393731256
+              "dps_delta": -0.021920458393731447
             },
             {
               "item_id": 17713,
@@ -5977,8 +6006,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.050782287,
-      "verify_run_seconds": 1.35075984,
+      "weights_run_seconds": 1.1941602869999999,
+      "verify_run_seconds": 1.502283905,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6278,14 +6307,14 @@
               "item_name": "Bracers of the Eclipse",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -0.06218768616773483
+              "dps_delta": -0.06218768616773521
             },
             {
               "item_id": 19587,
               "item_name": "Forest Stalker's Bracers",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.18830731378516885
+              "dps_delta": -0.18830731378516924
             },
             {
               "item_id": 23093,
@@ -6303,7 +6332,7 @@
           "item_name": "Duskwraith Gauntlets",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 64.90440186674941,
+          "score": 64.90440186674942,
           "verified": true,
           "alternatives": [
             {
@@ -6311,14 +6340,14 @@
               "item_name": "Blood Guard's Leather Vices",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.1213217955255295
+              "dps_delta": -1.1213217955255301
             },
             {
               "item_id": 272099,
               "item_name": "Raider Gloves",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -1.1705618646794356
+              "dps_delta": -1.1705618646794362
             },
             {
               "item_id": 14640,
@@ -6369,7 +6398,7 @@
           "item_name": "Duskwraith Legplates",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 86.07439274922436,
+          "score": 86.07439274922437,
           "verified": true,
           "alternatives": [
             {
@@ -6377,14 +6406,14 @@
               "item_name": "Cadaverous Leggings",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.8111317569949312
+              "dps_delta": -1.811131756994932
             },
             {
               "item_id": 15065,
               "item_name": "Warbear Woolies",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.9570664467853478
+              "dps_delta": -1.9570664467853485
             },
             {
               "item_id": 15062,
@@ -6402,7 +6431,7 @@
           "item_name": "Duskwraith Sabatons",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 67.90440186674942,
+          "score": 67.90440186674941,
           "verified": true,
           "alternatives": [
             {
@@ -6410,14 +6439,14 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.8513364227033293
+              "dps_delta": -1.8513364227033287
             },
             {
               "item_id": 239553,
               "item_name": "Duskwraith Treads",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.860925736316601
+              "dps_delta": -1.8609257363166007
             },
             {
               "item_id": 13210,
@@ -6697,8 +6726,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.050782287,
-      "verify_run_seconds": 1.415226787,
+      "weights_run_seconds": 1.1941602869999999,
+      "verify_run_seconds": 1.577156768,
       "coverage": {
         "back": {
           "eligible": 451,

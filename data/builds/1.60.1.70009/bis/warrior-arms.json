@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:46:45Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:52:51Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -542,8 +542,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.081954863,
-      "verify_run_seconds": 0.858889559,
+      "weights_run_seconds": 1.156802807,
+      "verify_run_seconds": 0.944987024,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1174,8 +1174,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.081954863,
-      "verify_run_seconds": 0.848102699,
+      "weights_run_seconds": 1.156802807,
+      "verify_run_seconds": 0.913272541,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1834,8 +1834,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.138020188,
-      "verify_run_seconds": 1.052037656,
+      "weights_run_seconds": 1.255334941,
+      "verify_run_seconds": 1.085973121,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2501,8 +2501,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.138020188,
-      "verify_run_seconds": 1.002186519,
+      "weights_run_seconds": 1.255334941,
+      "verify_run_seconds": 1.085424882,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3173,8 +3173,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.394487951,
-      "verify_run_seconds": 1.0764707040000001,
+      "weights_run_seconds": 1.55345876,
+      "verify_run_seconds": 1.164885526,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3851,8 +3851,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.394487951,
-      "verify_run_seconds": 1.137348949,
+      "weights_run_seconds": 1.55345876,
+      "verify_run_seconds": 1.183997921,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4410,8 +4410,18 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 129.5040093207497,
           "verified": true,
-          "effect_unmodelled": true
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -1.1977547467375018,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -4520,8 +4530,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.469899125,
-      "verify_run_seconds": 1.25061412,
+      "weights_run_seconds": 1.6124743769999998,
+      "verify_run_seconds": 1.385301171,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5202,8 +5212,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.469899125,
-      "verify_run_seconds": 1.257774574,
+      "weights_run_seconds": 1.6124743769999998,
+      "verify_run_seconds": 1.377798588,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5556,7 +5566,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 169.77262092861724,
+          "score": 169.77262092861727,
           "verified": true,
           "alternatives": [
             {
@@ -5564,14 +5574,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.6783524697370982
+              "dps_delta": -1.678352469737099
             },
             {
               "item_id": 16482,
               "item_name": "Marshal's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.9563626954386177
+              "dps_delta": -1.9563626954386188
             },
             {
               "item_id": 227814,
@@ -5885,8 +5895,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.517201461,
-      "verify_run_seconds": 1.255314547,
+      "weights_run_seconds": 1.5976015380000002,
+      "verify_run_seconds": 1.346798184,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6239,7 +6249,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 169.77262092861724,
+          "score": 169.77262092861727,
           "verified": true,
           "alternatives": [
             {
@@ -6247,14 +6257,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.6783524697370982
+              "dps_delta": -1.678352469737099
             },
             {
               "item_id": 16547,
               "item_name": "General's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.9563626954386177
+              "dps_delta": -1.9563626954386188
             },
             {
               "item_id": 227814,
@@ -6315,7 +6325,7 @@
               "item_name": "General's Plate Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.7028920845555935
+              "dps_delta": -2.702892084555594
             },
             {
               "item_id": 21995,
@@ -6569,8 +6579,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.517201461,
-      "verify_run_seconds": 1.270361795,
+      "weights_run_seconds": 1.5976015380000002,
+      "verify_run_seconds": 1.320091047,
       "coverage": {
         "back": {
           "eligible": 450,

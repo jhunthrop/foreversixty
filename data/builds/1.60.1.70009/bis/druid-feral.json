@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T16:40:25Z",
+  "engine_version": "90f9325b0",
+  "generated_at": "2026-09-30T17:45:50Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -519,8 +519,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.296851735,
-      "verify_run_seconds": 1.071167155,
+      "weights_run_seconds": 1.360085421,
+      "verify_run_seconds": 1.160166198,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1109,8 +1109,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.296851735,
-      "verify_run_seconds": 1.065234072,
+      "weights_run_seconds": 1.360085421,
+      "verify_run_seconds": 1.159131338,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1732,8 +1732,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.425243512,
-      "verify_run_seconds": 1.296994416,
+      "weights_run_seconds": 1.5974044680000001,
+      "verify_run_seconds": 1.422026094,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2355,8 +2355,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.425243512,
-      "verify_run_seconds": 1.289099546,
+      "weights_run_seconds": 1.5974044680000001,
+      "verify_run_seconds": 1.4185963209999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2978,8 +2978,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.503237356,
-      "verify_run_seconds": 1.371606713,
+      "weights_run_seconds": 1.68031709,
+      "verify_run_seconds": 1.480892336,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3602,8 +3602,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.503237356,
-      "verify_run_seconds": 1.333333245,
+      "weights_run_seconds": 1.68031709,
+      "verify_run_seconds": 1.463295985,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3754,7 +3754,7 @@
               "item_name": "White Bandit Mask",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.3831848544340346,
+              "dps_delta": -0.38218662097162337,
               "verified": true
             },
             {
@@ -3794,7 +3794,7 @@
               "item_name": "Zealous Shadowshard Pendant",
               "source_kind": "quest",
               "source": "Shadowshard Fragments",
-              "dps_delta": -0.9459086365939413,
+              "dps_delta": -0.9470573132547031,
               "verified": true
             }
           ]
@@ -3820,7 +3820,7 @@
               "item_name": "Failed Flying Experiment",
               "source_kind": "quest",
               "source": "Rescue OOX-22/FE!",
-              "dps_delta": -0.1533210952681543,
+              "dps_delta": -0.15354344246946994,
               "verified": true
             },
             {
@@ -3860,7 +3860,7 @@
               "item_name": "Dark Hooded Cape",
               "source_kind": "world",
               "source": "Nimar the Slayer",
-              "dps_delta": -0.704867841240457,
+              "dps_delta": -0.7052721405494822,
               "verified": true
             }
           ]
@@ -3879,7 +3879,7 @@
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -0.4024051052951165,
+              "dps_delta": -0.4030083819054937,
               "verified": true
             },
             {
@@ -3912,7 +3912,7 @@
               "item_name": "Prowler's Leather Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.07003982657286656,
+              "dps_delta": -0.0707361115200058,
               "verified": true
             },
             {
@@ -3952,7 +3952,7 @@
               "item_name": "Feralheart Fists",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.6987062165782731,
+              "dps_delta": -0.699402501525384,
               "verified": true
             },
             {
@@ -3978,7 +3978,7 @@
               "item_name": "Skulker's Leather Waistguard",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.07774565975873315,
+              "dps_delta": -0.07760943160508305,
               "verified": true
             },
             {
@@ -4011,7 +4011,7 @@
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.1730570774178659,
+              "dps_delta": -0.17292084926415896,
               "verified": true
             },
             {
@@ -4044,7 +4044,7 @@
               "item_name": "Skulker's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.07774565975873315,
+              "dps_delta": -0.07760943160508305,
               "verified": true
             },
             {
@@ -4071,8 +4071,8 @@
           "source_kind": "rep",
           "score": 37.574037773116714,
           "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 19515): kept the pick, +0.4 DPS (134.3 vs 133.9 set DPS)",
-          "dps_delta": 0.37344421139817996,
+          "swap_note": "confirmed by the sim against Protector's Band (id 19515): kept the pick, +0.4 DPS (134.5 vs 134.2 set DPS)",
+          "dps_delta": 0.37357909581180593,
           "alternatives": [
             {
               "item_id": 13097,
@@ -4125,7 +4125,7 @@
               "item_name": "Thunderbrow Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.10979739036272917,
+              "dps_delta": -0.11049367530984,
               "verified": true
             }
           ]
@@ -4138,7 +4138,18 @@
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_sourced_item"
+          "alternatives": [
+            {
+              "item_id": 11811,
+              "item_name": "Smoking Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0,
+              "verified": true,
+              "sim_dps": 134.52384094430073
+            }
+          ],
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4146,7 +4157,7 @@
           "item_name": "Ragehammer",
           "source": "Sunken Temple: Atal'ai Warrior",
           "source_kind": "dungeon",
-          "sim_dps": 134.27657437737236,
+          "sim_dps": 134.52384094430073,
           "verified": true,
           "alternatives": [
             {
@@ -4168,7 +4179,7 @@
               "item_name": "The Jackhammer",
               "source_kind": "dungeon",
               "source": "Uldaman: Shadowforge Relic Hunter",
-              "dps_delta": -0.5143554444318568,
+              "dps_delta": -0.5072054482491808,
               "verified": true
             }
           ]
@@ -4185,7 +4196,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 134.27657437737236,
+      "set_dps": 134.52384094430073,
       "no_source_count": 573,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -4219,8 +4230,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.526947523,
-      "verify_run_seconds": 1.254229512,
+      "weights_run_seconds": 1.6679660950000001,
+      "verify_run_seconds": 1.578268552,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4771,8 +4782,18 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 136.61719753344988,
           "verified": true,
-          "effect_unmodelled": true
+          "alternatives": [
+            {
+              "item_id": 249470,
+              "item_name": "Molten Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -0.5555115381269786,
+              "verified": true
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -4855,8 +4876,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.526947523,
-      "verify_run_seconds": 1.3322531450000001,
+      "weights_run_seconds": 1.6679660950000001,
+      "verify_run_seconds": 1.575052392,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5618,8 +5639,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.488298627,
-      "verify_run_seconds": 1.43981487,
+      "weights_run_seconds": 1.664366027,
+      "verify_run_seconds": 1.584571767,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6374,8 +6395,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.488298627,
-      "verify_run_seconds": 1.465912093,
+      "weights_run_seconds": 1.664366027,
+      "verify_run_seconds": 1.562027729,
       "coverage": {
         "back": {
           "eligible": 451,

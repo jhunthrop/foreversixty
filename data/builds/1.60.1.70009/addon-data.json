@@ -8449,9 +8449,14 @@
               "source": "Greater Friend of the Library"
             },
             "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 812,
@@ -8491,7 +8496,8 @@
             252471,
             11824,
             281635,
-            11302,
+            249469,
+            19120,
             812
           ]
         },
@@ -10328,6 +10334,11 @@
               "source_kind": "quest",
               "source": "The Green Drake"
             },
+            "trinket2": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 9480,
               "source_kind": "dungeon",
@@ -10436,6 +10447,7 @@
             9533,
             2951,
             19991,
+            249470,
             9480,
             285281
           ],
@@ -11342,6 +11354,11 @@
               "source_kind": "quest",
               "source": "The Green Drake"
             },
+            "trinket2": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 9480,
               "source_kind": "dungeon",
@@ -11450,6 +11467,7 @@
             9533,
             2951,
             19991,
+            249470,
             9480,
             285281
           ],
@@ -13380,11 +13398,6 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
@@ -13493,7 +13506,6 @@
             9484,
             7553,
             19523,
-            11302,
             249469,
             11748
           ],
@@ -14363,11 +14375,6 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
-            "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -14441,14 +14448,14 @@
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
-            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 812,
@@ -14477,7 +14484,6 @@
             6440,
             11824,
             249469,
-            11302,
             812,
             11748
           ],
@@ -14494,8 +14500,8 @@
             220909,
             6440,
             11824,
-            19120,
             249469,
+            19120,
             812,
             11748
           ]
@@ -15361,11 +15367,6 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
-            "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -15389,9 +15390,9 @@
               "source": "Destroy Morphaz"
             },
             "shoulder": {
-              "item_id": 11624,
+              "item_id": 17732,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
+              "source": "Maraudon: Rotgrip"
             },
             "back": {
               "item_id": 19121,
@@ -15404,9 +15405,9 @@
               "source": "Twisted Evils"
             },
             "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 12546,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anvilrage Overseer"
             },
             "hands": {
               "item_id": 226930,
@@ -15439,9 +15440,9 @@
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
             "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
               "item_id": 19120,
@@ -15449,9 +15450,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 17780,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "ranged": {
               "item_id": 11748,
@@ -15473,24 +15474,23 @@
             9484,
             11824,
             249469,
-            11302,
             812,
             11748
           ],
           "horde": [
             10033,
             20037,
-            11624,
+            17732,
             19121,
             17775,
-            254061,
+            12546,
             226930,
             12466,
             9484,
             11824,
-            11302,
+            249469,
             19120,
-            812,
+            17780,
             11748
           ]
         },
@@ -15634,7 +15634,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 240058,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -15699,7 +15699,7 @@
             240057,
             240053,
             240055,
-            240050,
+            240058,
             234032,
             20682,
             11832,
@@ -16318,14 +16318,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 20512,
-              "source_kind": "quest",
-              "source": "Forging the Mightstone"
-            },
-            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 20512,
+              "source_kind": "quest",
+              "source": "Forging the Mightstone"
             },
             "main_hand": {
               "item_id": 1982,
@@ -16424,8 +16424,8 @@
             12555,
             17713,
             19516,
-            20512,
             249469,
+            20512,
             1982
           ],
           "horde": [
@@ -17384,14 +17384,14 @@
               "source": "Greater Friend of the Library"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
-            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 812,
@@ -17437,8 +17437,8 @@
             220909,
             11824,
             281635,
-            19120,
             249469,
+            19120,
             812,
             11748
           ]
@@ -19389,6 +19389,11 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
+            "trinket2": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 809,
               "source_kind": "world_drop",
@@ -19472,7 +19477,7 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 249469,
+              "item_id": 249470,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -19506,6 +19511,7 @@
             17713,
             19516,
             249469,
+            249470,
             809,
             2163,
             13039
@@ -19522,7 +19528,7 @@
             11862,
             17713,
             19120,
-            249469,
+            249470,
             809,
             2163,
             13039
@@ -21410,11 +21416,6 @@
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
             "trinket1": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
@@ -21517,7 +21518,6 @@
             252471,
             6440,
             11824,
-            11302,
             249469,
             812
           ],
@@ -21768,9 +21768,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 6461,
+              "item_id": 5404,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Mutanus the Devourer"
+              "source": "Wailing Caverns: Lady Anacondra"
             },
             "back": {
               "item_id": 4706,
@@ -21818,14 +21818,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 2194,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "off_hand": {
-              "item_id": 12997,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 7230,
+              "source_kind": "dungeon",
+              "source": "Westfall: Mr. Smite"
             }
           },
           "horde": {
@@ -21840,9 +21835,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 5404,
+              "item_id": 6461,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lady Anacondra"
+              "source": "Wailing Caverns: Mutanus the Devourer"
             },
             "back": {
               "item_id": 4706,
@@ -21890,14 +21885,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 1292,
+              "item_id": 23171,
               "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Razorclaw the Butcher"
-            },
-            "off_hand": {
-              "item_id": 12997,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "source": "Shadowfang Keep: Sever"
             }
           }
         },
@@ -21905,7 +21895,7 @@
           "alliance": [
             252447,
             20444,
-            6461,
+            5404,
             4706,
             252435,
             270015,
@@ -21915,13 +21905,12 @@
             252439,
             20439,
             12054,
-            2194,
-            12997
+            7230
           ],
           "horde": [
             252447,
             20442,
-            5404,
+            6461,
             4706,
             252435,
             14569,
@@ -21931,8 +21920,7 @@
             252439,
             20429,
             12054,
-            1292,
-            12997
+            23171
           ]
         },
         "weights": {
@@ -22186,9 +22174,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 9449,
+              "item_id": 9423,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Crowd Pummeler 9-60"
+              "source": "Uldaman: Shadowforge Relic Hunter"
             }
           },
           "horde": {
@@ -22253,9 +22241,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 9449,
+              "item_id": 9425,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Crowd Pummeler 9-60"
+              "source": "Uldaman: Shadowforge Relic Hunter"
             }
           }
         },
@@ -22272,7 +22260,8 @@
             10330,
             252465,
             2262,
-            13095
+            13095,
+            9423
           ],
           "horde": [
             7719,
@@ -22286,7 +22275,8 @@
             10330,
             252465,
             2262,
-            13095
+            13095,
+            9425
           ]
         },
         "weights": {
@@ -22323,14 +22313,14 @@
               "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "chest": {
-              "item_id": 223078,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 12793,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Plugger Spazzring"
             },
             "wrist": {
-              "item_id": 17714,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 18711,
+              "source_kind": "world",
+              "source": "Arena Treasure Chest"
             },
             "hands": {
               "item_id": 252547,
@@ -22368,9 +22358,9 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 10626,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Atal'ai Warrior"
+              "item_id": 812,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           },
           "horde": {
@@ -22456,15 +22446,15 @@
             9479,
             223073,
             11626,
-            223078,
-            17714,
+            12793,
+            18711,
             252547,
             11686,
             252468,
             17713,
             19516,
             249469,
-            10626
+            812
           ],
           "horde": [
             9479,
@@ -22556,19 +22546,19 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 11819,
+              "item_id": 11815,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach"
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "main_hand": {
-              "item_id": 12969,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: The Beast"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             }
           },
           "horde": {
@@ -22638,9 +22628,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11832,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 13983,
@@ -22663,9 +22653,9 @@
             240129,
             234034,
             19325,
-            19289,
-            11819,
-            12969
+            11832,
+            11815,
+            19323
           ],
           "horde": [
             240131,
@@ -22681,7 +22671,7 @@
             234034,
             19325,
             19289,
-            11832,
+            11819,
             13983
           ]
         },
@@ -23333,9 +23323,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 1664,
@@ -23375,9 +23365,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 9448,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Electrocutioner 6000"
+              "item_id": 254061,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "hands": {
               "item_id": 10019,
@@ -23415,9 +23405,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 1664,
@@ -23441,19 +23431,20 @@
             7553,
             19523,
             20534,
-            11302,
+            249469,
             17745
           ],
           "horde": [
             15999,
             17732,
             11623,
+            254061,
             17755,
             9484,
             7553,
             19519,
             20534,
-            11302,
+            249469,
             17745
           ]
         },
@@ -24264,9 +24255,9 @@
               "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
-              "item_id": 11624,
+              "item_id": 17732,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
+              "source": "Maraudon: Rotgrip"
             },
             "back": {
               "item_id": 11623,
@@ -24319,9 +24310,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 1664,
@@ -24346,9 +24337,9 @@
               "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
-              "item_id": 11624,
+              "item_id": 17732,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
+              "source": "Maraudon: Rotgrip"
             },
             "back": {
               "item_id": 11623,
@@ -24401,9 +24392,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 1664,
@@ -24411,16 +24402,16 @@
               "source": "Venture Co. Surveyor"
             },
             "ranged": {
-              "item_id": 11748,
+              "item_id": 17745,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain"
+              "source": "Maraudon: Noxxion"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             15999,
-            11624,
+            17732,
             11623,
             17775,
             17755,
@@ -24428,12 +24419,12 @@
             7553,
             19523,
             20534,
-            11302,
+            249469,
             17745
           ],
           "horde": [
             15999,
-            11624,
+            17732,
             11623,
             17775,
             17755,
@@ -24441,8 +24432,8 @@
             7553,
             19519,
             20534,
-            11302,
-            11748
+            249469,
+            17745
           ]
         },
         "weights": {
@@ -25248,9 +25239,9 @@
               "source": "Tailoring"
             },
             "neck": {
-              "item_id": 23169,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Scorn"
+              "item_id": 13085,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 17732,
@@ -25278,9 +25269,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 17755,
+              "item_id": 12466,
               "source_kind": "dungeon",
-              "source": "Maraudon: Lord Vyletongue"
+              "source": "Sunken Temple: Morphaz"
             },
             "legs": {
               "item_id": 9484,
@@ -25308,9 +25299,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 11302,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 17780,
@@ -25390,9 +25381,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 17780,
@@ -25409,17 +25400,18 @@
         "new_at_band": {
           "alliance": [
             10033,
+            13085,
             17732,
             11623,
             17775,
             12546,
             272098,
-            17755,
+            12466,
             9484,
             6440,
             11824,
             20534,
-            11302,
+            249469,
             17780,
             17745
           ],
@@ -25436,7 +25428,7 @@
             6440,
             11824,
             20534,
-            19120,
+            249469,
             17780,
             17745
           ]

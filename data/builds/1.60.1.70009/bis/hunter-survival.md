@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 57.3. Weights run: 1.3s. Verify run: 1.2s. 217 eligible items had no known source.
+Set DPS (verified): 57.3. Weights run: 1.4s. Verify run: 1.3s. 217 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.041 ± 0.008, strength=1.000 ± 0.001, crit=0.114 ± 0.004 per rating point (14 rating = 1%, 1.602 per %), hit=0.039 ± 0.002 per rating point (10 rating = 1%, 0.386 per %), melee_haste=not significant (0.818 ± 0.763)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 217, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 85.1. Weights run: 1.4s. Verify run: 1.3s. 363 eligible items had no known source.
+Set DPS (verified): 85.1. Weights run: 1.5s. Verify run: 1.4s. 363 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.050 ± 0.013, strength=1.000 ± 0.001, crit=0.193 ± 0.007 per rating point (14 rating = 1%, 2.706 per %), hit=0.059 ± 0.002 per rating point (10 rating = 1%, 0.586 per %), melee_haste=not significant (0.559 ± 0.829)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 363, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 118.6. Weights run: 1.4s. Verify run: 1.3s. 591 eligible items had no known source.
+Set DPS (verified): 118.6. Weights run: 1.5s. Verify run: 1.4s. 591 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.166 ± 0.016, strength=1.000 ± 0.001, crit=0.232 ± 0.008 per rating point (14 rating = 1%, 3.251 per %), hit=0.068 ± 0.003 per rating point (10 rating = 1%, 0.675 per %), melee_haste=not significant (3.438 ± 1.346)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 591, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 162.2. Weights run: 1.4s. Verify run: 1.4s. 748 eligible items had no known source.
+Set DPS (verified): 162.2. Weights run: 1.5s. Verify run: 1.6s. 748 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.196 ± 0.022, strength=1.000 ± 0.001, crit=0.308 ± 0.011 per rating point (14 rating = 1%, 4.313 per %), hit=0.091 ± 0.004 per rating point (10 rating = 1%, 0.907 per %), melee_haste=not significant (2.108 ± 0.907)
 
@@ -117,7 +117,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 20.9 attack_power points (1.07 DPS) | yes | Mark of Kern (2262, -0.05 DPS) [dungeon]; Assault Band (13095, -0.05 DPS) [world_drop]; Masons Fraternity Ring (9533, -0.21 DPS) [quest] |
 | finger2 | Protector's Band (19516) | Silverwing Sentinels [rep] | 20.8 attack_power points (1.06 DPS) | yes | Assault Band (13095, -0.04 DPS) [world_drop]; Masons Fraternity Ring (9533, -0.21 DPS) [quest]; Mark of Kern (2262, -0.28 DPS, sim-verified) [dungeon] |
 | trinket1 | Devilsaur Eye (19991) | The Green Drake [quest] | sim-verified (162.2 DPS) | yes | - |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (162.2 DPS) | yes | Devilsaur Tooth (19992, -1.24 DPS, sim-verified) [quest] |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (162.2 DPS) | yes | Molten Heart of the Mountain (249470, -0.73 DPS, sim-verified) [crafted] |
 | main_hand | Bloodrazor (809) | World drop [world_drop] | sim-verified (162.2 DPS) | yes | Glowing Brightwood Staff (812, +0.00 DPS) [world_drop]; Darkspear Raider's Reaper (272080, +0.00 DPS) [vendor]; Hanzo Sword (8190, -13.77 DPS, sim-verified) [world_drop] |
 | off_hand | Thorium Cestus (250614) | Blacksmithing [crafted] | 526.4 attack_power points (26.89 DPS) | yes | Claw of Celebras (17738, -2.26 DPS) [dungeon]; Shoni's Disarming Tool (9608, -15.41 DPS) [quest]; Grizzle's Skinner (11702, -19.65 DPS, sim-verified) [dungeon] |
 | ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (162.2 DPS) | yes | Stinging Bow (10624, +0.00 DPS) [dungeon]; Precisely Calibrated Boomstick (2100, -0.01 DPS) [world_drop]; Dark Iron Rifle (16004, -1.61 DPS, sim-verified) [crafted] |
@@ -128,7 +128,7 @@ No-known-source sample (15 of 748, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 303.4. Weights run: 1.4s. Verify run: 1.4s. 1622 eligible items had no known source.
+Set DPS (verified): 303.4. Weights run: 1.5s. Verify run: 1.6s. 1622 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=0.457 ± 0.018 per rating point (14 rating = 1%, 6.402 per %), hit=0.119 ± 0.006 per rating point (10 rating = 1%, 1.190 per %), melee_haste=not significant (0.393 ± 1.319)
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1622, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (troll, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 57.2. Weights run: 1.3s. Verify run: 1.2s. 213 eligible items had no known source.
+Set DPS (verified): 57.2. Weights run: 1.4s. Verify run: 1.3s. 213 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.041 ± 0.008, strength=1.000 ± 0.001, crit=0.114 ± 0.004 per rating point (14 rating = 1%, 1.602 per %), hit=0.039 ± 0.002 per rating point (10 rating = 1%, 0.386 per %), melee_haste=not significant (0.818 ± 0.763)
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 213, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 84.9. Weights run: 1.4s. Verify run: 1.3s. 360 eligible items had no known source.
+Set DPS (verified): 84.9. Weights run: 1.5s. Verify run: 1.4s. 360 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.050 ± 0.013, strength=1.000 ± 0.001, crit=0.193 ± 0.007 per rating point (14 rating = 1%, 2.706 per %), hit=0.059 ± 0.002 per rating point (10 rating = 1%, 0.586 per %), melee_haste=not significant (0.559 ± 0.829)
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 360, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 119.0. Weights run: 1.4s. Verify run: 1.3s. 579 eligible items had no known source.
+Set DPS (verified): 119.0. Weights run: 1.5s. Verify run: 1.4s. 579 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.166 ± 0.016, strength=1.000 ± 0.001, crit=0.232 ± 0.008 per rating point (14 rating = 1%, 3.251 per %), hit=0.068 ± 0.003 per rating point (10 rating = 1%, 0.675 per %), melee_haste=not significant (3.438 ± 1.346)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 579, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 166.5. Weights run: 1.4s. Verify run: 1.4s. 737 eligible items had no known source.
+Set DPS (verified): 166.5. Weights run: 1.5s. Verify run: 1.5s. 737 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.196 ± 0.022, strength=1.000 ± 0.001, crit=0.308 ± 0.011 per rating point (14 rating = 1%, 4.313 per %), hit=0.091 ± 0.004 per rating point (10 rating = 1%, 0.907 per %), melee_haste=not significant (2.108 ± 0.907)
 
@@ -261,7 +261,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | shoulder | Sunburn Spaulders (274751) | Rettrick [vendor] | 25.2 attack_power points (1.29 DPS) | yes | Skulker's Leather Shoulder (252535, +0.00 DPS, sim-verified) [crafted]; Failed Flying Experiment (9647, -0.16 DPS) [quest]; Prowler's Leather Shoulder (252534, -0.17 DPS) [crafted] |
 | back | Blackveil Cape (11626) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 22.7 attack_power points (1.16 DPS) | yes | Dark Phantom Cape (13122, +0.00 DPS, sim-verified) [world_drop]; Blisterbane Wrap (12552, -0.25 DPS) [dungeon]; Dark Hooded Cape (5257, -0.35 DPS) [world] |
 | chest | Warbear Harness (15064) | Leatherworking [crafted] | 32.5 attack_power points (1.66 DPS) | yes | Quillward Harness (10583, -0.09 DPS) [dungeon]; Blazewind Breastplate (11193, -0.10 DPS) [quest]; Mixologist's Tunic (12793, -0.29 DPS, sim-verified) [dungeon] |
-| wrist | Arena Bands (18711) (or Bracers of the Stone Princess (17714)) | Arena Treasure Chest [world] | 28.0 attack_power points (1.43 DPS) | yes | Deepfury Bracers (13120, -0.31 DPS) [world_drop]; Branded Leather Bracers (19508, -0.41 DPS) [dungeon]; Bracers of the Stone Princess (17714, -0.47 DPS, sim-verified) [dungeon] |
+| wrist | Arena Bands (18711) | Arena Treasure Chest [world] | 28.0 attack_power points (1.43 DPS) | yes | Deepfury Bracers (13120, -0.31 DPS) [world_drop]; Branded Leather Bracers (19508, -0.41 DPS) [dungeon]; Bracers of the Stone Princess (17714, -0.47 DPS, sim-verified) [dungeon] |
 | hands | Raider Gloves (272100) | Creeg Bothunk [vendor] | 36.3 attack_power points (1.86 DPS) | yes | Rockgrip Gauntlets (17736, -0.42 DPS) [dungeon]; Skulker's Leather Gauntlets (252548, -0.54 DPS) [crafted]; Gauntlets of Divinity (7724, -1.07 DPS, sim-verified) [dungeon] |
 | waist | Girdle of Beastial Fury (11686) | Blackrock Depths: Eviscerator [dungeon] | 38.0 attack_power points (1.94 DPS) | yes | Substandard Belt Chain (274757, -0.32 DPS, sim-verified) [vendor]; Defiler's Leather Girdle (20192, -0.41 DPS) [rep]; Skulker's Leather Waistguard (252474, -0.47 DPS) [crafted] |
 | legs | Serpentskin Leggings (8262) | World drop [world_drop] | 32.1 attack_power points (1.64 DPS) | yes | Ferine Leggings (6690, +0.00 DPS, sim-verified) [dungeon]; Basilisk Hide Pants (1718, -0.36 DPS) [world_drop]; Triprunner Dungarees (9624, -0.39 DPS) [quest] |
@@ -280,7 +280,7 @@ No-known-source sample (15 of 737, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (troll, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 305.9. Weights run: 1.4s. Verify run: 1.4s. 1610 eligible items had no known source.
+Set DPS (verified): 305.9. Weights run: 1.5s. Verify run: 1.5s. 1610 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=0.457 ± 0.018 per rating point (14 rating = 1%, 6.402 per %), hit=0.119 ± 0.006 per rating point (10 rating = 1%, 1.190 per %), melee_haste=not significant (0.393 ± 1.319)
 
