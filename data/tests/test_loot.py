@@ -40,8 +40,7 @@ FIXTURES = HERE / "fixtures/loot"
 OVERLAY_FIXTURE = FIXTURES / "curated"
 BUILD = "1.60.1.69893"
 
-RAW_FILES = ("Map.csv", "ItemSparse.csv", "SpellMisc.csv", "Item.csv",
-             "ManifestInterfaceData.csv")
+RAW_FILES = ("Map.csv", "ItemSparse.csv", "SpellMisc.csv", "Item.csv", "ManifestInterfaceData.csv")
 JSON_FILES = ("zones.json", "items.json", "spells.json")
 
 #: What `write_loot_files` writes for these fixtures, before any overlay --
@@ -136,9 +135,7 @@ def test_check_no_sockets_runs_on_the_loot_path(tmp_path: Path):
     """The same guard `normalize` runs (parity design 4.4): a socketed item
     reaching `loot` must stop the run, not silently get a loot table."""
     sparse = (FIXTURES / "ItemSparse.csv").read_text(encoding="utf-8")
-    socketed = sparse.replace(
-        "110,Suffixed Sword,0,0,0,0", "110,Suffixed Sword,0,1,0,0"
-    )
+    socketed = sparse.replace("110,Suffixed Sword,0,0,0,0", "110,Suffixed Sword,0,1,0,0")
     assert socketed != sparse
     with pytest.raises(SystemExit, match="gem socket"):
         run(tmp_path, sparse_rows=socketed)
@@ -193,8 +190,12 @@ def test_a_curated_source_with_an_empty_item_list_survives_because_the_build_fil
                 ],
                 "notes": "An announced raid with no known loot table yet.",
                 "add": [
-                    {"id": "raid:announced-only", "kind": "raid", "name": "Announced Raid",
-                     "items": []}
+                    {
+                        "id": "raid:announced-only",
+                        "kind": "raid",
+                        "name": "Announced Raid",
+                        "items": [],
+                    }
                 ],
             }
         ),
@@ -268,7 +269,10 @@ def test_pvp_ranks_with_classic_db_merges_in_every_id_the_client_ranks_do_not_na
     build_dir = tmp_path / "builds" / "1.60.1.70009"
     write_extract(
         build_dir,
-        [_classic_db_item(16465, required_honor_rank=17), _classic_db_item(9999, required_honor_rank=0)],
+        [
+            _classic_db_item(16465, required_honor_rank=17),
+            _classic_db_item(9999, required_honor_rank=0),
+        ],
         {},
         source_commit="deadbeef",
     )
@@ -279,7 +283,9 @@ def test_pvp_ranks_with_classic_db_merges_in_every_id_the_client_ranks_do_not_na
 
 def test_pvp_ranks_with_classic_db_client_wins_on_a_conflicting_id(tmp_path: Path):
     build_dir = tmp_path / "builds" / "1.60.1.70009"
-    write_extract(build_dir, [_classic_db_item(16465, required_honor_rank=17)], {}, source_commit="deadbeef")
+    write_extract(
+        build_dir, [_classic_db_item(16465, required_honor_rank=17)], {}, source_commit="deadbeef"
+    )
     client_ranks = {16465: 99}  # disagreement never measured on a real build; client must win
     merged = _pvp_ranks_with_classic_db(build_dir, client_ranks)
     assert merged == {16465: 99}
