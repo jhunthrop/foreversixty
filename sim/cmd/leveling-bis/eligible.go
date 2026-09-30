@@ -30,6 +30,23 @@ const (
 	armorSubtotemID  = 9
 )
 
+// isRelicCandidate reports whether c is a relic (libram/idol/totem) -
+// this lane's brief, item 2 (bis-ranker-integrity-3, 2026-09-29): a
+// relic's real value is almost always its engraved class-spell effect
+// (EffectText), which score() cannot see at all (a relic carries
+// little to no plain stat block - trinkets.go's own doc makes the
+// identical point about trinkets) and which the engine very often
+// cannot simulate either (rank.go's hasImplementedEffect). report.go
+// reads this to tell a relic whose effect the engine does not
+// implement apart from an ordinary armor piece whose EffectUnmodelled
+// proc is merely a bonus on top of a real stat block worth keeping -
+// the relic has nothing else worth publishing as "BiS" once its one
+// real selling point cannot be measured.
+func isRelicCandidate(c candidate) bool {
+	return c.ClassID == armorClassID &&
+		(c.SubclassID == armorSublibramID || c.SubclassID == armorSubidolID || c.SubclassID == armorSubtotemID)
+}
+
 // armorAvailableLevel is the level a class's armor proficiency for a
 // subclass opens, keyed by "<class>:<subclass id>". Only entries a
 // class does NOT have from level 1 need to be listed; an absent entry

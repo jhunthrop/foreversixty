@@ -84,19 +84,26 @@ type slotRow struct {
 	// eligible/sourced existed" (band.go's own NoSourceCount already
 	// covers that case): "no_dps_value" means at least one candidate WAS
 	// eligible and sourced, but every one of them contributed exactly
-	// zero to this spec's own score() (score.go's weighted-stat-plus-
-	// weapon-dps total) - this lane's brief, item 2: Sentinel's Medallion
-	// (Agility/Stamina) for a mage, Eye of the Dead (pure healing) for a
-	// DPS shadow priest, both published as "verified" BiS across every
-	// caster spec this build carries before this fix, scoring exactly 0
-	// against weights that never priced agility or healing at all. Never
-	// set for trinket1/trinket2 (score() cannot value a trinket at all --
-	// rankTrinketSlot's own real-sim decision is authoritative regardless
-	// of the published Score field, trinkets.go's own doc) or for a
-	// candidate carrying an unmodelled effect (EffectUnmodelled, above --
-	// its own real value might not be zero at all, score() simply cannot
-	// see it) or for a slot a real swap sim actually promoted (SwapNote
-	// non-empty - a real, measured DPS gain, whatever score() says).
+	// zero this spec's own score() could measure (score.go's weighted-
+	// stat-plus-weapon-dps total), or - since bis-ranker-integrity-3,
+	// 2026-09-29, this lane's brief item 2 - a trinket/relic whose own
+	// real, engine-measured GAIN over an empty slot (GainMeasured/
+	// MeasuredGainDPS, trinkets.go) never cleared
+	// trinketZeroGainThresholdDPS: Sentinel's Medallion (Agility/Stamina)
+	// for a mage, Rune of Perfection (spell penetration/stamina) for a
+	// warrior, Ankh of Life (pure Spirit) for any physical-damage spec -
+	// each published as "verified" BiS before its own fix, contributing
+	// nothing any weight or real sim measured. "effect_not_modelled"
+	// (effectNotModelledReason) is the OTHER empty reason a relic can
+	// carry - not "measured zero", but "this relic's one real selling
+	// point is its engraved effect and the engine cannot simulate it at
+	// all", which score()'s plain stat fallback was never designed to
+	// answer either way (isRelicCandidate, eligible.go). Never set for a
+	// slot a real swap sim actually promoted (SwapNote non-empty - a
+	// real, measured DPS gain, whatever score() says) or for a candidate
+	// carrying an unmodelled effect outside a relic slot (EffectUnmodelled,
+	// above - its own real value might not be zero at all, score() simply
+	// cannot see it, and no relic-specific "cannot know at all" applies).
 	EmptyReason string `json:"empty_reason,omitempty"`
 	// LowValue is true for a weapon-slot pick (band.go's weaponSlots)
 	// score() still measured at exactly 0 even after every real fix
@@ -117,6 +124,58 @@ type slotRow struct {
 // brief item 2 - a named constant so buildReport's own check and any
 // consumer testing for it read the identical string.
 const noDPSValueReason = "no_dps_value"
+
+// effectNotModelledReason is EmptyReason's own value for a relic
+// (libram/idol/totem) whose one real selling point - its engraved
+// effect - the engine does not implement at all (bis-ranker-
+// integrity-3, 2026-09-29, this lane's brief item 2): distinct from
+// noDPSValueReason (which means "measured/estimated, and the answer
+// really is zero") because this case is the opposite - the item's
+// real value is specifically UNKNOWN, not zero, and publishing it as
+// BiS on a plain-stats fallback score() was never designed to value
+// (druid-balance's own Idol of the Huntress, an "Improved Swipe" -
+// a Feral rune - engrave with nothing else worth scoring) would show
+// an unverified guess as fact. The lane report lists every relic id
+// this reason fires for, so the effect can be added to
+// effectids_generated.go.
+const effectNotModelledReason = "effect_not_modelled"
+
+// trinketZeroGainThresholdDPS is the noise floor rankTrinketSlot's own
+// baseline-relative gain (scored.MeasuredGainDPS) must clear before a
+// trinket counts as having any real, measured value at all - this
+// lane's brief, item 2: "a trinket or relic whose measured/estimated
+// gain is < 0.05 DPS publishes empty with no_dps_value". Below this, a
+// trinket's own real contribution (Rune of Perfection's spell
+// penetration/stamina) is indistinguishable from noise, not a genuine
+// DPS gain a player should read as a reason to chase this item.
+//
+// Known limitation (bis-ranker-integrity-3 lane report): a trinket
+// whose ONLY stat is completely inert for this spec (Rune of
+// Perfection/Rune of Duty/Onyxia Blood Talisman - nothing the engine's
+// resource model reads at all) measures bit-identical to the baseline,
+// exactly 0.0000, every time - this threshold catches those
+// deterministically. A trinket carrying Spirit specifically (Ankh of
+// Life) can still perturb a MANA-using spec's own RNG consumption
+// order (a slightly different mp5 tick timing shifts which random
+// draws a 100-iteration trinket-rank sim happens to make) enough to
+// read anywhere from small-negative to several DPS on either side of
+// this threshold, inconsistently across bands, for paladin-retribution
+// and shaman-enhancement specifically (dogfooded directly: Ankh of
+// Life measured exactly 0.0000 at every band for druid-feral, which
+// spends no mana in Cat Form, but 0.03-1.3 DPS for the two mana-using
+// hybrids) - this is the same scale of noise verify.go's own swapMargin
+// (1%) already exists to filter for the swap pass, at 300 iterations;
+// this pass runs at trinketRankIterations (100, a deliberately smaller
+// nightly-budget spend) and could not fully suppress it within this
+// lane's scope. The fix as shipped is still strictly better than
+// before it (previously nothing here could ever fire for ANY trinket -
+// see rankTrinketSlot's own doc), and reliably closes the exact,
+// reported defect (a bare off-axis-stat trinket like Rune of
+// Perfection). A mana-using hybrid's own Ankh of Life pick may still
+// occasionally survive on sim noise; a future lane could raise this
+// pass's own iteration count or switch to a relative margin (matching
+// swapMargin's own convention) if that residual case needs closing too.
+const trinketZeroGainThresholdDPS = 0.05
 
 // twoHandEquippedReason is EmptyReason's own value for an off_hand
 // slot with no pick at all because main_hand equipped a two-hander -
@@ -181,33 +240,24 @@ type alternativeRow struct {
 	ItemName   string `json:"item_name"`
 	SourceKind string `json:"source_kind"`
 	Source     string `json:"source"`
-	// Score and ScoreDelta are score()'s own stat-weight estimate (in
-	// reference-stat points, bandReport.ScoreUnit) - published only for
-	// a row score() actually decided the ranking of. This lane's brief,
-	// item 7 ("one number per row"): the ONE row this slot's real sim
-	// actually measured (SimDPS, below - either the swap pass's own
-	// runner-up, or the demoted former pick once it lost that swap)
-	// omits both, the same way slotRow.Score omits itself for a
-	// sim-decided pick - a reader comparing THIS row's Score against
-	// another slot's score()-decided row was the exact "alternative
-	// outscores the verified pick" confusion the melee sweep's own
-	// systemic finding #14/#24 named (163 slots): the two numbers were
-	// never in the same unit to begin with.
-	Score float64 `json:"score,omitempty"`
-	// ScoreDelta is Score minus the pick's own published Score, in the
-	// band's score unit (score.go's weighted-stat-plus-weapon-dps
-	// total) - the raw number DPSDelta below is derived from, kept
-	// here so a consumer that wants the un-converted figure still has
-	// it. Exactly 0 for a tie (this row came from pk.Ties, whose whole
-	// definition is "scored identically to the pick").
-	ScoreDelta float64 `json:"score_delta,omitempty"`
-	// DPSDelta is ScoreDelta converted to real DPS (ScoreDelta *
-	// bandReport.ReferenceDPSPerPoint) - owner review, tenet 8
-	// (2026-09-29): the first cut of this field published the raw
-	// score-unit delta under a "dps_delta" name with nothing saying it
-	// was not actually DPS (warrior-arms horde band 20 read "Smite's
-	// Mighty Hammer -5.09" when the real gap is 0.23 DPS - 5.09 SCORE
-	// points at this band's reference_dps_per_point of 0.0444).
+	// DPSDelta is this row's own DPS gap against the pick - owner
+	// review, tenet 8 (2026-09-29): the first cut of this field
+	// published the raw score-unit delta under a "dps_delta" name with
+	// nothing saying it was not actually DPS (warrior-arms horde band 20
+	// read "Smite's Mighty Hammer -5.09" when the real gap is 0.23 DPS -
+	// 5.09 SCORE points at this band's reference_dps_per_point of
+	// 0.0444). bis-ranker-integrity-3 (2026-09-29), this lane's brief
+	// item 1: a THIRD wow-player sweep still read this row's own score()
+	// estimate (formerly published alongside DPSDelta as Score/
+	// ScoreDelta) as "a positive gap against the pick", the exact
+	// confusion those two fields existed to prevent - the field itself
+	// carried no player meaning score()'s own units already didn't, and
+	// has no test that ever asserted a consumer needed it. Removed
+	// entirely: DPSDelta (already always <=0 for an unverified row, see
+	// its own doc below) is the only per-alternative delta this JSON
+	// publishes now, in one unit, always DPS. Score/score_unit stay on
+	// the PICK (slotRow.Score) exactly as before - only the alternative
+	// side of the comparison is gone.
 	//
 	// This lane's brief (bis-ranker-integrity, 2026-09-29): score() is
 	// not the unit a trinket-rank/effect-rank/set-completion pick was
@@ -252,8 +302,7 @@ type alternativeRow struct {
 	// sw.BaselineDPS when this row is the demoted FORMER pick
 	// (sw.Beat promoted the other item into pk.Item, so THIS row's own
 	// measured value is the number that used to be the baseline).
-	// Omitted (0) for every unverified row, exactly like Score/
-	// ScoreDelta are omitted for this one.
+	// Omitted (0) for every unverified row.
 	SimDPS float64 `json:"sim_dps,omitempty"`
 }
 
@@ -284,7 +333,7 @@ type alternativeRow struct {
 // (pick.go) guarantees off_hand's own Item is nil whenever main_hand
 // is two-handed.
 //
-// referenceDPSPerPoint converts every score-based ScoreDelta into a
+// referenceDPSPerPoint converts every score-based delta into a
 // real DPSDelta (owner review, tenet 8). sw is verify.go's own
 // swapResult for this slot, or nil when this slot had no runner-up to
 // sim at all - when present, the ONE row matching pk.RunnerUp's own
@@ -319,12 +368,21 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 			mateID, mateName = mp.ID, mp.Name
 		}
 	}
+	// isPairMateItem is the mate-exclusion half of excluded (below) on
+	// its own: buildAlternatives' own force-include step for a real
+	// swap-tested runner-up (further down) needs to ask this WITHOUT
+	// also asking "is this id already in out" the way excluded does -
+	// that second question is true for the very row this step exists to
+	// update, which would wrongly skip it.
+	isPairMateItem := func(c scored) bool {
+		return mateID != 0 && (c.ID == mateID || (mateName != "" && c.Name == mateName))
+	}
 	seen := map[int]bool{pk.Item.ID: true}
 	excluded := func(c scored) bool {
 		if seen[c.ID] {
 			return true
 		}
-		return mateID != 0 && (c.ID == mateID || (mateName != "" && c.Name == mateName))
+		return isPairMateItem(c)
 	}
 	add := func(out []alternativeRow, c scored) []alternativeRow {
 		seen[c.ID] = true
@@ -343,10 +401,8 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		return append(out, alternativeRow{
 			ItemID:     c.ID,
 			ItemName:   c.Name,
-			Score:      c.Score,
 			SourceKind: c.Source.Kind,
 			Source:     c.Source.Label,
-			ScoreDelta: scoreDelta,
 			DPSDelta:   dpsDelta,
 		})
 	}
@@ -371,7 +427,45 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		out = add(out, c)
 	}
 
-	if sw != nil && pk.RunnerUp != nil {
+	if sw != nil && pk.RunnerUp != nil && !isPairMateItem(*pk.RunnerUp) {
+		// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 3:
+		// pk.RunnerUp is the ONE candidate verify.go's own swap pass
+		// actually simmed against the pick (swapBySlot, buildReport's own
+		// call site) - but the tie/list loop above fills out purely by
+		// score(), so a runner-up that lost badly enough on raw score()
+		// to sit outside the top alternativesLimit candidates (shaman-
+		// enhancement's own main_hand at bands 20/30/40: Diamond Hammer,
+		// the real one-hand runner-up a dual-wield spec's own
+		// twoHandBeatsPair pre-filter left as the only legal candidate to
+		// test, ranked behind three untested two-handers on raw weapon
+		// score alone) was silently dropped from the row entirely, even
+		// though it is the ONE alternative this slot has real, measured
+		// evidence about. The result read as "Verified: true" with
+		// nothing anywhere on the row - no SimDPS on the pick (never
+		// promoted, so never sim-decided by buildReport's own rule) and
+		// no verified alternative either - which is indistinguishable
+		// from "nothing was ever run" even though a real sim was. Force
+		// room for it here if the tie/list loop did not already include
+		// it, so "Verified: true" always has real evidence attached
+		// somewhere on the row.
+		found := false
+		for _, a := range out {
+			if a.ItemID == pk.RunnerUp.ID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			if len(out) >= alternativesLimit {
+				out = out[:alternativesLimit-1]
+			}
+			out = append(out, alternativeRow{
+				ItemID:     pk.RunnerUp.ID,
+				ItemName:   pk.RunnerUp.Name,
+				SourceKind: pk.RunnerUp.Source.Kind,
+				Source:     pk.RunnerUp.Source.Label,
+			})
+		}
 		measured := swapMeasuredDelta(*sw)
 		for i := range out {
 			if out[i].ItemID == pk.RunnerUp.ID {
@@ -379,15 +473,11 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 				out[i].Verified = true
 				// This lane's brief, item 7: the one row a real sim
 				// actually measured publishes that measurement (SimDPS),
-				// not score()'s stat estimate - Score/ScoreDelta are
-				// cleared for exactly the same reason slotRow.Score is
-				// cleared for a sim-decided pick (buildReport, below):
-				// the two units are not comparable, and publishing both
-				// under unlabelled names is what let a reviewer compare
-				// them directly and call it a ranking bug.
+				// not score()'s stat estimate - the two units are not
+				// comparable (score() is gone from this row entirely as
+				// of bis-ranker-integrity-3, see alternativeRow's own
+				// doc).
 				out[i].SimDPS = swapAlternativeMeasuredDPS(*sw)
-				out[i].Score = 0
-				out[i].ScoreDelta = 0
 				break
 			}
 		}
@@ -456,6 +546,21 @@ func swapAlternativeMeasuredDPS(sw swapResult) float64 {
 	return sw.SwapDPS
 }
 
+// alternativeCarriesRealEvidence reports whether alts already names the
+// one candidate a real sim actually measured against the pick (a
+// Verified row - buildAlternatives' own contract, at most one) - this
+// lane's brief, item 3: buildReport's own fallback SwapNote (above)
+// only needs to state the real numbers itself when Alternatives does
+// not already show them.
+func alternativeCarriesRealEvidence(alts []alternativeRow) bool {
+	for _, a := range alts {
+		if a.Verified {
+			return true
+		}
+	}
+	return false
+}
+
 // bandReport is one band's whole answer for one faction: the pick per
 // slot, the verification DPS, the diff against the previous band, and
 // the counts an honest reader needs (how many eligible items had no
@@ -499,10 +604,11 @@ type bandReport struct {
 	// 0.14 DPS per point)" instead of publishing a bare, unitless
 	// ratio with nothing saying what "1" means.
 	ReferenceDPSPerPoint float64 `json:"reference_dps_per_point"`
-	// ScoreUnit documents slotRow.Score/alternativeRow.Score's own unit
-	// for every consumer of this JSON - this lane's brief, item 7:
-	// "publish score ONLY where it is the stat-weight estimate in
-	// reference-stat points, and document that in the JSON". Always
+	// ScoreUnit documents slotRow.Score's own unit for every consumer
+	// of this JSON (alternativeRow carries no score at all as of
+	// bis-ranker-integrity-3 - see its own doc) - this lane's brief,
+	// item 7: "publish score ONLY where it is the stat-weight estimate
+	// in reference-stat points, and document that in the JSON". Always
 	// scoreUnitReferenceStatPoints today (score.go has exactly one
 	// scoring function); a constant field rather than a bare doc
 	// comment because a future second scoring unit must not silently
@@ -615,12 +721,35 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				row.SwapNote = "the runner-up's verification sim failed (an engine-side error, not a scoring one - see verify_errors); the pick is unconfirmed against it"
 			default:
 				row.Verified = true
-				if sw, ok := swapBySlot[slot]; ok && sw.Beat && pk.RunnerUp != nil {
+				switch sw, ok := swapBySlot[slot]; {
+				case ok && sw.Beat && pk.RunnerUp != nil:
 					// applySwaps already promoted the runner-up into pk.Item and
 					// demoted the scored pick to pk.RunnerUp: this row IS the
 					// measured winner, verified by that very run.
 					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %.1f vs %.1f set DPS", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.SwapDPS, sw.BaselineDPS)
 					realSimPromotion = true
+				case ok && pk.RunnerUp != nil && !alternativeCarriesRealEvidence(row.Alternatives):
+					// bis-ranker-integrity-3, 2026-09-29, this lane's brief
+					// item 3: a real sim DID run for this slot (verifyBand's
+					// own swap pass) even though nothing was promoted - the
+					// row otherwise has NO trace anywhere that this pick was
+					// ever tested (never sim-decided, since nothing beat it
+					// - SimDPS above stays 0; and the one candidate that WAS
+					// tested is often not a visible Alternative at all,
+					// either crowded out of the top alternativesLimit rows
+					// by raw score() or - shaman-enhancement's own main_hand
+					// at bands 20/30/40, this lane's own dogfood - correctly
+					// excluded as the slot's own pair-mate's item: Diamond
+					// Hammer is main_hand's real, tested runner-up here, but
+					// it is ALSO off_hand's own pick, so buildAlternatives
+					// rightly never offers the same physical weapon back as
+					// a main_hand fallback). "Verified: true" published with
+					// nothing anywhere backing it up read exactly like
+					// "verified without a sim" to three sweeps of review in
+					// a row, even though a sim genuinely ran; naming the
+					// real numbers here, the same way a promoted swap's own
+					// SwapNote already does, is this fix.
+					row.SwapNote = fmt.Sprintf("confirmed by the sim against %s (id %d): kept the pick, %.1f vs %.1f set DPS", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.BaselineDPS, sw.SwapDPS)
 				}
 			}
 			// This lane's brief, item 2 (original), narrowed by
@@ -650,11 +779,57 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// (one carrying a weight stat, else the highest item level);
 			// this just flags that fallback honestly via LowValue instead
 			// of blanking the row.
-			trinketEffectExempt := (slot == "trinket1" || slot == "trinket2") && pk.Item.EffectText != ""
+			isTrinketSlot := slot == "trinket1" || slot == "trinket2"
+			trinketEffectExempt := isTrinketSlot && pk.Item.EffectText != ""
+			// bis-ranker-integrity-3, 2026-09-29, this lane's brief item
+			// 2: simDecided alone can never gate a TRINKET - rankTrinketSlot
+			// always sets MeasuredDPS to the whole set's own absolute DPS
+			// (scored.MeasuredGainDPS's own doc), which is positive for
+			// every trinket regardless of whether it contributes anything,
+			// so "simDecided" was true for every trinket unconditionally
+			// and this whole zero-value gate could never actually reach
+			// one (warrior-arms band 20's Rune of Perfection, +6 spell
+			// penetration/+4 stamina, no effect_text, still published as
+			// "verified" for three sweeps running). A trinket's own real
+			// GAIN over an empty slot (GainMeasured/MeasuredGainDPS,
+			// rankTrinketSlot's own baseline sim) is what actually
+			// answers the question; a non-trinket slot's simDecided
+			// (rankSlotWithEffects, trySetCompletion, a swap promotion)
+			// is untouched - each of those already measures a genuine
+			// comparative delta, not an absolute set total.
+			trinketLowGain := isTrinketSlot && pk.Item.GainMeasured && pk.Item.MeasuredGainDPS < trinketZeroGainThresholdDPS
+			// A relic (libram/idol/totem) whose one real selling point -
+			// its engraved effect - the engine cannot simulate at all
+			// never got a fair shot at EITHER exemption below: score()
+			// cannot value it (same as a trinket, but a relic is not a
+			// trinket slot, so trinketEffectExempt never applies to it),
+			// and it was never sim-ranked (rankSlotWithEffects only runs
+			// a slot with at least one IMPLEMENTED-effect candidate in
+			// the pool - rank.go's own doc). The old EffectUnmodelled
+			// exemption let it fall back to score()'s plain stat total
+			// as though that were the whole story (druid-balance's own
+			// Idol of the Huntress, an "Improved Swipe" - a FERAL rune -
+			// engrave with no Balance-relevant stats at all, picked at 4
+			// of 5 bands because it was simply never emptied). This lane's
+			// brief, item 2: empty it with its own reason instead, so the
+			// report can name exactly which relic ids need their effect
+			// added to effectids_generated.go rather than silently
+			// publishing an unmeasured guess as BiS.
+			relicEffectUnmodelled := row.EffectUnmodelled && !simDecided && !realSimPromotion && isRelicCandidate(pk.Item.candidate)
 			switch {
+			case relicEffectUnmodelled:
+				row = slotRow{Slot: slot, EmptyReason: effectNotModelledReason, EffectUnmodelled: true}
+			case trinketLowGain:
+				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason}
 			case row.Score != 0 || row.EffectUnmodelled || realSimPromotion || trinketEffectExempt || simDecided:
 				// Not zero-value at all, or redeemed by one of the
 				// existing exemptions above - the row stands as computed.
+				// A trinket that IS simDecided reaches this case only when
+				// trinketLowGain above did NOT match: either its measured
+				// gain cleared the noise floor, or the baseline sim failed
+				// and GainMeasured is false - an unmeasured gain is not
+				// evidence of zero value either (tenet 8: never publish a
+				// claim this command could not check).
 			case weaponSlots[slot]:
 				row.LowValue = true
 			default:
@@ -882,7 +1057,24 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 						}
 						item += " (or " + strings.Join(alts, ", ") + ")"
 					}
-					score = strconv.FormatFloat(row.Score, 'f', 1, 64)
+					// This lane's brief, item 1 (bis-ranker-integrity-3,
+					// 2026-09-29): a sim-decided row (SimDPS set, Score
+					// deliberately zeroed - buildReport's own doc) used
+					// to fall straight into FormatFloat(row.Score, ...)
+					// here and print "0.0" right next to "Verified:
+					// yes" (hybrids sweep, item 5: Dawn's Edge/Ebon
+					// Hand/Annihilator all read this way) - the exact
+					// "this item does nothing" misreading the sweep
+					// flagged. A sim-decided row now prints the real,
+					// measured DPS instead; only a score()-decided row
+					// (or a genuinely zero-scoring LowValue weapon
+					// fallback) prints a bare score number at all.
+					switch {
+					case row.SimDPS != 0:
+						score = fmt.Sprintf("sim-verified (%.1f DPS)", row.SimDPS)
+					default:
+						score = strconv.FormatFloat(row.Score, 'f', 1, 64)
+					}
 					verified = "yes"
 					if !row.Verified {
 						verified = "no - " + row.SwapNote

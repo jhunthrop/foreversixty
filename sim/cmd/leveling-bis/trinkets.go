@@ -186,6 +186,30 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	}
 	sort.SliceStable(results, func(i, j int) bool { return results[i].dps > results[j].dps })
 
+	// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 2: every
+	// candidate's own dps above is the full SET's absolute DPS wearing
+	// it, always positive regardless of whether the trinket itself does
+	// anything at all - report.go's old zero-value check read
+	// MeasuredDPS > 0 as "this trinket was really measured, so it must
+	// carry real value", which is true of every trinket a real trinket-
+	// less character's own gear already produces hundreds of DPS
+	// without. baselineGear drops this slot entirely (swapSlot's own
+	// itemID-0 shape - see its doc) so baselineDPS is what THIS set
+	// produces with NOTHING in the trinket slot at all; every
+	// candidate's own real GAIN is its own dps minus this one shared
+	// number. A failed baseline sim is logged and every candidate below
+	// is left with GainMeasured false (report.go's zero-value gate only
+	// trusts a gain it actually has - see scored.GainMeasured's own
+	// doc): this pass already has a real MeasuredDPS ranking from
+	// results above, so a baseline failure costs the gain check, not
+	// the ranking itself.
+	baselineGear := swapSlot(picks, slot, 0, false)
+	baselineReq := plainRequest(spec, bandCharacter("trinket-rank-baseline", race, classSlug, level, talents, baselineGear), trinketRankIterations, verifySeed)
+	baselineDPS, baselineErr := runner.RunPlainDPS(baselineReq)
+	if baselineErr != nil {
+		notes = append(notes, slot+": measuring the no-trinket baseline failed: "+baselineErr.Error())
+	}
+
 	best := results[0].item
 	// This lane's brief, item 7: best/runnerUp's own MeasuredDPS
 	// (scored's own doc) records the real, per-candidate full-set DPS
@@ -194,10 +218,18 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	// stays whatever near-zero value it always was; buildReport reads
 	// MeasuredDPS, not Score, to decide what this row publishes.
 	best.MeasuredDPS = results[0].dps
+	if baselineErr == nil {
+		best.MeasuredGainDPS = results[0].dps - baselineDPS
+		best.GainMeasured = true
+	}
 	sp := slotPick{Item: &best}
 	if len(results) > 1 {
 		runnerUp := results[1].item
 		runnerUp.MeasuredDPS = results[1].dps
+		if baselineErr == nil {
+			runnerUp.MeasuredGainDPS = results[1].dps - baselineDPS
+			runnerUp.GainMeasured = true
+		}
 		sp.RunnerUp = &runnerUp
 	}
 	out[slot] = sp
