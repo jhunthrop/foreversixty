@@ -11,6 +11,7 @@ CLASSES = [{"id": 1, "name": "Warrior", "slug": "warrior"}]
 TREE_CLASS = {161: 1, 164: 1}
 TREE_NAMES = {161: "Arms", 164: "Fury"}
 TREE_BACKGROUNDS = {161: "warriorarms", 164: "warriorfury"}
+TREE_ICONS = {161: "spell_impending_victory", 164: "ability_warrior_innerrage"}
 
 
 def payload(**overrides):
@@ -68,6 +69,7 @@ def normalize(p=None):
         tree_class=TREE_CLASS,
         tree_names=TREE_NAMES,
         tree_backgrounds=TREE_BACKGROUNDS,
+        tree_icons=TREE_ICONS,
     )
 
 
@@ -146,6 +148,7 @@ def test_a_tree_with_no_name_in_our_tables_is_refused():
             tree_class=TREE_CLASS,
             tree_names={161: "Arms"},
             tree_backgrounds=TREE_BACKGROUNDS,
+            tree_icons=TREE_ICONS,
         )
 
 
@@ -158,6 +161,25 @@ def test_a_tree_with_no_background_in_our_tables_is_refused():
             tree_class=TREE_CLASS,
             tree_names=TREE_NAMES,
             tree_backgrounds={161: "warriorarms"},
+            tree_icons=TREE_ICONS,
+        )
+
+
+def test_a_tree_with_no_icon_in_our_tables_is_refused():
+    """The same refusal `background` gets (data-followups-13 lane): a
+    TalentTree with no icon at all would 404 in the site rather than
+    show a placeholder, so a from_build predating the tree-icon field
+    (write_forever_talents' own `.get(...) or PLACEHOLDER_ICON` fallback
+    never lets this happen in practice) still refuses loudly here."""
+    with pytest.raises(ForeverTalentError, match="no icon in our tables"):
+        normalize_forever_talents(
+            payload(),
+            build="forever-prebeta",
+            classes=CLASSES,
+            tree_class=TREE_CLASS,
+            tree_names=TREE_NAMES,
+            tree_backgrounds=TREE_BACKGROUNDS,
+            tree_icons={161: "spell_impending_victory"},
         )
 
 
