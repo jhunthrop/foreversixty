@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T17:45:16Z",
+  "generated_at": "2026-09-30T18:37:43Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -527,8 +527,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.263175669,
-      "verify_run_seconds": 0.685849637,
+      "weights_run_seconds": 1.635429845,
+      "verify_run_seconds": 0.860345634,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1134,8 +1134,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.263175669,
-      "verify_run_seconds": 0.687768044,
+      "weights_run_seconds": 1.635429845,
+      "verify_run_seconds": 0.915298966,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1771,8 +1771,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.339652415,
-      "verify_run_seconds": 0.786520677,
+      "weights_run_seconds": 1.8031006889999999,
+      "verify_run_seconds": 0.993146035,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2409,8 +2409,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.339652415,
-      "verify_run_seconds": 0.793635525,
+      "weights_run_seconds": 1.8031006889999999,
+      "verify_run_seconds": 1.029519811,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3039,8 +3039,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.431793528,
-      "verify_run_seconds": 0.779856073,
+      "weights_run_seconds": 1.90271311,
+      "verify_run_seconds": 1.228747012,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3670,8 +3670,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.431793528,
-      "verify_run_seconds": 0.85484941,
+      "weights_run_seconds": 1.90271311,
+      "verify_run_seconds": 1.113474853,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4323,8 +4323,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.456170588,
-      "verify_run_seconds": 0.96876085,
+      "weights_run_seconds": 1.958877384,
+      "verify_run_seconds": 1.246371808,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4730,7 +4730,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.525318334164254
+              "dps_delta": -0.5253183341642544
             }
           ]
         },
@@ -4983,8 +4983,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.456170588,
-      "verify_run_seconds": 0.950412049,
+      "weights_run_seconds": 1.958877384,
+      "verify_run_seconds": 1.232293223,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5130,34 +5130,34 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 240072,
-          "item_name": "Waywatcher Hood",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 86.95444366195227,
+          "item_id": 226773,
+          "item_name": "Feralheart Cowl",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
+          "score": 48.92808243418514,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240088,
-              "item_name": "Waywatcher Headpiece",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.9169031894875275,
-              "verified": true
+              "item_id": 252561,
+              "item_name": "Living Crown",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.3884256270614274
             },
             {
-              "item_id": 226773,
-              "item_name": "Feralheart Cowl",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -4.2042851843111455
+              "item_id": 16686,
+              "item_name": "Magister's Crown",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling",
+              "dps_delta": -0.43155219380529347
             },
             {
               "item_id": 231695,
               "item_name": "Field Marshal's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -4.285181201998312
+              "dps_delta": -0.8483724855456956,
+              "verified": true
             }
           ]
         },
@@ -5171,19 +5171,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 22149,
+              "item_name": "Beads of Ogre Mojo",
+              "source_kind": "quest",
+              "source": "Falrin's Vendetta",
+              "dps_delta": -0.6412526638158056,
+              "verified": true
+            },
+            {
               "item_id": 15856,
               "item_name": "Archlight Talisman",
               "source_kind": "quest",
               "source": "Hidden Treasures",
               "dps_delta": -0.7078738598051266
-            },
-            {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.749872805731485,
-              "verified": true
             },
             {
               "item_id": 23125,
@@ -5196,33 +5196,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 240070,
-          "item_name": "Waywatcher Mantle",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 227808,
+          "item_name": "Rugged Mantle of the Timbermaw",
+          "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 71.44304020180783,
+          "score": 46.52559879746821,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240086,
-              "item_name": "Waywatcher Spaulders",
+              "item_id": 272104,
+              "item_name": "Darkspear Shoulders",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.8265034019998265
+              "source": "Creeg Bothunk",
+              "dps_delta": -0.43155219380529425
+            },
+            {
+              "item_id": 231699,
+              "item_name": "Field Marshal's Dragonhide Spaulders",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "dps_delta": -0.5676451078027265
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.1864839396992353
-            },
-            {
-              "item_id": 227808,
-              "item_name": "Rugged Mantle of the Timbermaw",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -6.245982417999102,
+              "dps_delta": -0.9548398072432462,
               "verified": true
             }
           ]
@@ -5262,199 +5262,192 @@
         },
         {
           "slot": "chest",
-          "item_id": 240075,
-          "item_name": "Waywatcher Leathers",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 202.66576036917718,
+          "item_id": 226776,
+          "item_name": "Feralheart Vest",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
+          "sim_dps": 154.59567010440313,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240091,
-              "item_name": "Waywatcher Tunic",
+              "item_id": 231696,
+              "item_name": "Field Marshal's Dragonhide Armor",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.6922379778343386
+              "source": "Captain Dirgehammer",
+              "dps_delta": -0.05382391231770681
             },
             {
-              "item_id": 226776,
-              "item_name": "Feralheart Vest",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -3.8403374008310207
+              "item_id": 18373,
+              "item_name": "Chestplate of Tranquility",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin",
+              "dps_delta": -0.08089601768716698
             },
             {
               "item_id": 23089,
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -17.741949326095835,
+              "dps_delta": -7.802140833281527,
               "verified": true
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 240068,
-          "item_name": "Waywatcher Bindings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 202.66576036917718,
+          "item_id": 19595,
+          "item_name": "Dryad's Wrist Bindings",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "sim_dps": 154.59567010440313,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240084,
-              "item_name": "Waywatcher Wristguards",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.2126430709675664
+              "item_id": 18497,
+              "item_name": "Sublime Wristguards",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Guard Slip'kik",
+              "dps_delta": -0.8548327116006516
             },
             {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -2.78579700076782
+              "item_id": 254123,
+              "item_name": "Runecloth Cuffs",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.9653950964454351
             },
             {
               "item_id": 23093,
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -12.369547009708441,
+              "dps_delta": -6.905483449923764,
               "verified": true
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 240073,
-          "item_name": "Waywatcher Mitts",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 272097,
+          "item_name": "Raider Handwraps",
+          "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "score": 74.10122556859699,
+          "score": 38.62235273045236,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 240089,
-              "item_name": "Waywatcher Handguards",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.288927381322452,
-              "verified": true
-            },
-            {
-              "item_id": 272097,
-              "item_name": "Raider Handwraps",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -3.9226287925900842
-            },
             {
               "item_id": 231700,
               "item_name": "Marshal's Dragonhide Gloves",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -4.255688931116993
+              "dps_delta": -0.1865857123069361,
+              "verified": true
+            },
+            {
+              "item_id": 226777,
+              "item_name": "Feralheart Hands",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -0.5393517246376676
+            },
+            {
+              "item_id": 13253,
+              "item_name": "Hands of Power",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Quartermaster Zigris",
+              "dps_delta": -0.6431840096893268
             }
           ]
         },
         {
           "slot": "waist",
-          "item_id": 240069,
-          "item_name": "Waywatcher Cord",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 228190,
+          "item_name": "Knowledge of the Timbermaw",
+          "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 77.06402080016325,
+          "score": 55.477347977546785,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240085,
-              "item_name": "Waywatcher Girdle",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.3615675824355664
+              "item_id": 18504,
+              "item_name": "Girdle of Insight",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -1.5911740508471337
+            },
+            {
+              "item_id": 18405,
+              "item_name": "Belt of the Archmage",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -1.6382678633717163
             },
             {
               "item_id": 272401,
               "item_name": "Elunite Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.7418901257113095
-            },
-            {
-              "item_id": 228190,
-              "item_name": "Knowledge of the Timbermaw",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -5.1571334575511685,
+              "dps_delta": -2.915485955631908,
               "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 240071,
-          "item_name": "Waywatcher Kilt",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 95.11384626300271,
+          "item_id": 252486,
+          "item_name": "Ironfeather Leggings",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 60.92808243418514,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 240087,
-              "item_name": "Waywatcher Legguards",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.8550386171634159,
-              "verified": true
-            },
-            {
-              "item_id": 252486,
-              "item_name": "Ironfeather Leggings",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -3.77965957665461
-            },
             {
               "item_id": 22752,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -5.037751098895497
+              "dps_delta": -0.9761632722239426,
+              "verified": true
+            },
+            {
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -1.3886756142407939
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 240074,
-          "item_name": "Waywatcher Sandals",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 226774,
+          "item_name": "Feralheart Galoshes",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 58.02793587068516,
+          "score": 40.14657939582362,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 240090,
-              "item_name": "Waywatcher Boots",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
-              "item_id": 226774,
-              "item_name": "Feralheart Galoshes",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -1.977005416120404
-            },
             {
               "item_id": 231698,
               "item_name": "Marshal's Dragonhide Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.3383589378123713
+              "dps_delta": -0.36135352169196727
+            },
+            {
+              "item_id": 231704,
+              "item_name": "Marshal's Dragonhide Greaves",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -0.714603959598251
+            },
+            {
+              "item_id": 18102,
+              "item_name": "Dragonrider Boots",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": -2.0522600050821893,
+              "verified": true
             }
           ]
         },
@@ -5464,7 +5457,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 202.66576036917718,
+          "sim_dps": 154.59567010440313,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5487,7 +5480,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -8.966003415748702,
+              "dps_delta": -8.209325980547192,
               "verified": true
             }
           ]
@@ -5498,7 +5491,7 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 202.66576036917718,
+          "sim_dps": 154.59567010440313,
           "verified": true,
           "alternatives": [
             {
@@ -5520,7 +5513,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -6.958714345185399,
+              "dps_delta": -5.875252434574861,
               "verified": true
             }
           ]
@@ -5531,10 +5524,10 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 202.66576036917718,
+          "sim_dps": 154.59567010440313,
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +11.6 DPS (202.7 vs 191.1 set DPS)",
-          "dps_delta": 11.604302487282183,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +8.2 DPS (154.6 vs 146.4 set DPS)",
+          "dps_delta": 8.229156693888086,
           "alternatives": [
             {
               "item_id": 12930,
@@ -5565,7 +5558,7 @@
           "item_name": "Second Wind",
           "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
-          "sim_dps": 202.66576036917718,
+          "sim_dps": 154.59567010440313,
           "verified": true,
           "alternatives": [
             {
@@ -5576,19 +5569,19 @@
               "dps_delta": 0
             },
             {
+              "item_id": 22678,
+              "item_name": "Talisman of Ascendance",
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn",
+              "dps_delta": 0,
+              "verified": true
+            },
+            {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "dps_delta": 0
-            },
-            {
-              "item_id": 22268,
-              "item_name": "Draconic Infused Emblem",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -3.598401004673349,
-              "verified": true
             }
           ]
         },
@@ -5598,7 +5591,7 @@
           "item_name": "Crackling Staff",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 202.66576036917718,
+          "sim_dps": 154.59567010440313,
           "verified": true,
           "alternatives": [
             {
@@ -5620,7 +5613,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.655496793416319,
+              "dps_delta": -4.852627213129807,
               "verified": true
             }
           ]
@@ -5709,15 +5702,15 @@
               "item_name": "Howling Idol",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.6382499262684576,
+              "dps_delta": -0.6658767348216088,
               "verified": true
             }
           ],
           "low_value": true
         }
       ],
-      "set_dps": 202.66576036917718,
-      "no_source_count": 1386,
+      "set_dps": 154.59567010440313,
+      "no_source_count": 1418,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5736,16 +5729,16 @@
         "4989 Mage Dragon Robe"
       ],
       "new_at_band": [
-        "head: Waywatcher Hood",
+        "head: Feralheart Cowl",
         "neck: Amulet of the Dawn",
-        "shoulder: Waywatcher Mantle",
+        "shoulder: Rugged Mantle of the Timbermaw",
         "back: Arcanoweave Cloak",
-        "chest: Waywatcher Leathers",
-        "wrist: Waywatcher Bindings",
-        "hands: Waywatcher Mitts",
-        "waist: Waywatcher Cord",
-        "legs: Waywatcher Kilt",
-        "feet: Waywatcher Sandals",
+        "chest: Feralheart Vest",
+        "wrist: Dryad's Wrist Bindings",
+        "hands: Raider Handwraps",
+        "waist: Knowledge of the Timbermaw",
+        "legs: Ironfeather Leggings",
+        "feet: Feralheart Galoshes",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Burst of Knowledge",
@@ -5753,8 +5746,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.483050803,
-      "verify_run_seconds": 0.901825335,
+      "weights_run_seconds": 1.9957726789999999,
+      "verify_run_seconds": 1.1330689760000001,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5762,11 +5755,11 @@
         },
         "chest": {
           "eligible": 544,
-          "sourced": 447
+          "sourced": 443
         },
         "feet": {
           "eligible": 429,
-          "sourced": 350
+          "sourced": 346
         },
         "finger1": {
           "eligible": 369,
@@ -5778,15 +5771,15 @@
         },
         "hands": {
           "eligible": 445,
-          "sourced": 356
+          "sourced": 352
         },
         "head": {
           "eligible": 349,
-          "sourced": 268
+          "sourced": 264
         },
         "legs": {
           "eligible": 444,
-          "sourced": 352
+          "sourced": 348
         },
         "main_hand": {
           "eligible": 720,
@@ -5806,7 +5799,7 @@
         },
         "shoulder": {
           "eligible": 333,
-          "sourced": 264
+          "sourced": 260
         },
         "trinket1": {
           "eligible": 178,
@@ -5818,11 +5811,11 @@
         },
         "waist": {
           "eligible": 399,
-          "sourced": 334
+          "sourced": 330
         },
         "wrist": {
           "eligible": 325,
-          "sourced": 247
+          "sourced": 243
         }
       },
       "reference_dps_per_point": 0.11056238484478356,
@@ -5900,34 +5893,34 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 240072,
-          "item_name": "Waywatcher Hood",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 86.95444366195227,
+          "item_id": 226773,
+          "item_name": "Feralheart Cowl",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
+          "score": 48.92808243418514,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240088,
-              "item_name": "Waywatcher Headpiece",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.8538930097270452,
-              "verified": true
+              "item_id": 252561,
+              "item_name": "Living Crown",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.3884256270614274
             },
             {
-              "item_id": 226773,
-              "item_name": "Feralheart Cowl",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -4.2042851843111455
+              "item_id": 16686,
+              "item_name": "Magister's Crown",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling",
+              "dps_delta": -0.43155219380529347
             },
             {
               "item_id": 231678,
               "item_name": "Warlord's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -4.285181201998312
+              "dps_delta": -0.7021081707603116,
+              "verified": true
             }
           ]
         },
@@ -5941,19 +5934,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.630519928474456,
-              "verified": true
-            },
-            {
               "item_id": 15856,
               "item_name": "Archlight Talisman",
               "source_kind": "quest",
               "source": "Hidden Treasures",
               "dps_delta": -0.7078738598051266
+            },
+            {
+              "item_id": 22149,
+              "item_name": "Beads of Ogre Mojo",
+              "source_kind": "quest",
+              "source": "Falrin's Vendetta",
+              "dps_delta": -0.7393106505533353,
+              "verified": true
             },
             {
               "item_id": 23125,
@@ -5966,34 +5959,34 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 240070,
-          "item_name": "Waywatcher Mantle",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 227808,
+          "item_name": "Rugged Mantle of the Timbermaw",
+          "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 71.44304020180783,
+          "score": 46.52559879746821,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240086,
-              "item_name": "Waywatcher Spaulders",
+              "item_id": 272104,
+              "item_name": "Darkspear Shoulders",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.8265034019998265
+              "source": "Creeg Bothunk",
+              "dps_delta": -0.43155219380529425
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.1864839396992353
+              "dps_delta": -0.5424097619905695,
+              "verified": true
             },
             {
-              "item_id": 227808,
-              "item_name": "Rugged Mantle of the Timbermaw",
+              "item_id": 231681,
+              "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -5.976998572298015,
-              "verified": true
+              "source": "Lady Palanseer",
+              "dps_delta": -0.5676451078027265
             }
           ]
         },
@@ -6003,7 +5996,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.59909100620111,
+          "score": 30.599091006201114,
           "verified": true,
           "alternatives": [
             {
@@ -6019,211 +6012,211 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381236
+              "dps_delta": -0.6702785051381239
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -0.927799741778432
+              "dps_delta": -0.9277997417784324
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 240075,
-          "item_name": "Waywatcher Leathers",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
+          "item_id": 226776,
+          "item_name": "Feralheart Vest",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240091,
-              "item_name": "Waywatcher Tunic",
+              "item_id": 231679,
+              "item_name": "Warlord's Dragonhide Armor",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.6922379778343386
+              "source": "Lady Palanseer",
+              "dps_delta": -0.05382391231770681
             },
             {
-              "item_id": 226776,
-              "item_name": "Feralheart Vest",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -3.8403374008310207
+              "item_id": 18373,
+              "item_name": "Chestplate of Tranquility",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin",
+              "dps_delta": -0.08089601768716698
             },
             {
               "item_id": 23089,
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -17.061422229614806,
+              "dps_delta": -8.614275075878481,
               "verified": true
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 240068,
-          "item_name": "Waywatcher Bindings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
+          "item_id": 19595,
+          "item_name": "Dryad's Wrist Bindings",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240084,
-              "item_name": "Waywatcher Wristguards",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.2126430709675655
+              "item_id": 18497,
+              "item_name": "Sublime Wristguards",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Guard Slip'kik",
+              "dps_delta": -0.8548327116006516
             },
             {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -2.785797000767819
+              "item_id": 254123,
+              "item_name": "Runecloth Cuffs",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.9653950964454351
             },
             {
               "item_id": 23093,
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -11.760808595627964,
+              "dps_delta": -6.471901698606814,
               "verified": true
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 240073,
-          "item_name": "Waywatcher Mitts",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 226777,
+          "item_name": "Feralheart Hands",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 74.10122556859699,
+          "sim_dps": 158.18530016320602,
           "verified": true,
+          "swap_note": "beat the scored pick Raider Handwraps (id 272097) in the sim: +4.0 DPS (158.2 vs 154.2 set DPS)",
+          "dps_delta": 3.978700873956228,
           "alternatives": [
             {
-              "item_id": 240089,
-              "item_name": "Waywatcher Handguards",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.684272981276905,
-              "verified": true
+              "item_id": 231677,
+              "item_name": "General's Dragonhide Gloves",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 13253,
+              "item_name": "Hands of Power",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Quartermaster Zigris",
+              "dps_delta": -0.10383228505165923
             },
             {
               "item_id": 272097,
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.9226287925900842
-            },
-            {
-              "item_id": 231677,
-              "item_name": "General's Dragonhide Gloves",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -4.255688931116993
+              "dps_delta": -3.978700873956228,
+              "verified": true
             }
           ]
         },
         {
           "slot": "waist",
-          "item_id": 240069,
-          "item_name": "Waywatcher Cord",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 228190,
+          "item_name": "Knowledge of the Timbermaw",
+          "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 77.06402080016325,
+          "score": 55.477347977546785,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 240085,
-              "item_name": "Waywatcher Girdle",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.3615675824355664
+              "item_id": 18504,
+              "item_name": "Girdle of Insight",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -1.5911740508471337
             },
             {
-              "item_id": 228190,
-              "item_name": "Knowledge of the Timbermaw",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -3.571780889103877,
-              "verified": true
+              "item_id": 18405,
+              "item_name": "Belt of the Archmage",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -1.6382678633717163
             },
             {
               "item_id": 272401,
               "item_name": "Elunite Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.7418901257113095
+              "dps_delta": -2.6662407268823927,
+              "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 240071,
-          "item_name": "Waywatcher Kilt",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 95.11384626300271,
+          "item_id": 252486,
+          "item_name": "Ironfeather Leggings",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 60.92808243418514,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 240087,
-              "item_name": "Waywatcher Legguards",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
-              "item_id": 252486,
-              "item_name": "Ironfeather Leggings",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -3.77965957665461
-            },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -5.037751098895497
+              "dps_delta": 0,
+              "verified": true
+            },
+            {
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -1.3886756142407939
+            },
+            {
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -1.3886756142407939
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 240090,
-          "item_name": "Waywatcher Boots",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 226774,
+          "item_name": "Feralheart Galoshes",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 201.14743384772802,
+          "score": 40.14657939582362,
           "verified": true,
-          "swap_note": "beat the scored pick Waywatcher Sandals (id 240074) in the sim: +2.1 DPS (201.1 vs 199.1 set DPS)",
-          "dps_delta": 2.073840795300299,
           "alternatives": [
-            {
-              "item_id": 226774,
-              "item_name": "Feralheart Galoshes",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -0.8548327116006519
-            },
             {
               "item_id": 231682,
               "item_name": "General's Dragonhide Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.2161862332926192
+              "dps_delta": -0.36135352169196727
             },
             {
-              "item_id": 240074,
-              "item_name": "Waywatcher Sandals",
+              "item_id": 231671,
+              "item_name": "General's Dragonhide Greaves",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.073840795300299,
+              "source": "Lady Palanseer",
+              "dps_delta": -0.714603959598251
+            },
+            {
+              "item_id": 18102,
+              "item_name": "Dragonrider Boots",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": -1.5489310704565469,
               "verified": true
             }
           ]
@@ -6256,7 +6249,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.021176857451053,
+              "dps_delta": -8.438528163012563,
               "verified": true
             }
           ]
@@ -6288,7 +6281,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -7.003378952714058,
+              "dps_delta": -6.04154602632957,
               "verified": true
             }
           ]
@@ -6300,8 +6293,8 @@
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +10.6 DPS over it",
-          "dps_delta": 10.613327004823532,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +8.5 DPS over it",
+          "dps_delta": 8.453427970492385,
           "alternatives": [
             {
               "item_id": 12930,
@@ -6335,13 +6328,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 12930,
-              "item_name": "Briarwood Reed",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": 0
-            },
-            {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
               "source_kind": "vendor",
@@ -6349,11 +6335,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 22268,
-              "item_name": "Draconic Infused Emblem",
+              "item_id": 272439,
+              "item_name": "Serenity Field",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -2.6223006827742665,
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": -1.285434177713114,
               "verified": true
             }
           ]
@@ -6385,7 +6378,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.1349336070231857,
+              "dps_delta": -4.585526135603914,
               "verified": true
             }
           ]
@@ -6474,15 +6467,15 @@
               "item_name": "Howling Idol",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.617537305947593,
+              "dps_delta": -0.6516177245769086,
               "verified": true
             }
           ],
           "low_value": true
         }
       ],
-      "set_dps": 201.14743384772802,
-      "no_source_count": 1388,
+      "set_dps": 158.18530016320602,
+      "no_source_count": 1420,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6501,16 +6494,15 @@
         "5004 Mark of the Kirin Tor"
       ],
       "new_at_band": [
-        "head: Waywatcher Hood",
+        "head: Feralheart Cowl",
         "neck: Amulet of the Dawn",
-        "shoulder: Waywatcher Mantle",
+        "shoulder: Rugged Mantle of the Timbermaw",
         "back: Arcanoweave Cloak",
-        "chest: Waywatcher Leathers",
-        "wrist: Waywatcher Bindings",
-        "hands: Waywatcher Mitts",
-        "waist: Waywatcher Cord",
-        "legs: Waywatcher Kilt",
-        "feet: Waywatcher Boots",
+        "chest: Feralheart Vest",
+        "wrist: Dryad's Wrist Bindings",
+        "waist: Knowledge of the Timbermaw",
+        "legs: Ironfeather Leggings",
+        "feet: Feralheart Galoshes",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Burst of Knowledge",
@@ -6518,8 +6510,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.483050803,
-      "verify_run_seconds": 0.921219684,
+      "weights_run_seconds": 1.9957726789999999,
+      "verify_run_seconds": 1.218377568,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6527,11 +6519,11 @@
         },
         "chest": {
           "eligible": 542,
-          "sourced": 444
+          "sourced": 440
         },
         "feet": {
           "eligible": 434,
-          "sourced": 349
+          "sourced": 345
         },
         "finger1": {
           "eligible": 372,
@@ -6543,15 +6535,15 @@
         },
         "hands": {
           "eligible": 445,
-          "sourced": 354
+          "sourced": 350
         },
         "head": {
           "eligible": 350,
-          "sourced": 268
+          "sourced": 264
         },
         "legs": {
           "eligible": 439,
-          "sourced": 346
+          "sourced": 342
         },
         "main_hand": {
           "eligible": 725,
@@ -6571,7 +6563,7 @@
         },
         "shoulder": {
           "eligible": 331,
-          "sourced": 261
+          "sourced": 257
         },
         "trinket1": {
           "eligible": 177,
@@ -6583,11 +6575,11 @@
         },
         "waist": {
           "eligible": 402,
-          "sourced": 334
+          "sourced": 330
         },
         "wrist": {
           "eligible": 328,
-          "sourced": 252
+          "sourced": 248
         }
       },
       "reference_dps_per_point": 0.11056238484478356,

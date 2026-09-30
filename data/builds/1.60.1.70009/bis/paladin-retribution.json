@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T17:48:37Z",
+  "generated_at": "2026-09-30T18:42:19Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.070003366,
-      "verify_run_seconds": 0.834592256,
+      "weights_run_seconds": 1.375394249,
+      "verify_run_seconds": 1.069738422,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1133,8 +1133,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.070003366,
-      "verify_run_seconds": 0.825377483,
+      "weights_run_seconds": 1.375394249,
+      "verify_run_seconds": 1.029694263,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1763,8 +1763,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.04935532,
-      "verify_run_seconds": 1.046054103,
+      "weights_run_seconds": 1.432688382,
+      "verify_run_seconds": 1.384083216,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2399,8 +2399,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.04935532,
-      "verify_run_seconds": 1.017849838,
+      "weights_run_seconds": 1.432688382,
+      "verify_run_seconds": 1.375092828,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3030,8 +3030,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.042360031,
-      "verify_run_seconds": 0.996637742,
+      "weights_run_seconds": 1.405908016,
+      "verify_run_seconds": 1.319777819,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3661,8 +3661,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.042360031,
-      "verify_run_seconds": 0.995883387,
+      "weights_run_seconds": 1.405908016,
+      "verify_run_seconds": 1.279647092,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4305,8 +4305,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.099126411,
-      "verify_run_seconds": 1.066668267,
+      "weights_run_seconds": 1.4884503439999999,
+      "verify_run_seconds": 1.368048212,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4949,8 +4949,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.099126411,
-      "verify_run_seconds": 1.030054151,
+      "weights_run_seconds": 1.4884503439999999,
+      "verify_run_seconds": 1.3840685,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5082,33 +5082,35 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 240027,
-          "item_name": "Inquisition Helmet",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 231648,
+          "item_name": "Field Marshal's Lamellar Headguard",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 116.7236015117816,
+          "sim_dps": 170.62251372927653,
           "verified": true,
+          "swap_note": "beat the scored pick Lionheart Helm (id 12640) in the sim: +4.9 DPS (170.6 vs 165.7 set DPS)",
+          "dps_delta": 4.913740778684144,
           "alternatives": [
+            {
+              "item_id": 16474,
+              "item_name": "Field Marshal's Lamellar Faceguard",
+              "source_kind": "vendor",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "dps_delta": -0.08742961025082342
+            },
+            {
+              "item_id": 9479,
+              "item_name": "Embrace of the Lycan",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+              "dps_delta": -0.146960464914029
+            },
             {
               "item_id": 12640,
               "item_name": "Lionheart Helm",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.4777858139534485
-            },
-            {
-              "item_id": 231648,
-              "item_name": "Field Marshal's Lamellar Headguard",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -2.8572783826893198
-            },
-            {
-              "item_id": 240035,
-              "item_name": "Inquisition Crown",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.49388276323657,
+              "dps_delta": -4.913740778684144,
               "verified": true
             }
           ]
@@ -5148,33 +5150,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 240025,
-          "item_name": "Inquisition Shoulderplates",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 231651,
+          "item_name": "Field Marshal's Lamellar Shoulders",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 84.02145008013429,
+          "score": 42.000000000007276,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 231651,
-              "item_name": "Field Marshal's Lamellar Shoulders",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -1.8369595013396554
+              "item_id": 20058,
+              "item_name": "Highlander's Lamellar Spaulders",
+              "source_kind": "rep",
+              "source": "The League of Arathor",
+              "dps_delta": -0.010664247336712795
+            },
+            {
+              "item_id": 15051,
+              "item_name": "Black Dragonscale Shoulders",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.08742961025112658
             },
             {
               "item_id": 20057,
               "item_name": "Highlander's Plate Spaulders",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -1.8476237486763682
-            },
-            {
-              "item_id": 240033,
-              "item_name": "Inquisition Pauldrons",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.719590297457387,
+              "dps_delta": -3.685543799817708,
               "verified": true
             }
           ]
@@ -5200,7 +5202,7 @@
               "item_name": "Shroud of Domination",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.41766510475909513,
+              "dps_delta": -0.4072854262907697,
               "verified": true
             },
             {
@@ -5214,110 +5216,108 @@
         },
         {
           "slot": "chest",
-          "item_id": 240030,
-          "item_name": "Inquisition Breastplate",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 188.27910365856155,
+          "item_id": 22191,
+          "item_name": "Obsidian Mail Tunic",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 22191,
-              "item_name": "Obsidian Mail Tunic",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -1.4584046186767166
-            },
             {
               "item_id": 252484,
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.6291266404312212
+              "dps_delta": -0.17072202175450538
+            },
+            {
+              "item_id": 14637,
+              "item_name": "Cadaverous Armor",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov",
+              "dps_delta": -0.20340811674907414
             },
             {
               "item_id": 23087,
               "item_name": "Breastplate of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -10.329458912667121,
+              "dps_delta": -6.7106709396387885,
               "verified": true
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 240023,
-          "item_name": "Inquisition Vambraces",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 188.27910365856155,
+          "item_id": 19578,
+          "item_name": "Berserker Bracers",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 19578,
-              "item_name": "Berserker Bracers",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -1.1075946568366624
-            },
             {
               "item_id": 19582,
               "item_name": "Windtalker's Wristguards",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.2260062255031894
+              "dps_delta": -0.11841156866652687
+            },
+            {
+              "item_id": 18533,
+              "item_name": "Gordok Bracers of Power",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Gordok Mastiff",
+              "dps_delta": -0.2932707891678864
             },
             {
               "item_id": 23090,
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -5.279205965456413,
+              "dps_delta": -3.177435535594043,
               "verified": true
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 240028,
-          "item_name": "Inquisition Gloves",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 272095,
+          "item_name": "Raider Gauntlets",
+          "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272095,
-              "item_name": "Raider Gauntlets",
+              "item_id": 227817,
+              "item_name": "Radiant Gloves of the Dawn",
               "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1.1207294912584156
+              "source": "Argent Quartermaster Hasana",
+              "dps_delta": -0.36451988708657457
             },
             {
-              "item_id": 240036,
-              "item_name": "Inquisition Gauntlets",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.4295681770159232
+              "item_id": 19049,
+              "item_name": "Timbermaw Brawlers",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.480173323255102
             },
             {
               "item_id": 18326,
               "item_name": "Razor Gauntlets",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -5.768993903006958,
+              "dps_delta": -3.4377032273759482,
               "verified": true
             }
           ]
         },
         {
           "slot": "waist",
-          "item_id": 240024,
-          "item_name": "Inquisition Belt",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 227807,
+          "item_name": "Dense Timbermaw Belt",
+          "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 86.72360151177642,
+          "score": 64,
           "verified": true,
           "alternatives": [
             {
@@ -5325,87 +5325,79 @@
               "item_name": "Radiant Girdle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.1086861776728476
+              "dps_delta": 0,
+              "verified": true
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.266310889923347
+              "dps_delta": -0.2729530780886991
             },
             {
-              "item_id": 227807,
-              "item_name": "Dense Timbermaw Belt",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -3.644986000218978,
-              "verified": true
+              "item_id": 22197,
+              "item_name": "Heavy Obsidian Belt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -0.612007271755281
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 240026,
-          "item_name": "Inquisition Leggings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 188.27910365856155,
+          "item_id": 22385,
+          "item_name": "Titanic Leggings",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 22385,
-              "item_name": "Titanic Leggings",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -1.8667162282700416
-            },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689446
+              "dps_delta": -0.14416480749890218
             },
             {
               "item_id": 14554,
               "item_name": "Cloudkeeper Legplates",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.00094386090052,
+              "dps_delta": -2.386827403082208,
               "verified": true
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 240029,
-          "item_name": "Inquisition Greaves",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 86.02145008013463,
+          "item_id": 275618,
+          "item_name": "Scalegut Treaders",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 40.708729189723094,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 13210,
-              "item_name": "Pads of the Dread Wolf",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Halycon",
-              "dps_delta": -2.0118187218416055
-            },
             {
               "item_id": 275627,
               "item_name": "Clutchlord's Stompers",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.0992483320921265
+              "dps_delta": -0.11841156866595161
             },
             {
-              "item_id": 275618,
-              "item_name": "Scalegut Treaders",
+              "item_id": 275624,
+              "item_name": "Goregasher Stompers",
               "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -3.84693940172059,
+              "source": "Blacksmithing",
+              "dps_delta": -0.11841156866623924
+            },
+            {
+              "item_id": 13210,
+              "item_name": "Pads of the Dread Wolf",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon",
+              "dps_delta": -0.4434264435168416,
               "verified": true
             }
           ]
@@ -5416,7 +5408,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 188.27910365856155,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5439,7 +5430,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.8498343572564124,
+              "dps_delta": -3.82260766110673,
               "verified": true
             }
           ]
@@ -5450,7 +5441,6 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5472,19 +5462,20 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.001976769997924,
+              "dps_delta": -3.147861337612113,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 11819,
-          "item_name": "Second Wind",
-          "source": "Blackrock Depths: Golem Lord Argelmach",
+          "item_id": 11832,
+          "item_name": "Burst of Knowledge",
+          "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 188.27910365856155,
           "verified": true,
+          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +5.7 DPS over it",
+          "dps_delta": 5.7172739055052375,
           "alternatives": [
             {
               "item_id": 11815,
@@ -5501,22 +5492,20 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -1.348445250498031,
-              "verified": true
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 19289,
-          "item_name": "Darkmoon Card: Maelstrom",
-          "source": "Darkmoon Elementals Deck",
-          "source_kind": "quest",
-          "sim_dps": 188.27910365856155,
+          "item_id": 22268,
+          "item_name": "Draconic Infused Emblem",
+          "source": "Blackrock Spire: General Drakkisath",
+          "source_kind": "dungeon",
           "verified": true,
           "alternatives": [
             {
@@ -5534,11 +5523,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 22268,
-              "item_name": "Draconic Infused Emblem",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.09209246874883092,
+              "item_id": 19289,
+              "item_name": "Darkmoon Card: Maelstrom",
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck",
+              "dps_delta": -0.6978234097011295,
               "verified": true
             }
           ]
@@ -5549,7 +5538,6 @@
           "item_name": "Blackblade of Shahram",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5571,7 +5559,7 @@
               "item_name": "Runeblade of Baron Rivendare",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -3.3512265960983427,
+              "dps_delta": -3.2048617706624896,
               "verified": true
             }
           ]
@@ -5588,8 +5576,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 188.27910365856155,
-      "no_source_count": 1594,
+      "set_dps": 170.62251372927653,
+      "no_source_count": 1626,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5608,24 +5596,24 @@
         "4798 Heavy Runed Cloak"
       ],
       "new_at_band": [
-        "head: Inquisition Helmet",
+        "head: Field Marshal's Lamellar Headguard",
         "neck: Imperial Jewel",
-        "shoulder: Inquisition Shoulderplates",
+        "shoulder: Field Marshal's Lamellar Shoulders",
         "back: Cloak of the Honor Guard",
-        "chest: Inquisition Breastplate",
-        "wrist: Inquisition Vambraces",
-        "hands: Inquisition Gloves",
-        "waist: Inquisition Belt",
-        "legs: Inquisition Leggings",
-        "feet: Inquisition Greaves",
+        "chest: Obsidian Mail Tunic",
+        "wrist: Berserker Bracers",
+        "hands: Raider Gauntlets",
+        "waist: Dense Timbermaw Belt",
+        "legs: Titanic Leggings",
+        "feet: Scalegut Treaders",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
-        "trinket1: Second Wind",
-        "trinket2: Darkmoon Card: Maelstrom",
+        "trinket1: Burst of Knowledge",
+        "trinket2: Draconic Infused Emblem",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.139798669,
-      "verify_run_seconds": 1.046200552,
+      "weights_run_seconds": 1.495150014,
+      "verify_run_seconds": 1.3407638880000001,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5633,11 +5621,11 @@
         },
         "chest": {
           "eligible": 785,
-          "sourced": 666
+          "sourced": 662
         },
         "feet": {
           "eligible": 683,
-          "sourced": 577
+          "sourced": 573
         },
         "finger1": {
           "eligible": 365,
@@ -5649,15 +5637,15 @@
         },
         "hands": {
           "eligible": 695,
-          "sourced": 582
+          "sourced": 578
         },
         "head": {
           "eligible": 508,
-          "sourced": 421
+          "sourced": 417
         },
         "legs": {
           "eligible": 686,
-          "sourced": 562
+          "sourced": 558
         },
         "main_hand": {
           "eligible": 684,
@@ -5677,7 +5665,7 @@
         },
         "shoulder": {
           "eligible": 528,
-          "sourced": 433
+          "sourced": 429
         },
         "trinket1": {
           "eligible": 177,
@@ -5689,11 +5677,11 @@
         },
         "waist": {
           "eligible": 630,
-          "sourced": 535
+          "sourced": 531
         },
         "wrist": {
           "eligible": 529,
-          "sourced": 428
+          "sourced": 424
         }
       },
       "reference_dps_per_point": 0.04371480512540426,
@@ -5757,33 +5745,33 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 240027,
-          "item_name": "Inquisition Helmet",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 116.7236015117816,
+          "item_id": 12640,
+          "item_name": "Lionheart Helm",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 60.04290016024984,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 12640,
-              "item_name": "Lionheart Helm",
+              "item_id": 252485,
+              "item_name": "Warbear Helm",
               "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -2.4777858139534485
+              "source": "Leatherworking",
+              "dps_delta": -0.8438104499886814
+            },
+            {
+              "item_id": 13359,
+              "item_name": "Crown of Tyranny",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar",
+              "dps_delta": -0.853184354266439
             },
             {
               "item_id": 9479,
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -3.004238847603349
-            },
-            {
-              "item_id": 240035,
-              "item_name": "Inquisition Crown",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.48060671210655,
+              "dps_delta": -4.755692539160492,
               "verified": true
             }
           ]
@@ -5823,33 +5811,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 240025,
-          "item_name": "Inquisition Shoulderplates",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 84.02145008013429,
+          "item_id": 20212,
+          "item_name": "Defiler's Plate Spaulders",
+          "source": "The Defilers",
+          "source_kind": "rep",
+          "score": 41.75604952816781,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20212,
-              "item_name": "Defiler's Plate Spaulders",
+              "item_id": 20194,
+              "item_name": "Defiler's Leather Shoulders",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -1.8476237486763682
+              "dps_delta": -0.24748738466941833
+            },
+            {
+              "item_id": 20175,
+              "item_name": "Defiler's Lizardhide Shoulders",
+              "source_kind": "rep",
+              "source": "The Defilers",
+              "dps_delta": -0.33629606116909766
             },
             {
               "item_id": 15051,
               "item_name": "Black Dragonscale Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.924389111590782
-            },
-            {
-              "item_id": 240033,
-              "item_name": "Inquisition Pauldrons",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -4.808245822696136,
+              "dps_delta": -1.014720250844789,
               "verified": true
             }
           ]
@@ -5871,128 +5859,129 @@
               "dps_delta": -0.13260039900695916
             },
             {
+              "item_id": 22337,
+              "item_name": "Shroud of Domination",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -0.30749083284558765,
+              "verified": true
+            },
+            {
               "item_id": 18328,
               "item_name": "Shadewood Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
               "dps_delta": -0.42372567141943657
-            },
-            {
-              "item_id": 22337,
-              "item_name": "Shroud of Domination",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.43918074293418385,
-              "verified": true
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 240030,
-          "item_name": "Inquisition Breastplate",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 183.49693361061247,
+          "item_id": 22191,
+          "item_name": "Obsidian Mail Tunic",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "sim_dps": 158.56090296115096,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 22191,
-              "item_name": "Obsidian Mail Tunic",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -1.4584046186767166
-            },
             {
               "item_id": 252484,
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.6291266404312212
+              "dps_delta": -0.17072202175450477
+            },
+            {
+              "item_id": 14637,
+              "item_name": "Cadaverous Armor",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov",
+              "dps_delta": -0.20340811674907414
             },
             {
               "item_id": 23087,
               "item_name": "Breastplate of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -10.046033973199627,
+              "dps_delta": -6.364329510506963,
               "verified": true
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 240023,
-          "item_name": "Inquisition Vambraces",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 183.49693361061247,
+          "item_id": 19578,
+          "item_name": "Berserker Bracers",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 19578,
-              "item_name": "Berserker Bracers",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -1.1075946568366624
-            },
             {
               "item_id": 19582,
               "item_name": "Windtalker's Wristguards",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.2260062255031894
+              "dps_delta": -0.11841156866652687
+            },
+            {
+              "item_id": 18533,
+              "item_name": "Gordok Bracers of Power",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Gordok Mastiff",
+              "dps_delta": -0.2932707891678864
             },
             {
               "item_id": 23090,
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -6.298389633995299,
+              "dps_delta": -3.013227875420455,
               "verified": true
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 240028,
-          "item_name": "Inquisition Gloves",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 272095,
+          "item_name": "Raider Gauntlets",
+          "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 183.49693361061247,
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272095,
-              "item_name": "Raider Gauntlets",
+              "item_id": 227817,
+              "item_name": "Radiant Gloves of the Dawn",
               "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1.1207294912584156
+              "source": "Argent Quartermaster Hasana",
+              "dps_delta": -0.36451988708657457
             },
             {
-              "item_id": 240036,
-              "item_name": "Inquisition Gauntlets",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.4295681770159232
+              "item_id": 19049,
+              "item_name": "Timbermaw Brawlers",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.480173323255102
             },
             {
               "item_id": 18326,
               "item_name": "Razor Gauntlets",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -5.685644955627936,
+              "dps_delta": -3.239207246448501,
               "verified": true
             }
           ]
         },
         {
           "slot": "waist",
-          "item_id": 240024,
-          "item_name": "Inquisition Belt",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 227807,
+          "item_name": "Dense Timbermaw Belt",
+          "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 86.72360151177642,
+          "score": 64,
           "verified": true,
           "alternatives": [
             {
@@ -6000,87 +5989,87 @@
               "item_name": "Radiant Girdle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.1086861776728476
+              "dps_delta": 0,
+              "verified": true
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.266310889923347
+              "dps_delta": -0.2729530780886991
             },
             {
-              "item_id": 227807,
-              "item_name": "Dense Timbermaw Belt",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -3.735002171100348,
-              "verified": true
+              "item_id": 22197,
+              "item_name": "Heavy Obsidian Belt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -0.612007271755281
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 240026,
-          "item_name": "Inquisition Leggings",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "sim_dps": 183.49693361061247,
+          "item_id": 22385,
+          "item_name": "Titanic Leggings",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 22385,
-              "item_name": "Titanic Leggings",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -1.8667162282700416
-            },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689446
+              "dps_delta": -0.14416480749890279
+            },
+            {
+              "item_id": 22651,
+              "item_name": "Outrider's Plate Legguards",
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
+              "dps_delta": -0.37855488266351295
             },
             {
               "item_id": 14554,
               "item_name": "Cloudkeeper Legplates",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -8.055859788343042,
+              "dps_delta": -5.097916720504571,
               "verified": true
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 240029,
-          "item_name": "Inquisition Greaves",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 86.02145008013463,
+          "item_id": 275618,
+          "item_name": "Scalegut Treaders",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 40.708729189723094,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 13210,
-              "item_name": "Pads of the Dread Wolf",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Halycon",
-              "dps_delta": -2.0118187218416055
-            },
             {
               "item_id": 275627,
               "item_name": "Clutchlord's Stompers",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.0992483320921265
+              "dps_delta": -0.11841156866595161
             },
             {
-              "item_id": 275618,
-              "item_name": "Scalegut Treaders",
+              "item_id": 275624,
+              "item_name": "Goregasher Stompers",
               "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -4.9497200970458834,
+              "source": "Blacksmithing",
+              "dps_delta": -0.11841156866623924
+            },
+            {
+              "item_id": 13210,
+              "item_name": "Pads of the Dread Wolf",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon",
+              "dps_delta": -0.421121567487063,
               "verified": true
             }
           ]
@@ -6091,7 +6080,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 183.49693361061247,
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6114,7 +6103,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.885651162023805,
+              "dps_delta": -4.53009495265681,
               "verified": true
             }
           ]
@@ -6125,7 +6114,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 183.49693361061247,
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "alternatives": [
             {
@@ -6147,7 +6136,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.134738913455465,
+              "dps_delta": -3.8972409385994524,
               "verified": true
             }
           ]
@@ -6158,7 +6147,7 @@
           "item_name": "Second Wind",
           "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
-          "sim_dps": 183.49693361061247,
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "alternatives": [
             {
@@ -6180,7 +6169,7 @@
               "item_name": "Darkmoon Card: Maelstrom",
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck",
-              "dps_delta": -2.549851513175355,
+              "dps_delta": -2.16554138273014,
               "verified": true
             }
           ]
@@ -6191,7 +6180,7 @@
           "item_name": "Draconic Infused Emblem",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 183.49693361061247,
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "alternatives": [
             {
@@ -6213,7 +6202,7 @@
               "item_name": "Darkmoon Card: Maelstrom",
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck",
-              "dps_delta": -1.0724559468548875,
+              "dps_delta": -0.9304691591520111,
               "verified": true
             }
           ]
@@ -6224,7 +6213,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 183.49693361061247,
+          "sim_dps": 158.56090296115096,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6247,7 +6236,7 @@
               "item_name": "Blackblade of Shahram",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -4.2104271973942105,
+              "dps_delta": -3.778119278483331,
               "verified": true
             }
           ]
@@ -6264,8 +6253,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 183.49693361061247,
-      "no_source_count": 1635,
+      "set_dps": 158.56090296115096,
+      "no_source_count": 1667,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6284,24 +6273,24 @@
         "4988 Burning Obsidian Band"
       ],
       "new_at_band": [
-        "head: Inquisition Helmet",
+        "head: Lionheart Helm",
         "neck: Imperial Jewel",
-        "shoulder: Inquisition Shoulderplates",
+        "shoulder: Defiler's Plate Spaulders",
         "back: Deathguard's Cloak",
-        "chest: Inquisition Breastplate",
-        "wrist: Inquisition Vambraces",
-        "hands: Inquisition Gloves",
-        "waist: Inquisition Belt",
-        "legs: Inquisition Leggings",
-        "feet: Inquisition Greaves",
+        "chest: Obsidian Mail Tunic",
+        "wrist: Berserker Bracers",
+        "hands: Raider Gauntlets",
+        "waist: Dense Timbermaw Belt",
+        "legs: Titanic Leggings",
+        "feet: Scalegut Treaders",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
         "trinket1: Second Wind",
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.139798669,
-      "verify_run_seconds": 1.032749423,
+      "weights_run_seconds": 1.495150014,
+      "verify_run_seconds": 1.309704252,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -6309,11 +6298,11 @@
         },
         "chest": {
           "eligible": 779,
-          "sourced": 649
+          "sourced": 645
         },
         "feet": {
           "eligible": 678,
-          "sourced": 561
+          "sourced": 557
         },
         "finger1": {
           "eligible": 367,
@@ -6325,15 +6314,15 @@
         },
         "hands": {
           "eligible": 694,
-          "sourced": 569
+          "sourced": 565
         },
         "head": {
           "eligible": 505,
-          "sourced": 410
+          "sourced": 406
         },
         "legs": {
           "eligible": 677,
-          "sourced": 547
+          "sourced": 543
         },
         "main_hand": {
           "eligible": 679,
@@ -6353,7 +6342,7 @@
         },
         "shoulder": {
           "eligible": 525,
-          "sourced": 423
+          "sourced": 419
         },
         "trinket1": {
           "eligible": 175,
@@ -6365,11 +6354,11 @@
         },
         "waist": {
           "eligible": 629,
-          "sourced": 531
+          "sourced": 527
         },
         "wrist": {
           "eligible": 532,
-          "sourced": 434
+          "sourced": 430
         }
       },
       "reference_dps_per_point": 0.04371480512540426,

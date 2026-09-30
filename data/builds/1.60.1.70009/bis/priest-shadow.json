@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T17:48:53Z",
+  "generated_at": "2026-09-30T18:42:40Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -923,8 +923,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.660512331,
-      "verify_run_seconds": 0.798353527,
+      "weights_run_seconds": 0.889050761,
+      "verify_run_seconds": 1.031455883,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1986,8 +1986,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.660512331,
-      "verify_run_seconds": 0.714258088,
+      "weights_run_seconds": 0.889050761,
+      "verify_run_seconds": 0.966877725,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2666,8 +2666,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.557632385,
-      "verify_run_seconds": 0.55433272,
+      "weights_run_seconds": 0.719400036,
+      "verify_run_seconds": 0.722992473,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3353,8 +3353,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.557632385,
-      "verify_run_seconds": 0.571480585,
+      "weights_run_seconds": 0.719400036,
+      "verify_run_seconds": 0.729330967,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4004,8 +4004,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.597401411,
-      "verify_run_seconds": 0.541347698,
+      "weights_run_seconds": 0.763257213,
+      "verify_run_seconds": 0.695229099,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4649,8 +4649,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.597401411,
-      "verify_run_seconds": 0.588647244,
+      "weights_run_seconds": 0.763257213,
+      "verify_run_seconds": 0.738328652,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5324,8 +5324,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.609522574,
-      "verify_run_seconds": 0.618681142,
+      "weights_run_seconds": 0.747888746,
+      "verify_run_seconds": 0.769700041,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5491,7 +5491,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.2699444807178655
+              "dps_delta": -1.2699444807178657
             }
           ]
         },
@@ -6007,8 +6007,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.609522574,
-      "verify_run_seconds": 0.607999729,
+      "weights_run_seconds": 0.747888746,
+      "verify_run_seconds": 0.791645583,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6162,19 +6162,19 @@
               "dps_delta": 0
             },
             {
-              "item_id": 239585,
-              "item_name": "Circlet of Revelation",
+              "item_id": 226957,
+              "item_name": "Virtuous Cowl",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.0984488238857466,
-              "verified": true
+              "source": "Mokvar",
+              "dps_delta": -1.7649985798071097
             },
             {
               "item_id": 231622,
               "item_name": "Field Marshal's Satin Hood",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.34417276498226
+              "dps_delta": -2.4134069702944885,
+              "verified": true
             }
           ]
         },
@@ -6188,19 +6188,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.4909276285918054,
-              "verified": true
-            },
-            {
               "item_id": 15856,
               "item_name": "Archlight Talisman",
               "source_kind": "quest",
               "source": "Hidden Treasures",
               "dps_delta": -0.7359102738735083
+            },
+            {
+              "item_id": 22149,
+              "item_name": "Beads of Ogre Mojo",
+              "source_kind": "quest",
+              "source": "Falrin's Vendetta",
+              "dps_delta": -0.869374281752954,
+              "verified": true
             },
             {
               "item_id": 14558,
@@ -6233,7 +6233,7 @@
               "source": "Captain Dirgehammer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 267.2603757813852
+              "sim_dps": 255.14763640447512
             },
             {
               "item_id": 227808,
@@ -6243,11 +6243,11 @@
               "dps_delta": -0.09042386835717654
             },
             {
-              "item_id": 239586,
-              "item_name": "Shoulderpads of Revelation",
+              "item_id": 226955,
+              "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.22371289589982357
+              "source": "Mokvar",
+              "dps_delta": -0.4825878106531325
             }
           ]
         },
@@ -6286,11 +6286,11 @@
         },
         {
           "slot": "chest",
-          "item_id": 239591,
-          "item_name": "Robe of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 231618,
+          "item_name": "Field Marshal's Satin Robe",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 75.98848051068084,
+          "score": 66.31797401424112,
           "verified": true,
           "alternatives": [
             {
@@ -6298,59 +6298,66 @@
               "item_name": "Field Marshal's Satin Vestments",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.0832359546748587
+              "dps_delta": 0
+            },
+            {
+              "item_id": 226960,
+              "item_name": "Virtuous Gown",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -2.1169910549994606
             },
             {
               "item_id": 231624,
               "item_name": "Field Marshal's Satin Tunic",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.4274087196571186
-            },
-            {
-              "item_id": 231618,
-              "item_name": "Field Marshal's Satin Robe",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -3.658918298477545,
+              "dps_delta": -2.4134069702944885,
               "verified": true
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 239588,
-          "item_name": "Bindings of Revelation",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 39.991300668375885,
+          "item_id": 19595,
+          "item_name": "Dryad's Wrist Bindings",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 31.519421146926035,
           "verified": true,
-          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +3.1 DPS (267.3 vs 264.2 set DPS)",
-          "dps_delta": 3.080693247352883,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19596): kept the pick, +0.7 DPS (255.1 vs 254.4 set DPS)",
+          "dps_delta": 0.7362899236231044,
           "alternatives": [
-            {
-              "item_id": 19596,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -1.4395793259943253
-            },
             {
               "item_id": 18497,
               "item_name": "Sublime Wristguards",
               "source_kind": "dungeon",
               "source": "Dire Maul: Guard Slip'kik",
-              "dps_delta": -1.8025383924785752
+              "dps_delta": -0.8535659157332554
+            },
+            {
+              "item_id": 254123,
+              "item_name": "Runecloth Cuffs",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.9655803128151105
+            },
+            {
+              "item_id": 17606,
+              "item_name": "Marshal's Satin Bracers",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": -0.9981374328316877
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 239584,
-          "item_name": "Gloves of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 272097,
+          "item_name": "Raider Handwraps",
+          "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "score": 49.13368668626546,
+          "score": 40.12804637087537,
           "verified": true,
           "alternatives": [
             {
@@ -6358,21 +6365,21 @@
               "item_name": "Marshal's Satin Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.1945917996337092
+              "dps_delta": -0.18583042936924052
+            },
+            {
+              "item_id": 226958,
+              "item_name": "Virtuous Hands",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -0.6338880176966608
             },
             {
               "item_id": 231617,
               "item_name": "Marshal's Satin Grips",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.1945917996337092
-            },
-            {
-              "item_id": 272097,
-              "item_name": "Raider Handwraps",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -3.1768810568196955,
+              "dps_delta": -1.5897978354432212,
               "verified": true
             }
           ]
@@ -6387,69 +6394,63 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 239590,
-              "item_name": "Belt of Revelation",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 16685,
+              "item_name": "Magister's Belt",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Smolderthorn Mystic",
+              "dps_delta": -3.4053589671952174
+            },
+            {
+              "item_id": 12589,
+              "item_name": "Dustfeather Sash",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Solakar Flamewreath",
+              "dps_delta": -3.58119725565945
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.263624467651988
-            },
-            {
-              "item_id": 16685,
-              "item_name": "Magister's Belt",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Smolderthorn Mystic",
-              "dps_delta": -3.4053589671952174
+              "dps_delta": -3.9943282556091617,
+              "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 239587,
-          "item_name": "Leggings of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 231619,
+          "item_name": "Marshal's Satin Leggings",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 66.08332490309424,
+          "score": 56.988480510680844,
           "verified": true,
+          "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (id 22752): kept the pick, +1.4 DPS (255.1 vs 253.7 set DPS)",
+          "dps_delta": 1.4275946562586341,
           "alternatives": [
             {
               "item_id": 17603,
               "item_name": "Marshal's Satin Pants",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.0187535111694765
+              "dps_delta": 0
             },
             {
-              "item_id": 22752,
+              "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -1.7333891545821927
-            },
-            {
-              "item_id": 231619,
-              "item_name": "Marshal's Satin Leggings",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -3.4736323153920807,
-              "verified": true
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -0.7621943525844204
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 239589,
-          "item_name": "Sandals of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 231620,
+          "item_name": "Marshal's Satin Treads",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 46.801373025010136,
+          "score": 44.41869758058358,
           "verified": true,
           "alternatives": [
             {
@@ -6457,22 +6458,22 @@
               "item_name": "Marshal's Satin Sandals",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.2668939533491814
+              "dps_delta": 0
             },
             {
               "item_id": 226959,
               "item_name": "Virtuous Slippers",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.6454864055163322
+              "dps_delta": 0,
+              "verified": true
             },
             {
-              "item_id": 231620,
-              "item_name": "Marshal's Satin Treads",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -3.0895610013848227,
-              "verified": true
+              "item_id": 18102,
+              "item_name": "Dragonrider Boots",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": -0.826650040494571
             }
           ]
         },
@@ -6482,7 +6483,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 267.2603757813852,
+          "sim_dps": 255.14763640447512,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6491,21 +6492,21 @@
               "item_name": "Channeler's Ring",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.4699579805787035
+              "dps_delta": -2.4699579805787044
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.6425328180830245
+              "dps_delta": -2.6425328180830254
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.856606375366141,
+              "dps_delta": -9.169411051198523,
               "verified": true
             }
           ]
@@ -6516,7 +6517,7 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 267.2603757813852,
+          "sim_dps": 255.14763640447512,
           "verified": true,
           "alternatives": [
             {
@@ -6538,7 +6539,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -6.841391848700425,
+              "dps_delta": -5.866639685843978,
               "verified": true
             }
           ]
@@ -6549,7 +6550,7 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 267.2603757813852,
+          "sim_dps": 255.14763640447512,
           "verified": true,
           "alternatives": [
             {
@@ -6571,7 +6572,7 @@
               "item_name": "Second Wind",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -0.7195396556733726,
+              "dps_delta": -0.42445316939532063,
               "verified": true
             }
           ]
@@ -6582,7 +6583,7 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 267.2603757813852,
+          "sim_dps": 255.14763640447512,
           "verified": true,
           "alternatives": [
             {
@@ -6604,7 +6605,7 @@
               "item_name": "Briarwood Reed",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": -1.0936198363135645,
+              "dps_delta": -1.1761259970429023,
               "verified": true
             }
           ]
@@ -6615,7 +6616,7 @@
           "item_name": "Crackling Staff",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 267.2603757813852,
+          "sim_dps": 255.14763640447512,
           "verified": true,
           "alternatives": [
             {
@@ -6637,7 +6638,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.448224348961844,
+              "dps_delta": -6.076179511879218,
               "verified": true
             }
           ]
@@ -6661,7 +6662,7 @@
               "item_name": "Ritssyn's Wand of Bad Mojo",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -2.5546086747997947,
+              "dps_delta": -3.8192694423892135,
               "verified": true
             },
             {
@@ -6681,8 +6682,8 @@
           ]
         }
       ],
-      "set_dps": 267.2603757813852,
-      "no_source_count": 1080,
+      "set_dps": 255.14763640447512,
+      "no_source_count": 1096,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6705,12 +6706,12 @@
         "neck: Amulet of the Dawn",
         "shoulder: Field Marshal's Satin Mantle",
         "back: Arcanoweave Cloak",
-        "chest: Robe of Revelation",
-        "wrist: Bindings of Revelation",
-        "hands: Gloves of Revelation",
+        "chest: Field Marshal's Satin Robe",
+        "wrist: Dryad's Wrist Bindings",
+        "hands: Raider Handwraps",
         "waist: Knowledge of the Timbermaw",
-        "legs: Leggings of Revelation",
-        "feet: Sandals of Revelation",
+        "legs: Marshal's Satin Leggings",
+        "feet: Marshal's Satin Treads",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Burst of Knowledge",
@@ -6718,8 +6719,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.646173215,
-      "verify_run_seconds": 0.622464266,
+      "weights_run_seconds": 0.80325067,
+      "verify_run_seconds": 0.785108611,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6727,11 +6728,11 @@
         },
         "chest": {
           "eligible": 340,
-          "sourced": 275
+          "sourced": 273
         },
         "feet": {
           "eligible": 222,
-          "sourced": 180
+          "sourced": 178
         },
         "finger1": {
           "eligible": 370,
@@ -6743,15 +6744,15 @@
         },
         "hands": {
           "eligible": 229,
-          "sourced": 178
+          "sourced": 176
         },
         "head": {
           "eligible": 201,
-          "sourced": 151
+          "sourced": 149
         },
         "legs": {
           "eligible": 222,
-          "sourced": 171
+          "sourced": 169
         },
         "main_hand": {
           "eligible": 565,
@@ -6771,7 +6772,7 @@
         },
         "shoulder": {
           "eligible": 176,
-          "sourced": 137
+          "sourced": 135
         },
         "trinket1": {
           "eligible": 179,
@@ -6783,11 +6784,11 @@
         },
         "waist": {
           "eligible": 202,
-          "sourced": 164
+          "sourced": 162
         },
         "wrist": {
           "eligible": 165,
-          "sourced": 120
+          "sourced": 118
         }
       },
       "reference_dps_per_point": 0.11201439708185507,
@@ -6873,19 +6874,19 @@
               "dps_delta": 0
             },
             {
-              "item_id": 239585,
-              "item_name": "Circlet of Revelation",
+              "item_id": 226957,
+              "item_name": "Virtuous Cowl",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.2768685417885877,
-              "verified": true
+              "source": "Mokvar",
+              "dps_delta": -1.7649985798071097
             },
             {
               "item_id": 231635,
               "item_name": "Warlord's Satin Hood",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.34417276498226
+              "dps_delta": -1.841724117646777,
+              "verified": true
             }
           ]
         },
@@ -6899,6 +6900,14 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 22149,
+              "item_name": "Beads of Ogre Mojo",
+              "source_kind": "quest",
+              "source": "Falrin's Vendetta",
+              "dps_delta": -0.15818091494983832,
+              "verified": true
+            },
+            {
               "item_id": 15856,
               "item_name": "Archlight Talisman",
               "source_kind": "quest",
@@ -6911,14 +6920,6 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.8804817909719406
-            },
-            {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -1.0377806914248424,
-              "verified": true
             }
           ]
         },
@@ -6944,7 +6945,7 @@
               "source": "Lady Palanseer",
               "dps_delta": 0,
               "verified": true,
-              "sim_dps": 253.25253769000625
+              "sim_dps": 241.23158301895086
             },
             {
               "item_id": 227808,
@@ -6954,11 +6955,11 @@
               "dps_delta": -0.09042386835717654
             },
             {
-              "item_id": 239586,
-              "item_name": "Shoulderpads of Revelation",
+              "item_id": 226955,
+              "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.22371289589982357
+              "source": "Mokvar",
+              "dps_delta": -0.4825878106531325
             }
           ]
         },
@@ -6976,7 +6977,7 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.9129114733771644,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -6997,65 +6998,78 @@
         },
         {
           "slot": "chest",
-          "item_id": 239591,
-          "item_name": "Robe of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 17624,
+          "item_name": "Warlord's Satin Robes",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 75.98848051068084,
+          "score": 66.31797401424112,
           "verified": true,
-          "swap_note": "confirmed by the sim against Warlord's Satin Robes (id 17624): kept the pick, +3.6 DPS (253.3 vs 249.6 set DPS)",
-          "dps_delta": 3.610063187397486,
           "alternatives": [
-            {
-              "item_id": 231612,
-              "item_name": "Warlord's Satin Robes",
-              "source_kind": "pvp",
-              "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.0832359546748587
-            },
             {
               "item_id": 231632,
               "item_name": "Warlord's Satin Tunic",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.4274087196571186
+              "dps_delta": -1.841724117646777,
+              "verified": true
+            },
+            {
+              "item_id": 226960,
+              "item_name": "Virtuous Gown",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -2.1169910549994606
+            },
+            {
+              "item_id": 16688,
+              "item_name": "Magister's Robes",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -2.3523023387189554
             }
           ]
         },
         {
           "slot": "wrist",
-          "item_id": 239588,
-          "item_name": "Bindings of Revelation",
-          "source": "Leonid Barthalomew the Revered",
-          "source_kind": "vendor",
-          "score": 39.991300668375885,
+          "item_id": 19595,
+          "item_name": "Dryad's Wrist Bindings",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 31.519421146926035,
           "verified": true,
-          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +2.8 DPS (253.3 vs 250.5 set DPS)",
-          "dps_delta": 2.781073299866307,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19596): kept the pick, +0.5 DPS (241.2 vs 240.7 set DPS)",
+          "dps_delta": 0.4878950483271751,
           "alternatives": [
-            {
-              "item_id": 19596,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -1.4395793259943253
-            },
             {
               "item_id": 18497,
               "item_name": "Sublime Wristguards",
               "source_kind": "dungeon",
               "source": "Dire Maul: Guard Slip'kik",
-              "dps_delta": -1.8025383924785752
+              "dps_delta": -0.8535659157332554
+            },
+            {
+              "item_id": 254123,
+              "item_name": "Runecloth Cuffs",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.9655803128151105
+            },
+            {
+              "item_id": 17619,
+              "item_name": "General's Satin Bracers",
+              "source_kind": "pvp",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": -0.9981374328316877
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 239584,
-          "item_name": "Gloves of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 272097,
+          "item_name": "Raider Handwraps",
+          "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "score": 49.13368668626546,
+          "score": 40.12804637087537,
           "verified": true,
           "alternatives": [
             {
@@ -7063,21 +7077,21 @@
               "item_name": "General's Satin Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.1945917996337092
+              "dps_delta": -0.18583042936924052
+            },
+            {
+              "item_id": 226958,
+              "item_name": "Virtuous Hands",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -0.6338880176966608
             },
             {
               "item_id": 231613,
               "item_name": "General's Satin Grips",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.1945917996337092
-            },
-            {
-              "item_id": 272097,
-              "item_name": "Raider Handwraps",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -2.8847588475279338,
+              "dps_delta": -2.136304349522021,
               "verified": true
             }
           ]
@@ -7092,63 +7106,69 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 239590,
-              "item_name": "Belt of Revelation",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.7366829187700148,
-              "verified": true
+              "item_id": 16685,
+              "item_name": "Magister's Belt",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Smolderthorn Mystic",
+              "dps_delta": -3.4053589671952174
+            },
+            {
+              "item_id": 12589,
+              "item_name": "Dustfeather Sash",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Solakar Flamewreath",
+              "dps_delta": -3.58119725565945
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.263624467651988
-            },
-            {
-              "item_id": 16685,
-              "item_name": "Magister's Belt",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Smolderthorn Mystic",
-              "dps_delta": -3.4053589671952174
+              "dps_delta": -4.414530150024916,
+              "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 239587,
-          "item_name": "Leggings of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 17625,
+          "item_name": "General's Satin Leggings",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 66.08332490309424,
+          "score": 56.988480510680844,
           "verified": true,
-          "swap_note": "confirmed by the sim against General's Satin Leggings (id 17625): kept the pick, +2.9 DPS (253.3 vs 250.4 set DPS)",
-          "dps_delta": 2.851436685068734,
           "alternatives": [
-            {
-              "item_id": 231614,
-              "item_name": "General's Satin Leggings",
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.0187535111694765
-            },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.7333891545821927
+              "dps_delta": -0.7177947431732434,
+              "verified": true
+            },
+            {
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -0.7621943525844204
+            },
+            {
+              "item_id": 231634,
+              "item_name": "General's Satin Legguards",
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "dps_delta": -1.3441727649822608
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 239589,
-          "item_name": "Sandals of Revelation",
-          "source": "Leonid Barthalomew the Revered",
+          "item_id": 231610,
+          "item_name": "General's Satin Treads",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 46.801373025010136,
+          "score": 44.41869758058358,
           "verified": true,
           "alternatives": [
             {
@@ -7156,22 +7176,22 @@
               "item_name": "General's Satin Boots",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.2668939533491814
+              "dps_delta": 0
             },
             {
               "item_id": 226959,
               "item_name": "Virtuous Slippers",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.6454864055163322
+              "dps_delta": 0,
+              "verified": true
             },
             {
-              "item_id": 231610,
-              "item_name": "General's Satin Treads",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -2.3378457759834532,
-              "verified": true
+              "item_id": 18102,
+              "item_name": "Dragonrider Boots",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": -0.826650040494571
             }
           ]
         },
@@ -7181,7 +7201,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 253.25253769000625,
+          "sim_dps": 241.23158301895086,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7204,7 +7224,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.856396806124707,
+              "dps_delta": -8.869249445436822,
               "verified": true
             }
           ]
@@ -7215,7 +7235,7 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 253.25253769000625,
+          "sim_dps": 241.23158301895086,
           "verified": true,
           "alternatives": [
             {
@@ -7237,7 +7257,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -6.445937511032639,
+              "dps_delta": -5.743267283930436,
               "verified": true
             }
           ]
@@ -7248,10 +7268,10 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 253.25253769000625,
+          "sim_dps": 241.23158301895086,
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +11.8 DPS (253.3 vs 241.5 set DPS)",
-          "dps_delta": 11.77766641112882,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +10.8 DPS (241.2 vs 230.5 set DPS)",
+          "dps_delta": 10.766360360775508,
           "alternatives": [
             {
               "item_id": 12930,
@@ -7282,7 +7302,7 @@
           "item_name": "Second Wind",
           "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
-          "sim_dps": 253.25253769000625,
+          "sim_dps": 241.23158301895086,
           "verified": true,
           "alternatives": [
             {
@@ -7304,7 +7324,7 @@
               "item_name": "Draconic Infused Emblem",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -3.829171899444077,
+              "dps_delta": -3.4334449122606543,
               "verified": true
             }
           ]
@@ -7315,7 +7335,7 @@
           "item_name": "Amethyst War Staff",
           "source": "Azure Templar",
           "source_kind": "world",
-          "sim_dps": 253.25253769000625,
+          "sim_dps": 241.23158301895086,
           "verified": true,
           "alternatives": [
             {
@@ -7337,7 +7357,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.008149018424177,
+              "dps_delta": -4.491108849653699,
               "verified": true
             }
           ]
@@ -7361,7 +7381,7 @@
               "item_name": "Ritssyn's Wand of Bad Mojo",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -1.7543253469202114,
+              "dps_delta": -3.8455615203777143,
               "verified": true
             },
             {
@@ -7381,8 +7401,8 @@
           ]
         }
       ],
-      "set_dps": 253.25253769000625,
-      "no_source_count": 1071,
+      "set_dps": 241.23158301895086,
+      "no_source_count": 1087,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7405,12 +7425,12 @@
         "neck: Amulet of the Dawn",
         "shoulder: Warlord's Satin Mantle",
         "back: Arcanoweave Cloak",
-        "chest: Robe of Revelation",
-        "wrist: Bindings of Revelation",
-        "hands: Gloves of Revelation",
+        "chest: Warlord's Satin Robes",
+        "wrist: Dryad's Wrist Bindings",
+        "hands: Raider Handwraps",
         "waist: Knowledge of the Timbermaw",
-        "legs: Leggings of Revelation",
-        "feet: Sandals of Revelation",
+        "legs: General's Satin Leggings",
+        "feet: General's Satin Treads",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Burst of Knowledge",
@@ -7418,8 +7438,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.646173215,
-      "verify_run_seconds": 0.622821277,
+      "weights_run_seconds": 0.80325067,
+      "verify_run_seconds": 0.760048592,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7427,11 +7447,11 @@
         },
         "chest": {
           "eligible": 338,
-          "sourced": 271
+          "sourced": 269
         },
         "feet": {
           "eligible": 222,
-          "sourced": 179
+          "sourced": 177
         },
         "finger1": {
           "eligible": 373,
@@ -7443,15 +7463,15 @@
         },
         "hands": {
           "eligible": 232,
-          "sourced": 180
+          "sourced": 178
         },
         "head": {
           "eligible": 201,
-          "sourced": 151
+          "sourced": 149
         },
         "legs": {
           "eligible": 221,
-          "sourced": 172
+          "sourced": 170
         },
         "main_hand": {
           "eligible": 570,
@@ -7471,7 +7491,7 @@
         },
         "shoulder": {
           "eligible": 175,
-          "sourced": 136
+          "sourced": 134
         },
         "trinket1": {
           "eligible": 178,
@@ -7483,11 +7503,11 @@
         },
         "waist": {
           "eligible": 202,
-          "sourced": 162
+          "sourced": 160
         },
         "wrist": {
           "eligible": 166,
-          "sourced": 124
+          "sourced": 122
         }
       },
       "reference_dps_per_point": 0.11201439708185507,

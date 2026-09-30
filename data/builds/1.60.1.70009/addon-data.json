@@ -8515,9 +8515,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240072,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 226773,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22657,
@@ -8525,9 +8525,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240070,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -8535,34 +8535,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240075,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 226776,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "wrist": {
-              "item_id": 240068,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240073,
+              "item_id": 272097,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 240069,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240071,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252486,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 240074,
+              "item_id": 226774,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 234032,
@@ -8597,9 +8597,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240072,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 226773,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22657,
@@ -8607,9 +8607,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240070,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -8617,34 +8617,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240075,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 226776,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "wrist": {
-              "item_id": 240068,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240073,
+              "item_id": 226777,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Mokvar"
             },
             "waist": {
-              "item_id": 240069,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240071,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252486,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 240090,
+              "item_id": 226774,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 234032,
@@ -8680,16 +8680,16 @@
         },
         "new_at_band": {
           "alliance": [
-            240072,
+            226773,
             22657,
-            240070,
+            227808,
             272411,
-            240075,
-            240068,
-            240073,
-            240069,
-            240071,
-            240074,
+            226776,
+            19595,
+            272097,
+            228190,
+            252486,
+            226774,
             234032,
             20682,
             11832,
@@ -8698,16 +8698,15 @@
             23197
           ],
           "horde": [
-            240072,
+            226773,
             22657,
-            240070,
+            227808,
             272411,
-            240075,
-            240068,
-            240073,
-            240069,
-            240071,
-            240090,
+            226776,
+            19595,
+            228190,
+            252486,
+            226774,
             234032,
             20682,
             11832,
@@ -9460,9 +9459,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240064,
+              "item_id": 231689,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 19491,
@@ -9470,9 +9469,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 240062,
+              "item_id": 231693,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 13340,
@@ -9480,34 +9479,34 @@
               "source": "Stratholme: Baron Rivendare"
             },
             "chest": {
-              "item_id": 240067,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 240060,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19587,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240065,
+              "item_id": 16448,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 240061,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240063,
+              "item_id": 16450,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 240066,
+              "item_id": 231692,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234034,
@@ -9542,9 +9541,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240064,
+              "item_id": 231687,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 19491,
@@ -9552,9 +9551,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 240062,
+              "item_id": 231684,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "back": {
               "item_id": 13340,
@@ -9562,34 +9561,34 @@
               "source": "Stratholme: Baron Rivendare"
             },
             "chest": {
-              "item_id": 240067,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 240060,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19587,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240065,
+              "item_id": 16555,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 240061,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240063,
+              "item_id": 16552,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "feet": {
-              "item_id": 240066,
+              "item_id": 231683,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234034,
@@ -9625,16 +9624,16 @@
         },
         "new_at_band": {
           "alliance": [
-            240064,
+            231689,
             19491,
-            240062,
+            231693,
             13340,
-            240067,
-            240060,
-            240065,
-            240061,
-            240063,
-            240066,
+            252484,
+            19587,
+            16448,
+            227805,
+            16450,
+            231692,
             234034,
             19514,
             19289,
@@ -9643,16 +9642,16 @@
             23197
           ],
           "horde": [
-            240064,
+            231687,
             19491,
-            240062,
+            231684,
             13340,
-            240067,
-            240060,
-            240065,
-            240061,
-            240063,
-            240066,
+            252484,
+            19587,
+            16555,
+            227805,
+            16552,
+            231683,
             234034,
             19510,
             19289,
@@ -10481,9 +10480,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239532,
+              "item_id": 16465,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 19491,
@@ -10491,9 +10490,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239534,
+              "item_id": 272105,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "back": {
               "item_id": 13340,
@@ -10501,34 +10500,34 @@
               "source": "Stratholme: Baron Rivendare"
             },
             "chest": {
-              "item_id": 239529,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252483,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239536,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239531,
+              "item_id": 16463,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 239535,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239533,
+              "item_id": 237819,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239530,
+              "item_id": 231579,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 21205,
@@ -10563,9 +10562,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 239532,
+              "item_id": 231571,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 19491,
@@ -10573,9 +10572,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239534,
+              "item_id": 272105,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "back": {
               "item_id": 13340,
@@ -10583,34 +10582,34 @@
               "source": "Stratholme: Baron Rivendare"
             },
             "chest": {
-              "item_id": 239529,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252483,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239536,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239531,
+              "item_id": 231575,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 239535,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239533,
+              "item_id": 237819,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239530,
+              "item_id": 16569,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 21205,
@@ -10646,16 +10645,16 @@
         },
         "new_at_band": {
           "alliance": [
-            239532,
+            16465,
             19491,
-            239534,
+            272105,
             13340,
-            239529,
-            239536,
-            239531,
-            239535,
-            239533,
-            239530,
+            252483,
+            18375,
+            16463,
+            227807,
+            237819,
+            231579,
             21205,
             272408,
             11832,
@@ -10664,16 +10663,16 @@
             279273
           ],
           "horde": [
-            239532,
+            231571,
             19491,
-            239534,
+            272105,
             13340,
-            239529,
-            239536,
-            239531,
-            239535,
-            239533,
-            239530,
+            252483,
+            18375,
+            231575,
+            227807,
+            237819,
+            16569,
             21205,
             272408,
             11832,
@@ -11502,9 +11501,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239532,
+              "item_id": 16465,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 19491,
@@ -11512,9 +11511,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239534,
+              "item_id": 272105,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "back": {
               "item_id": 13340,
@@ -11522,34 +11521,34 @@
               "source": "Stratholme: Baron Rivendare"
             },
             "chest": {
-              "item_id": 239529,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252483,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239536,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239531,
+              "item_id": 16463,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 239535,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239533,
+              "item_id": 237819,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239530,
+              "item_id": 231579,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 21205,
@@ -11584,9 +11583,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 239532,
+              "item_id": 231571,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 19491,
@@ -11594,9 +11593,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239534,
+              "item_id": 272105,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "back": {
               "item_id": 13340,
@@ -11604,34 +11603,34 @@
               "source": "Stratholme: Baron Rivendare"
             },
             "chest": {
-              "item_id": 239529,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252483,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239536,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239531,
+              "item_id": 231575,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 239535,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239533,
+              "item_id": 237819,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239530,
+              "item_id": 16569,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 21205,
@@ -11644,14 +11643,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
-            },
-            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village"
+            },
+            "trinket2": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 250619,
@@ -11667,16 +11666,16 @@
         },
         "new_at_band": {
           "alliance": [
-            239532,
+            16465,
             19491,
-            239534,
+            272105,
             13340,
-            239529,
-            239536,
-            239531,
-            239535,
-            239533,
-            239530,
+            252483,
+            18375,
+            16463,
+            227807,
+            237819,
+            231579,
             21205,
             19325,
             11832,
@@ -11685,20 +11684,19 @@
             279273
           ],
           "horde": [
-            239532,
+            231571,
             19491,
-            239534,
+            272105,
             13340,
-            239529,
-            239536,
-            239531,
-            239535,
-            239533,
-            239530,
+            252483,
+            18375,
+            231575,
+            227807,
+            237819,
+            16569,
             21205,
             19325,
             11832,
-            19120,
             250619,
             279273
           ]
@@ -12545,9 +12543,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239532,
+              "item_id": 231562,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 19491,
@@ -12555,9 +12553,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239534,
+              "item_id": 231557,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 20073,
@@ -12565,34 +12563,34 @@
               "source": "The League of Arathor"
             },
             "chest": {
-              "item_id": 239529,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22191,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 239536,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19582,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 239531,
+              "item_id": 16463,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 239535,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239533,
+              "item_id": 231558,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 239530,
+              "item_id": 231561,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 21205,
@@ -12603,6 +12601,93 @@
               "item_id": 19514,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
+            },
+            "trinket1": {
+              "item_id": 19289,
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck"
+            },
+            "trinket2": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "main_hand": {
+              "item_id": 1728,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
+            "off_hand": {
+              "item_id": 21520,
+              "source_kind": "quest",
+              "source": "Treasure of the Timeless One"
+            },
+            "ranged": {
+              "item_id": 12653,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 231568,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
+            },
+            "neck": {
+              "item_id": 19491,
+              "source_kind": "quest",
+              "source": "1200 Tickets - Amulet of the Darkmoon"
+            },
+            "shoulder": {
+              "item_id": 231565,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
+            },
+            "back": {
+              "item_id": 20068,
+              "source_kind": "rep",
+              "source": "The Defilers"
+            },
+            "chest": {
+              "item_id": 22191,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
+            },
+            "wrist": {
+              "item_id": 19582,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
+            },
+            "hands": {
+              "item_id": 231569,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
+            },
+            "waist": {
+              "item_id": 227807,
+              "source_kind": "vendor",
+              "source": "Meilosh"
+            },
+            "legs": {
+              "item_id": 231567,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
+            },
+            "feet": {
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
+            },
+            "finger1": {
+              "item_id": 21205,
+              "source_kind": "quest",
+              "source": "The Changing of Paths - Protector No More"
+            },
+            "finger2": {
+              "item_id": 19510,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "trinket1": {
               "item_id": 11832,
@@ -12629,130 +12714,43 @@
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
             }
-          },
-          "horde": {
-            "head": {
-              "item_id": 239532,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "neck": {
-              "item_id": 19491,
-              "source_kind": "quest",
-              "source": "1200 Tickets - Amulet of the Darkmoon"
-            },
-            "shoulder": {
-              "item_id": 239534,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "back": {
-              "item_id": 20068,
-              "source_kind": "rep",
-              "source": "The Defilers"
-            },
-            "chest": {
-              "item_id": 239529,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "wrist": {
-              "item_id": 239536,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "hands": {
-              "item_id": 239531,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "waist": {
-              "item_id": 239535,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "legs": {
-              "item_id": 239533,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "feet": {
-              "item_id": 239530,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "finger1": {
-              "item_id": 21205,
-              "source_kind": "quest",
-              "source": "The Changing of Paths - Protector No More"
-            },
-            "finger2": {
-              "item_id": 19510,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
-            "trinket1": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
-            },
-            "trinket2": {
-              "item_id": 11819,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach"
-            },
-            "main_hand": {
-              "item_id": 1728,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "off_hand": {
-              "item_id": 21520,
-              "source_kind": "quest",
-              "source": "Treasure of the Timeless One"
-            },
-            "ranged": {
-              "item_id": 12653,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
-            }
           }
         },
         "new_at_band": {
           "alliance": [
-            239532,
+            231562,
             19491,
-            239534,
+            231557,
             20073,
-            239529,
-            239536,
-            239531,
-            239535,
-            239533,
-            239530,
+            22191,
+            19582,
+            16463,
+            227807,
+            231558,
+            231561,
             21205,
             19514,
-            11832,
             19289,
+            11832,
             1728,
             21520,
             12653
           ],
           "horde": [
-            239532,
+            231568,
             19491,
-            239534,
+            231565,
             20068,
-            239529,
-            239536,
-            239531,
-            239535,
-            239533,
-            239530,
+            22191,
+            19582,
+            231569,
+            227807,
+            231567,
+            275618,
             21205,
             19510,
+            11832,
             19289,
-            11819,
             1728,
             21520,
             12653
@@ -13537,9 +13535,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240056,
+              "item_id": 16441,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 23125,
@@ -13547,9 +13545,9 @@
               "source": "Stratholme: Balzaphon"
             },
             "shoulder": {
-              "item_id": 240054,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -13557,34 +13555,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240059,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14152,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240052,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240057,
+              "item_id": 231608,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 240053,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240055,
+              "item_id": 237815,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 16437,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234032,
@@ -13619,9 +13617,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240056,
+              "item_id": 16533,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 23125,
@@ -13629,9 +13627,9 @@
               "source": "Stratholme: Balzaphon"
             },
             "shoulder": {
-              "item_id": 240054,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -13639,34 +13637,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240059,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14152,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240052,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240057,
+              "item_id": 231599,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 240053,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240055,
+              "item_id": 237815,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 16539,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -13702,16 +13700,16 @@
         },
         "new_at_band": {
           "alliance": [
-            240056,
+            16441,
             23125,
-            240054,
+            227808,
             272411,
-            240059,
-            240052,
-            240057,
-            240053,
-            240055,
-            240050,
+            14152,
+            19595,
+            231608,
+            228190,
+            237815,
+            16437,
             234032,
             20682,
             12930,
@@ -13720,16 +13718,16 @@
             279246
           ],
           "horde": [
-            240056,
+            16533,
             23125,
-            240054,
+            227808,
             272411,
-            240059,
-            240052,
-            240057,
-            240053,
-            240055,
-            240050,
+            14152,
+            19595,
+            231599,
+            228190,
+            237815,
+            16539,
             234032,
             20682,
             12930,
@@ -14520,19 +14518,19 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240056,
+              "item_id": 16441,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
-              "item_id": 19601,
+              "item_id": 22657,
               "source_kind": "quest",
-              "source": "The Jewel of Kajaro"
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240054,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -14540,34 +14538,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240059,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14152,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240052,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240057,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
-              "item_id": 240053,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240055,
+              "item_id": 16442,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 16437,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234032,
@@ -14602,9 +14600,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240056,
+              "item_id": 16533,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 22657,
@@ -14612,9 +14610,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240054,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -14622,34 +14620,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240059,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14152,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240052,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240057,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
-              "item_id": 240053,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18405,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
-              "item_id": 240055,
+              "item_id": 237815,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 16539,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -14685,16 +14683,16 @@
         },
         "new_at_band": {
           "alliance": [
-            240056,
-            19601,
-            240054,
+            16441,
+            22657,
+            227808,
             272411,
-            240059,
-            240052,
-            240057,
-            240053,
-            240055,
-            240050,
+            14152,
+            19595,
+            22066,
+            228190,
+            16442,
+            16437,
             234032,
             20682,
             11832,
@@ -14703,16 +14701,16 @@
             279246
           ],
           "horde": [
-            240056,
+            16533,
             22657,
-            240054,
+            227808,
             272411,
-            240059,
-            240052,
-            240057,
-            240053,
-            240055,
-            240050,
+            14152,
+            19595,
+            22066,
+            18405,
+            237815,
+            16539,
             234032,
             20682,
             11832,
@@ -15507,9 +15505,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240056,
+              "item_id": 16441,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 22657,
@@ -15517,9 +15515,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240054,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -15527,34 +15525,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240059,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14152,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240052,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240057,
+              "item_id": 231608,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 240053,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240055,
+              "item_id": 237815,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 16437,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234032,
@@ -15572,9 +15570,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 12930,
+              "item_id": 11832,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 19102,
@@ -15589,9 +15587,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240056,
+              "item_id": 16533,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 22657,
@@ -15599,9 +15597,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240054,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -15609,34 +15607,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240059,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14152,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240052,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240057,
+              "item_id": 231599,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 240053,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240055,
+              "item_id": 237815,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 240058,
+              "item_id": 16539,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -15672,34 +15670,34 @@
         },
         "new_at_band": {
           "alliance": [
-            240056,
+            16441,
             22657,
-            240054,
+            227808,
             272411,
-            240059,
-            240052,
-            240057,
-            240053,
-            240055,
-            240050,
+            14152,
+            19595,
+            231608,
+            228190,
+            237815,
+            16437,
             234032,
             20682,
             22678,
-            12930,
+            11832,
             19102,
             279246
           ],
           "horde": [
-            240056,
+            16533,
             22657,
-            240054,
+            227808,
             272411,
-            240059,
-            240052,
-            240057,
-            240053,
-            240055,
-            240058,
+            14152,
+            19595,
+            231599,
+            228190,
+            237815,
+            16539,
             234032,
             20682,
             11832,
@@ -16459,9 +16457,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240027,
+              "item_id": 231648,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 11933,
@@ -16469,9 +16467,9 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "shoulder": {
-              "item_id": 240025,
+              "item_id": 231651,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 20073,
@@ -16479,34 +16477,34 @@
               "source": "The League of Arathor"
             },
             "chest": {
-              "item_id": 240030,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22191,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 240023,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19578,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240028,
+              "item_id": 272095,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 240024,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240026,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22385,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "feet": {
-              "item_id": 240029,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 234034,
@@ -16519,14 +16517,14 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 11819,
+              "item_id": 11832,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach"
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "item_id": 22268,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 12592,
@@ -16536,9 +16534,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240027,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 12640,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "neck": {
               "item_id": 11933,
@@ -16546,9 +16544,9 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "shoulder": {
-              "item_id": 240025,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 20212,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "back": {
               "item_id": 20068,
@@ -16556,34 +16554,34 @@
               "source": "The Defilers"
             },
             "chest": {
-              "item_id": 240030,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22191,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 240023,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19578,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240028,
+              "item_id": 272095,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 240024,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240026,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22385,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "feet": {
-              "item_id": 240029,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 234034,
@@ -16614,33 +16612,33 @@
         },
         "new_at_band": {
           "alliance": [
-            240027,
+            231648,
             11933,
-            240025,
+            231651,
             20073,
-            240030,
-            240023,
-            240028,
-            240024,
-            240026,
-            240029,
+            22191,
+            19578,
+            272095,
+            227807,
+            22385,
+            275618,
             234034,
             19325,
-            11819,
-            19289,
+            11832,
+            22268,
             12592
           ],
           "horde": [
-            240027,
+            12640,
             11933,
-            240025,
+            20212,
             20068,
-            240030,
-            240023,
-            240028,
-            240024,
-            240026,
-            240029,
+            22191,
+            19578,
+            272095,
+            227807,
+            22385,
+            275618,
             234034,
             19325,
             11819,
@@ -17476,19 +17474,19 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 239591,
+              "item_id": 231618,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
-              "item_id": 239588,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 239584,
+              "item_id": 272097,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 228190,
@@ -17496,14 +17494,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239587,
+              "item_id": 231619,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 239589,
+              "item_id": 231620,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234032,
@@ -17558,19 +17556,19 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 239591,
+              "item_id": 17624,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "wrist": {
-              "item_id": 239588,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 239584,
+              "item_id": 272097,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 228190,
@@ -17578,14 +17576,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239587,
+              "item_id": 17625,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "feet": {
-              "item_id": 239589,
+              "item_id": 231610,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -17625,12 +17623,12 @@
             22657,
             17604,
             272411,
-            239591,
-            239588,
-            239584,
+            231618,
+            19595,
+            272097,
             228190,
-            239587,
-            239589,
+            231619,
+            231620,
             234032,
             20682,
             11832,
@@ -17643,12 +17641,12 @@
             22657,
             17622,
             272411,
-            239591,
-            239588,
-            239584,
+            17624,
+            19595,
+            272097,
             228190,
-            239587,
-            239589,
+            17625,
+            231610,
             234032,
             20682,
             11832,
@@ -18493,9 +18491,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239560,
+              "item_id": 23312,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 11933,
@@ -18503,9 +18501,9 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "shoulder": {
-              "item_id": 239559,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 20059,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "back": {
               "item_id": 20073,
@@ -18513,34 +18511,34 @@
               "source": "The League of Arathor"
             },
             "chest": {
-              "item_id": 239562,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14637,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "wrist": {
-              "item_id": 239555,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239557,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14640,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
-              "item_id": 239556,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239561,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14638,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "feet": {
-              "item_id": 239558,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 13210,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon"
             },
             "finger1": {
               "item_id": 21205,
@@ -18580,9 +18578,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 239560,
+              "item_id": 23257,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 11933,
@@ -18590,9 +18588,9 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "shoulder": {
-              "item_id": 239559,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 20194,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "back": {
               "item_id": 20068,
@@ -18600,34 +18598,34 @@
               "source": "The Defilers"
             },
             "chest": {
-              "item_id": 239562,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14637,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "wrist": {
-              "item_id": 239555,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239557,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14640,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
-              "item_id": 239556,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239561,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14638,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "feet": {
-              "item_id": 239558,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 13210,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon"
             },
             "finger1": {
               "item_id": 21205,
@@ -18668,16 +18666,16 @@
         },
         "new_at_band": {
           "alliance": [
-            239560,
+            23312,
             11933,
-            239559,
+            20059,
             20073,
-            239562,
-            239555,
-            239557,
-            239556,
-            239561,
-            239558,
+            14637,
+            18375,
+            14640,
+            227805,
+            14638,
+            13210,
             21205,
             19514,
             19289,
@@ -18687,16 +18685,16 @@
             12653
           ],
           "horde": [
-            239560,
+            23257,
             11933,
-            239559,
+            20194,
             20068,
-            239562,
-            239555,
-            239557,
-            239556,
-            239561,
-            239558,
+            14637,
+            18375,
+            14640,
+            227805,
+            14638,
+            13210,
             21205,
             19510,
             19289,
@@ -19547,9 +19545,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239560,
+              "item_id": 16455,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 19491,
@@ -19557,9 +19555,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239559,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 20059,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "back": {
               "item_id": 20073,
@@ -19567,34 +19565,34 @@
               "source": "The League of Arathor"
             },
             "chest": {
-              "item_id": 239562,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14637,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "wrist": {
-              "item_id": 239555,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239557,
+              "item_id": 272099,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 239556,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239561,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 15062,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 239558,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 13210,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon"
             },
             "finger1": {
               "item_id": 21205,
@@ -19634,9 +19632,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 239560,
+              "item_id": 16561,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 19491,
@@ -19644,9 +19642,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239559,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 20194,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "back": {
               "item_id": 20068,
@@ -19654,34 +19652,34 @@
               "source": "The Defilers"
             },
             "chest": {
-              "item_id": 239562,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14637,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "wrist": {
-              "item_id": 239555,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239557,
+              "item_id": 272099,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 239556,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239561,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 15062,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 239558,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 13210,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon"
             },
             "finger1": {
               "item_id": 21205,
@@ -19699,9 +19697,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 19120,
+              "item_id": 18465,
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "source": "Garona: A Study on Stealth and Treachery"
             },
             "main_hand": {
               "item_id": 1728,
@@ -19722,16 +19720,16 @@
         },
         "new_at_band": {
           "alliance": [
-            239560,
+            16455,
             19491,
-            239559,
+            20059,
             20073,
-            239562,
-            239555,
-            239557,
-            239556,
-            239561,
-            239558,
+            14637,
+            18375,
+            272099,
+            227805,
+            15062,
+            13210,
             21205,
             19514,
             19289,
@@ -19741,20 +19739,20 @@
             12653
           ],
           "horde": [
-            239560,
+            16561,
             19491,
-            239559,
+            20194,
             20068,
-            239562,
-            239555,
-            239557,
-            239556,
-            239561,
-            239558,
+            14637,
+            18375,
+            272099,
+            227805,
+            15062,
+            13210,
             21205,
             19510,
             19289,
-            19120,
+            18465,
             1728,
             21520,
             12653
@@ -20596,9 +20594,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239560,
+              "item_id": 23312,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 19491,
@@ -20606,9 +20604,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239559,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 20059,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "back": {
               "item_id": 20073,
@@ -20616,34 +20614,34 @@
               "source": "The League of Arathor"
             },
             "chest": {
-              "item_id": 239562,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14637,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "wrist": {
-              "item_id": 239555,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239557,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14640,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
-              "item_id": 239556,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239561,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 15062,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 239558,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 13210,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon"
             },
             "finger1": {
               "item_id": 21205,
@@ -20683,9 +20681,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 239560,
+              "item_id": 23257,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 19491,
@@ -20693,9 +20691,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239559,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 20194,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "back": {
               "item_id": 20068,
@@ -20703,34 +20701,34 @@
               "source": "The Defilers"
             },
             "chest": {
-              "item_id": 239562,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14637,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "wrist": {
-              "item_id": 239555,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 18375,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 239557,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14640,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
-              "item_id": 239556,
+              "item_id": 227805,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 239561,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 15062,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 239558,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 13210,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon"
             },
             "finger1": {
               "item_id": 21205,
@@ -20748,9 +20746,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 21522,
@@ -20771,16 +20769,16 @@
         },
         "new_at_band": {
           "alliance": [
-            239560,
+            23312,
             19491,
-            239559,
+            20059,
             20073,
-            239562,
-            239555,
-            239557,
-            239556,
-            239561,
-            239558,
+            14637,
+            18375,
+            14640,
+            227805,
+            15062,
+            13210,
             21205,
             19514,
             19289,
@@ -20790,20 +20788,20 @@
             12653
           ],
           "horde": [
-            239560,
+            23257,
             19491,
-            239559,
+            20194,
             20068,
-            239562,
-            239555,
-            239557,
-            239556,
-            239561,
-            239558,
+            14637,
+            18375,
+            14640,
+            227805,
+            15062,
+            13210,
             21205,
             19510,
             19289,
-            11815,
+            19120,
             21522,
             12590,
             12653
@@ -21553,9 +21551,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240123,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252604,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 22657,
@@ -21563,29 +21561,29 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240125,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
-              "item_id": 18510,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240109,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 16666,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "wrist": {
-              "item_id": 240127,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240122,
+              "item_id": 272097,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 228190,
@@ -21593,14 +21591,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240124,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252486,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 240110,
+              "item_id": 227007,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 234032,
@@ -21630,9 +21628,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240123,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 227002,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22657,
@@ -21640,29 +21638,29 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240125,
+              "item_id": 272958,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "back": {
-              "item_id": 272411,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
+              "item_id": 18510,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 240109,
+              "item_id": 231662,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "wrist": {
-              "item_id": 240127,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240122,
+              "item_id": 272097,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 228190,
@@ -21670,14 +21668,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240124,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252486,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 240110,
+              "item_id": 16573,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -21708,16 +21706,16 @@
         },
         "new_at_band": {
           "alliance": [
-            240123,
+            252604,
             22657,
-            240125,
-            18510,
-            240109,
-            240127,
-            240122,
+            227808,
+            272411,
+            16666,
+            19595,
+            272097,
             228190,
-            240124,
-            240110,
+            252486,
+            227007,
             234032,
             20682,
             11832,
@@ -21725,16 +21723,16 @@
             19102
           ],
           "horde": [
-            240123,
+            227002,
             22657,
-            240125,
-            272411,
-            240109,
-            240127,
-            240122,
+            272958,
+            18510,
+            231662,
+            19595,
+            272097,
             228190,
-            240124,
-            240110,
+            252486,
+            16573,
             234032,
             20682,
             11832,
@@ -22486,9 +22484,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240131,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 9479,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
             },
             "neck": {
               "item_id": 22659,
@@ -22496,9 +22494,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240135,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 15051,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -22506,34 +22504,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240128,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22191,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 240137,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19582,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240130,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19049,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 240136,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240134,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 15065,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 240129,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 234034,
@@ -22546,14 +22544,14 @@
               "source": "Stormpike Guard"
             },
             "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "item_id": 19289,
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 13965,
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise"
             },
             "main_hand": {
               "item_id": 19323,
@@ -22563,9 +22561,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240131,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 9479,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
             },
             "neck": {
               "item_id": 22659,
@@ -22573,9 +22571,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240135,
+              "item_id": 231654,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "back": {
               "item_id": 272414,
@@ -22583,34 +22581,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240128,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 22191,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 240137,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19582,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240130,
+              "item_id": 231655,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 240136,
+              "item_id": 227807,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240134,
+              "item_id": 231658,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "feet": {
-              "item_id": 240129,
+              "item_id": 231656,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234034,
@@ -22633,46 +22631,44 @@
               "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
-              "item_id": 13983,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            240131,
             22659,
-            240135,
+            15051,
             272414,
-            240128,
-            240137,
-            240130,
-            240136,
-            240134,
-            240129,
+            22191,
+            19582,
+            19049,
+            227807,
+            15065,
+            275618,
             234034,
             19325,
-            11832,
-            11815,
+            19289,
+            13965,
             19323
           ],
           "horde": [
-            240131,
             22659,
-            240135,
+            231654,
             272414,
-            240128,
-            240137,
-            240130,
-            240136,
-            240134,
-            240129,
+            22191,
+            19582,
+            231655,
+            227807,
+            231658,
+            231656,
             234034,
             19325,
             19289,
             11819,
-            13983
+            19323
           ]
         },
         "weights": {
@@ -23461,9 +23457,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240141,
+              "item_id": 17578,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 23125,
@@ -23471,9 +23467,9 @@
               "source": "Stratholme: Balzaphon"
             },
             "shoulder": {
-              "item_id": 240143,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 20697,
@@ -23481,34 +23477,116 @@
               "source": "Chillwind Ravager"
             },
             "chest": {
-              "item_id": 240138,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14153,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240145,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240140,
+              "item_id": 17584,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 240144,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240142,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 13170,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Highlord Omokk"
             },
             "feet": {
-              "item_id": 240139,
+              "item_id": 17583,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
+            },
+            "finger1": {
+              "item_id": 234436,
+              "source_kind": "vendor",
+              "source": "Anachronos"
+            },
+            "finger2": {
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
+            },
+            "trinket1": {
+              "item_id": 12930,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher"
+            },
+            "trinket2": {
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "main_hand": {
+              "item_id": 20654,
+              "source_kind": "world",
+              "source": "Azure Templar"
+            },
+            "ranged": {
+              "item_id": 22408,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 17591,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
+            },
+            "neck": {
+              "item_id": 23125,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balzaphon"
+            },
+            "shoulder": {
+              "item_id": 227808,
+              "source_kind": "vendor",
+              "source": "Meilosh"
+            },
+            "back": {
+              "item_id": 20697,
+              "source_kind": "world",
+              "source": "Chillwind Ravager"
+            },
+            "chest": {
+              "item_id": 14153,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            },
+            "wrist": {
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
+            },
+            "hands": {
+              "item_id": 17588,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
+            },
+            "waist": {
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
+            },
+            "legs": {
+              "item_id": 17593,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
+            },
+            "feet": {
+              "item_id": 17586,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234436,
@@ -23540,126 +23618,44 @@
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare"
             }
-          },
-          "horde": {
-            "head": {
-              "item_id": 240141,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "neck": {
-              "item_id": 23125,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Balzaphon"
-            },
-            "shoulder": {
-              "item_id": 240143,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "back": {
-              "item_id": 20697,
-              "source_kind": "world",
-              "source": "Chillwind Ravager"
-            },
-            "chest": {
-              "item_id": 240138,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "wrist": {
-              "item_id": 240145,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "hands": {
-              "item_id": 240140,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "waist": {
-              "item_id": 240144,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "legs": {
-              "item_id": 240142,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "feet": {
-              "item_id": 240139,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "finger1": {
-              "item_id": 234436,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
-              "item_id": 20682,
-              "source_kind": "world",
-              "source": "Prince Skaldrenox"
-            },
-            "trinket1": {
-              "item_id": 12930,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
-            },
-            "trinket2": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "main_hand": {
-              "item_id": 20654,
-              "source_kind": "world",
-              "source": "Azure Templar"
-            },
-            "ranged": {
-              "item_id": 279246,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            }
           }
         },
         "new_at_band": {
           "alliance": [
-            240141,
+            17578,
             23125,
-            240143,
+            227808,
             20697,
-            240138,
-            240145,
-            240140,
-            240144,
-            240142,
-            240139,
+            14153,
+            19595,
+            17584,
+            228190,
+            13170,
+            17583,
+            234436,
+            20682,
+            12930,
+            22678,
+            20654,
+            22408
+          ],
+          "horde": [
+            17591,
+            23125,
+            227808,
+            20697,
+            14153,
+            19595,
+            17588,
+            228190,
+            17593,
+            17586,
             234436,
             20682,
             22678,
             12930,
             20654,
             22408
-          ],
-          "horde": [
-            240141,
-            23125,
-            240143,
-            20697,
-            240138,
-            240145,
-            240140,
-            240144,
-            240142,
-            240139,
-            234436,
-            20682,
-            12930,
-            22678,
-            20654,
-            279246
           ]
         },
         "weights": {
@@ -24450,9 +24446,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240141,
+              "item_id": 17578,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 23125,
@@ -24460,9 +24456,9 @@
               "source": "Stratholme: Balzaphon"
             },
             "shoulder": {
-              "item_id": 240143,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -24470,34 +24466,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240138,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14153,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240145,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240140,
+              "item_id": 17584,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
-              "item_id": 240144,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240142,
+              "item_id": 17579,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 240139,
+              "item_id": 17583,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234032,
@@ -24532,9 +24528,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240141,
+              "item_id": 17591,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 23125,
@@ -24542,9 +24538,9 @@
               "source": "Stratholme: Balzaphon"
             },
             "shoulder": {
-              "item_id": 240143,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -24552,34 +24548,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240138,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14153,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240145,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240140,
+              "item_id": 17588,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 240144,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240142,
+              "item_id": 17593,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "feet": {
-              "item_id": 240139,
+              "item_id": 17586,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -24615,16 +24611,16 @@
         },
         "new_at_band": {
           "alliance": [
-            240141,
+            17578,
             23125,
-            240143,
+            227808,
             272411,
-            240138,
-            240145,
-            240140,
-            240144,
-            240142,
-            240139,
+            14153,
+            19595,
+            17584,
+            228190,
+            17579,
+            17583,
             234032,
             20682,
             22678,
@@ -24633,16 +24629,16 @@
             279246
           ],
           "horde": [
-            240141,
+            17591,
             23125,
-            240143,
+            227808,
             272411,
-            240138,
-            240145,
-            240140,
-            240144,
-            240142,
-            240139,
+            14153,
+            19595,
+            17588,
+            228190,
+            17593,
+            17586,
             234032,
             20682,
             22678,
@@ -25446,9 +25442,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 240141,
+              "item_id": 17578,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 22657,
@@ -25456,9 +25452,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240143,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -25466,34 +25462,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240138,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14153,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240145,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 240140,
+              "item_id": 272097,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 240144,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240142,
+              "item_id": 17579,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 240139,
+              "item_id": 17583,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234032,
@@ -25506,14 +25502,14 @@
               "source": "Prince Skaldrenox"
             },
             "trinket1": {
-              "item_id": 12930,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
-            },
-            "trinket2": {
               "item_id": 22678,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "trinket2": {
+              "item_id": 12930,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher"
             },
             "main_hand": {
               "item_id": 19102,
@@ -25528,9 +25524,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 240141,
+              "item_id": 17591,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 22657,
@@ -25538,9 +25534,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 240143,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -25548,34 +25544,34 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 240138,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 14153,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 240145,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 240140,
+              "item_id": 17588,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "waist": {
-              "item_id": 240144,
+              "item_id": 228190,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Meilosh"
             },
             "legs": {
-              "item_id": 240142,
+              "item_id": 17593,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "feet": {
-              "item_id": 240139,
+              "item_id": 17586,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -25611,34 +25607,34 @@
         },
         "new_at_band": {
           "alliance": [
-            240141,
+            17578,
             22657,
-            240143,
+            227808,
             272411,
-            240138,
-            240145,
-            240140,
-            240144,
-            240142,
-            240139,
+            14153,
+            19595,
+            272097,
+            228190,
+            17579,
+            17583,
             234032,
             20682,
-            12930,
             22678,
+            12930,
             19102,
             22408
           ],
           "horde": [
-            240141,
+            17591,
             22657,
-            240143,
+            227808,
             272411,
-            240138,
-            240145,
-            240140,
-            240144,
-            240142,
-            240139,
+            14153,
+            19595,
+            17588,
+            228190,
+            17593,
+            17586,
             234032,
             20682,
             12930,
@@ -26422,9 +26418,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239517,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 12640,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "neck": {
               "item_id": 19491,
@@ -26432,9 +26428,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239516,
+              "item_id": 16480,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 22337,
@@ -26442,34 +26438,34 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "chest": {
-              "item_id": 239519,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239512,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19578,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 239514,
+              "item_id": 272095,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 239513,
+              "item_id": 227814,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
-              "item_id": 239518,
+              "item_id": 237825,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239515,
+              "item_id": 16483,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234034,
@@ -26487,9 +26483,9 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "trinket2": {
-              "item_id": 19289,
+              "item_id": 13965,
               "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "source": "General Drakkisath's Demise"
             },
             "main_hand": {
               "item_id": 12592,
@@ -26504,9 +26500,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 239517,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 12640,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "neck": {
               "item_id": 19491,
@@ -26514,9 +26510,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 239516,
+              "item_id": 16544,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "back": {
               "item_id": 22337,
@@ -26524,34 +26520,34 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "chest": {
-              "item_id": 239519,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239512,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19578,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 239514,
+              "item_id": 272095,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 239513,
+              "item_id": 227814,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
-              "item_id": 239518,
+              "item_id": 237825,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239515,
+              "item_id": 16545,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234034,
@@ -26587,34 +26583,34 @@
         },
         "new_at_band": {
           "alliance": [
-            239517,
+            12640,
             19491,
-            239516,
+            16480,
             22337,
-            239519,
-            239512,
-            239514,
-            239513,
-            239518,
-            239515,
+            252484,
+            19578,
+            272095,
+            227814,
+            237825,
+            16483,
             234034,
             19514,
             11815,
-            19289,
+            13965,
             12592,
             19107
           ],
           "horde": [
-            239517,
+            12640,
             19491,
-            239516,
+            16544,
             22337,
-            239519,
-            239512,
-            239514,
-            239513,
-            239518,
-            239515,
+            252484,
+            19578,
+            272095,
+            227814,
+            237825,
+            16545,
             234034,
             19510,
             19289,
@@ -27468,9 +27464,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 239517,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 12640,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "neck": {
               "item_id": 22659,
@@ -27478,9 +27474,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 239516,
+              "item_id": 16480,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 22337,
@@ -27488,34 +27484,34 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "chest": {
-              "item_id": 239519,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239512,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19578,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 239514,
+              "item_id": 272095,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 239513,
+              "item_id": 227814,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
-              "item_id": 239518,
+              "item_id": 237825,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239515,
+              "item_id": 16483,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234034,
@@ -27555,9 +27551,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 239517,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 12640,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "neck": {
               "item_id": 22659,
@@ -27565,9 +27561,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 239516,
+              "item_id": 16544,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "back": {
               "item_id": 22337,
@@ -27575,34 +27571,34 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "chest": {
-              "item_id": 239519,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 239512,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "item_id": 19578,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 239514,
+              "item_id": 272095,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 239513,
+              "item_id": 227814,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Argent Quartermaster Hasana"
             },
             "legs": {
-              "item_id": 239518,
+              "item_id": 237825,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 239515,
+              "item_id": 16545,
               "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234034,
@@ -27615,9 +27611,9 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 19120,
+              "item_id": 20130,
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "source": "Voodoo Feathers"
             },
             "trinket2": {
               "item_id": 19289,
@@ -27643,16 +27639,16 @@
         },
         "new_at_band": {
           "alliance": [
-            239517,
+            12640,
             22659,
-            239516,
+            16480,
             22337,
-            239519,
-            239512,
-            239514,
-            239513,
-            239518,
-            239515,
+            252484,
+            19578,
+            272095,
+            227814,
+            237825,
+            16483,
             234034,
             19514,
             19289,
@@ -27662,18 +27658,19 @@
             12653
           ],
           "horde": [
-            239517,
+            12640,
             22659,
-            239516,
+            16544,
             22337,
-            239519,
-            239512,
-            239514,
-            239513,
-            239518,
-            239515,
+            252484,
+            19578,
+            272095,
+            227814,
+            237825,
+            16545,
             234034,
             19510,
+            20130,
             19289,
             21520,
             21522,
