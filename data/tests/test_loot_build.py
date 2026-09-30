@@ -598,11 +598,27 @@ def test_zone_sources_are_additive_to_world_not_a_replacement_for_it():
 
 
 def test_vendor_sources_are_one_per_npc_selling_equippable_gear():
+    """One `vendor:<npc_id>` source per npc, plus at most one
+    `vendor:<npc_id>:later` sibling (vendor-11036 lane, 2026-09-30:
+    `pipeline.loot.vendor_cost.apply_vendor_cost_gate` splits a vendor's
+    unresolvable-currency/overleveled-beta rows into that sibling,
+    `opens="later"`, the same shape `crafted:<profession>:<phase>`
+    already uses) -- never a second base id or more than one sibling
+    for the same npc.
+    """
     vendors = [s for s in loot()["sources"] if s["kind"] == "vendor"]
     assert len(vendors) >= VENDOR_SOURCES
     assert sum(len(s["items"]) for s in vendors) >= VENDOR_ITEMS
-    ids = sorted(s["id"] for s in vendors)
-    assert ids == sorted({f"vendor:{s['npc_id']}" for s in vendors})
+    base_ids = [s["id"] for s in vendors if not s["id"].endswith(":later")]
+    later_ids = [s["id"] for s in vendors if s["id"].endswith(":later")]
+    assert len(base_ids) == len(set(base_ids))
+    assert len(later_ids) == len(set(later_ids))
+    assert set(base_ids) == {
+        f"vendor:{s['npc_id']}" for s in vendors if not s["id"].endswith(":later")
+    }
+    assert set(later_ids) == {
+        f"vendor:{s['npc_id']}:later" for s in vendors if s["id"].endswith(":later")
+    }
     for source in vendors:
         assert source["name"].strip(), source["id"]
         assert source["items"], source["id"]
@@ -648,6 +664,11 @@ def test_crafted_rep_pvp_and_quest_carry_their_own_keys_and_counts():
 #: `level_max` -- the `world_drop` kind's own level range
 #: (`pipeline.models.LootSource`'s own doc), `None` on either side when
 #: classic-db's dump names no level for the pool at all.
+#:
+#: vendor-11036 lane, 2026-09-30: grown by one more, `source_note` --
+#: `pipeline.loot.vendor_cost.apply_vendor_cost_gate`'s own pipeline-only
+#: explanation of why a `vendor:<npc_id>:later` sibling is gated (never
+#: shown in player-facing copy, tenet 7).
 _OPTIONAL_SOURCE_KEYS = {
     "zone_id",
     "opens",
@@ -661,6 +682,7 @@ _OPTIONAL_SOURCE_KEYS = {
     "title",
     "npc_id",
     "bosses",
+    "source_note",
     "trash",
     "item_chances",
     "reitemised_from",
@@ -713,9 +735,12 @@ WORLD_BOSS_SOURCES = {
 
 def test_every_raid_is_gated_and_nothing_else_is():
     """Raids open later (Onyxia with the first raid phase), the six world
-    bosses open with the raids, and a crafted item whose recipe or reagent
-    is raid-bound sits in a `crafted:<profession>:<phase>` sibling source
-    (data-followups-3). Nothing else carries `opens`."""
+    bosses open with the raids, a crafted item whose recipe or reagent is
+    raid-bound sits in a `crafted:<profession>:<phase>` sibling source
+    (data-followups-3), and a vendor row with no working launch-day
+    purchase path (unresolvable `ItemExtendedCost`, or beta-overleveled
+    stock -- vendor-11036 lane, 2026-09-30) sits in a
+    `vendor:<npc_id>:later` sibling. Nothing else carries `opens`."""
     for source in loot()["sources"]:
         opens = source.get("opens")
         if source["id"] == DATED_RAID:
@@ -726,6 +751,8 @@ def test_every_raid_is_gated_and_nothing_else_is():
             assert opens == "raids-1", source["id"]
         elif source["kind"] == "crafted" and source["id"].count(":") == 2:
             assert opens in PHASES | {OPENS_LATER}, source["id"]
+        elif source["kind"] == "vendor" and source["id"].endswith(":later"):
+            assert opens == OPENS_LATER, source["id"]
         else:
             assert opens is None, source["id"]
         assert opens is None or opens in PHASES | {OPENS_LATER}
@@ -830,7 +857,15 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     Earthstrike's own case, the same item's `rep`-kind `LootSource`
     supplies) a reputation requirement for, omitted (`exclude_none`) on
     every other entry -- so both are excluded from the fixed key list
-    below the same way `opens` already is."""
+    below the same way `opens` already is.
+
+    day3 data-followups-7 lane, 2026-09-30: `classes` (the sorted class
+    slugs allowed to accept the quest at all, e.g. Fire Ruby's mage-only
+    quest 8253) and `profession`/`skill` (classic-db's own
+    `RequiredSkill`/`RequiredSkillValue`, a tradeskill or secondary skill
+    the quest itself requires) are the same kind of optional key --
+    present only when classic-db states one, omitted on every other
+    entry."""
     quests = loot()["quests"]
     assert len(quests) >= QUEST_DETAIL_ITEMS
     # data-followups-4, 2026-09-30: a superseded legacy id leaves the `quest` source but
@@ -838,7 +873,15 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     superseded = {str(row["id"]) for row in items() if row.get("superseded_by")}
     assert set(quests) - superseded == {str(i) for i in by_id()["quest"]["items"]}
     counts = {"alliance": 0, "horde": 0, "both": 0, "unknown": 0}
-    optional_keys = {"opens", "required_rep_faction", "required_rep_standing"}
+    optional_keys = {
+        "opens",
+        "required_rep_faction",
+        "required_rep_standing",
+        "classes",
+        "profession",
+        "skill",
+    }
+    secondary_skills = {"first-aid", "cooking", "fishing"}
     for item_id, entries in quests.items():
         assert entries, item_id
         for entry in entries:
@@ -855,6 +898,14 @@ def test_quests_map_carries_id_name_and_faction_per_item():
             # quest and then names a phase.
             if "opens" in entry:
                 assert entry["opens"] in PHASES | {OPENS_LATER}
+            if "classes" in entry:
+                assert entry["classes"] == sorted(entry["classes"])
+                assert set(entry["classes"]) <= set(CLASS_SLUGS.values()), item_id
+            if "profession" in entry:
+                assert entry["profession"] in set(PROFESSIONS.values()) | secondary_skills, item_id
+                assert entry.get("skill") is None or entry["skill"] > 0, item_id
+            elif "skill" in entry:
+                assert entry["skill"] is None, item_id
             assert entry["faction"] in QUEST_FACTION_VALUES
             assert entry["faction_source"] in {"classic-db", "item", "wowhead"}, item_id
             assert entry["name"].strip(), item_id
