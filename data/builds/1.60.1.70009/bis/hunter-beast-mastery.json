@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:14:16Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:41:25Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -527,8 +527,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.426504903,
-      "verify_run_seconds": 1.554703062,
+      "weights_run_seconds": 1.510316277,
+      "verify_run_seconds": 1.651230727,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1141,8 +1141,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.426504903,
-      "verify_run_seconds": 1.644740799,
+      "weights_run_seconds": 1.510316277,
+      "verify_run_seconds": 1.7318404429999998,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1861,8 +1861,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.58193303,
-      "verify_run_seconds": 1.788478487,
+      "weights_run_seconds": 1.668998231,
+      "verify_run_seconds": 1.860941438,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2568,8 +2568,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.58193303,
-      "verify_run_seconds": 1.727513625,
+      "weights_run_seconds": 1.668998231,
+      "verify_run_seconds": 1.8342194219999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3234,8 +3234,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.702436392,
-      "verify_run_seconds": 1.950622877,
+      "weights_run_seconds": 1.837619722,
+      "verify_run_seconds": 2.052425865,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3901,8 +3901,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.702436392,
-      "verify_run_seconds": 1.913005462,
+      "weights_run_seconds": 1.837619722,
+      "verify_run_seconds": 1.985754866,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4053,7 +4053,7 @@
               "item_name": "Helm of Fire",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.144431604260859,
+              "dps_delta": -2.2849306377283085,
               "verified": true
             }
           ]
@@ -4066,15 +4066,15 @@
           "source_kind": "world_drop",
           "score": 29.207691585474063,
           "verified": true,
+          "swap_note": "confirmed by the sim against Sentinel's Medallion (id 19539): kept the pick, +0.5 DPS (158.7 vs 158.3 set DPS)",
+          "dps_delta": 0.48455726139300737,
           "alternatives": [
             {
-              "item_id": 19539,
+              "item_id": 19540,
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 158.97601611982827
+              "dps_delta": -0.2483443414486104
             },
             {
               "item_id": 17772,
@@ -4106,7 +4106,7 @@
               "item_name": "Sunburn Spaulders",
               "source_kind": "vendor",
               "source": "Rettrick",
-              "dps_delta": -0.4499636754994185,
+              "dps_delta": -0.38131255156642396,
               "verified": true
             },
             {
@@ -4171,7 +4171,7 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.2861906524145468,
+              "dps_delta": -0.2812122139696953,
               "verified": true
             },
             {
@@ -4204,7 +4204,7 @@
               "item_name": "Bracers of the Stone Princess",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": 0,
+              "dps_delta": -0.2453877153617725,
               "verified": true
             },
             {
@@ -4244,7 +4244,7 @@
               "item_name": "Sergeant Major's Chain Gauntlets",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9919532877729296,
+              "dps_delta": -0.9658237661577402,
               "verified": true
             },
             {
@@ -4336,7 +4336,7 @@
               "item_name": "Fleetfoot Greaves",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Houndmaster Grebmar",
-              "dps_delta": 0,
+              "dps_delta": -0.15297005299376565,
               "verified": true
             },
             {
@@ -4363,8 +4363,8 @@
           "source_kind": "quest",
           "score": 31.45443709204899,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +2.0 DPS (159.0 vs 157.0 set DPS)",
-          "dps_delta": 1.9760438738087487,
+          "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +1.9 DPS (158.7 vs 156.8 set DPS)",
+          "dps_delta": 1.9132146721142647,
           "alternatives": [
             {
               "item_id": 17713,
@@ -4428,10 +4428,10 @@
           "item_name": "Devilsaur Eye",
           "source": "The Green Drake",
           "source_kind": "quest",
-          "sim_dps": 158.98350859997134,
+          "sim_dps": 158.74647244801608,
           "verified": true,
-          "swap_note": "confirmed by the sim against Fire Ruby (id 20036): kept the pick, +2.4 DPS (159.0 vs 156.6 set DPS)",
-          "dps_delta": 2.4287411024446897,
+          "swap_note": "confirmed by the sim against Sanctified Orb (id 20512): kept the pick, +2.9 DPS (158.7 vs 155.8 set DPS)",
+          "dps_delta": 2.9229997587841297,
           "alternatives": [
             {
               "item_id": 249469,
@@ -4453,7 +4453,7 @@
           "item_name": "Eyegouger",
           "source": "Zul'Farrak: Chief Ukorz Sandscalp",
           "source_kind": "dungeon",
-          "sim_dps": 158.98350859997134,
+          "sim_dps": 158.74647244801608,
           "verified": true,
           "alternatives": [
             {
@@ -4475,7 +4475,7 @@
               "item_name": "Hanzo Sword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.1887917837153736,
+              "dps_delta": -3.1435312059574017,
               "verified": true
             }
           ]
@@ -4491,18 +4491,10 @@
           "item_name": "Arcanite Blacksmith Hammer",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 158.98350859997134,
+          "sim_dps": 158.74647244801608,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 16004,
-              "item_name": "Dark Iron Rifle",
-              "source_kind": "crafted",
-              "source": "Engineering",
-              "dps_delta": -1.2570057698495702,
-              "verified": true
-            },
             {
               "item_id": 2824,
               "item_name": "Hurricane",
@@ -4516,11 +4508,19 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.6505971705878606
+            },
+            {
+              "item_id": 16004,
+              "item_name": "Dark Iron Rifle",
+              "source_kind": "crafted",
+              "source": "Engineering",
+              "dps_delta": -1.963195412195546,
+              "verified": true
             }
           ]
         }
       ],
-      "set_dps": 158.98350859997134,
+      "set_dps": 158.74647244801608,
       "no_source_count": 751,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -4555,8 +4555,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.741628125,
-      "verify_run_seconds": 2.057729188,
+      "weights_run_seconds": 1.834210441,
+      "verify_run_seconds": 2.140247612,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5113,11 +5113,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 20036,
-              "item_name": "Fire Ruby",
+              "item_id": 19992,
+              "item_name": "Devilsaur Tooth",
               "source_kind": "quest",
-              "source": "Destroy Morphaz",
-              "dps_delta": -1.2706919141590163,
+              "source": "The Green Drake",
+              "dps_delta": -2.235776194285222,
               "verified": true
             }
           ]
@@ -5231,8 +5231,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.741628125,
-      "verify_run_seconds": 1.9786672539999999,
+      "weights_run_seconds": 1.834210441,
+      "verify_run_seconds": 2.073187998,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5365,19 +5365,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 239540,
+              "item_name": "Dawnstalker Headpiece",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -5.05789815064179,
+              "verified": true
+            },
+            {
               "item_id": 231580,
               "item_name": "Field Marshal's Chain Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
               "dps_delta": -5.094736074883634
-            },
-            {
-              "item_id": 239540,
-              "item_name": "Dawnstalker Headpiece",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.643299689875022,
-              "verified": true
             }
           ]
         },
@@ -5424,6 +5424,14 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 239542,
+              "item_name": "Dawnstalker Spaulders",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -2.8522994918953657,
+              "verified": true
+            },
+            {
               "item_id": 272105,
               "item_name": "Darkspear Pauldrons",
               "source_kind": "vendor",
@@ -5436,14 +5444,6 @@
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": -3.1716350226669787
-            },
-            {
-              "item_id": 239542,
-              "item_name": "Dawnstalker Spaulders",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.385169667541305,
-              "verified": true
             }
           ]
         },
@@ -5461,7 +5461,7 @@
               "item_name": "Cloak of the Honor Guard",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -0.657011353566844,
+              "dps_delta": -0.677410844242786,
               "verified": true
             },
             {
@@ -5486,7 +5486,7 @@
           "item_name": "Dawnstalker Breastplate",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5508,7 +5508,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -14.348472323940712,
+              "dps_delta": -14.221926961605504,
               "verified": true
             }
           ]
@@ -5519,7 +5519,7 @@
           "item_name": "Dawnstalker Vambraces",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5527,21 +5527,21 @@
               "item_name": "Dawnstalker Wristguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.6305154957901453
+              "dps_delta": -0.6305154957901461
             },
             {
               "item_id": 18375,
               "item_name": "Bracers of the Eclipse",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -2.434306210945536
+              "dps_delta": -2.4343062109455365
             },
             {
               "item_id": 23093,
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -7.011814958959889,
+              "dps_delta": -7.09426769494803,
               "verified": true
             }
           ]
@@ -5552,7 +5552,7 @@
           "item_name": "Dawnstalker Gauntlets",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5574,7 +5574,7 @@
               "item_name": "Marshal's Chain Grips",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -4.442893259876172,
+              "dps_delta": -4.068013989902312,
               "verified": true
             }
           ]
@@ -5585,7 +5585,7 @@
           "item_name": "Dawnstalker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 113.62738711256564,
+          "score": 113.62738711256566,
           "verified": true,
           "alternatives": [
             {
@@ -5593,7 +5593,7 @@
               "item_name": "Dawnstalker Girdle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.2428313374852564,
+              "dps_delta": -1.2584616541689684,
               "verified": true
             },
             {
@@ -5601,14 +5601,14 @@
               "item_name": "Dense Timbermaw Belt",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.6592525912849743
+              "dps_delta": -2.6592525912849747
             },
             {
               "item_id": 272397,
               "item_name": "Ranger's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.216674106725877
+              "dps_delta": -3.2166741067258777
             }
           ]
         },
@@ -5633,7 +5633,7 @@
               "item_name": "Dawnstalker Legguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.794294775970087,
+              "dps_delta": -5.2247951927286636,
               "verified": true
             }
           ]
@@ -5652,7 +5652,7 @@
               "item_name": "Dawnstalker Boots",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.5848521847495363,
+              "dps_delta": -3.6138795118018834,
               "verified": true
             },
             {
@@ -5677,7 +5677,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Changing of Paths - Protector No More",
           "source_kind": "quest",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5692,7 +5692,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.794445520758785,
+              "dps_delta": -5.397674713805742,
               "verified": true
             }
           ]
@@ -5703,7 +5703,7 @@
           "item_name": "Cutthroat's Signet",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5725,7 +5725,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.148635877236444,
+              "dps_delta": -3.8034747179523265,
               "verified": true
             }
           ]
@@ -5736,8 +5736,10 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +8.3 DPS (243.3 vs 235.0 set DPS)",
+          "dps_delta": 8.293244821284986,
           "alternatives": [
             {
               "item_id": 11815,
@@ -5754,22 +5756,21 @@
               "dps_delta": 0
             },
             {
-              "item_id": 13965,
-              "item_name": "Blackhand's Breadth",
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise",
-              "dps_delta": -2.6485175126343563,
-              "verified": true
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 20036,
-          "item_name": "Fire Ruby",
-          "source": "Destroy Morphaz",
-          "source_kind": "quest",
-          "sim_dps": 238.73463340513544,
+          "item_id": 11819,
+          "item_name": "Second Wind",
+          "source": "Blackrock Depths: Golem Lord Argelmach",
+          "source_kind": "dungeon",
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5787,11 +5788,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11819,
-              "item_name": "Second Wind",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -0.5794363325650522,
+              "item_id": 19991,
+              "item_name": "Devilsaur Eye",
+              "source_kind": "quest",
+              "source": "The Green Drake",
+              "dps_delta": -2.2472680144527715,
               "verified": true
             }
           ]
@@ -5802,7 +5803,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5824,7 +5825,7 @@
               "item_name": "Electrified Dagger",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -6.485634292037986,
+              "dps_delta": -6.206516990430629,
               "verified": true
             }
           ]
@@ -5840,7 +5841,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 238.73463340513544,
+          "sim_dps": 243.30991304789654,
           "verified": true,
           "alternatives": [
             {
@@ -5858,17 +5859,17 @@
               "dps_delta": 0
             },
             {
-              "item_id": 16004,
-              "item_name": "Dark Iron Rifle",
-              "source_kind": "crafted",
-              "source": "Engineering",
-              "dps_delta": -7.214242247322204,
+              "item_id": 2825,
+              "item_name": "Bow of Searing Arrows",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -8.993302585847545,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 238.73463340513544,
+      "set_dps": 243.30991304789654,
       "no_source_count": 1637,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -5901,11 +5902,12 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Cutthroat's Signet",
         "trinket1: Burst of Knowledge",
+        "trinket2: Second Wind",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.714266836,
-      "verify_run_seconds": 2.060071756,
+      "weights_run_seconds": 1.817048974,
+      "verify_run_seconds": 2.13733069,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6056,7 +6058,7 @@
               "item_name": "Dawnstalker Headpiece",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.815377737612181,
+              "dps_delta": -5.250764166245062,
               "verified": true
             }
           ]
@@ -6076,8 +6078,7 @@
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
               "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 243.23324241423458
+              "verified": true
             },
             {
               "item_id": 22340,
@@ -6105,6 +6106,14 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 239542,
+              "item_name": "Dawnstalker Spaulders",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -2.978913057711509,
+              "verified": true
+            },
+            {
               "item_id": 272105,
               "item_name": "Darkspear Pauldrons",
               "source_kind": "vendor",
@@ -6117,14 +6126,6 @@
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": -3.1716350226669787
-            },
-            {
-              "item_id": 239542,
-              "item_name": "Dawnstalker Spaulders",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.204304682416563,
-              "verified": true
             }
           ]
         },
@@ -6142,7 +6143,7 @@
               "item_name": "Deathguard's Cloak",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -0.6615383191862065,
+              "dps_delta": -0.6687366424937977,
               "verified": true
             },
             {
@@ -6167,7 +6168,7 @@
           "item_name": "Dawnstalker Breastplate",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
           "alternatives": [
             {
@@ -6189,7 +6190,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -14.334802136636029,
+              "dps_delta": -14.323947503565421,
               "verified": true
             }
           ]
@@ -6200,7 +6201,7 @@
           "item_name": "Dawnstalker Vambraces",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
           "alternatives": [
             {
@@ -6222,7 +6223,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -7.021552885643899,
+              "dps_delta": -7.014005363588353,
               "verified": true
             }
           ]
@@ -6233,7 +6234,7 @@
           "item_name": "Dawnstalker Gauntlets",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
           "alternatives": [
             {
@@ -6255,7 +6256,7 @@
               "item_name": "Blood Guard's Chain Vices",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -6.5319659763045195,
+              "dps_delta": -6.542016379194308,
               "verified": true
             }
           ]
@@ -6266,7 +6267,7 @@
           "item_name": "Dawnstalker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 113.62738711256564,
+          "score": 113.62738711256566,
           "verified": true,
           "alternatives": [
             {
@@ -6274,7 +6275,7 @@
               "item_name": "Dawnstalker Girdle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.2427817896030149,
+              "dps_delta": -1.2463306501048805,
               "verified": true
             },
             {
@@ -6282,14 +6283,14 @@
               "item_name": "Dense Timbermaw Belt",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.6592525912849743
+              "dps_delta": -2.6592525912849747
             },
             {
               "item_id": 272397,
               "item_name": "Ranger's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.216674106725877
+              "dps_delta": -3.2166741067258777
             }
           ]
         },
@@ -6321,7 +6322,7 @@
               "item_name": "Dawnstalker Legguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.975138272304662,
+              "dps_delta": -5.443450943934778,
               "verified": true
             }
           ]
@@ -6340,7 +6341,7 @@
               "item_name": "Dawnstalker Boots",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.6076046700970323,
+              "dps_delta": -3.445149780126769,
               "verified": true
             },
             {
@@ -6365,7 +6366,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Changing of Paths - Protector No More",
           "source_kind": "quest",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
           "alternatives": [
             {
@@ -6380,7 +6381,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.791834723661026,
+              "dps_delta": -5.734187103032326,
               "verified": true
             }
           ]
@@ -6391,7 +6392,7 @@
           "item_name": "Cutthroat's Signet",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
           "alternatives": [
             {
@@ -6413,22 +6414,62 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.157982758091322,
+              "dps_delta": -4.068353194643748,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
+          "item_id": 11832,
+          "item_name": "Burst of Knowledge",
+          "source": "Blackrock Depths: Ambassador Flamelash",
+          "source_kind": "dungeon",
+          "sim_dps": 245.31043586267566,
+          "verified": true,
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +7.0 DPS (245.3 vs 238.3 set DPS)",
+          "dps_delta": 7.0178264895944835,
+          "alternatives": [
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 18537,
+              "item_name": "Counterattack Lodestone",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Tribute",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            }
+          ]
+        },
+        {
+          "slot": "trinket2",
           "item_id": 19120,
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
-          "swap_note": "confirmed by the sim against Burst of Knowledge (id 11832): kept the pick, +7.2 DPS (243.2 vs 236.1 set DPS)",
-          "dps_delta": 7.151800650193081,
           "alternatives": [
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -1.9512487361825208,
+              "verified": true
+            },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
@@ -6442,46 +6483,6 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
               "dps_delta": -3.5628197742722882
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -4.462967708717465
-            }
-          ]
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 11832,
-          "item_name": "Burst of Knowledge",
-          "source": "Blackrock Depths: Ambassador Flamelash",
-          "source_kind": "dungeon",
-          "sim_dps": 243.23097255605785,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 11815,
-              "item_name": "Hand of Justice",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 18537,
-              "item_name": "Counterattack Lodestone",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Tribute",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 13965,
-              "item_name": "Blackhand's Breadth",
-              "source_kind": "quest",
-              "source": "For The Horde!",
-              "dps_delta": -2.0151326400909113,
-              "verified": true
             }
           ]
         },
@@ -6491,7 +6492,7 @@
           "item_name": "Legionite Glaive",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
           "alternatives": [
             {
@@ -6513,7 +6514,7 @@
               "item_name": "Glacial Blade",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -6.517965907693991,
+              "dps_delta": -6.460236250946906,
               "verified": true
             }
           ]
@@ -6529,7 +6530,7 @@
           "item_name": "Hyper Deluxe Sniper Rifle Mk XVII",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 243.23097255605785,
+          "sim_dps": 245.31043586267566,
           "verified": true,
           "alternatives": [
             {
@@ -6551,13 +6552,13 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -7.868616574887255,
+              "dps_delta": -5.963814925612894,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 243.23097255605785,
+      "set_dps": 245.31043586267566,
       "no_source_count": 1625,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -6589,12 +6590,13 @@
         "feet: Dawnstalker Greaves",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Cutthroat's Signet",
-        "trinket2: Burst of Knowledge",
+        "trinket1: Burst of Knowledge",
+        "trinket2: Rune of the Guard Captain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.714266836,
-      "verify_run_seconds": 2.021135178,
+      "weights_run_seconds": 1.817048974,
+      "verify_run_seconds": 2.10705477,
       "coverage": {
         "back": {
           "eligible": 451,

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-35300000000000000-000000000000000000)
 
-Set DPS (verified): 75.1. Weights run: 1.4s. Verify run: 1.6s. 217 eligible items had no known source.
+Set DPS (verified): 75.1. Weights run: 1.5s. Verify run: 1.6s. 217 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.185 ± 0.045, crit=0.477 ± 0.019 per rating point (14 rating = 1%, 6.678 per %), hit=0.165 ± 0.007 per rating point (10 rating = 1%, 1.648 per %), melee_haste=3.462 ± 0.795
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 363, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 0000000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 110.4. Weights run: 1.6s. Verify run: 1.8s. 591 eligible items had no known source.
+Set DPS (verified): 110.4. Weights run: 1.7s. Verify run: 1.9s. 591 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.222 ± 0.063, crit=0.834 ± 0.034 per rating point (14 rating = 1%, 11.681 per %), hit=0.204 ± 0.008 per rating point (10 rating = 1%, 2.043 per %), melee_haste=not significant (3.437 ± 0.971)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 591, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 5500000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 136.1. Weights run: 1.6s. Verify run: 1.9s. 751 eligible items had no known source.
+Set DPS (verified): 136.1. Weights run: 1.7s. Verify run: 2.0s. 751 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.307 ± 0.077, crit=0.964 ± 0.038 per rating point (14 rating = 1%, 13.494 per %), hit=0.240 ± 0.010 per rating point (10 rating = 1%, 2.404 per %), melee_haste=13.786 ± 1.194
 
@@ -116,7 +116,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | feet | Albino Crocscale Boots (17728) | Maraudon: Rotgrip [dungeon] | 46.1 ranged_attack_power points (2.70 DPS) | yes | Fleetfoot Greaves (11627, +0.00 DPS, sim-verified) [dungeon]; Elven Chain Boots (13125, -0.27 DPS) [world_drop]; Whisperwalk Boots (20255, -0.27 DPS) [quest] |
 | finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 32.3 ranged_attack_power points (1.89 DPS) | yes | Blackstone Ring (17713, -0.58 DPS) [dungeon]; Falcon's Hook (7552, -0.67 DPS) [dungeon]; Protector's Band (19516, -0.67 DPS) [rep] |
 | finger2 | Ring of the Underwood (2951) | World drop [world_drop] | 23.1 ranged_attack_power points (1.35 DPS) | yes | Blackstone Ring (17713, +0.00 DPS, sim-verified) [dungeon]; Falcon's Hook (7552, -0.13 DPS) [dungeon]; Protector's Band (19516, -0.13 DPS) [rep] |
-| trinket1 | Devilsaur Eye (19991) | The Green Drake [quest] | sim-verified (136.1 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Fire Ruby (20036, -1.73 DPS, sim-verified) [quest] |
+| trinket1 | Devilsaur Eye (19991) | The Green Drake [quest] | sim-verified (136.1 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
 | trinket2 | - | - |  |  |  |
 | main_hand | Eyegouger (9480) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | sim-verified (136.1 DPS) | yes | Steel Spear (250605, -0.76 DPS) [crafted]; Manslayer (10570, -0.88 DPS) [dungeon]; Hanzo Sword (8190, -3.50 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
@@ -128,29 +128,29 @@ No-known-source sample (15 of 751, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 227.8. Weights run: 1.5s. Verify run: 1.9s. 1637 eligible items had no known source.
+Set DPS (verified): 233.8. Weights run: 1.7s. Verify run: 2.0s. 1637 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.339 ± 0.094, crit=1.438 ± 0.055 per rating point (14 rating = 1%, 20.135 per %), hit=0.343 ± 0.014 per rating point (10 rating = 1%, 3.434 per %), melee_haste=10.525 ± 1.657
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Dawnstalker Visor (239532) | Leonid Barthalomew the Revered [vendor] | 196.3 ranged_attack_power points (11.14 DPS) | yes | Field Marshal's Chain Helm (231580, -5.48 DPS) [pvp]; Dawnstalker Headpiece (239540, -6.20 DPS, sim-verified) [vendor] |
+| head | Dawnstalker Visor (239532) | Leonid Barthalomew the Revered [vendor] | 196.3 ranged_attack_power points (11.14 DPS) | yes | Field Marshal's Chain Helm (231580, -5.48 DPS) [pvp]; Dawnstalker Headpiece (239540, -6.27 DPS, sim-verified) [vendor] |
 | neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 44.4 ranged_attack_power points (2.52 DPS) | yes | Medallion of the Dawn (22659, +0.00 DPS, sim-verified) [quest]; Pendant of Celerity (22340, -0.51 DPS) [dungeon]; Maelstrom's Tendril (19620, -0.53 DPS) [quest] |
-| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | 143.1 ranged_attack_power points (8.12 DPS) | yes | Dawnstalker Spaulders (239542, -2.72 DPS, sim-verified) [vendor]; Darkspear Pauldrons (272105, -3.39 DPS) [vendor]; Darkspear Epaulets (272106, -3.39 DPS) [vendor] |
-| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 55.1 ranged_attack_power points (3.13 DPS) | yes | Cloak of the Honor Guard (20073, -0.83 DPS, sim-verified) [rep]; Shifting Cloak (18511, -0.87 DPS) [crafted]; Shadow Prowler's Cloak (22269, -0.87 DPS) [dungeon] |
-| chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (227.8 DPS) | yes | Dawnstalker Tunic (239543, -1.70 DPS) [vendor]; Dawn Armor (252483, -5.38 DPS) [crafted]; Tunic of Undead Slaying (23089, -16.79 DPS, sim-verified) [world] |
-| wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | sim-verified (227.8 DPS) | yes | Dawnstalker Wristguards (239544, -0.66 DPS) [vendor]; Bracers of the Eclipse (18375, -2.96 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -8.47 DPS, sim-verified) [world] |
-| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (227.8 DPS) | yes | Dawnstalker Handguards (239539, -1.65 DPS) [vendor]; Marshal's Chain Vices (231578, -4.34 DPS) [vendor]; Marshal's Chain Grips (16463, -4.97 DPS, sim-verified) [vendor] |
-| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 122.3 ranged_attack_power points (6.94 DPS) | yes | Dawnstalker Girdle (239538, -1.37 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -3.31 DPS) [vendor]; Ranger's Belt (272397, -3.76 DPS) [vendor] |
-| legs | Dawnstalker Leggings (239533) | Leonid Barthalomew the Revered [vendor] | 193.9 ranged_attack_power points (11.01 DPS) | yes | Sentinel's Chain Leggings (237819, -3.88 DPS) [vendor]; Dawnstalker Legguards (239541, -6.38 DPS, sim-verified) [vendor] |
-| feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | 154.3 ranged_attack_power points (8.76 DPS) | yes | Dawnstalker Boots (239537, -3.68 DPS, sim-verified) [vendor]; Marshal's Chain Boots (16462, -5.11 DPS) [vendor]; Marshal's Chain Greaves (231579, -5.11 DPS) [vendor] |
-| finger1 | Signet Ring of the Bronze Dragonflight (21205) | The Changing of Paths - Protector No More [quest] | sim-verified (227.8 DPS) | yes | Signet Ring of the Bronze Dragonflight (234202, +0.00 DPS) [vendor]; Naglering (11669, -6.48 DPS, sim-verified) [dungeon] |
-| finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (227.8 DPS) | yes | Cutthroat's Signet (272408, -0.19 DPS) [vendor]; Tarnished Elven Ring (18500, -0.24 DPS) [dungeon]; Naglering (11669, -5.24 DPS, sim-verified) [dungeon] |
-| trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (227.8 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, -1.51 DPS, sim-verified) [quest] |
-| trinket2 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (227.8 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, +0.00 DPS, sim-verified) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon] |
-| main_hand | Legionite Glaive (250619) | Blacksmithing [crafted] | sim-verified (227.8 DPS) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Electrified Dagger (19100, -7.17 DPS, sim-verified) [rep] |
+| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | 143.1 ranged_attack_power points (8.12 DPS) | yes | Dawnstalker Spaulders (239542, -3.10 DPS, sim-verified) [vendor]; Darkspear Pauldrons (272105, -3.39 DPS) [vendor]; Darkspear Epaulets (272106, -3.39 DPS) [vendor] |
+| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 55.1 ranged_attack_power points (3.13 DPS) | yes | Shifting Cloak (18511, -0.87 DPS) [crafted]; Shadow Prowler's Cloak (22269, -0.87 DPS) [dungeon]; Cloak of the Honor Guard (20073, -0.91 DPS, sim-verified) [rep] |
+| chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (233.8 DPS) | yes | Dawnstalker Tunic (239543, -1.70 DPS) [vendor]; Dawn Armor (252483, -5.38 DPS) [crafted]; Tunic of Undead Slaying (23089, -17.27 DPS, sim-verified) [world] |
+| wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | sim-verified (233.8 DPS) | yes | Dawnstalker Wristguards (239544, -0.66 DPS) [vendor]; Bracers of the Eclipse (18375, -2.96 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -8.56 DPS, sim-verified) [world] |
+| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (233.8 DPS) | yes | Dawnstalker Handguards (239539, -1.65 DPS) [vendor]; Marshal's Chain Vices (231578, -4.34 DPS) [vendor]; Marshal's Chain Grips (16463, -5.15 DPS, sim-verified) [vendor] |
+| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 122.3 ranged_attack_power points (6.94 DPS) | yes | Dawnstalker Girdle (239538, -1.41 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -3.31 DPS) [vendor]; Ranger's Belt (272397, -3.76 DPS) [vendor] |
+| legs | Dawnstalker Leggings (239533) | Leonid Barthalomew the Revered [vendor] | 193.9 ranged_attack_power points (11.01 DPS) | yes | Sentinel's Chain Leggings (237819, -3.88 DPS) [vendor]; Dawnstalker Legguards (239541, -6.42 DPS, sim-verified) [vendor] |
+| feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | 154.3 ranged_attack_power points (8.76 DPS) | yes | Dawnstalker Boots (239537, -3.82 DPS, sim-verified) [vendor]; Marshal's Chain Boots (16462, -5.11 DPS) [vendor]; Marshal's Chain Greaves (231579, -5.11 DPS) [vendor] |
+| finger1 | Signet Ring of the Bronze Dragonflight (21205) | The Changing of Paths - Protector No More [quest] | sim-verified (233.8 DPS) | yes | Signet Ring of the Bronze Dragonflight (234202, +0.00 DPS) [vendor]; Naglering (11669, -6.96 DPS, sim-verified) [dungeon] |
+| finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (233.8 DPS) | yes | Cutthroat's Signet (272408, -0.19 DPS) [vendor]; Tarnished Elven Ring (18500, -0.24 DPS) [dungeon]; Naglering (11669, -5.49 DPS, sim-verified) [dungeon] |
+| trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (233.8 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (233.8 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, -1.76 DPS, sim-verified) [quest] |
+| main_hand | Legionite Glaive (250619) | Blacksmithing [crafted] | sim-verified (233.8 DPS) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Electrified Dagger (19100, -7.61 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Hyper Deluxe Sniper Rifle Mk XVII (279273) | Engineering [crafted] | sim-verified (227.8 DPS) | yes | Grand Marshal's Bullseye (234585, +0.00 DPS) [pvp]; Grand Marshal's Repeater (234586, +0.00 DPS) [pvp]; Dark Iron Rifle (16004, -8.86 DPS, sim-verified) [crafted] |
+| ranged | Hyper Deluxe Sniper Rifle Mk XVII (279273) | Engineering [crafted] | sim-verified (233.8 DPS) | yes | Grand Marshal's Bullseye (234585, +0.00 DPS) [pvp]; Grand Marshal's Repeater (234586, +0.00 DPS) [pvp]; Dark Iron Rifle (16004, -9.70 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Dawnstalker Visor; neck: Amulet of the Darkmoon; shoulder: Dawnstalker Pauldrons; back: Cape of the Black Baron; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Burst of Knowledge; trinket2: Second Wind; main_hand: Legionite Glaive; ranged: Hyper Deluxe Sniper Rifle Mk XVII
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1637, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (troll, 0000000000000000-35300000000000000-000000000000000000)
 
-Set DPS (verified): 75.8. Weights run: 1.4s. Verify run: 1.7s. 213 eligible items had no known source.
+Set DPS (verified): 75.8. Weights run: 1.5s. Verify run: 1.7s. 213 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.185 ± 0.045, crit=0.477 ± 0.019 per rating point (14 rating = 1%, 6.678 per %), hit=0.165 ± 0.007 per rating point (10 rating = 1%, 1.648 per %), melee_haste=3.462 ± 0.795
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 360, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 0000000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 110.6. Weights run: 1.6s. Verify run: 1.8s. 579 eligible items had no known source.
+Set DPS (verified): 110.6. Weights run: 1.7s. Verify run: 1.9s. 579 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.222 ± 0.063, crit=0.834 ± 0.034 per rating point (14 rating = 1%, 11.681 per %), hit=0.204 ± 0.008 per rating point (10 rating = 1%, 2.043 per %), melee_haste=not significant (3.437 ± 0.971)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 579, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 5500000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 141.0. Weights run: 1.6s. Verify run: 1.9s. 740 eligible items had no known source.
+Set DPS (verified): 141.0. Weights run: 1.7s. Verify run: 1.9s. 740 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.307 ± 0.077, crit=0.964 ± 0.038 per rating point (14 rating = 1%, 13.494 per %), hit=0.240 ± 0.010 per rating point (10 rating = 1%, 2.404 per %), melee_haste=13.786 ± 1.194
 
@@ -269,7 +269,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 32.3 ranged_attack_power points (1.89 DPS) | yes | Ring of the Underwood (2951, -0.54 DPS) [world_drop]; Blackstone Ring (17713, -0.58 DPS) [dungeon]; Legionnaire's Band (19511, -0.67 DPS) [rep] |
 | finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 ranged_attack_power points (1.40 DPS) | yes | Ring of the Underwood (2951, +0.00 DPS, sim-verified) [world_drop]; Blackstone Ring (17713, -0.09 DPS) [dungeon]; Legionnaire's Band (19511, -0.19 DPS) [rep] |
 | trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (141.0 DPS) | yes | Frozen Heart of the Mountain (249469, -4.88 DPS) [crafted] |
-| trinket2 | Devilsaur Eye (19991) | The Green Drake [quest] | sim-verified (141.0 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Fire Ruby (20036, -1.39 DPS, sim-verified) [quest] |
+| trinket2 | Devilsaur Eye (19991) | The Green Drake [quest] | sim-verified (141.0 DPS) | yes | Frozen Heart of the Mountain (249469, -2.51 DPS, sim-verified) [crafted] |
 | main_hand | Eyegouger (9480) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | sim-verified (141.0 DPS) | yes | Steel Spear (250605, -0.76 DPS) [crafted]; Manslayer (10570, -0.88 DPS) [dungeon]; Hanzo Sword (8190, -3.48 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Arcanite Blacksmith Hammer (285281) | Blacksmithing [crafted] | sim-verified (141.0 DPS) | yes | Dark Iron Rifle (16004, -1.23 DPS, sim-verified) [crafted]; Hurricane (2824, -1.42 DPS) [world_drop]; Precisely Calibrated Boomstick (2100, -1.70 DPS) [world_drop] |
@@ -280,31 +280,31 @@ No-known-source sample (15 of 740, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (troll, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 232.4. Weights run: 1.5s. Verify run: 1.9s. 1625 eligible items had no known source.
+Set DPS (verified): 234.6. Weights run: 1.7s. Verify run: 1.9s. 1625 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.339 ± 0.094, crit=1.438 ± 0.055 per rating point (14 rating = 1%, 20.135 per %), hit=0.343 ± 0.014 per rating point (10 rating = 1%, 3.434 per %), melee_haste=10.525 ± 1.657
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Dawnstalker Visor (239532) | Leonid Barthalomew the Revered [vendor] | 196.3 ranged_attack_power points (11.14 DPS) | yes | Warlord's Chain Helmet (16566, -5.48 DPS) [vendor]; Warlord's Chain Helm (231571, -5.48 DPS) [vendor]; Dawnstalker Headpiece (239540, -6.78 DPS, sim-verified) [vendor] |
+| head | Dawnstalker Visor (239532) | Leonid Barthalomew the Revered [vendor] | 196.3 ranged_attack_power points (11.14 DPS) | yes | Warlord's Chain Helmet (16566, -5.48 DPS) [vendor]; Warlord's Chain Helm (231571, -5.48 DPS) [vendor]; Dawnstalker Headpiece (239540, -6.52 DPS, sim-verified) [vendor] |
 | neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 44.4 ranged_attack_power points (2.52 DPS) | yes | Medallion of the Dawn (22659, +0.00 DPS, sim-verified) [quest]; Pendant of Celerity (22340, -0.51 DPS) [dungeon]; Maelstrom's Tendril (19620, -0.53 DPS) [quest] |
-| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | 143.1 ranged_attack_power points (8.12 DPS) | yes | Dawnstalker Spaulders (239542, -3.35 DPS, sim-verified) [vendor]; Darkspear Pauldrons (272105, -3.39 DPS) [vendor]; Darkspear Epaulets (272106, -3.39 DPS) [vendor] |
-| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 55.1 ranged_attack_power points (3.13 DPS) | yes | Deathguard's Cloak (20068, -0.78 DPS, sim-verified) [rep]; Shifting Cloak (18511, -0.87 DPS) [crafted]; Shadow Prowler's Cloak (22269, -0.87 DPS) [dungeon] |
-| chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (232.4 DPS) | yes | Dawnstalker Tunic (239543, -1.70 DPS) [vendor]; Dawn Armor (252483, -5.38 DPS) [crafted]; Tunic of Undead Slaying (23089, -16.79 DPS, sim-verified) [world] |
-| wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | sim-verified (232.4 DPS) | yes | Dawnstalker Wristguards (239544, -0.66 DPS) [vendor]; Bracers of the Eclipse (18375, -2.96 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -8.35 DPS, sim-verified) [world] |
-| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (232.4 DPS) | yes | Dawnstalker Handguards (239539, -1.65 DPS) [vendor]; General's Chain Gloves (16571, -4.34 DPS) [vendor]; Blood Guard's Chain Vices (22862, -7.43 DPS, sim-verified) [vendor] |
-| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 122.3 ranged_attack_power points (6.94 DPS) | yes | Dawnstalker Girdle (239538, -1.37 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -3.31 DPS) [vendor]; Ranger's Belt (272397, -3.76 DPS) [vendor] |
-| legs | Dawnstalker Leggings (239533) | Leonid Barthalomew the Revered [vendor] | 193.9 ranged_attack_power points (11.01 DPS) | yes | Sentinel's Chain Leggings (237819, -3.88 DPS) [vendor]; Outrider's Chain Leggings (22673, -5.02 DPS) [rep]; Dawnstalker Legguards (239541, -6.95 DPS, sim-verified) [vendor] |
-| feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | 154.3 ranged_attack_power points (8.76 DPS) | yes | Dawnstalker Boots (239537, -3.81 DPS, sim-verified) [vendor]; General's Chain Sabatons (16569, -5.11 DPS) [vendor]; General's Chain Greaves (231570, -5.11 DPS) [vendor] |
-| finger1 | Signet Ring of the Bronze Dragonflight (21205) | The Changing of Paths - Protector No More [quest] | sim-verified (232.4 DPS) | yes | Signet Ring of the Bronze Dragonflight (234202, +0.00 DPS) [vendor]; Naglering (11669, -6.98 DPS, sim-verified) [dungeon] |
-| finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (232.4 DPS) | yes | Cutthroat's Signet (272408, -0.19 DPS) [vendor]; Tarnished Elven Ring (18500, -0.24 DPS) [dungeon]; Naglering (11669, -5.78 DPS, sim-verified) [dungeon] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (232.4 DPS) | yes | Counterattack Lodestone (18537, -3.66 DPS) [dungeon]; Hand of Justice (11815, -3.77 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -4.73 DPS) [crafted] |
-| trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (232.4 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, -1.82 DPS, sim-verified) [quest] |
-| main_hand | Legionite Glaive (250619) | Blacksmithing [crafted] | sim-verified (232.4 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Glacial Blade (19099, -7.66 DPS, sim-verified) [rep] |
+| shoulder | Dawnstalker Pauldrons (239534) | Leonid Barthalomew the Revered [vendor] | 143.1 ranged_attack_power points (8.12 DPS) | yes | Dawnstalker Spaulders (239542, -3.03 DPS, sim-verified) [vendor]; Darkspear Pauldrons (272105, -3.39 DPS) [vendor]; Darkspear Epaulets (272106, -3.39 DPS) [vendor] |
+| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 55.1 ranged_attack_power points (3.13 DPS) | yes | Deathguard's Cloak (20068, -0.83 DPS, sim-verified) [rep]; Shifting Cloak (18511, -0.87 DPS) [crafted]; Shadow Prowler's Cloak (22269, -0.87 DPS) [dungeon] |
+| chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (234.6 DPS) | yes | Dawnstalker Tunic (239543, -1.70 DPS) [vendor]; Dawn Armor (252483, -5.38 DPS) [crafted]; Tunic of Undead Slaying (23089, -16.83 DPS, sim-verified) [world] |
+| wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | sim-verified (234.6 DPS) | yes | Dawnstalker Wristguards (239544, -0.66 DPS) [vendor]; Bracers of the Eclipse (18375, -2.96 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -8.36 DPS, sim-verified) [world] |
+| hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | sim-verified (234.6 DPS) | yes | Dawnstalker Handguards (239539, -1.65 DPS) [vendor]; General's Chain Gloves (16571, -4.34 DPS) [vendor]; Blood Guard's Chain Vices (22862, -7.59 DPS, sim-verified) [vendor] |
+| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 122.3 ranged_attack_power points (6.94 DPS) | yes | Dawnstalker Girdle (239538, -1.38 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -3.31 DPS) [vendor]; Ranger's Belt (272397, -3.76 DPS) [vendor] |
+| legs | Dawnstalker Leggings (239533) | Leonid Barthalomew the Revered [vendor] | 193.9 ranged_attack_power points (11.01 DPS) | yes | Sentinel's Chain Leggings (237819, -3.88 DPS) [vendor]; Outrider's Chain Leggings (22673, -5.02 DPS) [rep]; Dawnstalker Legguards (239541, -6.69 DPS, sim-verified) [vendor] |
+| feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | 154.3 ranged_attack_power points (8.76 DPS) | yes | Dawnstalker Boots (239537, -3.70 DPS, sim-verified) [vendor]; General's Chain Sabatons (16569, -5.11 DPS) [vendor]; General's Chain Greaves (231570, -5.11 DPS) [vendor] |
+| finger1 | Signet Ring of the Bronze Dragonflight (21205) | The Changing of Paths - Protector No More [quest] | sim-verified (234.6 DPS) | yes | Signet Ring of the Bronze Dragonflight (234202, +0.00 DPS) [vendor]; Naglering (11669, -6.67 DPS, sim-verified) [dungeon] |
+| finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (234.6 DPS) | yes | Cutthroat's Signet (272408, -0.19 DPS) [vendor]; Tarnished Elven Ring (18500, -0.24 DPS) [dungeon]; Naglering (11669, -5.40 DPS, sim-verified) [dungeon] |
+| trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (234.6 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (234.6 DPS) | yes | Second Wind (11819, -2.54 DPS, sim-verified) [dungeon]; Counterattack Lodestone (18537, -3.66 DPS) [dungeon]; Hand of Justice (11815, -3.77 DPS) [dungeon] |
+| main_hand | Legionite Glaive (250619) | Blacksmithing [crafted] | sim-verified (234.6 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Glacial Blade (19099, -7.43 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Hyper Deluxe Sniper Rifle Mk XVII (279273) | Engineering [crafted] | sim-verified (232.4 DPS) | yes | High Warlord's Recurve (234559, +0.00 DPS) [pvp]; High Warlord's Crossbow (234560, +0.00 DPS) [pvp]; Dark Iron Rifle (16004, -8.97 DPS, sim-verified) [crafted] |
+| ranged | Hyper Deluxe Sniper Rifle Mk XVII (279273) | Engineering [crafted] | sim-verified (234.6 DPS) | yes | High Warlord's Recurve (234559, +0.00 DPS) [pvp]; High Warlord's Crossbow (234560, +0.00 DPS) [pvp]; Dark Iron Rifle (16004, -9.02 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Dawnstalker Visor; neck: Amulet of the Darkmoon; shoulder: Dawnstalker Pauldrons; back: Cape of the Black Baron; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket2: Burst of Knowledge; main_hand: Legionite Glaive; ranged: Hyper Deluxe Sniper Rifle Mk XVII
+**New at 60:** head: Dawnstalker Visor; neck: Amulet of the Darkmoon; shoulder: Dawnstalker Pauldrons; back: Cape of the Black Baron; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Burst of Knowledge; trinket2: Rune of the Guard Captain; main_hand: Legionite Glaive; ranged: Hyper Deluxe Sniper Rifle Mk XVII
 
 No-known-source sample (15 of 1625, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 

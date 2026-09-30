@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:18:18Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:45:31Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -560,8 +560,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.095110744,
-      "verify_run_seconds": 1.269925435,
+      "weights_run_seconds": 1.136310511,
+      "verify_run_seconds": 1.288389493,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.095110744,
-      "verify_run_seconds": 1.283333601,
+      "weights_run_seconds": 1.136310511,
+      "verify_run_seconds": 1.284555991,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1860,8 +1860,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.095903948,
-      "verify_run_seconds": 1.331208913,
+      "weights_run_seconds": 1.142098288,
+      "verify_run_seconds": 1.304404376,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2546,8 +2546,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.095903948,
-      "verify_run_seconds": 1.355325771,
+      "weights_run_seconds": 1.142098288,
+      "verify_run_seconds": 1.388326278,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3207,8 +3207,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.167001132,
-      "verify_run_seconds": 1.406056815,
+      "weights_run_seconds": 1.193337798,
+      "verify_run_seconds": 1.383739419,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3868,8 +3868,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.167001132,
-      "verify_run_seconds": 1.361270442,
+      "weights_run_seconds": 1.193337798,
+      "verify_run_seconds": 1.39149483,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4560,8 +4560,8 @@
         "off_hand: Shadowblade",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.1937195,
-      "verify_run_seconds": 1.738381108,
+      "weights_run_seconds": 1.225410298,
+      "verify_run_seconds": 1.779151534,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5124,14 +5124,7 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 20036,
-              "item_name": "Fire Ruby",
-              "source_kind": "quest",
-              "source": "Destroy Morphaz",
-              "dps_delta": -3.1761450104219477,
+              "dps_delta": -1.3543812972920364,
               "verified": true
             }
           ]
@@ -5268,8 +5261,8 @@
         "off_hand: Shadowblade",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.1937195,
-      "verify_run_seconds": 1.748395395,
+      "weights_run_seconds": 1.225410298,
+      "verify_run_seconds": 1.811096698,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5976,8 +5969,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.169305694,
-      "verify_run_seconds": 1.6601859719999998,
+      "weights_run_seconds": 1.208159227,
+      "verify_run_seconds": 1.697240402,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6684,8 +6677,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.169305694,
-      "verify_run_seconds": 1.6648183319999998,
+      "weights_run_seconds": 1.208159227,
+      "verify_run_seconds": 1.65748136,
       "coverage": {
         "back": {
           "eligible": 451,

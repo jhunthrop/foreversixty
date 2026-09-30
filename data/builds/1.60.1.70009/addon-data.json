@@ -8556,9 +8556,9 @@
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 22268,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 19102,
@@ -8618,7 +8618,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240074,
+              "item_id": 240090,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -8638,9 +8638,9 @@
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 22268,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 20654,
@@ -8669,7 +8669,7 @@
             234032,
             20682,
             11832,
-            22268,
+            11819,
             19102,
             23197
           ],
@@ -8683,11 +8683,11 @@
             240073,
             240069,
             240071,
-            240074,
+            240090,
             234032,
             20682,
             11832,
-            22268,
+            11819,
             20654,
             23197
           ]
@@ -10522,9 +10522,9 @@
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 250619,
@@ -10599,14 +10599,14 @@
               "source": "Pix Xizzix"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
-            "trinket2": {
               "item_id": 11832,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 250619,
@@ -10635,6 +10635,7 @@
             21205,
             272408,
             11832,
+            11819,
             250619,
             279273
           ],
@@ -10652,6 +10653,7 @@
             21205,
             272408,
             11832,
+            19120,
             250619,
             279273
           ]
@@ -11612,14 +11614,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
-            "trinket2": {
               "item_id": 11832,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 250619,
@@ -11666,6 +11668,7 @@
             21205,
             19325,
             11832,
+            19120,
             250619,
             279273
           ]
@@ -12664,9 +12667,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11832,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 1728,
@@ -12719,7 +12722,7 @@
             21205,
             19510,
             19289,
-            11832,
+            11819,
             1728,
             21520,
             12653
@@ -14393,9 +14396,9 @@
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
             "main_hand": {
-              "item_id": 17780,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 812,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "ranged": {
               "item_id": 11748,
@@ -14434,7 +14437,7 @@
             220909,
             6440,
             11824,
-            17780,
+            812,
             11748
           ]
         },
@@ -14457,9 +14460,9 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
-              "item_id": 22657,
+              "item_id": 19601,
               "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "source": "The Jewel of Kajaro"
             },
             "shoulder": {
               "item_id": 240054,
@@ -14598,7 +14601,7 @@
         "new_at_band": {
           "alliance": [
             240056,
-            22657,
+            19601,
             240054,
             272411,
             240059,
@@ -15296,9 +15299,9 @@
               "source": "Destroy Morphaz"
             },
             "shoulder": {
-              "item_id": 17732,
+              "item_id": 11624,
               "source_kind": "dungeon",
-              "source": "Maraudon: Rotgrip"
+              "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "back": {
               "item_id": 19121,
@@ -15351,9 +15354,9 @@
               "source": "World drop"
             },
             "ranged": {
-              "item_id": 11748,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain"
+              "item_id": 20082,
+              "source_kind": "quest",
+              "source": "Blood of Morphaz"
             }
           }
         },
@@ -15375,7 +15378,7 @@
           "horde": [
             10033,
             20037,
-            17732,
+            11624,
             19121,
             17775,
             254061,
@@ -15384,7 +15387,7 @@
             9484,
             11824,
             812,
-            11748
+            20082
           ]
         },
         "weights": {
@@ -15445,7 +15448,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 240058,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -15522,7 +15525,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 240058,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -15537,9 +15540,14 @@
               "source": "Prince Skaldrenox"
             },
             "trinket1": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "trinket2": {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 20654,
@@ -15564,7 +15572,7 @@
             240057,
             240053,
             240055,
-            240050,
+            240058,
             234032,
             20682,
             22678,
@@ -15581,10 +15589,11 @@
             240057,
             240053,
             240055,
-            240050,
+            240058,
             234032,
             20682,
-            22678,
+            11832,
+            11819,
             20654,
             279246
           ]
@@ -16399,9 +16408,9 @@
               "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "trinket2": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 19289,
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck"
             },
             "main_hand": {
               "item_id": 12592,
@@ -16471,9 +16480,9 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 11832,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "trinket2": {
               "item_id": 22268,
@@ -16502,7 +16511,7 @@
             234034,
             19325,
             11819,
-            22268,
+            19289,
             12592
           ],
           "horde": [
@@ -16518,7 +16527,7 @@
             240029,
             234034,
             19325,
-            11832,
+            11819,
             22268,
             19323
           ]
@@ -17248,11 +17257,6 @@
               "source_kind": "quest",
               "source": "Greater Friend of the Library"
             },
-            "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -17295,7 +17299,6 @@
             220909,
             11824,
             281635,
-            20036,
             812,
             11748
           ]
@@ -17373,14 +17376,14 @@
               "source": "Prince Skaldrenox"
             },
             "trinket1": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "trinket2": {
               "item_id": 11832,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "trinket2": {
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "main_hand": {
               "item_id": 19102,
@@ -17490,8 +17493,8 @@
             239589,
             234032,
             20682,
-            22678,
             11832,
+            22678,
             19102,
             279246
           ],
@@ -21163,9 +21166,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 10033,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 17740,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Celebras the Cursed"
             },
             "neck": {
               "item_id": 20037,
@@ -21221,11 +21224,6 @@
               "item_id": 11824,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
-            },
-            "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
             },
             "main_hand": {
               "item_id": 812,
@@ -21303,7 +21301,7 @@
         },
         "new_at_band": {
           "alliance": [
-            10033,
+            17740,
             20037,
             15067,
             11623,
@@ -21315,7 +21313,6 @@
             252471,
             6440,
             11824,
-            20036,
             812
           ],
           "horde": [
@@ -21347,83 +21344,6 @@
         "level": 60,
         "factions": {
           "alliance": {
-            "head": {
-              "item_id": 240123,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "neck": {
-              "item_id": 22657,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "shoulder": {
-              "item_id": 240125,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "back": {
-              "item_id": 272411,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            "chest": {
-              "item_id": 240109,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "wrist": {
-              "item_id": 240127,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "hands": {
-              "item_id": 240122,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "waist": {
-              "item_id": 228190,
-              "source_kind": "vendor",
-              "source": "Meilosh"
-            },
-            "legs": {
-              "item_id": 240124,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "feet": {
-              "item_id": 240110,
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered"
-            },
-            "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
-              "item_id": 20682,
-              "source_kind": "world",
-              "source": "Prince Skaldrenox"
-            },
-            "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
-            },
-            "trinket2": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "main_hand": {
-              "item_id": 19102,
-              "source_kind": "rep",
-              "source": "Stormpike Guard"
-            }
-          },
-          "horde": {
             "head": {
               "item_id": 240123,
               "source_kind": "vendor",
@@ -21490,9 +21410,86 @@
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 22678,
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
+            },
+            "main_hand": {
+              "item_id": 19102,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 240123,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "neck": {
+              "item_id": 22657,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "shoulder": {
+              "item_id": 240125,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "back": {
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            "chest": {
+              "item_id": 240109,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "wrist": {
+              "item_id": 240127,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "hands": {
+              "item_id": 240122,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "waist": {
+              "item_id": 228190,
+              "source_kind": "vendor",
+              "source": "Meilosh"
+            },
+            "legs": {
+              "item_id": 240124,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "feet": {
+              "item_id": 240110,
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered"
+            },
+            "finger1": {
+              "item_id": 234032,
+              "source_kind": "vendor",
+              "source": "Anachronos"
+            },
+            "finger2": {
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
+            },
+            "trinket1": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "trinket2": {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 22333,
@@ -21506,23 +21503,6 @@
             240123,
             22657,
             240125,
-            272411,
-            240109,
-            240127,
-            240122,
-            228190,
-            240124,
-            240110,
-            234032,
-            20682,
-            11832,
-            22678,
-            19102
-          ],
-          "horde": [
-            240123,
-            22657,
-            240125,
             18510,
             240109,
             240127,
@@ -21533,7 +21513,24 @@
             234032,
             20682,
             11832,
-            22678,
+            11819,
+            19102
+          ],
+          "horde": [
+            240123,
+            22657,
+            240125,
+            272411,
+            240109,
+            240127,
+            240122,
+            228190,
+            240124,
+            240110,
+            234032,
+            20682,
+            11832,
+            11819,
             22333
           ]
         },
@@ -22186,14 +22183,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 20036,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
-            },
-            "trinket2": {
               "item_id": 20130,
               "source_kind": "quest",
               "source": "Voodoo Feathers"
+            },
+            "trinket2": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 810,
@@ -22301,8 +22298,8 @@
             252468,
             17713,
             19516,
-            20036,
             20130,
+            249469,
             810,
             2163
           ],
@@ -22402,9 +22399,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise"
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 21522,
@@ -22479,14 +22476,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 19120,
+              "item_id": 13965,
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "source": "For The Horde!"
             },
             "main_hand": {
               "item_id": 21522,
@@ -22515,7 +22512,7 @@
             234034,
             19325,
             19289,
-            13965,
+            11832,
             21522,
             279261
           ],
@@ -22532,8 +22529,8 @@
             240129,
             234034,
             19325,
-            19289,
-            19120,
+            11832,
+            13965,
             21522,
             279261
           ]
@@ -25204,9 +25201,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 12466,
+              "item_id": 17755,
               "source_kind": "dungeon",
-              "source": "Sunken Temple: Morphaz"
+              "source": "Maraudon: Lord Vyletongue"
             },
             "legs": {
               "item_id": 9484,
@@ -25234,9 +25231,9 @@
               "source": "Trolls of a Feather"
             },
             "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 17780,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "ranged": {
               "item_id": 11748,
@@ -25271,12 +25268,12 @@
             17775,
             12546,
             272098,
-            12466,
+            17755,
             9484,
             6440,
             11824,
             20534,
-            812,
+            17780,
             11748
           ]
         },

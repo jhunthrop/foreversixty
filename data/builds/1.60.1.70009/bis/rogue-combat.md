@@ -98,7 +98,7 @@ No-known-source sample (15 of 456, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32500000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 151.7. Weights run: 1.2s. Verify run: 1.7s. 582 eligible items had no known source.
+Set DPS (verified): 151.7. Weights run: 1.2s. Verify run: 1.8s. 582 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.123 ± 0.020, crit=0.470 ± 0.028 per rating point (14 rating = 1%, 6.578 per %), hit=0.080 ± 0.010 per rating point (10 rating = 1%, 0.803 per %), melee_haste=not significant (-2.593 ± 2.550)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 456, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 32500000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 155.0. Weights run: 1.2s. Verify run: 1.7s. 583 eligible items had no known source.
+Set DPS (verified): 155.0. Weights run: 1.2s. Verify run: 1.8s. 583 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.123 ± 0.020, crit=0.470 ± 0.028 per rating point (14 rating = 1%, 6.578 per %), hit=0.080 ± 0.010 per rating point (10 rating = 1%, 0.803 per %), melee_haste=not significant (-2.593 ± 2.550)
 
@@ -269,7 +269,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger1 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 attack_power points (1.28 DPS) | yes | Mark of Kern (2262, -0.21 DPS) [dungeon]; Assault Band (13095, -0.21 DPS) [world_drop]; Masons Fraternity Ring (9533, -0.44 DPS) [quest] |
 | finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 20.8 attack_power points (1.11 DPS) | yes | Mark of Kern (2262, -0.04 DPS) [dungeon]; Masons Fraternity Ring (9533, -0.27 DPS) [quest]; Assault Band (13095, -1.66 DPS, sim-verified) [world_drop] |
 | trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (+5.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Frozen Heart of the Mountain (249469, -2.24 DPS) [crafted] |
-| trinket2 | Diamond Flask (20130) | Voodoo Feathers [quest] | 0.0 attack_power points (0.00 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Fire Ruby (20036, -3.18 DPS, sim-verified) [quest] |
+| trinket2 | Diamond Flask (20130) | Voodoo Feathers [quest] | 0.0 attack_power points (0.00 DPS) | yes | Frozen Heart of the Mountain (249469, -1.35 DPS, sim-verified) [crafted] |
 | main_hand | Bloodrazor (809) | World drop [world_drop] | 0.0 attack_power points (0.00 DPS) | yes | Hammer of the Northern Wind (810, +0.00 DPS) [world_drop]; Thorium Cestus (250614, +0.00 DPS) [crafted]; Hanzo Sword (8190, -4.73 DPS, sim-verified) [world_drop] |
 | off_hand | Shadowblade (2163) | World drop [world_drop] | 545.0 attack_power points (29.13 DPS) | yes | Claw of Celebras (17738, -3.36 DPS) [dungeon]; Thorium Cestus (250614, -4.34 DPS, sim-verified) [crafted]; White Bone Shredder (11863, -5.46 DPS) [quest] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | 0.0 attack_power points (0.00 DPS) | yes | Stinging Bow (10624, -0.09 DPS) [dungeon]; Skull Splitting Crossbow (13039, -0.09 DPS) [world_drop]; Dark Iron Rifle (16004, -2.12 DPS, sim-verified) [crafted] |

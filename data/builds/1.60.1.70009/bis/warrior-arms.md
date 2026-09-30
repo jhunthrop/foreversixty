@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 35300000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 30.4. Weights run: 1.4s. Verify run: 1.2s. 302 eligible items had no known source.
+Set DPS (verified): 30.4. Weights run: 1.6s. Verify run: 1.3s. 302 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.045, strength=2.084 ± 0.056, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000) per rating point (14 rating = 1%, 0.000 per %), hit=0.053 ± 0.002 per rating point (10 rating = 1%, 0.529 per %), melee_haste=1.835 ± 0.076
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 302, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 35325210000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 70.7. Weights run: 1.6s. Verify run: 1.4s. 488 eligible items had no known source.
+Set DPS (verified): 70.7. Weights run: 1.7s. Verify run: 1.5s. 488 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.089, strength=1.991 ± 0.124, agility=not significant (0.008 ± 0.005), crit=0.012 ± 0.002 per rating point (14 rating = 1%, 0.171 per %), hit=0.074 ± 0.003 per rating point (10 rating = 1%, 0.743 per %), melee_haste=2.607 ± 0.360
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 488, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 35325213032010001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 90.3. Weights run: 2.0s. Verify run: 1.5s. 671 eligible items had no known source.
+Set DPS (verified): 90.3. Weights run: 2.1s. Verify run: 1.6s. 671 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.304, strength=2.474 ± 0.448, agility=not significant (0.006 ± 0.006), crit=0.034 ± 0.004 per rating point (14 rating = 1%, 0.473 per %), hit=0.114 ± 0.006 per rating point (10 rating = 1%, 1.140 per %), melee_haste=3.320 ± 0.694
 
@@ -98,29 +98,29 @@ No-known-source sample (15 of 671, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 129.5. Weights run: 2.1s. Verify run: 1.9s. 859 eligible items had no known source.
+Set DPS (verified): 129.5. Weights run: 2.2s. Verify run: 1.9s. 859 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.275, strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=0.440 ± 0.037 per rating point (14 rating = 1%, 6.161 per %), hit=0.098 ± 0.005 per rating point (10 rating = 1%, 0.978 per %), melee_haste=3.257 ± 0.606
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 44.6 attack_power points (3.46 DPS) | yes | Ebon Mask (19984, +0.00 DPS, sim-verified) [quest]; Bloomsprout Headpiece (17767, -0.67 DPS) [dungeon]; Fury Visor (20521, -1.22 DPS) [quest] |
-| neck | Zealous Shadowshard Pendant (17772) | Shadowshard Fragments [quest] | 20.0 attack_power points (1.55 DPS) | yes | Ghostshard Talisman (7731, -0.17 DPS, sim-verified) [dungeon]; Skibi's Pendant (13089, -0.65 DPS) [world_drop]; Kaleidoscope Chain (13084, -0.97 DPS) [world_drop] |
-| shoulder | Knight-Lieutenant's Plate Pauldrons (220795) | Captain Dirgehammer [vendor] | 23.5 attack_power points (1.82 DPS) | yes | Wyrmslayer Spaulders (13066, -0.18 DPS) [world_drop]; Earthslag Shoulders (11632, -0.23 DPS) [dungeon]; Officer's Pauldrons (250576, -1.01 DPS, sim-verified) [crafted] |
+| neck | Zealous Shadowshard Pendant (17772) | Shadowshard Fragments [quest] | 20.0 attack_power points (1.55 DPS) | yes | Skibi's Pendant (13089, -0.65 DPS) [world_drop]; Ghostshard Talisman (7731, -0.69 DPS, sim-verified) [dungeon]; Kaleidoscope Chain (13084, -0.97 DPS) [world_drop] |
+| shoulder | Knight-Lieutenant's Plate Pauldrons (220795) | Captain Dirgehammer [vendor] | 23.5 attack_power points (1.82 DPS) | yes | Wyrmslayer Spaulders (13066, -0.18 DPS) [world_drop]; Earthslag Shoulders (11632, -0.23 DPS) [dungeon]; Officer's Pauldrons (250576, -1.13 DPS, sim-verified) [crafted] |
 | back | Bloodlust Cape (14801) | World drop [world_drop] | 14.2 attack_power points (1.10 DPS) | yes | Blackveil Cape (11626, +0.00 DPS, sim-verified) [dungeon]; Sergeant Major's Cape (16336, -0.23 DPS) [pvp]; Wolfmaster Cape (6314, -0.32 DPS) [dungeon] |
-| chest | Warforged Chestplate (11195) | Tremors of the Earth [quest] | 37.8 attack_power points (2.93 DPS) | yes | Valorous Chestguard (8274, -0.35 DPS, sim-verified) [world_drop]; Mixologist's Tunic (12793, -0.49 DPS) [dungeon]; Grizzled Pelt (22274, -0.50 DPS) [quest] |
+| chest | Warforged Chestplate (11195) | Tremors of the Earth [quest] | 37.8 attack_power points (2.93 DPS) | yes | Mixologist's Tunic (12793, -0.49 DPS) [dungeon]; Grizzled Pelt (22274, -0.50 DPS) [quest]; Valorous Chestguard (8274, -0.79 DPS, sim-verified) [world_drop] |
 | wrist | Bracers of the Stone Princess (17714) (or Arena Bands (18711)) | Maraudon: Princess Theradras [dungeon] | 28.0 attack_power points (2.17 DPS) | yes | Arena Bands (18711, +0.00 DPS, sim-verified) [world]; Runed Golem Shackles (12550, -0.46 DPS) [dungeon]; Branded Leather Bracers (19508, -0.62 DPS) [dungeon] |
-| hands | Raider Gauntlets (272096) | Creeg Bothunk [vendor] | 37.5 attack_power points (2.90 DPS) | yes | Rockgrip Gauntlets (17736, -0.73 DPS) [dungeon]; Officer's Gloves (250551, -0.75 DPS) [crafted]; Gauntlets of Divinity (7724, -1.38 DPS, sim-verified) [dungeon] |
-| waist | Girdle of Beastial Fury (11686) | Blackrock Depths: Eviscerator [dungeon] | 42.6 attack_power points (3.30 DPS) | yes | Highlander's Leather Girdle (20116, -1.02 DPS, sim-verified) [rep]; Atal'alarion's Tusk Ring (10798, -1.11 DPS) [dungeon]; Belt of the Gladiator (13134, -1.11 DPS) [world_drop] |
-| legs | Golem Shard Leggings (13074) | World drop [world_drop] | 34.6 attack_power points (2.68 DPS) | yes | Scarlet Leggings (10330, -0.09 DPS, sim-verified) [dungeon]; Silvershell Leggings (10633, -0.24 DPS) [dungeon]; Elemental Rockridge Leggings (17711, -0.24 DPS) [dungeon] |
-| feet | Battlechaser's Greaves (12555) | Blackrock Depths: Anvilrage Overseer [dungeon] | 25.7 attack_power points (1.99 DPS) | yes | Officer's Sabatons (250561, -0.21 DPS) [crafted]; Officer's Boots (250546, -0.25 DPS) [crafted]; Prowler's Leather Boots (252468, -0.36 DPS, sim-verified) [crafted] |
+| hands | Raider Gauntlets (272096) | Creeg Bothunk [vendor] | 37.5 attack_power points (2.90 DPS) | yes | Rockgrip Gauntlets (17736, -0.73 DPS) [dungeon]; Officer's Gloves (250551, -0.75 DPS) [crafted]; Gauntlets of Divinity (7724, -2.84 DPS, sim-verified) [dungeon] |
+| waist | Girdle of Beastial Fury (11686) | Blackrock Depths: Eviscerator [dungeon] | 42.6 attack_power points (3.30 DPS) | yes | Atal'alarion's Tusk Ring (10798, -1.11 DPS) [dungeon]; Belt of the Gladiator (13134, -1.11 DPS) [world_drop]; Highlander's Leather Girdle (20116, -1.53 DPS, sim-verified) [rep] |
+| legs | Golem Shard Leggings (13074) | World drop [world_drop] | 34.6 attack_power points (2.68 DPS) | yes | Scarlet Leggings (10330, -0.16 DPS, sim-verified) [dungeon]; Silvershell Leggings (10633, -0.24 DPS) [dungeon]; Elemental Rockridge Leggings (17711, -0.24 DPS) [dungeon] |
+| feet | Battlechaser's Greaves (12555) | Blackrock Depths: Anvilrage Overseer [dungeon] | 25.7 attack_power points (1.99 DPS) | yes | Officer's Sabatons (250561, -0.21 DPS) [crafted]; Officer's Boots (250546, -0.25 DPS) [crafted]; Prowler's Leather Boots (252468, -0.52 DPS, sim-verified) [crafted] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 21.0 attack_power points (1.63 DPS) | yes | Mark of Kern (2262, -0.08 DPS) [dungeon]; Protector's Band (19516, -0.21 DPS) [rep]; Insurgent's Band (272065, -0.46 DPS) [vendor] |
 | finger2 | Assault Band (13095) (or Mark of Kern (2262)) | World drop [world_drop] | 20.0 attack_power points (1.55 DPS) | yes | Mark of Kern (2262, +0.00 DPS, sim-verified) [dungeon]; Protector's Band (19516, -0.13 DPS) [rep]; Insurgent's Band (272065, -0.39 DPS) [vendor] |
-| trinket1 | Diamond Flask (20130) | Voodoo Feathers [quest] | 0.0 attack_power points (0.00 DPS) | yes | Sanctified Orb (20512, -2.78 DPS, sim-verified) [quest] |
+| trinket1 | Diamond Flask (20130) | Voodoo Feathers [quest] | sim-verified (129.5 DPS) | yes | Sanctified Orb (20512, -3.15 DPS, sim-verified) [quest] |
 | trinket2 | - | - |  |  |  |
-| main_hand | Nightblade (1982) | World drop [world_drop] | 0.0 attack_power points (0.00 DPS) | yes | Taran Icebreaker (2915, +0.00 DPS) [world_drop]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Glowing Brightwood Staff (812, -6.14 DPS, sim-verified) [world_drop] |
+| main_hand | Nightblade (1982) | World drop [world_drop] | sim-verified (129.5 DPS) | yes | Taran Icebreaker (2915, +0.00 DPS) [world_drop]; Thorium Greatmace (250613, +0.00 DPS) [crafted]; Glowing Brightwood Staff (812, -7.55 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | 0.0 attack_power points (0.00 DPS) | yes | Stinging Bow (10624, +0.00 DPS) [dungeon]; Houndmaster's Bow (11628, -0.16 DPS) [dungeon]; Dark Iron Rifle (16004, -1.04 DPS, sim-verified) [crafted] |
+| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (129.5 DPS) | yes | Stinging Bow (10624, +0.00 DPS) [dungeon]; Houndmaster's Bow (11628, -0.16 DPS) [dungeon]; Dark Iron Rifle (16004, -1.87 DPS, sim-verified) [crafted] |
 
 **New at 50:** head: Embrace of the Lycan; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Bloodlust Cape; chest: Warforged Chestplate; wrist: Bracers of the Stone Princess; hands: Raider Gauntlets; waist: Girdle of Beastial Fury; legs: Golem Shard Leggings; feet: Battlechaser's Greaves; finger1: Blackstone Ring; finger2: Assault Band; trinket1: Diamond Flask; ranged: Skull Splitting Crossbow
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 859, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (human, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 245.3. Weights run: 2.1s. Verify run: 1.8s. 1906 eligible items had no known source.
+Set DPS (verified): 245.3. Weights run: 2.2s. Verify run: 1.8s. 1906 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.801, strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=1.448 ± 0.116 per rating point (14 rating = 1%, 20.276 per %), hit=0.304 ± 0.015 per rating point (10 rating = 1%, 3.037 per %), melee_haste=9.244 ± 1.838
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1906, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (orc, 35300000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 33.5. Weights run: 1.4s. Verify run: 1.2s. 285 eligible items had no known source.
+Set DPS (verified): 33.5. Weights run: 1.6s. Verify run: 1.2s. 285 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.045, strength=2.084 ± 0.056, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000) per rating point (14 rating = 1%, 0.000 per %), hit=0.053 ± 0.002 per rating point (10 rating = 1%, 0.529 per %), melee_haste=1.835 ± 0.076
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 285, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 35325210000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 72.1. Weights run: 1.6s. Verify run: 1.4s. 471 eligible items had no known source.
+Set DPS (verified): 72.1. Weights run: 1.7s. Verify run: 1.4s. 471 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.089, strength=1.991 ± 0.124, agility=not significant (0.008 ± 0.005), crit=0.012 ± 0.002 per rating point (14 rating = 1%, 0.171 per %), hit=0.074 ± 0.003 per rating point (10 rating = 1%, 0.743 per %), melee_haste=2.607 ± 0.360
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 471, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (orc, 35325213032010001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 89.0. Weights run: 2.0s. Verify run: 1.5s. 652 eligible items had no known source.
+Set DPS (verified): 89.0. Weights run: 2.1s. Verify run: 1.6s. 652 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.304, strength=2.474 ± 0.448, agility=not significant (0.006 ± 0.006), crit=0.034 ± 0.004 per rating point (14 rating = 1%, 0.473 per %), hit=0.114 ± 0.006 per rating point (10 rating = 1%, 1.140 per %), melee_haste=3.320 ± 0.694
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 652, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (orc, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 130.6. Weights run: 2.1s. Verify run: 1.8s. 840 eligible items had no known source.
+Set DPS (verified): 130.6. Weights run: 2.2s. Verify run: 1.9s. 840 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.275, strength=1.574 ± 0.365, agility=not significant (0.284 ± 0.128), crit=0.440 ± 0.037 per rating point (14 rating = 1%, 6.161 per %), hit=0.098 ± 0.005 per rating point (10 rating = 1%, 0.978 per %), melee_haste=3.257 ± 0.606
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 840, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (orc, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 237.7. Weights run: 2.1s. Verify run: 1.7s. 1887 eligible items had no known source.
+Set DPS (verified): 237.7. Weights run: 2.2s. Verify run: 1.7s. 1887 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.801, strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=1.448 ± 0.116 per rating point (14 rating = 1%, 20.276 per %), hit=0.304 ± 0.015 per rating point (10 rating = 1%, 3.037 per %), melee_haste=9.244 ± 1.838
 

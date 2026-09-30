@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:20:25Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:47:39Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -533,8 +533,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.366593425,
-      "verify_run_seconds": 1.15867857,
+      "weights_run_seconds": 1.302257734,
+      "verify_run_seconds": 1.181698316,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1143,8 +1143,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.366593425,
-      "verify_run_seconds": 1.208110893,
+      "weights_run_seconds": 1.302257734,
+      "verify_run_seconds": 1.2601509690000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1825,8 +1825,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.469264969,
-      "verify_run_seconds": 1.168427548,
+      "weights_run_seconds": 1.325978852,
+      "verify_run_seconds": 1.169004356,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2514,8 +2514,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.469264969,
-      "verify_run_seconds": 1.199160795,
+      "weights_run_seconds": 1.325978852,
+      "verify_run_seconds": 1.20424739,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3166,8 +3166,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.203471683,
-      "verify_run_seconds": 0.984656451,
+      "weights_run_seconds": 1.1897245459999999,
+      "verify_run_seconds": 0.984857303,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3812,8 +3812,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.203471683,
-      "verify_run_seconds": 0.986643403,
+      "weights_run_seconds": 1.1897245459999999,
+      "verify_run_seconds": 0.964887275,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4243,7 +4243,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.837646116650996
+              "dps_delta": -2.8376461166509963
             },
             {
               "item_id": 14132,
@@ -4284,7 +4284,7 @@
               "item_name": "Sergeant Major's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.385386295106878
+              "dps_delta": -3.3853862951068785
             }
           ]
         },
@@ -4483,8 +4483,8 @@
         "trinket1: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.295369555,
-      "verify_run_seconds": 1.33095409,
+      "weights_run_seconds": 1.205639256,
+      "verify_run_seconds": 1.288164842,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5179,8 +5179,8 @@
         "trinket2: Uther's Strength",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.295369555,
-      "verify_run_seconds": 1.309052838,
+      "weights_run_seconds": 1.205639256,
+      "verify_run_seconds": 1.314108863,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5544,7 +5544,7 @@
               "item_name": "Heretic Waistguard",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -13.239361353553894
+              "dps_delta": -13.239361353553893
             }
           ]
         },
@@ -5837,8 +5837,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.237297009,
-      "verify_run_seconds": 1.337782739,
+      "weights_run_seconds": 1.269528265,
+      "verify_run_seconds": 1.326469232,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6406,7 +6406,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -2.004029075855467
+              "dps_delta": -2.004029075855463
             },
             {
               "item_id": 19099,
@@ -6494,8 +6494,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.237297009,
-      "verify_run_seconds": 1.268145518,
+      "weights_run_seconds": 1.269528265,
+      "verify_run_seconds": 1.274573368,
       "coverage": {
         "back": {
           "eligible": 451,

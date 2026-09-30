@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:12:57Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:40:03Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -528,8 +528,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.559720547,
-      "verify_run_seconds": 0.901102977,
+      "weights_run_seconds": 1.646941644,
+      "verify_run_seconds": 0.949601479,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1133,8 +1133,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.559720547,
-      "verify_run_seconds": 0.896200304,
+      "weights_run_seconds": 1.646941644,
+      "verify_run_seconds": 0.911191714,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1770,8 +1770,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.770806183,
-      "verify_run_seconds": 1.011159522,
+      "weights_run_seconds": 1.838179435,
+      "verify_run_seconds": 1.042687252,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2408,8 +2408,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.770806183,
-      "verify_run_seconds": 1.083391048,
+      "weights_run_seconds": 1.838179435,
+      "verify_run_seconds": 1.074375627,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3039,8 +3039,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.891374213,
-      "verify_run_seconds": 1.106727915,
+      "weights_run_seconds": 2.04738409,
+      "verify_run_seconds": 1.172454851,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3672,8 +3672,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.891374213,
-      "verify_run_seconds": 1.115369895,
+      "weights_run_seconds": 2.04738409,
+      "verify_run_seconds": 1.133479691,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4072,7 +4072,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.525318334164254
+              "dps_delta": -0.5253183341642544
             },
             {
               "item_id": 12466,
@@ -4307,8 +4307,8 @@
         "finger2: Philanthropist's Ring",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.899740193,
-      "verify_run_seconds": 1.250956413,
+      "weights_run_seconds": 1.961888503,
+      "verify_run_seconds": 1.266385712,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4716,7 +4716,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5253183341642544
+              "dps_delta": -0.525318334164254
             }
           ]
         },
@@ -4943,8 +4943,8 @@
         "finger2: Philanthropist's Ring",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.899740193,
-      "verify_run_seconds": 1.2356320140000001,
+      "weights_run_seconds": 1.961888503,
+      "verify_run_seconds": 1.298696713,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5102,7 +5102,7 @@
               "item_name": "Waywatcher Headpiece",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.8429042034184704,
+              "dps_delta": -0.9169031894875275,
               "verified": true
             },
             {
@@ -5131,19 +5131,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.6089598447986759,
-              "verified": true
-            },
-            {
               "item_id": 15856,
               "item_name": "Archlight Talisman",
               "source_kind": "quest",
               "source": "Hidden Treasures",
               "dps_delta": -0.7078738598051266
+            },
+            {
+              "item_id": 22149,
+              "item_name": "Beads of Ogre Mojo",
+              "source_kind": "quest",
+              "source": "Falrin's Vendetta",
+              "dps_delta": -0.749872805731485,
+              "verified": true
             },
             {
               "item_id": 20037,
@@ -5182,7 +5182,7 @@
               "item_name": "Rugged Mantle of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -5.66607425017591,
+              "dps_delta": -6.245982417999102,
               "verified": true
             }
           ]
@@ -5193,7 +5193,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.599091006201114,
+          "score": 30.59909100620111,
           "verified": true,
           "alternatives": [
             {
@@ -5209,14 +5209,14 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381239
+              "dps_delta": -0.6702785051381236
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.0828616773596413
+              "dps_delta": -1.082861677359641
             }
           ]
         },
@@ -5226,7 +5226,7 @@
           "item_name": "Waywatcher Leathers",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 196.12723141173535,
+          "sim_dps": 202.66576036917718,
           "verified": true,
           "alternatives": [
             {
@@ -5248,7 +5248,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -17.274392965429627,
+              "dps_delta": -17.741949326095835,
               "verified": true
             }
           ]
@@ -5259,7 +5259,7 @@
           "item_name": "Waywatcher Bindings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 196.12723141173535,
+          "sim_dps": 202.66576036917718,
           "verified": true,
           "alternatives": [
             {
@@ -5281,7 +5281,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -12.07000580409246,
+              "dps_delta": -12.369547009708441,
               "verified": true
             }
           ]
@@ -5300,7 +5300,7 @@
               "item_name": "Waywatcher Handguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.0512478835991033,
+              "dps_delta": -3.288927381322452,
               "verified": true
             },
             {
@@ -5347,7 +5347,7 @@
               "item_name": "Knowledge of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -3.7982298768708915,
+              "dps_delta": -5.1571334575511685,
               "verified": true
             }
           ]
@@ -5366,7 +5366,7 @@
               "item_name": "Waywatcher Legguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.1896647460552856,
+              "dps_delta": -0.8550386171634159,
               "verified": true
             },
             {
@@ -5424,7 +5424,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 196.12723141173535,
+          "sim_dps": 202.66576036917718,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5440,7 +5440,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.80231692003261,
+              "dps_delta": -8.966003415748702,
               "verified": true
             }
           ]
@@ -5451,7 +5451,7 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 196.12723141173535,
+          "sim_dps": 202.66576036917718,
           "verified": true,
           "alternatives": [
             {
@@ -5473,7 +5473,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -7.666165587389457,
+              "dps_delta": -6.958714345185399,
               "verified": true
             }
           ]
@@ -5484,10 +5484,10 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 196.12723141173535,
+          "sim_dps": 202.66576036917718,
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +9.7 DPS (196.1 vs 186.4 set DPS)",
-          "dps_delta": 9.687074254000038,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +11.6 DPS (202.7 vs 191.1 set DPS)",
+          "dps_delta": 11.604302487282183,
           "alternatives": [
             {
               "item_id": 12930,
@@ -5514,11 +5514,11 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
+          "item_id": 11819,
+          "item_name": "Second Wind",
+          "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
-          "sim_dps": 196.12723141173535,
+          "sim_dps": 202.66576036917718,
           "verified": true,
           "alternatives": [
             {
@@ -5536,11 +5536,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11819,
-              "item_name": "Second Wind",
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -0.9734378623044506,
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -3.598401004673349,
               "verified": true
             }
           ]
@@ -5551,7 +5551,7 @@
           "item_name": "Crackling Staff",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 196.12723141173535,
+          "sim_dps": 202.66576036917718,
           "verified": true,
           "alternatives": [
             {
@@ -5573,7 +5573,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.175906044232988,
+              "dps_delta": -4.655496793416319,
               "verified": true
             }
           ]
@@ -5666,14 +5666,14 @@
               "item_name": "Howling Idol",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.5971546122326572,
+              "dps_delta": -0.6382499262684576,
               "verified": true
             }
           ],
           "low_value": true
         }
       ],
-      "set_dps": 196.12723141173535,
+      "set_dps": 202.66576036917718,
       "no_source_count": 1391,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -5706,12 +5706,12 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Burst of Knowledge",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Second Wind",
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.908326979,
-      "verify_run_seconds": 1.2115315309999999,
+      "weights_run_seconds": 1.991662658,
+      "verify_run_seconds": 1.266411216,
       "coverage": {
         "back": {
           "eligible": 446,
@@ -5869,7 +5869,7 @@
               "item_name": "Waywatcher Headpiece",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.7823083630867416,
+              "dps_delta": -0.8538930097270452,
               "verified": true
             },
             {
@@ -5898,6 +5898,14 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 22149,
+              "item_name": "Beads of Ogre Mojo",
+              "source_kind": "quest",
+              "source": "Falrin's Vendetta",
+              "dps_delta": -0.630519928474456,
+              "verified": true
+            },
+            {
               "item_id": 15856,
               "item_name": "Archlight Talisman",
               "source_kind": "quest",
@@ -5910,14 +5918,6 @@
               "source_kind": "quest",
               "source": "Destroy Morphaz",
               "dps_delta": -0.7672065941203602
-            },
-            {
-              "item_id": 22149,
-              "item_name": "Beads of Ogre Mojo",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.7709397236915265,
-              "verified": true
             }
           ]
         },
@@ -5949,7 +5949,7 @@
               "item_name": "Rugged Mantle of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -6.57331849627289,
+              "dps_delta": -5.976998572298015,
               "verified": true
             }
           ]
@@ -5960,7 +5960,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.599091006201114,
+          "score": 30.59909100620111,
           "verified": true,
           "alternatives": [
             {
@@ -5976,14 +5976,14 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381239
+              "dps_delta": -0.6702785051381236
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -0.9277997417784324
+              "dps_delta": -0.927799741778432
             }
           ]
         },
@@ -5993,7 +5993,6 @@
           "item_name": "Waywatcher Leathers",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 193.11344709276196,
           "verified": true,
           "alternatives": [
             {
@@ -6001,7 +6000,7 @@
               "item_name": "Waywatcher Tunic",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.6922379778343386
+              "dps_delta": -1.692237977834337
             },
             {
               "item_id": 226776,
@@ -6015,7 +6014,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -17.498419189025327,
+              "dps_delta": -17.061422229614806,
               "verified": true
             }
           ]
@@ -6026,7 +6025,6 @@
           "item_name": "Waywatcher Bindings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 193.11344709276196,
           "verified": true,
           "alternatives": [
             {
@@ -6034,21 +6032,21 @@
               "item_name": "Waywatcher Wristguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.2126430709675664
+              "dps_delta": -2.2126430709675655
             },
             {
               "item_id": 19595,
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.78579700076782
+              "dps_delta": -2.785797000767819
             },
             {
               "item_id": 23093,
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -12.866269391403705,
+              "dps_delta": -11.760808595627964,
               "verified": true
             }
           ]
@@ -6067,7 +6065,7 @@
               "item_name": "Waywatcher Handguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.8339972784903296,
+              "dps_delta": -1.684272981276905,
               "verified": true
             },
             {
@@ -6103,19 +6101,19 @@
               "dps_delta": -3.3615675824355664
             },
             {
+              "item_id": 228190,
+              "item_name": "Knowledge of the Timbermaw",
+              "source_kind": "vendor",
+              "source": "Meilosh",
+              "dps_delta": -3.571780889103877,
+              "verified": true
+            },
+            {
               "item_id": 272401,
               "item_name": "Elunite Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "dps_delta": -3.7418901257113095
-            },
-            {
-              "item_id": 228190,
-              "item_name": "Knowledge of the Timbermaw",
-              "source_kind": "vendor",
-              "source": "Meilosh",
-              "dps_delta": -4.7975225735663685,
-              "verified": true
             }
           ]
         },
@@ -6133,7 +6131,7 @@
               "item_name": "Waywatcher Legguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.2817301661919771,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -6154,34 +6152,36 @@
         },
         {
           "slot": "feet",
-          "item_id": 240074,
-          "item_name": "Waywatcher Sandals",
+          "item_id": 240090,
+          "item_name": "Waywatcher Boots",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 58.02793587068517,
+          "sim_dps": 201.14743384772802,
           "verified": true,
+          "swap_note": "beat the scored pick Waywatcher Sandals (id 240074) in the sim: +2.1 DPS (201.1 vs 199.1 set DPS)",
+          "dps_delta": 2.073840795300299,
           "alternatives": [
-            {
-              "item_id": 240090,
-              "item_name": "Waywatcher Boots",
-              "source_kind": "vendor",
-              "source": "Leonid Barthalomew the Revered",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 226774,
               "item_name": "Feralheart Galoshes",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.9770054161204047
+              "dps_delta": -0.8548327116006519
             },
             {
               "item_id": 231682,
               "item_name": "General's Dragonhide Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.338358937812372
+              "dps_delta": -1.2161862332926192
+            },
+            {
+              "item_id": 240074,
+              "item_name": "Waywatcher Sandals",
+              "source_kind": "vendor",
+              "source": "Leonid Barthalomew the Revered",
+              "dps_delta": -2.073840795300299,
+              "verified": true
             }
           ]
         },
@@ -6191,7 +6191,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 193.11344709276196,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6200,14 +6199,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "vendor",
               "source": "Anachronos",
-              "dps_delta": -0.34652033811315935
+              "dps_delta": -0.3465203381131586
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -8.722699780385454,
+              "dps_delta": -9.021176857451053,
               "verified": true
             }
           ]
@@ -6218,7 +6217,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 193.11344709276196,
           "verified": true,
           "alternatives": [
             {
@@ -6240,7 +6238,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -7.303935815366259,
+              "dps_delta": -7.003378952714058,
               "verified": true
             }
           ]
@@ -6251,8 +6249,9 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 193.11344709276196,
           "verified": true,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +10.6 DPS over it",
+          "dps_delta": 10.613327004823532,
           "alternatives": [
             {
               "item_id": 12930,
@@ -6261,32 +6260,6 @@
               "source": "Blackrock Spire: Jed Runewatcher",
               "dps_delta": 0
             },
-            {
-              "item_id": 272438,
-              "item_name": "Weakness Analyzer",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 11819,
-              "item_name": "Second Wind",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -2.505858351233229,
-              "verified": true
-            }
-          ]
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "sim_dps": 193.11344709276196,
-          "verified": true,
-          "alternatives": [
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
@@ -6300,13 +6273,37 @@
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "dps_delta": 0
-            },
+            }
+          ]
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 11819,
+          "item_name": "Second Wind",
+          "source": "Blackrock Depths: Golem Lord Argelmach",
+          "source_kind": "dungeon",
+          "verified": true,
+          "alternatives": [
             {
               "item_id": 12930,
               "item_name": "Briarwood Reed",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": -0.7596769539661352,
+              "dps_delta": 0
+            },
+            {
+              "item_id": 272438,
+              "item_name": "Weakness Analyzer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -2.6223006827742665,
               "verified": true
             }
           ]
@@ -6317,7 +6314,6 @@
           "item_name": "Amethyst War Staff",
           "source": "Azure Templar",
           "source_kind": "world",
-          "sim_dps": 193.11344709276196,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6340,7 +6336,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.5647943455719826,
+              "dps_delta": -3.1349336070231857,
               "verified": true
             }
           ]
@@ -6433,14 +6429,14 @@
               "item_name": "Howling Idol",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.5817208011306434,
+              "dps_delta": -0.617537305947593,
               "verified": true
             }
           ],
           "low_value": true
         }
       ],
-      "set_dps": 193.11344709276196,
+      "set_dps": 201.14743384772802,
       "no_source_count": 1393,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6469,16 +6465,16 @@
         "hands: Waywatcher Mitts",
         "waist: Waywatcher Cord",
         "legs: Waywatcher Kilt",
-        "feet: Waywatcher Sandals",
+        "feet: Waywatcher Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Burst of Knowledge",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Second Wind",
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.908326979,
-      "verify_run_seconds": 1.225771759,
+      "weights_run_seconds": 1.991662658,
+      "verify_run_seconds": 1.31616799,
       "coverage": {
         "back": {
           "eligible": 452,

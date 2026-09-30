@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:16:57Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:44:10Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -532,8 +532,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.32007963,
-      "verify_run_seconds": 1.086253328,
+      "weights_run_seconds": 1.36411139,
+      "verify_run_seconds": 1.123272376,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1134,8 +1134,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.32007963,
-      "verify_run_seconds": 1.088535097,
+      "weights_run_seconds": 1.36411139,
+      "verify_run_seconds": 1.056235528,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1764,8 +1764,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.38683476,
-      "verify_run_seconds": 1.365263827,
+      "weights_run_seconds": 1.391900858,
+      "verify_run_seconds": 1.403045865,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2400,8 +2400,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.38683476,
-      "verify_run_seconds": 1.365829102,
+      "weights_run_seconds": 1.391900858,
+      "verify_run_seconds": 1.412117103,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3033,8 +3033,8 @@
         "finger1: Assault Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.402411174,
-      "verify_run_seconds": 1.272226715,
+      "weights_run_seconds": 1.429547029,
+      "verify_run_seconds": 1.292899295,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3666,8 +3666,8 @@
         "finger1: Assault Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.402411174,
-      "verify_run_seconds": 1.280620377,
+      "weights_run_seconds": 1.429547029,
+      "verify_run_seconds": 1.31286482,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3803,10 +3803,10 @@
           "item_name": "Fury Visor",
           "source": "Voodoo Feathers",
           "source_kind": "quest",
-          "sim_dps": 105.50718245380543,
+          "sim_dps": 104.33553226747908,
           "verified": true,
-          "swap_note": "beat the scored pick Embrace of the Lycan (id 9479) in the sim: +1.7 DPS (105.5 vs 103.8 set DPS)",
-          "dps_delta": 1.7263796880963866,
+          "swap_note": "beat the scored pick Embrace of the Lycan (id 9479) in the sim: +1.3 DPS (104.3 vs 103.0 set DPS)",
+          "dps_delta": 1.316846346500725,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -3828,7 +3828,7 @@
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -1.7263796880963866,
+              "dps_delta": -1.316846346500725,
               "verified": true
             }
           ]
@@ -3855,7 +3855,7 @@
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.35590185292872434,
+              "dps_delta": -0.35995051080217877,
               "verified": true
             },
             {
@@ -3943,14 +3943,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 8274,
-              "item_name": "Valorous Chestguard",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
               "item_id": 12793,
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
@@ -3963,6 +3955,14 @@
               "source_kind": "vendor",
               "source": "Zippie Fizzbolt",
               "dps_delta": -0.4296783277609239
+            },
+            {
+              "item_id": 8274,
+              "item_name": "Valorous Chestguard",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.1214376942799618,
+              "verified": true
             }
           ]
         },
@@ -4000,7 +4000,7 @@
               "item_name": "Arena Bands",
               "source_kind": "world",
               "source": "Arena Treasure Chest",
-              "dps_delta": -0.2689838117326815,
+              "dps_delta": -0.9595294906799978,
               "verified": true
             }
           ]
@@ -4033,7 +4033,7 @@
               "item_name": "Officer's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.7746772562628621,
+              "dps_delta": -0.7508106292034995,
               "verified": true
             }
           ]
@@ -4060,7 +4060,7 @@
               "item_name": "Atal'alarion's Tusk Ring",
               "source_kind": "dungeon",
               "source": "The Temple of Atal'Hakkar: Atal'alarion",
-              "dps_delta": -0.5931697548811599,
+              "dps_delta": -0.5999175180035792,
               "verified": true
             },
             {
@@ -4086,7 +4086,7 @@
               "item_name": "Scarlet Leggings",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.1186339509762604,
+              "dps_delta": -0.11998350360073573,
               "verified": true
             },
             {
@@ -4133,7 +4133,7 @@
               "item_name": "Prowler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.22329267509110196,
+              "dps_delta": -0.19306217896897238,
               "verified": true
             }
           ]
@@ -4146,8 +4146,8 @@
           "source_kind": "dungeon",
           "score": 23.894707944740873,
           "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +2.5 DPS over it",
-          "dps_delta": 2.533286539465678,
+          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +1.9 DPS over it",
+          "dps_delta": 1.9475353344240318,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4182,14 +4182,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13095,
-              "item_name": "Assault Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
               "item_id": 2262,
               "item_name": "Mark of Kern",
               "source_kind": "dungeon",
@@ -4202,6 +4194,14 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -0.18180399669548541
+            },
+            {
+              "item_id": 13095,
+              "item_name": "Assault Band",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.6672837095271831,
+              "verified": true
             }
           ]
         },
@@ -4218,7 +4218,7 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -1.6282925599938238,
+              "dps_delta": -1.7564088904619979,
               "verified": true
             }
           ]
@@ -4255,7 +4255,7 @@
               "item_name": "Thorium Greatmace",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.417826553462234,
+              "dps_delta": -4.040171320667227,
               "verified": true
             }
           ]
@@ -4272,7 +4272,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 105.50718245380543,
+      "set_dps": 104.33553226747908,
       "no_source_count": 713,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -4306,8 +4306,8 @@
         "trinket1: Diamond Flask",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.447848703,
-      "verify_run_seconds": 1.42841716,
+      "weights_run_seconds": 1.492246299,
+      "verify_run_seconds": 1.520205094,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4877,14 +4877,7 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 20036,
-              "item_name": "Fire Ruby",
-              "source_kind": "quest",
-              "source": "Destroy Morphaz",
-              "dps_delta": -0.14264546855663696,
+              "dps_delta": -1.4933115760081108,
               "verified": true
             }
           ]
@@ -4968,8 +4961,8 @@
         "trinket2: Diamond Flask",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.447848703,
-      "verify_run_seconds": 1.40706853,
+      "weights_run_seconds": 1.492246299,
+      "verify_run_seconds": 1.4605782760000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5127,7 +5120,7 @@
               "item_name": "Inquisition Crown",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.460876787011188,
+              "dps_delta": -5.49388276323657,
               "verified": true
             }
           ]
@@ -5194,7 +5187,7 @@
               "item_name": "Inquisition Pauldrons",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -3.799255855381517,
+              "dps_delta": -3.719590297457387,
               "verified": true
             }
           ]
@@ -5216,19 +5209,19 @@
               "dps_delta": -0.13260039900695916
             },
             {
+              "item_id": 22337,
+              "item_name": "Shroud of Domination",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -0.41766510475909513,
+              "verified": true
+            },
+            {
               "item_id": 18328,
               "item_name": "Shadewood Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
               "dps_delta": -0.42372567141943657
-            },
-            {
-              "item_id": 22337,
-              "item_name": "Shroud of Domination",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.46310611423209025,
-              "verified": true
             }
           ]
         },
@@ -5238,7 +5231,7 @@
           "item_name": "Inquisition Breastplate",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5260,7 +5253,7 @@
               "item_name": "Breastplate of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -10.305171546349897,
+              "dps_delta": -10.329458912667121,
               "verified": true
             }
           ]
@@ -5271,7 +5264,7 @@
           "item_name": "Inquisition Vambraces",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5293,7 +5286,7 @@
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -5.3421584903594805,
+              "dps_delta": -5.279205965456413,
               "verified": true
             }
           ]
@@ -5304,7 +5297,7 @@
           "item_name": "Inquisition Gloves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5326,7 +5319,7 @@
               "item_name": "Razor Gauntlets",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -5.912123132230164,
+              "dps_delta": -5.768993903006958,
               "verified": true
             }
           ]
@@ -5359,7 +5352,7 @@
               "item_name": "Dense Timbermaw Belt",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -3.6086464378522862,
+              "dps_delta": -3.644986000218978,
               "verified": true
             }
           ]
@@ -5370,7 +5363,7 @@
           "item_name": "Inquisition Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5385,14 +5378,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689437
+              "dps_delta": -2.0108810357689446
             },
             {
               "item_id": 14554,
               "item_name": "Cloudkeeper Legplates",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.87362600371398,
+              "dps_delta": -5.00094386090052,
               "verified": true
             }
           ]
@@ -5425,7 +5418,7 @@
               "item_name": "Scalegut Treaders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.896448101436448,
+              "dps_delta": -3.84693940172059,
               "verified": true
             }
           ]
@@ -5436,7 +5429,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5452,7 +5445,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.8268424203769484,
+              "dps_delta": -3.8498343572564124,
               "verified": true
             }
           ]
@@ -5463,7 +5456,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5485,7 +5478,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.081254618191309,
+              "dps_delta": -3.001976769997924,
               "verified": true
             }
           ]
@@ -5496,7 +5489,7 @@
           "item_name": "Second Wind",
           "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5518,18 +5511,18 @@
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -0.9003991605803492,
+              "dps_delta": -1.348445250498031,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "sim_dps": 186.95941932482359,
+          "item_id": 19289,
+          "item_name": "Darkmoon Card: Maelstrom",
+          "source": "Darkmoon Elementals Deck",
+          "source_kind": "quest",
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5547,11 +5540,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -1.4335126970765373,
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -0.09209246874883092,
               "verified": true
             }
           ]
@@ -5562,7 +5555,7 @@
           "item_name": "Blackblade of Shahram",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 186.95941932482359,
+          "sim_dps": 188.27910365856155,
           "verified": true,
           "alternatives": [
             {
@@ -5584,7 +5577,7 @@
               "item_name": "Runeblade of Baron Rivendare",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -3.8524661469199657,
+              "dps_delta": -3.3512265960983427,
               "verified": true
             }
           ]
@@ -5601,7 +5594,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 186.95941932482359,
+      "set_dps": 188.27910365856155,
       "no_source_count": 1604,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -5634,11 +5627,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
         "trinket1: Second Wind",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.491774044,
-      "verify_run_seconds": 1.353112899,
+      "weights_run_seconds": 1.5299017689999999,
+      "verify_run_seconds": 1.423210379,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5796,7 +5789,7 @@
               "item_name": "Inquisition Crown",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -5.444459329721326,
+              "dps_delta": -5.48060671210655,
               "verified": true
             }
           ]
@@ -5863,7 +5856,7 @@
               "item_name": "Inquisition Pauldrons",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -4.774461691418054,
+              "dps_delta": -4.808245822696136,
               "verified": true
             }
           ]
@@ -5885,19 +5878,19 @@
               "dps_delta": -0.13260039900695916
             },
             {
-              "item_id": 22337,
-              "item_name": "Shroud of Domination",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.42017487676022824,
-              "verified": true
-            },
-            {
               "item_id": 18328,
               "item_name": "Shadewood Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
               "dps_delta": -0.42372567141943657
+            },
+            {
+              "item_id": 22337,
+              "item_name": "Shroud of Domination",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -0.43918074293418385,
+              "verified": true
             }
           ]
         },
@@ -5907,7 +5900,7 @@
           "item_name": "Inquisition Breastplate",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "alternatives": [
             {
@@ -5922,14 +5915,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.629126640431222
+              "dps_delta": -1.6291266404312212
             },
             {
               "item_id": 23087,
               "item_name": "Breastplate of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -9.999957320550749,
+              "dps_delta": -10.046033973199627,
               "verified": true
             }
           ]
@@ -5940,7 +5933,7 @@
           "item_name": "Inquisition Vambraces",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "alternatives": [
             {
@@ -5962,7 +5955,7 @@
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -6.238349198696085,
+              "dps_delta": -6.298389633995299,
               "verified": true
             }
           ]
@@ -5973,7 +5966,7 @@
           "item_name": "Inquisition Gloves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "alternatives": [
             {
@@ -5995,7 +5988,7 @@
               "item_name": "Razor Gauntlets",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -5.720520648938901,
+              "dps_delta": -5.685644955627936,
               "verified": true
             }
           ]
@@ -6028,7 +6021,7 @@
               "item_name": "Dense Timbermaw Belt",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -3.702651274404218,
+              "dps_delta": -3.735002171100348,
               "verified": true
             }
           ]
@@ -6039,7 +6032,7 @@
           "item_name": "Inquisition Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "alternatives": [
             {
@@ -6061,7 +6054,7 @@
               "item_name": "Cloudkeeper Legplates",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -7.770324007942833,
+              "dps_delta": -8.055859788343042,
               "verified": true
             }
           ]
@@ -6094,7 +6087,7 @@
               "item_name": "Scalegut Treaders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -4.909785233113894,
+              "dps_delta": -4.9497200970458834,
               "verified": true
             }
           ]
@@ -6105,7 +6098,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6121,7 +6114,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.773805651581085,
+              "dps_delta": -4.885651162023805,
               "verified": true
             }
           ]
@@ -6132,7 +6125,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "alternatives": [
             {
@@ -6154,18 +6147,18 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.103113261083649,
+              "dps_delta": -4.134738913455465,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 11832,
-          "item_name": "Burst of Knowledge",
-          "source": "Blackrock Depths: Ambassador Flamelash",
+          "item_id": 11819,
+          "item_name": "Second Wind",
+          "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "alternatives": [
             {
@@ -6187,7 +6180,7 @@
               "item_name": "Darkmoon Card: Maelstrom",
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck",
-              "dps_delta": -0.4554805592603941,
+              "dps_delta": -2.549851513175355,
               "verified": true
             }
           ]
@@ -6198,7 +6191,7 @@
           "item_name": "Draconic Infused Emblem",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "alternatives": [
             {
@@ -6220,7 +6213,7 @@
               "item_name": "Darkmoon Card: Maelstrom",
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck",
-              "dps_delta": -0.4145939329716839,
+              "dps_delta": -1.0724559468548875,
               "verified": true
             }
           ]
@@ -6231,7 +6224,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 181.4025626566975,
+          "sim_dps": 183.49693361061247,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6254,7 +6247,7 @@
               "item_name": "Blackblade of Shahram",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -3.792894791171051,
+              "dps_delta": -4.2104271973942105,
               "verified": true
             }
           ]
@@ -6271,7 +6264,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 181.4025626566975,
+      "set_dps": 183.49693361061247,
       "no_source_count": 1643,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -6303,12 +6296,12 @@
         "feet: Inquisition Greaves",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
-        "trinket1: Burst of Knowledge",
+        "trinket1: Second Wind",
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.491774044,
-      "verify_run_seconds": 1.387295787,
+      "weights_run_seconds": 1.5299017689999999,
+      "verify_run_seconds": 1.397217373,
       "coverage": {
         "back": {
           "eligible": 450,

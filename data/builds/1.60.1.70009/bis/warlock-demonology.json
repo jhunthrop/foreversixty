@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T15:20:50Z",
+  "engine_version": "047a0ddb3",
+  "generated_at": "2026-09-30T15:48:05Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -540,8 +540,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.397797003,
-      "verify_run_seconds": 1.172447304,
+      "weights_run_seconds": 1.464560961,
+      "verify_run_seconds": 1.192457148,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1156,8 +1156,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.397797003,
-      "verify_run_seconds": 1.208341169,
+      "weights_run_seconds": 1.464560961,
+      "verify_run_seconds": 1.216649559,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1851,8 +1851,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.426497563,
-      "verify_run_seconds": 1.151986403,
+      "weights_run_seconds": 1.482538479,
+      "verify_run_seconds": 1.164540681,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2546,8 +2546,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.426497563,
-      "verify_run_seconds": 1.135206207,
+      "weights_run_seconds": 1.482538479,
+      "verify_run_seconds": 1.165031327,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3211,8 +3211,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.2854754210000001,
-      "verify_run_seconds": 0.959437471,
+      "weights_run_seconds": 1.346825943,
+      "verify_run_seconds": 0.95146113,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3869,8 +3869,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.2854754210000001,
-      "verify_run_seconds": 0.949793462,
+      "weights_run_seconds": 1.346825943,
+      "verify_run_seconds": 0.980230901,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4548,8 +4548,8 @@
         "trinket1: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.265084037,
-      "verify_run_seconds": 1.155405549,
+      "weights_run_seconds": 1.32091289,
+      "verify_run_seconds": 1.205725846,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5021,7 +5021,7 @@
               "item_name": "First Sergeant's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -3.4225105060089462
+              "dps_delta": -3.422510506008946
             }
           ]
         },
@@ -5130,14 +5130,6 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20036,
-              "item_name": "Fire Ruby",
-              "source_kind": "quest",
-              "source": "Destroy Morphaz",
-              "dps_delta": -1.1454586147224575,
-              "verified": true
-            },
-            {
               "item_id": 249469,
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
@@ -5149,7 +5141,8 @@
               "item_name": "Rune of the Guard Captain",
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village",
-              "dps_delta": -1.3885912759522665
+              "dps_delta": -1.3065676850953594,
+              "verified": true
             }
           ]
         },
@@ -5259,8 +5252,8 @@
         "trinket2: Uther's Strength",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.265084037,
-      "verify_run_seconds": 1.089661526,
+      "weights_run_seconds": 1.32091289,
+      "verify_run_seconds": 1.136711241,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5934,8 +5927,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.3215313929999999,
-      "verify_run_seconds": 1.110315647,
+      "weights_run_seconds": 1.380588297,
+      "verify_run_seconds": 1.137102731,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6341,7 +6334,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.2491927079997014
+              "dps_delta": -3.2491927079997005
             }
           ]
         },
@@ -6609,8 +6602,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.3215313929999999,
-      "verify_run_seconds": 1.123151113,
+      "weights_run_seconds": 1.380588297,
+      "verify_run_seconds": 1.141155574,
       "coverage": {
         "back": {
           "eligible": 451,
