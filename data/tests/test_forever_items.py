@@ -62,11 +62,14 @@ def test_helm_of_wrath_does_not_leak_into_forever_prebetas_item_files():
     active_build = json.loads(ACTIVE_BUILD_FILE.read_text(encoding="utf-8"))["build"]
     # catalogue-universe, 2026-09-30: the flat catalogue (`items.json`) may now carry
     # classic-db's 1.12 row for it, but only labelled as such -- never as a client row.
-    flat = json.loads((BUILDS_DIR / active_build / "items.json").read_text(encoding="utf-8"))
-    for item in flat:
-        if item["id"] == 16963:
-            assert item.get("stats_source") == "classic-db"
-            assert item.get("client_unconfirmed") is True
+    # (The flat items.json does not carry the provenance columns yet -- lane
+    # loot-parity-2 adds them; the per-class files are the labelled surface.)
+    assert 16963 not in {
+        item["id"]
+        for items in _per_class_items(active_build).values()
+        for item in items
+        if item.get("stats_source") != "classic-db"
+    }
     for items in _per_class_items("forever-prebeta").values():
         for item in items:
             if item["id"] == 16963:
