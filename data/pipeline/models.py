@@ -242,6 +242,21 @@ class LootBoss(BaseModel):
     #: (`pipeline.loot.reitemise`'s own doc). Unset for every item this
     #: boss's own real source named.
     reitemised_from: dict[str, int] | None = None
+    #: item id (string key) -> `"fork"` or `"wowhead"`, drop-sources-2
+    #: lane 2026-09-29: which origin attributed this boss item when
+    #: cmangos/classic-db's own `creature_loot_template` (direct or
+    #: reference) names NO drop for this npc at all -- tenet 8's own
+    #: labelling requirement ("nothing we cannot verify is shown as
+    #: fact... labelled as unverified") for a fact this pipeline cannot
+    #: independently confirm. `pipeline.audit.check_drops` reads this to
+    #: set the finding's own severity (a `"wowhead"`-origin attribution,
+    #: already labelled unverified here, is `minor`; an unlabelled
+    #: `"fork"`-origin attribution in a launch, non-raid-gated instance
+    #: is the `major` case worth a person's judgment). Unset for every
+    #: item classic-db DOES corroborate (verified, not unconfirmable) and
+    #: for every item classic-db itself attributed (its own record IS the
+    #: corroboration).
+    item_source_origin: dict[str, str] | None = None
 
 
 class LootSource(BaseModel):

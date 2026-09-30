@@ -84,6 +84,30 @@ def test_an_instance_creature_drop_becomes_a_dungeon_boss_with_a_chance():
     assert stats.classicdb_items == 1
 
 
+def test_a_classic_db_corroborated_boss_item_gets_no_source_origin_tag():
+    """drop-sources-2 lane, 2026-09-29: npc 657's own item (`UNSOURCED_
+    ITEM`) IS classic-db's own `creature_drop` record for that exact
+    (npc, item) pair -- verified, not unconfirmable, so `LootBoss.
+    item_source_origin` carries no entry for it at all. The fork's OWN
+    item 103 on npc 902, which classic_sources here says nothing about
+    either way, still gets its `"fork"` label -- this test's own point is
+    that the two npcs on the SAME dungeon source are treated
+    independently."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            ClassicDbSourceRecord(
+                kind="creature_drop", npc_id=657, name="Defias Pirate", map_id=36, chance=6.0,
+            )
+        ]
+    }
+    document, _ = built(classic_sources)
+    dungeon = source(document, "dungeon:the-deadmines")
+    confirmed_boss = next(b for b in dungeon.bosses if b.npc_id == 657)
+    assert confirmed_boss.item_source_origin is None
+    fork_boss = next(b for b in dungeon.bosses if b.npc_id == 902)
+    assert fork_boss.item_source_origin == {"103": "fork"}
+
+
 def test_an_open_world_creature_drop_becomes_a_flat_world_bucket():
     """A creature spawning on map 1 (Kalimdor, a bare continent id, not a
     specific instance) gets no zone at all -- per this lane's own brief,
@@ -332,4 +356,93 @@ def test_a_battleground_zone_never_becomes_a_loot_source():
         1581,
         3428,
     }
+
+
+# drop-sources-2 lane, 2026-09-29: items 7909 (Aquamarine), 7910 (Star
+# Ruby) and 4306 (Silk Cloth) on build 1.60.1.70009's audit -- ~900-1,500
+# direct per-creature `creature_loot_template` rows each, none of them
+# through a shared `reference_loot_template` id, so
+# `pipeline.classic_sources._world_drop_pools` never catches the pattern.
+# Six distinct creatures, two maps (neither resolving to an instance --
+# both bare continent ids), every chance well under 1%: the same
+# `is_world_drop_pattern` rule `pipeline.loot.wowhead` applies to a
+# wowhead `dropped-by` list, over classic-db's own differently-shaped
+# rows (`tests/test_classic_sources.py` tests that rule in isolation;
+# this is the same shape through the full `classicdb_additions` path).
+_DIRECT_WORLD_DROP_TRASH_ROWS = [
+    ClassicDbSourceRecord(
+        kind="creature_drop", npc_id=9801, name="Trash One", map_id=1, chance=0.2,
+        level_min=20, level_max=22,
+    ),
+    ClassicDbSourceRecord(
+        kind="creature_drop", npc_id=9802, name="Trash Two", map_id=1, chance=0.3,
+        level_min=21, level_max=23,
+    ),
+    ClassicDbSourceRecord(
+        kind="creature_drop", npc_id=9803, name="Trash Three", map_id=1, chance=0.1,
+        level_min=22, level_max=24,
+    ),
+    ClassicDbSourceRecord(
+        kind="creature_drop", npc_id=9804, name="Trash Four", map_id=0, chance=0.4,
+        level_min=23, level_max=25,
+    ),
+    ClassicDbSourceRecord(
+        kind="creature_drop", npc_id=9805, name="Trash Five", map_id=0, chance=0.05,
+        level_min=24, level_max=26,
+    ),
+    ClassicDbSourceRecord(
+        kind="creature_drop", npc_id=9806, name="Trash Six", map_id=0, chance=0.6,
+        level_min=25, level_max=35,
+    ),
+]  # fmt: skip
+
+
+def test_a_direct_row_world_drop_pattern_becomes_exactly_one_world_drop_source():
+    """None of the six rows resolves to a dungeon/raid zone and none
+    carries a real (>= 5%) chance, so every one folds into a single
+    `world_drop:20-35` source (level range the min/max of all six
+    creatures' own levels) -- no per-creature `world:<name>` entry
+    survives for the item at all."""
+    document, _ = built({UNSOURCED_ITEM: _DIRECT_WORLD_DROP_TRASH_ROWS})
+    world_drop = source(document, "world_drop:20-35")
+    assert world_drop.source_origin == "classic-db"
+    assert world_drop.items == [UNSOURCED_ITEM]
+    assert not any(
+        candidate.id.startswith("world:") and UNSOURCED_ITEM in source_item_ids(candidate)
+        for candidate in document.sources
+    )
+
+
+def test_a_real_chance_dungeon_boss_keeps_its_own_attribution_alongside_the_direct_row_pool():
+    """The same six trash rows above, PLUS a seventh: the SAME npc id
+    `test_an_instance_creature_drop_becomes_a_dungeon_boss_with_a_chance`
+    uses (657, Defias Pirate, map 36 -> `dungeon:the-deadmines`) with a
+    real 20% chance. Seven distinct creatures across three maps clears
+    every one of `is_world_drop_pattern`'s three signals, but `Defias
+    Pirate`'s own row is `is_confirmed_boss_drop` (dungeon zone AND
+    chance >= `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`) -- tenet 7's "a boss
+    that genuinely drops it" exception -- so it keeps its own attribution
+    in `dungeon:the-deadmines` while the six trash rows still fold into
+    one `world_drop:20-35` pool."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            *_DIRECT_WORLD_DROP_TRASH_ROWS,
+            ClassicDbSourceRecord(
+                kind="creature_drop", npc_id=657, name="Defias Pirate", map_id=36, chance=20.0,
+            ),
+        ]
+    }
+    document, _ = built(classic_sources)
+    dungeon = source(document, "dungeon:the-deadmines")
+    boss = next(b for b in dungeon.bosses if b.npc_id == 657)
+    assert boss.items == [UNSOURCED_ITEM]
+    assert boss.item_chances == {str(UNSOURCED_ITEM): 20.0}
+
+    world_drop = source(document, "world_drop:20-35")
+    assert world_drop.items == [UNSOURCED_ITEM]
+
+    assert not any(
+        candidate.id.startswith("world:") and UNSOURCED_ITEM in source_item_ids(candidate)
+        for candidate in document.sources
+    )
 

@@ -597,6 +597,65 @@ def _resolve_or_drop_unnamed_bosses(
     return resolved, dropped
 
 
+def _classic_db_creature_items(
+    classic_sources: dict[int, list[ClassicDbSourceRecord]],
+) -> dict[int, set[int]]:
+    """npc_id -> every item id classic-db's own `creature_loot_template`
+    (direct or reference -- `pipeline.classic_sources.parse_classic_db_
+    sources` already expanded a reference row into this SAME `kind=
+    "creature_drop"` shape) names for it. `pipeline.audit.check_drops`'
+    own `_boss_items` check reads the identical fact off `classic_
+    sources_by_item`; this is that same corroboration test, inverted to
+    npc-keyed so `_boss_item_source_origins` can ask it once per boss
+    rather than once per (boss, item) pair.
+    """
+    by_npc: dict[int, set[int]] = defaultdict(set)
+    for item_id, records in classic_sources.items():
+        for record in records:
+            if record.kind == "creature_drop" and record.npc_id:
+                by_npc[record.npc_id].add(item_id)
+    return dict(by_npc)
+
+
+def _boss_item_source_origins(
+    sources: list[LootSource],
+    fork_boss_items: set[tuple[int, int]],
+    classic_sources: dict[int, list[ClassicDbSourceRecord]],
+) -> list[LootSource]:
+    """`LootBoss.item_source_origin`'s own doc: tag every dungeon/raid
+    boss item classic-db does NOT corroborate with whichever origin --
+    `"fork"` or `"wowhead"` -- actually named it, drop-sources-2 lane
+    2026-09-29. `fork_boss_items` (every (npc_id, item_id) pair the
+    fork's OWN `_drop_sources` result names, captured in `build_loot`
+    BEFORE classic-db/wowhead merge in) is what tells the two apart: a
+    boss item classic-db does not corroborate and the fork's own
+    pre-merge data does not name either can only have reached this boss
+    through `wowhead_additions`' own union merge -- fork, classic-db and
+    wowhead are the only three origins a boss item can have at all.
+
+    Runs at the end of `build_loot`, after every merge, alongside
+    `_resolve_or_drop_unnamed_bosses` -- same reasoning: it needs to see
+    the FINAL boss item list regardless of which origin's union produced
+    it.
+    """
+    classic_items_by_npc = _classic_db_creature_items(classic_sources)
+
+    def tag(boss: LootBoss) -> LootBoss:
+        origins = {
+            str(item_id): "fork" if (boss.npc_id, item_id) in fork_boss_items else "wowhead"
+            for item_id in boss.items
+            if item_id not in classic_items_by_npc.get(boss.npc_id, set())
+        }
+        return boss if not origins else boss.model_copy(update={"item_source_origin": origins})
+
+    return [
+        source.model_copy(update={"bosses": [tag(boss) for boss in source.bosses]})
+        if source.bosses
+        else source
+        for source in sources
+    ]
+
+
 def build_loot(
     fork: ForkDatabase,
     zone_names: dict[int, str],
@@ -621,6 +680,16 @@ def build_loot(
     drops, dropped_drops, unnamed_zones = _drop_sources(
         fork, zone_names, types, build_items, absent
     )
+    # `_boss_item_source_origins`' own doc: captured BEFORE classic-db/
+    # wowhead merge in, so it is the fork's OWN, unmixed boss item list --
+    # the one fact that lets that function tell "wowhead's own union
+    # merge added this" apart from "the fork always named this".
+    fork_boss_items = {
+        (boss.npc_id, item_id)
+        for source in drops
+        for boss in (source.bosses or [])
+        for item_id in boss.items
+    }
     keyed, quest, quest_detail, dropped_keyed = _keyed_sources(
         fork, build_items, equippable, absent, quest_levels or {}
     )
@@ -723,6 +792,12 @@ def build_loot(
     sources, dropped_unnamed_bosses = _resolve_or_drop_unnamed_bosses(
         sources, classic_db_npc_names(classic_sources) if classic_sources else {}
     )
+    # drop-sources-2 lane, 2026-09-29: labels every boss item classic-db
+    # does not corroborate with whichever origin (fork/wowhead) actually
+    # named it -- `_boss_item_source_origins`' own doc -- same "after
+    # every merge" placement as the unnamed-boss resolution just above,
+    # for the same reason (it needs the FINAL, post-merge boss lists).
+    sources = _boss_item_source_origins(sources, fork_boss_items, classic_sources or {})
     # A source the filter emptied is not a source. `_drop_sources` already
     # drops a boss with no items left (its `bosses` set is simply never
     # created), so this is the last sweep: a zone whose every drop was

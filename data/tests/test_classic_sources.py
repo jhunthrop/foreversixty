@@ -514,6 +514,102 @@ INSERT INTO `reference_loot_template` VALUES (701,9600,4,0,1,1,0,'x'),(702,9600,
     assert records[0].chance == 6.0  # the higher of the two bands' own chances
 
 
+#: drop-sources-2 lane, 2026-09-29: items 7909 (Aquamarine), 7910 (Star
+#: Ruby) and 4306 (Silk Cloth) on build 1.60.1.70009's audit -- each
+#: creature below names item 9700 on its OWN DIRECT (positive
+#: `mincountOrRef`) `creature_loot_template` row, never through a shared
+#: `reference_loot_template` id, which is exactly the shape
+#: `_world_drop_pools`/`_excluded_reference_ids` cannot see at all (both
+#: only ever look at a NEGATIVE `mincountOrRef` row). Six distinct
+#: creatures across two maps (`WORLD_DROP_MIN_CREATURES`/
+#: `WORLD_DROP_MIN_ZONES` both fire independently), each with its own
+#: `creature_template.MinLevel`/`MaxLevel`.
+_DIRECT_WORLD_DROP_SQL = f"""
+CREATE TABLE `creature_template` (
+  `Entry` mediumint,
+  `Name` char(100),
+  `VendorTemplateId` mediumint,
+  `MinLevel` tinyint,
+  `MaxLevel` tinyint
+) ENGINE=MyISAM;
+INSERT INTO `creature_template` VALUES
+  (901,'Trash One',0,20,22),(902,'Trash Two',0,21,23),(903,'Trash Three',0,22,24),
+  (904,'Trash Four',0,23,25),(905,'Trash Five',0,24,26),(906,'Trash Six',0,25,35);
+CREATE TABLE `creature` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+INSERT INTO `creature` VALUES
+  (1,901,1),(2,902,1),(3,903,1),(4,904,2),(5,905,2),(6,906,2);
+CREATE TABLE `creature_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+INSERT INTO `creature_loot_template` VALUES
+  (901,9700,0.2,0,1,1,0,'x'),(902,9700,0.3,0,1,1,0,'x'),(903,9700,0.1,0,1,1,0,'x'),
+  (904,9700,0.4,0,1,1,0,'x'),(905,9700,0.05,0,1,1,0,'x'),(906,9700,0.6,0,1,1,0,'x');
+CREATE TABLE `reference_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+{_EMPTY_SUPPORTING_TABLES}"""
+
+
+def test_a_direct_creature_loot_row_still_carries_the_npcs_own_level_range():
+    """No reference id is involved here at all (every row's own
+    `mincountOrRef` is POSITIVE) -- `creature_template.MinLevel`/
+    `MaxLevel` reaches the record through the SAME `level_min`/
+    `level_max` fields a reference-pool `world_drop` record already
+    uses, so `pipeline.loot.classicdb.classicdb_additions` can merge a
+    direct-row pool's own range the identical way."""
+    items = cs.parse_classic_db_sources(_DIRECT_WORLD_DROP_SQL)
+    records = items[9700]
+    assert len(records) == 6
+    assert all(r.kind == "creature_drop" for r in records)
+    assert {(r.npc_id, r.level_min, r.level_max) for r in records} == {
+        (901, 20, 22), (902, 21, 23), (903, 22, 24),
+        (904, 23, 25), (905, 24, 26), (906, 25, 35),
+    }  # fmt: skip
+
+
+def test_direct_row_world_drop_items_flags_the_item_six_creatures_two_maps_name_directly():
+    items = cs.parse_classic_db_sources(_DIRECT_WORLD_DROP_SQL)
+    assert cs.direct_row_world_drop_items(items) == {9700}
+
+
+def test_direct_row_world_drop_items_does_not_flag_an_ordinary_single_boss_drop():
+    """The base fixture's own item 5404 (one creature, one map, a real
+    40% chance) clears none of the three signals -- confirms this new
+    check does not false-positive on the shape every other test in this
+    file already exercises."""
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    assert cs.direct_row_world_drop_items(items) == set()
+
+
+def test_direct_row_world_drop_items_treats_classic_dbs_own_zero_chance_sentinel_as_unknown():
+    """A single creature/single map row with `chance=0.0` must NOT
+    trivially satisfy `is_world_drop_pattern`'s "every known chance is
+    low" signal on its own -- classic-db's own `ChanceOrQuestChance`
+    uses 0 as ITS sentinel for "no chance recorded", never a real 0%
+    (`ClassicDbSourceRecord.chance`'s own doc), so treating it as a
+    real, known, low chance would misclassify a real single-boss kill as
+    a world drop."""
+    sql = f"""
+CREATE TABLE `creature_template` (
+  `Entry` mediumint,
+  `Name` char(100),
+  `VendorTemplateId` mediumint
+) ENGINE=MyISAM;
+INSERT INTO `creature_template` VALUES (657,'Defias Pirate',0);
+CREATE TABLE `creature` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+INSERT INTO `creature` VALUES (1,657,36);
+CREATE TABLE `creature_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+INSERT INTO `creature_loot_template` VALUES (657,9800,0.0,0,1,1,0,'x');
+CREATE TABLE `reference_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
+{_EMPTY_SUPPORTING_TABLES}"""
+    items = cs.parse_classic_db_sources(sql)
+    assert cs.direct_row_world_drop_items(items) == set()
+
+
 def test_faction_from_required_races_zero_means_both():
     assert cs._faction_from_required_races(0) == "both"
     assert cs._faction_from_required_races(1) == "alliance"
