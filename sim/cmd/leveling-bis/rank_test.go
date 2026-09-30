@@ -133,6 +133,75 @@ func TestRankSlotWithEffectsExcludesTwoHandersForADualWieldSpec(t *testing.T) {
 	}
 }
 
+// This lane's brief, item 1: the fifth wow-player sweep caught
+// warlock-affliction band 60 Horde main_hand publishing Shortsword of
+// Vengeance (stats: {}, a proc-only world drop) over Staff of
+// Dar'Orahil (+11 int, +10 hit) as a 0.0-DPS "tie", while Alliance,
+// the identical pool, published the staff with the sword losing by
+// -2.6 DPS - a coin flip decided by this tournament's own measurement
+// noise, not a real difference. A candidate whose stat score is lower
+// (or zero, like the sword's) must not win the slot unless its
+// measured DPS clears beatsByMargin's own 1% bar over the pool's
+// stat-scored best (current) - here a 0.5% lead is noise, so the
+// stat-scored pick must keep the slot and the proc item becomes its
+// alternative.
+func TestRankSlotWithEffectsKeepsTheStatScoredPickWithinNoiseMargin(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, Name: "Staff of Dar'Orahil (stat pick)"}}},
+	}
+	bySlot := map[string][]scored{
+		// 754 is the real Shortsword of Vengeance id (engineImplemented-
+		// EffectItemIDs, effectids_generated.go) - the exact zero-stat
+		// proc weapon the brief names.
+		"main_hand": {
+			effectItem(754, "Shortsword of Vengeance", "text", "main_hand"),
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 1}}):   100.0,
+			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 754}}): 100.5, // +0.5%, inside the 1% margin
+		},
+	}
+	out, notes := rankSlotWithEffects(fake, specInfo{}, "human", "warlock", 60, "", picks, bySlot, "main_hand")
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none", notes)
+	}
+	if out["main_hand"].Item == nil || out["main_hand"].Item.ID != 1 {
+		t.Fatalf("main_hand pick = %+v, want the stat-scored pick (1) kept - the proc item's lead is inside the noise margin", out["main_hand"].Item)
+	}
+	if out["main_hand"].RunnerUp == nil || out["main_hand"].RunnerUp.ID != 754 {
+		t.Fatalf("runner-up = %+v, want the proc item (754) recorded as the alternative with its measured delta", out["main_hand"].RunnerUp)
+	}
+}
+
+// The mirror image of the noise-margin test above: a proc item that
+// really does clear the 1% bar over the stat-scored best still wins -
+// this rule only stops noise-level flips, not a genuine DPS gain.
+func TestRankSlotWithEffectsLetsAProcItemWinWhenItClearsTheMargin(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, Name: "Stat pick"}}},
+	}
+	bySlot := map[string][]scored{
+		"main_hand": {
+			effectItem(754, "Real proc weapon", "text", "main_hand"),
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 1}}):   100.0,
+			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 754}}): 102.0, // +2%, clears the 1% margin
+		},
+	}
+	out, notes := rankSlotWithEffects(fake, specInfo{}, "human", "warlock", 60, "", picks, bySlot, "main_hand")
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none", notes)
+	}
+	if out["main_hand"].Item == nil || out["main_hand"].Item.ID != 754 {
+		t.Fatalf("main_hand pick = %+v, want the proc item (754) - it cleared the noise margin", out["main_hand"].Item)
+	}
+}
+
 func TestRankSlotWithEffectsLeavesTheSlotAloneWhenOnlyOneCandidateQualifies(t *testing.T) {
 	original := &scored{candidate: candidate{ID: 3854, Name: "Frost Tiger Blade", EffectText: "text"}}
 	picks := map[string]slotPick{"main_hand": {Item: original}}

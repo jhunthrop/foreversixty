@@ -182,6 +182,23 @@ type CharacterSpec struct {
 	// Cooldowns is when to use the major cooldowns and potions the
 	// rotation would otherwise fire on cooldown.
 	Cooldowns []CooldownSpec `json:"cooldowns,omitempty"`
+	// DistanceFromTarget is how far this character stands from the
+	// target, in yards - the engine's own proto.Player.DistanceFromTarget
+	// (wowsims-forever's sim/core/character.go passes it straight
+	// through, unit.DistanceFromTarget), which gates whether a melee
+	// auto-attack can ever fire at all (sim/core/attack.go: a melee swing
+	// only starts when DistanceFromTarget <= MaxMeleeAttackDistance, a
+	// ranged/wand swing only when it is >= MinRangedAttackDistance -
+	// sim/core/constants.go pins those at 5 and 12). Zero (the field
+	// omitted) is the engine's own melee-range default - every request
+	// this site ever sent left it unset before this field existed, so
+	// every character effectively stood in melee range regardless of
+	// spec. Set it above 12 for a spec whose kit has no melee attacks at
+	// all (sim/cmd/leveling-bis's own noMeleeAutoAttackSpecs) so a Shoot/
+	// wand-using character still fires its ranged auto-attack without
+	// also picking up a melee weapon's own auto-swing DPS the real
+	// character could never use.
+	DistanceFromTarget float64 `json:"distance_from_target,omitempty"`
 }
 
 // CooldownSpec pins one cooldown's timings.

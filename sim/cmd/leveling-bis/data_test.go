@@ -539,6 +539,66 @@ func TestLoadLootIndexComputedOpensWinsOverTheHandList(t *testing.T) {
 	}
 }
 
+// This lane's brief, item 4: Earthstrike (21180,
+// rep:cenarion-circle:exalted) published with no gate at all - loot.json
+// never states an "opens" value for any rep-kind source, but Cenarion
+// Circle (faction 609) is Gates of Ahn'Qiraj content, the same patch
+// this build already gates raid:ahnqiraj "later" for.
+// repFactionRaidPhaseOpens (data.go) supplies that gate on top of
+// loot.json's own (always-empty) rep opens; an ordinary reputation
+// faction not in that map stays open at launch, exactly as a previous
+// lane already confirmed for reputation sources in general.
+func TestLoadLootIndexGatesCenarionCircleRepToLaterPhase(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "rep:cenarion-circle:exalted", "kind": "rep", "name": "Cenarion Circle", "faction_id": 609, "standing": "exalted", "items": [21180]},
+			{"id": "rep:timbermaw-hold:friendly", "kind": "rep", "name": "Timbermaw Hold", "faction_id": 576, "standing": "friendly", "items": [9999]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	earthstrike, ok := idx[21180]
+	if !ok || len(earthstrike) != 1 || earthstrike[0].Opens != "later" {
+		t.Fatalf("idx[21180] (Earthstrike, Cenarion Circle exalted) = %+v, want one source with Opens \"later\"", earthstrike)
+	}
+	ordinary, ok := idx[9999]
+	if !ok || len(ordinary) != 1 || ordinary[0].Opens != "" {
+		t.Fatalf("idx[9999] (Timbermaw Hold, an ordinary launch-day reputation) = %+v, want Opens empty", ordinary)
+	}
+}
+
+// A rep source loot.json itself already gives an explicit opens value
+// for must keep that computed value, not the hand-maintained
+// repFactionRaidPhaseOpens fallback - the same firstNonEmpty priority
+// TestLoadLootIndexComputedOpensWinsOverTheHandList pins for quests.
+func TestLoadLootIndexComputedRepOpensWinsOverTheHandList(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "rep:cenarion-circle:exalted", "kind": "rep", "name": "Cenarion Circle", "faction_id": 609, "standing": "exalted", "items": [21180], "opens": "raids-1"}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	src, ok := idx[21180]
+	if !ok || len(src) != 1 || src[0].Opens != "raids-1" {
+		t.Fatalf("idx[21180] = %+v, want Opens \"raids-1\" (the computed value, not repFactionRaidPhaseOpens's \"later\")", src)
+	}
+}
+
 func TestLoadLootIndexMissingFile(t *testing.T) {
 	if _, _, err := loadLootIndex(t.TempDir(), nil); err == nil {
 		t.Fatal("loadLootIndex on an empty dir: want an error, got nil")

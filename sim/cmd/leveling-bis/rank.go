@@ -131,7 +131,7 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	var notes []string
 	for _, c := range candidates {
 		gear := swapSlot(picks, slot, c.ID, c.TwoHand)
-		req := plainRequest(spec, bandCharacter("effect-rank", race, classSlug, level, talents, gear), trinketRankIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("effect-rank", race, classSlug, spec.Spec, level, talents, gear), trinketRankIterations, verifySeed)
 		dps, err := runner.RunPlainDPS(req)
 		if err != nil {
 			notes = append(notes, formatTrinketRankError(slot, c, err))
@@ -144,18 +144,60 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	}
 	sort.SliceStable(results, func(i, j int) bool { return results[i].dps > results[j].dps })
 
-	best := results[0].item
+	// This lane's brief, item 1: rankTrinketSlot's own beatsByMargin
+	// rule (verify.go's swapMargin, 1%) applies here too, not just to
+	// trinkets. Without it, a zero/low-stat proc item (e.g. Shortsword
+	// of Vengeance, stats: {}, a world-drop proc-only sword) can win
+	// this tournament over the pool's real stat-scored best purely off
+	// this short verify sim's own noise floor - the fifth wow-player
+	// sweep caught it flipping by faction on an identical candidate
+	// pool (warlock-affliction band 60 main_hand: the sword beat Staff
+	// of Dar'Orahil, +11 int/+10 hit, on Horde but lost to it on
+	// Alliance). current is always the pool's stat-scored best entering
+	// this tournament (picks[slot] came from pick()'s score-first
+	// choice before this function ran, and every other candidate here
+	// was appended "best score() first, excluding this slot's own
+	// pair-mate" - this function's own doc above), so it plays the
+	// same role a modelled trinket plays in rankTrinketSlot: it keeps
+	// the slot unless some other candidate's measured DPS clears
+	// beatsByMargin over it.
+	winner := 0
+	for i, r := range results {
+		if r.item.ID == current.Item.ID {
+			winner = i
+			break
+		}
+	}
+	// winner is now the stat-scored best's own index (0 when it also
+	// measured highest, or when it is missing from results entirely -
+	// its own sim failed, see the error-skip loop above - in which case
+	// the top measured candidate is the only fair fallback). Only when
+	// results[0] is some other candidate AND actually clears the noise
+	// floor over the stat-scored best does that other candidate get to
+	// keep winning.
+	if winner > 0 && beatsByMargin(results[0].dps, results[winner].dps) {
+		winner = 0
+	}
+	runnerUpIdx := -1
+	for i := range results {
+		if i != winner {
+			runnerUpIdx = i
+			break
+		}
+	}
+
+	best := results[winner].item
 	// This lane's brief, item 7: this tournament ran a real sim (this
 	// function's own precondition, len(candidates) >= 2), so the slot's
 	// decision is sim-based even when the plain score()-based pick
 	// happened to win its own fair fight - MeasuredDPS (scored's own
 	// doc) is what tells buildReport (report.go) to publish this row's
 	// real DPS instead of score()'s stat estimate.
-	best.MeasuredDPS = results[0].dps
+	best.MeasuredDPS = results[winner].dps
 	sp := slotPick{Item: &best}
-	if len(results) > 1 {
-		runnerUp := results[1].item
-		runnerUp.MeasuredDPS = results[1].dps
+	if runnerUpIdx >= 0 {
+		runnerUp := results[runnerUpIdx].item
+		runnerUp.MeasuredDPS = results[runnerUpIdx].dps
 		sp.RunnerUp = &runnerUp
 	}
 	out[slot] = sp

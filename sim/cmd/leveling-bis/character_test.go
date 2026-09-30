@@ -51,6 +51,52 @@ func TestLadderCharacterWithoutWeapon(t *testing.T) {
 	}
 }
 
+// This lane's brief, item 7: a caster spec's tournament character
+// stands out of melee range (DistanceFromTarget above
+// MinRangedAttackDistance) so the engine's own hardcoded
+// AutoSwingMelee: true (every registered caster agent) never actually
+// fires a melee auto-attack - Manual Crowd Pummeler's own haste proc
+// otherwise rides along on free melee auto-attack DPS a real leveling
+// caster could never generate.
+func TestBandCharacterSetsDistanceForANoMeleeAutoAttackSpec(t *testing.T) {
+	ch := bandCharacter("verify", "orc", "shaman", "shaman-elemental", 60, "", nil)
+	if ch.DistanceFromTarget != casterTournamentDistanceFromTarget {
+		t.Fatalf("shaman-elemental DistanceFromTarget = %v, want %v (out of melee range)", ch.DistanceFromTarget, casterTournamentDistanceFromTarget)
+	}
+}
+
+func TestBandCharacterLeavesDistanceAloneForAMeleeSpec(t *testing.T) {
+	ch := bandCharacter("verify", "orc", "warrior", "warrior-arms", 60, "", nil)
+	if ch.DistanceFromTarget != 0 {
+		t.Fatalf("warrior-arms DistanceFromTarget = %v, want 0 (melee range, the engine's own default)", ch.DistanceFromTarget)
+	}
+}
+
+// Every spec this lane's own ruling names must actually be in the set -
+// a typo here would silently exempt one from the whole fix.
+func TestNoMeleeAutoAttackSpecsCoversTheRuledSpecs(t *testing.T) {
+	want := []string{
+		"mage-arcane", "mage-fire", "mage-frost",
+		"warlock-affliction", "warlock-demonology", "warlock-destruction",
+		"priest-shadow", "shaman-elemental", "druid-balance",
+	}
+	for _, spec := range want {
+		if !noMeleeAutoAttackSpecs[spec] {
+			t.Errorf("noMeleeAutoAttackSpecs[%q] = false, want true", spec)
+		}
+	}
+}
+
+// ladderCharacter deliberately does not get this treatment (this
+// lane's brief scopes the fix to the tournament character only) - a
+// caster's weights sweep is untouched.
+func TestLadderCharacterNeverSetsDistanceFromTarget(t *testing.T) {
+	ch := ladderCharacter("gnome", "mage", 60, "", nil)
+	if ch.DistanceFromTarget != 0 {
+		t.Fatalf("ladderCharacter DistanceFromTarget = %v, want 0 - ladderCharacter is out of this lane's scope", ch.DistanceFromTarget)
+	}
+}
+
 func TestWeightsRequestCarriesSpecWeightsAndReference(t *testing.T) {
 	spec := specInfo{Spec: "hunter-marksmanship", WeightStats: []string{"agility", "crit"}, ReferenceStat: "ranged_attack_power"}
 	ch := ladderCharacter("dwarf", "hunter", 20, "", nil)

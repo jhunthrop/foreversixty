@@ -259,6 +259,38 @@ func TestProfessionsReachThePlayer(t *testing.T) {
 	}
 }
 
+// This lane's brief (bis-ranker-integrity-5, item 7):
+// api.CharacterSpec.DistanceFromTarget must reach the engine's own
+// proto.Player.DistanceFromTarget unchanged - the field wowsims-forever's
+// sim/core/attack.go reads to decide whether a melee auto-attack can
+// ever fire at all (a melee swing only starts within
+// MaxMeleeAttackDistance). Zero (the default, every request before this
+// field existed) must reach the engine as zero too - the engine's own
+// melee-range default, not something this site's request layer invents
+// a substitute for.
+func TestDistanceFromTargetReachesThePlayer(t *testing.T) {
+	req := fury()
+	req.Character.DistanceFromTarget = 30
+	got, err := Build(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := got.Raid.Parties[0].Players[0]
+	if p.DistanceFromTarget != 30 {
+		t.Errorf("p.DistanceFromTarget = %v, want 30", p.DistanceFromTarget)
+	}
+
+	zero := fury()
+	got, err = Build(zero)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p = got.Raid.Parties[0].Players[0]
+	if p.DistanceFromTarget != 0 {
+		t.Errorf("a character with no DistanceFromTarget set got %v, want 0", p.DistanceFromTarget)
+	}
+}
+
 // The addon lists every skill GetProfessions returns, secondaries
 // included, so a real export reads leatherworking, enchanting, cooking.
 // That is a character with two professions; refusing it as three kept a

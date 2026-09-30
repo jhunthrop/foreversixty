@@ -207,6 +207,11 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		Buffs:         buffs.Individual,
 		Profession1:   first,
 		Profession2:   second,
+		// This lane's brief (bis-ranker-integrity-5, item 7): passed
+		// straight through - api.CharacterSpec.DistanceFromTarget's own
+		// doc explains what zero (the default, every request before this
+		// field existed) does and why a caller sets it.
+		DistanceFromTarget: ch.DistanceFromTarget,
 	}
 	if err := applySpec(player, req.Spec, ch.Class, ch.Level); err != nil {
 		return nil, err

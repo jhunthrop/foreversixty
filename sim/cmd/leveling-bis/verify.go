@@ -169,7 +169,7 @@ func swapSlot(picks map[string]slotPick, slot string, itemID int, itemIsTwoHand 
 // DPS there is nothing to compare a swap against, so that error
 // still propagates and the caller reports the band as unverified.
 func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
-	baseline := plainRequest(spec, bandCharacter("verify", race, classSlug, level, talents, buildGear(picks)), verifyIterations, verifySeed)
+	baseline := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, buildGear(picks)), verifyIterations, verifySeed)
 	baselineDPS, err = runner.RunPlainDPS(baseline)
 	if err != nil {
 		return 0, nil, nil, err
@@ -186,7 +186,7 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 	for _, slot := range slots {
 		runnerUp := picks[slot].RunnerUp
 		gear := swapSlot(picks, slot, runnerUp.ID, runnerUp.TwoHand)
-		req := plainRequest(spec, bandCharacter("verify", race, classSlug, level, talents, gear), verifyIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, gear), verifyIterations, verifySeed)
 		dps, runErr := runner.RunPlainDPS(req)
 		if runErr != nil {
 			verifyErrors = append(verifyErrors, fmt.Sprintf("%s: runner-up %s (id %d): %v", slot, runnerUp.Name, runnerUp.ID, runErr))
@@ -320,7 +320,7 @@ func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, leve
 	if !promoted {
 		return picks, setDPS, adjusted, nil
 	}
-	final := plainRequest(spec, bandCharacter("verify", race, classSlug, level, talents, buildGear(out)), verifyIterations, verifySeed)
+	final := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, buildGear(out)), verifyIterations, verifySeed)
 	dps, err := runner.RunPlainDPS(final)
 	if err != nil {
 		return nil, 0, nil, err
