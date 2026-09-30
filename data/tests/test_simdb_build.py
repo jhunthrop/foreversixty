@@ -27,16 +27,16 @@ BUILD = "1.60.1.70009"
 BUILD_DIR = Path("builds") / BUILD
 GOCHECK = Path(__file__).parent / "gocheck"
 
-EXPECTED_ITEMS = 9666
+EXPECTED_ITEMS = 9688
 EXPECTED_ENCHANTS = 2216
-EXPECTED_WEAPONS = 1466
+EXPECTED_WEAPONS = 1470
 EXPECTED_IN_A_SET = 1879
 #: 654 InventoryType-{13,21} weapons split into two disjoint HandType buckets:
-#: 402 InventoryType 13 (one-hand, either hand) and 252 InventoryType 21
+#: 403 InventoryType 13 (one-hand, either hand) and 252 InventoryType 21
 #: (main-hand only). See pipeline/simdb/items.py's HAND_TYPE_BY_INVENTORY_TYPE
 #: and tests/test_simdb_items.py's test_inventory_type_13_is_one_hand_not_main_hand,
 #: which pins the mapping itself against the fixtures.
-EXPECTED_ONE_HAND_WEAPONS = 402
+EXPECTED_ONE_HAND_WEAPONS = 403
 EXPECTED_MAIN_HAND_WEAPONS = 252
 #: 1,329 enchants carry a stat in the final database, counting every source:
 #: the direct ITEM_MOD/resistance slots plus equip-spell auras. A narrower
@@ -50,7 +50,7 @@ EXPECTED_ENCHANTS_WITH_STATS = 1329
 #: running `pipeline loot` then `pipeline simdb` for 1.60.1.69893 and
 #: reading builds/1.60.1.69893/simdb.bin -- not the same population as
 #: items.json's, so this is not derivable from any earlier task's numbers).
-EXPECTED_UNIQUE = 1012
+EXPECTED_UNIQUE = 1014
 #: The whole-items.json figures from task 11's log line (loot: items.json:
 #: 69 with suffix options, 819 faction-restricted). simdb keeps only 4,986
 #: of the build's 19,171 items; both counts happen to survive that
