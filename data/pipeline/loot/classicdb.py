@@ -139,6 +139,60 @@ def instanced_zones(zone_ids: set[int], types: dict[int, int]) -> set[int]:
     return {zone_id for zone_id in zone_ids if INSTANCE_KIND.get(types.get(zone_id, 0)) is not None}
 
 
+def _item_instance_zone_consensus(
+    records: list[ClassicDbSourceRecord],
+    zone_by_map: dict[int, int],
+    fork_instance_npcs: dict[int, int],
+) -> int | None:
+    """The one instance zone id every OTHER creature-kind record for this
+    same item resolves to (via its own `map_id` or `fork_instance_npcs`),
+    when they all agree -- the third fallback tier `classicdb_additions`
+    uses for a creature record whose own spawn data names no map at all,
+    after `zone_by_map` and `fork_instance_npcs` have both already come up
+    empty for it (that record's own `zone_id` is `None` at the call site).
+
+    day3 data-followups-5 lane, 2026-09-30: Molten Core's Firelord (npc
+    11668) and Lava Annihilator (npc 11665) have NO static spawn row
+    anywhere in the pinned classic-db dump -- every one of their 69/70
+    appearances across the whole dump states `map_id: null` -- and the
+    fork's own database names neither npc at all, so `zone_by_map` and
+    `fork_instance_npc_zones` are both legitimately empty for them (not a
+    bug in either -- there is truly no map/zone fact recorded for these
+    two npcs anywhere this pipeline reads). Both are summoned Molten Core
+    trash: Fiery Core (17010) and Lava Core (17011), the two items this
+    lane's brief names, list them as a source ALONGSIDE four/six other
+    creatures that DO resolve to Molten Core's own zone (2717) and no
+    other -- exactly the pattern this function looks for. Without this,
+    Firelord's contribution reads as `world:firelord` (an open-world
+    source) and Lava Annihilator's folds into a `world_drop:<range>`
+    pool (`classicdb_additions`'s own `is_direct_world_drop` branch,
+    since Fiery/Lava Core's 5-7 distinct creature-kind rows for one item
+    clear `is_world_drop_pattern`'s `WORLD_DROP_MIN_CREATURES` floor on
+    creature COUNT alone) -- both readings leave the item's real,
+    already-present `raid:molten-core` source looking optional, which is
+    exactly what let `apply_crafted_opens_gate`'s reagent check see an
+    open source and leave every craft using either reagent ungated.
+
+    Deliberately item-scoped, never npc-wide: Firelord alone drops 69
+    different items, most of them ordinary multi-zone/continent trash
+    pools (bind-on-equip greens, cloth, and the like) where its OTHER
+    co-droppers span many different maps or none at all -- `zones` below
+    would have zero or more than one member for those, so this returns
+    `None` and they are left exactly as before. Only an item whose
+    resolvable creature-kind siblings agree on ONE zone counts.
+    """
+    zones: set[int] = set()
+    for record in records:
+        if record.kind not in _CREATURE_KINDS:
+            continue
+        zone_id = zone_by_map.get(record.map_id) if record.map_id else None
+        if zone_id is None and record.npc_id:
+            zone_id = fork_instance_npcs.get(record.npc_id)
+        if zone_id is not None:
+            zones.add(zone_id)
+    return next(iter(zones)) if len(zones) == 1 else None
+
+
 def classicdb_additions(
     classic_sources: dict[int, list[ClassicDbSourceRecord]],
     build_items: set[int],
@@ -172,6 +226,12 @@ def classicdb_additions(
     in a dungeon or raid must land in that SAME instance here too, never
     `world` -- src-classicdb-fixes lane, 2026-09-29 (181 items measured on
     `world:darkmaster-gandling` alone before this fallback existed).
+
+    `_item_instance_zone_consensus` (day3 data-followups-5 lane,
+    2026-09-30) is a further, item-scoped fallback for a creature BOTH of
+    those still miss -- one with no static spawn row AND no fork mention
+    at all (Molten Core's Firelord and Lava Annihilator, its own doc's
+    measured case). See its own doc for the full reasoning.
 
     `item_factions` (`pipeline.loot.sources.item_factions`' own result)
     is what a quest reward's `QuestSource.faction` is built from --
@@ -276,6 +336,14 @@ def classicdb_additions(
         # `WORLD_DROP_MAX_CHANCE_PERCENT`, rather than "whatever its
         # chance" keeping it on the boss unconditionally.
         has_world_drop_record = any(record.kind == "world_drop" for record in records)
+        # `_item_instance_zone_consensus`'s own doc: the third fallback tier
+        # for a creature record whose own map is None AND `fork_instance_npcs`
+        # names nothing for its npc -- computed once per item, not per
+        # record, since it reads every OTHER creature record for this same
+        # item_id.
+        item_zone_consensus = _item_instance_zone_consensus(
+            records, zone_by_map, fork_instance_npcs
+        )
         direct_pool_level: tuple[int | None, int | None] | None = None
         direct_pool_chance: float | None = None
         for record in records:
@@ -284,6 +352,16 @@ def classicdb_additions(
                 npc_id = record.npc_id or 0
                 if zone_id is None and npc_id:
                     zone_id = fork_instance_npcs.get(npc_id)
+                # The consensus fallback is narrower than the two above: only
+                # for a record whose own `map_id` is a true `None` (classic-db
+                # records no spawn map for this npc at all -- Firelord, Lava
+                # Annihilator), never one recorded as a bare continent id (0
+                # Eastern Kingdoms, 1 Kalimdor -- Trash One..Six's own shape,
+                # `_item_instance_zone_consensus`'s own doc), which is real,
+                # if coarse, open-world data that a same-item instance sibling
+                # must never override.
+                if zone_id is None and npc_id and record.map_id is None:
+                    zone_id = item_zone_consensus
                 confirmed = is_confirmed_boss_drop(
                     zone_id is not None, has_world_drop_record, record.chance
                 )
