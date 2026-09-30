@@ -59,11 +59,27 @@ IDS_MD = Path("../sim/request/IDS.md")
 #: which is why `world` (3,905 -> 3,736) and `zone` (55 -> 31, 5,104 ->
 #: 274 items) both shrink here rather than grow. See
 #: `pipeline.classic_sources._world_drop_records`'s own doc.
+#: raid-loot-regression lane, 2026-09-29: `world` (1,599, down from 3,468)
+#: and `world_drop` (50, up from 48) follow drop-sources-2's own
+#: direct-row world-drop rule (`pipeline.classic_sources.direct_row_
+#: world_drop_items`) getting its first real full-build measurement --
+#: 3,468/48/4,158 predate that rule's introduction entirely (loot-
+#: contracts lane, 2026-09-29, before drop-sources-2 landed) and were
+#: never updated for it. The rule folds a much larger set of items than
+#: its own doc's three named examples (7909/7910/4306) -- ~2,177 items
+#: on this build clear at least one of its three signals -- consolidating
+#: many per-creature `world:<name>` buckets into far fewer `world_drop`
+#: pools; this lane's own fix (raid-loot-instance rows are NEVER pool
+#: members, `pipeline.loot.constants.is_confirmed_boss_drop`) is what
+#: makes that consolidation safe to measure here at all -- see this
+#: lane's report for the raid-item regression this same rule caused
+#: before the fix (767 -> 350) and the floor below is that same command
+#: (`loot-merge`), re-run after the fix.
 SOURCES_PER_KIND = {
     "raid": 7,
     "dungeon": 21,
-    "world": 3468,
-    "world_drop": 48,
+    "world": 1599,
+    "world_drop": 50,
     "zone": 31,
     "vendor": 526,
     "crafted": 5,
@@ -71,7 +87,7 @@ SOURCES_PER_KIND = {
     "pvp": 13,
     "quest": 1,
 }
-TOTAL_SOURCES = 4158  # world pools fold per-creature sources away (2026-09-30)
+TOTAL_SOURCES = 2296  # raid-loot-regression lane, 2026-09-29 -- see SOURCES_PER_KIND's own doc
 
 RAID_SOURCE_IDS = [
     "raid:ahnqiraj",
@@ -146,7 +162,11 @@ DUNGEONS_WITH_TRASH = 14
 #: new `world_drop` kind (SOURCES_PER_KIND above) absorbed the generic
 #: bind-on-equip world-drop-pool items this bucket used to attribute to
 #: one specific creature.
-WORLD_SOURCES = 3468
+#:
+#: raid-loot-regression lane, 2026-09-29: down again, 3,736's own later
+#: value of 3,468 -> 1,599 -- SOURCES_PER_KIND["world"]'s own doc above
+#: has the reason (drop-sources-2's direct-row rule, first measured here).
+WORLD_SOURCES = 1599
 CRAFTED_ITEMS = {
     "crafted:blacksmithing": 218,
     "crafted:enchanting": 4,

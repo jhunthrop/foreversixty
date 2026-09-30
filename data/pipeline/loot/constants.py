@@ -39,15 +39,19 @@ WORLD_DROP_MIN_CREATURES = 6
 WORLD_DROP_MIN_ZONES = 2
 WORLD_DROP_MAX_CHANCE_PERCENT = 1.0
 
-#: A row inside an item classified as a world-drop pattern above this
-#: chance, resolving to a dungeon/raid zone, still reads as a real,
-#: intentional boss/instance kill (tenet 7's own exception: "a named
-#: boss with a chance >= 5% ... keeps its own source alongside") and is
-#: kept as its own source next to the pool -- only when BOTH hold; an
-#: open-world creature at any chance, or an instance one below the
-#: floor, folds into the pool like every other row. See
-#: `is_confirmed_boss_drop`.
-WORLD_DROP_BOSS_MIN_CHANCE_PERCENT = 5.0
+#: raid-loot-regression lane, 2026-09-29: `WORLD_DROP_BOSS_MIN_CHANCE_
+#: PERCENT` (a >= 5% floor a dungeon/raid row also had to clear to keep
+#: its own attribution) is retired. Tier armour in cmangos routinely
+#: drops from several bosses -- or many trash creatures -- of ONE
+#: instance, sometimes at a chance under 1% or none stated at all
+#: (unknown, not zero: `ClassicDbSourceRecord.chance`'s own doc); gating
+#: a dungeon/raid row's attribution on that chance folded real,
+#: intentional boss/instance kills into the item's generic `world_drop`
+#: pool instead -- measured on build 1.60.1.70009: raid distinct items
+#: fell 767 -> 350 (Molten Core 174 -> 38, Blackwing Lair 324 -> 46,
+#: Ahn'Qiraj 178 -> 93, Naxxramas 152 -> 90) once drop-sources-2's own
+#: direct-row rule started flagging these items' pooled classification
+#: at all. See `is_confirmed_boss_drop`.
 
 
 def is_world_drop_pattern(
@@ -79,16 +83,20 @@ def is_world_drop_pattern(
     )
 
 
-def is_confirmed_boss_drop(is_instance_zone: bool, chance: float | None) -> bool:
+def is_confirmed_boss_drop(is_instance_zone: bool) -> bool:
     """Whether one row inside an item already classified a world-drop
-    pattern (`is_world_drop_pattern`) still keeps its own attribution
-    rather than folding into the item's synthetic `world_drop` pool --
-    `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`'s own doc: only when the row
-    resolves to a dungeon/raid zone AND states a chance at or above that
-    floor."""
-    return (
-        is_instance_zone and chance is not None and chance >= WORLD_DROP_BOSS_MIN_CHANCE_PERCENT
-    )
+    pattern (`is_world_drop_pattern`) still keeps its own boss/trash
+    attribution rather than folding into the item's synthetic
+    `world_drop` pool.
+
+    raid-loot-regression lane, 2026-09-29: a creature that spawns in a
+    dungeon or raid instance is NEVER a world-pool member, whatever
+    chance its row states -- `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`'s own
+    retirement doc, above, has the measured regression this closes. The
+    world-pool rule (`is_world_drop_pattern`) applies to OPEN-WORLD
+    creatures only: this predicate is now exactly "does this row resolve
+    to a dungeon/raid zone", no chance involved."""
+    return is_instance_zone
 
 
 def world_drop_id(level_min: int | None, level_max: int | None) -> str:
