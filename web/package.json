@@ -23,6 +23,7 @@
     "test:e2e:real-engine": "FOREVER_DATA=real PUBLIC_SIM_ENGINE=wasm E2E_PORT=4341 playwright test tests/e2e/sim-real-engine.spec.ts tests/e2e/sim-gear-real-engine.spec.ts tests/e2e/sim-weights-real-engine.spec.ts tests/e2e/sim-talents-real-engine.spec.ts --project=desktop",
     "test:e2e:phone": "playwright test report-phone.spec.ts rankings-phone.spec.ts character-phone.spec.ts guild-phone.spec.ts sim-phone.spec.ts sim-tools-phone.spec.ts --project=mobile",
     "lhci": "lhci autorun",
+    "lhci:push": "lhci autorun --config=lighthouserc.push.cjs",
     "deploy": "npm run build && wrangler deploy",
     "sync:data": "node scripts/sync-data.mjs",
     "sync:sim-ids": "node scripts/sync-sim-ids.mjs",

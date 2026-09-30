@@ -21,8 +21,13 @@ export default defineConfig({
   // The suite defaults to the fixture: every spec but real-data.spec.ts asserts on the
   // fixture's talent names, item ids and counts, which the real pipeline output moves. Run
   // `npm run test:e2e:real` to build with real data and run the smoke suite against it.
+  // CI's `e2e` job (.github/workflows/web.yml) downloads a dist/ the `build` job already
+  // produced on this exact command and env, then sets E2E_SKIP_BUILD so each of the four
+  // shards serves it instead of rebuilding it four times over.
   webServer: {
-    command: `npm run build && npm run preview -- --port ${port}`,
+    command: process.env.E2E_SKIP_BUILD
+      ? `npm run preview -- --port ${port}`
+      : `npm run build && npm run preview -- --port ${port}`,
     port: Number(port),
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
