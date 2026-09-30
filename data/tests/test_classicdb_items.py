@@ -652,7 +652,7 @@ def test_honor_rank_by_title_table_agrees_with_the_committed_classic_db_extract(
     primary source it was built from, not just a snapshot of today's data."""
     from pathlib import Path
 
-    from pipeline.classicdb_items import HONOR_RANK_BY_TITLE, load_extract
+    from pipeline.classicdb_items import load_extract
 
     build_dir = Path("builds/1.60.1.70009")
     extract = load_extract(build_dir)

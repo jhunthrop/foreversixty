@@ -249,7 +249,7 @@ def test_split_pvp_sources_by_faction_exposes_faction_on_a_matching_vendor_row()
 
 
 _WEB_COPY_PATH = (
-    Path(__file__).resolve().parents[2] / "web" / "src" / "lib" / "bis" / "copy.ts"
+    Path(__file__).resolve().parents[2] / "web" / "src" / "lib" / "items" / "source-labels.ts"
 )
 
 
