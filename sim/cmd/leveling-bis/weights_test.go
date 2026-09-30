@@ -406,3 +406,58 @@ func TestIsHasteStat(t *testing.T) {
 		}
 	}
 }
+
+// TestBandHasHasteCandidateFindsAHasteStatInScored is the ordinary
+// case: a scored, sourced candidate (this band's own eligible pool)
+// carries a nonzero melee_haste stat.
+func TestBandHasHasteCandidateFindsAHasteStatInScored(t *testing.T) {
+	scoredItems := []scored{
+		{candidate: candidate{ID: 1, Name: "Plain Ring", Stats: map[string]float64{"agility": 5}}},
+		{candidate: candidate{ID: 2, Name: "Quick Ring", Stats: map[string]float64{"melee_haste": 1}}},
+	}
+	if !bandHasHasteCandidate(scoredItems, nil) {
+		t.Error("bandHasHasteCandidate(...) = false, want true (scoredItems[1] carries melee_haste: 1)")
+	}
+}
+
+// TestBandHasHasteCandidateFindsAHasteStatInNoSource is the same
+// check against an eligible-but-unsourced candidate - buildBandPool's
+// own NoSource slice is still a real item this band's eligible() pass
+// considered, just one sourceFor() could not place, so it counts the
+// same as a scored one.
+func TestBandHasHasteCandidateFindsAHasteStatInNoSource(t *testing.T) {
+	noSource := []candidate{
+		{ID: 3, Name: "Unsourced Trinket", Stats: map[string]float64{"spell_haste": 2}},
+	}
+	if !bandHasHasteCandidate(nil, noSource) {
+		t.Error("bandHasHasteCandidate(...) = false, want true (noSource[0] carries spell_haste: 2)")
+	}
+}
+
+// TestBandHasHasteCandidateIgnoresAZeroHasteStat is this function's
+// own "nonzero" rule (the doc's own wording): a candidate whose Stats
+// map carries the key at 0 (an item stripped down by some upstream
+// gate, or a data artifact) is not a real haste item.
+func TestBandHasHasteCandidateIgnoresAZeroHasteStat(t *testing.T) {
+	scoredItems := []scored{
+		{candidate: candidate{ID: 1, Name: "Zero-Haste Item", Stats: map[string]float64{"melee_haste": 0}}},
+	}
+	if bandHasHasteCandidate(scoredItems, nil) {
+		t.Error("bandHasHasteCandidate(...) = true, want false (melee_haste: 0 is not a real haste item)")
+	}
+}
+
+// TestBandHasHasteCandidateIsFalseWithNoHasteAnywhere is the band
+// this lane's brief's caption bug was found on: no eligible candidate
+// (scored or unsourced) carries either haste id at all.
+func TestBandHasHasteCandidateIsFalseWithNoHasteAnywhere(t *testing.T) {
+	scoredItems := []scored{
+		{candidate: candidate{ID: 1, Name: "Plain Ring", Stats: map[string]float64{"agility": 5}}},
+	}
+	noSource := []candidate{
+		{ID: 2, Name: "Plain Cloak", Stats: map[string]float64{"stamina": 3}},
+	}
+	if bandHasHasteCandidate(scoredItems, noSource) {
+		t.Error("bandHasHasteCandidate(...) = true, want false (nothing here carries melee_haste or spell_haste)")
+	}
+}

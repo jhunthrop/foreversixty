@@ -364,3 +364,46 @@ func hasteScaleFactorFromRows(rows []weightRow, anchor string) *float64 {
 	}
 	return nil
 }
+
+// bandHasHasteCandidate is bandReport.HasteOnItems' own builder (owner
+// correction, 2026-09-30, after the caption's own doubled-suffix bug
+// was found on screenshot review): whether any candidate this band's
+// own eligible() pass considered -- buildBandPool's own Scored (every
+// eligible, sourced-or-not item this band+faction scored) and
+// NoSource (eligible but unsourced) together, the two slices that
+// between them hold every real candidate.Stats this band ever looked
+// at -- carries a nonzero haste stat (isHasteStat's own two ids).
+//
+// This is deliberately NOT the same question isWeightSignificant asks
+// about the haste weightRow itself: a band's own 100-iteration sweep
+// can call a real, nonzero haste weight "insignificant" purely from
+// sampling noise even when real items in the band DO carry haste (the
+// two are independent measurements - one statistical, one a plain
+// inventory check) - conflating them is exactly what produced the
+// caption's own "Haste: 1.58 per 1%, per 1%" bug this lane's brief
+// reports: the ranker's own reference implementation used the weight
+// row's Insignificant flag as a stand-in for "no item has it", and a
+// significant-but-noisy haste weight rendered the caption's redundant
+// second clause. This function answers the inventory question
+// directly instead.
+func bandHasHasteCandidate(scoredItems []scored, noSource []candidate) bool {
+	hasHaste := func(stats map[string]float64) bool {
+		for stat, amount := range stats {
+			if isHasteStat(stat) && amount != 0 {
+				return true
+			}
+		}
+		return false
+	}
+	for _, s := range scoredItems {
+		if hasHaste(s.Stats) {
+			return true
+		}
+	}
+	for _, c := range noSource {
+		if hasHaste(c.Stats) {
+			return true
+		}
+	}
+	return false
+}

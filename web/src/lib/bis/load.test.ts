@@ -285,6 +285,30 @@ describe('normaliseBisFile', () => {
     expect(normalised.bands[0].haste_scale_factor).toBe(1.58);
   });
 
+  it('defaults a missing haste_on_items to true (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [baseBand],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].haste_on_items).toBe(true);
+  });
+
+  it('keeps a real haste_on_items false unchanged', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, haste_on_items: false }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].haste_on_items).toBe(false);
+  });
+
   const slotWithoutAlternatives: BisSlot = {
     slot: 'head',
     item_id: 1,

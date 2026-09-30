@@ -655,6 +655,13 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// more, only a one-line caption built from this one number
 			// - see bandReport.HasteScaleFactor's own doc.
 			report.HasteScaleFactor = hasteScaleFactorFromRows(report.Weights, report.ScaleReferenceStat)
+			// Owner correction, 2026-09-30, after the caption's own
+			// doubled-suffix bug was found on screenshot review: a
+			// plain inventory check (does this band's own eligible
+			// pool carry a haste stat at all), independent of whether
+			// the sweep's own sample happened to land significant -
+			// see bandReport.HasteOnItems' own doc.
+			report.HasteOnItems = bandHasHasteCandidate(pool.Scored, pool.NoSource)
 			reports = append(reports, report)
 			previous[f.name] = picks
 

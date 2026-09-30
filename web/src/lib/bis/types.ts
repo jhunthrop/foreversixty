@@ -221,6 +221,17 @@ export interface BisBand {
    *  empty (no per-point anchor this band's own sweep trusted). Optional and defaults to
    *  `null` (`normaliseBisFile`, `load.ts`), same pattern as `weights_reason`. */
   haste_scale_factor?: number | null;
+  /** Whether any candidate this band's own eligible() pass considered carries a nonzero
+   *  haste stat -- `sim/cmd/leveling-bis/report.go`'s own `bandHasHasteCandidate`. Read
+   *  directly (never inferred from a haste `weights` row's own `insignificant` flag, which
+   *  answers a different, statistical question -- owner correction, 2026-09-30, after the
+   *  caption's own doubled-suffix bug was found on screenshot review) to decide the rail's
+   *  haste caption: "Haste: `<n>` per 1%", plus ", not in the table because no item at this
+   *  band has it" only when this is `false`. Optional and defaults to `true`
+   *  (`normaliseBisFile`, `load.ts`) for a file published before this lane -- an unknown
+   *  band should not silently start showing a claim ("no item has it") an older file never
+   *  made. */
+  haste_on_items?: boolean;
 }
 
 export interface BisFile {

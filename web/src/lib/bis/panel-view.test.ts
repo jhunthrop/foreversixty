@@ -292,15 +292,31 @@ describe('bandInfosFor: scale rail', () => {
     expect(infos[0].scaleRows.some((row) => row.stat === 'melee_haste')).toBe(false);
   });
 
-  it('gives haste its own one-line caption instead, with the "not in the table" clause when the row is insignificant', () => {
+  it('gives haste a plain caption by default (haste_on_items absent defaults to true), even though band()’s own melee_haste row is insignificant', () => {
+    // Owner fix, 2026-09-30, found on screenshot review: a haste row's own `insignificant`
+    // flag is a STATISTICAL question (did the sweep's sample clear its own noise bar), never
+    // the plain inventory question `haste_on_items` answers -- conflating the two is exactly
+    // what produced the previous, doubled "Haste: 1.58 per 1%, per 1%" caption. band()'s own
+    // default fixture marks melee_haste insignificant but never sets haste_on_items, so the
+    // caption must still read plain (default true, no clause) here.
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     // melee_haste weight 10 / agility's own anchor weight 2 = 5.00.
-    expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(5, true));
-    expect(infos[0].hasteCaptionLine).toContain('not in the table because no item at this band has it');
+    expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(5, false));
+    expect(infos[0].hasteCaptionLine).toBe('Haste: 5.00 per 1%');
+    expect(infos[0].hasteCaptionLine).not.toContain('not in the table');
   });
 
-  it('gives haste the plain ", per 1%" clause when its own row is significant', () => {
+  it('adds the "not in the table" clause only when the band’s own haste_on_items is explicitly false', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null, haste_on_items: false })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(5, true));
+    expect(infos[0].hasteCaptionLine).toBe(
+      'Haste: 5.00 per 1%, not in the table because no item at this band has it',
+    );
+  });
+
+  it('gives haste the plain caption when its own row is significant and haste_on_items is true', () => {
     const file = fileWith([
       band({
         weights: [
@@ -310,11 +326,12 @@ describe('bandInfosFor: scale rail', () => {
         ],
         slots: [slot()],
         reference_dps_per_point: null,
+        haste_on_items: true,
       }),
     ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(1.5, false));
-    expect(infos[0].hasteCaptionLine).toBe('Haste: 1.50 per 1%, per 1%');
+    expect(infos[0].hasteCaptionLine).toBe('Haste: 1.50 per 1%');
   });
 
   it('gives no haste caption when the spec carries no haste weight_stat at all', () => {

@@ -1021,6 +1021,24 @@ type bandReport struct {
 	// anchor this band's own sweep trusted - see that field's own
 	// doc).
 	HasteScaleFactor *float64 `json:"haste_scale_factor,omitempty"`
+	// HasteOnItems is bandHasHasteCandidate's own return (weights.go) -
+	// owner correction, 2026-09-30, after the caption's own doubled-
+	// suffix bug was found on screenshot review ("Haste: 1.58 per 1%,
+	// per 1%"): whether any candidate this band's own eligible() pass
+	// considered carries a nonzero haste stat, published so the site's
+	// own caption ("Haste: <n> per 1%", plus ", not in the table
+	// because no item at this band has it" only when this is false)
+	// never has to infer that from a haste weightRow's own
+	// Insignificant flag - which answers a different, statistical
+	// question (was the sweep's own sample clean enough to trust the
+	// number), not this plain inventory one. No omitempty: false is a
+	// real, meaningful answer here, never "absent" - a file published
+	// before this lane simply carries no `haste_on_items` key at all,
+	// which the site's own load path (`normaliseBisFile`) defaults to
+	// true, not false, on the theory that an unknown band should not
+	// silently start SHOWING a claim ("no item has it") an older file
+	// never made.
+	HasteOnItems bool `json:"haste_on_items"`
 }
 
 // scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value

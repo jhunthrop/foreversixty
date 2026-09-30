@@ -172,12 +172,18 @@ export const bisCopy = {
     `Per point of stat, normalized to ${topLabel} = 1.00, with DPS per point and the sim error.`,
   /** Haste's own one-line caption (owner correction, 2026-09-30, after player review: haste
    *  is not a per-point stat and never appears as a table row) -- `scaleFactor` is the same
-   *  number `band.haste_scale_factor` (or its client-side fallback) publishes; `noItemAtBand`
-   *  is true when the haste row measured `insignificant` (this band's own gear carries
-   *  nothing that grants it, so the sweep could not measure it against real items). */
+   *  number `band.haste_scale_factor` (or its client-side fallback) publishes. `noItemAtBand`
+   *  is `!band.haste_on_items` (`sim/cmd/leveling-bis/report.go`'s own `bandHasHasteCandidate`
+   *  -- a plain inventory check, "does any candidate this band considered carry a haste
+   *  stat"), never a haste row's own `insignificant` flag: that answers a different,
+   *  statistical question (was the sweep's own sample clean enough to trust the number) and
+   *  conflating the two produced this line's own second-draft bug -- a significant-but-
+   *  noisy haste weight on a band that DOES have haste gear rendered the redundant
+   *  "Haste: 1.58 per 1%, per 1%" (owner fix, 2026-09-30, found on screenshot review). The
+   *  suffix now only ever appears when no candidate item actually carries the stat. */
   weightsHasteCaption: (scaleFactor: number, noItemAtBand: boolean): string =>
     `Haste: ${scaleFactor.toFixed(2)} per 1%${
-      noItemAtBand ? ', not in the table because no item at this band has it' : ', per 1%'
+      noItemAtBand ? ', not in the table because no item at this band has it' : ''
     }`,
   /** A per-point row's own `scale_factor`/`dps_per_point`/`scale_error` the sweep's own 25%-
    *  of-value error bar could not clear (`weight.insignificant`) -- greyed on the page

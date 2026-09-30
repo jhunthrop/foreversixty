@@ -413,17 +413,24 @@ function buildScaleRows(
  *  nor the client-side fallback (`byStat`) has a number to show (no trustworthy anchor this
  *  band -- see `computeScaleFactors`'s own doc). Prefers the published field so the page
  *  never has to recompute what the ranker already measured; falls back to the exact same
- *  divisor `buildScaleRows` used otherwise. */
+ *  divisor `buildScaleRows` used otherwise.
+ *
+ *  `hasteOnItems` (`band.haste_on_items`, defaulted to `true` by `normaliseBisFile` for an
+ *  older file) decides the caption's own "not in the table" clause -- NEVER the haste row's
+ *  own `insignificant` flag, which answers a different, statistical question and produced
+ *  this caption's own second-draft bug: "Haste: 1.58 per 1%, per 1%" (owner fix, 2026-09-30,
+ *  found on screenshot review -- see `bisCopy.weightsHasteCaption`'s own doc). */
 function hasteCaptionFor(
   weights: readonly BisStatWeight[],
   publishedHasteScaleFactor: number | null,
   byStat: ReadonlyMap<string, ScaleFactors>,
+  hasteOnItems: boolean,
 ): string | undefined {
   const hasteRow = weights.find((w) => isHasteStat(w.stat));
   if (hasteRow === undefined) return undefined;
   const scaleFactor = publishedHasteScaleFactor ?? byStat.get(hasteRow.stat)?.scaleFactor;
   if (scaleFactor === undefined) return undefined;
-  return bisCopy.weightsHasteCaption(scaleFactor, hasteRow.insignificant ?? false);
+  return bisCopy.weightsHasteCaption(scaleFactor, !hasteOnItems);
 }
 
 /** One band's worth of `.paperdoll` data: every row, the centre column's numbers, and the
@@ -528,7 +535,12 @@ export function bandInfosFor(
     const hasteCaptionLine =
       weightsReason !== null
         ? undefined
-        : hasteCaptionFor(bandData.weights, bandData.haste_scale_factor ?? null, byStat);
+        : hasteCaptionFor(
+            bandData.weights,
+            bandData.haste_scale_factor ?? null,
+            byStat,
+            bandData.haste_on_items ?? true,
+          );
     return [
       {
         band,
