@@ -229,6 +229,51 @@ class ClassicDbDump:
             }
         return out
 
+    #: cmangos' own SPELL_EFFECT_LEARN_SPELL id (Classic 1.12 effect
+    #: list) -- a recipe item's own on-use `spellid_1..5` entry, when it
+    #: is one of these, teaches the crafting spell named by its own
+    #: `EffectTriggerSpell` (data-followups-3 lane, 2026-09-30, item 1:
+    #: verified against Sulfuron Hammer's real chain -- item 18592
+    #: "Plans: Sulfuron Hammer" has `spellid_1` 23007, spell 23007 is
+    #: `Effect1` 36 with `EffectTriggerSpell1` 21161, and spell 21161 is
+    #: `Effect1` 24 (`SPELL_EFFECT_CREATE_ITEM`) `EffectItemType1` 17193
+    #: Sulfuron Hammer itself).
+    LEARN_SPELL_EFFECT = 36
+
+    @functools.cached_property
+    def item_template_spell_ids(self) -> dict[int, list[int]]:
+        """item id -> every non-zero `spellid_1..5` -- the SAME column
+        `item_template` (above) already reads, but keyed for EVERY item
+        (recipe items included: `item_template` itself narrows to
+        nothing, but callers historically only asked it for equippable
+        rows) -- `pipeline.classicdb_crafted`'s own reverse lookup (which
+        item teaches a given crafting spell) needs the full universe."""
+        return {
+            int(row["entry"]): [
+                int(row[f"spellid_{n}"]) for n in range(1, 6) if int(row[f"spellid_{n}"])
+            ]
+            for row in iter_table_records(self._text, "item_template")
+        }
+
+    @functools.cached_property
+    def spell_reagents(self) -> dict[int, list[tuple[int, int]]]:
+        """spell id -> every non-zero `(Reagent<n>, ReagentCount<n>)`
+        pair, `spell_template`'s own 1.12 reagent columns (n in 1..8) --
+        the ingredients a `SPELL_EFFECT_CREATE_ITEM` spell (this dump's
+        own `created_item_to_spells`, above) consumes. Not narrowed to
+        create-item spells here (same convention as `spell_effects`):
+        the caller already knows which spell id it wants reagents for."""
+        out: dict[int, list[tuple[int, int]]] = {}
+        for row in iter_table_records(self._text, "spell_template"):
+            reagents = [
+                (int(row[f"Reagent{n}"]), int(row[f"ReagentCount{n}"]))
+                for n in range(1, 9)
+                if int(row[f"Reagent{n}"])
+            ]
+            if reagents:
+                out[int(row["Id"])] = reagents
+        return out
+
     @functools.cached_property
     def created_item_to_spells(self) -> dict[int, list[int]]:
         """The item a crafting spell's own `SPELL_EFFECT_CREATE_ITEM`

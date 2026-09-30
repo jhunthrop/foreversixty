@@ -75,6 +75,50 @@ def test_created_item_to_spells(tmp_path):
     assert 0 not in dump.created_item_to_spells
 
 
+def test_item_template_spell_ids(tmp_path):
+    """Every non-zero `spellid_1..5`, keyed by item id -- NOT narrowed
+    to equippable rows the way `item_template` (RequiredReputation*) is;
+    `pipeline.classicdb_crafted`'s own reverse lookup needs recipe items
+    (Item.ClassID 9, never equippable) too."""
+    dump = _write_dump(tmp_path)
+    assert dump.item_template_spell_ids[500] == []
+    assert dump.item_template_spell_ids[600] == [7001]
+
+
+# --- spell_reagents (data-followups-3 lane, 2026-09-30, item 1) ---
+
+REAGENT_SQL = """
+CREATE TABLE `spell_template` (
+  `Id` int,
+  `Reagent1` int,
+  `Reagent2` int,
+  `Reagent3` int,
+  `Reagent4` int,
+  `Reagent5` int,
+  `Reagent6` int,
+  `Reagent7` int,
+  `Reagent8` int,
+  `ReagentCount1` int,
+  `ReagentCount2` int,
+  `ReagentCount3` int,
+  `ReagentCount4` int,
+  `ReagentCount5` int,
+  `ReagentCount6` int,
+  `ReagentCount7` int,
+  `ReagentCount8` int
+) ENGINE=MyISAM;
+INSERT INTO `spell_template` VALUES
+  (21161,17203,11371,0,0,0,0,0,0,8,20,0,0,0,0,0,0),
+  (7002,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+"""
+
+
+def test_spell_reagents_reads_every_nonzero_reagent_and_its_count(tmp_path):
+    dump = ClassicDbDump.from_text(REAGENT_SQL)
+    assert dump.spell_reagents[21161] == [(17203, 8), (11371, 20)]
+    assert 7002 not in dump.spell_reagents  # every reagent slot is zero
+
+
 # --- equippable_item_template_rows / spell_names (catalogue-universe lane) ---
 
 EQUIPPABLE_SQL = """

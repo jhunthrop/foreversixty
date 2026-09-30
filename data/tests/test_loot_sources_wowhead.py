@@ -166,11 +166,18 @@ def test_a_wowhead_quest_reward_joins_the_flat_quest_bucket_with_wowhead_level_s
     assert len(detail) == 1
     assert detail[0].quest_id == 99
     # item 110 (the fixture's fork-unsourced item) carries no
-    # factionRestriction of its own, so QuestSource.faction is "both",
-    # NOT the scrape's own "horde" -- see
+    # factionRestriction of its own, so `pipeline.loot.wowhead.
+    # wowhead_additions` itself sets QuestSource.faction to the generic
+    # "both" default -- but `build_loot`'s later `resolve_quest_faction`
+    # pass (data-followups-3 lane, 2026-09-30, item 2) then reads THIS
+    # SAME scrape's own `faction="horde"` (a real, distinguishing signal,
+    # not the uninformative "both") off `item_sources`, since no item
+    # restriction exists to prefer over it -- see
     # test_a_wowhead_quest_reward_faction_follows_the_items_own_
-    # restriction_not_the_scrapes below for the item-restricted case.
-    assert detail[0].faction == "both"
+    # restriction_not_the_scrapes below for the item-restricted case,
+    # where a REAL restriction still wins.
+    assert detail[0].faction == "horde"
+    assert detail[0].faction_source == "wowhead"
     assert detail[0].level_source == "wowhead"
 
 

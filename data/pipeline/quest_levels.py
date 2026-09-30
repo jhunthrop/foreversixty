@@ -73,6 +73,23 @@ class QuestLevelEntry(BaseModel):
     level: int
     source: QuestLevelSource
     fetched_at: str
+    #: "alliance", "horde" or "both" -- wowhead's own `side` field off
+    #: the SAME quest-page fetch that resolved `min_level`/`level`
+    #: (`pipeline.wowhead_quests.QuestPageLevel.faction`'s own doc).
+    #: data-followups-3 lane, 2026-09-30, item 2: the second fallback
+    #: `pipeline.loot.sources.build_loot`'s own doc calls for, behind
+    #: classic-db's `RequiredRaces` (`quest_factions_from_classic_
+    #: sources`) and ahead of publishing `"unknown"`. Always `None` for
+    #: a `source: "classic-db"` entry (that source settles faction on
+    #: its own, through the OTHER path) and for every entry fetched
+    #: before this field existed -- a quest already in this file from an
+    #: earlier `quest-levels` run keeps `None` here until a FUTURE
+    #: refetch (this lane's own report: `fetch_missing_from_wowhead`
+    #: only ever fetches an id NOT already covered, so an existing
+    #: `source: "wowhead"` entry is never automatically backfilled;
+    #: repinning/deleting its entry to force a refetch is a controller
+    #: decision, not this pipeline's to make unprompted).
+    faction: str | None = None
 
 
 def raw_path(build_dir: Path) -> Path:
@@ -203,7 +220,11 @@ def fetch_missing_from_wowhead(
     now = datetime.now(UTC).isoformat()
     for entry, quest in result.levels.items():
         entries[entry] = QuestLevelEntry(
-            min_level=quest.min_level, level=quest.level, source="wowhead", fetched_at=now
+            min_level=quest.min_level,
+            level=quest.level,
+            source="wowhead",
+            fetched_at=now,
+            faction=quest.faction,
         )
     _write(build_dir, entries)
     still_missing = len(needed) - len(result.levels)

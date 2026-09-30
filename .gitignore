@@ -91,6 +91,10 @@ data/builds/*/raw/classicdb/*
 # item_template extract (pipeline.classicdb_items) -- fills the ids neither
 # the client's ItemSparse/hotfix cache nor the wowhead supplement carry.
 !data/builds/*/raw/classicdb/item_template.json
+# data-followups-3 lane, 2026-09-30: the same exception, for the crafted-item
+# recipe/reagent extract (pipeline.classicdb_crafted) -- apply_crafted_opens_
+# gate reads it offline, in CI, the same way loot reads sources.json.
+!data/builds/*/raw/classicdb/crafted-recipes.json
 # normalize-levels lane, 2026-09-29: the same exception, for the beta
 # client's own hotfix cache (pipeline.hotfix_cache/hotfix_merge) -- the
 # DBCache.bin the controller copies off the client is never committed

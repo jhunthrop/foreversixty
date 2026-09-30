@@ -130,3 +130,67 @@ def test_the_committed_loot_json_agrees_with_classic_db_for_all_ten():
                 )
     missing = set(ONE_FACTION_QUESTS) - seen
     assert not missing, f"quest ids missing from loot.json entirely: {sorted(missing)}"
+
+
+# data-followups-3 lane, 2026-09-30, item 2: the regression this module's
+# own doc says was "flagged, then withdrawn" -- quest 78150 "Friend of the
+# Library" (reward items 277203 Scholarly Pendant / 277204 Erudite's
+# Amulet). Confirmed here against the SAME committed, offline inputs
+# `pipeline.loot.sources.build_loot`/`resolve_quest_faction` read in CI, so
+# a future refresh of any one of them that quietly starts (or stops)
+# resolving this quest fails here by name, the same contract the ten
+# one-faction starting quests above already get.
+QUEST_78150 = 78150
+ITEM_SCHOLARLY_PENDANT = 277203
+ITEM_ERUDITES_AMULET = 277204
+ITEMS_JSON = BUILD_DIR / "items.json"
+ITEM_SOURCES_CACHE = BUILD_DIR / "raw" / "items" / "item-sources.json"
+
+
+def test_neither_reward_item_carries_a_real_faction_restriction():
+    """The root cause: unlike Hammerbone/Leaders of the Fang (a real
+    quest-vs-item disagreement), Friend of the Library's own two reward
+    items state NO `factionRestriction` at all -- `item_factions`'s own
+    result never gets a key for either one, so there is no item-level
+    fact to fall back on, only wowhead's and classic-db's."""
+    items = {item["id"]: item for item in json.loads(ITEMS_JSON.read_text(encoding="utf-8"))}
+    for item_id in (ITEM_SCHOLARLY_PENDANT, ITEM_ERUDITES_AMULET):
+        assert items[item_id]["faction_restriction"] == "", item_id
+
+
+def test_quest_78150_has_no_classic_db_row():
+    """Confirms the brief's own claim independently: a Forever-new quest,
+    absent from the pinned classic-db dump entirely -- `faction_source`
+    can never be `"classic-db"` for it until/unless a future re-pin of
+    `SOURCE_COMMIT` adds one."""
+    by_quest = _quest_records_by_id()
+    assert QUEST_78150 not in by_quest
+
+
+def test_wowhead_states_both_for_this_quest_and_is_correctly_not_trusted():
+    """The committed `item-sources.json` scrape (already fetched, no
+    network needed here) states `faction: "both"` for both reward items
+    -- confirmed real data, not a stand-in -- and `resolve_quest_faction`
+    (`pipeline.loot.sources`) correctly treats this as uninformative
+    (indistinguishable from "wowhead has not resolved this one either")
+    rather than republishing it as fact, per that function's own doc."""
+    from pipeline.item_sources import load_item_sources
+    from pipeline.loot.sources import resolve_quest_faction
+
+    item_sources = load_item_sources(BUILD_DIR)
+    for item_id in (ITEM_SCHOLARLY_PENDANT, ITEM_ERUDITES_AMULET):
+        entry = item_sources[item_id]
+        rewards = [r for r in entry.quest_rewards if r.quest_id == QUEST_78150]
+        assert len(rewards) == 1, item_id
+        assert rewards[0].faction == "both", item_id
+
+        faction, faction_source = resolve_quest_faction(
+            QUEST_78150,
+            item_id,
+            quest_factions={},  # test_quest_78150_has_no_classic_db_row, above
+            quest_levels={},  # no quest-page fetch has covered 78150 yet
+            item_sources=item_sources,
+            item_faction_restrictions={},  # test_neither_reward_item_..., above
+        )
+        assert faction == "unknown", item_id
+        assert faction_source == "item", item_id

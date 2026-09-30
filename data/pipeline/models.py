@@ -469,7 +469,14 @@ class QuestSource(BaseModel):
     quest_id: int
     name: str
     faction: str
-    faction_source: Literal["classic-db", "item"] | None = None
+    #: data-followups-3 lane, 2026-09-30, item 2: `"wowhead"` joins
+    #: `"classic-db"`/`"item"` -- wowhead's own quest-page `side` field
+    #: (`pipeline.quest_levels.QuestLevelEntry.faction`), the second
+    #: fallback behind classic-db's `RequiredRaces` and ahead of
+    #: publishing `faction="unknown"` (`"item"`, now with no item-derived
+    #: guess left to report -- see `pipeline.loot.sources.build_loot`'s
+    #: own doc for why the guess was retired).
+    faction_source: Literal["classic-db", "wowhead", "item"] | None = None
     min_level: int
     level: int
     level_source: str
