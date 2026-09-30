@@ -133,33 +133,6 @@ export const guildJoinCopy = {
   signInLine: 'Sign in to join this guild.',
 } as const;
 
-/**
- * The homepage hero's guild card (spec 2026-09-28, "the hero's right column is a
- * horizontally scrolling strip of launch dates -- it's pretty worthless"): the eyebrow,
- * the no-guild pitch, and the one line + one action shown per state, checked in the order
- * `web/src/lib/guild/home-card.ts`'s `homeGuildCardView` checks them. Honest voice, no
- * exclamation marks, same as every other copy module in this file.
- */
-export const homeGuildCardCopy = {
-  eyebrow: 'YOUR GUILD',
-  noGuildLead: 'No guild yet.',
-  noGuildBody:
-    'Ask an officer of your guild for its invite link, or save a character that is in one on Get set up.',
-  claimPendingLine: 'A claim is waiting for a second officer.',
-  confirmClaim: 'Confirm the claim',
-  unclaimedLine: (name: string): string =>
-    `Nobody has claimed ${name} yet. Claiming unlocks settings, the invite link and roster approval.`,
-  claimThisGuild: 'Claim this guild',
-  waitingLine: (count: number): string => `${count} members waiting for approval.`,
-  reviewRoster: 'Review roster',
-  statsLine: (logged: number, reports: number, killed: number, total: number): string =>
-    `${logged} logged in the last day · ${reports} reports this week · ${killed}/${total} bosses`,
-  statsLineNoBosses: (logged: number, reports: number): string =>
-    `${logged} logged in the last day · ${reports} reports this week`,
-  guildSettings: 'Guild settings',
-  viewGuild: 'View guild',
-} as const;
-
 export const guildConsentCopy = {
   heading: 'My guilds',
   roster: 'Roster only',

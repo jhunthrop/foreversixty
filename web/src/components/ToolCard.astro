@@ -6,13 +6,22 @@ interface Props {
   href: string;
   /** Omitted where a card is a way into a section rather than a tool with data of its own. */
   status?: { label: string; kind: ToolStatusKind };
+  /** Home rebuild spec §3.A.5: the bottom gold 12px/700/uppercase "OPEN THE PLANNER" line
+   *  every "Five doors" card shows -- an extension of this existing component (tenet 10),
+   *  not a new one. Plain text inside the card's one anchor, never a second nested <a>.
+   *  Omitted everywhere else this component is used today, unchanged. */
+  linkLabel?: string;
+  /** Optional `data-testid` on the card's own anchor -- Astro.props does not spread
+   *  unknown attributes automatically, so a caller that wants one passes it explicitly. */
+  testid?: string;
 }
-const { title, description, href, status } = Astro.props;
+const { title, description, href, status, linkLabel, testid } = Astro.props;
 ---
 
 <a
   href={href}
   class="flex flex-col gap-[10px] p-[18px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150"
+  data-testid={testid}
 >
   <div class="flex items-center justify-between">
     <span class="text-gold">
@@ -22,4 +31,7 @@ const { title, description, href, status } = Astro.props;
   </div>
   <span class="font-display text-[15px] font-bold">{title}</span>
   <span class="text-[13px] leading-snug text-muted">{description}</span>
+  {linkLabel && (
+    <span class="text-gold mt-auto text-[12px] font-bold uppercase tracking-[0.06em]">{linkLabel}</span>
+  )}
 </a>

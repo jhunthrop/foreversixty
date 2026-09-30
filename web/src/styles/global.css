@@ -227,11 +227,26 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
   display: none;
 }
 
-/* The homepage hero's guild card slot (index.astro, filled by HomeAccountPanel after
-   /v1/me answers): with a session hinted it keeps the card's height from first paint, so
-   the card's arrival moves nothing; without one it stays empty and flat under the dates. */
-html[data-session='1'] .home-guild-slot {
+/* The homepage hero's Switch character slot (index.astro, filled by HomeAccountPanel's
+   HomeSwitchCharacterPanel after /v1/me answers -- home rebuild spec §3.B.4, replacing
+   the old guild card here): with a session hinted it keeps the panel's height from first
+   paint, so the panel's arrival moves nothing; without one it stays empty and flat under
+   the example panel. */
+html[data-session='1'] .home-switch-character-slot {
   min-height: 168px;
+}
+
+/* Home rebuild spec §3.B.3/§3.B.5: "Your upgrades" and "Another class" exist only signed
+   in; "Best in slot by class" only signed out. All three toggle on the same pre-paint
+   session hint `.chip-slot` above already uses for a `display:none` swap -- the hint
+   lands before layout settles, so this never causes a visible shift either direction, and
+   (unlike `data-session-hide`'s visibility toggle for the hero's own same-shaped overlay)
+   `display:none` costs no reserved height for the common case that never shows it. */
+html[data-session='1'] [data-signed-out-only] {
+  display: none;
+}
+html:not([data-session='1']) [data-signed-in-only] {
+  display: none;
 }
 
 /* /setup as a checklist: what each step shows depends on the two pre-paint hints on <html>

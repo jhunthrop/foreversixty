@@ -39,9 +39,22 @@ describe('getSetUpLine', () => {
     expect(getSetUpLine(meWith([WITHOUT_BUILD]))).toBe('Install the addon · Set up the companion →');
   });
 
-  it('collapses to the exact one-line sentence once the addon is linked', () => {
-    expect(getSetUpLine(meWith([WITH_ADDON_BUILD]))).toBe(
-      'Signed in and addon linked · Set up the companion →',
+  it('collapses to the exact one-line sentence once the addon is linked, naming the real sync time', () => {
+    const now = new Date('2026-09-20T02:00:00Z');
+    expect(getSetUpLine(meWith([WITH_ADDON_BUILD]), now)).toBe(
+      'Signed in and addon linked · synced 2 hours ago → Set up the companion',
+    );
+  });
+
+  it('uses the most recently synced addon build when more than one character has one', () => {
+    const olderAddon: MeCharacter = {
+      ...WITHOUT_BUILD,
+      key: 'us/normal/older',
+      build: { source: 'addon', captured_at: '2026-09-19T00:00:00Z' },
+    };
+    const now = new Date('2026-09-20T00:10:00Z');
+    expect(getSetUpLine(meWith([olderAddon, WITH_ADDON_BUILD]), now)).toBe(
+      'Signed in and addon linked · synced 10 minutes ago → Set up the companion',
     );
   });
 });

@@ -34,8 +34,12 @@ describe('home-landing-copy', () => {
     expect(homeCompanionRow[0].href).toBe('/setup');
   });
 
-  it('carries the exact collapsed "Get set up" sentence and the two remaining-step words', () => {
-    expect(homeGetSetUpCopy.bothDone).toBe('Signed in and addon linked · Set up the companion →');
+  it('carries the exact collapsed "Get set up" sentence, interpolating the real sync time', () => {
+    // Home rebuild spec §3.B.6: a function, not a fixed string, so this card's sync time
+    // can never disagree with the hero's own sync line.
+    expect(homeGetSetUpCopy.bothDone('4 minutes ago')).toBe(
+      'Signed in and addon linked · synced 4 minutes ago → Set up the companion',
+    );
     expect(nonEmpty(homeGetSetUpCopy.addonRemaining)).toBe(true);
     expect(nonEmpty(homeGetSetUpCopy.companionRemaining)).toBe(true);
   });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { characterDescriptor, classSquare } from './character-descriptor';
+import { characterDescriptor, classSquare, homeHeroLevelRaceClassLine } from './character-descriptor';
 import type { MeCharacter } from './api';
 
 const FULL: MeCharacter = {
@@ -27,6 +27,23 @@ describe('characterDescriptor', () => {
 
   it('falls back to the bare ruleset/region location when race, class, level and realm are all unknown', () => {
     expect(characterDescriptor(BARE)).toBe('PvP US');
+  });
+});
+
+describe('homeHeroLevelRaceClassLine', () => {
+  it('builds "Level N Race Class" for the signed-in hero', () => {
+    expect(homeHeroLevelRaceClassLine(FULL)).toBe('Level 25 Night Elf Hunter');
+  });
+
+  it('omits whichever parts are unknown rather than guessing', () => {
+    expect(homeHeroLevelRaceClassLine(BARE)).toBe('');
+    expect(homeHeroLevelRaceClassLine({ ...BARE, level: 9 })).toBe('Level 9');
+  });
+
+  it('inserts the spec between race and class once the account payload carries one (review round 1 item 2)', () => {
+    expect(homeHeroLevelRaceClassLine({ ...FULL, spec: 'Marksmanship' })).toBe(
+      'Level 25 Night Elf Marksmanship Hunter',
+    );
   });
 });
 

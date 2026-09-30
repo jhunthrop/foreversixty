@@ -2,9 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('the homepage Planner card points at the live planner', async ({ page }) => {
   await page.goto('/');
-  const link = page
-    .getByTestId('home-next-planner-signed-out')
-    .getByRole('link', { name: 'Open the planner' });
+  const link = page.getByTestId('home-five-doors-planner');
   await expect(link).toHaveAttribute('href', '/planner');
   await link.click();
   await expect(page).toHaveURL(/\/planner$/);

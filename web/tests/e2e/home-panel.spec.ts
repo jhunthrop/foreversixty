@@ -6,6 +6,21 @@ const fulfil = (body: unknown, status = 200) => ({
   body: JSON.stringify(body),
 });
 
+const NO_SIMS_PAGE = { rows: [], total: 0, page: 1, per_page: 20 };
+const NO_RATING = null;
+
+/** Stubs every fetch the signed-in hero and its cards make, beyond `/v1/me` itself, so a
+ *  test that does not care about sims/ratings/talents still settles instead of hanging on
+ *  a real network call (the real API's CORS policy refuses `localhost` outright, so an
+ *  un-stubbed request never resolves at all in a local run). */
+async function stubHeroExtras(page: import('@playwright/test').Page): Promise<void> {
+  await page.route('**/v1/sims**', (route) => route.fulfill(fulfil(NO_SIMS_PAGE)));
+  await page.route('**/rating', (route) => route.fulfill(fulfil(NO_RATING)));
+  await page.route('**/v1/characters/**', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'none' }, request_id: 'r' }, 404)),
+  );
+}
+
 test('the home page offers Battle.net sign-in when signed out', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
@@ -13,15 +28,23 @@ test('the home page offers Battle.net sign-in when signed out', async ({ page })
   await page.goto('/');
   const signedOut = page.getByTestId('home-signed-out');
   await expect(signedOut).toBeVisible();
-  // The pitch heading moved inside the signed-out block in this redesign.
-  await expect(signedOut.getByRole('heading', { level: 1 })).toHaveText(
-    'Your character, planned, simmed, logged and ranked.',
-  );
+  // Home rebuild spec §1 / tenet 14: the one sentence this page is allowed to say about
+  // itself, replacing the old pitch headline.
+  await expect(signedOut.getByRole('heading', { level: 1 })).toHaveText('Play your class better.');
   await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute(
     'href',
     /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
   );
   await expect(page.getByTestId('home-account-panel')).toHaveCount(0);
+  // The nine-class picker (§3.A.1): one row, in web/src/data/classes.json's own order.
+  const picker = page.getByTestId('home-class-picker');
+  await expect(picker.getByTestId(/^home-class-picker-/)).toHaveCount(9);
+  await expect(picker.getByTestId('home-class-picker-warrior')).toContainText('Warrior');
+  // §3.A.4: the signed-out "Best in slot by class" row is present; the signed-in-only
+  // regions are not (display:none, per the session hint).
+  await expect(page.getByTestId('home-class-picker-large')).toBeVisible();
+  await expect(page.getByTestId('home-upgrades')).toBeHidden();
+  await expect(page.getByTestId('home-another-class')).toBeHidden();
 });
 
 test('a signed-in visitor with zero characters still sees the Battle.net sign-in CTA, not a blank hero', async ({
@@ -49,9 +72,16 @@ test('a signed-in visitor with zero characters still sees the Battle.net sign-in
   await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
 });
 
-test('a character with no build shows Open the planner as the one primary action, not a Sim button, with the portrait fallback', async ({
+test('a signed-in hero shows the descriptor, the three next-action cards, and hides the signed-out door', async ({
   page,
-}, testInfo) => {
+  context,
+}) => {
+  await stubHeroExtras(page);
+  // The signed-out/signed-in region swap (Best in slot by class vs. Your upgrades/Another
+  // class) reads the session cookie's readable half before first paint (Base.astro), not
+  // the mocked /v1/me response -- the same pre-paint hint `data-session-hide` already
+  // relies on elsewhere on this page.
+  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -59,7 +89,19 @@ test('a character with no build shows Open the planner as the one primary action
         data: {
           user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
           characters: [
-            { key: 'us/normal/kiloz', region: 'us', ruleset: 'normal', name: 'Kiloz', class: 'Warrior' },
+            {
+              key: 'us/normal/zulmara',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'Zulmara',
+              class: 'hunter',
+              race: 'Troll',
+              realm: 'Skyborne',
+              level: 24,
+              faction: 'horde',
+              guild: { id: 9, name: 'Sample Guild', verified: true },
+              build: { source: 'addon', captured_at: new Date(Date.now() - 4 * 60_000).toISOString() },
+            },
           ],
           guilds: [],
         },
@@ -73,9 +115,9 @@ test('a character with no build shows Open the planner as the one primary action
       'fs.currentCharacter',
       JSON.stringify({
         source: 'armory',
-        ref: 'us/normal/kiloz',
-        label: 'Kiloz · Warrior',
-        classSlug: 'warrior',
+        ref: 'us/normal/zulmara',
+        label: 'Zulmara · Hunter',
+        classSlug: 'hunter',
         savedAt: new Date().toISOString(),
       }),
     );
@@ -83,170 +125,63 @@ test('a character with no build shows Open the planner as the one primary action
   await page.goto('/');
   const panel = page.getByTestId('home-account-panel');
   await expect(panel).toBeVisible();
-  // The header is live on the home page too: a signed-in visitor sees their tag, not a
-  // "Sign in" link beside their own hero.
-  await expect(page.getByTestId('session-nav')).toContainText('Fixture#1');
-  await expect(page.getByTestId('session-nav-static')).toHaveCount(0);
-  // The character name is the page's only heading -- no testid is passed for it, so it is
-  // located by role/name, the way a real user (or a screen reader) would find it.
-  await expect(panel.getByRole('heading', { name: 'Kiloz', level: 1 })).toBeVisible();
-  // Review round 1 fix item 1: no build yet, so the one primary action is "Open the
-  // planner" (the same `?class=` fallback the Planner door itself builds), never a claim
-  // that a build exists to retrieve -- "Get the build" is retired from this page entirely.
-  await expect(panel.getByRole('link', { name: 'Open the planner' })).toHaveAttribute(
-    'href',
-    '/planner?class=warrior',
-  );
-  await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveCount(0);
-  // Without a build, "Plan talents" would only repeat the primary action, so it is absent
-  // rather than a second, competing route to the same place.
-  await expect(panel.getByRole('link', { name: 'Plan talents' })).toHaveCount(0);
-  await expect(panel.getByRole('link', { name: 'Logs' })).toHaveAttribute('href', '/logs');
-  await expect(panel.getByRole('link', { name: 'Your characters' })).toHaveAttribute('href', '/account');
-  // The signed-out "Sign in with Battle.net" link is only ever visually covered by the
-  // grid-overlay CLS trick, never removed from the DOM -- without `inert`, a signed-in
-  // keyboard/screen-reader user could still tab to, or hear, the duplicate link behind it.
+  await expect(panel.getByRole('heading', { name: 'Zulmara', level: 1 })).toBeVisible();
+  // Review round 1 item 1: one line, the spec's own shape, guild in angle brackets.
+  const descriptor = panel.getByTestId('home-hero-descriptor');
+  await expect(descriptor).toContainText('Level 24 Troll Hunter');
+  await expect(descriptor).toContainText('Horde');
+  await expect(descriptor).toContainText('<Sample Guild>');
+  await expect(panel.getByTestId('home-hero-guild')).toContainText('Sample Guild');
+  await expect(panel.getByTestId('home-hero-sync')).toContainText('from the addon');
+  // Best in slot / Talents: not yet computable against live worn-gear data (§3.B.2) --
+  // an honest, settled line, never a fabricated figure.
+  await expect(panel.getByTestId('home-hero-card-bis')).toContainText('Not available yet');
+  await expect(panel.getByTestId('home-hero-card-talents')).toContainText('Not available yet');
+  // Simulator: the one card with a real, live figure -- no saved sim for this fixture, so
+  // the existing empty-state copy/action shows.
+  await expect(panel.getByTestId('home-hero-card-sim')).toContainText('No sim yet.');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
-  // No render_url on this fixture: CharacterIdentity's own inline portrait (the one
-  // beside the name, testid "home-hero" passed through to its CharacterPortrait) is the
-  // hero's sole visual identity here -- HomeAccountPanel renders no separate portrait of
-  // its own when there is no render, so there is exactly one portrait, not two.
-  await expect(panel.getByTestId('home-hero-avatar-fallback')).toBeVisible();
-  await expect(panel.getByTestId('home-hero-render')).toHaveCount(0);
-  // Every hero gets the class's tree art as a backdrop at desktop width, render or not
-  // (lib/home/class-art.ts); it is decoration, so it is absent from the phone layout.
-  const art = panel.getByTestId('home-hero-art');
-  await expect(art).toHaveAttribute('style', /trees\/warriorarms\.webp/);
-  if (testInfo.project.name === 'desktop') await expect(art).toBeVisible();
-  else await expect(art).toBeHidden();
-  // No character has a build: the reason is Blizzard's, and the hero says so once.
+  // §3.A.4/§3.B.3/§3.B.5: the signed-out class-picker row is gone, replaced by the
+  // signed-in-only "Your upgrades" (not-yet-available) and "Another class" regions.
+  await expect(page.getByTestId('home-class-picker-large')).toBeHidden();
+  await expect(page.getByTestId('home-upgrades')).toBeVisible();
+  await expect(page.getByTestId('home-upgrades-not-yet-available')).toBeVisible();
+  await expect(page.getByTestId('home-another-class').getByTestId(/^class-crest-/)).toHaveCount(9);
+});
+
+test('no Battle.net data for this realm type yet is shown once, when every character has no build', async ({
+  page,
+}) => {
+  await stubHeroExtras(page);
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [
+            { key: 'us/normal/kiloz', region: 'us', ruleset: 'normal', name: 'Kiloz', class: 'warrior' },
+          ],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.goto('/');
+  const panel = page.getByTestId('home-account-panel');
   await expect(panel.getByTestId('home-hero-no-bnet-data')).toHaveText(
     'Blizzard serves no data for this realm type yet.',
   );
-});
-
-test('a character with a build shows a Sim button to the armory-source href and its render image', async ({
-  page,
-}, testInfo) => {
-  // A real (tiny) image, not just a mocked /v1/me url: the img has no explicit
-  // width/height, so an unresolved src collapses its rendered box to 0x0 and a
-  // visibility assertion below would pass or fail for the wrong reason.
-  await page.route('**/render.jpg', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'image/png',
-      // A minimal valid 1x1 transparent PNG.
-      body: Buffer.from(
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
-        'base64',
-      ),
-    }),
-  );
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
-          characters: [
-            {
-              key: 'us/normal/kiloz',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'Kiloz',
-              class: 'Warrior',
-              render_url: 'https://example.test/render.jpg',
-              build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
-            },
-          ],
-          guilds: [],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.addInitScript(() => {
-    window.localStorage.setItem(
-      'fs.currentCharacter',
-      JSON.stringify({
-        source: 'armory',
-        ref: 'us/normal/kiloz',
-        label: 'Kiloz · Warrior',
-        classSlug: 'warrior',
-        savedAt: new Date().toISOString(),
-      }),
-    );
-  });
-  await page.goto('/');
-  const panel = page.getByTestId('home-account-panel');
-  await expect(panel.getByRole('link', { name: 'Sim Kiloz' })).toHaveAttribute(
-    'href',
-    '/sim?source=armory&ref=us%2Fnormal%2Fkiloz',
-  );
-  await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveCount(0);
-  // Once a build exists, "Sim Kiloz" is the primary action and "Plan talents" is the
-  // secondary text row underneath it -- never two look-alike buttons side by side.
-  await expect(panel.getByRole('link', { name: 'Plan talents' })).toHaveAttribute('href', '/planner');
-  const renderImage = panel.getByTestId('home-hero-render');
-  await expect(renderImage).toHaveAttribute('src', 'https://example.test/render.jpg');
-  // `hidden lg:block`: visible once the image data loads on the desktop-width project,
-  // and genuinely hidden (not just untested) below the `lg` breakpoint on mobile.
-  if (testInfo.project.name === 'desktop') {
-    await expect(renderImage).toBeVisible();
-  } else {
-    await expect(renderImage).toBeHidden();
-  }
-});
-
-test('the hero shows a guild line when the character has one, with a verified mark', async ({ page }) => {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
-          characters: [
-            {
-              key: 'us/normal/kiloz',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'Kiloz',
-              class: 'Warrior',
-              guild: { id: 9, name: 'Emerald Dream', verified: true },
-            },
-          ],
-          guilds: [],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.route('**/v1/characters/**', (route) =>
-    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'none' }, request_id: 'r' }, 404)),
-  );
-  await page.addInitScript(() => {
-    window.localStorage.setItem(
-      'fs.currentCharacter',
-      JSON.stringify({
-        source: 'armory',
-        ref: 'us/normal/kiloz',
-        label: 'Kiloz · Warrior',
-        classSlug: 'warrior',
-        savedAt: new Date().toISOString(),
-      }),
-    );
-  });
-  await page.goto('/');
-  const panel = page.getByTestId('home-account-panel');
-  const guildLine = panel.getByTestId('home-hero-guild-line');
-  await expect(guildLine).toContainText('Emerald Dream');
-  await expect(guildLine.getByTestId('home-hero-guild-verified')).toHaveText('Verified');
+  // No build at all: the sync line has nothing honest to say, so it is absent rather than
+  // invented.
+  await expect(panel.getByTestId('home-hero-sync')).toHaveCount(0);
 });
 
 test('the signed-in hero shows a rating figure once one exists, never before', async ({ page }) => {
+  await page.route('**/v1/sims**', (route) => route.fulfill(fulfil(NO_SIMS_PAGE)));
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -296,9 +231,10 @@ test('the signed-in hero shows a rating figure once one exists, never before', a
   await expect(page.getByTestId('home-hero-rating')).toHaveText('Performance rating 1.08');
 });
 
-test('the hub lists the other characters as chips, and a chip makes that character current', async ({
+test('the Switch character panel lists every character, hero first, with a Current marker', async ({
   page,
 }) => {
+  await stubHeroExtras(page);
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -330,21 +266,20 @@ test('the hub lists the other characters as chips, and a chip makes that charact
       }),
     ),
   );
-  await page.route('**/v1/characters/**', (route) =>
-    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'none' }, request_id: 'r' }, 404)),
-  );
   await page.goto('/');
-  const panel = page.getByTestId('home-account-panel');
-  await expect(panel).toBeVisible();
-  // Kiloz is the main character (highest level); Dottzz is the one chip.
-  const chip = panel.getByTestId('home-character-chip');
-  await expect(chip).toHaveCount(1);
-  await expect(chip).toContainText('Dottzz');
-  await chip.click();
-  await expect(panel).toContainText('Dottzz');
-  await expect(panel.getByTestId('home-character-chip')).toContainText('Kiloz');
-  const stored = await page.evaluate(() => window.localStorage.getItem('fs.currentCharacter') ?? '');
-  expect(stored).toContain('us/normal/dottzz');
+  const switchPanel = page.getByTestId('home-switch-character-panel');
+  await expect(switchPanel).toBeVisible();
+  await expect(switchPanel).toContainText('Switch character');
+  await expect(switchPanel.getByRole('link', { name: 'Add one' })).toHaveAttribute(
+    'href',
+    '/account#add-character',
+  );
+  await expect(switchPanel.getByTestId('current-character-bar-switch-current')).toBeVisible();
+  const switchButton = switchPanel.getByTestId('current-character-bar-switch-us/normal/dottzz');
+  await switchButton.click();
+  await expect(page.getByTestId('home-account-panel').getByRole('heading', { level: 1 })).toHaveText(
+    'Dottzz',
+  );
 });
 
 test('a returning signed-in visitor sees the hub from the session snapshot before /v1/me answers', async ({
@@ -370,16 +305,12 @@ test('a returning signed-in visitor sees the hub from the session snapshot befor
     error: null,
     request_id: 'r',
   };
+  await stubHeroExtras(page);
   // The readable half of the session cookie pair is what makes the snapshot trusted.
   await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
-  await page.route('**/v1/characters/**', (route) =>
-    route.fulfill({ status: 404, json: { ok: false, data: null, error: { message: 'none' } } }),
-  );
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(body)));
   await page.goto('/');
   await expect(page.getByTestId('home-account-panel')).toBeVisible();
-  // The data module persists under its own keys (lib/data/query.ts); the session entry is
-  // whichever one holds the account.
   const stored = await page.evaluate(() =>
     Object.keys(window.localStorage)
       .filter((k) => k.startsWith('fs.q.'))
@@ -398,204 +329,4 @@ test('a returning signed-in visitor sees the hub from the session snapshot befor
   await page.goto('/');
   await expect(page.getByTestId('home-account-panel')).toBeVisible({ timeout: 3000 });
   await expect(page.getByTestId('home-signed-out')).toBeHidden();
-});
-
-// The hero's guild card (spec 2026-09-28) replaces the old date strip in this same slot.
-// Its rules live in lib/guild/home-card.ts and are unit-tested there exhaustively; these
-// two e2e cases only prove the island wires that pure function to the real fetches.
-
-test('an officer of an unclaimed guild sees "Claim this guild" on the hero card', async ({
-  page,
-  context,
-}) => {
-  // The card decides signed-in from the session cookie's readable half before its first
-  // paint (Lighthouse's signed-out run must never see its skeleton), so a mocked /v1/me
-  // alone is not enough here.
-  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
-          characters: [],
-          guilds: [
-            {
-              id: 501,
-              region: 'us',
-              ruleset: 'hardcore',
-              name: 'The Last Watch',
-              rank: 'officer',
-              verified: true,
-            },
-          ],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.route('**/v1/guilds/501/home', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          guild: { id: 501, name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
-          claim: { state: 'unclaimed', frozen: false },
-          reports: [],
-          roster: [],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  // The public guild page (the progression figure) is irrelevant to this state's line, but
-  // the card fetches it alongside home regardless -- stub it refused so that fetch settles
-  // without reaching the real network.
-  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) =>
-    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'none' }, request_id: 'r' }, 404)),
-  );
-  await page.goto('/');
-  const card = page.getByTestId('home-guild-card');
-  await card.scrollIntoViewIfNeeded();
-  await expect(card.getByTestId('home-guild-card-name')).toHaveText('The Last Watch');
-  await expect(card).toContainText(
-    'Nobody has claimed The Last Watch yet. Claiming unlocks settings, the invite link and roster approval.',
-  );
-  await expect(card.getByRole('link', { name: 'Claim this guild' })).toHaveAttribute(
-    'href',
-    '/guild/us/hardcore/the-last-watch/claim',
-  );
-});
-
-test('a member sees the stats line with how many logged in, reports this week and bosses down', async ({
-  page,
-  context,
-}) => {
-  // The card decides signed-in from the session cookie's readable half before its first
-  // paint (Lighthouse's signed-out run must never see its skeleton), so a mocked /v1/me
-  // alone is not enough here.
-  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
-          characters: [],
-          guilds: [
-            {
-              id: 502,
-              region: 'us',
-              ruleset: 'normal',
-              name: 'Emerald Dream',
-              rank: 'member',
-              verified: true,
-            },
-          ],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.route('**/v1/guilds/502/home', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          guild: { id: 502, name: 'Emerald Dream', region: 'us', ruleset: 'normal' },
-          claim: { state: 'claimed', frozen: false },
-          reports: [
-            {
-              id: 'r1',
-              title: 'Night one',
-              zone: 'Onyxia',
-              created_at: '2026-09-20T00:00:00Z',
-              fight_count: 5,
-              kill_count: 3,
-            },
-          ],
-          roster: [
-            {
-              character_key: 'us/normal/a',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'A',
-              rank: 'member',
-              verified: true,
-              logged_recently: true,
-              consent: 'roster',
-              may_remove: false,
-            },
-            {
-              character_key: 'us/normal/b',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'B',
-              rank: 'member',
-              verified: true,
-              logged_recently: true,
-              consent: 'roster',
-              may_remove: false,
-            },
-            {
-              character_key: 'us/normal/c',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'C',
-              rank: 'member',
-              verified: true,
-              logged_recently: true,
-              consent: 'roster',
-              may_remove: false,
-            },
-            {
-              character_key: 'us/normal/d',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'D',
-              rank: 'member',
-              verified: true,
-              logged_recently: false,
-              consent: 'roster',
-              may_remove: false,
-            },
-          ],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.route('**/v1/guilds/us/normal/emerald-dream', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          guild: { id: 502, name: 'Emerald Dream', region: 'us', ruleset: 'normal' },
-          progression: [
-            { encounter: 'Skolex', encounter_id: 1, difficulty: 1, kills: 2, pull_count: 5 },
-            { encounter: 'Warden Kelthas', encounter_id: 2, difficulty: 1, kills: 0, pull_count: 3 },
-          ],
-          roster_best: [],
-          reports: [],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.goto('/');
-  const card = page.getByTestId('home-guild-card');
-  await card.scrollIntoViewIfNeeded();
-  await expect(card.getByTestId('home-guild-card-name')).toHaveText('Emerald Dream');
-  await expect(card.getByTestId('home-guild-card-line')).toHaveText(
-    '3 logged in the last day · 1 reports this week · 1/2 bosses',
-  );
-  await expect(card.getByRole('link', { name: 'View guild' })).toHaveAttribute(
-    'href',
-    '/guild/us/normal/emerald-dream',
-  );
 });
