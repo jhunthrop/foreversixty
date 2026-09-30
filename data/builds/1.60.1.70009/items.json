@@ -79064,7 +79064,7 @@
     "required_level_source": null,
     "stats_source": null,
     "client_unconfirmed": false,
-    "superseded_by": null
+    "superseded_by": 256057
   },
   {
     "id": 6072,
@@ -266447,7 +266447,7 @@
     "required_level_source": null,
     "stats_source": null,
     "client_unconfirmed": false,
-    "superseded_by": null
+    "superseded_by": 228696
   },
   {
     "id": 18489,
