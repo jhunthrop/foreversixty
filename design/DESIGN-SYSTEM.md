@@ -45,7 +45,7 @@ Derived from the approved "Cinematic" direction and the live-game homepage mocku
 | `--ember` | `#d66e28` | Sky horizon glow only |
 | `--night` | `#26405c` | Sky zenith only |
 
-Gold text is a gradient (`#fbe7a1` → `#e5b955` → `#a8762a`, top to bottom) clipped to text. Use it for the wordmark and section titles only.
+Gold text is a gradient (`#fbe7a1` → `#e5b955` → `#a8762a`, top to bottom) clipped to text. Use it for section titles only; the wordmark is flat `--text-strong`.
 
 ### Source pills
 
@@ -105,6 +105,10 @@ Self-host all three faces (Google Fonts license permits it) so no third-party re
 - **Account button**: the one filled gold button (44px, `#f0cc6c` → `#c99a3a`, dark text, 1px `--gold-deep` inset ring, soft gold glow). Used only for "Sign in with Battle.net" on the signed-out home; never for a tool or a link.
 - **Character row**: class crest (36px circle with class ring), name in class colour (Cinzel 14px), muted descriptor, and on the right either a mono stat ("2 upgrades") or a progress bar. The signed-in home's "Switch character" panel uses the stat form.
 - **Upgrade row**: slot label, the worn item, an arrow, the best-in-slot item, and a mono gain in green; every item is icon (36px, 1px quality border), name in quality colour, and one source line under it. The table carries a label header row (Slot / You wear / Best in slot / Gain).
+
+## Logo
+
+The mark is the LX seal (`design/logo`, built by `build.py` from the real Cinzel outlines): the unit-frame level badge with sixty as the Roman numeral, a dark disc, a gold-gradient ring with a dotted inner track, and LX in Cinzel 800 gold. Header: seal at 34px beside the flat wordmark (Cinzel 700, 0.10em tracking, `--text-strong`); footer 22px; the favicon and the addon icon are the seal alone. Mono versions ink the whole seal in one colour for light or dark grounds. Never recolour, outline, stretch or add the gradient back to the wordmark.
 
 ## Icons
 
