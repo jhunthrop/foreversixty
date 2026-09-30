@@ -30,26 +30,54 @@
 // This file re-exports the base config's ci.collect/ci.assert/ci.upload wholesale -- the
 // assertMatrix and its budgets are never duplicated, so changing a budget still means
 // changing it in exactly one place: lighthouserc.json.
+//
+// LHCI_PUSH_SHARD (1-3, set by .github/workflows/web.yml's `lhci` matrix) narrows PUSH_URLS
+// further, to one of PUSH_GROUPS below, so the three shards run in parallel instead of one
+// job auditing all 7: same numberOfRuns, same assertions, no URL or assertion dropped --
+// PUSH_GROUPS.flat() is exactly PUSH_URLS. Unset (a plain `npm run lhci:push`) audits all 7,
+// same as before sharding.
 // @lhci/cli's own config loader require()s `.js`/`.cjs` config files (web/README.md's
 // Lighthouse budgets section); this file has to be requireable the same way, so it stays
 // CommonJS rather than the ESM `import` the rest of web/ uses.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const base = require('./lighthouserc.json');
 
-const PUSH_URLS = [
-  'http://localhost/index.html', // index pattern
-  'http://localhost/guides.html', // default (catch-all) pattern
-  'http://localhost/bis/hunter/marksmanship.html', // bis/<class>/<spec> pattern
-  'http://localhost/planner.html', // planner|logs|setup pattern
-  'http://localhost/reports/fixture2abcd.html', // reports/* pattern
-  'http://localhost/sim.html', // sim(/specs|/gear|/talents|/drops|/weights)? pattern
-  'http://localhost/sim/simfixtureab.html', // sim/<12-char fixture slug> pattern
+// Grouped, not a flat list, so a shard is "one of these arrays" rather than a slice index
+// that silently drifts if a URL is added or removed above it. Balanced 3/2/2 by page count,
+// the closest three-way split of 7: each group's total Lighthouse cost (numberOfRuns x URLs)
+// is otherwise about the same, since every URL here carries the same numberOfRuns: 3.
+const PUSH_GROUPS = [
+  [
+    'http://localhost/index.html', // index pattern
+    'http://localhost/guides.html', // default (catch-all) pattern
+    'http://localhost/bis/hunter/marksmanship.html', // bis/<class>/<spec> pattern
+  ],
+  [
+    'http://localhost/planner.html', // planner|logs|setup pattern
+    'http://localhost/reports/fixture2abcd.html', // reports/* pattern
+  ],
+  [
+    'http://localhost/sim.html', // sim(/specs|/gear|/talents|/drops|/weights)? pattern
+    'http://localhost/sim/simfixtureab.html', // sim/<12-char fixture slug> pattern
+  ],
 ];
+
+const PUSH_URLS = PUSH_GROUPS.flat();
+
+function urlsForShard(shard) {
+  if (shard === undefined) return PUSH_URLS;
+  const index = Number(shard) - 1;
+  const group = PUSH_GROUPS[index];
+  if (group === undefined) {
+    throw new Error(`LHCI_PUSH_SHARD must be 1-${PUSH_GROUPS.length}; got '${shard}'`);
+  }
+  return group;
+}
 
 module.exports = {
   ...base,
   ci: {
     ...base.ci,
-    collect: { ...base.ci.collect, url: PUSH_URLS },
+    collect: { ...base.ci.collect, url: urlsForShard(process.env.LHCI_PUSH_SHARD) },
   },
 };
