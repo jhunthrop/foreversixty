@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (human, 00000000000000000-353000000000000000-000000000000000000)
 
-Set DPS (verified): 32.3. Weights run: 1.5s. Verify run: 1.5s. 542 eligible items had no known source.
+Set DPS (verified): 32.3. Weights run: 1.1s. Verify run: 1.2s. 542 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.034, strength=2.084 ± 0.042, agility=0.085 ± 0.015, crit=2.317 ± 0.066, hit=1.130 ± 0.086, melee_haste=1.686 ± 0.042
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 542, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-353211005010000000-000000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 1.6s. Verify run: 1.7s. 1014 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 1.2s. Verify run: 1.3s. 1014 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.160, strength=1.676 ± 0.208, agility=not significant (0.186 ± 0.061), crit=3.475 ± 0.238, hit=1.401 ± 0.221, melee_haste=1.775 ± 0.290
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 1014, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 40 (human, 00000000000000000-353211005050010050-000000000000000000)
 
-Set DPS (verified): 88.1. Weights run: 1.9s. Verify run: 2.1s. 1460 eligible items had no known source.
+Set DPS (verified): 88.1. Weights run: 1.4s. Verify run: 1.6s. 1460 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.203, strength=1.289 ± 0.264, agility=not significant (0.291 ± 0.084), crit=4.325 ± 0.374, hit=1.889 ± 0.312, melee_haste=2.652 ± 0.374
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 1460, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (human, 35100000000000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 94.0. Weights run: 2.1s. Verify run: 1.9s. 1900 eligible items had no known source.
+Set DPS (verified): 94.0. Weights run: 1.5s. Verify run: 1.4s. 1900 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.217, strength=1.796 ± 0.296, agility=not significant (0.302 ± 0.101), crit=4.820 ± 0.391, hit=2.018 ± 0.331, melee_haste=2.822 ± 0.403
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 1900, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (human, 35311103002000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 269.7. Weights run: 2.1s. Verify run: 2.3s. 2773 eligible items had no known source.
+Set DPS (verified): 269.7. Weights run: 1.5s. Verify run: 1.7s. 2736 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.427), strength=not significant (2.344 ± 0.596), agility=not significant (0.450 ± 0.239), crit=13.060 ± 0.873, hit=not significant (0.000 ± 0.000), melee_haste=6.782 ± 0.884
 
@@ -136,7 +136,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | 206.8 | yes | Onyxia Tooth Pendant (18404, -1.20 DPS) [quest]; Choker of the Shifting Sands (21505, -9.52 DPS) [quest]; Pendant of the Shifting Sands (21506, -10.05 DPS) [quest] |
 | shoulder | Champion's Plate Shoulders (23243) (or Lieutenant Commander's Plate Shoulders (23315), Champion's Plate Shoulders (227042), Lieutenant Commander's Plate Shoulders (227045)) | Lady Palanseer [vendor] | 222.7 | yes | Lieutenant Commander's Plate Shoulders (23315, +0.00 DPS, sim-verified) [vendor]; Champion's Plate Shoulders (227042, +0.00 DPS) [pvp]; Lieutenant Commander's Plate Shoulders (227045, +0.00 DPS) [pvp] |
 | back | Drape of Unyielding Strength (21394) | Drape of Unyielding Strength [quest] | 39.2 | yes | Cloak of the Fallen God (21710, -0.10 DPS) [quest]; Cloak of the Honor Guard (20073, -0.17 DPS) [rep]; Chromatic Cloak (18509, -7.91 DPS, sim-verified) [crafted] |
-| chest | Bloodsoul Breastplate (19690) | Blacksmithing [crafted] | 369.7 | yes | Stormshroud Armor (15056, -1.01 DPS, sim-verified) [crafted]; Savage Gladiator Chain (11726, -2.98 DPS) [dungeon]; Obsidian Mail Tunic (22191, -6.40 DPS) [crafted] |
+| chest | Bloodsoul Breastplate (19690) | Blacksmithing [crafted] | 369.7 | yes | Stormshroud Armor (15056, -1.01 DPS, sim-verified) [crafted]; Savage Gladiator Chain (11726, -2.98 DPS) [dungeon]; Timbermaw Tunic (252484, -5.86 DPS) [crafted] |
 | wrist | Deeprock Bracers (21184) | Stalwart's Battlegear [quest] | 49.0 | yes | Berserker Bracers (19578, -0.05 DPS) [rep]; Marshal's Plate Bracers (16481, -0.35 DPS) [pvp]; Vambraces of the Sadist (13400, -2.61 DPS, sim-verified) [dungeon] |
 | hands | Marshal's Plate Gauntlets (16484) | Captain Dirgehammer [vendor] | 229.7 | yes | General's Plate Gauntlets (16548, +0.00 DPS, sim-verified) [vendor]; General's Plate Gauntlets (231532, +0.00 DPS) [pvp]; Marshal's Plate Gauntlets (231541, +0.00 DPS) [pvp] |
 | waist | Zandalar Vindicator's Belt (19823) | Paragons of Power: The Vindicator's Belt [quest] | 241.4 | yes | Highlander's Plate Girdle (20041, -0.29 DPS, sim-verified) [rep]; Highlander's Lamellar Girdle (20042, -1.35 DPS) [rep]; Highlander's Chain Girdle (20043, -1.42 DPS) [rep] |
@@ -152,13 +152,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Champion's Plate Shoulders; back: Drape of Unyielding Strength; chest: Bloodsoul Breastplate; wrist: Deeprock Bracers; hands: Marshal's Plate Gauntlets; waist: Zandalar Vindicator's Belt; legs: Marshal's Plate Legguards; feet: Conqueror's Greaves; finger1: Signet of Unyielding Strength; finger2: Don Julio's Band; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: High Warlord's Quickblade; off_hand: Grand Marshal's Swiftblade; ranged: The Purifier
 
-No-known-source sample (15 of 2773, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2736, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 
 ## Horde
 
 ### Band 20 (troll, 00000000000000000-353000000000000000-000000000000000000)
 
-Set DPS (verified): 29.0. Weights run: 1.5s. Verify run: 1.5s. 538 eligible items had no known source.
+Set DPS (verified): 29.0. Weights run: 1.1s. Verify run: 1.1s. 538 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.034, strength=2.084 ± 0.042, agility=0.085 ± 0.015, crit=2.317 ± 0.066, hit=1.130 ± 0.086, melee_haste=1.686 ± 0.042
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 538, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-353211005010000000-000000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 1.6s. Verify run: 1.8s. 1012 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 1.2s. Verify run: 1.4s. 1012 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.160, strength=1.676 ± 0.208, agility=not significant (0.186 ± 0.061), crit=3.475 ± 0.238, hit=1.401 ± 0.221, melee_haste=1.775 ± 0.290
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 1012, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 40 (troll, 00000000000000000-353211005050010050-000000000000000000)
 
-Set DPS (verified): 83.5. Weights run: 1.9s. Verify run: 2.0s. 1457 eligible items had no known source.
+Set DPS (verified): 83.5. Weights run: 1.4s. Verify run: 1.5s. 1457 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.203, strength=1.289 ± 0.264, agility=not significant (0.291 ± 0.084), crit=4.325 ± 0.374, hit=1.889 ± 0.312, melee_haste=2.652 ± 0.374
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 1457, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (troll, 35100000000000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 99.6. Weights run: 2.1s. Verify run: 2.0s. 1897 eligible items had no known source.
+Set DPS (verified): 99.6. Weights run: 1.5s. Verify run: 1.5s. 1897 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.217, strength=1.796 ± 0.296, agility=not significant (0.302 ± 0.101), crit=4.820 ± 0.391, hit=2.018 ± 0.331, melee_haste=2.822 ± 0.403
 
@@ -278,7 +278,7 @@ No-known-source sample (15 of 1897, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (troll, 35311103002000000-353211005050010051-000000000000000000)
 
-Set DPS (verified): 248.1. Weights run: 2.1s. Verify run: 2.4s. 2770 eligible items had no known source.
+Set DPS (verified): 248.1. Weights run: 1.5s. Verify run: 1.8s. 2733 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.427), strength=not significant (2.344 ± 0.596), agility=not significant (0.450 ± 0.239), crit=13.060 ± 0.873, hit=not significant (0.000 ± 0.000), melee_haste=6.782 ± 0.884
 
@@ -288,7 +288,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | 206.8 | yes | Onyxia Tooth Pendant (18404, -1.20 DPS) [quest]; Choker of the Shifting Sands (21505, -9.52 DPS) [quest]; Pendant of the Shifting Sands (21506, -10.05 DPS) [quest] |
 | shoulder | Champion's Plate Shoulders (23243) (or Lieutenant Commander's Plate Shoulders (23315), Champion's Plate Shoulders (227042), Lieutenant Commander's Plate Shoulders (227045)) | Lady Palanseer [vendor] | 222.7 | yes | Lieutenant Commander's Plate Shoulders (23315, +0.00 DPS, sim-verified) [vendor]; Champion's Plate Shoulders (227042, +0.00 DPS) [pvp]; Lieutenant Commander's Plate Shoulders (227045, +0.00 DPS) [pvp] |
 | back | Drape of Unyielding Strength (21394) | Drape of Unyielding Strength [quest] | 39.2 | yes | Cloak of the Fallen God (21710, -0.10 DPS) [quest]; Deathguard's Cloak (20068, -0.17 DPS) [rep]; Chromatic Cloak (18509, -8.64 DPS, sim-verified) [crafted] |
-| chest | Bloodsoul Breastplate (19690) | Blacksmithing [crafted] | 369.7 | yes | Stormshroud Armor (15056, -1.34 DPS, sim-verified) [crafted]; Savage Gladiator Chain (11726, -2.98 DPS) [dungeon]; Obsidian Mail Tunic (22191, -6.40 DPS) [crafted] |
+| chest | Bloodsoul Breastplate (19690) | Blacksmithing [crafted] | 369.7 | yes | Stormshroud Armor (15056, -1.34 DPS, sim-verified) [crafted]; Savage Gladiator Chain (11726, -2.98 DPS) [dungeon]; Timbermaw Tunic (252484, -5.86 DPS) [crafted] |
 | wrist | Vambraces of the Sadist (13400) | Stratholme: Timmy the Cruel [dungeon] | 199.2 | yes | Deeprock Bracers (21184, +2.13 DPS, sim-verified) [quest]; Berserker Bracers (19578, -8.72 DPS) [rep]; Marshal's Plate Bracers (16481, -9.02 DPS) [pvp] |
 | hands | Marshal's Plate Gauntlets (16484) | Captain Dirgehammer [vendor] | 229.7 | yes | General's Plate Gauntlets (16548, +0.00 DPS, sim-verified) [vendor]; General's Plate Gauntlets (231532, +0.00 DPS) [pvp]; Marshal's Plate Gauntlets (231541, +0.00 DPS) [pvp] |
 | waist | Zandalar Vindicator's Belt (19823) | Paragons of Power: The Vindicator's Belt [quest] | 241.4 | yes | Defiler's Plate Girdle (20204, -1.34 DPS, sim-verified) [rep]; Defiler's Chain Girdle (20150, -1.42 DPS) [rep]; Defiler's Leather Girdle (20190, -1.42 DPS) [rep] |
@@ -304,5 +304,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Champion's Plate Shoulders; back: Drape of Unyielding Strength; chest: Bloodsoul Breastplate; wrist: Vambraces of the Sadist; hands: Marshal's Plate Gauntlets; waist: Zandalar Vindicator's Belt; legs: Marshal's Plate Legguards; feet: Marshal's Plate Boots; finger1: Signet of Unyielding Strength; finger2: Don Julio's Band; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Quickblade; off_hand: Grand Marshal's Swiftblade; ranged: The Purifier
 
-No-known-source sample (15 of 2770, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2733, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 

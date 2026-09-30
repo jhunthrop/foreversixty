@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (gnome, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 43.6. Weights run: 1.5s. Verify run: 1.2s. 253 eligible items had no known source.
+Set DPS (verified): 43.6. Weights run: 1.1s. Verify run: 0.8s. 253 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 4.526), intellect=not significant (-6.373 ± 5.311), crit=26.443 ± 1.099, hit=65.807 ± 2.970, spell_haste=not significant (14.513 ± 4.528), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-7.626 ± 4.527), fire_power=8.686 ± 0.016
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 253, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 66.9. Weights run: 1.5s. Verify run: 1.3s. 476 eligible items had no known source.
+Set DPS (verified): 66.9. Weights run: 1.1s. Verify run: 1.0s. 476 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.132, intellect=not significant (-0.254 ± 0.146), crit=1.140 ± 0.054, hit=2.044 ± 0.097, spell_haste=not significant (0.104 ± 0.127), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.768 ± 0.132, fire_power=0.234 ± 0.000
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 476, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 00000000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 114.5. Weights run: 1.4s. Verify run: 1.1s. 643 eligible items had no known source.
+Set DPS (verified): 114.5. Weights run: 1.1s. Verify run: 0.9s. 643 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.258), intellect=not significant (0.900 ± 0.309), crit=1.426 ± 0.062, hit=2.298 ± 0.162, spell_haste=not significant (0.621 ± 0.236), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.451 ± 0.258), fire_power=0.545 ± 0.002
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 643, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 25300000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 143.9. Weights run: 1.4s. Verify run: 1.2s. 804 eligible items had no known source.
+Set DPS (verified): 143.9. Weights run: 1.0s. Verify run: 0.9s. 804 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.389), intellect=not significant (1.144 ± 0.464), crit=1.848 ± 0.086, hit=2.789 ± 0.228, spell_haste=not significant (0.636 ± 0.343), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.417 ± 0.389), fire_power=0.581 ± 0.002
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 804, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 297.9. Weights run: 1.4s. Verify run: 1.1s. 1239 eligible items had no known source.
+Set DPS (verified): 297.9. Weights run: 1.0s. Verify run: 0.8s. 1231 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.964), intellect=not significant (1.610 ± 0.952), crit=5.970 ± 0.274, hit=10.408 ± 0.660, spell_haste=not significant (1.990 ± 0.697), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-0.383 ± 0.964), fire_power=1.387 ± 0.004
 
@@ -152,13 +152,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Plagueheart Circlet; neck: Onyxia Tooth Pendant; shoulder: Plagueheart Shoulderpads; back: Earthweave Cloak; chest: Plagueheart Robe; wrist: Rockfury Bracers; hands: Gloves of Spell Mastery; waist: Plagueheart Belt; legs: Plagueheart Leggings; feet: Bloodvine Boots; finger1: Ring of Unspoken Names; finger2: Don Julio's Band; trinket1: Frozen Heart of the Mountain; main_hand: High Warlord's War Staff; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1239, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1231, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ## Horde
 
 ### Band 20 (troll, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 41.2. Weights run: 1.5s. Verify run: 1.2s. 250 eligible items had no known source.
+Set DPS (verified): 41.2. Weights run: 1.1s. Verify run: 0.9s. 250 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 4.526), intellect=not significant (-6.373 ± 5.311), crit=26.443 ± 1.099, hit=65.807 ± 2.970, spell_haste=not significant (14.513 ± 4.528), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-7.626 ± 4.527), fire_power=8.686 ± 0.016
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 250, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 64.5. Weights run: 1.5s. Verify run: 1.3s. 474 eligible items had no known source.
+Set DPS (verified): 64.5. Weights run: 1.1s. Verify run: 0.9s. 474 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.132, intellect=not significant (-0.254 ± 0.146), crit=1.140 ± 0.054, hit=2.044 ± 0.097, spell_haste=not significant (0.104 ± 0.127), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.768 ± 0.132, fire_power=0.234 ± 0.000
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 474, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 107.6. Weights run: 1.4s. Verify run: 1.1s. 640 eligible items had no known source.
+Set DPS (verified): 107.6. Weights run: 1.1s. Verify run: 0.9s. 640 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.258), intellect=not significant (0.900 ± 0.309), crit=1.426 ± 0.062, hit=2.298 ± 0.162, spell_haste=not significant (0.621 ± 0.236), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.451 ± 0.258), fire_power=0.545 ± 0.002
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 640, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 25300000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 140.1. Weights run: 1.4s. Verify run: 1.2s. 801 eligible items had no known source.
+Set DPS (verified): 140.1. Weights run: 1.0s. Verify run: 0.9s. 801 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.389), intellect=not significant (1.144 ± 0.464), crit=1.848 ± 0.086, hit=2.789 ± 0.228, spell_haste=not significant (0.636 ± 0.343), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.417 ± 0.389), fire_power=0.581 ± 0.002
 
@@ -278,7 +278,7 @@ No-known-source sample (15 of 801, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 295.4. Weights run: 1.4s. Verify run: 1.1s. 1236 eligible items had no known source.
+Set DPS (verified): 295.4. Weights run: 1.0s. Verify run: 0.8s. 1228 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.964), intellect=not significant (1.610 ± 0.952), crit=5.970 ± 0.274, hit=10.408 ± 0.660, spell_haste=not significant (1.990 ± 0.697), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-0.383 ± 0.964), fire_power=1.387 ± 0.004
 
@@ -304,5 +304,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Plagueheart Circlet; neck: Onyxia Tooth Pendant; shoulder: Plagueheart Shoulderpads; back: Earthweave Cloak; chest: Plagueheart Robe; wrist: Rockfury Bracers; hands: Gloves of Spell Mastery; waist: Plagueheart Belt; legs: Plagueheart Leggings; feet: Bloodvine Boots; finger1: Ring of Unspoken Names; finger2: Don Julio's Band; trinket2: Frozen Heart of the Mountain; main_hand: High Warlord's War Staff; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1236, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1228, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers
 

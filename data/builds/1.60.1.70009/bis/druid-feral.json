@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T23:59:32Z",
+  "generated_at": "2026-09-30T00:35:36Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -611,8 +611,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.8228535319999999,
-      "verify_run_seconds": 1.393608891,
+      "weights_run_seconds": 1.33579225,
+      "verify_run_seconds": 1.092747841,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1288,8 +1288,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.8228535319999999,
-      "verify_run_seconds": 1.409933535,
+      "weights_run_seconds": 1.33579225,
+      "verify_run_seconds": 1.040720331,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2035,8 +2035,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.076787209,
-      "verify_run_seconds": 1.9763166079999999,
+      "weights_run_seconds": 1.492750713,
+      "verify_run_seconds": 1.505252751,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2782,8 +2782,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.076787209,
-      "verify_run_seconds": 1.95448753,
+      "weights_run_seconds": 1.492750713,
+      "verify_run_seconds": 1.447101103,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3529,8 +3529,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Primitive Fishing Pole"
       ],
-      "weights_run_seconds": 2.162990451,
-      "verify_run_seconds": 2.020648048,
+      "weights_run_seconds": 1.657809836,
+      "verify_run_seconds": 1.525291315,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4276,8 +4276,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 2.162990451,
-      "verify_run_seconds": 1.8511754040000001,
+      "weights_run_seconds": 1.657809836,
+      "verify_run_seconds": 1.377517292,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5039,8 +5039,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.194368089,
-      "verify_run_seconds": 1.924232705,
+      "weights_run_seconds": 1.638396118,
+      "verify_run_seconds": 1.452999246,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -5806,8 +5806,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.194368089,
-      "verify_run_seconds": 2.048391781,
+      "weights_run_seconds": 1.638396118,
+      "verify_run_seconds": 1.522402872,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -5948,20 +5948,20 @@
               "verified": true
             },
             {
-              "item_id": 16451,
-              "item_name": "Field Marshal's Dragonhide Helmet",
+              "item_id": 16550,
+              "item_name": "Warlord's Dragonhide Helmet",
               "score": 271.92744110129837,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source": "Lady Palanseer",
               "score_delta": -126.16411220517108,
               "dps_delta": -6.844149413796593
             },
             {
-              "item_id": 16550,
-              "item_name": "Warlord's Dragonhide Helmet",
+              "item_id": 16451,
+              "item_name": "Field Marshal's Dragonhide Helmet",
               "score": 271.9274411012983,
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "score_delta": -126.16411220517114,
               "dps_delta": -6.844149413796596
             }
@@ -6093,31 +6093,31 @@
         },
         {
           "slot": "chest",
-          "item_id": 16452,
-          "item_name": "Field Marshal's Dragonhide Breastplate",
-          "source": "Captain Dirgehammer",
-          "source_kind": "vendor",
-          "score": 274.72700308865234,
+          "item_id": 252484,
+          "item_name": "Timbermaw Tunic",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 300.327353498772,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 166.0 vs 163.3 set DPS",
+          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 167.4 vs 163.3 set DPS",
           "alternatives": [
+            {
+              "item_id": 16452,
+              "item_name": "Field Marshal's Dragonhide Breastplate",
+              "score": 274.72700308865234,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "score_delta": -25.600350410119688,
+              "dps_delta": -1.3887675361078362
+            },
             {
               "item_id": 16549,
               "item_name": "Warlord's Dragonhide Hauberk",
               "score": 274.72700308865234,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": 0,
-              "dps_delta": 0
-            },
-            {
-              "item_id": 227176,
-              "item_name": "Knight-Captain's Dragonhide Chestpiece",
-              "score": 249.20700308864966,
-              "source_kind": "pvp",
-              "source": "Rank 12",
-              "score_delta": -25.520000000002682,
-              "dps_delta": -1.3844086879164716
+              "score_delta": -25.600350410119688,
+              "dps_delta": -1.3887675361078362
             },
             {
               "item_id": 15056,
@@ -6125,8 +6125,8 @@
               "score": 384.171553306468,
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "score_delta": 109.44455021781567,
-              "dps_delta": -2.686608372165125,
+              "score_delta": 83.84419980769599,
+              "dps_delta": -4.067486826699735,
               "verified": true
             }
           ]
@@ -6533,8 +6533,8 @@
           "verified": false
         }
       ],
-      "set_dps": 174.41385254535538,
-      "no_source_count": 1941,
+      "set_dps": 175.7669284107215,
+      "no_source_count": 1913,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6557,7 +6557,7 @@
         "neck: Blazefury Medallion",
         "shoulder: Lieutenant Commander's Dragonhide Shoulders",
         "back: Cloak of the Fallen God",
-        "chest: Field Marshal's Dragonhide Breastplate",
+        "chest: Timbermaw Tunic",
         "wrist: Forest Stalker's Bracers",
         "hands: Devilsaur Gauntlets",
         "waist: Highlander's Leather Girdle",
@@ -6569,56 +6569,56 @@
         "trinket2: Talisman of Arathor",
         "main_hand: High Warlord's Pulverizer"
       ],
-      "weights_run_seconds": 2.262535031,
-      "verify_run_seconds": 2.087803413,
+      "weights_run_seconds": 1.6856128780000001,
+      "verify_run_seconds": 1.57465703,
       "coverage": {
         "back": {
           "eligible": 369,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 499,
-          "sourced": 318
+          "sourced": 322
         },
         "feet": {
           "eligible": 390,
-          "sourced": 245
+          "sourced": 247
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 406,
-          "sourced": 259
+          "sourced": 260
         },
         "head": {
           "eligible": 311,
-          "sourced": 185
+          "sourced": 191
         },
         "legs": {
           "eligible": 409,
-          "sourced": 252
+          "sourced": 257
         },
         "main_hand": {
           "eligible": 633,
-          "sourced": 395
+          "sourced": 399
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 131,
-          "sourced": 70
+          "sourced": 71
         },
         "shoulder": {
           "eligible": 304,
-          "sourced": 173
+          "sourced": 174
         },
         "trinket1": {
           "eligible": 80,
@@ -6856,31 +6856,31 @@
         },
         {
           "slot": "chest",
-          "item_id": 16452,
-          "item_name": "Field Marshal's Dragonhide Breastplate",
-          "source": "Captain Dirgehammer",
-          "source_kind": "vendor",
-          "score": 274.72700308865234,
+          "item_id": 252484,
+          "item_name": "Timbermaw Tunic",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 300.327353498772,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 169.6 vs 166.9 set DPS",
+          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 171.0 vs 166.9 set DPS",
           "alternatives": [
+            {
+              "item_id": 16452,
+              "item_name": "Field Marshal's Dragonhide Breastplate",
+              "score": 274.72700308865234,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "score_delta": -25.600350410119688,
+              "dps_delta": -1.3887675361078362
+            },
             {
               "item_id": 16549,
               "item_name": "Warlord's Dragonhide Hauberk",
               "score": 274.72700308865234,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": 0,
-              "dps_delta": 0
-            },
-            {
-              "item_id": 227176,
-              "item_name": "Knight-Captain's Dragonhide Chestpiece",
-              "score": 249.20700308864966,
-              "source_kind": "pvp",
-              "source": "Rank 12",
-              "score_delta": -25.520000000002682,
-              "dps_delta": -1.3844086879164716
+              "score_delta": -25.600350410119688,
+              "dps_delta": -1.3887675361078362
             },
             {
               "item_id": 15056,
@@ -6888,8 +6888,8 @@
               "score": 384.171553306468,
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "score_delta": 109.44455021781567,
-              "dps_delta": -2.731149597424178,
+              "score_delta": 83.84419980769599,
+              "dps_delta": -4.107172911071473,
               "verified": true
             }
           ]
@@ -7296,8 +7296,8 @@
           "verified": false
         }
       ],
-      "set_dps": 178.0164337054338,
-      "no_source_count": 1940,
+      "set_dps": 179.3898282635453,
+      "no_source_count": 1912,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7320,7 +7320,7 @@
         "neck: Blazefury Medallion",
         "shoulder: Lieutenant Commander's Dragonhide Shoulders",
         "back: Cloak of the Fallen God",
-        "chest: Field Marshal's Dragonhide Breastplate",
+        "chest: Timbermaw Tunic",
         "wrist: Forest Stalker's Bracers",
         "hands: Devilsaur Gauntlets",
         "waist: Defiler's Leather Girdle",
@@ -7331,56 +7331,56 @@
         "trinket2: Onyxia Blood Talisman",
         "main_hand: High Warlord's Pulverizer"
       ],
-      "weights_run_seconds": 2.262535031,
-      "verify_run_seconds": 2.097915717,
+      "weights_run_seconds": 1.6856128780000001,
+      "verify_run_seconds": 1.607555243,
       "coverage": {
         "back": {
           "eligible": 374,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 496,
-          "sourced": 316
+          "sourced": 320
         },
         "feet": {
           "eligible": 394,
-          "sourced": 249
+          "sourced": 251
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 406,
-          "sourced": 258
+          "sourced": 259
         },
         "head": {
           "eligible": 312,
-          "sourced": 186
+          "sourced": 192
         },
         "legs": {
           "eligible": 404,
-          "sourced": 245
+          "sourced": 250
         },
         "main_hand": {
           "eligible": 638,
-          "sourced": 401
+          "sourced": 405
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 70
+          "sourced": 71
         },
         "shoulder": {
           "eligible": 300,
-          "sourced": 170
+          "sourced": 171
         },
         "trinket1": {
           "eligible": 80,

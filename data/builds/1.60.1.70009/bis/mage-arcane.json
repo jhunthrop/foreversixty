@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:01:44Z",
+  "generated_at": "2026-09-30T00:37:13Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -591,8 +591,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.712825075,
-      "verify_run_seconds": 0.641574894,
+      "weights_run_seconds": 0.524755551,
+      "verify_run_seconds": 0.48703469,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1281,8 +1281,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.712825075,
-      "verify_run_seconds": 0.632000762,
+      "weights_run_seconds": 0.524755551,
+      "verify_run_seconds": 0.488843623,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2086,8 +2086,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 0.720515836,
-      "verify_run_seconds": 0.72725962,
+      "weights_run_seconds": 0.551866595,
+      "verify_run_seconds": 0.539203457,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2893,8 +2893,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 0.720515836,
-      "verify_run_seconds": 0.700238496,
+      "weights_run_seconds": 0.551866595,
+      "verify_run_seconds": 0.575112761,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3690,8 +3690,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.884167406,
-      "verify_run_seconds": 0.760722269,
+      "weights_run_seconds": 0.698505639,
+      "verify_run_seconds": 0.569279048,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4474,8 +4474,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.884167406,
-      "verify_run_seconds": 0.790001649,
+      "weights_run_seconds": 0.698505639,
+      "verify_run_seconds": 0.603705167,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4987,8 +4987,14 @@
           "item_name": "Sergeant Major's Dreadweave Boots",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 65.527726276878,
+          "score": 65.52772627687798,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 220909,
+              "item_name": "First Sergeant's Dreadweave Boots"
+            }
+          ],
           "alternatives": [
             {
               "item_id": 220909,
@@ -4996,7 +5002,7 @@
               "score": 65.52772627687798,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -1.4210854715202004e-14,
+              "score_delta": 0,
               "dps_delta": 0,
               "verified": true
             },
@@ -5006,8 +5012,8 @@
               "score": 24,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -41.527726276878,
-              "dps_delta": -14.548842157648373
+              "score_delta": -41.527726276877985,
+              "dps_delta": -14.548842157648368
             },
             {
               "item_id": 254107,
@@ -5015,8 +5021,8 @@
               "score": 11.956563713199921,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -53.57116256367808,
-              "dps_delta": -18.768145001346507
+              "score_delta": -53.571162563678065,
+              "dps_delta": -18.768145001346504
             }
           ]
         },
@@ -5291,8 +5297,8 @@
         "main_hand: Kindling Stave",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 0.882463563,
-      "verify_run_seconds": 0.787034501,
+      "weights_run_seconds": 0.676504934,
+      "verify_run_seconds": 0.574762546,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -5794,26 +5800,20 @@
         },
         {
           "slot": "feet",
-          "item_id": 220891,
-          "item_name": "Sergeant Major's Dreadweave Boots",
-          "source": "Captain Dirgehammer",
+          "item_id": 220909,
+          "item_name": "First Sergeant's Dreadweave Boots",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 65.52772627687798,
+          "score": 65.527726276878,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220909,
-              "item_name": "First Sergeant's Dreadweave Boots"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 220909,
-              "item_name": "First Sergeant's Dreadweave Boots",
+              "item_id": 220891,
+              "item_name": "Sergeant Major's Dreadweave Boots",
               "score": 65.52772627687798,
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "score_delta": 0,
+              "source": "Captain Dirgehammer",
+              "score_delta": -1.4210854715202004e-14,
               "dps_delta": 0,
               "verified": true
             },
@@ -5823,8 +5823,8 @@
               "score": 24,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -41.527726276877985,
-              "dps_delta": -14.548842157648368
+              "score_delta": -41.527726276878,
+              "dps_delta": -14.548842157648373
             },
             {
               "item_id": 254107,
@@ -5832,8 +5832,8 @@
               "score": 11.956563713199921,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -53.571162563678065,
-              "dps_delta": -18.768145001346504
+              "score_delta": -53.57116256367808,
+              "dps_delta": -18.768145001346507
             }
           ]
         },
@@ -6102,7 +6102,7 @@
         "chest: Knight's Dreadweave Vest",
         "waist: Defiler's Cloth Girdle",
         "legs: Knight's Dreadweave Leggings",
-        "feet: Sergeant Major's Dreadweave Boots",
+        "feet: First Sergeant's Dreadweave Boots",
         "finger1: Blackstone Ring",
         "finger2: Advisor's Ring",
         "trinket1: Frozen Heart of the Mountain",
@@ -6110,8 +6110,8 @@
         "main_hand: Kindling Stave",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 0.882463563,
-      "verify_run_seconds": 0.765640435,
+      "weights_run_seconds": 0.676504934,
+      "verify_run_seconds": 0.579799023,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6242,7 +6242,7 @@
           "item_name": "Frostfire Circlet",
           "source": "Frostfire Circlet",
           "source_kind": "quest",
-          "score": 314.0022160258512,
+          "score": 314.00221602585117,
           "verified": true,
           "alternatives": [
             {
@@ -6251,7 +6251,7 @@
               "score": 263.8647406312954,
               "source_kind": "crafted",
               "source": "Engineering",
-              "score_delta": -50.13747539455585,
+              "score_delta": -50.13747539455579,
               "dps_delta": -17.58371414663469,
               "verified": true
             },
@@ -6261,8 +6261,8 @@
               "score": 216.19707313546579,
               "source_kind": "quest",
               "source": "Enigma Circlet",
-              "score_delta": -97.80514289038544,
-              "dps_delta": -34.26684903754774
+              "score_delta": -97.80514289038538,
+              "dps_delta": -34.26684903754772
             },
             {
               "item_id": 16441,
@@ -6270,8 +6270,8 @@
               "score": 131.27528022684487,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -182.72693579900636,
-              "dps_delta": -64.01990876017372
+              "score_delta": -182.7269357990063,
+              "dps_delta": -64.01990876017369
             }
           ]
         },
@@ -6870,7 +6870,7 @@
         }
       ],
       "set_dps": 499.85953143492276,
-      "no_source_count": 1239,
+      "no_source_count": 1229,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6904,12 +6904,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.897760467,
-      "verify_run_seconds": 0.850163482,
+      "weights_run_seconds": 0.708692802,
+      "verify_run_seconds": 0.655514491,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 299,
@@ -6921,19 +6921,19 @@
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 202,
-          "sourced": 129
+          "sourced": 131
         },
         "head": {
           "eligible": 166,
-          "sourced": 108
+          "sourced": 110
         },
         "legs": {
           "eligible": 193,
@@ -6941,15 +6941,15 @@
         },
         "main_hand": {
           "eligible": 451,
-          "sourced": 302
+          "sourced": 303
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 126,
-          "sourced": 67
+          "sourced": 68
         },
         "ranged": {
           "eligible": 81,
@@ -7036,7 +7036,7 @@
           "item_name": "Frostfire Circlet",
           "source": "Frostfire Circlet",
           "source_kind": "quest",
-          "score": 314.0022160258512,
+          "score": 314.00221602585117,
           "verified": true,
           "alternatives": [
             {
@@ -7045,7 +7045,7 @@
               "score": 263.8647406312954,
               "source_kind": "crafted",
               "source": "Engineering",
-              "score_delta": -50.13747539455585,
+              "score_delta": -50.13747539455579,
               "dps_delta": -16.194983589815422,
               "verified": true
             },
@@ -7055,8 +7055,8 @@
               "score": 216.1970731354658,
               "source_kind": "quest",
               "source": "Enigma Circlet",
-              "score_delta": -97.80514289038541,
-              "dps_delta": -34.266849037547736
+              "score_delta": -97.80514289038535,
+              "dps_delta": -34.266849037547715
             },
             {
               "item_id": 16441,
@@ -7064,8 +7064,8 @@
               "score": 131.27528022684487,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -182.72693579900636,
-              "dps_delta": -64.01990876017372
+              "score_delta": -182.7269357990063,
+              "dps_delta": -64.01990876017369
             }
           ]
         },
@@ -7347,7 +7347,7 @@
           "item_name": "Frostfire Leggings",
           "source": "Frostfire Leggings",
           "source_kind": "quest",
-          "score": 133.52916009710597,
+          "score": 133.52916009710594,
           "verified": true,
           "alternatives": [
             {
@@ -7356,8 +7356,8 @@
               "score": 128.68696978292144,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -4.842190314184535,
-              "dps_delta": -1.6965018362398245
+              "score_delta": -4.842190314184506,
+              "dps_delta": -1.6965018362398148
             },
             {
               "item_id": 16534,
@@ -7365,8 +7365,8 @@
               "score": 128.68696978292144,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -4.842190314184535,
-              "dps_delta": -1.6965018362398245
+              "score_delta": -4.842190314184506,
+              "dps_delta": -1.6965018362398148
             },
             {
               "item_id": 21346,
@@ -7374,7 +7374,7 @@
               "score": 133.51034889507463,
               "source_kind": "quest",
               "source": "Enigma Leggings",
-              "score_delta": -0.01881120203134401,
+              "score_delta": -0.018811202031315588,
               "dps_delta": -7.425207411551753,
               "verified": true
             }
@@ -7665,7 +7665,7 @@
         }
       ],
       "set_dps": 480.04699222522856,
-      "no_source_count": 1235,
+      "no_source_count": 1225,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7700,12 +7700,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.897760467,
-      "verify_run_seconds": 0.836126626,
+      "weights_run_seconds": 0.708692802,
+      "verify_run_seconds": 0.619007967,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 296,
@@ -7717,19 +7717,19 @@
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 204,
-          "sourced": 130
+          "sourced": 132
         },
         "head": {
           "eligible": 166,
-          "sourced": 108
+          "sourced": 110
         },
         "legs": {
           "eligible": 192,
@@ -7737,15 +7737,15 @@
         },
         "main_hand": {
           "eligible": 453,
-          "sourced": 306
+          "sourced": 307
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 124,
-          "sourced": 66
+          "sourced": 67
         },
         "ranged": {
           "eligible": 77,

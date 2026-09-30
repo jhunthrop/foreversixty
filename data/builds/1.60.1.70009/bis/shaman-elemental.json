@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:04:53Z",
+  "generated_at": "2026-09-30T00:39:36Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -599,8 +599,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.6171856610000002,
-      "verify_run_seconds": 1.041209001,
+      "weights_run_seconds": 1.159824891,
+      "verify_run_seconds": 0.735337386,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1261,8 +1261,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.6171856610000002,
-      "verify_run_seconds": 0.996255414,
+      "weights_run_seconds": 1.159824891,
+      "verify_run_seconds": 0.750952073,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2024,8 +2024,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.7084524330000002,
-      "verify_run_seconds": 1.152708957,
+      "weights_run_seconds": 1.286849405,
+      "verify_run_seconds": 0.850004279,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2786,8 +2786,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.7084524330000002,
-      "verify_run_seconds": 1.1063188290000001,
+      "weights_run_seconds": 1.286849405,
+      "verify_run_seconds": 0.838408706,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3555,8 +3555,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.877422739,
-      "verify_run_seconds": 1.391533618,
+      "weights_run_seconds": 1.408313927,
+      "verify_run_seconds": 1.002417096,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4324,8 +4324,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Mograine's Might"
       ],
-      "weights_run_seconds": 1.877422739,
-      "verify_run_seconds": 1.325303301,
+      "weights_run_seconds": 1.408313927,
+      "verify_run_seconds": 0.982345404,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5066,8 +5066,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Hammer of the Northern Wind"
       ],
-      "weights_run_seconds": 1.927835355,
-      "verify_run_seconds": 1.626691015,
+      "weights_run_seconds": 1.417301266,
+      "verify_run_seconds": 1.205830591,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -5200,10 +5200,10 @@
             {
               "item_id": 220848,
               "item_name": "Blood Guard's Pulsing Helmet",
-              "score": 108.01720637972481,
+              "score": 108.0172063797248,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -4.93286032835006,
+              "score_delta": -4.932860328350074,
               "dps_delta": -1.1855435038931432,
               "verified": true
             },
@@ -5351,7 +5351,7 @@
           "item_name": "Stone Guard's Pulsing Breastplate",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 116.12686855064648,
+          "score": 116.12686855064649,
           "verified": true,
           "alternatives": [
             {
@@ -5360,7 +5360,7 @@
               "score": 91.1824315116231,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -24.944437039023384,
+              "score_delta": -24.9444370390234,
               "dps_delta": -2.0730747166157357,
               "verified": true
             },
@@ -5370,8 +5370,8 @@
               "score": 91.1824315116231,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -24.944437039023384,
-              "dps_delta": -2.198071826244154
+              "score_delta": -24.9444370390234,
+              "dps_delta": -2.1980718262441554
             },
             {
               "item_id": 223078,
@@ -5379,8 +5379,8 @@
               "score": 91.1824315116231,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -24.944437039023384,
-              "dps_delta": -2.198071826244154
+              "score_delta": -24.9444370390234,
+              "dps_delta": -2.1980718262441554
             }
           ]
         },
@@ -5812,8 +5812,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Hammer of the Northern Wind"
       ],
-      "weights_run_seconds": 1.927835355,
-      "verify_run_seconds": 1.492296874,
+      "weights_run_seconds": 1.417301266,
+      "verify_run_seconds": 1.1218520810000001,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6032,21 +6032,21 @@
               "dps_delta": -0.6188002280240027
             },
             {
-              "item_id": 23260,
-              "item_name": "Champion's Mail Pauldrons",
-              "score": 103.69241763686608,
+              "item_id": 227160,
+              "item_name": "Champion's Mail Spaulders",
+              "score": 106.69241763686608,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -12.275918086152544,
-              "dps_delta": -1.064217497616988
+              "score_delta": -9.275918086152544,
+              "dps_delta": -0.8041430599704601
             },
             {
               "item_id": 227154,
               "item_name": "Champion's Mail Pauldrons",
-              "score": 149.97948475967712,
+              "score": 149.97948475967715,
               "source_kind": "pvp",
               "source": "Rank 14",
-              "score_delta": 34.011149036658495,
+              "score_delta": 34.01114903665852,
               "dps_delta": -1.6825044135024143,
               "verified": true
             }
@@ -6273,13 +6273,13 @@
               "dps_delta": 0
             },
             {
-              "item_id": 231664,
-              "item_name": "General's Mail Leggings",
-              "score": 131.33622650455533,
-              "source_kind": "pvp",
-              "source": "Rank 16",
-              "score_delta": -13.413326516661357,
-              "dps_delta": -1.1628211169299878
+              "item_id": 252486,
+              "item_name": "Ironfeather Leggings",
+              "score": 135.0603084184028,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -9.689244602813886,
+              "dps_delta": -0.8399749470988258
             },
             {
               "item_id": 15057,
@@ -6542,7 +6542,7 @@
         }
       ],
       "set_dps": 144.282030210123,
-      "no_source_count": 2453,
+      "no_source_count": 2418,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6576,56 +6576,56 @@
         "trinket2: Uther's Strength",
         "main_hand: High Warlord's War Staff"
       ],
-      "weights_run_seconds": 1.9377499,
-      "verify_run_seconds": 1.5078178150000001,
+      "weights_run_seconds": 1.4122706680000001,
+      "verify_run_seconds": 1.122845287,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 203
+          "sourced": 204
         },
         "chest": {
           "eligible": 650,
-          "sourced": 427
+          "sourced": 431
         },
         "feet": {
           "eligible": 533,
-          "sourced": 337
+          "sourced": 341
         },
         "finger1": {
           "eligible": 347,
-          "sourced": 142
+          "sourced": 144
         },
         "finger2": {
           "eligible": 347,
-          "sourced": 142
+          "sourced": 144
         },
         "hands": {
           "eligible": 549,
-          "sourced": 352
+          "sourced": 354
         },
         "head": {
           "eligible": 396,
-          "sourced": 238
+          "sourced": 246
         },
         "legs": {
           "eligible": 546,
-          "sourced": 341
+          "sourced": 346
         },
         "main_hand": {
           "eligible": 765,
-          "sourced": 498
+          "sourced": 503
         },
         "neck": {
           "eligible": 162,
-          "sourced": 74
+          "sourced": 75
         },
         "off_hand": {
           "eligible": 352,
-          "sourced": 186
+          "sourced": 187
         },
         "shoulder": {
           "eligible": 405,
-          "sourced": 225
+          "sourced": 227
         },
         "trinket1": {
           "eligible": 80,
@@ -6763,21 +6763,21 @@
               "dps_delta": -0.6188002280240027
             },
             {
-              "item_id": 23260,
-              "item_name": "Champion's Mail Pauldrons",
-              "score": 103.69241763686608,
+              "item_id": 227160,
+              "item_name": "Champion's Mail Spaulders",
+              "score": 106.69241763686608,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -12.275918086152544,
-              "dps_delta": -1.064217497616988
+              "score_delta": -9.275918086152544,
+              "dps_delta": -0.8041430599704601
             },
             {
               "item_id": 227154,
               "item_name": "Champion's Mail Pauldrons",
-              "score": 149.97948475967712,
+              "score": 149.97948475967715,
               "source_kind": "pvp",
               "source": "Rank 14",
-              "score_delta": 34.011149036658495,
+              "score_delta": 34.01114903665852,
               "dps_delta": -3.184162465771749,
               "verified": true
             }
@@ -7013,13 +7013,13 @@
               "dps_delta": -1.0156388186731216
             },
             {
-              "item_id": 231664,
-              "item_name": "General's Mail Leggings",
-              "score": 131.33622650455533,
-              "source_kind": "pvp",
-              "source": "Rank 16",
-              "score_delta": -25.128881815335063,
-              "dps_delta": -2.1784599356031094
+              "item_id": 252486,
+              "item_name": "Ironfeather Leggings",
+              "score": 135.0603084184028,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -21.404799901487593,
+              "dps_delta": -1.8556137657719474
             }
           ]
         },
@@ -7272,7 +7272,7 @@
         }
       ],
       "set_dps": 141.61381951471486,
-      "no_source_count": 2444,
+      "no_source_count": 2409,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7305,56 +7305,56 @@
         "finger2: Ring of the Fallen God",
         "main_hand: High Warlord's War Staff"
       ],
-      "weights_run_seconds": 1.9377499,
-      "verify_run_seconds": 1.4504545420000001,
+      "weights_run_seconds": 1.4122706680000001,
+      "verify_run_seconds": 1.065891027,
       "coverage": {
         "back": {
           "eligible": 374,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 648,
-          "sourced": 427
+          "sourced": 431
         },
         "feet": {
           "eligible": 538,
-          "sourced": 343
+          "sourced": 347
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 553,
-          "sourced": 354
+          "sourced": 356
         },
         "head": {
           "eligible": 399,
-          "sourced": 242
+          "sourced": 250
         },
         "legs": {
           "eligible": 545,
-          "sourced": 339
+          "sourced": 344
         },
         "main_hand": {
           "eligible": 769,
-          "sourced": 503
+          "sourced": 508
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 352,
-          "sourced": 187
+          "sourced": 188
         },
         "shoulder": {
           "eligible": 406,
-          "sourced": 228
+          "sourced": 230
         },
         "trinket1": {
           "eligible": 80,

@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:02:14Z",
+  "generated_at": "2026-09-30T00:37:37Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -623,8 +623,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.643602834,
-      "verify_run_seconds": 0.575342928,
+      "weights_run_seconds": 0.488872264,
+      "verify_run_seconds": 0.420340984,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1316,8 +1316,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.643602834,
-      "verify_run_seconds": 0.559968665,
+      "weights_run_seconds": 0.488872264,
+      "verify_run_seconds": 0.430270551,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2121,8 +2121,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 0.638530057,
-      "verify_run_seconds": 0.641285376,
+      "weights_run_seconds": 0.497290058,
+      "verify_run_seconds": 0.49308015,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2928,8 +2928,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 0.638530057,
-      "verify_run_seconds": 0.647273186,
+      "weights_run_seconds": 0.497290058,
+      "verify_run_seconds": 0.494855343,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3731,8 +3731,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.643902282,
-      "verify_run_seconds": 0.628347253,
+      "weights_run_seconds": 0.501006686,
+      "verify_run_seconds": 0.476127481,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4521,8 +4521,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.643902282,
-      "verify_run_seconds": 0.605801419,
+      "weights_run_seconds": 0.501006686,
+      "verify_run_seconds": 0.472745143,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5361,8 +5361,8 @@
         "main_hand: Kindling Stave",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.661629191,
-      "verify_run_seconds": 0.656916326,
+      "weights_run_seconds": 0.513590396,
+      "verify_run_seconds": 0.505987379,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6201,8 +6201,8 @@
         "main_hand: Kindling Stave",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.661629191,
-      "verify_run_seconds": 0.662051705,
+      "weights_run_seconds": 0.513590396,
+      "verify_run_seconds": 0.516164075,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6356,13 +6356,13 @@
               "dps_delta": -15.412607013639755
             },
             {
-              "item_id": 16441,
-              "item_name": "Field Marshal's Coronet",
-              "score": 156.6215422438949,
+              "item_id": 16533,
+              "item_name": "Warlord's Silk Cowl",
+              "score": 156.62154224389494,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "score_delta": -252.77971708660965,
-              "dps_delta": -31.574291379527292
+              "source": "Lady Palanseer",
+              "score_delta": -252.77971708660962,
+              "dps_delta": -31.57429137952729
             }
           ]
         },
@@ -6505,11 +6505,11 @@
             {
               "item_id": 21343,
               "item_name": "Enigma Robes",
-              "score": 163.3649396388722,
+              "score": 163.36493963887222,
               "source_kind": "quest",
               "source": "Enigma Robes",
-              "score_delta": -137.0166683301579,
-              "dps_delta": -17.11452271396511
+              "score_delta": -137.01666833015787,
+              "dps_delta": -17.114522713965105
             },
             {
               "item_id": 14152,
@@ -6700,20 +6700,20 @@
               "verified": true
             },
             {
-              "item_id": 16437,
+              "item_id": 231606,
               "item_name": "Marshal's Silk Footwraps",
               "score": 151.25566398845336,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source_kind": "pvp",
+              "source": "Rank 16",
               "score_delta": -7.123899565829532,
               "dps_delta": -0.8898343713745094
             },
             {
-              "item_id": 16539,
-              "item_name": "General's Silk Boots",
+              "item_id": 16437,
+              "item_name": "Marshal's Silk Footwraps",
               "score": 151.25566398845334,
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "score_delta": -7.123899565829561,
               "dps_delta": -0.8898343713745129
             }
@@ -6756,11 +6756,11 @@
             {
               "item_id": 20632,
               "item_name": "Mindtear Band",
-              "score": 144.2586470197699,
+              "score": 144.25864701976994,
               "source_kind": "world",
               "source": "Taerar",
-              "score_delta": -105.77767267186243,
-              "dps_delta": -13.212512051531867
+              "score_delta": -105.7776726718624,
+              "dps_delta": -13.212512051531863
             }
           ]
         },
@@ -6786,11 +6786,11 @@
             {
               "item_id": 20632,
               "item_name": "Mindtear Band",
-              "score": 144.2586470197699,
+              "score": 144.25864701976994,
               "source_kind": "world",
               "source": "Taerar",
-              "score_delta": -22.00582044204708,
-              "dps_delta": -2.748710199895856
+              "score_delta": -22.005820442047053,
+              "dps_delta": -2.7487101998958523
             },
             {
               "item_id": 21182,
@@ -6893,11 +6893,11 @@
             {
               "item_id": 234571,
               "item_name": "Grand Marshal's Stave",
-              "score": 326.8801892636648,
+              "score": 326.8801892636649,
               "source_kind": "pvp",
               "source": "Rank 18",
-              "score_delta": -5.684341886080802e-14,
-              "dps_delta": -7.100216310095491e-15
+              "score_delta": 0,
+              "dps_delta": 0
             },
             {
               "item_id": 20069,
@@ -6964,7 +6964,7 @@
         }
       ],
       "set_dps": 235.31591073646163,
-      "no_source_count": 1239,
+      "no_source_count": 1229,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6999,12 +6999,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.676833578,
-      "verify_run_seconds": 0.679024003,
+      "weights_run_seconds": 0.534785763,
+      "verify_run_seconds": 0.540337341,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 299,
@@ -7016,19 +7016,19 @@
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 202,
-          "sourced": 129
+          "sourced": 131
         },
         "head": {
           "eligible": 166,
-          "sourced": 108
+          "sourced": 110
         },
         "legs": {
           "eligible": 193,
@@ -7036,15 +7036,15 @@
         },
         "main_hand": {
           "eligible": 451,
-          "sourced": 302
+          "sourced": 303
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 126,
-          "sourced": 67
+          "sourced": 68
         },
         "ranged": {
           "eligible": 81,
@@ -7156,11 +7156,11 @@
             {
               "item_id": 16441,
               "item_name": "Field Marshal's Coronet",
-              "score": 156.62154224389494,
+              "score": 156.6215422438949,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -252.77971708660962,
-              "dps_delta": -31.57429137952729
+              "score_delta": -252.77971708660965,
+              "dps_delta": -31.574291379527292
             }
           ]
         },
@@ -7287,7 +7287,7 @@
           "item_name": "Frostfire Robe",
           "source": "Frostfire Robe",
           "source_kind": "quest",
-          "score": 300.3816079690301,
+          "score": 300.38160796903003,
           "verified": true,
           "alternatives": [
             {
@@ -7296,18 +7296,18 @@
               "score": 285.65283448946354,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -14.728773479566541,
+              "score_delta": -14.728773479566485,
               "dps_delta": -7.2120809677970215,
               "verified": true
             },
             {
               "item_id": 21343,
               "item_name": "Enigma Robes",
-              "score": 163.36493963887222,
+              "score": 163.3649396388722,
               "source_kind": "quest",
               "source": "Enigma Robes",
-              "score_delta": -137.01666833015787,
-              "dps_delta": -17.114522713965105
+              "score_delta": -137.01666833015784,
+              "dps_delta": -17.1145227139651
             },
             {
               "item_id": 14152,
@@ -7315,8 +7315,8 @@
               "score": 163.0020444147472,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -137.3795635542829,
-              "dps_delta": -17.15985134902658
+              "score_delta": -137.37956355428284,
+              "dps_delta": -17.159851349026574
             }
           ]
         },
@@ -7456,11 +7456,11 @@
               "dps_delta": -2.373985221047462
             },
             {
-              "item_id": 16442,
-              "item_name": "Marshal's Silk Leggings",
+              "item_id": 16534,
+              "item_name": "General's Silk Trousers",
               "score": 153.99324094138356,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source": "Lady Palanseer",
               "score_delta": -23.749217837024332,
               "dps_delta": -2.966475050548252
             },
@@ -7762,7 +7762,7 @@
         }
       ],
       "set_dps": 209.81228550934173,
-      "no_source_count": 1235,
+      "no_source_count": 1225,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7797,12 +7797,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.676833578,
-      "verify_run_seconds": 0.692493606,
+      "weights_run_seconds": 0.534785763,
+      "verify_run_seconds": 0.532463776,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 296,
@@ -7814,19 +7814,19 @@
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 204,
-          "sourced": 130
+          "sourced": 132
         },
         "head": {
           "eligible": 166,
-          "sourced": 108
+          "sourced": 110
         },
         "legs": {
           "eligible": 192,
@@ -7834,15 +7834,15 @@
         },
         "main_hand": {
           "eligible": 453,
-          "sourced": 306
+          "sourced": 307
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 124,
-          "sourced": 66
+          "sourced": 67
         },
         "ranged": {
           "eligible": 77,

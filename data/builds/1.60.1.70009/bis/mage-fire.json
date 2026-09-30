@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:02:00Z",
+  "generated_at": "2026-09-30T00:37:26Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -625,8 +625,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.710599872,
-      "verify_run_seconds": 0.603184583,
+      "weights_run_seconds": 0.555690295,
+      "verify_run_seconds": 0.455072117,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1318,8 +1318,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.710599872,
-      "verify_run_seconds": 0.597027335,
+      "weights_run_seconds": 0.555690295,
+      "verify_run_seconds": 0.468102412,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2120,8 +2120,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Lesser Mystic Wand"
       ],
-      "weights_run_seconds": 0.734427064,
-      "verify_run_seconds": 0.746086638,
+      "weights_run_seconds": 0.568926505,
+      "verify_run_seconds": 0.559411644,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2922,8 +2922,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Lesser Mystic Wand"
       ],
-      "weights_run_seconds": 0.734427064,
-      "verify_run_seconds": 0.755179698,
+      "weights_run_seconds": 0.568926505,
+      "verify_run_seconds": 0.567700244,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3738,8 +3738,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.760153469,
-      "verify_run_seconds": 0.751786512,
+      "weights_run_seconds": 0.602227497,
+      "verify_run_seconds": 0.58974808,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4544,8 +4544,8 @@
         "main_hand: Windweaver Staff",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.760153469,
-      "verify_run_seconds": 0.75408663,
+      "weights_run_seconds": 0.602227497,
+      "verify_run_seconds": 0.572293175,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5362,8 +5362,8 @@
         "main_hand: Kindling Stave",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 0.782700653,
-      "verify_run_seconds": 0.708145799,
+      "weights_run_seconds": 0.598141816,
+      "verify_run_seconds": 0.535850423,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6174,8 +6174,8 @@
         "main_hand: Kindling Stave",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 0.782700653,
-      "verify_run_seconds": 0.687074096,
+      "weights_run_seconds": 0.598141816,
+      "verify_run_seconds": 0.526007849,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6306,7 +6306,7 @@
           "item_name": "Frostfire Circlet",
           "source": "Frostfire Circlet",
           "source_kind": "quest",
-          "score": 447.62810959340476,
+          "score": 447.6281095934048,
           "verified": true,
           "swap_note": "beat the scored pick Bloodvine Goggles (id 19999) in the sim: 407.6 vs 387.8 set DPS",
           "alternatives": [
@@ -6316,7 +6316,7 @@
               "score": 449.07089764376656,
               "source_kind": "crafted",
               "source": "Engineering",
-              "score_delta": 1.4427880503617985,
+              "score_delta": 1.4427880503617416,
               "dps_delta": -19.804921894022016,
               "verified": true
             },
@@ -6326,8 +6326,8 @@
               "score": 338.75261224149,
               "source_kind": "quest",
               "source": "Enigma Circlet",
-              "score_delta": -108.87549735191476,
-              "dps_delta": -23.513556778032616
+              "score_delta": -108.87549735191482,
+              "dps_delta": -23.51355677803263
             },
             {
               "item_id": 16441,
@@ -6335,8 +6335,8 @@
               "score": 160.2848632860245,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -287.34324630738024,
-              "dps_delta": -62.05677035847747
+              "score_delta": -287.34324630738035,
+              "dps_delta": -62.0567703584775
             }
           ]
         },
@@ -6586,10 +6586,10 @@
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
-              "score": 146.15100962301838,
+              "score": 146.1510096230184,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -76.19069061453246,
+              "score_delta": -76.19069061453243,
               "dps_delta": -9.81965511277133,
               "verified": true
             },
@@ -6643,10 +6643,10 @@
             {
               "item_id": 19683,
               "item_name": "Bloodvine Leggings",
-              "score": 214.3338952924594,
+              "score": 214.33389529245943,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -31.677073260121915,
+              "score_delta": -31.677073260121887,
               "dps_delta": -17.497087962864953,
               "verified": true
             }
@@ -6937,7 +6937,7 @@
         }
       ],
       "set_dps": 428.05123228759703,
-      "no_source_count": 1239,
+      "no_source_count": 1229,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6973,12 +6973,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.811470486,
-      "verify_run_seconds": 0.812455766,
+      "weights_run_seconds": 0.615974671,
+      "verify_run_seconds": 0.617055288,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 299,
@@ -6990,19 +6990,19 @@
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 202,
-          "sourced": 129
+          "sourced": 131
         },
         "head": {
           "eligible": 166,
-          "sourced": 108
+          "sourced": 110
         },
         "legs": {
           "eligible": 193,
@@ -7010,15 +7010,15 @@
         },
         "main_hand": {
           "eligible": 451,
-          "sourced": 302
+          "sourced": 303
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 126,
-          "sourced": 67
+          "sourced": 68
         },
         "ranged": {
           "eligible": 81,
@@ -7434,10 +7434,10 @@
             {
               "item_id": 19683,
               "item_name": "Bloodvine Leggings",
-              "score": 214.3338952924594,
+              "score": 214.33389529245943,
               "source_kind": "crafted",
               "source": "Tailoring",
-              "score_delta": -31.677073260121915,
+              "score_delta": -31.677073260121887,
               "dps_delta": -10.542547131084348,
               "verified": true
             },
@@ -7542,7 +7542,7 @@
           "item_name": "Ring of the Fallen God",
           "source": "The Savior of Kalimdor",
           "source_kind": "quest",
-          "score": 214.33389529245943,
+          "score": 214.3338952924594,
           "verified": true,
           "swap_note": "beat the scored pick Band of Earthen Might (id 21182) in the sim: 374.9 vs 363.8 set DPS",
           "alternatives": [
@@ -7552,8 +7552,8 @@
               "score": 170.53077331442285,
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "score_delta": -43.803121978036586,
-              "dps_delta": -9.460045838932169
+              "score_delta": -43.80312197803656,
+              "dps_delta": -9.460045838932164
             },
             {
               "item_id": 19384,
@@ -7561,8 +7561,8 @@
               "score": 170.53077331442285,
               "source_kind": "quest",
               "source": "The Lord of Blackrock",
-              "score_delta": -43.803121978036586,
-              "dps_delta": -9.460045838932169
+              "score_delta": -43.80312197803656,
+              "dps_delta": -9.460045838932164
             },
             {
               "item_id": 21182,
@@ -7570,7 +7570,7 @@
               "score": 278.5401243293437,
               "source_kind": "quest",
               "source": "Veteran's Battlegear",
-              "score_delta": 64.20622903688428,
+              "score_delta": 64.20622903688431,
               "dps_delta": -11.170682577123785,
               "verified": true
             }
@@ -7738,7 +7738,7 @@
         }
       ],
       "set_dps": 400.0947095807139,
-      "no_source_count": 1235,
+      "no_source_count": 1225,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7774,12 +7774,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.811470486,
-      "verify_run_seconds": 0.788573176,
+      "weights_run_seconds": 0.615974671,
+      "verify_run_seconds": 0.604690787,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 296,
@@ -7791,19 +7791,19 @@
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 204,
-          "sourced": 130
+          "sourced": 132
         },
         "head": {
           "eligible": 166,
-          "sourced": 108
+          "sourced": 110
         },
         "legs": {
           "eligible": 192,
@@ -7811,15 +7811,15 @@
         },
         "main_hand": {
           "eligible": 453,
-          "sourced": 306
+          "sourced": 307
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 124,
-          "sourced": 66
+          "sourced": 67
         },
         "ranged": {
           "eligible": 77,

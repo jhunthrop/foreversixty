@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (night-elf, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 62.4. Weights run: 1.8s. Verify run: 1.4s. 361 eligible items had no known source.
+Set DPS (verified): 62.4. Weights run: 1.3s. Verify run: 1.1s. 361 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=8.959 ± 0.224, hit=not significant (0.000 ± 0.000), melee_haste=5.281 ± 0.416
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 361, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-5423222100000000000-0000000000000000)
 
-Set DPS (verified): 101.2. Weights run: 2.1s. Verify run: 2.0s. 684 eligible items had no known source.
+Set DPS (verified): 101.2. Weights run: 1.5s. Verify run: 1.5s. 684 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.494 ± 0.064, crit=10.211 ± 0.292, hit=not significant (0.000 ± 0.000), melee_haste=6.340 ± 0.693
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 684, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 103.5. Weights run: 2.2s. Verify run: 2.0s. 937 eligible items had no known source.
+Set DPS (verified): 103.5. Weights run: 1.7s. Verify run: 1.5s. 937 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.534 ± 0.071, crit=11.632 ± 0.333, hit=not significant (0.000 ± 0.000), melee_haste=7.650 ± 0.975
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 937, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 126.9. Weights run: 2.2s. Verify run: 1.9s. 1196 eligible items had no known source.
+Set DPS (verified): 126.9. Weights run: 1.6s. Verify run: 1.5s. 1196 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.597 ± 0.077, crit=12.908 ± 0.369, hit=not significant (0.000 ± 0.000), melee_haste=7.662 ± 1.230
 
@@ -126,17 +126,17 @@ No-known-source sample (15 of 1196, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (night-elf, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 174.4. Weights run: 2.3s. Verify run: 2.1s. 1941 eligible items had no known source.
+Set DPS (verified): 175.8. Weights run: 1.7s. Verify run: 1.6s. 1913 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.760 ± 0.098, crit=13.720 ± 0.409, hit=not significant (0.000 ± 0.000), melee_haste=not significant (7.156 ± 1.916)
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Ragefury Eyepatch (11735) | Blackrock Depths: Guzzler [dungeon] | 398.1 | yes | Bloodvine Lens (19998, -0.88 DPS, sim-verified) [crafted]; Field Marshal's Dragonhide Helmet (16451, -6.84 DPS) [vendor]; Warlord's Dragonhide Helmet (16550, -6.84 DPS) [vendor] |
+| head | Ragefury Eyepatch (11735) | Blackrock Depths: Guzzler [dungeon] | 398.1 | yes | Bloodvine Lens (19998, -0.88 DPS, sim-verified) [crafted]; Warlord's Dragonhide Helmet (16550, -6.84 DPS) [vendor]; Field Marshal's Dragonhide Helmet (16451, -6.84 DPS) [vendor] |
 | neck | Blazefury Medallion (17111) | Lord Kazzak [world] | 22.9 | yes | Onyxia Tooth Pendant (18404, +0.00 DPS) [quest]; Amulet of the Darkmoon (19491, +0.00 DPS) [quest]; Medallion of the Dawn (22659, -1.98 DPS, sim-verified) [quest] |
 | shoulder | Lieutenant Commander's Dragonhide Shoulders (227172) (or Champion's Dragonhide Shoulders (227175)) | Rank 14 [pvp] | 230.5 | yes | Champion's Dragonhide Shoulders (227175, +0.00 DPS, sim-verified) [pvp]; Knight-Lieutenant's Leather Shoulders (220852, -1.65 DPS) [vendor]; Blood Guard's Leather Shoulders (220853, -1.65 DPS) [vendor] |
 | back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | 71.3 | yes | Cape of the Black Baron (13340, -1.35 DPS) [dungeon]; Cloak of the Honor Guard (20073, -1.55 DPS) [rep]; Chromatic Cloak (18509, -3.58 DPS, sim-verified) [crafted] |
-| chest | Field Marshal's Dragonhide Breastplate (16452) | Captain Dirgehammer [vendor] | 274.7 | yes | Warlord's Dragonhide Hauberk (16549, +0.00 DPS) [vendor]; Knight-Captain's Dragonhide Chestpiece (227176, -1.38 DPS) [pvp]; Stormshroud Armor (15056, -2.69 DPS, sim-verified) [crafted] |
+| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 300.3 | yes | Field Marshal's Dragonhide Breastplate (16452, -1.39 DPS) [vendor]; Warlord's Dragonhide Hauberk (16549, -1.39 DPS) [vendor]; Stormshroud Armor (15056, -4.07 DPS, sim-verified) [crafted] |
 | wrist | Forest Stalker's Bracers (19587) | Silverwing Sentinels [rep] | 59.0 | yes | Bracers of Subterfuge (22668, -0.51 DPS) [quest]; Forest Stalker's Bracers (19589, -0.51 DPS, sim-verified) [rep]; Forest Stalker's Bracers (19590, -0.85 DPS) [rep] |
 | hands | Devilsaur Gauntlets (15063) | Leatherworking [crafted] | 220.1 | yes | Gloves of Holy Might (867, -0.51 DPS, sim-verified) [world_drop]; Sergeant Major's Leather Gauntlets (220856, -0.76 DPS) [vendor]; First Sergeant's Leather Gauntlets (220857, -0.76 DPS) [vendor] |
 | waist | Highlander's Leather Girdle (20045) | The League of Arathor [rep] | 226.1 | yes | Highlander's Leather Girdle (20115, -0.89 DPS, sim-verified) [rep]; Belt of the Archmage (18405, -1.84 DPS) [crafted]; Highlander's Lizardhide Girdle (20046, -1.84 DPS) [rep] |
@@ -150,15 +150,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Ragefury Eyepatch; neck: Blazefury Medallion; shoulder: Lieutenant Commander's Dragonhide Shoulders; back: Cloak of the Fallen God; chest: Field Marshal's Dragonhide Breastplate; wrist: Forest Stalker's Bracers; hands: Devilsaur Gauntlets; waist: Highlander's Leather Girdle; legs: Marshal's Dragonhide Legguards; feet: Blood Guard's Dragonhide Treads; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: High Warlord's Pulverizer
+**New at 60:** head: Ragefury Eyepatch; neck: Blazefury Medallion; shoulder: Lieutenant Commander's Dragonhide Shoulders; back: Cloak of the Fallen God; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Devilsaur Gauntlets; waist: Highlander's Leather Girdle; legs: Marshal's Dragonhide Legguards; feet: Blood Guard's Dragonhide Treads; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: High Warlord's Pulverizer
 
-No-known-source sample (15 of 1941, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1913, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 
 ## Horde
 
 ### Band 20 (tauren, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 61.0. Weights run: 1.8s. Verify run: 1.4s. 359 eligible items had no known source.
+Set DPS (verified): 61.0. Weights run: 1.3s. Verify run: 1.0s. 359 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=8.959 ± 0.224, hit=not significant (0.000 ± 0.000), melee_haste=5.281 ± 0.416
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 359, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-5423222100000000000-0000000000000000)
 
-Set DPS (verified): 99.8. Weights run: 2.1s. Verify run: 2.0s. 685 eligible items had no known source.
+Set DPS (verified): 99.8. Weights run: 1.5s. Verify run: 1.4s. 685 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.494 ± 0.064, crit=10.211 ± 0.292, hit=not significant (0.000 ± 0.000), melee_haste=6.340 ± 0.693
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 685, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 101.4. Weights run: 2.2s. Verify run: 1.9s. 937 eligible items had no known source.
+Set DPS (verified): 101.4. Weights run: 1.7s. Verify run: 1.4s. 937 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.534 ± 0.071, crit=11.632 ± 0.333, hit=not significant (0.000 ± 0.000), melee_haste=7.650 ± 0.975
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 937, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 132.2. Weights run: 2.2s. Verify run: 2.0s. 1196 eligible items had no known source.
+Set DPS (verified): 132.2. Weights run: 1.6s. Verify run: 1.5s. 1196 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.597 ± 0.077, crit=12.908 ± 0.369, hit=not significant (0.000 ± 0.000), melee_haste=7.662 ± 1.230
 
@@ -278,7 +278,7 @@ No-known-source sample (15 of 1196, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (tauren, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 178.0. Weights run: 2.3s. Verify run: 2.1s. 1940 eligible items had no known source.
+Set DPS (verified): 179.4. Weights run: 1.7s. Verify run: 1.6s. 1912 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.760 ± 0.098, crit=13.720 ± 0.409, hit=not significant (0.000 ± 0.000), melee_haste=not significant (7.156 ± 1.916)
 
@@ -288,7 +288,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | neck | Blazefury Medallion (17111) | Lord Kazzak [world] | 22.9 | yes | Onyxia Tooth Pendant (18404, +0.00 DPS) [quest]; Amulet of the Darkmoon (19491, +0.00 DPS) [quest]; Medallion of the Dawn (22659, -2.46 DPS, sim-verified) [quest] |
 | shoulder | Lieutenant Commander's Dragonhide Shoulders (227172) (or Champion's Dragonhide Shoulders (227175)) | Rank 14 [pvp] | 230.5 | yes | Champion's Dragonhide Shoulders (227175, +0.00 DPS, sim-verified) [pvp]; Knight-Lieutenant's Leather Shoulders (220852, -1.65 DPS) [vendor]; Blood Guard's Leather Shoulders (220853, -1.65 DPS) [vendor] |
 | back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | 71.3 | yes | Cape of the Black Baron (13340, -1.35 DPS) [dungeon]; Deathguard's Cloak (20068, -1.55 DPS) [rep]; Chromatic Cloak (18509, -3.55 DPS, sim-verified) [crafted] |
-| chest | Field Marshal's Dragonhide Breastplate (16452) | Captain Dirgehammer [vendor] | 274.7 | yes | Warlord's Dragonhide Hauberk (16549, +0.00 DPS) [vendor]; Knight-Captain's Dragonhide Chestpiece (227176, -1.38 DPS) [pvp]; Stormshroud Armor (15056, -2.73 DPS, sim-verified) [crafted] |
+| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 300.3 | yes | Field Marshal's Dragonhide Breastplate (16452, -1.39 DPS) [vendor]; Warlord's Dragonhide Hauberk (16549, -1.39 DPS) [vendor]; Stormshroud Armor (15056, -4.11 DPS, sim-verified) [crafted] |
 | wrist | Forest Stalker's Bracers (19587) | Warsong Outriders [rep] | 59.0 | yes | Forest Stalker's Bracers (19589, -0.50 DPS, sim-verified) [rep]; Bracers of Subterfuge (22668, -0.51 DPS) [quest]; Forest Stalker's Bracers (19590, -0.85 DPS) [rep] |
 | hands | Devilsaur Gauntlets (15063) | Leatherworking [crafted] | 220.1 | yes | Gloves of Holy Might (867, -0.51 DPS, sim-verified) [world_drop]; Sergeant Major's Leather Gauntlets (220856, -0.76 DPS) [vendor]; First Sergeant's Leather Gauntlets (220857, -0.76 DPS) [vendor] |
 | waist | Defiler's Leather Girdle (20190) | The Defilers [rep] | 226.1 | yes | Defiler's Leather Girdle (20193, -0.89 DPS, sim-verified) [rep]; Belt of the Archmage (18405, -1.84 DPS) [crafted]; Defiler's Cloth Girdle (20163, -1.84 DPS) [rep] |
@@ -302,7 +302,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Ragefury Eyepatch; neck: Blazefury Medallion; shoulder: Lieutenant Commander's Dragonhide Shoulders; back: Cloak of the Fallen God; chest: Field Marshal's Dragonhide Breastplate; wrist: Forest Stalker's Bracers; hands: Devilsaur Gauntlets; waist: Defiler's Leather Girdle; legs: Marshal's Dragonhide Legguards; feet: Blood Guard's Dragonhide Treads; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Pulverizer
+**New at 60:** head: Ragefury Eyepatch; neck: Blazefury Medallion; shoulder: Lieutenant Commander's Dragonhide Shoulders; back: Cloak of the Fallen God; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Devilsaur Gauntlets; waist: Defiler's Leather Girdle; legs: Marshal's Dragonhide Legguards; feet: Blood Guard's Dragonhide Treads; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Pulverizer
 
-No-known-source sample (15 of 1940, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
+No-known-source sample (15 of 1912, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers
 

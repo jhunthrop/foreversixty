@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:02:55Z",
+  "generated_at": "2026-09-30T00:38:07Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -625,8 +625,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.858298628,
-      "verify_run_seconds": 0.935646275,
+      "weights_run_seconds": 0.628898668,
+      "verify_run_seconds": 0.710169064,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1314,8 +1314,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.858298628,
-      "verify_run_seconds": 0.762812673,
+      "weights_run_seconds": 0.628898668,
+      "verify_run_seconds": 0.589340055,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2112,8 +2112,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 0.697590646,
-      "verify_run_seconds": 0.644225832,
+      "weights_run_seconds": 0.514974104,
+      "verify_run_seconds": 0.492004677,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2917,8 +2917,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 0.697590646,
-      "verify_run_seconds": 0.6964894,
+      "weights_run_seconds": 0.514974104,
+      "verify_run_seconds": 0.539787134,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3717,8 +3717,8 @@
         "main_hand: Windweaver Staff",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.703833417,
-      "verify_run_seconds": 0.714351078,
+      "weights_run_seconds": 0.546427639,
+      "verify_run_seconds": 0.5424599,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4508,8 +4508,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.703833417,
-      "verify_run_seconds": 0.710485678,
+      "weights_run_seconds": 0.546427639,
+      "verify_run_seconds": 0.531099775,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5372,8 +5372,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 0.724747561,
-      "verify_run_seconds": 0.697369872,
+      "weights_run_seconds": 0.549496201,
+      "verify_run_seconds": 0.516056186,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6230,8 +6230,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 0.724747561,
-      "verify_run_seconds": 0.726160967,
+      "weights_run_seconds": 0.549496201,
+      "verify_run_seconds": 0.572123378,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6991,7 +6991,7 @@
         }
       ],
       "set_dps": 226.51846432223732,
-      "no_source_count": 1334,
+      "no_source_count": 1314,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -7025,52 +7025,52 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.750863971,
-      "verify_run_seconds": 0.730793552,
+      "weights_run_seconds": 0.572628775,
+      "verify_run_seconds": 0.561953622,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 309,
-          "sourced": 196
+          "sourced": 198
         },
         "feet": {
           "eligible": 202,
-          "sourced": 129
+          "sourced": 131
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 209,
-          "sourced": 129
+          "sourced": 131
         },
         "head": {
           "eligible": 176,
-          "sourced": 106
+          "sourced": 110
         },
         "legs": {
           "eligible": 204,
-          "sourced": 131
+          "sourced": 132
         },
         "main_hand": {
           "eligible": 461,
-          "sourced": 297
+          "sourced": 299
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 122,
-          "sourced": 64
+          "sourced": 65
         },
         "ranged": {
           "eligible": 78,
@@ -7078,7 +7078,7 @@
         },
         "shoulder": {
           "eligible": 164,
-          "sourced": 100
+          "sourced": 102
         },
         "trinket1": {
           "eligible": 80,
@@ -7786,7 +7786,7 @@
         }
       ],
       "set_dps": 218.80945275405332,
-      "no_source_count": 1332,
+      "no_source_count": 1312,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7822,52 +7822,52 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 0.750863971,
-      "verify_run_seconds": 0.710796676,
+      "weights_run_seconds": 0.572628775,
+      "verify_run_seconds": 0.561589744,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 306,
-          "sourced": 194
+          "sourced": 196
         },
         "feet": {
           "eligible": 202,
-          "sourced": 129
+          "sourced": 131
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 211,
-          "sourced": 130
+          "sourced": 132
         },
         "head": {
           "eligible": 176,
-          "sourced": 106
+          "sourced": 110
         },
         "legs": {
           "eligible": 203,
-          "sourced": 129
+          "sourced": 130
         },
         "main_hand": {
           "eligible": 465,
-          "sourced": 301
+          "sourced": 303
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 120,
-          "sourced": 63
+          "sourced": 64
         },
         "ranged": {
           "eligible": 74,
@@ -7875,7 +7875,7 @@
         },
         "shoulder": {
           "eligible": 161,
-          "sourced": 97
+          "sourced": 99
         },
         "trinket1": {
           "eligible": 80,

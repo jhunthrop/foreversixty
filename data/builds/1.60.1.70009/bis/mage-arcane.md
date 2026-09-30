@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (gnome, 253100000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 32.7. Weights run: 0.7s. Verify run: 0.6s. 252 eligible items had no known source.
+Set DPS (verified): 32.7. Weights run: 0.5s. Verify run: 0.5s. 252 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (-0.108 ± 0.264), crit=2.133 ± 0.074, hit=5.698 ± 0.181, spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 252, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 253225110000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 56.8. Weights run: 0.7s. Verify run: 0.7s. 476 eligible items had no known source.
+Set DPS (verified): 56.8. Weights run: 0.6s. Verify run: 0.5s. 476 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.157 ± 0.128), crit=1.917 ± 0.062, hit=4.834 ± 0.199, spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.004
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 476, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 253225111100011501-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 180.7. Weights run: 0.9s. Verify run: 0.8s. 643 eligible items had no known source.
+Set DPS (verified): 180.7. Weights run: 0.7s. Verify run: 0.6s. 643 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.091 ± 0.015, crit=3.159 ± 0.088, hit=3.864 ± 0.105, spell_haste=2.043 ± 0.072, spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 643, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 253225111100011501-23500000000000000-0000000000000000000)
 
-Set DPS (verified): 255.2. Weights run: 0.9s. Verify run: 0.8s. 806 eligible items had no known source.
+Set DPS (verified): 255.2. Weights run: 0.7s. Verify run: 0.6s. 806 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.106 ± 0.020, crit=4.628 ± 0.134, hit=5.657 ± 0.238, spell_haste=3.000 ± 0.103, spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -111,7 +111,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 18.4 | yes | Black Mageweave Gloves (10003, -1.45 DPS, sim-verified) [crafted]; Sergeant Major's Dreadweave Gloves (220890, -1.57 DPS) [vendor]; First Sergeant's Dreadweave Gloves (220908, -1.57 DPS) [vendor] |
 | waist | Highlander's Cloth Girdle (20097) | The League of Arathor [rep] | 74.3 | yes | Satyrmane Sash (17755, -0.25 DPS, sim-verified) [dungeon]; Highlander's Cloth Girdle (20098, -20.98 DPS) [rep]; Ghostweave Cord (254073, -21.13 DPS) [crafted] |
 | legs | Knight's Dreadweave Leggings (220888) (or Stone Guard's Dreadweave Leggings (220906)) | Captain Dirgehammer [vendor] | 78.1 | yes | Stone Guard's Dreadweave Leggings (220906, +0.00 DPS, sim-verified) [vendor]; Wizardweave Leggings (14132, -20.69 DPS) [crafted]; Red Mageweave Pants (10009, -22.00 DPS) [crafted] |
-| feet | Sergeant Major's Dreadweave Boots (220891) | Captain Dirgehammer [vendor] | 65.5 | yes | First Sergeant's Dreadweave Boots (220909, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -14.55 DPS) [crafted]; Gilded Sandals (254107, -18.77 DPS) [crafted] |
+| feet | Sergeant Major's Dreadweave Boots (220891) (or First Sergeant's Dreadweave Boots (220909)) | Captain Dirgehammer [vendor] | 65.5 | yes | First Sergeant's Dreadweave Boots (220909, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -14.55 DPS) [crafted]; Gilded Sandals (254107, -18.77 DPS) [crafted] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 56.6 | yes | Ring of Forlorn Spirits (2043, -17.02 DPS) [quest]; Reedknot Ring (9622, -17.37 DPS) [quest]; Sea Giant's Toe Ring (274746, -17.72 DPS) [vendor] |
 | finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 12.0 | yes | Lorekeeper's Ring (19524, -1.16 DPS, sim-verified) [rep]; Ring of Forlorn Spirits (2043, -1.40 DPS) [quest]; Reedknot Ring (9622, -1.75 DPS) [quest] |
 | trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 50.9 | yes | Thunderbrew's Boot Flask (744, -17.84 DPS) [quest]; Tidal Charm (1404, -17.84 DPS) [vendor]; Guardian Talisman (1490, -17.84 DPS) [quest] |
@@ -126,7 +126,7 @@ No-known-source sample (15 of 806, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 253225111100011501-23552300000000000-0000000000000000000)
 
-Set DPS (verified): 499.9. Weights run: 0.9s. Verify run: 0.9s. 1239 eligible items had no known source.
+Set DPS (verified): 499.9. Weights run: 0.7s. Verify run: 0.7s. 1229 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.137 ± 0.028, crit=6.853 ± 0.198, hit=8.396 ± 0.345, spell_haste=4.452 ± 0.152, spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -152,13 +152,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Frostfire Circlet; neck: Onyxia Tooth Pendant; shoulder: Mantle of the Timbermaw; back: Chromatic Cloak; chest: Frostfire Robe; wrist: Rockfury Bracers; hands: Gloves of Spell Mastery; waist: Belt of the Archmage; legs: Frostfire Leggings; feet: Frostfire Sandals; finger1: Don Julio's Band; finger2: Ring of the Fallen God; main_hand: High Warlord's War Staff; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1239, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1229, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ## Horde
 
 ### Band 20 (orc, 253100000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 29.3. Weights run: 0.7s. Verify run: 0.6s. 249 eligible items had no known source.
+Set DPS (verified): 29.3. Weights run: 0.5s. Verify run: 0.5s. 249 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (-0.108 ± 0.264), crit=2.133 ± 0.074, hit=5.698 ± 0.181, spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 249, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 253225110000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 50.0. Weights run: 0.7s. Verify run: 0.7s. 473 eligible items had no known source.
+Set DPS (verified): 50.0. Weights run: 0.6s. Verify run: 0.6s. 473 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.157 ± 0.128), crit=1.917 ± 0.062, hit=4.834 ± 0.199, spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.004
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 473, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 253225111100011501-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 173.3. Weights run: 0.9s. Verify run: 0.8s. 639 eligible items had no known source.
+Set DPS (verified): 173.3. Weights run: 0.7s. Verify run: 0.6s. 639 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.091 ± 0.015, crit=3.159 ± 0.088, hit=3.864 ± 0.105, spell_haste=2.043 ± 0.072, spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 639, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 253225111100011501-23500000000000000-0000000000000000000)
 
-Set DPS (verified): 245.3. Weights run: 0.9s. Verify run: 0.8s. 802 eligible items had no known source.
+Set DPS (verified): 245.3. Weights run: 0.7s. Verify run: 0.6s. 802 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.106 ± 0.020, crit=4.628 ± 0.134, hit=5.657 ± 0.238, spell_haste=3.000 ± 0.103, spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -263,7 +263,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 18.4 | yes | Black Mageweave Gloves (10003, -1.38 DPS, sim-verified) [crafted]; Sergeant Major's Dreadweave Gloves (220890, -1.57 DPS) [vendor]; First Sergeant's Dreadweave Gloves (220908, -1.57 DPS) [vendor] |
 | waist | Defiler's Cloth Girdle (20165) | The Defilers [rep] | 74.3 | yes | Satyrmane Sash (17755, -0.10 DPS, sim-verified) [dungeon]; Defiler's Cloth Girdle (20166, -20.98 DPS) [rep]; Ghostweave Cord (254073, -21.13 DPS) [crafted] |
 | legs | Knight's Dreadweave Leggings (220888) (or Stone Guard's Dreadweave Leggings (220906)) | Captain Dirgehammer [vendor] | 78.1 | yes | Stone Guard's Dreadweave Leggings (220906, +0.00 DPS, sim-verified) [vendor]; Wizardweave Leggings (14132, -20.69 DPS) [crafted]; Red Mageweave Pants (10009, -22.00 DPS) [crafted] |
-| feet | Sergeant Major's Dreadweave Boots (220891) (or First Sergeant's Dreadweave Boots (220909)) | Captain Dirgehammer [vendor] | 65.5 | yes | First Sergeant's Dreadweave Boots (220909, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -14.55 DPS) [crafted]; Gilded Sandals (254107, -18.77 DPS) [crafted] |
+| feet | First Sergeant's Dreadweave Boots (220909) | Lady Palanseer [vendor] | 65.5 | yes | Sergeant Major's Dreadweave Boots (220891, +0.00 DPS, sim-verified) [vendor]; Earthen Silk Slippers (254013, -14.55 DPS) [crafted]; Gilded Sandals (254107, -18.77 DPS) [crafted] |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 56.6 | yes | Reedknot Ring (9622, -17.37 DPS) [quest]; Sea Giant's Toe Ring (274746, -17.72 DPS) [vendor]; Electrocutioner Lagnut (9447, -18.77 DPS) [dungeon] |
 | finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 12.0 | yes | Advisor's Ring (19520, -1.12 DPS, sim-verified) [rep]; Reedknot Ring (9622, -1.75 DPS) [quest]; Advisor's Ring (19521, -1.75 DPS) [rep] |
 | trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 50.9 | yes | Uther's Strength (11302, -0.15 DPS, sim-verified) [world]; Tidal Charm (1404, -17.84 DPS) [vendor]; Guardian Talisman (1490, -17.84 DPS) [quest] |
@@ -272,13 +272,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |  |
 | ranged | Lesser Eternal Wand (249232) | Enchanting [crafted] | 8.0 | yes | Dreambough Wand (249234, -0.37 DPS, sim-verified) [crafted]; Twisted Nether Wand (249144, -0.70 DPS) [crafted]; Charged Lightning Rod (11860, -0.90 DPS) [quest] |
 
-**New at 50:** head: Knight-Lieutenant's Dreadweave Hat; shoulder: Knight-Lieutenant's Dreadweave Mantle; back: Spritecaster Cape; chest: Knight's Dreadweave Vest; waist: Defiler's Cloth Girdle; legs: Knight's Dreadweave Leggings; feet: Sergeant Major's Dreadweave Boots; finger1: Blackstone Ring; finger2: Advisor's Ring; trinket1: Frozen Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Kindling Stave; ranged: Lesser Eternal Wand
+**New at 50:** head: Knight-Lieutenant's Dreadweave Hat; shoulder: Knight-Lieutenant's Dreadweave Mantle; back: Spritecaster Cape; chest: Knight's Dreadweave Vest; waist: Defiler's Cloth Girdle; legs: Knight's Dreadweave Leggings; feet: First Sergeant's Dreadweave Boots; finger1: Blackstone Ring; finger2: Advisor's Ring; trinket1: Frozen Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Kindling Stave; ranged: Lesser Eternal Wand
 
 No-known-source sample (15 of 802, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat
 
 ### Band 60 (orc, 253225111100011501-23552300000000000-0000000000000000000)
 
-Set DPS (verified): 480.0. Weights run: 0.9s. Verify run: 0.8s. 1235 eligible items had no known source.
+Set DPS (verified): 480.0. Weights run: 0.7s. Verify run: 0.6s. 1225 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.137 ± 0.028, crit=6.853 ± 0.198, hit=8.396 ± 0.345, spell_haste=4.452 ± 0.152, spell_penetration=not significant (0.000 ± 0.000), arcane_power=1.000 ± 0.002
 
@@ -304,5 +304,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Frostfire Circlet; neck: Onyxia Tooth Pendant; shoulder: Mantle of the Timbermaw; back: Chromatic Cloak; chest: Frostfire Robe; wrist: Rockfury Bracers; hands: Gloves of Spell Mastery; waist: Belt of the Archmage; legs: Frostfire Leggings; feet: Frostfire Sandals; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket2: Uther's Strength; main_hand: High Warlord's War Staff; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat
+No-known-source sample (15 of 1225, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat
 

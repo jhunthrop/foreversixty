@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (dwarf, 0000000000000000-35300000000000000-000000000000000000)
 
-Set DPS (verified): 75.1. Weights run: 1.5s. Verify run: 1.6s. 385 eligible items had no known source.
+Set DPS (verified): 75.1. Weights run: 1.1s. Verify run: 1.2s. 385 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.067 ± 0.030, crit=8.180 ± 0.347, hit=4.699 ± 0.333, melee_haste=5.581 ± 0.983
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 385, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-35305500000000000-000000000000000000)
 
-Set DPS (verified): 90.1. Weights run: 1.6s. Verify run: 2.0s. 734 eligible items had no known source.
+Set DPS (verified): 90.1. Weights run: 1.2s. Verify run: 1.5s. 734 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.151 ± 0.048, crit=9.471 ± 0.389, hit=5.605 ± 0.389, melee_haste=not significant (1.703 ± 1.175)
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 734, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 102.1. Weights run: 1.7s. Verify run: 2.1s. 1260 eligible items had no known source.
+Set DPS (verified): 102.1. Weights run: 1.2s. Verify run: 1.5s. 1260 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.199 ± 0.068, crit=13.685 ± 0.578, hit=6.174 ± 0.454, melee_haste=7.173 ± 1.232
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 1260, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (dwarf, 5500000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 129.2. Weights run: 1.6s. Verify run: 2.2s. 1602 eligible items had no known source.
+Set DPS (verified): 129.2. Weights run: 1.2s. Verify run: 1.6s. 1602 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.235 ± 0.084, crit=14.111 ± 0.595, hit=7.061 ± 0.559, melee_haste=6.806 ± 1.475
 
@@ -126,39 +126,39 @@ No-known-source sample (15 of 1602, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 194.4. Weights run: 1.6s. Verify run: 2.2s. 2324 eligible items had no known source.
+Set DPS (verified): 188.3. Weights run: 1.2s. Verify run: 1.6s. 2288 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.339 ± 0.094, crit=20.135 ± 0.769, hit=not significant (0.000 ± 0.000), melee_haste=10.525 ± 1.657
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Cryptstalker Headpiece (22438) | Cryptstalker Headpiece [quest] | 636.3 | yes | Lieutenant Commander's Chain Helm (23306, -1.73 DPS) [vendor]; Lieutenant Commander's Chain Helm (227066, -1.73 DPS) [pvp]; Champion's Chain Helm (23251, -11.73 DPS, sim-verified) [vendor] |
+| head | Cryptstalker Headpiece (22438) | Cryptstalker Headpiece [quest] | 636.3 | yes | Lieutenant Commander's Chain Greathelm (227086, -1.29 DPS) [vendor]; Champion's Chain Helm (23251, -1.73 DPS) [vendor]; Champion's Chain Greathelm (227080, -10.81 DPS, sim-verified) [vendor] |
 | neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | 305.9 | yes | Onyxia Tooth Pendant (18404, -0.43 DPS) [quest]; Amulet of the Darkmoon (19491, -14.84 DPS) [quest]; Choker of the Shifting Sands (21505, -14.98 DPS) [quest] |
-| shoulder | Cryptstalker Spaulders (22439) | Cryptstalker Spaulders [quest] | 349.7 | yes | Lieutenant Commander's Chain Shoulders (23307, -1.46 DPS) [vendor]; Lieutenant Commander's Chain Shoulders (227068, -1.46 DPS) [pvp]; Champion's Chain Shoulders (23252, -11.39 DPS, sim-verified) [vendor] |
-| back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | 60.8 | yes | Cape of the Black Baron (13340, -0.32 DPS) [dungeon]; Cloak of the Honor Guard (20073, -0.86 DPS) [rep]; Chromatic Cloak (18509, -2.58 DPS, sim-verified) [crafted] |
-| chest | Legionnaire's Chain Hauberk (22874) (or Knight-Captain's Chain Hauberk (23292), Legionnaire's Chain Hauberk (227071)) | Lady Palanseer [vendor] | 601.2 | yes | Legionnaire's Chain Hauberk (227071, +0.00 DPS) [pvp]; Bloodsoul Breastplate (19690, -0.93 DPS) [crafted]; Knight-Captain's Chain Hauberk (23292, -4.54 DPS, sim-verified) [vendor] |
-| wrist | Cryptstalker Wristguards (22443) | Cryptstalker Wristguards [quest] | 60.8 | yes | General's Chain Wristguards (16570, -0.80 DPS) [pvp]; Forest Stalker's Bracers (19587, -0.93 DPS) [rep]; Marshal's Chain Bracers (16461, -9.28 DPS, sim-verified) [pvp] |
-| hands | Cryptstalker Handguards (22441) | Cryptstalker Handguards [quest] | 338.0 | yes | General's Chain Gloves (16571, -0.40 DPS) [vendor]; Marshal's Chain Grips (231560, -0.61 DPS) [pvp]; Marshal's Chain Grips (16463, -10.22 DPS, sim-verified) [vendor] |
-| waist | Cryptstalker Girdle (22442) | Cryptstalker Girdle [quest] | 335.7 | yes | Highlander's Leather Girdle (20045, -1.12 DPS) [rep]; Light Obsidian Belt (22195, -1.24 DPS) [crafted]; Highlander's Chain Girdle (20043, -13.20 DPS, sim-verified) [rep] |
-| legs | Legionnaire's Chain Legguards (22875) (or Knight-Captain's Chain Legguards (23293), Knight-Captain's Chain Legguards (227072), Legionnaire's Chain Legguards (227073)) | Lady Palanseer [vendor] | 601.2 | yes | Knight-Captain's Chain Legguards (227072, +0.00 DPS) [pvp]; Legionnaire's Chain Legguards (227073, +0.00 DPS) [pvp]; Knight-Captain's Chain Legguards (23293, -4.54 DPS, sim-verified) [vendor] |
-| feet | Cryptstalker Boots (22440) | Cryptstalker Boots [quest] | 77.2 | yes | Marshal's Chain Boots (16462, -0.93 DPS) [vendor]; General's Chain Sabatons (16569, -0.93 DPS) [vendor]; Striker's Footguards (21365, -8.95 DPS, sim-verified) [quest] |
+| shoulder | Cryptstalker Spaulders (22439) | Cryptstalker Spaulders [quest] | 349.7 | yes | Lieutenant Commander's Chain Shoulders (23307, -1.46 DPS) [vendor]; Lieutenant Commander's Chain Shoulders (227068, -1.46 DPS) [pvp]; Champion's Chain Shoulders (23252, -10.65 DPS, sim-verified) [vendor] |
+| back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | 60.8 | yes | Cape of the Black Baron (13340, -0.32 DPS) [dungeon]; Cloak of the Honor Guard (20073, -0.86 DPS) [rep]; Chromatic Cloak (18509, -2.90 DPS, sim-verified) [crafted] |
+| chest | Legionnaire's Chain Armor (227083) (or Knight-Captain's Chain Armor (227089)) | Lady Palanseer [vendor] | 607.2 | yes | Knight-Captain's Chain Armor (227089, +0.00 DPS, sim-verified) [vendor]; Legionnaire's Chain Hauberk (22874, -0.34 DPS) [vendor]; Knight-Captain's Chain Hauberk (23292, -0.34 DPS) [vendor] |
+| wrist | Cryptstalker Wristguards (22443) | Cryptstalker Wristguards [quest] | 60.8 | yes | General's Chain Wristguards (16570, -0.80 DPS) [pvp]; Forest Stalker's Bracers (19587, -0.93 DPS) [rep]; Marshal's Chain Bracers (16461, -9.27 DPS, sim-verified) [pvp] |
+| hands | Cryptstalker Handguards (22441) | Cryptstalker Handguards [quest] | 338.0 | yes | General's Chain Gloves (16571, -0.40 DPS) [vendor]; Marshal's Chain Grips (231560, -0.61 DPS) [pvp]; Marshal's Chain Grips (16463, -9.05 DPS, sim-verified) [vendor] |
+| waist | Cryptstalker Girdle (22442) | Cryptstalker Girdle [quest] | 335.7 | yes | Highlander's Leather Girdle (20045, -1.12 DPS) [rep]; Light Obsidian Belt (22195, -1.24 DPS) [crafted]; Highlander's Chain Girdle (20043, -12.24 DPS, sim-verified) [rep] |
+| legs | Legionnaire's Chain Legplates (227079) (or Knight-Captain's Chain Legplates (227085)) | Lady Palanseer [vendor] | 607.2 | yes | Knight-Captain's Chain Legplates (227085, +0.00 DPS, sim-verified) [vendor]; Legionnaire's Chain Legguards (22875, -0.34 DPS) [vendor]; Knight-Captain's Chain Legguards (23293, -0.34 DPS) [vendor] |
+| feet | Cryptstalker Boots (22440) | Cryptstalker Boots [quest] | 77.2 | yes | Marshal's Chain Boots (16462, -0.93 DPS) [vendor]; General's Chain Sabatons (16569, -0.93 DPS) [vendor]; Striker's Footguards (21365, -9.29 DPS, sim-verified) [quest] |
 | finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | 297.9 | yes | Dragonslayer's Signet (18403, -0.91 DPS) [quest]; Ring of Entropy (18543, -0.91 DPS) [world]; Mindtear Band (20632, -0.91 DPS) [world] |
-| finger2 | Band of the Penitent (13217) (or Dragonslayer's Signet (18403), Ring of Entropy (18543), Mindtear Band (20632), Band of Earthen Wrath (21179), Band of Earthen Might (21182), Don Rodrigo's Band (21563), Ritssyn's Ring of Chaos (21836), Ring of the Eternal Flame (23237)) | Houses of the Holy [quest] | 281.9 | yes | Dragonslayer's Signet (18403, +1.26 DPS, sim-verified) [quest]; Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
-| trinket2 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | 0.0 | yes | Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
+| finger2 | Band of the Penitent (13217) (or Dragonslayer's Signet (18403), Ring of Entropy (18543), Mindtear Band (20632), Band of Earthen Wrath (21179), Band of Earthen Might (21182), Don Rodrigo's Band (21563), Ritssyn's Ring of Chaos (21836), Ring of the Eternal Flame (23237)) | Houses of the Holy [quest] | 281.9 | yes | Dragonslayer's Signet (18403, +1.38 DPS, sim-verified) [quest]; Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world] |
+| trinket1 | Onyxia Blood Talisman (18406) | Celebrating Good Times [quest] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest] |
+| trinket2 | Talisman of Arathor (20071) | The League of Arathor [rep] | 0.0 | yes | Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest] |
 | main_hand | Grand Marshal's Longsword (12584) | Captain O'Neal [vendor] | 309.9 | yes | Ironbark Staff (20069, +0.00 DPS) [rep]; High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp] |
 | off_hand | High Warlord's Blade (16345) (or Grand Marshal's Handaxe (18827), High Warlord's Cleaver (18828), Grand Marshal's Dirk (18838), High Warlord's Razor (18840), Grand Marshal's Right Hand Blade (18843), High Warlord's Right Claw (18844), Grand Marshal's Left Hand Blade (18847), High Warlord's Left Claw (18848), Grand Marshal's Swiftblade (23456), High Warlord's Quickblade (23467), High Warlord's Blade (234552), High Warlord's Quickblade (234553), High Warlord's Cleaver (234554), High Warlord's Razor (234556), High Warlord's Right Claw (234557), High Warlord's Left Claw (234558), Grand Marshal's Swiftblade (234579), Grand Marshal's Handaxe (234580), Grand Marshal's Dirk (234582), Grand Marshal's Right Hand Blade (234583), Grand Marshal's Left Hand Blade (234584)) | Sergeant Thunderhorn [vendor] | 309.9 | yes | Grand Marshal's Handaxe (18827, +0.00 DPS, sim-verified) [vendor]; High Warlord's Cleaver (18828, +0.00 DPS) [vendor]; Grand Marshal's Dirk (18838, +0.00 DPS) [vendor] |
 | ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | 755.5 | yes | High Warlord's Recurve (234559, -4.60 DPS) [pvp]; High Warlord's Crossbow (234560, -4.60 DPS) [pvp]; High Warlord's Street Sweeper (234561, -4.60 DPS) [pvp] |
 
-**New at 60:** head: Cryptstalker Headpiece; neck: Medallion of the Dawn; shoulder: Cryptstalker Spaulders; back: Cloak of the Fallen God; chest: Legionnaire's Chain Hauberk; wrist: Cryptstalker Wristguards; hands: Cryptstalker Handguards; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legguards; feet: Cryptstalker Boots; finger1: Don Julio's Band; finger2: Band of the Penitent; trinket1: Ankh of Life; main_hand: Grand Marshal's Longsword; off_hand: High Warlord's Blade; ranged: The Purifier
+**New at 60:** head: Cryptstalker Headpiece; neck: Medallion of the Dawn; shoulder: Cryptstalker Spaulders; back: Cloak of the Fallen God; chest: Legionnaire's Chain Armor; wrist: Cryptstalker Wristguards; hands: Cryptstalker Handguards; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legplates; feet: Cryptstalker Boots; finger1: Don Julio's Band; finger2: Band of the Penitent; trinket1: Onyxia Blood Talisman; trinket2: Talisman of Arathor; main_hand: Grand Marshal's Longsword; off_hand: High Warlord's Blade; ranged: The Purifier
 
-No-known-source sample (15 of 2324, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 2288, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ## Horde
 
 ### Band 20 (troll, 0000000000000000-35300000000000000-000000000000000000)
 
-Set DPS (verified): 74.6. Weights run: 1.5s. Verify run: 1.6s. 383 eligible items had no known source.
+Set DPS (verified): 74.6. Weights run: 1.1s. Verify run: 1.2s. 383 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.067 ± 0.030, crit=8.180 ± 0.347, hit=4.699 ± 0.333, melee_haste=5.581 ± 0.983
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 383, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 0000000000000000-35305500000000000-000000000000000000)
 
-Set DPS (verified): 91.4. Weights run: 1.6s. Verify run: 2.0s. 734 eligible items had no known source.
+Set DPS (verified): 91.4. Weights run: 1.2s. Verify run: 1.4s. 734 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.151 ± 0.048, crit=9.471 ± 0.389, hit=5.605 ± 0.389, melee_haste=not significant (1.703 ± 1.175)
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 734, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 0000000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 103.7. Weights run: 1.7s. Verify run: 2.0s. 1258 eligible items had no known source.
+Set DPS (verified): 103.7. Weights run: 1.2s. Verify run: 1.5s. 1258 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.199 ± 0.068, crit=13.685 ± 0.578, hit=6.174 ± 0.454, melee_haste=7.173 ± 1.232
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 1258, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (troll, 5500000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 137.8. Weights run: 1.6s. Verify run: 2.2s. 1601 eligible items had no known source.
+Set DPS (verified): 137.8. Weights run: 1.2s. Verify run: 1.6s. 1601 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.235 ± 0.084, crit=14.111 ± 0.595, hit=7.061 ± 0.559, melee_haste=6.806 ± 1.475
 
@@ -278,31 +278,31 @@ No-known-source sample (15 of 1601, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (troll, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 202.9. Weights run: 1.6s. Verify run: 2.2s. 2321 eligible items had no known source.
+Set DPS (verified): 200.0. Weights run: 1.2s. Verify run: 1.6s. 2285 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.339 ± 0.094, crit=20.135 ± 0.769, hit=not significant (0.000 ± 0.000), melee_haste=10.525 ± 1.657
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Cryptstalker Headpiece (22438) | Cryptstalker Headpiece [quest] | 636.3 | yes | Lieutenant Commander's Chain Helm (23306, -1.73 DPS) [vendor]; Lieutenant Commander's Chain Helm (227066, -1.73 DPS) [pvp]; Champion's Chain Helm (23251, -11.95 DPS, sim-verified) [vendor] |
+| head | Cryptstalker Headpiece (22438) | Cryptstalker Headpiece [quest] | 636.3 | yes | Lieutenant Commander's Chain Greathelm (227086, -1.29 DPS) [vendor]; Champion's Chain Helm (23251, -1.73 DPS) [vendor]; Champion's Chain Greathelm (227080, -10.73 DPS, sim-verified) [vendor] |
 | neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | 305.9 | yes | Onyxia Tooth Pendant (18404, -0.43 DPS) [quest]; Amulet of the Darkmoon (19491, -14.84 DPS) [quest]; Choker of the Shifting Sands (21505, -14.98 DPS) [quest] |
-| shoulder | Cryptstalker Spaulders (22439) | Cryptstalker Spaulders [quest] | 349.7 | yes | Lieutenant Commander's Chain Shoulders (23307, -1.46 DPS) [vendor]; Lieutenant Commander's Chain Shoulders (227068, -1.46 DPS) [pvp]; Champion's Chain Shoulders (23252, -11.43 DPS, sim-verified) [vendor] |
-| back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | 60.8 | yes | Cape of the Black Baron (13340, -0.32 DPS) [dungeon]; Deathguard's Cloak (20068, -0.86 DPS) [rep]; Chromatic Cloak (18509, -2.69 DPS, sim-verified) [crafted] |
-| chest | Legionnaire's Chain Hauberk (22874) (or Knight-Captain's Chain Hauberk (23292), Legionnaire's Chain Hauberk (227071)) | Lady Palanseer [vendor] | 601.2 | yes | Legionnaire's Chain Hauberk (227071, +0.00 DPS) [pvp]; Bloodsoul Breastplate (19690, -0.93 DPS) [crafted]; Knight-Captain's Chain Hauberk (23292, -4.52 DPS, sim-verified) [vendor] |
-| wrist | Cryptstalker Wristguards (22443) | Cryptstalker Wristguards [quest] | 60.8 | yes | General's Chain Wristguards (16570, -0.80 DPS) [pvp]; Forest Stalker's Bracers (19587, -0.93 DPS) [rep]; Marshal's Chain Bracers (16461, -9.54 DPS, sim-verified) [pvp] |
-| hands | Cryptstalker Handguards (22441) | Cryptstalker Handguards [quest] | 338.0 | yes | General's Chain Gloves (16571, -0.40 DPS) [vendor]; Marshal's Chain Grips (231560, -0.61 DPS) [pvp]; Marshal's Chain Grips (16463, -10.07 DPS, sim-verified) [vendor] |
-| waist | Cryptstalker Girdle (22442) | Cryptstalker Girdle [quest] | 335.7 | yes | Defiler's Leather Girdle (20190, -1.12 DPS) [rep]; Light Obsidian Belt (22195, -1.24 DPS) [crafted]; Defiler's Chain Girdle (20150, -14.07 DPS, sim-verified) [rep] |
-| legs | Legionnaire's Chain Legguards (22875) (or Knight-Captain's Chain Legguards (23293), Knight-Captain's Chain Legguards (227072), Legionnaire's Chain Legguards (227073)) | Lady Palanseer [vendor] | 601.2 | yes | Knight-Captain's Chain Legguards (227072, +0.00 DPS) [pvp]; Legionnaire's Chain Legguards (227073, +0.00 DPS) [pvp]; Knight-Captain's Chain Legguards (23293, -4.52 DPS, sim-verified) [vendor] |
-| feet | Cryptstalker Boots (22440) | Cryptstalker Boots [quest] | 77.2 | yes | Marshal's Chain Boots (16462, -0.93 DPS) [vendor]; General's Chain Sabatons (16569, -0.93 DPS) [vendor]; Striker's Footguards (21365, -8.96 DPS, sim-verified) [quest] |
-| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 297.9 | yes | Dragonslayer's Signet (18403, -0.91 DPS) [quest]; Ring of Entropy (18543, -0.91 DPS) [world]; Mindtear Band (20632, -0.91 DPS) [world] |
-| finger2 | Band of the Penitent (13217) (or Dragonslayer's Signet (18403), Ring of Entropy (18543), Mindtear Band (20632), Band of Earthen Wrath (21179), Band of Earthen Might (21182), Don Rodrigo's Band (21563), Ritssyn's Ring of Chaos (21836), Ring of the Eternal Flame (23237)) | Houses of the Holy [quest] | 281.9 | yes | Dragonslayer's Signet (18403, +0.74 DPS, sim-verified) [quest]; Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world] |
+| shoulder | Cryptstalker Spaulders (22439) | Cryptstalker Spaulders [quest] | 349.7 | yes | Lieutenant Commander's Chain Shoulders (23307, -1.46 DPS) [vendor]; Lieutenant Commander's Chain Shoulders (227068, -1.46 DPS) [pvp]; Champion's Chain Shoulders (23252, -10.33 DPS, sim-verified) [vendor] |
+| back | Cloak of the Fallen God (21710) | The Savior of Kalimdor [quest] | 60.8 | yes | Cape of the Black Baron (13340, -0.32 DPS) [dungeon]; Deathguard's Cloak (20068, -0.86 DPS) [rep]; Chromatic Cloak (18509, -3.42 DPS, sim-verified) [crafted] |
+| chest | Legionnaire's Chain Armor (227083) (or Knight-Captain's Chain Armor (227089)) | Lady Palanseer [vendor] | 607.2 | yes | Knight-Captain's Chain Armor (227089, +0.00 DPS, sim-verified) [vendor]; Legionnaire's Chain Hauberk (22874, -0.34 DPS) [vendor]; Knight-Captain's Chain Hauberk (23292, -0.34 DPS) [vendor] |
+| wrist | Cryptstalker Wristguards (22443) | Cryptstalker Wristguards [quest] | 60.8 | yes | General's Chain Wristguards (16570, -0.80 DPS) [pvp]; Forest Stalker's Bracers (19587, -0.93 DPS) [rep]; Marshal's Chain Bracers (16461, -9.18 DPS, sim-verified) [pvp] |
+| hands | Cryptstalker Handguards (22441) | Cryptstalker Handguards [quest] | 338.0 | yes | General's Chain Gloves (16571, -0.40 DPS) [vendor]; Marshal's Chain Grips (231560, -0.61 DPS) [pvp]; Marshal's Chain Grips (16463, -8.56 DPS, sim-verified) [vendor] |
+| waist | Cryptstalker Girdle (22442) | Cryptstalker Girdle [quest] | 335.7 | yes | Defiler's Leather Girdle (20190, -1.12 DPS) [rep]; Light Obsidian Belt (22195, -1.24 DPS) [crafted]; Defiler's Chain Girdle (20150, -11.92 DPS, sim-verified) [rep] |
+| legs | Legionnaire's Chain Legplates (227079) (or Knight-Captain's Chain Legplates (227085)) | Lady Palanseer [vendor] | 607.2 | yes | Knight-Captain's Chain Legplates (227085, +0.00 DPS, sim-verified) [vendor]; Legionnaire's Chain Legguards (22875, -0.34 DPS) [vendor]; Knight-Captain's Chain Legguards (23293, -0.34 DPS) [vendor] |
+| feet | Cryptstalker Boots (22440) | Cryptstalker Boots [quest] | 77.2 | yes | Marshal's Chain Boots (16462, -0.93 DPS) [vendor]; General's Chain Sabatons (16569, -0.93 DPS) [vendor]; Striker's Footguards (21365, -7.48 DPS, sim-verified) [quest] |
+| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 297.9 | yes | Ring of Entropy (18543, -0.91 DPS) [world]; Mindtear Band (20632, -0.91 DPS) [world]; Band of the Penitent (13217, -4.94 DPS, sim-verified) [quest] |
+| finger2 | Dragonslayer's Signet (18403) | For All To See [quest] | 281.9 | yes | Ring of Entropy (18543, +0.00 DPS) [world]; Mindtear Band (20632, +0.00 DPS) [world]; Band of the Penitent (13217, -1.98 DPS, sim-verified) [quest] |
 | trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | 84.0 | yes | Tidal Charm (1404, -4.77 DPS) [vendor]; Guardian Talisman (1490, -4.77 DPS) [quest]; Blazing Emblem (2802, -4.77 DPS) [world_drop] |
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Tidal Charm (1404, +0.00 DPS) [vendor]; Guardian Talisman (1490, +0.00 DPS) [quest]; Blazing Emblem (2802, +0.00 DPS) [world_drop] |
 | main_hand | Grand Marshal's Longsword (12584) | Captain O'Neal [vendor] | 309.9 | yes | Ironbark Staff (20220, +0.00 DPS) [rep]; High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp] |
 | off_hand | High Warlord's Blade (16345) (or Grand Marshal's Handaxe (18827), High Warlord's Cleaver (18828), Grand Marshal's Dirk (18838), High Warlord's Razor (18840), Grand Marshal's Right Hand Blade (18843), High Warlord's Right Claw (18844), Grand Marshal's Left Hand Blade (18847), High Warlord's Left Claw (18848), Grand Marshal's Swiftblade (23456), High Warlord's Quickblade (23467), High Warlord's Blade (234552), High Warlord's Quickblade (234553), High Warlord's Cleaver (234554), High Warlord's Razor (234556), High Warlord's Right Claw (234557), High Warlord's Left Claw (234558), Grand Marshal's Swiftblade (234579), Grand Marshal's Handaxe (234580), Grand Marshal's Dirk (234582), Grand Marshal's Right Hand Blade (234583), Grand Marshal's Left Hand Blade (234584)) | Sergeant Thunderhorn [vendor] | 309.9 | yes | Grand Marshal's Handaxe (18827, +0.00 DPS, sim-verified) [vendor]; High Warlord's Cleaver (18828, +0.00 DPS) [vendor]; Grand Marshal's Dirk (18838, +0.00 DPS) [vendor] |
 | ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | 755.5 | yes | High Warlord's Recurve (234559, -4.60 DPS) [pvp]; High Warlord's Crossbow (234560, -4.60 DPS) [pvp]; High Warlord's Street Sweeper (234561, -4.60 DPS) [pvp] |
 
-**New at 60:** head: Cryptstalker Headpiece; neck: Medallion of the Dawn; shoulder: Cryptstalker Spaulders; back: Cloak of the Fallen God; chest: Legionnaire's Chain Hauberk; wrist: Cryptstalker Wristguards; hands: Cryptstalker Handguards; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legguards; feet: Cryptstalker Boots; finger1: Don Julio's Band; finger2: Band of the Penitent; trinket2: Ankh of Life; main_hand: Grand Marshal's Longsword; off_hand: High Warlord's Blade; ranged: The Purifier
+**New at 60:** head: Cryptstalker Headpiece; neck: Medallion of the Dawn; shoulder: Cryptstalker Spaulders; back: Cloak of the Fallen God; chest: Legionnaire's Chain Armor; wrist: Cryptstalker Wristguards; hands: Cryptstalker Handguards; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legplates; feet: Cryptstalker Boots; finger1: Don Julio's Band; finger2: Dragonslayer's Signet; trinket2: Ankh of Life; main_hand: Grand Marshal's Longsword; off_hand: High Warlord's Blade; ranged: The Purifier
 
-No-known-source sample (15 of 2321, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
+No-known-source sample (15 of 2285, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring
 

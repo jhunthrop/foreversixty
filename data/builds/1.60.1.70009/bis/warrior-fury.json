@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:07:49Z",
+  "generated_at": "2026-09-30T00:41:48Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -682,8 +682,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Dwarven Fishing Pole"
       ],
-      "weights_run_seconds": 1.493630115,
-      "verify_run_seconds": 1.4860476089999999,
+      "weights_run_seconds": 1.08758203,
+      "verify_run_seconds": 1.162755131,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1427,8 +1427,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.493630115,
-      "verify_run_seconds": 1.46511777,
+      "weights_run_seconds": 1.08758203,
+      "verify_run_seconds": 1.108437979,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2260,8 +2260,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.614773997,
-      "verify_run_seconds": 1.745652091,
+      "weights_run_seconds": 1.1803964200000001,
+      "verify_run_seconds": 1.289280537,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3098,8 +3098,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.614773997,
-      "verify_run_seconds": 1.767750803,
+      "weights_run_seconds": 1.1803964200000001,
+      "verify_run_seconds": 1.351327913,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3913,8 +3913,8 @@
         "main_hand: Ardent Custodian",
         "off_hand: Vanquisher's Sword"
       ],
-      "weights_run_seconds": 1.8971660670000001,
-      "verify_run_seconds": 2.064012009,
+      "weights_run_seconds": 1.3826136980000001,
+      "verify_run_seconds": 1.559950905,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4732,8 +4732,8 @@
         "main_hand: Ardent Custodian",
         "off_hand: Vanquisher's Sword"
       ],
-      "weights_run_seconds": 1.8971660670000001,
-      "verify_run_seconds": 1.9693774579999999,
+      "weights_run_seconds": 1.3826136980000001,
+      "verify_run_seconds": 1.5006413570000001,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5572,8 +5572,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.050838585,
-      "verify_run_seconds": 1.9161575979999999,
+      "weights_run_seconds": 1.505265234,
+      "verify_run_seconds": 1.439544208,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6413,8 +6413,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.050838585,
-      "verify_run_seconds": 1.9738441039999999,
+      "weights_run_seconds": 1.505265234,
+      "verify_run_seconds": 1.489434577,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6732,13 +6732,13 @@
               "dps_delta": -2.9829637679156056
             },
             {
-              "item_id": 22191,
-              "item_name": "Obsidian Mail Tunic",
-              "score": 258.84118496468886,
+              "item_id": 252484,
+              "item_name": "Timbermaw Tunic",
+              "score": 268.2943743724589,
               "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "score_delta": -110.89244047784757,
-              "dps_delta": -6.402367165066118
+              "source": "Leatherworking",
+              "score_delta": -101.43925107007755,
+              "dps_delta": -5.856587946855585
             }
           ]
         },
@@ -7221,7 +7221,7 @@
         }
       ],
       "set_dps": 269.690083973601,
-      "no_source_count": 2773,
+      "no_source_count": 2736,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -7258,52 +7258,52 @@
         "off_hand: Grand Marshal's Swiftblade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.063401376,
-      "verify_run_seconds": 2.331726907,
+      "weights_run_seconds": 1.540278678,
+      "verify_run_seconds": 1.731155835,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 715,
-          "sourced": 475
+          "sourced": 480
         },
         "feet": {
           "eligible": 612,
-          "sourced": 398
+          "sourced": 400
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 622,
-          "sourced": 407
+          "sourced": 408
         },
         "head": {
           "eligible": 450,
-          "sourced": 279
+          "sourced": 289
         },
         "legs": {
           "eligible": 609,
-          "sourced": 385
+          "sourced": 393
         },
         "main_hand": {
           "eligible": 1061,
-          "sourced": 684
+          "sourced": 690
         },
         "neck": {
           "eligible": 169,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 353,
-          "sourced": 187
+          "sourced": 188
         },
         "ranged": {
           "eligible": 179,
@@ -7577,13 +7577,13 @@
               "dps_delta": -2.9829637679156056
             },
             {
-              "item_id": 22191,
-              "item_name": "Obsidian Mail Tunic",
-              "score": 258.84118496468886,
+              "item_id": 252484,
+              "item_name": "Timbermaw Tunic",
+              "score": 268.2943743724589,
               "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "score_delta": -110.89244047784757,
-              "dps_delta": -6.402367165066118
+              "source": "Leatherworking",
+              "score_delta": -101.43925107007755,
+              "dps_delta": -5.856587946855585
             }
           ]
         },
@@ -8066,7 +8066,7 @@
         }
       ],
       "set_dps": 248.06987566736203,
-      "no_source_count": 2770,
+      "no_source_count": 2733,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8102,52 +8102,52 @@
         "off_hand: Grand Marshal's Swiftblade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.063401376,
-      "verify_run_seconds": 2.366139229,
+      "weights_run_seconds": 1.540278678,
+      "verify_run_seconds": 1.796151577,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 710,
-          "sourced": 471
+          "sourced": 476
         },
         "feet": {
           "eligible": 609,
-          "sourced": 396
+          "sourced": 398
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 622,
-          "sourced": 404
+          "sourced": 405
         },
         "head": {
           "eligible": 450,
-          "sourced": 279
+          "sourced": 289
         },
         "legs": {
           "eligible": 603,
-          "sourced": 377
+          "sourced": 385
         },
         "main_hand": {
           "eligible": 1055,
-          "sourced": 680
+          "sourced": 686
         },
         "neck": {
           "eligible": 171,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 353,
-          "sourced": 188
+          "sourced": 189
         },
         "ranged": {
           "eligible": 178,

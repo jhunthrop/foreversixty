@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:03:52Z",
+  "generated_at": "2026-09-30T00:38:50Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -679,8 +679,8 @@
         "off_hand: Cruel Barb",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.110520883,
-      "verify_run_seconds": 1.2329395810000001,
+      "weights_run_seconds": 0.788515588,
+      "verify_run_seconds": 0.918826561,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1434,8 +1434,8 @@
         "off_hand: Cruel Barb",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.110520883,
-      "verify_run_seconds": 1.21966365,
+      "weights_run_seconds": 0.788515588,
+      "verify_run_seconds": 0.931180543,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2263,8 +2263,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.037046308,
-      "verify_run_seconds": 1.5444966089999999,
+      "weights_run_seconds": 0.812029259,
+      "verify_run_seconds": 1.182269643,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3102,8 +3102,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.037046308,
-      "verify_run_seconds": 1.5926096410000001,
+      "weights_run_seconds": 0.812029259,
+      "verify_run_seconds": 1.202368878,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3913,8 +3913,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.132298439,
-      "verify_run_seconds": 1.534055091,
+      "weights_run_seconds": 0.824026252,
+      "verify_run_seconds": 1.143037057,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4731,8 +4731,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.132298439,
-      "verify_run_seconds": 1.553056428,
+      "weights_run_seconds": 0.824026252,
+      "verify_run_seconds": 1.166175746,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5558,8 +5558,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.131476591,
-      "verify_run_seconds": 1.424932361,
+      "weights_run_seconds": 0.819263289,
+      "verify_run_seconds": 1.050380056,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6385,8 +6385,8 @@
         "off_hand: Hammer of the Northern Wind",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.131476591,
-      "verify_run_seconds": 1.33499473,
+      "weights_run_seconds": 0.819263289,
+      "verify_run_seconds": 1.004925808,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6505,7 +6505,7 @@
           "item_name": "Bonescythe Helmet",
           "source": "Bonescythe Helmet",
           "source_kind": "quest",
-          "score": 316.1076070350479,
+          "score": 316.107607035048,
           "verified": true,
           "alternatives": [
             {
@@ -6514,8 +6514,8 @@
               "score": 230.2352663835603,
               "source_kind": "crafted",
               "source": "Engineering",
-              "score_delta": -85.87234065148763,
-              "dps_delta": -4.597612654171519
+              "score_delta": -85.87234065148769,
+              "dps_delta": -4.597612654171522
             },
             {
               "item_id": 13404,
@@ -6523,8 +6523,8 @@
               "score": 203.06508823170304,
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
-              "score_delta": -113.04251880334488,
-              "dps_delta": -6.052306376729428
+              "score_delta": -113.04251880334493,
+              "dps_delta": -6.052306376729431
             },
             {
               "item_id": 11735,
@@ -6532,7 +6532,7 @@
               "score": 230.2352663835603,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Guzzler",
-              "score_delta": -85.87234065148763,
+              "score_delta": -85.87234065148769,
               "dps_delta": -10.192889071516618,
               "verified": true
             }
@@ -6587,15 +6587,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23313,
-              "item_name": "Lieutenant Commander's Leather Shoulders",
-              "score": 181.09136071174163,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "score_delta": -8.725649629785835,
-              "dps_delta": -0.46717204689441993
-            },
-            {
               "item_id": 227054,
               "item_name": "Lieutenant Commander's Leather Shoulders",
               "score": 181.09136071174163,
@@ -6607,9 +6598,18 @@
             {
               "item_id": 23258,
               "item_name": "Champion's Leather Shoulders",
-              "score": 181.09136071174163,
+              "score": 181.0913607117416,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
+              "score_delta": -8.725649629785863,
+              "dps_delta": -0.4671720468944215
+            },
+            {
+              "item_id": 23313,
+              "item_name": "Lieutenant Commander's Leather Shoulders",
+              "score": 181.09136071174163,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
               "score_delta": -8.725649629785835,
               "dps_delta": -4.800992718673513,
               "verified": true
@@ -6662,7 +6662,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Bonescythe Breastplate",
           "source_kind": "quest",
-          "score": 354.2089939035218,
+          "score": 354.20899390352173,
           "verified": true,
           "alternatives": [
             {
@@ -6671,8 +6671,8 @@
               "score": 230.2352663835603,
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "score_delta": -123.9737275199615,
-              "dps_delta": -6.637564250680672
+              "score_delta": -123.97372751996144,
+              "dps_delta": -6.6375642506806685
             },
             {
               "item_id": 19834,
@@ -6680,18 +6680,18 @@
               "score": 274.2352663835603,
               "source_kind": "quest",
               "source": "Paragons of Power: The Madcap's Tunic",
-              "score_delta": -79.97372751996147,
+              "score_delta": -79.97372751996141,
               "dps_delta": -7.190859508482902,
               "verified": true
             },
             {
               "item_id": 21364,
               "item_name": "Deathdealer's Vest",
-              "score": 210.76631690729056,
+              "score": 210.7663169072906,
               "source_kind": "quest",
               "source": "Deathdealer's Vest",
-              "score_delta": -143.44267699623123,
-              "dps_delta": -7.679933514129566
+              "score_delta": -143.44267699623114,
+              "dps_delta": -7.679933514129561
             }
           ]
         },
@@ -6815,8 +6815,8 @@
         },
         {
           "slot": "legs",
-          "item_id": 231548,
-          "item_name": "Marshal's Leather Leggings",
+          "item_id": 231554,
+          "item_name": "General's Leather Legguards",
           "source": "Rank 16",
           "source_kind": "pvp",
           "score": 240.77384005007664,
@@ -6842,8 +6842,8 @@
               "dps_delta": -1.5217008170388999e-15
             },
             {
-              "item_id": 231554,
-              "item_name": "General's Leather Legguards",
+              "item_id": 231548,
+              "item_name": "Marshal's Leather Leggings",
               "score": 240.77384005007661,
               "source_kind": "pvp",
               "source": "Rank 16",
@@ -6858,7 +6858,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Bonescythe Sabatons",
           "source_kind": "quest",
-          "score": 223.09136071174163,
+          "score": 223.0913607117416,
           "verified": true,
           "alternatives": [
             {
@@ -6867,7 +6867,7 @@
               "score": 80.2858589006175,
               "source_kind": "quest",
               "source": "Deathdealer's Boots",
-              "score_delta": -142.80550181112415,
+              "score_delta": -142.8055018111241,
               "dps_delta": -3.3159185636145594,
               "verified": true
             },
@@ -6886,8 +6886,8 @@
               "score": 42.52114744805678,
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
-              "score_delta": -180.57021326368485,
-              "dps_delta": -9.667745064000247
+              "score_delta": -180.57021326368482,
+              "dps_delta": -9.667745064000245
             }
           ]
         },
@@ -7161,7 +7161,7 @@
         }
       ],
       "set_dps": 282.06697651889675,
-      "no_source_count": 1792,
+      "no_source_count": 1774,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -7188,7 +7188,7 @@
         "wrist: Bonescythe Bracers",
         "hands: Bonescythe Gauntlets",
         "waist: Bonescythe Waistguard",
-        "legs: Marshal's Leather Leggings",
+        "legs: General's Leather Legguards",
         "feet: Bonescythe Sabatons",
         "finger1: Don Julio's Band",
         "finger2: Band of Earthen Might",
@@ -7197,16 +7197,16 @@
         "off_hand: Grand Marshal's Swiftblade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.126806214,
-      "verify_run_seconds": 1.812036046,
+      "weights_run_seconds": 0.841003676,
+      "verify_run_seconds": 1.3793755779999999,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 475,
-          "sourced": 315
+          "sourced": 317
         },
         "feet": {
           "eligible": 363,
@@ -7214,11 +7214,11 @@
         },
         "finger1": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 379,
@@ -7226,23 +7226,23 @@
         },
         "head": {
           "eligible": 286,
-          "sourced": 181
+          "sourced": 186
         },
         "legs": {
           "eligible": 382,
-          "sourced": 248
+          "sourced": 251
         },
         "main_hand": {
           "eligible": 496,
-          "sourced": 315
+          "sourced": 318
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 69
+          "sourced": 70
         },
         "ranged": {
           "eligible": 180,
@@ -7317,7 +7317,7 @@
           "item_name": "Bonescythe Helmet",
           "source": "Bonescythe Helmet",
           "source_kind": "quest",
-          "score": 316.107607035048,
+          "score": 316.1076070350479,
           "verified": true,
           "alternatives": [
             {
@@ -7326,8 +7326,8 @@
               "score": 230.2352663835603,
               "source_kind": "crafted",
               "source": "Engineering",
-              "score_delta": -85.87234065148769,
-              "dps_delta": -4.597612654171522
+              "score_delta": -85.87234065148763,
+              "dps_delta": -4.597612654171519
             },
             {
               "item_id": 13404,
@@ -7335,8 +7335,8 @@
               "score": 203.06508823170304,
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
-              "score_delta": -113.04251880334493,
-              "dps_delta": -6.052306376729431
+              "score_delta": -113.04251880334488,
+              "dps_delta": -6.052306376729428
             },
             {
               "item_id": 11735,
@@ -7344,7 +7344,7 @@
               "score": 230.2352663835603,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Guzzler",
-              "score_delta": -85.87234065148769,
+              "score_delta": -85.87234065148763,
               "dps_delta": -9.949694301759166,
               "verified": true
             }
@@ -7409,11 +7409,11 @@
             {
               "item_id": 227054,
               "item_name": "Lieutenant Commander's Leather Shoulders",
-              "score": 181.0913607117416,
+              "score": 181.09136071174163,
               "source_kind": "pvp",
               "source": "Rank 14",
-              "score_delta": -8.725649629785863,
-              "dps_delta": -0.4671720468944215
+              "score_delta": -8.725649629785835,
+              "dps_delta": -0.46717204689441993
             },
             {
               "item_id": 23258,
@@ -7473,7 +7473,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Bonescythe Breastplate",
           "source_kind": "quest",
-          "score": 354.20899390352173,
+          "score": 354.2089939035218,
           "verified": true,
           "alternatives": [
             {
@@ -7482,7 +7482,7 @@
               "score": 274.2352663835603,
               "source_kind": "quest",
               "source": "Paragons of Power: The Madcap's Tunic",
-              "score_delta": -79.97372751996141,
+              "score_delta": -79.97372751996147,
               "dps_delta": -6.183938491584854,
               "verified": true
             },
@@ -7492,8 +7492,8 @@
               "score": 230.2352663835603,
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "score_delta": -123.97372751996144,
-              "dps_delta": -6.6375642506806685
+              "score_delta": -123.9737275199615,
+              "dps_delta": -6.637564250680672
             },
             {
               "item_id": 21364,
@@ -7501,8 +7501,8 @@
               "score": 210.76631690729056,
               "source_kind": "quest",
               "source": "Deathdealer's Vest",
-              "score_delta": -143.44267699623117,
-              "dps_delta": -7.679933514129563
+              "score_delta": -143.44267699623123,
+              "dps_delta": -7.679933514129566
             }
           ]
         },
@@ -7626,22 +7626,41 @@
         },
         {
           "slot": "legs",
-          "item_id": 231548,
+          "item_id": 16456,
           "item_name": "Marshal's Leather Leggings",
-          "source": "Rank 16",
-          "source_kind": "pvp",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
           "score": 240.77384005007664,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 231548,
+              "item_name": "Marshal's Leather Leggings"
+            },
+            {
+              "item_id": 231554,
+              "item_name": "General's Leather Legguards"
+            }
+          ],
           "alternatives": [
             {
-              "item_id": 16456,
+              "item_id": 231548,
               "item_name": "Marshal's Leather Leggings",
-              "score": 240.77384005007661,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "score_delta": -2.842170943040401e-14,
+              "score": 240.77384005007664,
+              "source_kind": "pvp",
+              "source": "Rank 16",
+              "score_delta": 0,
               "dps_delta": 0,
               "verified": true
+            },
+            {
+              "item_id": 231554,
+              "item_name": "General's Leather Legguards",
+              "score": 240.77384005007664,
+              "source_kind": "pvp",
+              "source": "Rank 16",
+              "score_delta": 0,
+              "dps_delta": 0
             },
             {
               "item_id": 16564,
@@ -7649,15 +7668,6 @@
               "score": 240.77384005007661,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -2.842170943040401e-14,
-              "dps_delta": -1.5217008170388999e-15
-            },
-            {
-              "item_id": 231554,
-              "item_name": "General's Leather Legguards",
-              "score": 240.77384005007661,
-              "source_kind": "pvp",
-              "source": "Rank 16",
               "score_delta": -2.842170943040401e-14,
               "dps_delta": -1.5217008170388999e-15
             }
@@ -7972,7 +7982,7 @@
         }
       ],
       "set_dps": 285.7386733914677,
-      "no_source_count": 1791,
+      "no_source_count": 1773,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8007,16 +8017,16 @@
         "off_hand: Grand Marshal's Swiftblade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.126806214,
-      "verify_run_seconds": 1.749637039,
+      "weights_run_seconds": 0.841003676,
+      "verify_run_seconds": 1.310994857,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 472,
-          "sourced": 313
+          "sourced": 315
         },
         "feet": {
           "eligible": 367,
@@ -8024,11 +8034,11 @@
         },
         "finger1": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 379,
@@ -8036,23 +8046,23 @@
         },
         "head": {
           "eligible": 287,
-          "sourced": 182
+          "sourced": 187
         },
         "legs": {
           "eligible": 377,
-          "sourced": 241
+          "sourced": 244
         },
         "main_hand": {
           "eligible": 495,
-          "sourced": 315
+          "sourced": 318
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 129,
-          "sourced": 69
+          "sourced": 70
         },
         "ranged": {
           "eligible": 179,

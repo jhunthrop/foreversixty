@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:00:49Z",
+  "generated_at": "2026-09-30T00:36:32Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -639,8 +639,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.533231018,
-      "verify_run_seconds": 1.6254923799999998,
+      "weights_run_seconds": 1.095609955,
+      "verify_run_seconds": 1.213308252,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1354,8 +1354,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.533231018,
-      "verify_run_seconds": 1.576259629,
+      "weights_run_seconds": 1.095609955,
+      "verify_run_seconds": 1.19104566,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2211,8 +2211,8 @@
         "off_hand: Prison Shank",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.6444202209999998,
-      "verify_run_seconds": 2.045669982,
+      "weights_run_seconds": 1.162044516,
+      "verify_run_seconds": 1.5091463360000001,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3076,8 +3076,8 @@
         "off_hand: Prison Shank",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.6444202209999998,
-      "verify_run_seconds": 1.964897881,
+      "weights_run_seconds": 1.162044516,
+      "verify_run_seconds": 1.4499276669999999,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3870,8 +3870,8 @@
         "main_hand: Frost Tiger Blade",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.667528716,
-      "verify_run_seconds": 2.057591028,
+      "weights_run_seconds": 1.1952629670000001,
+      "verify_run_seconds": 1.518273356,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4659,8 +4659,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Sniper Rifle"
       ],
-      "weights_run_seconds": 1.667528716,
-      "verify_run_seconds": 2.030646872,
+      "weights_run_seconds": 1.1952629670000001,
+      "verify_run_seconds": 1.483224151,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5503,8 +5503,8 @@
         "off_hand: Inventor's Focal Sword",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.640635082,
-      "verify_run_seconds": 2.154220769,
+      "weights_run_seconds": 1.181505955,
+      "verify_run_seconds": 1.596538639,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6350,8 +6350,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.640635082,
-      "verify_run_seconds": 2.163291854,
+      "weights_run_seconds": 1.181505955,
+      "verify_run_seconds": 1.602378505,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6474,22 +6474,13 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23306,
-              "item_name": "Lieutenant Commander's Chain Helm",
-              "score": 605.8670397570712,
+              "item_id": 227086,
+              "item_name": "Lieutenant Commander's Chain Greathelm",
+              "score": 613.4973870720963,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -30.400783557810428,
-              "dps_delta": -1.7254798003926999
-            },
-            {
-              "item_id": 227066,
-              "item_name": "Lieutenant Commander's Chain Helm",
-              "score": 605.8670397570712,
-              "source_kind": "pvp",
-              "source": "Rank 14",
-              "score_delta": -30.400783557810428,
-              "dps_delta": -1.7254798003926999
+              "score_delta": -22.77043624278531,
+              "dps_delta": -1.2923985234900865
             },
             {
               "item_id": 23251,
@@ -6498,7 +6489,16 @@
               "source_kind": "vendor",
               "source": "Lady Palanseer",
               "score_delta": -30.400783557810428,
-              "dps_delta": -11.728109381142076,
+              "dps_delta": -1.7254798003926999
+            },
+            {
+              "item_id": 227080,
+              "item_name": "Champion's Chain Greathelm",
+              "score": 613.4973870720963,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "score_delta": -22.77043624278531,
+              "dps_delta": -10.80985149270262,
               "verified": true
             }
           ]
@@ -6575,7 +6575,7 @@
               "source_kind": "vendor",
               "source": "Lady Palanseer",
               "score_delta": -25.723739933531874,
-              "dps_delta": -11.392801618373483,
+              "dps_delta": -10.64963972587043,
               "verified": true
             }
           ]
@@ -6588,7 +6588,7 @@
           "source_kind": "quest",
           "score": 60.80156711562083,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 194.4 vs 191.8 set DPS",
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 188.3 vs 185.4 set DPS",
           "alternatives": [
             {
               "item_id": 13340,
@@ -6615,47 +6615,44 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": 221.0852564536614,
-              "dps_delta": -2.5796213226855684,
+              "dps_delta": -2.9046297205986775,
               "verified": true
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 22874,
-          "item_name": "Legionnaire's Chain Hauberk",
+          "item_id": 227083,
+          "item_name": "Legionnaire's Chain Armor",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 601.1899961327927,
+          "score": 607.1588652599571,
           "verified": true,
           "ties": [
             {
-              "item_id": 23292,
-              "item_name": "Knight-Captain's Chain Hauberk"
-            },
-            {
-              "item_id": 227071,
-              "item_name": "Legionnaire's Chain Hauberk"
+              "item_id": 227089,
+              "item_name": "Knight-Captain's Chain Armor"
             }
           ],
           "alternatives": [
             {
-              "item_id": 227071,
-              "item_name": "Legionnaire's Chain Hauberk",
-              "score": 601.1899961327927,
-              "source_kind": "pvp",
-              "source": "Rank 12",
+              "item_id": 227089,
+              "item_name": "Knight-Captain's Chain Armor",
+              "score": 607.1588652599571,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
               "score_delta": 0,
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true
             },
             {
-              "item_id": 19690,
-              "item_name": "Bloodsoul Breastplate",
-              "score": 584.8203434478178,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "score_delta": -16.36965268497488,
-              "dps_delta": -0.9291045079037635
+              "item_id": 22874,
+              "item_name": "Legionnaire's Chain Hauberk",
+              "score": 601.1899961327927,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             },
             {
               "item_id": 23292,
@@ -6663,9 +6660,8 @@
               "score": 601.1899961327927,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": 0,
-              "dps_delta": -4.538227754264085,
-              "verified": true
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             }
           ]
         },
@@ -6703,7 +6699,7 @@
               "source_kind": "pvp",
               "source": "Rank 16",
               "score_delta": -14.031130872835575,
-              "dps_delta": -9.284897176932134,
+              "dps_delta": -9.266963809188383,
               "verified": true
             }
           ]
@@ -6742,7 +6738,7 @@
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score_delta": -7.0155654364177735,
-              "dps_delta": -10.21772685530425,
+              "dps_delta": -9.052016225061607,
               "verified": true
             }
           ]
@@ -6781,51 +6777,44 @@
               "source_kind": "rep",
               "source": "The League of Arathor",
               "score_delta": -19.786001679203025,
-              "dps_delta": -13.201667010799355,
+              "dps_delta": -12.241207652744833,
               "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 22875,
-          "item_name": "Legionnaire's Chain Legguards",
+          "item_id": 227079,
+          "item_name": "Legionnaire's Chain Legplates",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 601.1899961327927,
+          "score": 607.1588652599571,
           "verified": true,
           "ties": [
             {
-              "item_id": 23293,
-              "item_name": "Knight-Captain's Chain Legguards"
-            },
-            {
-              "item_id": 227072,
-              "item_name": "Knight-Captain's Chain Legguards"
-            },
-            {
-              "item_id": 227073,
-              "item_name": "Legionnaire's Chain Legguards"
+              "item_id": 227085,
+              "item_name": "Knight-Captain's Chain Legplates"
             }
           ],
           "alternatives": [
             {
-              "item_id": 227072,
-              "item_name": "Knight-Captain's Chain Legguards",
-              "score": 601.1899961327927,
-              "source_kind": "pvp",
-              "source": "Rank 12",
+              "item_id": 227085,
+              "item_name": "Knight-Captain's Chain Legplates",
+              "score": 607.1588652599571,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
               "score_delta": 0,
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true
             },
             {
-              "item_id": 227073,
+              "item_id": 22875,
               "item_name": "Legionnaire's Chain Legguards",
               "score": 601.1899961327927,
-              "source_kind": "pvp",
-              "source": "Rank 12",
-              "score_delta": 0,
-              "dps_delta": 0
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             },
             {
               "item_id": 23293,
@@ -6833,9 +6822,8 @@
               "score": 601.1899961327927,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": 0,
-              "dps_delta": -4.538227754264085,
-              "verified": true
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             }
           ]
         },
@@ -6873,7 +6861,7 @@
               "source_kind": "quest",
               "source": "Striker's Footguards",
               "score_delta": -4.677043624278525,
-              "dps_delta": -8.95259271286551,
+              "dps_delta": -9.294500859484543,
               "verified": true
             }
           ]
@@ -6966,7 +6954,7 @@
               "source_kind": "quest",
               "source": "Celebrating Good Times",
               "score_delta": 0,
-              "dps_delta": 1.2587494995880206,
+              "dps_delta": 1.3794727028956117,
               "verified": true
             },
             {
@@ -6991,12 +6979,22 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 1713,
-          "item_name": "Ankh of Life",
-          "source": "World drop",
-          "source_kind": "world_drop",
+          "item_id": 18406,
+          "item_name": "Onyxia Blood Talisman",
+          "source": "Celebrating Good Times",
+          "source_kind": "quest",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "score": 0,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "score_delta": 0,
+              "dps_delta": 0
+            },
             {
               "item_id": 1404,
               "item_name": "Tidal Charm",
@@ -7012,15 +7010,6 @@
               "score": 0,
               "source_kind": "quest",
               "source": "Into The Temple of Atal'Hakkar",
-              "score_delta": 0,
-              "dps_delta": 0
-            },
-            {
-              "item_id": 2802,
-              "item_name": "Blazing Emblem",
-              "score": 0,
-              "source_kind": "world_drop",
-              "source": "World drop",
               "score_delta": 0,
               "dps_delta": 0
             }
@@ -7028,13 +7017,22 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 744,
-          "item_name": "Thunderbrew's Boot Flask",
-          "source": "Sweet Amber",
-          "source_kind": "quest",
+          "item_id": 20071,
+          "item_name": "Talisman of Arathor",
+          "source": "The League of Arathor",
+          "source_kind": "rep",
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "score": 0,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "score_delta": 0,
+              "dps_delta": 0
+            },
             {
               "item_id": 1404,
               "item_name": "Tidal Charm",
@@ -7050,15 +7048,6 @@
               "score": 0,
               "source_kind": "quest",
               "source": "Into The Temple of Atal'Hakkar",
-              "score_delta": 0,
-              "dps_delta": 0
-            },
-            {
-              "item_id": 2802,
-              "item_name": "Blazing Emblem",
-              "score": 0,
-              "source_kind": "world_drop",
-              "source": "World drop",
               "score_delta": 0,
               "dps_delta": 0
             }
@@ -7266,8 +7255,8 @@
           ]
         }
       ],
-      "set_dps": 194.35658863028652,
-      "no_source_count": 2324,
+      "set_dps": 188.28441608913732,
+      "no_source_count": 2288,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -7290,65 +7279,66 @@
         "neck: Medallion of the Dawn",
         "shoulder: Cryptstalker Spaulders",
         "back: Cloak of the Fallen God",
-        "chest: Legionnaire's Chain Hauberk",
+        "chest: Legionnaire's Chain Armor",
         "wrist: Cryptstalker Wristguards",
         "hands: Cryptstalker Handguards",
         "waist: Cryptstalker Girdle",
-        "legs: Legionnaire's Chain Legguards",
+        "legs: Legionnaire's Chain Legplates",
         "feet: Cryptstalker Boots",
         "finger1: Don Julio's Band",
         "finger2: Band of the Penitent",
-        "trinket1: Ankh of Life",
+        "trinket1: Onyxia Blood Talisman",
+        "trinket2: Talisman of Arathor",
         "main_hand: Grand Marshal's Longsword",
         "off_hand: High Warlord's Blade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.613400343,
-      "verify_run_seconds": 2.150549846,
+      "weights_run_seconds": 1.181531513,
+      "verify_run_seconds": 1.628881113,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 642,
-          "sourced": 432
+          "sourced": 437
         },
         "feet": {
           "eligible": 526,
-          "sourced": 342
+          "sourced": 346
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 540,
-          "sourced": 356
+          "sourced": 358
         },
         "head": {
           "eligible": 387,
-          "sourced": 242
+          "sourced": 251
         },
         "legs": {
           "eligible": 539,
-          "sourced": 347
+          "sourced": 353
         },
         "main_hand": {
           "eligible": 793,
-          "sourced": 511
+          "sourced": 516
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 131,
-          "sourced": 70
+          "sourced": 71
         },
         "ranged": {
           "eligible": 181,
@@ -7427,22 +7417,13 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23306,
-              "item_name": "Lieutenant Commander's Chain Helm",
-              "score": 605.8670397570712,
+              "item_id": 227086,
+              "item_name": "Lieutenant Commander's Chain Greathelm",
+              "score": 613.4973870720963,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -30.400783557810428,
-              "dps_delta": -1.7254798003926999
-            },
-            {
-              "item_id": 227066,
-              "item_name": "Lieutenant Commander's Chain Helm",
-              "score": 605.8670397570712,
-              "source_kind": "pvp",
-              "source": "Rank 14",
-              "score_delta": -30.400783557810428,
-              "dps_delta": -1.7254798003926999
+              "score_delta": -22.77043624278531,
+              "dps_delta": -1.2923985234900865
             },
             {
               "item_id": 23251,
@@ -7451,7 +7432,16 @@
               "source_kind": "vendor",
               "source": "Lady Palanseer",
               "score_delta": -30.400783557810428,
-              "dps_delta": -11.952776240362624,
+              "dps_delta": -1.7254798003926999
+            },
+            {
+              "item_id": 227080,
+              "item_name": "Champion's Chain Greathelm",
+              "score": 613.4973870720963,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "score_delta": -22.77043624278531,
+              "dps_delta": -10.733432359049232,
               "verified": true
             }
           ]
@@ -7528,7 +7518,7 @@
               "source_kind": "vendor",
               "source": "Lady Palanseer",
               "score_delta": -25.723739933531874,
-              "dps_delta": -11.425891305096258,
+              "dps_delta": -10.327621386398334,
               "verified": true
             }
           ]
@@ -7541,7 +7531,7 @@
           "source_kind": "quest",
           "score": 60.80156711562083,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 202.9 vs 200.3 set DPS",
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 197.8 vs 194.4 set DPS",
           "alternatives": [
             {
               "item_id": 13340,
@@ -7568,47 +7558,44 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": 221.0852564536614,
-              "dps_delta": -2.6861664471641404,
+              "dps_delta": -3.418983452500356,
               "verified": true
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 22874,
-          "item_name": "Legionnaire's Chain Hauberk",
+          "item_id": 227083,
+          "item_name": "Legionnaire's Chain Armor",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 601.1899961327927,
+          "score": 607.1588652599571,
           "verified": true,
           "ties": [
             {
-              "item_id": 23292,
-              "item_name": "Knight-Captain's Chain Hauberk"
-            },
-            {
-              "item_id": 227071,
-              "item_name": "Legionnaire's Chain Hauberk"
+              "item_id": 227089,
+              "item_name": "Knight-Captain's Chain Armor"
             }
           ],
           "alternatives": [
             {
-              "item_id": 227071,
-              "item_name": "Legionnaire's Chain Hauberk",
-              "score": 601.1899961327927,
-              "source_kind": "pvp",
-              "source": "Rank 12",
+              "item_id": 227089,
+              "item_name": "Knight-Captain's Chain Armor",
+              "score": 607.1588652599571,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
               "score_delta": 0,
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true
             },
             {
-              "item_id": 19690,
-              "item_name": "Bloodsoul Breastplate",
-              "score": 584.8203434478178,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "score_delta": -16.36965268497488,
-              "dps_delta": -0.9291045079037635
+              "item_id": 22874,
+              "item_name": "Legionnaire's Chain Hauberk",
+              "score": 601.1899961327927,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             },
             {
               "item_id": 23292,
@@ -7616,9 +7603,8 @@
               "score": 601.1899961327927,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": 0,
-              "dps_delta": -4.516160489937789,
-              "verified": true
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             }
           ]
         },
@@ -7656,7 +7642,7 @@
               "source_kind": "pvp",
               "source": "Rank 16",
               "score_delta": -14.031130872835575,
-              "dps_delta": -9.538739883032605,
+              "dps_delta": -9.179266124435912,
               "verified": true
             }
           ]
@@ -7695,7 +7681,7 @@
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score_delta": -7.0155654364177735,
-              "dps_delta": -10.065189520165688,
+              "dps_delta": -8.564528464283569,
               "verified": true
             }
           ]
@@ -7734,51 +7720,44 @@
               "source_kind": "rep",
               "source": "The Defilers",
               "score_delta": -19.786001679203025,
-              "dps_delta": -14.067329718499877,
+              "dps_delta": -11.915951127607912,
               "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 22875,
-          "item_name": "Legionnaire's Chain Legguards",
+          "item_id": 227079,
+          "item_name": "Legionnaire's Chain Legplates",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 601.1899961327927,
+          "score": 607.1588652599571,
           "verified": true,
           "ties": [
             {
-              "item_id": 23293,
-              "item_name": "Knight-Captain's Chain Legguards"
-            },
-            {
-              "item_id": 227072,
-              "item_name": "Knight-Captain's Chain Legguards"
-            },
-            {
-              "item_id": 227073,
-              "item_name": "Legionnaire's Chain Legguards"
+              "item_id": 227085,
+              "item_name": "Knight-Captain's Chain Legplates"
             }
           ],
           "alternatives": [
             {
-              "item_id": 227072,
-              "item_name": "Knight-Captain's Chain Legguards",
-              "score": 601.1899961327927,
-              "source_kind": "pvp",
-              "source": "Rank 12",
+              "item_id": 227085,
+              "item_name": "Knight-Captain's Chain Legplates",
+              "score": 607.1588652599571,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
               "score_delta": 0,
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true
             },
             {
-              "item_id": 227073,
+              "item_id": 22875,
               "item_name": "Legionnaire's Chain Legguards",
               "score": 601.1899961327927,
-              "source_kind": "pvp",
-              "source": "Rank 12",
-              "score_delta": 0,
-              "dps_delta": 0
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             },
             {
               "item_id": 23293,
@@ -7786,9 +7765,8 @@
               "score": 601.1899961327927,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": 0,
-              "dps_delta": -4.516160489937789,
-              "verified": true
+              "score_delta": -5.968869127164453,
+              "dps_delta": -0.33877952818304435
             }
           ]
         },
@@ -7826,7 +7804,7 @@
               "source_kind": "quest",
               "source": "Striker's Footguards",
               "score_delta": -4.677043624278525,
-              "dps_delta": -8.955160289903546,
+              "dps_delta": -7.478781853347527,
               "verified": true
             }
           ]
@@ -7841,15 +7819,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18403,
-              "item_name": "Dragonslayer's Signet",
-              "score": 281.8868235692822,
-              "source_kind": "quest",
-              "source": "For All To See",
-              "score_delta": -16,
-              "dps_delta": -0.9081238565375847
-            },
-            {
               "item_id": 18543,
               "item_name": "Ring of Entropy",
               "score": 281.8868235692822,
@@ -7866,62 +7835,29 @@
               "source": "Taerar",
               "score_delta": -16,
               "dps_delta": -0.9081238565375847
+            },
+            {
+              "item_id": 13217,
+              "item_name": "Band of the Penitent",
+              "score": 281.8868235692822,
+              "source_kind": "quest",
+              "source": "Houses of the Holy",
+              "score_delta": -16,
+              "dps_delta": -4.9372782812569085,
+              "verified": true
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 13217,
-          "item_name": "Band of the Penitent",
-          "source": "Houses of the Holy",
+          "item_id": 18403,
+          "item_name": "Dragonslayer's Signet",
+          "source": "For All To See",
           "source_kind": "quest",
           "score": 281.8868235692822,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 18403,
-              "item_name": "Dragonslayer's Signet"
-            },
-            {
-              "item_id": 18543,
-              "item_name": "Ring of Entropy"
-            },
-            {
-              "item_id": 20632,
-              "item_name": "Mindtear Band"
-            },
-            {
-              "item_id": 21179,
-              "item_name": "Band of Earthen Wrath"
-            },
-            {
-              "item_id": 21182,
-              "item_name": "Band of Earthen Might"
-            },
-            {
-              "item_id": 21563,
-              "item_name": "Don Rodrigo's Band"
-            },
-            {
-              "item_id": 21836,
-              "item_name": "Ritssyn's Ring of Chaos"
-            },
-            {
-              "item_id": 23237,
-              "item_name": "Ring of the Eternal Flame"
-            }
-          ],
+          "swap_note": "beat the scored pick Band of the Penitent (id 13217) in the sim: 196.3 vs 194.4 set DPS",
           "alternatives": [
-            {
-              "item_id": 18403,
-              "item_name": "Dragonslayer's Signet",
-              "score": 281.8868235692822,
-              "source_kind": "quest",
-              "source": "For All To See",
-              "score_delta": 0,
-              "dps_delta": 0.7412187527147296,
-              "verified": true
-            },
             {
               "item_id": 18543,
               "item_name": "Ring of Entropy",
@@ -7939,6 +7875,16 @@
               "source": "Taerar",
               "score_delta": 0,
               "dps_delta": 0
+            },
+            {
+              "item_id": 13217,
+              "item_name": "Band of the Penitent",
+              "score": 281.8868235692822,
+              "source_kind": "quest",
+              "source": "Houses of the Holy",
+              "score_delta": 0,
+              "dps_delta": -1.9762247039924716,
+              "verified": true
             }
           ]
         },
@@ -8219,8 +8165,8 @@
           ]
         }
       ],
-      "set_dps": 202.94663166288626,
-      "no_source_count": 2321,
+      "set_dps": 199.978337909426,
+      "no_source_count": 2285,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8243,65 +8189,65 @@
         "neck: Medallion of the Dawn",
         "shoulder: Cryptstalker Spaulders",
         "back: Cloak of the Fallen God",
-        "chest: Legionnaire's Chain Hauberk",
+        "chest: Legionnaire's Chain Armor",
         "wrist: Cryptstalker Wristguards",
         "hands: Cryptstalker Handguards",
         "waist: Cryptstalker Girdle",
-        "legs: Legionnaire's Chain Legguards",
+        "legs: Legionnaire's Chain Legplates",
         "feet: Cryptstalker Boots",
         "finger1: Don Julio's Band",
-        "finger2: Band of the Penitent",
+        "finger2: Dragonslayer's Signet",
         "trinket2: Ankh of Life",
         "main_hand: Grand Marshal's Longsword",
         "off_hand: High Warlord's Blade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.613400343,
-      "verify_run_seconds": 2.157262293,
+      "weights_run_seconds": 1.181531513,
+      "verify_run_seconds": 1.6236502800000001,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 638,
-          "sourced": 429
+          "sourced": 434
         },
         "feet": {
           "eligible": 530,
-          "sourced": 347
+          "sourced": 351
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 544,
-          "sourced": 357
+          "sourced": 359
         },
         "head": {
           "eligible": 389,
-          "sourced": 244
+          "sourced": 253
         },
         "legs": {
           "eligible": 537,
-          "sourced": 343
+          "sourced": 349
         },
         "main_hand": {
           "eligible": 791,
-          "sourced": 511
+          "sourced": 516
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 129,
-          "sourced": 69
+          "sourced": 70
         },
         "ranged": {
           "eligible": 180,

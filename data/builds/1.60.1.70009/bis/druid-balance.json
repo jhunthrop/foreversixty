@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T23:58:54Z",
+  "generated_at": "2026-09-30T00:35:07Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -599,8 +599,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.767492645,
-      "verify_run_seconds": 0.820504901,
+      "weights_run_seconds": 1.176728833,
+      "verify_run_seconds": 0.628033514,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1264,8 +1264,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.767492645,
-      "verify_run_seconds": 0.842152589,
+      "weights_run_seconds": 1.176728833,
+      "verify_run_seconds": 0.62343852,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2021,8 +2021,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.769780355,
-      "verify_run_seconds": 1.055378687,
+      "weights_run_seconds": 1.3136465990000001,
+      "verify_run_seconds": 0.819290899,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2784,8 +2784,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.769780355,
-      "verify_run_seconds": 1.086121302,
+      "weights_run_seconds": 1.3136465990000001,
+      "verify_run_seconds": 0.818206165,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3542,8 +3542,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 1.854110218,
-      "verify_run_seconds": 1.223509668,
+      "weights_run_seconds": 1.517529797,
+      "verify_run_seconds": 0.900532718,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4302,8 +4302,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Mograine's Might"
       ],
-      "weights_run_seconds": 1.854110218,
-      "verify_run_seconds": 1.183832708,
+      "weights_run_seconds": 1.517529797,
+      "verify_run_seconds": 0.873591517,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4780,19 +4780,19 @@
         },
         {
           "slot": "legs",
-          "item_id": 220865,
-          "item_name": "Stone Guard's Crackling Leather Leggings",
-          "source": "Lady Palanseer",
+          "item_id": 220864,
+          "item_name": "Knight's Crackling Leather Leggings",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
           "score": 94.40945687189804,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 220864,
-              "item_name": "Knight's Crackling Leather Leggings",
+              "item_id": 220865,
+              "item_name": "Stone Guard's Crackling Leather Leggings",
               "score": 94.40945687189803,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source": "Lady Palanseer",
               "score_delta": -1.4210854715202004e-14,
               "dps_delta": 0,
               "verified": true
@@ -5057,7 +5057,7 @@
         "wrist: Runic Leather Bracers",
         "hands: Gloves of Holy Might",
         "waist: Highlander's Cloth Girdle",
-        "legs: Stone Guard's Crackling Leather Leggings",
+        "legs: Knight's Crackling Leather Leggings",
         "feet: Sergeant Major's Crackling Leather Boots",
         "finger1: Blackstone Ring",
         "finger2: Lorekeeper's Ring",
@@ -5065,8 +5065,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.88610262,
-      "verify_run_seconds": 1.165098417,
+      "weights_run_seconds": 1.421377153,
+      "verify_run_seconds": 0.824813851,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -5543,19 +5543,19 @@
         },
         {
           "slot": "legs",
-          "item_id": 220864,
-          "item_name": "Knight's Crackling Leather Leggings",
-          "source": "Captain Dirgehammer",
+          "item_id": 220865,
+          "item_name": "Stone Guard's Crackling Leather Leggings",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
           "score": 94.40945687189804,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 220865,
-              "item_name": "Stone Guard's Crackling Leather Leggings",
+              "item_id": 220864,
+              "item_name": "Knight's Crackling Leather Leggings",
               "score": 94.40945687189803,
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "score_delta": -1.4210854715202004e-14,
               "dps_delta": 0,
               "verified": true
@@ -5820,7 +5820,7 @@
         "wrist: Runic Leather Bracers",
         "hands: Gloves of Holy Might",
         "waist: Defiler's Cloth Girdle",
-        "legs: Knight's Crackling Leather Leggings",
+        "legs: Stone Guard's Crackling Leather Leggings",
         "feet: Sergeant Major's Crackling Leather Boots",
         "finger1: Blackstone Ring",
         "finger2: Advisor's Ring",
@@ -5828,8 +5828,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.88610262,
-      "verify_run_seconds": 1.198581507,
+      "weights_run_seconds": 1.421377153,
+      "verify_run_seconds": 0.868422232,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6309,13 +6309,13 @@
               "dps_delta": -1.1896163783388216
             },
             {
-              "item_id": 231685,
-              "item_name": "General's Dragonhide Leggings",
-              "score": 99.6774250213274,
-              "source_kind": "pvp",
-              "source": "Rank 16",
-              "score_delta": -12.620157750717382,
-              "dps_delta": -1.3953147380366933
+              "item_id": 227178,
+              "item_name": "Knight-Captain's Dragonhide Leggings",
+              "score": 101.53789827347954,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "score_delta": -10.759684498565235,
+              "dps_delta": -1.1896163783388216
             }
           ]
         },
@@ -6565,7 +6565,7 @@
         }
       ],
       "set_dps": 149.81005401939856,
-      "no_source_count": 1941,
+      "no_source_count": 1913,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6591,63 +6591,62 @@
         "wrist: Rockfury Bracers",
         "hands: Primal Batskin Gloves",
         "waist: Belt of the Archmage",
-        "legs: Knight's Crackling Leather Leggings",
         "feet: Bloodvine Boots",
         "finger1: Ring of the Fallen God",
         "finger2: Don Julio's Band",
         "trinket2: Thunderbrew's Boot Flask",
         "main_hand: High Warlord's War Staff"
       ],
-      "weights_run_seconds": 1.9136223509999999,
-      "verify_run_seconds": 1.19665511,
+      "weights_run_seconds": 1.430982293,
+      "verify_run_seconds": 0.922321585,
       "coverage": {
         "back": {
           "eligible": 369,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 499,
-          "sourced": 318
+          "sourced": 322
         },
         "feet": {
           "eligible": 390,
-          "sourced": 245
+          "sourced": 247
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 406,
-          "sourced": 259
+          "sourced": 260
         },
         "head": {
           "eligible": 311,
-          "sourced": 185
+          "sourced": 191
         },
         "legs": {
           "eligible": 409,
-          "sourced": 252
+          "sourced": 257
         },
         "main_hand": {
           "eligible": 633,
-          "sourced": 395
+          "sourced": 399
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 131,
-          "sourced": 70
+          "sourced": 71
         },
         "shoulder": {
           "eligible": 304,
-          "sourced": 173
+          "sourced": 174
         },
         "trinket1": {
           "eligible": 80,
@@ -7084,13 +7083,13 @@
               "dps_delta": -1.1896163783388216
             },
             {
-              "item_id": 231685,
-              "item_name": "General's Dragonhide Leggings",
-              "score": 99.6774250213274,
-              "source_kind": "pvp",
-              "source": "Rank 16",
-              "score_delta": -12.620157750717382,
-              "dps_delta": -1.3953147380366933
+              "item_id": 227178,
+              "item_name": "Knight-Captain's Dragonhide Leggings",
+              "score": 101.53789827347954,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "score_delta": -10.759684498565235,
+              "dps_delta": -1.1896163783388216
             }
           ]
         },
@@ -7341,7 +7340,7 @@
         }
       ],
       "set_dps": 146.97137797741107,
-      "no_source_count": 1940,
+      "no_source_count": 1912,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7367,61 +7366,62 @@
         "wrist: Rockfury Bracers",
         "hands: Primal Batskin Gloves",
         "waist: Belt of the Archmage",
+        "legs: Knight's Crackling Leather Leggings",
         "feet: Bloodvine Boots",
         "finger1: Ring of the Fallen God",
         "finger2: Don Julio's Band",
         "main_hand: High Warlord's War Staff"
       ],
-      "weights_run_seconds": 1.9136223509999999,
-      "verify_run_seconds": 1.226719714,
+      "weights_run_seconds": 1.430982293,
+      "verify_run_seconds": 0.829605988,
       "coverage": {
         "back": {
           "eligible": 374,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 496,
-          "sourced": 316
+          "sourced": 320
         },
         "feet": {
           "eligible": 394,
-          "sourced": 249
+          "sourced": 251
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 406,
-          "sourced": 258
+          "sourced": 259
         },
         "head": {
           "eligible": 312,
-          "sourced": 186
+          "sourced": 192
         },
         "legs": {
           "eligible": 404,
-          "sourced": 245
+          "sourced": 250
         },
         "main_hand": {
           "eligible": 638,
-          "sourced": 401
+          "sourced": 405
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 70
+          "sourced": 71
         },
         "shoulder": {
           "eligible": 300,
-          "sourced": 170
+          "sourced": 171
         },
         "trinket1": {
           "eligible": 80,

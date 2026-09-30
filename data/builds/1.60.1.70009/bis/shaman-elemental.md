@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (dwarf, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 32.2. Weights run: 1.6s. Verify run: 1.0s. 485 eligible items had no known source.
+Set DPS (verified): 32.2. Weights run: 1.2s. Verify run: 0.7s. 485 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.268 ± 0.163, crit=0.822 ± 0.037, hit=1.874 ± 0.118, spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 485, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 57.7. Weights run: 1.7s. Verify run: 1.2s. 926 eligible items had no known source.
+Set DPS (verified): 57.7. Weights run: 1.3s. Verify run: 0.9s. 926 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.138 ± 0.340), crit=1.742 ± 0.105, hit=2.217 ± 0.197, spell_haste=2.693 ± 0.329, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.664 ± 0.003
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 926, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 69.3. Weights run: 1.9s. Verify run: 1.4s. 1264 eligible items had no known source.
+Set DPS (verified): 69.3. Weights run: 1.4s. Verify run: 1.0s. 1264 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.663 ± 0.634), crit=2.997 ± 0.195, hit=4.584 ± 0.401, spell_haste=not significant (-0.692 ± 0.671), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.529 ± 0.003
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 1264, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (dwarf, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 97.2. Weights run: 1.9s. Verify run: 1.6s. 1612 eligible items had no known source.
+Set DPS (verified): 97.2. Weights run: 1.4s. Verify run: 1.2s. 1612 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (3.110 ± 0.789), crit=3.848 ± 0.256, hit=6.081 ± 0.559, spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 1612, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 144.3. Weights run: 1.9s. Verify run: 1.5s. 2453 eligible items had no known source.
+Set DPS (verified): 144.3. Weights run: 1.4s. Verify run: 1.1s. 2418 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.046 ± 0.865), crit=5.588 ± 0.380, hit=6.652 ± 0.739, spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
@@ -134,13 +134,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 |---|---|---|---|---|---|
 | head | Bloodvine Goggles (19999) | Engineering [crafted] | 211.3 | yes | Mask of the Unforgiven (13404, -2.96 DPS, sim-verified) [dungeon]; Ragefury Eyepatch (11735, -4.75 DPS) [dungeon]; Bloodvine Lens (19998, -4.75 DPS) [crafted] |
 | neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | 144.7 | yes | Medallion of the Dawn (22659, -5.77 DPS) [quest]; Beads of Ogre Might (22150, -6.78 DPS) [quest]; Charm of the Shifting Sands (21504, -9.29 DPS) [quest] |
-| shoulder | Warlord's Mail Spaulders (231659) | Rank 17 [pvp] | 116.0 | yes | Mantle of the Timbermaw (19050, -0.62 DPS) [crafted]; Champion's Mail Pauldrons (23260, -1.06 DPS) [vendor]; Champion's Mail Pauldrons (227154, -1.68 DPS, sim-verified) [pvp] |
+| shoulder | Warlord's Mail Spaulders (231659) | Rank 17 [pvp] | 116.0 | yes | Mantle of the Timbermaw (19050, -0.62 DPS) [crafted]; Champion's Mail Spaulders (227160, -0.80 DPS) [vendor]; Champion's Mail Pauldrons (227154, -1.68 DPS, sim-verified) [pvp] |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 78.2 | yes | Earthweave Cloak (21187, +0.28 DPS, sim-verified) [quest]; Hide of the Wild (18510, -4.66 DPS) [crafted]; Spritecaster Cape (11623, -5.02 DPS) [dungeon] |
 | chest | Bloodvine Vest (19682) | Tailoring [crafted] | 173.6 | yes | Bloodsoul Breastplate (19690, -1.49 DPS) [crafted]; Legionnaire's Mail Hauberk (227157, -2.50 DPS) [pvp]; Stormshroud Armor (15056, -6.24 DPS, sim-verified) [crafted] |
 | wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 93.5 | yes | Primal Batskin Bracers (19687, -2.71 DPS, sim-verified) [crafted]; Bindings of Elements (16671, -5.22 DPS) [dungeon]; Dryad's Wrist Bindings (19595, -5.47 DPS) [rep] |
 | hands | Stormshroud Gloves (21278) (or Blood Guard's Mail Vices (227159)) | Leatherworking [crafted] | 144.7 | yes | Blood Guard's Mail Vices (227159, +1.10 DPS, sim-verified) [pvp]; Primal Batskin Gloves (19686, -1.02 DPS) [crafted]; General's Mail Gauntlets (231660, -2.59 DPS) [pvp] |
 | waist | Belt of the Archmage (18405) | Tailoring [crafted] | 115.0 | yes | Highlander's Mail Girdle (20044, -1.64 DPS) [vendor]; Highlander's Lizardhide Girdle (20046, -1.64 DPS) [rep]; Highlander's Cloth Girdle (20047, -3.50 DPS, sim-verified) [rep] |
-| legs | Sentinel's Chain Leggings (22748) | Silverwing Sentinels [rep] | 144.7 | yes | Legionnaire's Mail Legguards (227156, +0.00 DPS) [pvp]; General's Mail Leggings (231664, -1.16 DPS) [pvp]; Stormshroud Pants (15057, -1.37 DPS, sim-verified) [crafted] |
+| legs | Sentinel's Chain Leggings (22748) | Silverwing Sentinels [rep] | 144.7 | yes | Legionnaire's Mail Legguards (227156, +0.00 DPS) [pvp]; Ironfeather Leggings (252486, -0.84 DPS) [crafted]; Stormshroud Pants (15057, -1.37 DPS, sim-verified) [crafted] |
 | feet | Bloodvine Boots (19684) | Tailoring [crafted] | 102.3 | yes | Blood Guard's Mail Greaves (227158, -3.10 DPS) [pvp]; Greaves of Withering Despair (22240, -3.57 DPS, sim-verified) [dungeon]; General's Mail Boots (16573, -5.59 DPS) [vendor] |
 | finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Stormpike Guard [rep] | 144.7 | yes | Band of Earthen Might (21182, -2.90 DPS, sim-verified) [quest]; Mindtear Band (20632, -3.32 DPS) [world]; Ritssyn's Ring of Chaos (21836, -3.60 DPS) [world] |
 | finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 109.8 | yes | Mindtear Band (20632, -0.28 DPS) [world]; Ritssyn's Ring of Chaos (21836, -0.57 DPS) [world]; Band of Earthen Might (21182, -3.60 DPS, sim-verified) [quest] |
@@ -152,13 +152,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Bloodvine Goggles; neck: Onyxia Tooth Pendant; shoulder: Warlord's Mail Spaulders; back: Chromatic Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Stormshroud Gloves; waist: Belt of the Archmage; legs: Sentinel's Chain Leggings; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket2: Uther's Strength; main_hand: High Warlord's War Staff
 
-No-known-source sample (15 of 2453, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2418, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ## Horde
 
 ### Band 20 (orc, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 31.6. Weights run: 1.6s. Verify run: 1.0s. 482 eligible items had no known source.
+Set DPS (verified): 31.6. Weights run: 1.2s. Verify run: 0.8s. 482 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.268 ± 0.163, crit=0.822 ± 0.037, hit=1.874 ± 0.118, spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 482, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 53.2. Weights run: 1.7s. Verify run: 1.1s. 925 eligible items had no known source.
+Set DPS (verified): 53.2. Weights run: 1.3s. Verify run: 0.8s. 925 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.138 ± 0.340), crit=1.742 ± 0.105, hit=2.217 ± 0.197, spell_haste=2.693 ± 0.329, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.664 ± 0.003
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 925, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 71.7. Weights run: 1.9s. Verify run: 1.3s. 1263 eligible items had no known source.
+Set DPS (verified): 71.7. Weights run: 1.4s. Verify run: 1.0s. 1263 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.663 ± 0.634), crit=2.997 ± 0.195, hit=4.584 ± 0.401, spell_haste=not significant (-0.692 ± 0.671), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.529 ± 0.003
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 1263, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 50 (orc, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 95.4. Weights run: 1.9s. Verify run: 1.5s. 1612 eligible items had no known source.
+Set DPS (verified): 95.4. Weights run: 1.4s. Verify run: 1.1s. 1612 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (3.110 ± 0.789), crit=3.848 ± 0.256, hit=6.081 ± 0.559, spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
@@ -278,7 +278,7 @@ No-known-source sample (15 of 1612, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (orc, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 141.6. Weights run: 1.9s. Verify run: 1.5s. 2444 eligible items had no known source.
+Set DPS (verified): 141.6. Weights run: 1.4s. Verify run: 1.1s. 2409 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.046 ± 0.865), crit=5.588 ± 0.380, hit=6.652 ± 0.739, spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
@@ -286,13 +286,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 |---|---|---|---|---|---|
 | head | Bloodvine Goggles (19999) | Engineering [crafted] | 211.3 | yes | Mask of the Unforgiven (13404, -3.45 DPS, sim-verified) [dungeon]; Ragefury Eyepatch (11735, -4.75 DPS) [dungeon]; Bloodvine Lens (19998, -4.75 DPS) [crafted] |
 | neck | - | - |  |  |  |
-| shoulder | Warlord's Mail Spaulders (231659) | Rank 17 [pvp] | 116.0 | yes | Mantle of the Timbermaw (19050, -0.62 DPS) [crafted]; Champion's Mail Pauldrons (23260, -1.06 DPS) [vendor]; Champion's Mail Pauldrons (227154, -3.18 DPS, sim-verified) [pvp] |
+| shoulder | Warlord's Mail Spaulders (231659) | Rank 17 [pvp] | 116.0 | yes | Mantle of the Timbermaw (19050, -0.62 DPS) [crafted]; Champion's Mail Spaulders (227160, -0.80 DPS) [vendor]; Champion's Mail Pauldrons (227154, -3.18 DPS, sim-verified) [pvp] |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 78.2 | yes | Earthweave Cloak (21187, +0.69 DPS, sim-verified) [quest]; Cloak of the Gathering Storm (21400, -4.39 DPS) [quest]; Hide of the Wild (18510, -4.66 DPS) [crafted] |
 | chest | Bloodvine Vest (19682) | Tailoring [crafted] | 173.6 | yes | Bloodsoul Breastplate (19690, -1.49 DPS) [crafted]; Legionnaire's Mail Hauberk (227157, -2.50 DPS) [pvp]; Stormshroud Armor (15056, -4.98 DPS, sim-verified) [crafted] |
 | wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 93.5 | yes | Primal Batskin Bracers (19687, -2.76 DPS, sim-verified) [crafted]; Bindings of Elements (16671, -5.22 DPS) [dungeon]; Dryad's Wrist Bindings (19595, -5.47 DPS) [rep] |
 | hands | Stormshroud Gloves (21278) (or Blood Guard's Mail Vices (227159)) | Leatherworking [crafted] | 144.7 | yes | Blood Guard's Mail Vices (227159, +0.94 DPS, sim-verified) [pvp]; Primal Batskin Gloves (19686, -1.02 DPS) [crafted]; General's Mail Gauntlets (231660, -2.59 DPS) [pvp] |
 | waist | Belt of the Archmage (18405) | Tailoring [crafted] | 115.0 | yes | Cord of The Five Thunders (227008, -1.22 DPS, sim-verified) [quest]; Defiler's Cloth Girdle (20163, -1.43 DPS) [rep]; Highlander's Mail Girdle (20044, -1.64 DPS) [vendor] |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 156.5 | yes | Outrider's Chain Leggings (22673, +1.16 DPS, sim-verified) [rep]; Legionnaire's Mail Legguards (227156, -1.02 DPS) [pvp]; General's Mail Leggings (231664, -2.18 DPS) [pvp] |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 156.5 | yes | Outrider's Chain Leggings (22673, +1.16 DPS, sim-verified) [rep]; Legionnaire's Mail Legguards (227156, -1.02 DPS) [pvp]; Ironfeather Leggings (252486, -1.86 DPS) [crafted] |
 | feet | Bloodvine Boots (19684) | Tailoring [crafted] | 102.3 | yes | Greaves of Withering Despair (22240, -1.78 DPS, sim-verified) [dungeon]; Blood Guard's Mail Greaves (227158, -3.10 DPS) [pvp]; General's Mail Boots (16573, -5.59 DPS) [vendor] |
 | finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Frostwolf Clan [rep] | 144.7 | yes | Band of Earthen Might (21182, -2.06 DPS, sim-verified) [quest]; Mindtear Band (20632, -3.32 DPS) [world]; Ritssyn's Ring of Chaos (21836, -3.60 DPS) [world] |
 | finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 109.8 | yes | Mindtear Band (20632, -0.28 DPS) [world]; Ritssyn's Ring of Chaos (21836, -0.57 DPS) [world]; Band of Earthen Might (21182, -4.76 DPS, sim-verified) [quest] |
@@ -304,5 +304,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Bloodvine Goggles; neck: Blazefury Medallion; shoulder: Warlord's Mail Spaulders; back: Chromatic Cloak; chest: Bloodvine Vest; wrist: Rockfury Bracers; hands: Stormshroud Gloves; waist: Belt of the Archmage; legs: Stormshroud Pants; feet: Bloodvine Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; main_hand: High Warlord's War Staff
 
-No-known-source sample (15 of 2444, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 2409, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 

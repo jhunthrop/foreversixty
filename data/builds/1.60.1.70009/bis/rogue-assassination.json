@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:03:24Z",
+  "generated_at": "2026-09-30T00:38:29Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -673,8 +673,8 @@
         "off_hand: Cruel Barb",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.089266195,
-      "verify_run_seconds": 1.227317292,
+      "weights_run_seconds": 0.808834844,
+      "verify_run_seconds": 0.94329807,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1422,8 +1422,8 @@
         "off_hand: Cruel Barb",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.089266195,
-      "verify_run_seconds": 1.2797764919999999,
+      "weights_run_seconds": 0.808834844,
+      "verify_run_seconds": 0.940379781,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2250,8 +2250,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.119316777,
-      "verify_run_seconds": 1.709110746,
+      "weights_run_seconds": 0.834411692,
+      "verify_run_seconds": 1.278646953,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3088,8 +3088,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.119316777,
-      "verify_run_seconds": 1.678683086,
+      "weights_run_seconds": 0.834411692,
+      "verify_run_seconds": 1.2849349380000001,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3894,8 +3894,8 @@
         "main_hand: Ardent Custodian",
         "off_hand: Vanquisher's Sword"
       ],
-      "weights_run_seconds": 1.154754291,
-      "verify_run_seconds": 1.681335523,
+      "weights_run_seconds": 0.861021069,
+      "verify_run_seconds": 1.290459916,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4706,8 +4706,8 @@
         "main_hand: Ardent Custodian",
         "off_hand: Vanquisher's Sword"
       ],
-      "weights_run_seconds": 1.154754291,
-      "verify_run_seconds": 1.637663536,
+      "weights_run_seconds": 0.861021069,
+      "verify_run_seconds": 1.280238623,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5533,8 +5533,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.228042288,
-      "verify_run_seconds": 1.570685155,
+      "weights_run_seconds": 0.87684647,
+      "verify_run_seconds": 1.20149412,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6362,8 +6362,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.228042288,
-      "verify_run_seconds": 1.543819564,
+      "weights_run_seconds": 0.87684647,
+      "verify_run_seconds": 1.180790639,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -7180,7 +7180,7 @@
         }
       ],
       "set_dps": 227.9594436707192,
-      "no_source_count": 1792,
+      "no_source_count": 1774,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -7217,16 +7217,16 @@
         "off_hand: Grand Marshal's Swiftblade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.218205086,
-      "verify_run_seconds": 1.9377874259999999,
+      "weights_run_seconds": 0.873436024,
+      "verify_run_seconds": 1.486520172,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 475,
-          "sourced": 315
+          "sourced": 317
         },
         "feet": {
           "eligible": 363,
@@ -7234,11 +7234,11 @@
         },
         "finger1": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 379,
@@ -7246,23 +7246,23 @@
         },
         "head": {
           "eligible": 286,
-          "sourced": 181
+          "sourced": 186
         },
         "legs": {
           "eligible": 382,
-          "sourced": 248
+          "sourced": 251
         },
         "main_hand": {
           "eligible": 496,
-          "sourced": 315
+          "sourced": 318
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 69
+          "sourced": 70
         },
         "ranged": {
           "eligible": 180,
@@ -8035,7 +8035,7 @@
         }
       ],
       "set_dps": 232.9486242610276,
-      "no_source_count": 1791,
+      "no_source_count": 1773,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8071,16 +8071,16 @@
         "off_hand: Grand Marshal's Swiftblade",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.218205086,
-      "verify_run_seconds": 1.911552097,
+      "weights_run_seconds": 0.873436024,
+      "verify_run_seconds": 1.46408973,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 472,
-          "sourced": 313
+          "sourced": 315
         },
         "feet": {
           "eligible": 367,
@@ -8088,11 +8088,11 @@
         },
         "finger1": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 345,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 379,
@@ -8100,23 +8100,23 @@
         },
         "head": {
           "eligible": 287,
-          "sourced": 182
+          "sourced": 187
         },
         "legs": {
           "eligible": 377,
-          "sourced": 241
+          "sourced": 244
         },
         "main_hand": {
           "eligible": 495,
-          "sourced": 315
+          "sourced": 318
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 129,
-          "sourced": 69
+          "sourced": 70
         },
         "ranged": {
           "eligible": 179,

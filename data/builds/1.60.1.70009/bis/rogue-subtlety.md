@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (night-elf, 00000000000000000-00000000000000000-5321000000000000000)
 
-Set DPS (verified): 30.9. Weights run: 1.1s. Verify run: 1.4s. 361 eligible items had no known source.
+Set DPS (verified): 30.9. Weights run: 0.8s. Verify run: 1.0s. 361 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.009 ± 0.003, crit=0.279 ± 0.037, hit=1.342 ± 0.255, melee_haste=not significant (1.305 ± 0.713)
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 361, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-00000000000000000-5322210310011000000)
 
-Set DPS (verified): 38.8. Weights run: 1.2s. Verify run: 1.7s. 694 eligible items had no known source.
+Set DPS (verified): 38.8. Weights run: 0.9s. Verify run: 1.3s. 694 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.042 ± 0.026, crit=0.407 ± 0.046, hit=not significant (0.961 ± 0.247), melee_haste=not significant (1.094 ± 0.685)
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 694, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-00000000000000000-5322210310013011051)
 
-Set DPS (verified): 75.5. Weights run: 1.3s. Verify run: 1.8s. 962 eligible items had no known source.
+Set DPS (verified): 75.5. Weights run: 0.9s. Verify run: 1.4s. 962 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.023 ± 0.008, crit=0.659 ± 0.081, hit=not significant (2.739 ± 0.703), melee_haste=not significant (2.974 ± 1.701)
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 962, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 00500000000000000-32000000000000000-5322210310013011051)
 
-Set DPS (verified): 111.7. Weights run: 1.3s. Verify run: 2.0s. 1220 eligible items had no known source.
+Set DPS (verified): 111.7. Weights run: 0.9s. Verify run: 1.5s. 1220 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.395 ± 0.118, crit=6.478 ± 0.350, hit=4.201 ± 0.976, melee_haste=not significant (0.827 ± 2.686)
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 1220, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (night-elf, 00500000000000000-32513100000000000-5322210310013011051)
 
-Set DPS (verified): 223.8. Weights run: 1.3s. Verify run: 1.9s. 1792 eligible items had no known source.
+Set DPS (verified): 223.8. Weights run: 1.0s. Verify run: 1.5s. 1774 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.181 ± 0.023, crit=8.118 ± 0.504, hit=not significant (5.733 ± 1.563), melee_haste=not significant (-0.103 ± 4.302)
 
@@ -134,7 +134,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Bonescythe Helmet (22478) | Bonescythe Helmet [quest] | 320.1 | yes | Bloodvine Goggles (19999, -4.88 DPS) [crafted]; Ragefury Eyepatch (11735, -4.93 DPS) [dungeon]; Mask of the Unforgiven (13404, -8.28 DPS, sim-verified) [dungeon] |
 | neck | Onyxia Tooth Pendant (18404) | Celebrating Good Times [quest] | 179.3 | yes | Medallion of the Dawn (22659, -2.21 DPS) [quest]; Beads of Ogre Might (22150, -5.20 DPS) [quest]; Choker of the Shifting Sands (21505, -7.30 DPS) [quest] |
-| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 197.0 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.21 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.21 DPS) [pvp]; Champion's Leather Shoulders (23258, -4.29 DPS, sim-verified) [vendor] |
+| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 197.0 | yes | Lieutenant Commander's Leather Shoulders (227054, -0.21 DPS) [pvp]; Champion's Leather Shoulders (227056, -0.21 DPS) [pvp]; Lieutenant Commander's Leather Shoulders (23313, -4.29 DPS, sim-verified) [vendor] |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 113.7 | yes | Cloak of Veiled Shadows (21406, +1.96 DPS, sim-verified) [quest]; Earthweave Cloak (21187, -2.05 DPS) [quest]; Cloak of the Honor Guard (20073, -3.92 DPS) [rep] |
 | chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 364.6 | yes | Zandalar Madcap's Tunic (19834, -5.70 DPS, sim-verified) [quest]; Stormshroud Armor (15056, -7.30 DPS) [crafted]; Deathdealer's Vest (21364, -7.97 DPS) [quest] |
 | wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 144.4 | yes | Primal Batskin Bracers (19687, -3.19 DPS, sim-verified) [crafted]; Rockfury Bracers (21186, -4.63 DPS) [quest]; Marshal's Leather Armsplints (16460, -6.48 DPS) [pvp] |
@@ -152,13 +152,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Bonescythe Helmet; neck: Onyxia Tooth Pendant; shoulder: Bonescythe Pauldrons; back: Chromatic Cloak; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Bonescythe Waistguard; legs: Marshal's Leather Leggings; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; trinket2: Onyxia Blood Talisman; main_hand: High Warlord's Razor; off_hand: Grand Marshal's Dirk; ranged: The Purifier
 
-No-known-source sample (15 of 1792, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1774, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ## Horde
 
 ### Band 20 (troll, 00000000000000000-00000000000000000-5321000000000000000)
 
-Set DPS (verified): 30.6. Weights run: 1.1s. Verify run: 1.4s. 360 eligible items had no known source.
+Set DPS (verified): 30.6. Weights run: 0.8s. Verify run: 1.1s. 360 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.009 ± 0.003, crit=0.279 ± 0.037, hit=1.342 ± 0.255, melee_haste=not significant (1.305 ± 0.713)
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 360, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-00000000000000000-5322210310011000000)
 
-Set DPS (verified): 38.2. Weights run: 1.2s. Verify run: 1.7s. 695 eligible items had no known source.
+Set DPS (verified): 38.2. Weights run: 0.9s. Verify run: 1.3s. 695 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.042 ± 0.026, crit=0.407 ± 0.046, hit=not significant (0.961 ± 0.247), melee_haste=not significant (1.094 ± 0.685)
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 695, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-00000000000000000-5322210310013011051)
 
-Set DPS (verified): 75.0. Weights run: 1.3s. Verify run: 1.8s. 962 eligible items had no known source.
+Set DPS (verified): 75.0. Weights run: 0.9s. Verify run: 1.4s. 962 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.023 ± 0.008, crit=0.659 ± 0.081, hit=not significant (2.739 ± 0.703), melee_haste=not significant (2.974 ± 1.701)
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 962, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 00500000000000000-32000000000000000-5322210310013011051)
 
-Set DPS (verified): 114.6. Weights run: 1.3s. Verify run: 2.0s. 1220 eligible items had no known source.
+Set DPS (verified): 114.6. Weights run: 0.9s. Verify run: 1.5s. 1220 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.395 ± 0.118, crit=6.478 ± 0.350, hit=4.201 ± 0.976, melee_haste=not significant (0.827 ± 2.686)
 
@@ -278,7 +278,7 @@ No-known-source sample (15 of 1220, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (troll, 00500000000000000-32513100000000000-5322210310013011051)
 
-Set DPS (verified): 229.5. Weights run: 1.3s. Verify run: 2.0s. 1791 eligible items had no known source.
+Set DPS (verified): 229.5. Weights run: 1.0s. Verify run: 1.5s. 1773 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.181 ± 0.023, crit=8.118 ± 0.504, hit=not significant (5.733 ± 1.563), melee_haste=not significant (-0.103 ± 4.302)
 
@@ -286,7 +286,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Bonescythe Helmet (22478) | Bonescythe Helmet [quest] | 320.1 | yes | Bloodvine Goggles (19999, -4.88 DPS) [crafted]; Ragefury Eyepatch (11735, -4.93 DPS) [dungeon]; Mask of the Unforgiven (13404, -6.58 DPS, sim-verified) [dungeon] |
 | neck | Blazefury Medallion (17111) | Lord Kazzak [world] | 15.4 | yes | Beads of Ogre Might (22150, +0.00 DPS) [quest]; Medallion of the Dawn (22659, +0.00 DPS) [quest]; Onyxia Tooth Pendant (18404, -0.20 DPS, sim-verified) [quest] |
-| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 197.0 | yes | Champion's Leather Shoulders (23258, -0.21 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.21 DPS) [pvp]; Lieutenant Commander's Leather Shoulders (23313, -3.30 DPS, sim-verified) [vendor] |
+| shoulder | Bonescythe Pauldrons (22479) | Bonescythe Pauldrons [quest] | 197.0 | yes | Lieutenant Commander's Leather Shoulders (23313, -0.21 DPS) [vendor]; Lieutenant Commander's Leather Shoulders (227054, -0.21 DPS) [pvp]; Champion's Leather Shoulders (23258, -3.30 DPS, sim-verified) [vendor] |
 | back | Cloak of Veiled Shadows (21406) | Cloak of Veiled Shadows [quest] | 78.6 | yes | Earthweave Cloak (21187, -0.19 DPS) [quest]; Deathguard's Cloak (20068, -2.06 DPS) [rep]; Chromatic Cloak (18509, -3.37 DPS, sim-verified) [crafted] |
 | chest | Bonescythe Breastplate (22476) | Bonescythe Breastplate [quest] | 364.6 | yes | Zandalar Madcap's Tunic (19834, -5.51 DPS, sim-verified) [quest]; Stormshroud Armor (15056, -7.30 DPS) [crafted]; Deathdealer's Vest (21364, -7.97 DPS) [quest] |
 | wrist | Bonescythe Bracers (22483) | Bonescythe Bracers [quest] | 144.4 | yes | Primal Batskin Bracers (19687, -1.68 DPS, sim-verified) [crafted]; Rockfury Bracers (21186, -4.63 DPS) [quest]; Marshal's Leather Armsplints (16460, -6.48 DPS) [pvp] |
@@ -304,5 +304,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Bonescythe Helmet; neck: Blazefury Medallion; shoulder: Bonescythe Pauldrons; back: Cloak of Veiled Shadows; chest: Bonescythe Breastplate; wrist: Bonescythe Bracers; hands: Bonescythe Gauntlets; waist: Bonescythe Waistguard; legs: Marshal's Leather Leggings; feet: Bonescythe Sabatons; finger1: Don Julio's Band; finger2: Band of Earthen Might; main_hand: High Warlord's Razor; off_hand: Grand Marshal's Dirk; ranged: The Purifier
 
-No-known-source sample (15 of 1791, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 1773, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 

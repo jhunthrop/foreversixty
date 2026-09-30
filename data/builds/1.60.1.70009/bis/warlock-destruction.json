@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:06:37Z",
+  "generated_at": "2026-09-30T00:40:54Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -598,8 +598,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.450860791,
-      "verify_run_seconds": 1.1504644609999999,
+      "weights_run_seconds": 1.0688168710000001,
+      "verify_run_seconds": 0.848905387,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1294,8 +1294,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.450860791,
-      "verify_run_seconds": 1.220744293,
+      "weights_run_seconds": 1.0688168710000001,
+      "verify_run_seconds": 0.88472562,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2106,8 +2106,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 1.460080021,
-      "verify_run_seconds": 1.261642119,
+      "weights_run_seconds": 1.063498227,
+      "verify_run_seconds": 0.952859762,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2925,8 +2925,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 1.460080021,
-      "verify_run_seconds": 1.301044986,
+      "weights_run_seconds": 1.063498227,
+      "verify_run_seconds": 0.934550385,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3730,8 +3730,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 1.428217123,
-      "verify_run_seconds": 1.147737125,
+      "weights_run_seconds": 1.052019152,
+      "verify_run_seconds": 0.886836698,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4529,8 +4529,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.428217123,
-      "verify_run_seconds": 1.139793887,
+      "weights_run_seconds": 1.052019152,
+      "verify_run_seconds": 0.863597251,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5357,8 +5357,8 @@
         "main_hand: Soul Harvester",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.3692774939999999,
-      "verify_run_seconds": 1.167057801,
+      "weights_run_seconds": 1.03289651,
+      "verify_run_seconds": 0.881704147,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6184,8 +6184,8 @@
         "main_hand: Soul Harvester",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.3692774939999999,
-      "verify_run_seconds": 1.162858667,
+      "weights_run_seconds": 1.03289651,
+      "verify_run_seconds": 0.886052899,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6328,11 +6328,11 @@
             {
               "item_id": 21337,
               "item_name": "Doomcaller's Circlet",
-              "score": 259.2977962450516,
+              "score": 259.29779624505153,
               "source_kind": "quest",
               "source": "Doomcaller's Circlet",
-              "score_delta": -85.19472946720794,
-              "dps_delta": -10.748270811418118
+              "score_delta": -85.19472946720799,
+              "dps_delta": -10.748270811418125
             },
             {
               "item_id": 19999,
@@ -6950,7 +6950,7 @@
         }
       ],
       "set_dps": 297.91149715651056,
-      "no_source_count": 1239,
+      "no_source_count": 1231,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6985,12 +6985,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.378054148,
-      "verify_run_seconds": 1.069074841,
+      "weights_run_seconds": 1.03965188,
+      "verify_run_seconds": 0.801115928,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 296,
@@ -7002,11 +7002,11 @@
         },
         "finger1": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 196,
@@ -7014,7 +7014,7 @@
         },
         "head": {
           "eligible": 165,
-          "sourced": 107
+          "sourced": 109
         },
         "legs": {
           "eligible": 191,
@@ -7022,15 +7022,15 @@
         },
         "main_hand": {
           "eligible": 452,
-          "sourced": 303
+          "sourced": 304
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 125,
-          "sourced": 67
+          "sourced": 68
         },
         "ranged": {
           "eligible": 78,
@@ -7489,11 +7489,11 @@
             {
               "item_id": 220891,
               "item_name": "Sergeant Major's Dreadweave Boots",
-              "score": 126.56459493342393,
+              "score": 126.56459493342392,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": -22.269235922209788,
-              "dps_delta": -2.80951392125027
+              "score_delta": -22.269235922209802,
+              "dps_delta": -2.809513921250272
             },
             {
               "item_id": 220909,
@@ -7751,7 +7751,7 @@
         }
       ],
       "set_dps": 295.3901241583112,
-      "no_source_count": 1236,
+      "no_source_count": 1228,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7786,12 +7786,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.378054148,
-      "verify_run_seconds": 1.070317233,
+      "weights_run_seconds": 1.03965188,
+      "verify_run_seconds": 0.807509719,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 293,
@@ -7803,11 +7803,11 @@
         },
         "finger1": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 198,
@@ -7815,7 +7815,7 @@
         },
         "head": {
           "eligible": 165,
-          "sourced": 106
+          "sourced": 108
         },
         "legs": {
           "eligible": 190,
@@ -7823,15 +7823,15 @@
         },
         "main_hand": {
           "eligible": 454,
-          "sourced": 307
+          "sourced": 308
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 123,
-          "sourced": 66
+          "sourced": 67
         },
         "ranged": {
           "eligible": 74,

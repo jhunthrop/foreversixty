@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (gnome, 000000000000000000-00000000000000000-2531000000000000000)
 
-Set DPS (verified): 37.5. Weights run: 0.6s. Verify run: 0.6s. 252 eligible items had no known source.
+Set DPS (verified): 37.5. Weights run: 0.5s. Verify run: 0.4s. 252 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.128 ± 0.138), crit=1.335 ± 0.054, hit=3.164 ± 0.119, spell_haste=1.014 ± 0.120, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 252, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-2535111300000000000)
 
-Set DPS (verified): 61.7. Weights run: 0.6s. Verify run: 0.6s. 476 eligible items had no known source.
+Set DPS (verified): 61.7. Weights run: 0.5s. Verify run: 0.5s. 476 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.065 ± 0.228), crit=2.229 ± 0.108, hit=3.372 ± 0.161, spell_haste=1.051 ± 0.234, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 476, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 000000000000000000-00000000000000000-2535111300000301051)
 
-Set DPS (verified): 90.9. Weights run: 0.6s. Verify run: 0.6s. 643 eligible items had no known source.
+Set DPS (verified): 90.9. Weights run: 0.5s. Verify run: 0.5s. 643 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.379 ± 0.386), crit=3.424 ± 0.185, hit=5.185 ± 0.341, spell_haste=2.354 ± 0.492, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 643, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 000000000000000000-23500000000000000-2535111300000301051)
 
-Set DPS (verified): 115.9. Weights run: 0.7s. Verify run: 0.7s. 806 eligible items had no known source.
+Set DPS (verified): 115.9. Weights run: 0.5s. Verify run: 0.5s. 806 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.825 ± 0.694), crit=5.572 ± 0.315, hit=7.662 ± 0.520, spell_haste=not significant (0.844 ± 0.797), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -126,13 +126,13 @@ No-known-source sample (15 of 806, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 000000000000000000-23552300000000000-2535111300000301051)
 
-Set DPS (verified): 235.3. Weights run: 0.7s. Verify run: 0.7s. 1239 eligible items had no known source.
+Set DPS (verified): 235.3. Weights run: 0.5s. Verify run: 0.5s. 1229 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.124 ± 1.054), crit=8.680 ± 0.479, hit=12.852 ± 0.837, spell_haste=not significant (1.136 ± 1.257), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
 | Slot | Item | Source | Score | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Frostfire Circlet (22498) | Frostfire Circlet [quest] | 409.4 | yes | Bloodvine Goggles (19999, -4.15 DPS, sim-verified) [crafted]; Enigma Circlet (21347, -15.41 DPS) [quest]; Field Marshal's Coronet (16441, -31.57 DPS) [vendor] |
+| head | Frostfire Circlet (22498) | Frostfire Circlet [quest] | 409.4 | yes | Bloodvine Goggles (19999, -4.15 DPS, sim-verified) [crafted]; Enigma Circlet (21347, -15.41 DPS) [quest]; Warlord's Silk Cowl (16533, -31.57 DPS) [vendor] |
 | neck | Jewel of Kajaro (19601) | The Jewel of Kajaro [quest] | 10.6 | yes | Beads of Ogre Might (22150, +0.00 DPS) [quest]; Medallion of the Dawn (22659, +0.00 DPS) [quest]; Onyxia Tooth Pendant (18404, -1.81 DPS, sim-verified) [quest] |
 | shoulder | Mantle of the Timbermaw (19050) | Tailoring [crafted] | 140.1 | yes | Champion's Silk Mantle (23264, -0.12 DPS, sim-verified) [vendor]; Lieutenant Commander's Silk Mantle (23319, -0.28 DPS) [vendor]; Lieutenant Commander's Silk Mantle (227102, -0.28 DPS) [pvp] |
 | back | Earthweave Cloak (21187) | Volunteer's Battlegear [quest] | 128.5 | yes | Chromatic Cloak (18509, -0.59 DPS, sim-verified) [crafted]; Drape of Vaulted Secrets (21415, -13.67 DPS) [quest]; Hide of the Wild (18510, -14.15 DPS) [crafted] |
@@ -141,24 +141,24 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | hands | Sorcerer's Gloves (22066) | Just Compensation [quest] | 142.3 | yes | Dreadmist Wraps (16705, -1.58 DPS) [dungeon]; Gloves of Spell Mastery (14146, -3.03 DPS, sim-verified) [crafted]; Frostfire Gloves (22501, -12.98 DPS) [quest] |
 | waist | Frostfire Belt (22502) | Frostfire Belt [quest] | 159.1 | yes | Highlander's Cloth Girdle (20047, -2.86 DPS) [rep]; Belt of the Archmage (18405, -3.31 DPS, sim-verified) [crafted]; Highlander's Cloth Girdle (20097, -3.50 DPS) [rep] |
 | legs | Frostfire Leggings (22497) | Frostfire Leggings [quest] | 177.7 | yes | Enigma Leggings (21346, -2.37 DPS) [quest]; Marshal's Silk Leggings (16442, -2.97 DPS) [vendor]; Bloodvine Leggings (19683, -7.50 DPS, sim-verified) [crafted] |
-| feet | Enigma Boots (21344) | Enigma Boots [quest] | 158.4 | yes | Frostfire Sandals (22500, -0.52 DPS, sim-verified) [quest]; Marshal's Silk Footwraps (16437, -0.89 DPS) [vendor]; General's Silk Boots (16539, -0.89 DPS) [vendor] |
+| feet | Enigma Boots (21344) | Enigma Boots [quest] | 158.4 | yes | Frostfire Sandals (22500, -0.52 DPS, sim-verified) [quest]; Marshal's Silk Footwraps (231606, -0.89 DPS) [pvp]; Marshal's Silk Footwraps (16437, -0.89 DPS) [vendor] |
 | finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Stormpike Guard [rep] | 250.0 | yes | Band of Earthen Might (21182, -4.16 DPS, sim-verified) [quest]; Ritssyn's Ring of Chaos (21836, -12.93 DPS) [world]; Mindtear Band (20632, -13.21 DPS) [world] |
 | finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 166.3 | yes | Ritssyn's Ring of Chaos (21836, -2.47 DPS) [world]; Mindtear Band (20632, -2.75 DPS) [world]; Band of Earthen Might (21182, -7.93 DPS, sim-verified) [quest] |
 | trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | 115.7 | yes | Uther's Strength (11302, -13.70 DPS) [world]; Thunderbrew's Boot Flask (744, -14.45 DPS) [quest]; Tidal Charm (1404, -14.45 DPS) [vendor] |
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | 0.0 | yes | Uther's Strength (11302, +0.06 DPS, sim-verified) [world]; Thunderbrew's Boot Flask (744, +0.00 DPS) [quest]; Tidal Charm (1404, +0.00 DPS) [vendor] |
-| main_hand | High Warlord's War Staff (234549) | Rank 18 [pvp] | 326.9 | yes | Grand Marshal's Stave (234571, -0.00 DPS) [pvp]; Ironbark Staff (20069, -10.32 DPS) [rep]; Blade of Vaulted Secrets (21413, -24.53 DPS) [quest] |
+| main_hand | High Warlord's War Staff (234549) | Rank 18 [pvp] | 326.9 | yes | Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Ironbark Staff (20069, -10.32 DPS) [rep]; Blade of Vaulted Secrets (21413, -24.53 DPS) [quest] |
 | off_hand | - | - |  |  |  |
 | ranged | Brilliant Wand (249385) | Enchanting [crafted] | 9.9 | yes | Lesser Eternal Wand (249232, -0.23 DPS) [crafted]; Dreambough Wand (249234, -0.36 DPS) [crafted]; Greater Eternal Wand (249237, -2.65 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Frostfire Circlet; neck: Jewel of Kajaro; shoulder: Mantle of the Timbermaw; back: Earthweave Cloak; chest: Frostfire Robe; wrist: Frostfire Bindings; hands: Sorcerer's Gloves; waist: Frostfire Belt; legs: Frostfire Leggings; feet: Enigma Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket2: Ankh of Life; main_hand: High Warlord's War Staff; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1239, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1229, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ## Horde
 
 ### Band 20 (troll, 000000000000000000-00000000000000000-2531000000000000000)
 
-Set DPS (verified): 33.3. Weights run: 0.6s. Verify run: 0.6s. 249 eligible items had no known source.
+Set DPS (verified): 33.3. Weights run: 0.5s. Verify run: 0.4s. 249 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.128 ± 0.138), crit=1.335 ± 0.054, hit=3.164 ± 0.119, spell_haste=1.014 ± 0.120, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
@@ -188,7 +188,7 @@ No-known-source sample (15 of 249, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 000000000000000000-00000000000000000-2535111300000000000)
 
-Set DPS (verified): 56.9. Weights run: 0.6s. Verify run: 0.6s. 473 eligible items had no known source.
+Set DPS (verified): 56.9. Weights run: 0.5s. Verify run: 0.5s. 473 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.065 ± 0.228), crit=2.229 ± 0.108, hit=3.372 ± 0.161, spell_haste=1.051 ± 0.234, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -218,7 +218,7 @@ No-known-source sample (15 of 473, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 000000000000000000-00000000000000000-2535111300000301051)
 
-Set DPS (verified): 81.7. Weights run: 0.6s. Verify run: 0.6s. 639 eligible items had no known source.
+Set DPS (verified): 81.7. Weights run: 0.5s. Verify run: 0.5s. 639 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.379 ± 0.386), crit=3.424 ± 0.185, hit=5.185 ± 0.341, spell_haste=2.354 ± 0.492, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -248,7 +248,7 @@ No-known-source sample (15 of 639, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 000000000000000000-23500000000000000-2535111300000301051)
 
-Set DPS (verified): 102.8. Weights run: 0.7s. Verify run: 0.7s. 802 eligible items had no known source.
+Set DPS (verified): 102.8. Weights run: 0.5s. Verify run: 0.5s. 802 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.825 ± 0.694), crit=5.572 ± 0.315, hit=7.662 ± 0.520, spell_haste=not significant (0.844 ± 0.797), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -278,7 +278,7 @@ No-known-source sample (15 of 802, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 000000000000000000-23552300000000000-2535111300000301051)
 
-Set DPS (verified): 209.8. Weights run: 0.7s. Verify run: 0.7s. 1235 eligible items had no known source.
+Set DPS (verified): 209.8. Weights run: 0.5s. Verify run: 0.5s. 1225 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.124 ± 1.054), crit=8.680 ± 0.479, hit=12.852 ± 0.837, spell_haste=not significant (1.136 ± 1.257), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.004
 
@@ -292,7 +292,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | wrist | Rockfury Bracers (21186) | Stalwart's Battlegear [quest] | 155.5 | yes | Frostfire Bindings (22503, +1.76 DPS, sim-verified) [quest]; Dryad's Wrist Bindings (19595, -16.55 DPS) [rep]; Dryad's Wrist Bindings (19596, -16.83 DPS) [rep] |
 | hands | Gloves of Spell Mastery (14146) | Tailoring [crafted] | 253.3 | yes | Sorcerer's Gloves (22066, +1.91 DPS, sim-verified) [quest]; Dreadmist Wraps (16705, -15.44 DPS) [dungeon]; Frostfire Gloves (22501, -26.84 DPS) [quest] |
 | waist | Frostfire Belt (22502) | Frostfire Belt [quest] | 159.1 | yes | Defiler's Cloth Girdle (20163, -2.86 DPS) [rep]; Defiler's Cloth Girdle (20165, -3.50 DPS) [rep]; Belt of the Archmage (18405, -4.74 DPS, sim-verified) [crafted] |
-| legs | Frostfire Leggings (22497) | Frostfire Leggings [quest] | 177.7 | yes | Enigma Leggings (21346, -2.37 DPS) [quest]; Marshal's Silk Leggings (16442, -2.97 DPS) [vendor]; Bloodvine Leggings (19683, -8.64 DPS, sim-verified) [crafted] |
+| legs | Frostfire Leggings (22497) | Frostfire Leggings [quest] | 177.7 | yes | Enigma Leggings (21346, -2.37 DPS) [quest]; General's Silk Trousers (16534, -2.97 DPS) [vendor]; Bloodvine Leggings (19683, -8.64 DPS, sim-verified) [crafted] |
 | feet | Enigma Boots (21344) | Enigma Boots [quest] | 158.4 | yes | Marshal's Silk Footwraps (16437, -0.89 DPS) [vendor]; General's Silk Boots (16539, -0.89 DPS) [vendor]; Frostfire Sandals (22500, -1.07 DPS, sim-verified) [quest] |
 | finger1 | Don Julio's Band (19325) (or Band of Earthen Might (21182)) | Frostwolf Clan [rep] | 250.0 | yes | Band of Earthen Might (21182, -3.52 DPS, sim-verified) [quest]; Ritssyn's Ring of Chaos (21836, -12.93 DPS) [world]; Mindtear Band (20632, -13.21 DPS) [world] |
 | finger2 | Ring of the Fallen God (21709) | The Savior of Kalimdor [quest] | 166.3 | yes | Ritssyn's Ring of Chaos (21836, -2.47 DPS) [world]; Mindtear Band (20632, -2.75 DPS) [world]; Band of Earthen Might (21182, -7.09 DPS, sim-verified) [quest] |
@@ -304,5 +304,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Frostfire Circlet; neck: Jewel of Kajaro; shoulder: Mantle of the Timbermaw; back: Earthweave Cloak; chest: Frostfire Robe; wrist: Rockfury Bracers; hands: Gloves of Spell Mastery; waist: Frostfire Belt; legs: Frostfire Leggings; feet: Enigma Boots; finger1: Don Julio's Band; finger2: Ring of the Fallen God; trinket1: Frozen Heart of the Mountain; main_hand: High Warlord's War Staff; ranged: Brilliant Wand
 
-No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat
+No-known-source sample (15 of 1225, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat
 

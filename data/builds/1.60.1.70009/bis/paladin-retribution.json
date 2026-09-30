@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:02:39Z",
+  "generated_at": "2026-09-30T00:37:55Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -605,8 +605,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.318257729,
-      "verify_run_seconds": 0.953226449,
+      "weights_run_seconds": 0.976257939,
+      "verify_run_seconds": 0.702624203,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1276,8 +1276,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.318257729,
-      "verify_run_seconds": 0.935319698,
+      "weights_run_seconds": 0.976257939,
+      "verify_run_seconds": 0.7070529,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2029,8 +2029,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.36460019,
-      "verify_run_seconds": 1.198784249,
+      "weights_run_seconds": 0.963801934,
+      "verify_run_seconds": 0.905466207,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2785,8 +2785,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.36460019,
-      "verify_run_seconds": 1.219360166,
+      "weights_run_seconds": 0.963801934,
+      "verify_run_seconds": 0.912039004,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3524,8 +3524,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Bonebiter"
       ],
-      "weights_run_seconds": 1.3582246709999999,
-      "verify_run_seconds": 1.093415928,
+      "weights_run_seconds": 0.995407437,
+      "verify_run_seconds": 0.813506486,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4263,8 +4263,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Darkspear Raider's Reaper"
       ],
-      "weights_run_seconds": 1.3582246709999999,
-      "verify_run_seconds": 1.141886244,
+      "weights_run_seconds": 0.995407437,
+      "verify_run_seconds": 0.825840331,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4731,11 +4731,11 @@
             {
               "item_id": 220798,
               "item_name": "Stone Guard's Plate Leggings",
-              "score": 103.8292232326242,
+              "score": 103.82922323262422,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -51.20592019435853,
-              "dps_delta": -2.2002074160580207
+              "score_delta": -51.20592019435851,
+              "dps_delta": -2.20020741605802
             },
             {
               "item_id": 10330,
@@ -5022,8 +5022,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.419915798,
-      "verify_run_seconds": 1.13378723,
+      "weights_run_seconds": 1.030940256,
+      "verify_run_seconds": 0.870300792,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -5146,20 +5146,14 @@
           "source_kind": "vendor",
           "score": 138.26231824541102,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220804,
-              "item_name": "Knight-Lieutenant's Plate Helm"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 220804,
               "item_name": "Knight-Lieutenant's Plate Helm",
-              "score": 138.26231824541102,
+              "score": 138.262318245411,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "score_delta": 0,
+              "score_delta": -2.842170943040401e-14,
               "dps_delta": 0,
               "verified": true
             },
@@ -5496,11 +5490,11 @@
             {
               "item_id": 220798,
               "item_name": "Stone Guard's Plate Leggings",
-              "score": 103.8292232326242,
+              "score": 103.82922323262422,
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "score_delta": -51.20592019435853,
-              "dps_delta": -2.2002074160580207
+              "score_delta": -51.20592019435851,
+              "dps_delta": -2.20020741605802
             },
             {
               "item_id": 10330,
@@ -5786,8 +5780,8 @@
         "trinket1: Rune of the Guard Captain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.419915798,
-      "verify_run_seconds": 1.168092423,
+      "weights_run_seconds": 1.030940256,
+      "verify_run_seconds": 0.833835146,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -5918,7 +5912,7 @@
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
               "score_delta": -139.0652105823538,
-              "dps_delta": -4.054988147849031,
+              "dps_delta": -4.096149564941726,
               "verified": true
             },
             {
@@ -5931,11 +5925,11 @@
               "dps_delta": -6.079208580330903
             },
             {
-              "item_id": 220804,
-              "item_name": "Knight-Lieutenant's Plate Helm",
+              "item_id": 220803,
+              "item_name": "Blood Guard's Plate Helm",
               "score": 227.97831763596452,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "source": "Lady Palanseer",
               "score_delta": -211.97831763596173,
               "dps_delta": -9.266590846267112
             }
@@ -5947,7 +5941,7 @@
           "item_name": "Onyxia Tooth Pendant",
           "source": "Celebrating Good Times",
           "source_kind": "quest",
-          "score": 204.34845567696772,
+          "score": 204.3484556769677,
           "verified": true,
           "alternatives": [
             {
@@ -5956,8 +5950,8 @@
               "score": 127.06521058234756,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "score_delta": -77.28324509462016,
-              "dps_delta": -3.378421998770175
+              "score_delta": -77.28324509462013,
+              "dps_delta": -3.3784219987701736
             },
             {
               "item_id": 22150,
@@ -5965,8 +5959,8 @@
               "score": 122.91310705361244,
               "source_kind": "quest",
               "source": "Falrin's Vendetta",
-              "score_delta": -81.43534862335528,
-              "dps_delta": -3.559930395389334
+              "score_delta": -81.43534862335525,
+              "dps_delta": -3.559930395389333
             },
             {
               "item_id": 21505,
@@ -5974,8 +5968,8 @@
               "score": 42,
               "source_kind": "quest",
               "source": "The Fall of Ossirian",
-              "score_delta": -162.34845567696772,
-              "dps_delta": -7.097031102328975
+              "score_delta": -162.3484556769677,
+              "dps_delta": -7.097031102328973
             }
           ]
         },
@@ -6040,7 +6034,7 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": -0.926763701995668,
-              "dps_delta": -0.2036486912361113,
+              "dps_delta": -0.021374278085914966,
               "verified": true
             },
             {
@@ -6065,40 +6059,40 @@
         },
         {
           "slot": "chest",
-          "item_id": 19690,
-          "item_name": "Bloodsoul Breastplate",
-          "source": "Blacksmithing",
+          "item_id": 252483,
+          "item_name": "Dawn Armor",
+          "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 209.1777415031336,
+          "score": 214.5061901384293,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 19682,
-              "item_name": "Bloodvine Vest",
-              "score": 197.82621410722487,
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "score_delta": -11.351527395908732,
-              "dps_delta": -0.4962298079878379
-            },
             {
               "item_id": 15056,
               "item_name": "Stormshroud Armor",
               "score": 206.13042116469512,
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "score_delta": -3.0473203384384817,
-              "dps_delta": -0.6162939522642432,
-              "verified": true
+              "score_delta": -8.375768973734182,
+              "dps_delta": -0.366145108462197
             },
             {
-              "item_id": 11726,
-              "item_name": "Savage Gladiator Chain",
-              "score": 191.3380919555423,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish",
-              "score_delta": -17.839649547591307,
-              "dps_delta": -0.7798568034784602
+              "item_id": 19682,
+              "item_name": "Bloodvine Vest",
+              "score": 197.82621410722487,
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "score_delta": -16.679976031204433,
+              "dps_delta": -0.7291619017005158
+            },
+            {
+              "item_id": 19690,
+              "item_name": "Bloodsoul Breastplate",
+              "score": 209.1777415031336,
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "score_delta": -5.3284486352957,
+              "dps_delta": -0.8490387778155082,
+              "verified": true
             }
           ]
         },
@@ -6127,7 +6121,7 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": -13.411827446722143,
-              "dps_delta": -1.090257363239715,
+              "dps_delta": -1.3952504129443355,
               "verified": true
             },
             {
@@ -6157,7 +6151,7 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": -0.7661920415812631,
-              "dps_delta": -0.3332964637775149,
+              "dps_delta": -0.6765544121710718,
               "verified": true
             },
             {
@@ -6235,7 +6229,7 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "score_delta": -102.91310705361315,
-              "dps_delta": -0.7433279729053766,
+              "dps_delta": -0.5620289834511141,
               "verified": true
             },
             {
@@ -6266,7 +6260,17 @@
           "source_kind": "quest",
           "score": 103.06521058234756,
           "verified": true,
+          "swap_note": "beat the scored pick Knight-Lieutenant's Lamellar Sabatons (id 227146) in the sim: 166.9 vs 163.7 set DPS",
           "alternatives": [
+            {
+              "item_id": 19684,
+              "item_name": "Bloodvine Boots",
+              "score": 98.91310705361244,
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "score_delta": -4.152103528735125,
+              "dps_delta": -0.18150839661915938
+            },
             {
               "item_id": 22240,
               "item_name": "Greaves of Withering Despair",
@@ -6277,22 +6281,13 @@
               "dps_delta": -0.18150839661915938
             },
             {
-              "item_id": 275618,
-              "item_name": "Scalegut Treaders",
-              "score": 40.708729189723094,
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "score_delta": -62.35648139262447,
-              "dps_delta": -2.7259014323844752
-            },
-            {
-              "item_id": 19684,
-              "item_name": "Bloodvine Boots",
-              "score": 98.91310705361244,
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "score_delta": -4.152103528735125,
-              "dps_delta": -2.8736296651815962,
+              "item_id": 227146,
+              "item_name": "Knight-Lieutenant's Lamellar Sabatons",
+              "score": 127.06521058235171,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "score_delta": 24.00000000000415,
+              "dps_delta": -3.244188328632333,
               "verified": true
             }
           ]
@@ -6351,7 +6346,7 @@
               "source_kind": "quest",
               "source": "The Lord of Blackrock",
               "score_delta": -67.06521058234964,
-              "dps_delta": 1.2038721076164336,
+              "dps_delta": 1.1522459679006545,
               "verified": true
             },
             {
@@ -6385,6 +6380,15 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "score": 0,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "score_delta": -89.0217963482512,
+              "dps_delta": -3.8915704792772257
+            },
+            {
               "item_id": 1404,
               "item_name": "Tidal Charm",
               "score": 0,
@@ -6399,15 +6403,6 @@
               "score": 0,
               "source_kind": "quest",
               "source": "Into The Temple of Atal'Hakkar",
-              "score_delta": -89.0217963482512,
-              "dps_delta": -3.8915704792772257
-            },
-            {
-              "item_id": 1713,
-              "item_name": "Ankh of Life",
-              "score": 0,
-              "source_kind": "world_drop",
-              "source": "World drop",
               "score_delta": -89.0217963482512,
               "dps_delta": -3.8915704792772257
             }
@@ -6415,13 +6410,22 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 744,
-          "item_name": "Thunderbrew's Boot Flask",
-          "source": "Sweet Amber",
+          "item_id": 18406,
+          "item_name": "Onyxia Blood Talisman",
+          "source": "Celebrating Good Times",
           "source_kind": "quest",
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "score": 0,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "score_delta": 0,
+              "dps_delta": 0
+            },
             {
               "item_id": 1404,
               "item_name": "Tidal Charm",
@@ -6437,15 +6441,6 @@
               "score": 0,
               "source_kind": "quest",
               "source": "Into The Temple of Atal'Hakkar",
-              "score_delta": 0,
-              "dps_delta": 0
-            },
-            {
-              "item_id": 1713,
-              "item_name": "Ankh of Life",
-              "score": 0,
-              "source_kind": "world_drop",
-              "source": "World drop",
               "score_delta": 0,
               "dps_delta": 0
             }
@@ -6498,8 +6493,8 @@
           "verified": false
         }
       ],
-      "set_dps": 166.8558876688473,
-      "no_source_count": 2648,
+      "set_dps": 166.91872759281011,
+      "no_source_count": 2604,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6521,7 +6516,7 @@
         "head: Lionheart Helm",
         "neck: Onyxia Tooth Pendant",
         "back: Earthweave Cloak",
-        "chest: Bloodsoul Breastplate",
+        "chest: Dawn Armor",
         "wrist: Vambraces of the Sadist",
         "hands: Stormshroud Gloves",
         "waist: Highlander's Plate Girdle",
@@ -6530,59 +6525,59 @@
         "finger1: Don Julio's Band",
         "finger2: Band of Earthen Might",
         "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Thunderbrew's Boot Flask",
+        "trinket2: Onyxia Blood Talisman",
         "main_hand: High Warlord's Greatsword"
       ],
-      "weights_run_seconds": 1.420504964,
-      "verify_run_seconds": 1.120085397,
+      "weights_run_seconds": 1.048694384,
+      "verify_run_seconds": 0.892435105,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 718,
-          "sourced": 470
+          "sourced": 477
         },
         "feet": {
           "eligible": 619,
-          "sourced": 393
+          "sourced": 397
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 628,
-          "sourced": 403
+          "sourced": 405
         },
         "head": {
           "eligible": 453,
-          "sourced": 274
+          "sourced": 285
         },
         "legs": {
           "eligible": 615,
-          "sourced": 380
+          "sourced": 389
         },
         "main_hand": {
           "eligible": 721,
-          "sourced": 458
+          "sourced": 462
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 345,
-          "sourced": 182
+          "sourced": 183
         },
         "shoulder": {
           "eligible": 475,
-          "sourced": 266
+          "sourced": 268
         },
         "trinket1": {
           "eligible": 80,
@@ -6665,7 +6660,7 @@
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
               "score_delta": -139.0652105823538,
-              "dps_delta": -3.953868667877657,
+              "dps_delta": -3.894713277906561,
               "verified": true
             },
             {
@@ -6678,11 +6673,11 @@
               "dps_delta": -6.079208580330903
             },
             {
-              "item_id": 220803,
-              "item_name": "Blood Guard's Plate Helm",
+              "item_id": 220804,
+              "item_name": "Knight-Lieutenant's Plate Helm",
               "score": 227.97831763596452,
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "Captain Dirgehammer",
               "score_delta": -211.97831763596173,
               "dps_delta": -9.266590846267112
             }
@@ -6787,7 +6782,7 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": -0.926763701995668,
-              "dps_delta": 0.1341751306644312,
+              "dps_delta": -0.06015884909797364,
               "verified": true
             },
             {
@@ -6812,40 +6807,40 @@
         },
         {
           "slot": "chest",
-          "item_id": 19690,
-          "item_name": "Bloodsoul Breastplate",
-          "source": "Blacksmithing",
+          "item_id": 252483,
+          "item_name": "Dawn Armor",
+          "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 209.1777415031336,
+          "score": 214.5061901384293,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 19682,
-              "item_name": "Bloodvine Vest",
-              "score": 197.82621410722487,
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "score_delta": -11.351527395908732,
-              "dps_delta": -0.4962298079878379
-            },
             {
               "item_id": 15056,
               "item_name": "Stormshroud Armor",
               "score": 206.13042116469512,
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "score_delta": -3.0473203384384817,
-              "dps_delta": -0.7174368338627346,
-              "verified": true
+              "score_delta": -8.375768973734182,
+              "dps_delta": -0.366145108462197
             },
             {
-              "item_id": 11726,
-              "item_name": "Savage Gladiator Chain",
-              "score": 191.3380919555423,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish",
-              "score_delta": -17.839649547591307,
-              "dps_delta": -0.7798568034784602
+              "item_id": 19682,
+              "item_name": "Bloodvine Vest",
+              "score": 197.82621410722487,
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "score_delta": -16.679976031204433,
+              "dps_delta": -0.7291619017005158
+            },
+            {
+              "item_id": 19690,
+              "item_name": "Bloodsoul Breastplate",
+              "score": 209.1777415031336,
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "score_delta": -5.3284486352957,
+              "dps_delta": -0.9022044488575034,
+              "verified": true
             }
           ]
         },
@@ -6874,7 +6869,7 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": -13.411827446722143,
-              "dps_delta": -1.2676024187617827,
+              "dps_delta": -1.2677254720057078,
               "verified": true
             },
             {
@@ -6904,7 +6899,7 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "score_delta": -0.7661920415812631,
-              "dps_delta": -0.5500523154270525,
+              "dps_delta": -0.5855216160781538,
               "verified": true
             },
             {
@@ -6982,7 +6977,7 @@
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "score_delta": -102.91310705361315,
-              "dps_delta": -0.47982684042267465,
+              "dps_delta": -0.5597926942274967,
               "verified": true
             },
             {
@@ -7007,28 +7002,31 @@
         },
         {
           "slot": "feet",
-          "item_id": 19684,
-          "item_name": "Bloodvine Boots",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 98.91310705361244,
+          "item_id": 227146,
+          "item_name": "Knight-Lieutenant's Lamellar Sabatons",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
+          "score": 127.06521058235171,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 22240,
-              "item_name": "Greaves of Withering Despair"
-            }
-          ],
           "alternatives": [
+            {
+              "item_id": 19684,
+              "item_name": "Bloodvine Boots",
+              "score": 98.91310705361244,
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "score_delta": -28.152103528739275,
+              "dps_delta": 1.4267393170981109,
+              "verified": true
+            },
             {
               "item_id": 22240,
               "item_name": "Greaves of Withering Despair",
               "score": 98.91310705361244,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "score_delta": 0,
-              "dps_delta": -1.8720140005939925,
-              "verified": true
+              "score_delta": -28.152103528739275,
+              "dps_delta": -1.230663719629043
             },
             {
               "item_id": 275618,
@@ -7036,17 +7034,8 @@
               "score": 40.708729189723094,
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "score_delta": -58.20437786388934,
-              "dps_delta": -2.544393035765316
-            },
-            {
-              "item_id": 275627,
-              "item_name": "Clutchlord's Stompers",
-              "score": 38.00000000000658,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "score_delta": -60.913107053605856,
-              "dps_delta": -2.6628046044312677
+              "score_delta": -86.35648139262861,
+              "dps_delta": -3.775056755394359
             }
           ]
         },
@@ -7104,7 +7093,7 @@
               "source_kind": "quest",
               "source": "The Lord of Blackrock",
               "score_delta": -67.06521058234964,
-              "dps_delta": 0.934812863985286,
+              "dps_delta": 1.0452324412017333,
               "verified": true
             },
             {
@@ -7198,7 +7187,7 @@
               "source_kind": "crafted",
               "source": "Enchanting",
               "score_delta": 89.0217963482512,
-              "dps_delta": -0.09648167697628196,
+              "dps_delta": -0.20561017837553663,
               "verified": true
             }
           ]
@@ -7250,8 +7239,8 @@
           "verified": false
         }
       ],
-      "set_dps": 159.89319890044573,
-      "no_source_count": 2652,
+      "set_dps": 159.21814579886802,
+      "no_source_count": 2608,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7273,66 +7262,66 @@
         "head: Lionheart Helm",
         "neck: Onyxia Tooth Pendant",
         "back: Earthweave Cloak",
-        "chest: Bloodsoul Breastplate",
+        "chest: Dawn Armor",
         "wrist: Vambraces of the Sadist",
         "hands: Stormshroud Gloves",
         "waist: Defiler's Plate Girdle",
         "legs: Titanic Leggings",
-        "feet: Bloodvine Boots",
+        "feet: Knight-Lieutenant's Lamellar Sabatons",
         "finger1: Don Julio's Band",
         "finger2: Band of Earthen Might",
         "main_hand: High Warlord's Greatsword"
       ],
-      "weights_run_seconds": 1.420504964,
-      "verify_run_seconds": 1.131641574,
+      "weights_run_seconds": 1.048694384,
+      "verify_run_seconds": 0.853557698,
       "coverage": {
         "back": {
           "eligible": 372,
-          "sourced": 209
+          "sourced": 210
         },
         "chest": {
           "eligible": 711,
-          "sourced": 463
+          "sourced": 470
         },
         "feet": {
           "eligible": 615,
-          "sourced": 390
+          "sourced": 394
         },
         "finger1": {
           "eligible": 342,
-          "sourced": 142
+          "sourced": 144
         },
         "finger2": {
           "eligible": 342,
-          "sourced": 142
+          "sourced": 144
         },
         "hands": {
           "eligible": 628,
-          "sourced": 399
+          "sourced": 401
         },
         "head": {
           "eligible": 452,
-          "sourced": 273
+          "sourced": 284
         },
         "legs": {
           "eligible": 608,
-          "sourced": 370
+          "sourced": 379
         },
         "main_hand": {
           "eligible": 713,
-          "sourced": 451
+          "sourced": 455
         },
         "neck": {
           "eligible": 164,
-          "sourced": 76
+          "sourced": 77
         },
         "off_hand": {
           "eligible": 343,
-          "sourced": 181
+          "sourced": 182
         },
         "shoulder": {
           "eligible": 471,
-          "sourced": 262
+          "sourced": 264
         },
         "trinket1": {
           "eligible": 80,

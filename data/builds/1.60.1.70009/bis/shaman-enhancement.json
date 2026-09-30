@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:05:26Z",
+  "generated_at": "2026-09-30T00:40:01Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -639,8 +639,8 @@
         "main_hand: Butcher's Cleaver",
         "off_hand: Diamond Hammer"
       ],
-      "weights_run_seconds": 1.5233333249999998,
-      "verify_run_seconds": 1.396264651,
+      "weights_run_seconds": 1.058021626,
+      "verify_run_seconds": 1.044727725,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1344,8 +1344,8 @@
         "main_hand: Butcher's Cleaver",
         "off_hand: Diamond Hammer"
       ],
-      "weights_run_seconds": 1.5233333249999998,
-      "verify_run_seconds": 1.359360552,
+      "weights_run_seconds": 1.058021626,
+      "verify_run_seconds": 1.00167161,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2121,8 +2121,8 @@
         "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.576002084,
-      "verify_run_seconds": 1.705726534,
+      "weights_run_seconds": 1.139531645,
+      "verify_run_seconds": 1.288402783,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2905,8 +2905,8 @@
         "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.576002084,
-      "verify_run_seconds": 1.63225461,
+      "weights_run_seconds": 1.139531645,
+      "verify_run_seconds": 1.221384281,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3682,8 +3682,8 @@
         "main_hand: Ardent Custodian",
         "off_hand: Jhordy's Misplaced Screwdriver"
       ],
-      "weights_run_seconds": 1.8159868399999999,
-      "verify_run_seconds": 1.874474218,
+      "weights_run_seconds": 1.308271353,
+      "verify_run_seconds": 1.386064665,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4457,8 +4457,8 @@
         "main_hand: Ardent Custodian",
         "off_hand: Curve-bladed Ripper"
       ],
-      "weights_run_seconds": 1.8159868399999999,
-      "verify_run_seconds": 1.675100134,
+      "weights_run_seconds": 1.308271353,
+      "verify_run_seconds": 1.228466761,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5250,8 +5250,8 @@
         "main_hand: Dawn's Edge",
         "off_hand: Hammer of the Northern Wind"
       ],
-      "weights_run_seconds": 1.837156823,
-      "verify_run_seconds": 1.819591608,
+      "weights_run_seconds": 1.342375964,
+      "verify_run_seconds": 1.4366924380000001,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6047,8 +6047,8 @@
         "main_hand: Dawn's Edge",
         "off_hand: Hammer of the Northern Wind"
       ],
-      "weights_run_seconds": 1.837156823,
-      "verify_run_seconds": 1.747579742,
+      "weights_run_seconds": 1.342375964,
+      "verify_run_seconds": 1.459315906,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6339,13 +6339,13 @@
               "dps_delta": -0.40398039162760685
             },
             {
-              "item_id": 11726,
-              "item_name": "Savage Gladiator Chain",
-              "score": 255.84961219140985,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish",
-              "score_delta": -44.12484635006393,
-              "dps_delta": -1.5908978827465365
+              "item_id": 252483,
+              "item_name": "Dawn Armor",
+              "score": 275.1941396386001,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -24.78031890287366,
+              "dps_delta": -0.8934412272759917
             },
             {
               "item_id": 19690,
@@ -6797,7 +6797,7 @@
         }
       ],
       "set_dps": 198.16806591476973,
-      "no_source_count": 2453,
+      "no_source_count": 2418,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6832,56 +6832,56 @@
         "main_hand: High Warlord's Cleaver",
         "off_hand: High Warlord's Bludgeon"
       ],
-      "weights_run_seconds": 1.918191519,
-      "verify_run_seconds": 2.054465355,
+      "weights_run_seconds": 1.5791259439999998,
+      "verify_run_seconds": 1.5855317549999999,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 203
+          "sourced": 204
         },
         "chest": {
           "eligible": 650,
-          "sourced": 427
+          "sourced": 431
         },
         "feet": {
           "eligible": 533,
-          "sourced": 337
+          "sourced": 341
         },
         "finger1": {
           "eligible": 347,
-          "sourced": 142
+          "sourced": 144
         },
         "finger2": {
           "eligible": 347,
-          "sourced": 142
+          "sourced": 144
         },
         "hands": {
           "eligible": 549,
-          "sourced": 352
+          "sourced": 354
         },
         "head": {
           "eligible": 396,
-          "sourced": 238
+          "sourced": 246
         },
         "legs": {
           "eligible": 546,
-          "sourced": 341
+          "sourced": 346
         },
         "main_hand": {
           "eligible": 765,
-          "sourced": 498
+          "sourced": 503
         },
         "neck": {
           "eligible": 162,
-          "sourced": 74
+          "sourced": 75
         },
         "off_hand": {
           "eligible": 352,
-          "sourced": 186
+          "sourced": 187
         },
         "shoulder": {
           "eligible": 405,
-          "sourced": 225
+          "sourced": 227
         },
         "trinket1": {
           "eligible": 80,
@@ -7123,6 +7123,15 @@
               "dps_delta": -0.40398039162760685
             },
             {
+              "item_id": 252483,
+              "item_name": "Dawn Armor",
+              "score": 275.1941396386001,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -24.78031890287366,
+              "dps_delta": -0.8934412272759917
+            },
+            {
               "item_id": 19690,
               "item_name": "Bloodsoul Breastplate",
               "score": 293.4447914640831,
@@ -7131,15 +7140,6 @@
               "score_delta": -6.529667077390684,
               "dps_delta": -1.5290962582513146,
               "verified": true
-            },
-            {
-              "item_id": 11726,
-              "item_name": "Savage Gladiator Chain",
-              "score": 255.84961219140985,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish",
-              "score_delta": -44.12484635006393,
-              "dps_delta": -1.5908978827465365
             }
           ]
         },
@@ -7582,7 +7582,7 @@
         }
       ],
       "set_dps": 207.84248992976921,
-      "no_source_count": 2444,
+      "no_source_count": 2409,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7616,56 +7616,56 @@
         "main_hand: High Warlord's Cleaver",
         "off_hand: High Warlord's Bludgeon"
       ],
-      "weights_run_seconds": 1.918191519,
-      "verify_run_seconds": 1.9753905409999999,
+      "weights_run_seconds": 1.5791259439999998,
+      "verify_run_seconds": 1.472787118,
       "coverage": {
         "back": {
           "eligible": 374,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 648,
-          "sourced": 427
+          "sourced": 431
         },
         "feet": {
           "eligible": 538,
-          "sourced": 343
+          "sourced": 347
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 553,
-          "sourced": 354
+          "sourced": 356
         },
         "head": {
           "eligible": 399,
-          "sourced": 242
+          "sourced": 250
         },
         "legs": {
           "eligible": 545,
-          "sourced": 339
+          "sourced": 344
         },
         "main_hand": {
           "eligible": 769,
-          "sourced": 503
+          "sourced": 508
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 352,
-          "sourced": 187
+          "sourced": 188
         },
         "shoulder": {
           "eligible": 406,
-          "sourced": 228
+          "sourced": 230
         },
         "trinket1": {
           "eligible": 80,

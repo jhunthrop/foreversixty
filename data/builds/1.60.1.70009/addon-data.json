@@ -8422,9 +8422,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 220865,
+              "item_id": 220864,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 220862,
@@ -8494,9 +8494,9 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 220864,
+              "item_id": 220865,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "feet": {
               "item_id": 220862,
@@ -8534,7 +8534,7 @@
             15092,
             867,
             20097,
-            220865,
+            220864,
             220862,
             17713,
             19523,
@@ -8549,7 +8549,7 @@
             15092,
             867,
             20165,
-            220864,
+            220865,
             220862,
             17713,
             19519,
@@ -8733,7 +8733,6 @@
             21186,
             19686,
             18405,
-            220864,
             19684,
             21709,
             19325,
@@ -8748,6 +8747,7 @@
             21186,
             19686,
             18405,
+            220864,
             19684,
             21709,
             19325,
@@ -9589,9 +9589,9 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 16452,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 19587,
@@ -9666,9 +9666,9 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 16452,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 252484,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 19587,
@@ -9728,7 +9728,7 @@
             17111,
             227172,
             21710,
-            16452,
+            252484,
             19587,
             15063,
             20045,
@@ -9745,7 +9745,7 @@
             17111,
             227172,
             21710,
-            16452,
+            252484,
             19587,
             15063,
             20190,
@@ -10663,7 +10663,7 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 22874,
+              "item_id": 227083,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -10683,7 +10683,7 @@
               "source": "Cryptstalker Girdle"
             },
             "legs": {
-              "item_id": 22875,
+              "item_id": 227079,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -10750,7 +10750,7 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 22874,
+              "item_id": 227083,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -10770,7 +10770,7 @@
               "source": "Cryptstalker Girdle"
             },
             "legs": {
-              "item_id": 22875,
+              "item_id": 227079,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -10785,9 +10785,9 @@
               "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 13217,
+              "item_id": 18403,
               "source_kind": "quest",
-              "source": "Houses of the Holy"
+              "source": "For All To See"
             },
             "trinket1": {
               "item_id": 19120,
@@ -10795,9 +10795,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 18406,
-              "source_kind": "quest",
-              "source": "For All To See"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 12584,
@@ -10822,11 +10822,11 @@
             22659,
             22439,
             21710,
-            22874,
+            227083,
             22443,
             22441,
             22442,
-            22875,
+            227079,
             22440,
             19325,
             13217,
@@ -10841,15 +10841,15 @@
             22659,
             22439,
             21710,
-            22874,
+            227083,
             22443,
             22441,
             22442,
-            22875,
+            227079,
             22440,
             19325,
-            13217,
-            18406,
+            18403,
+            1713,
             12584,
             16345,
             22656
@@ -11762,7 +11762,7 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 22874,
+              "item_id": 227083,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -11782,7 +11782,7 @@
               "source": "Cryptstalker Girdle"
             },
             "legs": {
-              "item_id": 22875,
+              "item_id": 227079,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -11802,14 +11802,14 @@
               "source": "Houses of the Holy"
             },
             "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 18406,
+              "source_kind": "quest",
+              "source": "Celebrating Good Times"
             },
             "trinket2": {
-              "item_id": 744,
-              "source_kind": "quest",
-              "source": "Sweet Amber"
+              "item_id": 20071,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "main_hand": {
               "item_id": 12584,
@@ -11849,7 +11849,7 @@
               "source": "The Savior of Kalimdor"
             },
             "chest": {
-              "item_id": 22874,
+              "item_id": 227083,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -11869,7 +11869,7 @@
               "source": "Cryptstalker Girdle"
             },
             "legs": {
-              "item_id": 22875,
+              "item_id": 227079,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -11884,9 +11884,9 @@
               "source": "Frostwolf Clan"
             },
             "finger2": {
-              "item_id": 13217,
+              "item_id": 18403,
               "source_kind": "quest",
-              "source": "Houses of the Holy"
+              "source": "For All To See"
             },
             "trinket1": {
               "item_id": 19120,
@@ -11921,15 +11921,16 @@
             22659,
             22439,
             21710,
-            22874,
+            227083,
             22443,
             22441,
             22442,
-            22875,
+            227079,
             22440,
             19325,
             13217,
-            1713,
+            18406,
+            20071,
             12584,
             16345,
             22656
@@ -11939,14 +11940,14 @@
             22659,
             22439,
             21710,
-            22874,
+            227083,
             22443,
             22441,
             22442,
-            22875,
+            227079,
             22440,
             19325,
-            13217,
+            18403,
             1713,
             12584,
             16345,
@@ -12856,14 +12857,14 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 22438,
-              "source_kind": "quest",
-              "source": "Cryptstalker Headpiece"
+              "item_id": 227080,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "neck": {
-              "item_id": 18404,
-              "source_kind": "quest",
-              "source": "Celebrating Good Times"
+              "item_id": 17111,
+              "source_kind": "world",
+              "source": "Lord Kazzak"
             },
             "shoulder": {
               "item_id": 227078,
@@ -12871,14 +12872,14 @@
               "source": "Rank 14"
             },
             "back": {
-              "item_id": 18509,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 21403,
+              "source_kind": "quest",
+              "source": "Cloak of the Unseen Path"
             },
             "chest": {
-              "item_id": 22436,
-              "source_kind": "quest",
-              "source": "Cryptstalker Tunic"
+              "item_id": 227083,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "wrist": {
               "item_id": 22443,
@@ -12886,9 +12887,9 @@
               "source": "Cryptstalker Wristguards"
             },
             "hands": {
-              "item_id": 22862,
+              "item_id": 16463,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "waist": {
               "item_id": 22442,
@@ -12896,7 +12897,7 @@
               "source": "Cryptstalker Girdle"
             },
             "legs": {
-              "item_id": 22875,
+              "item_id": 227079,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -12921,9 +12922,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber"
             },
             "main_hand": {
               "item_id": 234553,
@@ -12943,9 +12944,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 22438,
-              "source_kind": "quest",
-              "source": "Cryptstalker Headpiece"
+              "item_id": 227080,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 17111,
@@ -12963,9 +12964,9 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 22436,
-              "source_kind": "quest",
-              "source": "Cryptstalker Tunic"
+              "item_id": 227083,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "wrist": {
               "item_id": 22443,
@@ -12983,7 +12984,7 @@
               "source": "Cryptstalker Girdle"
             },
             "legs": {
-              "item_id": 22875,
+              "item_id": 227079,
               "source_kind": "vendor",
               "source": "Lady Palanseer"
             },
@@ -13008,9 +13009,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 234553,
@@ -13031,35 +13032,37 @@
         },
         "new_at_band": {
           "alliance": [
-            22438,
-            18404,
+            227080,
+            17111,
             227078,
-            18509,
-            22436,
+            21403,
+            227083,
             22443,
-            22862,
+            16463,
             22442,
-            22875,
+            227079,
             231564,
             19325,
             19384,
+            744,
             234553,
             234579,
             22656
           ],
           "horde": [
-            22438,
+            227080,
             17111,
             227078,
             18509,
-            22436,
+            227083,
             22443,
             16463,
             22442,
-            22875,
+            227079,
             231564,
             19325,
             19384,
+            1713,
             234553,
             234579,
             22656
@@ -13824,9 +13827,9 @@
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 220891,
+              "item_id": 220909,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 17713,
@@ -13883,7 +13886,7 @@
             220886,
             20165,
             220888,
-            220891,
+            220909,
             17713,
             19519,
             249469,
@@ -17047,9 +17050,9 @@
               "source": "Volunteer's Battlegear"
             },
             "chest": {
-              "item_id": 19690,
+              "item_id": 252483,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 13400,
@@ -17092,9 +17095,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 744,
+              "item_id": 18406,
               "source_kind": "quest",
-              "source": "Sweet Amber"
+              "source": "Celebrating Good Times"
             },
             "main_hand": {
               "item_id": 234542,
@@ -17124,9 +17127,9 @@
               "source": "Volunteer's Battlegear"
             },
             "chest": {
-              "item_id": 19690,
+              "item_id": 252483,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 13400,
@@ -17149,9 +17152,9 @@
               "source": "Blacksmithing"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 227146,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 19325,
@@ -17185,7 +17188,7 @@
             12640,
             18404,
             21187,
-            19690,
+            252483,
             13400,
             21278,
             20041,
@@ -17194,19 +17197,19 @@
             19325,
             21182,
             249469,
-            744,
+            18406,
             234542
           ],
           "horde": [
             12640,
             18404,
             21187,
-            19690,
+            252483,
             13400,
             21278,
             20204,
             22385,
-            19684,
+            227146,
             19325,
             21182,
             234542
@@ -20315,7 +20318,7 @@
               "source": "Bonescythe Waistguard"
             },
             "legs": {
-              "item_id": 231548,
+              "item_id": 231554,
               "source_kind": "pvp",
               "source": "Rank 16"
             },
@@ -20402,9 +20405,9 @@
               "source": "Bonescythe Waistguard"
             },
             "legs": {
-              "item_id": 231548,
-              "source_kind": "pvp",
-              "source": "Rank 16"
+              "item_id": 16456,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 22480,
@@ -20458,7 +20461,7 @@
             22483,
             22481,
             22482,
-            231548,
+            231554,
             22480,
             19325,
             21182,
@@ -20476,7 +20479,7 @@
             22483,
             22481,
             22482,
-            231548,
+            16456,
             22480,
             19325,
             21182,
@@ -25521,9 +25524,9 @@
               "source": "Captain Dirgehammer"
             },
             "back": {
-              "item_id": 18510,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272063,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 22504,
@@ -25603,9 +25606,9 @@
               "source": "Captain Dirgehammer"
             },
             "back": {
-              "item_id": 18510,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272063,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 22504,
@@ -25674,7 +25677,7 @@
             22506,
             21504,
             17580,
-            18510,
+            272063,
             22504,
             22511,
             22509,
@@ -25692,7 +25695,7 @@
             22506,
             21504,
             17580,
-            18510,
+            272063,
             22504,
             22511,
             22509,
@@ -27470,9 +27473,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 220803,
+              "item_id": 220804,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 7731,
@@ -27570,7 +27573,7 @@
             11628
           ],
           "horde": [
-            220803,
+            220804,
             220795,
             14801,
             220794,

@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:07:11Z",
+  "generated_at": "2026-09-30T00:41:20Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -643,8 +643,8 @@
         "main_hand: Forsaken Greataxe",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.531370907,
-      "verify_run_seconds": 1.192535863,
+      "weights_run_seconds": 1.099205451,
+      "verify_run_seconds": 0.879619088,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1367,8 +1367,8 @@
         "main_hand: Forsaken Greataxe",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.531370907,
-      "verify_run_seconds": 1.244379877,
+      "weights_run_seconds": 1.099205451,
+      "verify_run_seconds": 0.928411658,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2158,8 +2158,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.624679145,
-      "verify_run_seconds": 1.580866866,
+      "weights_run_seconds": 1.204266089,
+      "verify_run_seconds": 1.132409348,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2955,8 +2955,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.624679145,
-      "verify_run_seconds": 1.576976978,
+      "weights_run_seconds": 1.204266089,
+      "verify_run_seconds": 1.158812578,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3740,8 +3740,8 @@
         "main_hand: Bonebiter",
         "ranged: Explosive Shotgun"
       ],
-      "weights_run_seconds": 2.046206606,
-      "verify_run_seconds": 1.683994555,
+      "weights_run_seconds": 1.493339879,
+      "verify_run_seconds": 1.272799286,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4525,8 +4525,8 @@
         "main_hand: Darkspear Raider's Reaper",
         "ranged: Explosive Shotgun"
       ],
-      "weights_run_seconds": 2.046206606,
-      "verify_run_seconds": 1.713653634,
+      "weights_run_seconds": 1.493339879,
+      "verify_run_seconds": 1.249113801,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -4651,7 +4651,7 @@
           "item_name": "Blood Guard's Plate Helm",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 137.8879749158477,
+          "score": 137.88797491584774,
           "verified": true,
           "ties": [
             {
@@ -4663,7 +4663,7 @@
             {
               "item_id": 220804,
               "item_name": "Knight-Lieutenant's Plate Helm",
-              "score": 137.8879749158477,
+              "score": 137.88797491584774,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score_delta": 0,
@@ -4676,8 +4676,8 @@
               "score": 117.22589009144572,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "score_delta": -20.662084824401987,
-              "dps_delta": -1.3851932190161949
+              "score_delta": -20.662084824402015,
+              "dps_delta": -1.3851932190161969
             },
             {
               "item_id": 7937,
@@ -4685,8 +4685,8 @@
               "score": 112.6675664966397,
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "score_delta": -25.220408419208013,
-              "dps_delta": -1.6907847886602123
+              "score_delta": -25.22040841920804,
+              "dps_delta": -1.690784788660214
             }
           ]
         },
@@ -5330,8 +5330,8 @@
         "main_hand: Blight",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.134621979,
-      "verify_run_seconds": 1.907230795,
+      "weights_run_seconds": 1.578613504,
+      "verify_run_seconds": 1.388122474,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -5452,26 +5452,20 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 220803,
-          "item_name": "Blood Guard's Plate Helm",
-          "source": "Lady Palanseer",
+          "item_id": 220804,
+          "item_name": "Knight-Lieutenant's Plate Helm",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 137.8879749158477,
+          "score": 137.88797491584774,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 220804,
-              "item_name": "Knight-Lieutenant's Plate Helm"
-            }
-          ],
           "alternatives": [
             {
-              "item_id": 220804,
-              "item_name": "Knight-Lieutenant's Plate Helm",
+              "item_id": 220803,
+              "item_name": "Blood Guard's Plate Helm",
               "score": 137.8879749158477,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "score_delta": 0,
+              "source": "Lady Palanseer",
+              "score_delta": -2.842170943040401e-14,
               "dps_delta": 0,
               "verified": true
             },
@@ -5481,8 +5475,8 @@
               "score": 117.22589009144572,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "score_delta": -20.662084824401987,
-              "dps_delta": -1.3851932190161949
+              "score_delta": -20.662084824402015,
+              "dps_delta": -1.3851932190161969
             },
             {
               "item_id": 7937,
@@ -5490,8 +5484,8 @@
               "score": 112.6675664966397,
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "score_delta": -25.220408419208013,
-              "dps_delta": -1.6907847886602123
+              "score_delta": -25.22040841920804,
+              "dps_delta": -1.690784788660214
             }
           ]
         },
@@ -6120,7 +6114,7 @@
         "5008 Quicksilver Ring"
       ],
       "new_at_band": [
-        "head: Blood Guard's Plate Helm",
+        "head: Knight-Lieutenant's Plate Helm",
         "shoulder: Knight-Lieutenant's Plate Pauldrons",
         "back: Bloodlust Cape",
         "chest: Knight's Plate Hauberk",
@@ -6136,8 +6130,8 @@
         "main_hand: Blight",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.134621979,
-      "verify_run_seconds": 1.799432143,
+      "weights_run_seconds": 1.578613504,
+      "verify_run_seconds": 1.3185761679999999,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6455,13 +6449,13 @@
               "dps_delta": -2.3997929262848405
             },
             {
-              "item_id": 22872,
-              "item_name": "Legionnaire's Plate Hauberk",
-              "score": 365.4718269518918,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "score_delta": -210.88729370324734,
-              "dps_delta": -6.751859977175826
+              "item_id": 252484,
+              "item_name": "Timbermaw Tunic",
+              "score": 429.3758113129095,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -146.98330934222963,
+              "dps_delta": -4.705882019886589
             }
           ]
         },
@@ -6909,7 +6903,7 @@
         }
       ],
       "set_dps": 223.28865623950261,
-      "no_source_count": 2773,
+      "no_source_count": 2736,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6945,52 +6939,52 @@
         "main_hand: High Warlord's Greatsword",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.129769789,
-      "verify_run_seconds": 1.8104036940000001,
+      "weights_run_seconds": 1.579354879,
+      "verify_run_seconds": 1.325318942,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 715,
-          "sourced": 475
+          "sourced": 480
         },
         "feet": {
           "eligible": 612,
-          "sourced": 398
+          "sourced": 400
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 622,
-          "sourced": 407
+          "sourced": 408
         },
         "head": {
           "eligible": 450,
-          "sourced": 279
+          "sourced": 289
         },
         "legs": {
           "eligible": 609,
-          "sourced": 385
+          "sourced": 393
         },
         "main_hand": {
           "eligible": 1061,
-          "sourced": 684
+          "sourced": 690
         },
         "neck": {
           "eligible": 169,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 353,
-          "sourced": 187
+          "sourced": 188
         },
         "ranged": {
           "eligible": 179,
@@ -7264,13 +7258,13 @@
               "dps_delta": -2.3997929262848405
             },
             {
-              "item_id": 22872,
-              "item_name": "Legionnaire's Plate Hauberk",
-              "score": 365.4718269518918,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "score_delta": -210.88729370324734,
-              "dps_delta": -6.751859977175826
+              "item_id": 252484,
+              "item_name": "Timbermaw Tunic",
+              "score": 429.3758113129095,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -146.98330934222963,
+              "dps_delta": -4.705882019886589
             }
           ]
         },
@@ -7719,7 +7713,7 @@
         }
       ],
       "set_dps": 211.4120611361882,
-      "no_source_count": 2770,
+      "no_source_count": 2733,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7754,52 +7748,52 @@
         "main_hand: High Warlord's Greatsword",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.129769789,
-      "verify_run_seconds": 1.7779149429999999,
+      "weights_run_seconds": 1.579354879,
+      "verify_run_seconds": 1.290217086,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 710,
-          "sourced": 471
+          "sourced": 476
         },
         "feet": {
           "eligible": 609,
-          "sourced": 396
+          "sourced": 398
         },
         "finger1": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 343,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 622,
-          "sourced": 404
+          "sourced": 405
         },
         "head": {
           "eligible": 450,
-          "sourced": 279
+          "sourced": 289
         },
         "legs": {
           "eligible": 603,
-          "sourced": 377
+          "sourced": 385
         },
         "main_hand": {
           "eligible": 1055,
-          "sourced": 680
+          "sourced": 686
         },
         "neck": {
           "eligible": 171,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 353,
-          "sourced": 188
+          "sourced": 189
         },
         "ranged": {
           "eligible": 178,

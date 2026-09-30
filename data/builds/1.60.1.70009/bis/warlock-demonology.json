@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:06:12Z",
+  "generated_at": "2026-09-30T00:40:36Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -598,8 +598,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.389383714,
-      "verify_run_seconds": 1.106024864,
+      "weights_run_seconds": 1.035305918,
+      "verify_run_seconds": 0.81001542,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1294,8 +1294,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.389383714,
-      "verify_run_seconds": 1.123045893,
+      "weights_run_seconds": 1.035305918,
+      "verify_run_seconds": 0.832281679,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2101,8 +2101,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 1.45661088,
-      "verify_run_seconds": 1.164690198,
+      "weights_run_seconds": 1.067436753,
+      "verify_run_seconds": 0.894968207,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2911,8 +2911,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 1.45661088,
-      "verify_run_seconds": 1.089025183,
+      "weights_run_seconds": 1.067436753,
+      "verify_run_seconds": 0.830864407,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3721,8 +3721,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 1.2756304840000001,
-      "verify_run_seconds": 0.994995339,
+      "weights_run_seconds": 0.975624518,
+      "verify_run_seconds": 0.749227646,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4518,8 +4518,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.2756304840000001,
-      "verify_run_seconds": 1.062048994,
+      "weights_run_seconds": 0.975624518,
+      "verify_run_seconds": 0.789443051,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5353,8 +5353,8 @@
         "trinket2: Abyss Shard",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 1.255800453,
-      "verify_run_seconds": 1.009231573,
+      "weights_run_seconds": 0.930714871,
+      "verify_run_seconds": 0.752100128,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6181,8 +6181,8 @@
         "trinket2: Uther's Strength",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 1.255800453,
-      "verify_run_seconds": 0.990500113,
+      "weights_run_seconds": 0.930714871,
+      "verify_run_seconds": 0.75710588,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6321,7 +6321,7 @@
           "source_kind": "quest",
           "score": 146.68656553903318,
           "verified": true,
-          "swap_note": "beat the scored pick Magister's Crown (id 16686) in the sim: 315.3 vs 304.7 set DPS",
+          "swap_note": "beat the scored pick Magister's Crown (id 16686) in the sim: 314.8 vs 304.8 set DPS",
           "alternatives": [
             {
               "item_id": 17578,
@@ -6348,7 +6348,7 @@
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
               "score_delta": 0.7373131078066422,
-              "dps_delta": -10.634919713231739,
+              "dps_delta": -10.06572717225498,
               "verified": true
             }
           ]
@@ -6399,7 +6399,7 @@
           "source_kind": "vendor",
           "score": 102.30686456654256,
           "verified": true,
-          "swap_note": "beat the scored pick Magister's Mantle (id 16689) in the sim: 310.4 vs 304.7 set DPS",
+          "swap_note": "beat the scored pick Magister's Mantle (id 16689) in the sim: 309.2 vs 304.8 set DPS",
           "alternatives": [
             {
               "item_id": 17590,
@@ -6426,28 +6426,27 @@
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
               "score_delta": 5.737313107806642,
-              "dps_delta": -5.712634284659373,
+              "dps_delta": -4.442028289256143,
               "verified": true
             }
           ]
         },
         {
           "slot": "back",
-          "item_id": 18510,
-          "item_name": "Hide of the Wild",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 59.47462621561327,
+          "item_id": 272063,
+          "item_name": "Darkspear Raider's Cloak",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
+          "score": 72.75940194498124,
           "verified": true,
-          "swap_note": "beat the scored pick Darkspear Raider's Cloak (id 272076) in the sim: 313.1 vs 304.7 set DPS",
           "alternatives": [
             {
-              "item_id": 8248,
-              "item_name": "Imperial Red Cloak",
-              "score": 50.0220888371746,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
-              "score_delta": -9.45253737843867,
+              "item_id": 18510,
+              "item_name": "Hide of the Wild",
+              "score": 59.47462621561327,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -13.284775729367965,
               "dps_delta": 0
             },
             {
@@ -6456,7 +6455,7 @@
               "score": 58.92716359405195,
               "source_kind": "quest",
               "source": "Shroud of Unspoken Names",
-              "score_delta": -0.5474626215613227,
+              "score_delta": -13.832238350929288,
               "dps_delta": 0
             },
             {
@@ -6465,8 +6464,8 @@
               "score": 63.66447670185858,
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "score_delta": 4.189850486245312,
-              "dps_delta": -8.480778291620027,
+              "score_delta": -9.094925243122653,
+              "dps_delta": -0.10073006581069421,
               "verified": true
             }
           ]
@@ -6505,7 +6504,7 @@
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score_delta": -9.905074756877355,
-              "dps_delta": -14.74746879887465,
+              "dps_delta": -13.919670311476409,
               "verified": true
             }
           ]
@@ -6544,7 +6543,7 @@
               "source_kind": "pvp",
               "source": "Rank 16",
               "score_delta": -0.26268689219335783,
-              "dps_delta": -11.440396862649663,
+              "dps_delta": -13.304355920574437,
               "verified": true
             }
           ]
@@ -6557,7 +6556,7 @@
           "source_kind": "quest",
           "score": 103.30686456654256,
           "verified": true,
-          "swap_note": "beat the scored pick Raider Handwraps (id 272098) in the sim: 309.0 vs 304.7 set DPS",
+          "swap_note": "beat the scored pick Raider Handwraps (id 272098) in the sim: 309.3 vs 304.8 set DPS",
           "alternatives": [
             {
               "item_id": 18409,
@@ -6584,7 +6583,7 @@
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "score_delta": 3.737313107806642,
-              "dps_delta": -4.385966424237097,
+              "dps_delta": -4.512006533469275,
               "verified": true
             }
           ]
@@ -6668,7 +6667,7 @@
               "source_kind": "quest",
               "source": "Doomcaller's Trousers",
               "score_delta": -7.547462621561323,
-              "dps_delta": -6.867442581570515,
+              "dps_delta": -6.906121493539388,
               "verified": true
             }
           ]
@@ -6707,7 +6706,7 @@
               "source_kind": "quest",
               "source": "Doomcaller's Footwraps",
               "score_delta": -4,
-              "dps_delta": -8.047228240258107,
+              "dps_delta": -8.136407693995181,
               "verified": true
             }
           ]
@@ -6784,7 +6783,7 @@
               "source_kind": "quest",
               "source": "The Grand Invoker",
               "score_delta": -0.6423878646839825,
-              "dps_delta": -0.5433888256384307,
+              "dps_delta": -0.47525618393189006,
               "verified": true
             }
           ]
@@ -6799,6 +6798,15 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "score": 0,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "score_delta": -12,
+              "dps_delta": 0
+            },
+            {
               "item_id": 1404,
               "item_name": "Tidal Charm",
               "score": 0,
@@ -6815,16 +6823,6 @@
               "source": "Into The Temple of Atal'Hakkar",
               "score_delta": -12,
               "dps_delta": 0
-            },
-            {
-              "item_id": 744,
-              "item_name": "Thunderbrew's Boot Flask",
-              "score": 0,
-              "source_kind": "quest",
-              "source": "Sweet Amber",
-              "score_delta": -12,
-              "dps_delta": -2.8105992299543345,
-              "verified": true
             }
           ]
         },
@@ -6838,15 +6836,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 744,
-              "item_name": "Thunderbrew's Boot Flask",
-              "score": 0,
-              "source_kind": "quest",
-              "source": "Sweet Amber",
-              "score_delta": -6,
-              "dps_delta": 0
-            },
-            {
               "item_id": 1404,
               "item_name": "Tidal Charm",
               "score": 0,
@@ -6863,6 +6852,16 @@
               "source": "Into The Temple of Atal'Hakkar",
               "score_delta": -6,
               "dps_delta": 0
+            },
+            {
+              "item_id": 744,
+              "item_name": "Thunderbrew's Boot Flask",
+              "score": 0,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "score_delta": -6,
+              "dps_delta": -1.8913881411008333,
+              "verified": true
             }
           ]
         },
@@ -6943,14 +6942,14 @@
               "source_kind": "quest",
               "source": "Ledger from Tanaris",
               "score_delta": -17.64238786468398,
-              "dps_delta": -3.0909961087335205,
+              "dps_delta": -2.650885125493744,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 334.5639458829576,
-      "no_source_count": 1239,
+      "set_dps": 325.0137099026428,
+      "no_source_count": 1231,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6972,7 +6971,7 @@
         "head: Plagueheart Circlet",
         "neck: Charm of the Shifting Sands",
         "shoulder: Field Marshal's Dreadweave Shoulders",
-        "back: Hide of the Wild",
+        "back: Darkspear Raider's Cloak",
         "chest: Plagueheart Robe",
         "wrist: Plagueheart Bindings",
         "hands: Plagueheart Gloves",
@@ -6986,12 +6985,12 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.310088028,
-      "verify_run_seconds": 1.037976923,
+      "weights_run_seconds": 0.980684281,
+      "verify_run_seconds": 0.820076816,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 296,
@@ -7003,11 +7002,11 @@
         },
         "finger1": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 196,
@@ -7015,7 +7014,7 @@
         },
         "head": {
           "eligible": 165,
-          "sourced": 107
+          "sourced": 109
         },
         "legs": {
           "eligible": 191,
@@ -7023,15 +7022,15 @@
         },
         "main_hand": {
           "eligible": 452,
-          "sourced": 303
+          "sourced": 304
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 125,
-          "sourced": 67
+          "sourced": 68
         },
         "ranged": {
           "eligible": 78,
@@ -7126,7 +7125,7 @@
           "source_kind": "quest",
           "score": 146.68656553903318,
           "verified": true,
-          "swap_note": "beat the scored pick Magister's Crown (id 16686) in the sim: 312.3 vs 301.0 set DPS",
+          "swap_note": "beat the scored pick Magister's Crown (id 16686) in the sim: 311.8 vs 301.4 set DPS",
           "alternatives": [
             {
               "item_id": 17578,
@@ -7153,7 +7152,7 @@
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
               "score_delta": 0.7373131078066422,
-              "dps_delta": -11.311452926577715,
+              "dps_delta": -10.414039410507826,
               "verified": true
             }
           ]
@@ -7204,7 +7203,7 @@
           "source_kind": "vendor",
           "score": 102.30686456654256,
           "verified": true,
-          "swap_note": "beat the scored pick Magister's Mantle (id 16689) in the sim: 305.3 vs 301.0 set DPS",
+          "swap_note": "beat the scored pick Magister's Mantle (id 16689) in the sim: 305.3 vs 301.4 set DPS",
           "alternatives": [
             {
               "item_id": 17590,
@@ -7231,28 +7230,27 @@
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
               "score_delta": 5.737313107806642,
-              "dps_delta": -4.293406395089846,
+              "dps_delta": -3.987519756394306,
               "verified": true
             }
           ]
         },
         {
           "slot": "back",
-          "item_id": 18510,
-          "item_name": "Hide of the Wild",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 59.47462621561327,
+          "item_id": 272063,
+          "item_name": "Darkspear Raider's Cloak",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
+          "score": 72.75940194498124,
           "verified": true,
-          "swap_note": "beat the scored pick Darkspear Raider's Cloak (id 272076) in the sim: 308.6 vs 301.0 set DPS",
           "alternatives": [
             {
-              "item_id": 19121,
-              "item_name": "Deep Woodlands Cloak",
-              "score": 52.92716359405195,
-              "source_kind": "quest",
-              "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "score_delta": -6.547462621561323,
+              "item_id": 18510,
+              "item_name": "Hide of the Wild",
+              "score": 59.47462621561327,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "score_delta": -13.284775729367965,
               "dps_delta": 0
             },
             {
@@ -7261,7 +7259,7 @@
               "score": 58.92716359405195,
               "source_kind": "quest",
               "source": "Shroud of Unspoken Names",
-              "score_delta": -0.5474626215613227,
+              "score_delta": -13.832238350929288,
               "dps_delta": 0
             },
             {
@@ -7270,8 +7268,8 @@
               "score": 63.66447670185858,
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "score_delta": 4.189850486245312,
-              "dps_delta": -7.624137335224191,
+              "score_delta": -9.094925243122653,
+              "dps_delta": -0.33459764951243187,
               "verified": true
             }
           ]
@@ -7310,7 +7308,7 @@
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "score_delta": -9.905074756877355,
-              "dps_delta": -15.888387684469649,
+              "dps_delta": -13.767290861907213,
               "verified": true
             }
           ]
@@ -7349,7 +7347,7 @@
               "source_kind": "pvp",
               "source": "Rank 16",
               "score_delta": -0.26268689219335783,
-              "dps_delta": -12.073760366828992,
+              "dps_delta": -13.124026044566278,
               "verified": true
             }
           ]
@@ -7362,7 +7360,7 @@
           "source_kind": "quest",
           "score": 103.30686456654256,
           "verified": true,
-          "swap_note": "beat the scored pick Raider Handwraps (id 272098) in the sim: 304.3 vs 301.0 set DPS",
+          "swap_note": "beat the scored pick Raider Handwraps (id 272098) in the sim: 305.5 vs 301.4 set DPS",
           "alternatives": [
             {
               "item_id": 18409,
@@ -7389,7 +7387,7 @@
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "score_delta": 3.737313107806642,
-              "dps_delta": -3.27101775592746,
+              "dps_delta": -4.1341502815969875,
               "verified": true
             }
           ]
@@ -7473,7 +7471,7 @@
               "source_kind": "quest",
               "source": "Doomcaller's Trousers",
               "score_delta": -7.547462621561323,
-              "dps_delta": -7.302830123301646,
+              "dps_delta": -6.5456724060333045,
               "verified": true
             }
           ]
@@ -7512,7 +7510,7 @@
               "source_kind": "quest",
               "source": "Doomcaller's Footwraps",
               "score_delta": -4,
-              "dps_delta": -7.460914132701873,
+              "dps_delta": -7.632690994904635,
               "verified": true
             }
           ]
@@ -7589,7 +7587,7 @@
               "source_kind": "quest",
               "source": "The Grand Invoker",
               "score_delta": -0.6423878646839825,
-              "dps_delta": -0.5084702768905913,
+              "dps_delta": -0.8491661073266528,
               "verified": true
             }
           ]
@@ -7628,7 +7626,8 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "score_delta": -12,
-              "dps_delta": 0
+              "dps_delta": -3.801753838281911,
+              "verified": true
             }
           ]
         },
@@ -7747,14 +7746,14 @@
               "source_kind": "quest",
               "source": "Dark Vessels",
               "score_delta": -13.547462621561323,
-              "dps_delta": -6.025314464044527,
+              "dps_delta": -6.38897099628241,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 330.2093080797175,
-      "no_source_count": 1236,
+      "set_dps": 321.2747440167753,
+      "no_source_count": 1228,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7776,7 +7775,7 @@
         "head: Plagueheart Circlet",
         "neck: Charm of the Shifting Sands",
         "shoulder: Field Marshal's Dreadweave Shoulders",
-        "back: Hide of the Wild",
+        "back: Darkspear Raider's Cloak",
         "chest: Plagueheart Robe",
         "wrist: Plagueheart Bindings",
         "hands: Plagueheart Gloves",
@@ -7788,12 +7787,12 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.310088028,
-      "verify_run_seconds": 1.070735861,
+      "weights_run_seconds": 0.980684281,
+      "verify_run_seconds": 0.816325246,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 293,
@@ -7805,11 +7804,11 @@
         },
         "finger1": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 198,
@@ -7817,7 +7816,7 @@
         },
         "head": {
           "eligible": 165,
-          "sourced": 106
+          "sourced": 108
         },
         "legs": {
           "eligible": 190,
@@ -7825,15 +7824,15 @@
         },
         "main_hand": {
           "eligible": 454,
-          "sourced": 307
+          "sourced": 308
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 123,
-          "sourced": 66
+          "sourced": 67
         },
         "ranged": {
           "eligible": 74,

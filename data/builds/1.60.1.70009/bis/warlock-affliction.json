@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-30T00:05:50Z",
+  "generated_at": "2026-09-30T00:40:19Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -624,8 +624,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.228545929,
-      "verify_run_seconds": 1.047860607,
+      "weights_run_seconds": 0.927901345,
+      "verify_run_seconds": 0.763275252,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1317,8 +1317,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.228545929,
-      "verify_run_seconds": 1.061753549,
+      "weights_run_seconds": 0.927901345,
+      "verify_run_seconds": 0.795553939,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2124,8 +2124,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 1.228805358,
-      "verify_run_seconds": 1.2412229909999999,
+      "weights_run_seconds": 0.93245285,
+      "verify_run_seconds": 0.88349723,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -2937,8 +2937,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Wand of Eventide"
       ],
-      "weights_run_seconds": 1.228805358,
-      "verify_run_seconds": 1.239801795,
+      "weights_run_seconds": 0.93245285,
+      "verify_run_seconds": 0.943599682,
       "coverage": {
         "back": {
           "eligible": 173,
@@ -3736,8 +3736,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.176341877,
-      "verify_run_seconds": 1.051103484,
+      "weights_run_seconds": 0.879084502,
+      "verify_run_seconds": 0.813573552,
       "coverage": {
         "back": {
           "eligible": 234,
@@ -4530,8 +4530,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.176341877,
-      "verify_run_seconds": 1.066089845,
+      "weights_run_seconds": 0.879084502,
+      "verify_run_seconds": 0.802117984,
       "coverage": {
         "back": {
           "eligible": 236,
@@ -5336,8 +5336,8 @@
         "main_hand: Soul Harvester",
         "ranged: Dreambough Wand"
       ],
-      "weights_run_seconds": 1.196748754,
-      "verify_run_seconds": 1.223514266,
+      "weights_run_seconds": 0.921325504,
+      "verify_run_seconds": 0.902714669,
       "coverage": {
         "back": {
           "eligible": 299,
@@ -6136,8 +6136,8 @@
         "main_hand: Soul Harvester",
         "ranged: Dreambough Wand"
       ],
-      "weights_run_seconds": 1.196748754,
-      "verify_run_seconds": 1.184671126,
+      "weights_run_seconds": 0.921325504,
+      "verify_run_seconds": 0.91514869,
       "coverage": {
         "back": {
           "eligible": 304,
@@ -6898,7 +6898,7 @@
         }
       ],
       "set_dps": 361.89972595407767,
-      "no_source_count": 1239,
+      "no_source_count": 1231,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6932,12 +6932,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.28384214,
-      "verify_run_seconds": 1.173099201,
+      "weights_run_seconds": 0.952572463,
+      "verify_run_seconds": 0.892531873,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 204
+          "sourced": 205
         },
         "chest": {
           "eligible": 296,
@@ -6949,11 +6949,11 @@
         },
         "finger1": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 196,
@@ -6961,7 +6961,7 @@
         },
         "head": {
           "eligible": 165,
-          "sourced": 107
+          "sourced": 109
         },
         "legs": {
           "eligible": 191,
@@ -6969,15 +6969,15 @@
         },
         "main_hand": {
           "eligible": 452,
-          "sourced": 303
+          "sourced": 304
         },
         "neck": {
           "eligible": 166,
-          "sourced": 78
+          "sourced": 79
         },
         "off_hand": {
           "eligible": 125,
-          "sourced": 67
+          "sourced": 68
         },
         "ranged": {
           "eligible": 78,
@@ -7698,7 +7698,7 @@
         }
       ],
       "set_dps": 350.6864529077719,
-      "no_source_count": 1236,
+      "no_source_count": 1228,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7732,12 +7732,12 @@
         "main_hand: High Warlord's War Staff",
         "ranged: Greater Eternal Wand"
       ],
-      "weights_run_seconds": 1.28384214,
-      "verify_run_seconds": 1.190913074,
+      "weights_run_seconds": 0.952572463,
+      "verify_run_seconds": 0.928563811,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 210
+          "sourced": 211
         },
         "chest": {
           "eligible": 293,
@@ -7749,11 +7749,11 @@
         },
         "finger1": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "finger2": {
           "eligible": 353,
-          "sourced": 143
+          "sourced": 145
         },
         "hands": {
           "eligible": 198,
@@ -7761,7 +7761,7 @@
         },
         "head": {
           "eligible": 165,
-          "sourced": 106
+          "sourced": 108
         },
         "legs": {
           "eligible": 190,
@@ -7769,15 +7769,15 @@
         },
         "main_hand": {
           "eligible": 454,
-          "sourced": 307
+          "sourced": 308
         },
         "neck": {
           "eligible": 168,
-          "sourced": 80
+          "sourced": 81
         },
         "off_hand": {
           "eligible": 123,
-          "sourced": 66
+          "sourced": 67
         },
         "ranged": {
           "eligible": 74,
