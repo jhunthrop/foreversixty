@@ -56,9 +56,9 @@ describe('HomeSwitchCharacterPanel', () => {
     const { body } = render(HomeSwitchCharacterPanel, {
       props: { me: ME, currentKey: 'us/normal/zulmara', onswitch: () => {} },
     });
-    expect(body).toContain('src="/icons/hd/crests/hunter.png"');
-    expect(body).toContain('src="/icons/hd/crests/mage.png"');
-    expect(body).toContain('src="/icons/hd/crests/warrior.png"');
+    expect(body).toContain('src="/icons/hd/crests/hunter.webp"');
+    expect(body).toContain('src="/icons/hd/crests/mage.webp"');
+    expect(body).toContain('src="/icons/hd/crests/warrior.webp"');
     expect((body.match(/width="36"/g) ?? []).length).toBe(3);
   });
 });

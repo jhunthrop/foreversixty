@@ -6,7 +6,7 @@ describe('FactionMark', () => {
   it('renders the alliance emblem at the given size, unboxed', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(FactionMark, { props: { faction: 'alliance', size: 20 } });
-    expect(html).toContain('src="/icons/hd/faction/alliance.png"');
+    expect(html).toContain('src="/icons/hd/faction/alliance.webp"');
     expect(html).toContain('width="20"');
     expect(html).toContain('height="20"');
     expect(html).not.toContain('border');
@@ -16,7 +16,7 @@ describe('FactionMark', () => {
   it('renders the horde emblem', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(FactionMark, { props: { faction: 'horde', size: 16 } });
-    expect(html).toContain('src="/icons/hd/faction/horde.png"');
+    expect(html).toContain('src="/icons/hd/faction/horde.webp"');
   });
 
   it('accepts every one of the three documented sizes', async () => {

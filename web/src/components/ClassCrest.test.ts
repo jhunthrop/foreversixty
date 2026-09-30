@@ -6,7 +6,7 @@ describe('ClassCrest', () => {
   it('renders the class icon at the given size, ringed in the class colour', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(ClassCrest, { props: { slug: 'hunter', size: 56 } });
-    expect(html).toContain('src="/icons/hd/crests/hunter.png"');
+    expect(html).toContain('src="/icons/hd/crests/hunter.webp"');
     expect(html).toContain('width="56"');
     expect(html).toContain('height="56"');
     expect(html).toContain('--c: #aad372');

@@ -6,21 +6,22 @@
 // an 80% fit over a disc made from the icon itself, blurred and darkened, with a class
 // ring"), rendered as a component instead of an inline class so every caller (the hero
 // picker, the state panel, Best in slot by class, the signed-in hero portrait, Switch
-// character, Another class) gets the identical ring width and background. The upscaled PNGs
-// themselves live at web/public/icons/hd/crests/<slug>.png (scratchpad/upscale/final/crests).
+// character, Another class) gets the identical ring width and background. The upscaled art
+// lives at web/public/icons/hd/crests/<slug>.webp.
 //
 // Review round 1 item 6 (index LCP): the source PNGs shipped from the upscale lane at their
 // native 256px, 50-95KB apiece -- serving all nine at once, every one visible in the
 // signed-out hero picker, was 76% of the index page's entire network weight and the
 // dominant cause of a measured 6.9s LCP against the 2200ms budget (web/lighthouserc.json).
-// The largest real display size any caller uses is 64px ("Best in slot by class"), so they
-// are resized (Lanczos, same PNG format, transparency and art unchanged -- a resolution
-// change, not a re-encode) to 128px, a clean 2x for retina at that size; faction emblems
-// (max display 36px) to 72px. This is not visible at any size this page actually renders
-// them: `width`/`height` already scale a 256px source down, so shipping the correct
-// resolution costs nothing in fidelity and roughly halves transfer size again after
-// halving it once already. See this component's own lane report for the full measurement
-// chain (6.9s -> 5.3s removing fetchpriority="high" -> 3.5s after this resize).
+// The largest real display size any caller uses is 64px ("Best in slot by class"), so round
+// 1 resized them (same PNG format) to 128px, a clean 2x for retina at that size; faction
+// emblems (max display 36px) to 72px -- 5.3s to ~2.9s median.
+//
+// Review round 2: still over budget, so the 128px art is re-encoded WebP (lossy quality
+// 90, alpha kept) from the original scratchpad 256px sources at the same 128px/72px target
+// -- 4-7KB a crest (was 17-30KB as PNG at the same resolution), 3-3.6KB a faction emblem
+// (was 7-10KB). The PNGs are gone from public/ entirely. See this component's own lane
+// report for the full measurement chain.
 //
 // Five sizes only, one per real caller today (home spec §6): a size this page's regions
 // don't use is its own design review before it's added, not a free-form number.

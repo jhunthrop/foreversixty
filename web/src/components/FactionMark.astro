@@ -4,9 +4,11 @@
 // fdbf63d6): the client's UI-PVP-Alliance lion shield / UI-PVP-Horde red disc from the unit
 // frame, upscaled 4x, transparency kept, "never boxed or framed" -- a plain <img>, no ring,
 // no background, unlike ClassCrest. Three sizes, the design system's own documented set:
-// "20px before the word, 16px in a row descriptor, 36px in a header." The upscaled PNGs
-// themselves live at web/public/icons/hd/faction/<faction>.png (scratchpad/faction/final,
-// copied in verbatim -- 256px, already transparent, never re-encoded here).
+// "20px before the word, 16px in a row descriptor, 36px in a header." The upscaled art
+// lives at web/public/icons/hd/faction/<faction>.webp -- resampled from the original
+// scratchpad/faction/final 256px PNGs down to 72px (2x for this component's largest real
+// size, 36px) and re-encoded WebP, lossy quality 90 with alpha kept (review round 2: index
+// LCP budget, web/lighthouserc.json), 3-3.6KB apiece.
 import { factionMarkSrc, type Faction } from '../lib/faction-mark';
 
 export type FactionMarkSize = 16 | 20 | 36;
