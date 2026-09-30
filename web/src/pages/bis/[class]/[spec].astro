@@ -311,7 +311,9 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                                       <span class="weight-bar-top">
                                         <span class="weight-bar-label">{label}</span>
                                         <span class="weight-bar-value tabular">
-                                          {significant ? scaleFactor.toFixed(2) : bisCopy.weightsNotSignificant}
+                                          {significant
+                                            ? scaleFactor.toFixed(2)
+                                            : bisCopy.weightsNotSignificant}
                                         </span>
                                       </span>
                                       {significant && (
@@ -320,7 +322,9 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                                             <span class="weight-bar-fill" style={`width:${barPercent}%`} />
                                           </span>
                                           <span class="weight-bar-meta text-muted tabular">
-                                            {dpsPerPoint !== undefined && <span>{dpsPerPoint.toFixed(3)} DPS</span>}
+                                            {dpsPerPoint !== undefined && (
+                                              <span>{dpsPerPoint.toFixed(3)} DPS</span>
+                                            )}
                                             <span>&plusmn;{scaleError.toFixed(2)}</span>
                                           </span>
                                         </Fragment>
@@ -337,7 +341,9 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                                   {hasteCaptionLine}
                                 </p>
                               )}
-                              <p class="weights-rating-note text-muted">{bisCopy.weightsRatingConversionNote}</p>
+                              <p class="weights-rating-note text-muted">
+                                {bisCopy.weightsRatingConversionNote}
+                              </p>
                               <p class="weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
                               <a
                                 href="/addon"

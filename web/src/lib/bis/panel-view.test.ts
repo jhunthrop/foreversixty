@@ -379,7 +379,14 @@ describe('bandInfosFor: scale rail', () => {
     const file = fileWith([
       band({
         weights: [
-          { stat: 'ranged_attack_power', weight: 1, error: 0, scale_factor: 0.5, dps_per_point: 1.25, scale_error: 0 },
+          {
+            stat: 'ranged_attack_power',
+            weight: 1,
+            error: 0,
+            scale_factor: 0.5,
+            dps_per_point: 1.25,
+            scale_error: 0,
+          },
           { stat: 'agility', weight: 2, error: 0.1, scale_factor: 1, dps_per_point: 2.5, scale_error: 0.05 },
         ],
         slots: [slot()],
