@@ -143,7 +143,14 @@ describe('itemTooltipModel', () => {
           standing: 'exalted',
           items: [4],
         },
-        { id: 'pvp:rank-10', kind: 'pvp', name: 'Warlord', rank: 10, items: [5] },
+        {
+          id: 'pvp:rank-10:horde',
+          kind: 'pvp',
+          name: 'Rank 10 (Horde)',
+          rank: 10,
+          faction: 'horde',
+          items: [5],
+        },
       ],
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
@@ -151,7 +158,19 @@ describe('itemTooltipModel', () => {
     expect(itemTooltipModel(item({ id: 2 }), sources).sourceLines).toEqual(['Some Vendor']);
     expect(itemTooltipModel(item({ id: 3 }), sources).sourceLines).toEqual(['Made item (blacksmithing)']);
     expect(itemTooltipModel(item({ id: 4 }), sources).sourceLines).toEqual(['Argent Dawn — Exalted']);
-    expect(itemTooltipModel(item({ id: 5 }), sources).sourceLines).toEqual(['Warlord, rank 10']);
+    // Rank 10 is Blizzard's client RequiredPVPRank; Horde's own in-game title for it is
+    // "Stone Guard" (pvpRankTitle(horde, 10) === HORDE_PVP_TITLES[5]).
+    expect(itemTooltipModel(item({ id: 5 }), sources).sourceLines).toEqual([
+      'PvP rank 10 · Stone Guard · Horde',
+    ]);
+  });
+
+  it('falls back to the source name for a pvp source missing rank or faction (should not happen on real data)', () => {
+    const loot: LootFile = {
+      sources: [{ id: 'pvp:rank-10', kind: 'pvp', name: 'Rank 10', items: [5] }],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 5 }), sources).sourceLines).toEqual(['Rank 10']);
   });
 
   it('adds one line per quest reward, named with its faction', () => {

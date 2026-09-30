@@ -59,6 +59,7 @@ from pipeline.loot.gear import (
     suffix_options,
 )
 from pipeline.loot.overlay import apply_overlays, load_overlays
+from pipeline.loot.pvp_faction import split_pvp_sources_by_faction
 from pipeline.loot.reitemise import apply_reitemisation
 from pipeline.loot.sources import build_loot, instance_types, pvp_ranks
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
@@ -164,6 +165,15 @@ def write_loot_files(
         zone_rows,
         item_required_levels,
     )
+    # pvp-faction lane, 2026-09-29: splits every `pvp` source into its
+    # alliance/horde copies (pipeline.loot.pvp_faction's own doc). Runs
+    # BEFORE apply_reitemisation, same reasoning as that step's own
+    # ordering below: a re-itemised item copied onto a classic twin's
+    # source must land in the twin's ALREADY-split bucket, not a still-
+    # mixed one.
+    document, pvp_faction_stats = split_pvp_sources_by_faction(
+        document, {int(row["id"]): row["name"] for row in item_rows}, classic_sources, zone_rows
+    )
     # src-classicdb lane item 3: a Forever-new item sharing its name and
     # slot with a Classic item, still unsourced after fork+classic-db+
     # wowhead, inherits the classic item's own sources. Runs AFTER
@@ -195,6 +205,8 @@ def write_loot_files(
         "loot: %d sources naming %d items (%d from classic-db's dump parse, %d from "
         "wowhead's item-sources.json scrape, %d from re-itemisation inheritance, "
         "%d quests with faction detail); "
+        "pvp faction split: %d items via classic-db vendor, %d via title, %d unresolved "
+        "and dropped; "
         "%d fork ids left out because this build has no such item, "
         "%d fork source entries with no kind dropped, %d zone sources with "
         "a zone id zones[] does not name, %d bosses dropped for having no name in "
@@ -208,6 +220,9 @@ def write_loot_files(
         stats.wowhead_items,
         reitemised,
         len(document.quests),
+        pvp_faction_stats.resolved_vendor,
+        pvp_faction_stats.resolved_title,
+        len(pvp_faction_stats.unresolved),
         stats.absent_items,
         stats.dropped_entries,
         stats.unnamed_zones,
@@ -344,18 +359,25 @@ def merge_loot_files(
         zone_rows,
         item_required_levels,
     )
+    document, pvp_faction_stats = split_pvp_sources_by_faction(
+        document, {int(row["id"]): row["name"] for row in item_rows}, classic_sources, zone_rows
+    )
     document, reitemised = apply_reitemisation(document, item_rows)
     document = apply_overlays(document, load_overlays(overlay_dir))
     write_document(document, build_dir / LOOT)
     logger.info(
         "loot-merge: %d sources naming %d items (%d from classic-db, %d from wowhead, %d "
-        "from re-itemisation inheritance); %d fork ids left out, %d fork entries with no "
-        "kind dropped, %d bosses dropped for having no name in either database",
+        "from re-itemisation inheritance); pvp faction split: %d via classic-db vendor, "
+        "%d via title, %d unresolved and dropped; %d fork ids left out, %d fork entries "
+        "with no kind dropped, %d bosses dropped for having no name in either database",
         len(document.sources),
         stats.items,
         stats.classicdb_items,
         stats.wowhead_items,
         reitemised,
+        pvp_faction_stats.resolved_vendor,
+        pvp_faction_stats.resolved_title,
+        len(pvp_faction_stats.unresolved),
         stats.absent_items,
         stats.dropped_entries,
         stats.dropped_unnamed_bosses,

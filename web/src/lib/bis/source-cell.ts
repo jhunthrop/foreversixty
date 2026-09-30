@@ -58,11 +58,20 @@ export interface RepSourceCell {
 }
 
 export interface ZoneSourceCell {
-  /** `zone`, `world` or `pvp` -- every other kind `loot.json` names as one flat place. */
-  kind: 'zone' | 'world' | 'pvp';
+  /** `zone` or `world` -- every other flat-place kind `loot.json` names, besides `pvp`
+   *  (its own `PvpSourceCell`, which needs a rank and a faction a plain place name has no
+   *  room for). */
+  kind: 'zone' | 'world';
   place: string;
   /** See `PlaceSourceCell.dropChance`'s own doc. */
   dropChance?: number;
+}
+
+export interface PvpSourceCell {
+  kind: 'pvp';
+  /** loot.json's own `LootSource.rank` (Blizzard's client RequiredPVPRank, 5-18). */
+  rank: number;
+  faction: 'alliance' | 'horde';
 }
 
 export interface WorldDropSourceCell {
@@ -89,6 +98,7 @@ export type SourceCell =
   | VendorSourceCell
   | RepSourceCell
   | ZoneSourceCell
+  | PvpSourceCell
   | WorldDropSourceCell
   | FallbackSourceCell;
 
@@ -207,11 +217,23 @@ export function resolveSourceCell(
     return source === undefined ? fallback : { kind: 'rep', faction: source.name, standing: source.standing };
   }
 
-  if (slot.source_kind === 'zone' || slot.source_kind === 'world' || slot.source_kind === 'pvp') {
+  if (slot.source_kind === 'zone' || slot.source_kind === 'world') {
     const source = findSource(loot.sources, slot.source_kind, itemId);
     return source === undefined
       ? fallback
       : { kind: slot.source_kind, place: source.name, dropChance: findChance(source, itemId) };
+  }
+
+  if (slot.source_kind === 'pvp') {
+    const source = findSource(loot.sources, 'pvp', itemId);
+    // A source missing rank or a recognised faction (should not happen on real data --
+    // pipeline.loot.pvp_faction sets both on every split source it emits) falls back
+    // rather than showing a half-built pvp cell.
+    return source === undefined ||
+      source.rank === undefined ||
+      (source.faction !== 'alliance' && source.faction !== 'horde')
+      ? fallback
+      : { kind: 'pvp', rank: source.rank, faction: source.faction };
   }
 
   if (slot.source_kind === 'world_drop') {
@@ -247,10 +269,11 @@ export function describeSourceCell(cell: SourceCell): string {
       return bisCopy.repSourceLabel(cell.faction, cell.standing);
     case 'zone':
     case 'world':
-    case 'pvp':
       return cell.dropChance === undefined
         ? bisCopy.placeSourceLabel(cell.place)
         : bisCopy.dropChanceLabel(cell.dropChance, cell.place);
+    case 'pvp':
+      return bisCopy.pvpSourceLabel(cell.rank, cell.faction);
     case 'world_drop':
       return bisCopy.worldDropSourceLabel(cell.levelMin, cell.levelMax);
     case 'unknown':

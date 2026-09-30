@@ -58,6 +58,19 @@ export const bisCopy = {
   repSourceLabel: (factionName: string, standing?: string): string =>
     standing === undefined ? factionName : `${factionName} (${standing})`,
   placeSourceLabel: (place: string): string => place,
+  /** "PvP rank 11 · Knight-Lieutenant · Alliance" -- never the bare bucket name "Rank 11"
+   *  (third wow-player sweep defect, 2026-09-29): a player reads a source by what they'd
+   *  actually see at the Quartermaster, the rank NUMBER and the reward's own TITLE and
+   *  faction, not a pipeline id. Falls back to naming just the rank and faction when the
+   *  rank falls outside the known ladder (`pvpRankTitle` returning `undefined` -- should
+   *  not happen on real data, but never worse than an incomplete-but-true line). */
+  pvpSourceLabel: (rank: number, faction: 'alliance' | 'horde'): string => {
+    const title = pvpRankTitle(faction, rank);
+    const factionLabel = faction === 'alliance' ? 'Alliance' : 'Horde';
+    return title === undefined
+      ? `PvP rank ${rank} · ${factionLabel}`
+      : `PvP rank ${rank} · ${title} · ${factionLabel}`;
+  },
   /** "40% from Lord Serpentis", "6% from Deadmines trash" -- classic-db's own drop
    *  chance (src-classicdb lane, 2026-09-29), shown in front of the place a source cell
    *  would otherwise just name plainly. */
@@ -135,4 +148,52 @@ export const bisCopy = {
  *  one, so every caller gets the fix for free rather than re-capitalising it themselves. */
 function capitalise(word: string): string {
   return word.length === 0 ? word : word[0]!.toUpperCase() + word.slice(1);
+}
+
+// --- pvp rank titles (third wow-player sweep defect, 2026-09-29) --------------------------
+// Vanilla's own Alliance/Horde PvP rank ladders, ranks 1-14 in order -- mirrors
+// data/pipeline/loot/pvp_faction.py's ALLIANCE_TITLES/HORDE_TITLES, the primary source for
+// both. Blizzard's own client `RequiredPVPRank` column (loot.json's `LootSource.rank`) is
+// these ranks + 4, which `pvpRankTitle` undoes.
+const ALLIANCE_PVP_TITLES = [
+  'Private',
+  'Corporal',
+  'Sergeant',
+  'Master Sergeant',
+  'Sergeant Major',
+  'Knight',
+  'Knight-Lieutenant',
+  'Knight-Captain',
+  'Knight-Champion',
+  'Lieutenant Commander',
+  'Commander',
+  'Marshal',
+  'Field Marshal',
+  'Grand Marshal',
+] as const;
+
+const HORDE_PVP_TITLES = [
+  'Scout',
+  'Grunt',
+  'Sergeant',
+  'Senior Sergeant',
+  'First Sergeant',
+  'Stone Guard',
+  'Blood Guard',
+  'Legionnaire',
+  'Centurion',
+  'Champion',
+  'Lieutenant General',
+  'General',
+  'Warlord',
+  'High Warlord',
+] as const;
+
+/** loot.json's own pvp source `rank` (Blizzard's client RequiredPVPRank, 5-18) -> the
+ *  in-game rank title for `faction` ("Knight-Lieutenant" for alliance rank 11). `undefined`
+ *  for a rank outside the ladder -- should not happen; loot.json only ever writes 5-18, but
+ *  a caller sees a title-less line rather than an out-of-bounds crash if it ever did. */
+export function pvpRankTitle(faction: 'alliance' | 'horde', rank: number): string | undefined {
+  const titles = faction === 'alliance' ? ALLIANCE_PVP_TITLES : HORDE_PVP_TITLES;
+  return titles[rank - 5];
 }

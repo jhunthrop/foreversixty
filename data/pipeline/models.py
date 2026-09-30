@@ -283,6 +283,21 @@ class LootSource(BaseModel):
     #: The vendor kind's own npc, so the page can link it the way a boss's
     #: `npc_id` already does.
     npc_id: int | None = None
+    #: "alliance" or "horde", for a `pvp` kind source only --
+    #: `pipeline.loot.pvp_faction`'s own doc: an honor-rank reward's
+    #: numeric `pvp:rank-N` bucket used to mix both factions' titled
+    #: rewards together, which is how an Alliance-titled item
+    #: ("Knight-Lieutenant's Pauldrons") reached a Horde character's
+    #: list. `None` for every other kind.
+    faction: Literal["alliance", "horde"] | None = None
+    #: "classic-db" when `faction` came from the rank quartermaster's own
+    #: classic-db `npc_vendor` row (`pipeline.loot.pvp_faction.
+    #: vendor_npc_factions`); "title" when no vendor resolved it and the
+    #: item's OWN display name's rank title settled it instead
+    #: (`pipeline.loot.pvp_faction.title_faction`) -- the site and
+    #: reports should say the vendor did not corroborate this one.
+    #: `None` for every other kind.
+    faction_source: Literal["classic-db", "title"] | None = None
     bosses: list[LootBoss] | None = None
     trash: list[int] | None = None
     items: list[int] | None = None

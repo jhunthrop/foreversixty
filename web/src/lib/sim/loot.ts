@@ -83,6 +83,11 @@ export interface LootSource {
   faction_id?: number;
   standing?: string;
   rank?: number;
+  /** `pvp` kind only (pvp-faction lane, 2026-09-29): "alliance" or "horde", the side
+   *  `pipeline.loot.pvp_faction` split this rank's own reward list into -- see that
+   *  module's own doc for how (a classic-db vendor's capital-city PvP hall, or the item's
+   *  own rank title as a fallback). */
+  faction?: 'alliance' | 'horde';
   /** item id (string-keyed) -> percent drop chance (0-100), for a `world`/`zone` source's
    *  own flat `items`/`trash` list -- see `LootBoss.item_chances`'s own doc. */
   item_chances?: Record<string, number>;

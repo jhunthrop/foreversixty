@@ -205,6 +205,39 @@ func TestLoadLootIndexCarriesOpensThrough(t *testing.T) {
 	}
 }
 
+// pvp-faction lane, 2026-09-29: loadLootIndex must copy a "pvp" kind
+// source's own "faction" JSON field onto the itemSource's Side, the
+// same fact factionExclusiveDungeons already supplies for a dungeon --
+// see band_test.go's TestSourceForGatesAPvpRankItemToItsOwnFaction for
+// the gating behaviour this makes possible.
+func TestLoadLootIndexPvpSourceSideComesFromItsOwnFaction(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "pvp:rank-11:alliance", "kind": "pvp", "name": "Rank 11 (Alliance)",
+			 "rank": 11, "faction": "alliance", "items": [16338]},
+			{"id": "pvp:rank-11:horde", "kind": "pvp", "name": "Rank 11 (Horde)",
+			 "rank": 11, "faction": "horde", "items": [16391]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	alliance := idx[16338]
+	if len(alliance) != 1 || alliance[0].Side != "alliance" || alliance[0].Rank != 11 {
+		t.Errorf("idx[16338] = %+v, want one pvp source with Side alliance, Rank 11", alliance)
+	}
+	horde := idx[16391]
+	if len(horde) != 1 || horde[0].Side != "horde" || horde[0].Rank != 11 {
+		t.Errorf("idx[16391] = %+v, want one pvp source with Side horde, Rank 11", horde)
+	}
+}
+
 // TestLoadLootIndexVendorInheritsPvpRank is the real shape this lane's
 // own dogfood run found regenerating band-60 weapons for item 1: loot.json
 // lists Grand Marshal's Stave (18873) under BOTH pvp:rank-18 (Rank 18)
