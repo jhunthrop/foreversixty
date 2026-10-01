@@ -11,6 +11,7 @@
   import { tick } from 'svelte';
   import { addonCopy } from '../../lib/addon/copy';
   import { plannerCopy } from '../../lib/planner/copy';
+  import { levelReached } from '../../lib/planner/derive';
   import { plannerAddonCode, unsavedPlannerHref } from '../../lib/planner/current-character-planner';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import {
@@ -62,7 +63,7 @@
    * goes stale at exactly that moment. A timed revert would need a cleared handle, a named
    * duration and a cleanup on destroy to say something less accurate.
    */
-  let copiedFrom = $state<'link' | 'addon' | 'unsaved' | null>(null);
+  let copiedFrom = $state<'link' | 'addon' | 'unsaved' | 'text' | null>(null);
 
   // Derived, not computed on click: the button is disabled while there is nothing to
   // copy, and a $derived keeps that in step with every talent and gear edit for free.
@@ -77,7 +78,25 @@
   // this stays safe to evaluate during SSR). '' before talent data has loaded.
   const unsavedHref = $derived(unsavedPlannerHref(store));
 
-  async function copyToClipboard(text: string, source: 'link' | 'addon' | 'unsaved'): Promise<void> {
+  /**
+   * Review finding 8 (spec §4.H): a plain-text summary for someone with no account and no
+   * addon. Computed, never templated with a placeholder -- `''` before talent/reference
+   * data has loaded, which the button below disables on, the same rule every other export
+   * action in this panel already follows.
+   */
+  const textSummary = $derived.by(() => {
+    const index = store.talentIndex;
+    if (index === null || store.classRow === null || store.raceRow === null) return '';
+    const trees = index.trees.map((tree, i) => ({ name: tree.name, points: store.split[i] ?? 0 }));
+    return plannerCopy.shareTextSummary(
+      store.raceRow.name,
+      store.classRow.name,
+      trees,
+      levelReached(store.order),
+    );
+  });
+
+  async function copyToClipboard(text: string, source: 'link' | 'addon' | 'unsaved' | 'text'): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
       copiedFrom = source;
@@ -350,6 +369,23 @@
     </button>
   </div>
   <p class="text-muted text-[13px]">{addonCopy.addonCodeHint}</p>
+
+  <!-- Rebuild spec §4.H: Share / Copy addon code / Copy as text read as three equally
+       weighted export options, so this sits in the same section rather than a separate
+       panel. The computed string itself is visible (not just copied blind), same as the
+       share link above. -->
+  <div class="flex flex-wrap items-center gap-3">
+    <span class="text-muted font-mono text-[13px]" data-testid="planner-text-summary">{textSummary}</span>
+    <button
+      type="button"
+      class={NEUTRAL_BUTTON}
+      data-testid="copy-as-text"
+      disabled={textSummary === ''}
+      onclick={() => copyToClipboard(textSummary, 'text')}
+    >
+      {copiedFrom === 'text' ? plannerCopy.copiedText : plannerCopy.copyAsText}
+    </button>
+  </div>
 
   <label
     class="text-muted flex min-h-11 w-fit items-center gap-2 text-[13px] md:min-h-0"

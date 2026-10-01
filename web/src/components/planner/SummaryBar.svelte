@@ -15,7 +15,6 @@
     simHref,
     gate,
     standalone,
-    hasCharacter,
     onshowdps,
   }: {
     store: PlannerStore;
@@ -31,9 +30,6 @@
      * would be noise.
      */
     standalone: boolean;
-    /** Spec 2026-09-25 §6: Level reads as a real character's level, so it renders only once
-     *  one is loaded (the site's current-character pointer), never for a bare build. */
-    hasCharacter: boolean;
     onshowdps: () => void;
   } = $props();
 
@@ -66,39 +62,25 @@
     </select>
   </label>
 
-  <label class="flex flex-col gap-1">
-    <span class="label text-muted">Race</span>
-    <select
-      class={controlClass}
-      bind:value={() => store.raceSlug, (slug) => store.selectRace(slug)}
-      disabled={store.readOnly}
-    >
-      {#each store.legalRaces as row (row.slug)}
-        <option value={row.slug}>{row.name}</option>
-      {/each}
-    </select>
-  </label>
+  <!-- Rebuild spec §4.A: the race select moves to the header, restyled onto ClassHeader's
+       own token -- this bar keeps only the class select, which the header has no room for
+       (the header's h1 already names the class). -->
 
-  {#if hasCharacter && store.spent > 0}
-    <div class="flex flex-col gap-1">
-      <span class="label text-muted">Level</span>
-      <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-level">
-        {store.level}
-      </span>
-    </div>
-  {/if}
+  <!-- Rebuild spec §4.C, review finding 2: Level is now always rendered -- it needs no
+       character, only `levelReached(order)`, which is computable from the moment the store
+       exists. Hiding it behind `hasCharacter && store.spent > 0` was exactly the "level gate
+       is an afterthought" complaint the review named. -->
+  <div class="flex flex-col gap-1">
+    <span class="label text-muted">Level</span>
+    <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-level">
+      {store.level}
+    </span>
+  </div>
 
   <div class="flex flex-col gap-1">
     <span class="label text-muted">Points left</span>
     <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-remaining">
       {MAX_POINTS - store.spent}
-    </span>
-  </div>
-
-  <div class="flex flex-col gap-1">
-    <span class="label text-muted">Split</span>
-    <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-split">
-      {store.splitLabel}
     </span>
   </div>
 
