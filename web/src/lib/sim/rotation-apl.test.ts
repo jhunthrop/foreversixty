@@ -64,9 +64,9 @@ describe('engineeringLeakIn', () => {
   });
 
   it('flags a bare filename with no directory prefix', () => {
-    expect(
-      engineeringLeakIn("the same shape warrior-arms.json's own Overpower line uses"),
-    ).toMatch(/file path/);
+    expect(engineeringLeakIn("the same shape warrior-arms.json's own Overpower line uses")).toMatch(
+      /file path/,
+    );
     expect(engineeringLeakIn('a real, engine-implemented DoT (see druid.py for the walk)')).toMatch(
       /file path/,
     );
@@ -99,20 +99,16 @@ describe('engineeringLeakIn', () => {
     expect(engineeringLeakIn('totemRemainingTime needs no aura or spell id to check')).toMatch(
       /code identifier/,
     );
-    expect(engineeringLeakIn('gated by the engine ExtraCastCondition mechanism')).toMatch(
-      /code identifier/,
-    );
-    expect(engineeringLeakIn('loops at 1-3 combo points via currentComboPoints')).toMatch(
-      /code identifier/,
-    );
+    expect(engineeringLeakIn('gated by the engine ExtraCastCondition mechanism')).toMatch(/code identifier/);
+    expect(engineeringLeakIn('loops at 1-3 combo points via currentComboPoints')).toMatch(/code identifier/);
     expect(engineeringLeakIn('a PvP rank 9 reward, correctly gated')).toBeNull();
     expect(engineeringLeakIn('an AoE DoT that ticks for GCD-free upkeep')).toBeNull();
   });
 
   it('flags an ISO date, the shape of a commit-log timestamp', () => {
-    expect(
-      engineeringLeakIn("Multi-Shot's real cooldown, corrected 2026-09-29, zeroed Arcane Shot"),
-    ).toMatch(/ISO date/);
+    expect(engineeringLeakIn("Multi-Shot's real cooldown, corrected 2026-09-29, zeroed Arcane Shot")).toMatch(
+      /ISO date/,
+    );
   });
 
   it('flags a hex/commit-looking token but not a plain decimal spell or item id', () => {

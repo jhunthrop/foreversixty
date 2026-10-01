@@ -46,8 +46,7 @@ const FILE_PATH_RE = /\b(?:[\w-]+\/)*[\w-]+(?:\.[\w-]+)*\.(?:go|mjs|ts|tsx|json|
  */
 function hasCodeIdentifier(text) {
   return (
-    /\b[a-z]+(?:[A-Z][a-z]{2,}){2,}\b/.test(text) ||
-    /\b[A-Z][a-z]{2,}(?:[A-Z][a-z]{2,}){1,}\b/.test(text)
+    /\b[a-z]+(?:[A-Z][a-z]{2,}){2,}\b/.test(text) || /\b[A-Z][a-z]{2,}(?:[A-Z][a-z]{2,}){1,}\b/.test(text)
   );
 }
 
@@ -55,13 +54,7 @@ function hasCodeIdentifier(text) {
 const ISO_DATE_RE = /\b\d{4}-\d{2}-\d{2}\b/;
 
 /** Phrases that only ever show up in engineering commit narrative, never player copy. */
-const LEAK_PHRASES = [
-  /fix round/i,
-  /smoke run/i,
-  /audit finding/i,
-  /not yet implemented/i,
-  /engine['’]s/i,
-];
+const LEAK_PHRASES = [/fix round/i, /smoke run/i, /audit finding/i, /not yet implemented/i, /engine['’]s/i];
 
 /**
  * True if `text` contains a 7-40 char token that reads as a hex/commit hash -- i.e. one
