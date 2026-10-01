@@ -145742,6 +145742,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -145755,6 +145756,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -146334,6 +146336,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -146705,6 +146708,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -146718,6 +146722,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "friendly"
       },
@@ -146729,6 +146734,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "friendly"
       }
@@ -146742,6 +146748,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "honored"
       },
@@ -146753,6 +146760,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "honored"
       }
@@ -146766,6 +146774,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "revered"
       },
@@ -146777,6 +146786,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "revered"
       }
@@ -146790,6 +146800,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       },
@@ -146801,6 +146812,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       },
@@ -146812,6 +146824,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       }
@@ -146834,6 +146847,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -146847,6 +146861,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "friendly"
       },
@@ -146858,6 +146873,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "friendly"
       }
@@ -146871,6 +146887,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "honored"
       },
@@ -146882,6 +146899,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "honored"
       }
@@ -146895,6 +146913,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "revered"
       },
@@ -146906,6 +146925,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "revered"
       }
@@ -146919,6 +146939,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       },
@@ -146930,6 +146951,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       },
@@ -146941,6 +146963,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       }
@@ -146963,6 +146986,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -146976,6 +147000,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "friendly"
       },
@@ -146987,6 +147012,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "friendly"
       }
@@ -147000,6 +147026,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "honored"
       },
@@ -147011,6 +147038,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "honored"
       }
@@ -147024,6 +147052,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "revered"
       },
@@ -147035,6 +147064,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "revered"
       }
@@ -147048,6 +147078,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       },
@@ -147059,6 +147090,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       },
@@ -147070,6 +147102,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "exalted"
       }
@@ -150953,6 +150986,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -150975,6 +151009,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -150997,6 +151032,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -151019,6 +151055,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -151041,6 +151078,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -151188,6 +151226,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
@@ -151210,6 +151249,7 @@
         "min_level": 60,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "required_rep_faction": 910,
         "required_rep_standing": "neutral"
       }
