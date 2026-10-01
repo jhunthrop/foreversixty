@@ -4,17 +4,16 @@
 // first (tenet 3), rank suffix only when spellranks.json names a real rank above 0, the
 // condition sentence printed in full, never CSS-clipped.
 //
-// Known, verified data gap (this lane's own report): the build carries NO icon-by-spell-id
-// data for a trained (non-talent) ability anywhere -- `spells.json`, `spellranks.json` and
-// `spellconst/<class>.json` were all checked and none names one; the per-class
-// `talents/<class>.json` files carry an `icon` per TALENT rank only, which Arcane
-// Shot/Aimed Shot/Serpent Sting (trainer abilities, not talents) never are. This panel
-// renders the client's own neutral "no icon resolved" placeholder for every line rather
-// than fabricate a spell-icon lookup the pipeline does not yet have (tenet 8) -- flagged in
-// the build lane's own report as a new blocking data-lane gap, parallel to the two named
-// sentence-level defects the spec itself calls out (§4.C.3's own condition truncation,
-// §4.D's Bronze Dory claim).
+// The build now carries a client icon per rotation line (`addon-data.json`'s own
+// `rotations.<spec>[].lines[].icon`, threaded through by `rotation-view.ts`'s
+// `RotationLineView`), served from the same `data/builds/<build>/icons/` tree
+// `GearRow.astro`'s item icons already read via `dataUrl` -- this panel renders that real
+// icon in the same square frame the old neutral placeholder used. The placeholder is kept
+// only for a line whose icon the build genuinely has none for (an older build, or an id
+// `rotation-view.ts`'s own `existsSync` check found no file for), never a fabricated
+// lookup (tenet 8).
 import { bisCopy } from '../../lib/bis/copy';
+import { dataUrl } from '../../lib/planner/load';
 import type { RotationLineView } from '../../lib/bis/rotation-view';
 
 interface Props {
@@ -22,9 +21,10 @@ interface Props {
   lines: RotationLineView[];
   specName: string;
   guideHref: string;
+  build: string;
 }
 
-const { bandLabel, lines, specName, guideHref } = Astro.props;
+const { bandLabel, lines, specName, guideHref, build } = Astro.props;
 ---
 
 <div class="panel-box play-it-panel" data-testid="bis-play-it">
@@ -32,7 +32,23 @@ const { bandLabel, lines, specName, guideHref } = Astro.props;
   <ul class="play-it-lines">
     {lines.map((line) => (
       <li class="play-it-line" data-testid={`bis-rotation-line-${line.spellId}`}>
-        <span class="play-it-icon" aria-hidden="true" title={bisCopy.iconNotAvailableYet} />
+        {line.icon !== undefined ? (
+          <img
+            src={dataUrl(build, `icons/${line.icon}.webp`)}
+            alt=""
+            width="28"
+            height="28"
+            loading="lazy"
+            decoding="async"
+            class="play-it-icon"
+          />
+        ) : (
+          <span
+            class="play-it-icon play-it-icon-placeholder"
+            aria-hidden="true"
+            title={bisCopy.iconNotAvailableYet}
+          />
+        )}
         <span class="play-it-body">
           <span class="play-it-name-line">
             <span class="play-it-name">{line.name}</span>
@@ -86,6 +102,9 @@ const { bandLabel, lines, specName, guideHref } = Astro.props;
     height: 28px;
     border-radius: var(--radius-control);
     border: 1px solid var(--color-line);
+    object-fit: cover;
+  }
+  .play-it-icon-placeholder {
     background: var(--color-bg);
   }
   .play-it-body {

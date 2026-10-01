@@ -216,6 +216,28 @@ test('Leveling BiS: a pick’s alternatives render as rows beside it, every one 
   }
 });
 
+test('Leveling BiS: the Play It panel renders a real icon for a rotation line, not the neutral placeholder', async ({
+  page,
+}) => {
+  // hunter-marksmanship's level-10 rotation entry applies through band 20's top (29), and
+  // every line on it (addon-data.json) carries an `icon` the build's icons/ tree ships --
+  // this guards the fix (rotation-view.ts threads RotationLine.icon through to the view,
+  // PlayItPanel.astro renders it) against the old regression of a neutral placeholder on
+  // every line regardless of the data.
+  await page.goto('/bis/hunter/marksmanship#band-alliance-20');
+  const band20 = page.getByTestId('bis-band-alliance-20');
+  const playIt = band20.getByTestId('bis-play-it');
+  await expect(playIt).toBeVisible();
+  const lines = playIt.locator('[data-testid^="bis-rotation-line-"]');
+  await expect(lines.first()).toBeVisible();
+  const icons = playIt.locator('[data-testid^="bis-rotation-line-"] img.play-it-icon');
+  expect(await icons.count()).toBeGreaterThan(0);
+  await expect(icons.first()).toHaveAttribute('src', /\/data\/[^/]+\/icons\/.+\.webp$/);
+  // Never the client's own red "?" placeholder texture naming (tenet 4), and never the old
+  // neutral "no icon resolved" box on a line the build actually has an icon for.
+  await expect(playIt.locator('.play-it-icon-placeholder')).toHaveCount(0);
+});
+
 test('Leveling BiS: the weight rail shows scale factors normalized to the top stat, DPS per point, the haste caption and the addon button', async ({
   page,
 }) => {
