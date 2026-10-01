@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:39:57Z",
+  "generated_at": "2026-10-01T01:17:56Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -604,8 +604,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.125641709,
-      "verify_run_seconds": 1.1445349,
+      "weights_run_seconds": 1.5958356679999999,
+      "verify_run_seconds": 1.469306979,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1277,8 +1277,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.125641709,
-      "verify_run_seconds": 0.979871756,
+      "weights_run_seconds": 1.5958356679999999,
+      "verify_run_seconds": 1.444597753,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1976,8 +1976,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.028353264,
-      "verify_run_seconds": 1.067561841,
+      "weights_run_seconds": 1.666431835,
+      "verify_run_seconds": 1.524164388,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2679,8 +2679,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.028353264,
-      "verify_run_seconds": 1.000429929,
+      "weights_run_seconds": 1.666431835,
+      "verify_run_seconds": 1.5425426,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3372,8 +3372,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.192747439,
-      "verify_run_seconds": 1.117120934,
+      "weights_run_seconds": 1.979298298,
+      "verify_run_seconds": 1.726948641,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4067,8 +4067,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.192747439,
-      "verify_run_seconds": 1.144198246,
+      "weights_run_seconds": 1.979298298,
+      "verify_run_seconds": 1.787925522,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4233,7 +4233,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -1.4898607004997253
+              "dps_delta": -1.4898607004997257
             },
             {
               "item_id": 14849,
@@ -4781,8 +4781,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.312258736,
-      "verify_run_seconds": 1.4762626,
+      "weights_run_seconds": 2.10841521,
+      "verify_run_seconds": 2.293361591,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5511,8 +5511,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.312258736,
-      "verify_run_seconds": 1.500417438,
+      "weights_run_seconds": 2.10841521,
+      "verify_run_seconds": 2.305803014,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6019,11 +6019,11 @@
               "dps_delta": -0.1008285129076023
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.15054813208464704
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.37461181058742204
             },
             {
               "item_id": 11669,
@@ -6052,11 +6052,11 @@
               "dps_delta": -0.08560874190461104
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.1353283610816558
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.35939203958443083
             },
             {
               "item_id": 11669,
@@ -6236,7 +6236,7 @@
         }
       ],
       "set_dps": 261.9935947416776,
-      "no_source_count": 1931,
+      "no_source_count": 1943,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6272,8 +6272,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.370079388,
-      "verify_run_seconds": 1.383659432,
+      "weights_run_seconds": 2.1328500200000002,
+      "verify_run_seconds": 2.233363136,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6289,11 +6289,11 @@
         },
         "finger1": {
           "eligible": 364,
-          "sourced": 175
+          "sourced": 163
         },
         "finger2": {
           "eligible": 364,
-          "sourced": 175
+          "sourced": 163
         },
         "hands": {
           "eligible": 685,
@@ -6773,11 +6773,11 @@
               "dps_delta": -0.1008285129076023
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.15054813208464704
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.37461181058742204
             },
             {
               "item_id": 11669,
@@ -6806,11 +6806,11 @@
               "dps_delta": -0.08560874190461104
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.1353283610816558
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.35939203958443083
             },
             {
               "item_id": 11669,
@@ -6988,7 +6988,7 @@
         }
       ],
       "set_dps": 241.45481991210266,
-      "no_source_count": 1901,
+      "no_source_count": 1913,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -7025,8 +7025,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.370079388,
-      "verify_run_seconds": 1.420997516,
+      "weights_run_seconds": 2.1328500200000002,
+      "verify_run_seconds": 2.2278788,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7042,11 +7042,11 @@
         },
         "finger1": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 685,

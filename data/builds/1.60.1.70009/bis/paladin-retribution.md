@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 00000000000000000-0000000000000000-55100000000000000)
 
-Set DPS (verified): 34.6. Weights run: 0.9s. Verify run: 0.7s. 239 eligible items had no known source.
+Set DPS (verified): 34.6. Weights run: 1.4s. Verify run: 1.1s. 239 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.133 ± 0.018, crit=0.172 ± 0.005 per rating point (14 rating = 1%, 2.410 per %), hit=0.187 ± 0.003 per rating point (10 rating = 1%, 1.869 per %), melee_haste=-2.419 ± 0.186
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 239, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-0000000000000000-55223310000000000)
 
-Set DPS (verified): 68.5. Weights run: 0.8s. Verify run: 0.8s. 404 eligible items had no known source.
+Set DPS (verified): 68.5. Weights run: 1.4s. Verify run: 1.4s. 404 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.118 ± 0.014, crit=0.231 ± 0.007 per rating point (14 rating = 1%, 3.235 per %), hit=0.226 ± 0.004 per rating point (10 rating = 1%, 2.259 per %), melee_haste=1.778 ± 0.112
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 404, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 00000000000000000-0000000000000000-55223331211000210)
 
-Set DPS (verified): 86.1. Weights run: 0.8s. Verify run: 0.8s. 562 eligible items had no known source.
+Set DPS (verified): 86.1. Weights run: 1.5s. Verify run: 1.3s. 562 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.228 ± 0.031, crit=0.306 ± 0.009 per rating point (14 rating = 1%, 4.287 per %), hit=0.312 ± 0.005 per rating point (10 rating = 1%, 3.119 per %), melee_haste=2.170 ± 0.198
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 562, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 00000000000000000-5500000000000000-55223331211000210)
 
-Set DPS (verified): 100.4. Weights run: 0.9s. Verify run: 0.8s. 722 eligible items had no known source.
+Set DPS (verified): 100.4. Weights run: 1.5s. Verify run: 1.4s. 722 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.231 ± 0.026, crit=0.395 ± 0.012 per rating point (14 rating = 1%, 5.537 per %), hit=0.389 ± 0.006 per rating point (10 rating = 1%, 3.895 per %), melee_haste=2.628 ± 0.325
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 722, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (human, 00000000000000000-5532500000000000-55223331211000210)
 
-Set DPS (verified): 163.3. Weights run: 0.9s. Verify run: 0.8s. 1662 eligible items had no known source.
+Set DPS (verified): 163.3. Weights run: 1.5s. Verify run: 1.4s. 1674 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.339 ± 0.051, crit=0.526 ± 0.017 per rating point (14 rating = 1%, 7.362 per %), hit=0.466 ± 0.008 per rating point (10 rating = 1%, 4.660 per %), melee_haste=3.638 ± 0.629
 
@@ -144,8 +144,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Dense Timbermaw Belt (227807) | Meilosh [vendor] | 64.0 attack_power points (2.80 DPS) | yes | Radiant Girdle of the Dawn (227814, +0.00 DPS, sim-verified) [vendor]; Ferocity of the Timbermaw (227805, -0.27 DPS) [vendor]; Heavy Obsidian Belt (22197, -0.61 DPS) [crafted] |
 | legs | Titanic Leggings (22385) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Sentinel's Plate Legguards (237825, -0.14 DPS) [vendor]; Cloudkeeper Legplates (14554, -2.21 DPS, sim-verified) [world_drop] |
 | feet | Scalegut Treaders (275618) | Leatherworking [crafted] | 40.7 attack_power points (1.78 DPS) | yes | Pads of the Dread Wolf (13210, -0.03 DPS) [dungeon]; Clutchlord's Stompers (275627, -0.12 DPS) [crafted]; Goregasher Stompers (275624, -0.12 DPS) [crafted] |
-| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Band (19514, -0.01 DPS) [rep]; Signet Ring of the Bronze Dragonflight (21200, -0.09 DPS) [quest]; Naglering (11669, -2.74 DPS, sim-verified) [dungeon] |
-| finger2 | Band of the Ogre King (18522) | Dire Maul: King Gordok [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Band (19514, -0.01 DPS) [rep]; Signet Ring of the Bronze Dragonflight (21200, -0.09 DPS) [quest]; Naglering (11669, -1.93 DPS, sim-verified) [dungeon] |
+| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Band (19514, -0.01 DPS) [rep]; Blackstone Ring (17713, -0.15 DPS) [dungeon]; Naglering (11669, -2.74 DPS, sim-verified) [dungeon] |
+| finger2 | Band of the Ogre King (18522) | Dire Maul: King Gordok [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Band (19514, -0.01 DPS) [rep]; Blackstone Ring (17713, -0.15 DPS) [dungeon]; Naglering (11669, -1.93 DPS, sim-verified) [dungeon] |
 | trinket1 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Burst of Knowledge (11832, -0.75 DPS, sim-verified) [dungeon] |
 | trinket2 | Draconic Infused Emblem (22268) | Blackrock Spire: General Drakkisath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Darkmoon Card: Maelstrom (19289, +0.00 DPS) [quest] |
 | main_hand | Blackblade of Shahram (12592) | Blackrock Spire: General Drakkisath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Runeblade of Baron Rivendare (13505, -3.12 DPS, sim-verified) [dungeon] |
@@ -154,13 +154,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Imperial Jewel; shoulder: Highlander's Lamellar Spaulders; back: Cloak of the Honor Guard; chest: Obsidian Mail Tunic; wrist: Berserker Bracers; hands: Raider Gauntlets; waist: Dense Timbermaw Belt; legs: Titanic Leggings; feet: Scalegut Treaders; finger1: Don Julio's Band; finger2: Band of the Ogre King; trinket1: Second Wind; trinket2: Draconic Infused Emblem; main_hand: Blackblade of Shahram
 
-No-known-source sample (15 of 1662, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4765 Enamelled Broadsword; 4777 Ironwood Maul
+No-known-source sample (15 of 1674, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4765 Enamelled Broadsword; 4777 Ironwood Maul
 
 ## Horde
 
 ### Band 20 (undead, 00000000000000000-0000000000000000-55100000000000000)
 
-Set DPS (verified): 32.2. Weights run: 0.9s. Verify run: 0.7s. 219 eligible items had no known source.
+Set DPS (verified): 32.2. Weights run: 1.4s. Verify run: 1.1s. 219 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.133 ± 0.018, crit=0.172 ± 0.005 per rating point (14 rating = 1%, 2.410 per %), hit=0.187 ± 0.003 per rating point (10 rating = 1%, 1.869 per %), melee_haste=-2.419 ± 0.186
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 219, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-0000000000000000-55223310000000000)
 
-Set DPS (verified): 67.7. Weights run: 0.8s. Verify run: 0.8s. 381 eligible items had no known source.
+Set DPS (verified): 67.7. Weights run: 1.4s. Verify run: 1.4s. 381 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.118 ± 0.014, crit=0.231 ± 0.007 per rating point (14 rating = 1%, 3.235 per %), hit=0.226 ± 0.004 per rating point (10 rating = 1%, 2.259 per %), melee_haste=1.778 ± 0.112
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 381, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 00000000000000000-0000000000000000-55223331211000210)
 
-Set DPS (verified): 85.5. Weights run: 0.8s. Verify run: 0.8s. 531 eligible items had no known source.
+Set DPS (verified): 85.5. Weights run: 1.5s. Verify run: 1.3s. 531 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.228 ± 0.031, crit=0.306 ± 0.009 per rating point (14 rating = 1%, 4.287 per %), hit=0.312 ± 0.005 per rating point (10 rating = 1%, 3.119 per %), melee_haste=2.170 ± 0.198
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 531, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 00000000000000000-5500000000000000-55223331211000210)
 
-Set DPS (verified): 100.3. Weights run: 0.9s. Verify run: 0.9s. 702 eligible items had no known source.
+Set DPS (verified): 100.3. Weights run: 1.5s. Verify run: 1.4s. 702 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.231 ± 0.026, crit=0.395 ± 0.012 per rating point (14 rating = 1%, 5.537 per %), hit=0.389 ± 0.006 per rating point (10 rating = 1%, 3.895 per %), melee_haste=2.628 ± 0.325
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 702, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (undead, 00000000000000000-5532500000000000-55223331211000210)
 
-Set DPS (verified): 155.8. Weights run: 0.9s. Verify run: 0.8s. 1687 eligible items had no known source.
+Set DPS (verified): 155.8. Weights run: 1.5s. Verify run: 1.3s. 1699 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.339 ± 0.051, crit=0.526 ± 0.017 per rating point (14 rating = 1%, 7.362 per %), hit=0.466 ± 0.008 per rating point (10 rating = 1%, 4.660 per %), melee_haste=3.638 ± 0.629
 
@@ -296,8 +296,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Dense Timbermaw Belt (227807) | Meilosh [vendor] | 64.0 attack_power points (2.80 DPS) | yes | Radiant Girdle of the Dawn (227814, +0.00 DPS, sim-verified) [vendor]; Ferocity of the Timbermaw (227805, -0.27 DPS) [vendor]; Heavy Obsidian Belt (22197, -0.61 DPS) [crafted] |
 | legs | Titanic Leggings (22385) | Blacksmithing [crafted] | sim-verified (155.8 DPS) | yes | Sentinel's Plate Legguards (237825, -0.14 DPS) [vendor]; Outrider's Plate Legguards (22651, -0.38 DPS) [rep]; Cloudkeeper Legplates (14554, -5.37 DPS, sim-verified) [world_drop] |
 | feet | Scalegut Treaders (275618) | Leatherworking [crafted] | 40.7 attack_power points (1.78 DPS) | yes | Pads of the Dread Wolf (13210, -0.03 DPS) [dungeon]; Clutchlord's Stompers (275627, -0.12 DPS) [crafted]; Goregasher Stompers (275624, -0.12 DPS) [crafted] |
-| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (155.8 DPS) | yes | Legionnaire's Band (19510, -0.01 DPS) [rep]; Signet Ring of the Bronze Dragonflight (21200, -0.09 DPS) [quest]; Naglering (11669, -3.86 DPS, sim-verified) [dungeon] |
-| finger2 | Band of the Ogre King (18522) | Dire Maul: King Gordok [dungeon] | sim-verified (155.8 DPS) | yes | Legionnaire's Band (19510, -0.01 DPS) [rep]; Signet Ring of the Bronze Dragonflight (21200, -0.09 DPS) [quest]; Naglering (11669, -1.81 DPS, sim-verified) [dungeon] |
+| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (155.8 DPS) | yes | Legionnaire's Band (19510, -0.01 DPS) [rep]; Blackstone Ring (17713, -0.15 DPS) [dungeon]; Naglering (11669, -3.86 DPS, sim-verified) [dungeon] |
+| finger2 | Band of the Ogre King (18522) | Dire Maul: King Gordok [dungeon] | sim-verified (155.8 DPS) | yes | Legionnaire's Band (19510, -0.01 DPS) [rep]; Blackstone Ring (17713, -0.15 DPS) [dungeon]; Naglering (11669, -1.81 DPS, sim-verified) [dungeon] |
 | trinket1 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (155.8 DPS) | yes | Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Burst of Knowledge (11832, -1.85 DPS, sim-verified) [dungeon] |
 | trinket2 | Draconic Infused Emblem (22268) | Blackrock Spire: General Drakkisath [dungeon] | sim-verified (155.8 DPS) | yes | Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Darkmoon Card: Maelstrom (19289, -0.85 DPS, sim-verified) [quest] |
 | main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-verified (155.8 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Blackblade of Shahram (12592, -4.09 DPS, sim-verified) [dungeon] |
@@ -306,5 +306,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Imperial Jewel; shoulder: Defiler's Plate Spaulders; back: Deathguard's Cloak; chest: Obsidian Mail Tunic; wrist: Berserker Bracers; hands: Raider Gauntlets; waist: Dense Timbermaw Belt; legs: Titanic Leggings; feet: Scalegut Treaders; finger1: Don Julio's Band; finger2: Band of the Ogre King; trinket1: Second Wind; trinket2: Draconic Infused Emblem; main_hand: The Unstoppable Force
 
-No-known-source sample (15 of 1687, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1699, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band
 

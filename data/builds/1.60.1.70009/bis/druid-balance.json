@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:32:58Z",
+  "generated_at": "2026-10-01T01:06:42Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -544,8 +544,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.035389315,
-      "verify_run_seconds": 0.622265636,
+      "weights_run_seconds": 1.7648190480000001,
+      "verify_run_seconds": 0.899189882,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1172,8 +1172,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.035389315,
-      "verify_run_seconds": 0.529964009,
+      "weights_run_seconds": 1.7648190480000001,
+      "verify_run_seconds": 0.876653637,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1833,8 +1833,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.197096447,
-      "verify_run_seconds": 0.648045692,
+      "weights_run_seconds": 1.7902969359999998,
+      "verify_run_seconds": 1.008941708,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2495,8 +2495,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.197096447,
-      "verify_run_seconds": 0.671211774,
+      "weights_run_seconds": 1.7902969359999998,
+      "verify_run_seconds": 1.029057621,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3147,8 +3147,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.154882077,
-      "verify_run_seconds": 0.654381472,
+      "weights_run_seconds": 1.892523457,
+      "verify_run_seconds": 1.079609286,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3799,8 +3799,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.154882077,
-      "verify_run_seconds": 0.663805594,
+      "weights_run_seconds": 1.892523457,
+      "verify_run_seconds": 1.163050746,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4471,8 +4471,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.220498126,
-      "verify_run_seconds": 0.763928509,
+      "weights_run_seconds": 1.959101559,
+      "verify_run_seconds": 1.241827578,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5142,8 +5142,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.220498126,
-      "verify_run_seconds": 0.747155412,
+      "weights_run_seconds": 1.959101559,
+      "verify_run_seconds": 1.247730544,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5321,8 +5321,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "verified": true,
-          "swap_note": "beat the scored pick Feralheart Cowl (id 226773) in the sim: +3.7 DPS over it",
-          "dps_delta": 3.6690433722713465,
+          "swap_note": "beat the scored pick Feralheart Cowl (id 226773) in the sim: +3.8 DPS over it",
+          "dps_delta": 3.7735548831959136,
           "alternatives": [
             {
               "item_id": 231695,
@@ -5343,7 +5343,7 @@
               "item_name": "Feralheart Cowl",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -3.6690433722713465,
+              "dps_delta": -3.7735548831959136,
               "verified": true
             }
           ]
@@ -5418,7 +5418,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.59909100620111,
+          "score": 30.599091006201114,
           "verified": true,
           "alternatives": [
             {
@@ -5426,21 +5426,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5812794036652731
+              "dps_delta": -0.5812794036652734
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381236
+              "dps_delta": -0.6702785051381239
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.082861677359641
+              "dps_delta": -1.0828616773596413
             }
           ]
         },
@@ -5471,7 +5471,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -7.56408696814114,
+              "dps_delta": -7.795272079659952,
               "verified": true
             }
           ]
@@ -5503,7 +5503,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -6.9593228383524774,
+              "dps_delta": -6.714593312426501,
               "verified": true
             }
           ]
@@ -5515,8 +5515,8 @@
           "source": "Mokvar",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "beat the scored pick Raider Handwraps (id 272097) in the sim: +3.1 DPS over it",
-          "dps_delta": 3.0739861747077555,
+          "swap_note": "beat the scored pick Raider Handwraps (id 272097) in the sim: +2.8 DPS over it",
+          "dps_delta": 2.828333719540666,
           "alternatives": [
             {
               "item_id": 231700,
@@ -5537,7 +5537,7 @@
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.0739861747077555,
+              "dps_delta": -2.828333719540666,
               "verified": true
             }
           ]
@@ -5570,7 +5570,7 @@
               "item_name": "Elunite Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.6187656100527192,
+              "dps_delta": -3.373047593646504,
               "verified": true
             }
           ]
@@ -5617,55 +5617,24 @@
               "dps_delta": -0.36135352169196727
             },
             {
-              "item_id": 18102,
-              "item_name": "Dragonrider Boots",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -0.44224953937913425
-            },
-            {
               "item_id": 231704,
               "item_name": "Marshal's Dragonhide Greaves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
               "dps_delta": -0.714603959598251
-            }
-          ]
-        },
-        {
-          "slot": "finger1",
-          "item_id": 21210,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Grand Invoker",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 12543,
-              "item_name": "Songstone of Ironforge",
-              "source_kind": "quest",
-              "source": "The Princess's Surprise",
-              "dps_delta": -1.3564149852950198
             },
             {
-              "item_id": 13001,
-              "item_name": "Maiden's Circle",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.3564149852950198
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
+              "item_id": 18102,
+              "item_name": "Dragonrider Boots",
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -8.44425302063567,
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": -1.756839016994121,
               "verified": true
             }
           ]
         },
         {
-          "slot": "finger2",
+          "slot": "finger1",
           "item_id": 20682,
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
@@ -5691,7 +5660,39 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.958033892305195,
+              "dps_delta": -5.8932603805437225,
+              "verified": true
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21206,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "The Path of the Invoker",
+          "source_kind": "quest",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 12543,
+              "item_name": "Songstone of Ironforge",
+              "source_kind": "quest",
+              "source": "The Princess's Surprise",
+              "dps_delta": -0.3316871545343507
+            },
+            {
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.3316871545343507
+            },
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -6.034670272691812,
               "verified": true
             }
           ]
@@ -5703,8 +5704,8 @@
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +7.7 DPS over it",
-          "dps_delta": 7.741601883332777,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +8.2 DPS over it",
+          "dps_delta": 8.211372001039905,
           "alternatives": [
             {
               "item_id": 12930,
@@ -5787,7 +5788,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.687985622842689,
+              "dps_delta": -4.744108461249908,
               "verified": true
             }
           ]
@@ -5886,8 +5887,8 @@
           "low_value": true
         }
       ],
-      "set_dps": 159.03759966423218,
-      "no_source_count": 1437,
+      "set_dps": 156.43096862106103,
+      "no_source_count": 1449,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5915,15 +5916,15 @@
         "waist: Knowledge of the Timbermaw",
         "legs: Ironfeather Leggings",
         "feet: Feralheart Galoshes",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Elemental Focus Band",
+        "finger1: Elemental Focus Band",
+        "finger2: Signet Ring of the Bronze Dragonflight",
         "trinket1: Burst of Knowledge",
         "trinket2: Second Wind",
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.240167897,
-      "verify_run_seconds": 0.773662288,
+      "weights_run_seconds": 1.974896206,
+      "verify_run_seconds": 1.225586355,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5939,11 +5940,11 @@
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 175
+          "sourced": 163
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 175
+          "sourced": 163
         },
         "hands": {
           "eligible": 439,
@@ -6100,10 +6101,9 @@
           "item_name": "Living Crown",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 157.72961896649193,
           "verified": true,
-          "swap_note": "beat the scored pick Feralheart Cowl (id 226773) in the sim: +3.9 DPS (157.7 vs 153.9 set DPS)",
-          "dps_delta": 3.856053889669681,
+          "swap_note": "beat the scored pick Feralheart Cowl (id 226773) in the sim: +3.2 DPS over it",
+          "dps_delta": 3.2074301473283526,
           "alternatives": [
             {
               "item_id": 231678,
@@ -6124,7 +6124,7 @@
               "item_name": "Feralheart Cowl",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -3.856053889669681,
+              "dps_delta": -3.2074301473283526,
               "verified": true
             }
           ]
@@ -6252,7 +6252,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -7.673423254303572,
+              "dps_delta": -8.197417176409658,
               "verified": true
             }
           ]
@@ -6284,7 +6284,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -6.4887321802387135,
+              "dps_delta": -6.924003551586679,
               "verified": true
             }
           ]
@@ -6296,8 +6296,8 @@
           "source": "Mokvar",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "beat the scored pick Raider Handwraps (id 272097) in the sim: +3.6 DPS over it",
-          "dps_delta": 3.56387460464083,
+          "swap_note": "beat the scored pick Raider Handwraps (id 272097) in the sim: +3.1 DPS over it",
+          "dps_delta": 3.0932161506583213,
           "alternatives": [
             {
               "item_id": 231677,
@@ -6318,7 +6318,7 @@
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.56387460464083,
+              "dps_delta": -3.0932161506583213,
               "verified": true
             }
           ]
@@ -6329,7 +6329,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 55.47734797754678,
+          "score": 55.477347977546785,
           "verified": true,
           "alternatives": [
             {
@@ -6337,21 +6337,21 @@
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.591174050847133
+              "dps_delta": -1.5911740508471337
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.6382678633717154
+              "dps_delta": -1.6382678633717163
             },
             {
               "item_id": 272401,
               "item_name": "Elunite Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.1112161693264397,
+              "dps_delta": -2.763211783735585,
               "verified": true
             }
           ]
@@ -6405,55 +6405,24 @@
               "dps_delta": -0.36135352169196727
             },
             {
-              "item_id": 18102,
-              "item_name": "Dragonrider Boots",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -0.44224953937913425
-            },
-            {
               "item_id": 231671,
               "item_name": "General's Dragonhide Greaves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
               "dps_delta": -0.714603959598251
-            }
-          ]
-        },
-        {
-          "slot": "finger1",
-          "item_id": 21210,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Grand Invoker",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 12545,
-              "item_name": "Eye of Orgrimmar",
-              "source_kind": "quest",
-              "source": "The Princess Saved?",
-              "dps_delta": -1.3564149852950198
             },
             {
-              "item_id": 13001,
-              "item_name": "Maiden's Circle",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.3564149852950198
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
+              "item_id": 18102,
+              "item_name": "Dragonrider Boots",
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -8.105493950585014,
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": -1.5986325466915616,
               "verified": true
             }
           ]
         },
         {
-          "slot": "finger2",
+          "slot": "finger1",
           "item_id": 20682,
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
@@ -6479,7 +6448,39 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.466031002559674,
+              "dps_delta": -6.1794465509587155,
+              "verified": true
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21206,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "The Path of the Invoker",
+          "source_kind": "quest",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 12545,
+              "item_name": "Eye of Orgrimmar",
+              "source_kind": "quest",
+              "source": "The Princess Saved?",
+              "dps_delta": -0.3316871545343507
+            },
+            {
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.3316871545343507
+            },
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -6.1617747639919855,
               "verified": true
             }
           ]
@@ -6491,8 +6492,8 @@
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +8.3 DPS over it",
-          "dps_delta": 8.323140187276351,
+          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +8.5 DPS over it",
+          "dps_delta": 8.480578894914402,
           "alternatives": [
             {
               "item_id": 12930,
@@ -6575,7 +6576,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.456773346731808,
+              "dps_delta": -4.745451386775812,
               "verified": true
             }
           ]
@@ -6674,8 +6675,8 @@
           "low_value": true
         }
       ],
-      "set_dps": 157.7226163479446,
-      "no_source_count": 1434,
+      "set_dps": 155.1216813694026,
+      "no_source_count": 1446,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6703,15 +6704,15 @@
         "waist: Knowledge of the Timbermaw",
         "legs: Ironfeather Leggings",
         "feet: Feralheart Galoshes",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Elemental Focus Band",
+        "finger1: Elemental Focus Band",
+        "finger2: Signet Ring of the Bronze Dragonflight",
         "trinket1: Burst of Knowledge",
         "trinket2: Second Wind",
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.240167897,
-      "verify_run_seconds": 0.750875884,
+      "weights_run_seconds": 1.974896206,
+      "verify_run_seconds": 1.191979376,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6727,11 +6728,11 @@
         },
         "finger1": {
           "eligible": 372,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 372,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 439,

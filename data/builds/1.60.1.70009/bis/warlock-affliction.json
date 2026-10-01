@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:38:24Z",
+  "generated_at": "2026-10-01T01:15:30Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.837458377,
-      "verify_run_seconds": 0.706176865,
+      "weights_run_seconds": 1.430859462,
+      "verify_run_seconds": 1.096979625,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.837458377,
-      "verify_run_seconds": 0.761218122,
+      "weights_run_seconds": 1.430859462,
+      "verify_run_seconds": 1.103443623,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.816884497,
-      "verify_run_seconds": 0.759246013,
+      "weights_run_seconds": 1.3754541470000001,
+      "verify_run_seconds": 1.178035213,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.816884497,
-      "verify_run_seconds": 0.777184751,
+      "weights_run_seconds": 1.3754541470000001,
+      "verify_run_seconds": 1.170502413,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3270,8 +3270,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.817109804,
-      "verify_run_seconds": 0.710129278,
+      "weights_run_seconds": 1.147131338,
+      "verify_run_seconds": 1.02242801,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3940,8 +3940,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 0.817109804,
-      "verify_run_seconds": 0.709491968,
+      "weights_run_seconds": 1.147131338,
+      "verify_run_seconds": 1.04252393,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4637,8 +4637,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.880308262,
-      "verify_run_seconds": 0.88449836,
+      "weights_run_seconds": 1.26081165,
+      "verify_run_seconds": 1.358409089,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5075,7 +5075,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.8376461166509963
+              "dps_delta": -2.837646116650996
             },
             {
               "item_id": 14132,
@@ -5340,8 +5340,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.880308262,
-      "verify_run_seconds": 0.907603202,
+      "weights_run_seconds": 1.26081165,
+      "verify_run_seconds": 1.3330952759999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5530,7 +5530,7 @@
               "item_name": "Spellpower Goggles Xtreme Plus",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -7.36876422113869,
+              "dps_delta": -6.6526621578369145,
               "verified": true
             }
           ]
@@ -5594,7 +5594,7 @@
               "item_name": "Argent Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.965523994126613,
+              "dps_delta": -3.407231190893185,
               "verified": true
             },
             {
@@ -5616,19 +5616,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 272411,
+              "item_name": "Arcanoweave Cloak",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -1.0989400933505067,
+              "verified": true
+            },
+            {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
               "dps_delta": -1.5262258132873494
-            },
-            {
-              "item_id": 272411,
-              "item_name": "Arcanoweave Cloak",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -1.702873544105671,
-              "verified": true
             },
             {
               "item_id": 18510,
@@ -5654,7 +5654,7 @@
               "item_name": "Robe of Everlasting Night",
               "source_kind": "dungeon",
               "source": "Dire Maul: Immol'thar",
-              "dps_delta": -4.316609173877282,
+              "dps_delta": -3.6904675153897415,
               "verified": true
             },
             {
@@ -5752,7 +5752,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -4.4355132115367155,
+              "dps_delta": -3.8609991346722836,
               "verified": true
             },
             {
@@ -5779,8 +5779,8 @@
           "source_kind": "dungeon",
           "score": 35.537932040041305,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (id 237815): kept the pick, +3.7 DPS (354.7 vs 351.0 set DPS)",
-          "dps_delta": 3.6826191263490955,
+          "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (id 237815): kept the pick, +3.3 DPS (351.7 vs 348.4 set DPS)",
+          "dps_delta": 3.290019688601319,
           "alternatives": [
             {
               "item_id": 231587,
@@ -5826,18 +5826,18 @@
               "item_name": "Omnicast Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.6249542781096125,
+              "dps_delta": -2.116796143183251,
               "verified": true
             }
           ]
         },
         {
           "slot": "finger1",
-          "item_id": 21210,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Grand Invoker",
-          "source_kind": "quest",
-          "sim_dps": 354.6531633139268,
+          "item_id": 20682,
+          "item_name": "Elemental Focus Band",
+          "source": "Prince Skaldrenox",
+          "source_kind": "world",
+          "sim_dps": 351.7023059177769,
           "verified": true,
           "alternatives": [
             {
@@ -5845,32 +5845,32 @@
               "item_name": "Songstone of Ironforge",
               "source_kind": "quest",
               "source": "The Princess's Surprise",
-              "dps_delta": -5.7238210627819335
+              "dps_delta": -2.628605403540294
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.7238210627819335
+              "dps_delta": -2.628605403540294
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -12.69684775356967,
+              "dps_delta": -10.434738857646153,
               "verified": true
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 20682,
-          "item_name": "Elemental Focus Band",
-          "source": "Prince Skaldrenox",
-          "source_kind": "world",
-          "sim_dps": 354.6531633139268,
+          "item_id": 21206,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "The Path of the Invoker",
+          "source_kind": "quest",
+          "sim_dps": 351.7023059177769,
           "verified": true,
           "alternatives": [
             {
@@ -5878,69 +5878,43 @@
               "item_name": "Songstone of Ironforge",
               "source_kind": "quest",
               "source": "The Princess's Surprise",
-              "dps_delta": -2.628605403540294
+              "dps_delta": -1.6535693853794198
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.628605403540294
+              "dps_delta": -1.6535693853794198
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.386695574042449,
+              "dps_delta": -9.745990357419771,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 22678,
-          "item_name": "Talisman of Ascendance",
-          "source": "Epic Armaments of Battle - Friend of the Dawn",
-          "source_kind": "quest",
-          "sim_dps": 354.6531633139268,
+          "item_id": 12930,
+          "item_name": "Briarwood Reed",
+          "source": "Blackrock Spire: Jed Runewatcher",
+          "source_kind": "dungeon",
+          "sim_dps": 351.7023059177769,
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +14.2 DPS (354.7 vs 340.5 set DPS)",
-          "dps_delta": 14.159146588239878,
+          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +14.2 DPS (351.7 vs 337.5 set DPS)",
+          "dps_delta": 14.21344757474219,
           "alternatives": [
             {
               "item_id": 18467,
               "item_name": "Royal Seal of Eldre'Thalas",
               "source_kind": "quest",
               "source": "Harnessing Shadows",
-              "dps_delta": 0
+              "dps_delta": -3.3071387707588396
             },
-            {
-              "item_id": 272438,
-              "item_name": "Weakness Analyzer",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            }
-          ],
-          "faction_note": "Briarwood Reed (from horde) and alliance's own pick Talisman of Ascendance measure statistically indistinguishable on gnome (14.88 ± 1.51 vs 16.13 ± 1.52 DPS gain) -- each faction's own tournament winner kept"
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 12930,
-          "item_name": "Briarwood Reed",
-          "source": "Blackrock Spire: Jed Runewatcher",
-          "source_kind": "dungeon",
-          "sim_dps": 354.6531633139268,
-          "verified": true,
-          "alternatives": [
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
@@ -5949,19 +5923,45 @@
               "dps_delta": -3.858328565885313
             },
             {
-              "item_id": 18467,
-              "item_name": "Royal Seal of Eldre'Thalas",
-              "source_kind": "quest",
-              "source": "Harnessing Shadows",
-              "dps_delta": -4.368583122949531,
-              "verified": true
+              "item_id": 272439,
+              "item_name": "Serenity Field",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -8.267846926897098
+            }
+          ],
+          "faction_note": "Talisman of Ascendance (from horde) and alliance's own pick Briarwood Reed measure statistically indistinguishable on gnome (14.49 ± 1.49 vs 14.76 ± 1.47 DPS gain) -- each faction's own tournament winner kept"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 22678,
+          "item_name": "Talisman of Ascendance",
+          "source": "Epic Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
+          "sim_dps": 351.7023059177769,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 272438,
+              "item_name": "Weakness Analyzer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
             },
             {
               "item_id": 272439,
               "item_name": "Serenity Field",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -8.267846926897098
+              "dps_delta": 0
+            },
+            {
+              "item_id": 18467,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Harnessing Shadows",
+              "dps_delta": -2.290445464365746,
+              "verified": true
             }
           ]
         },
@@ -5971,7 +5971,7 @@
           "item_name": "Amethyst War Staff",
           "source": "Azure Templar",
           "source_kind": "world",
-          "sim_dps": 354.6531633139268,
+          "sim_dps": 351.7023059177769,
           "verified": true,
           "alternatives": [
             {
@@ -5986,14 +5986,14 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -2.004029075855463
+              "dps_delta": -2.004029075855467
             },
             {
               "item_id": 1728,
               "item_name": "Teebu's Blazing Longsword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -18.7595339269198,
+              "dps_delta": -18.68451647302146,
               "verified": true
             }
           ]
@@ -6037,8 +6037,8 @@
           ]
         }
       ],
-      "set_dps": 354.6531633139268,
-      "no_source_count": 1063,
+      "set_dps": 351.7023059177769,
+      "no_source_count": 1075,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6066,15 +6066,15 @@
         "hands: Sandworm Skin Gloves",
         "waist: Knowledge of the Timbermaw",
         "legs: Skyshroud Leggings",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Elemental Focus Band",
-        "trinket1: Talisman of Ascendance",
-        "trinket2: Briarwood Reed",
+        "finger1: Elemental Focus Band",
+        "finger2: Signet Ring of the Bronze Dragonflight",
+        "trinket1: Briarwood Reed",
+        "trinket2: Talisman of Ascendance",
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.890218489,
-      "verify_run_seconds": 0.823629952,
+      "weights_run_seconds": 1.2625512460000001,
+      "verify_run_seconds": 1.213706073,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6090,11 +6090,11 @@
         },
         "finger1": {
           "eligible": 374,
-          "sourced": 175
+          "sourced": 163
         },
         "finger2": {
           "eligible": 374,
-          "sourced": 175
+          "sourced": 163
         },
         "hands": {
           "eligible": 211,
@@ -6263,7 +6263,7 @@
               "item_name": "Spellpower Goggles Xtreme Plus",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -5.443147851971958,
+              "dps_delta": -5.510986366402392,
               "verified": true
             }
           ]
@@ -6327,7 +6327,7 @@
               "item_name": "Argent Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.648362983399579,
+              "dps_delta": -3.7080761555185973,
               "verified": true
             },
             {
@@ -6349,19 +6349,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 272411,
+              "item_name": "Arcanoweave Cloak",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -1.4204519738448766,
+              "verified": true
+            },
+            {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
               "dps_delta": -1.5262258132873494
-            },
-            {
-              "item_id": 272411,
-              "item_name": "Arcanoweave Cloak",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -2.348822738791341,
-              "verified": true
             },
             {
               "item_id": 18510,
@@ -6387,7 +6387,7 @@
               "item_name": "Robe of Everlasting Night",
               "source_kind": "dungeon",
               "source": "Dire Maul: Immol'thar",
-              "dps_delta": -5.113445304993093,
+              "dps_delta": -3.6258734385306752,
               "verified": true
             },
             {
@@ -6414,8 +6414,6 @@
           "source_kind": "rep",
           "score": 23.5379320400413,
           "verified": true,
-          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (ilvl 55) (id 19596): kept the pick, +1.2 DPS (350.7 vs 349.5 set DPS)",
-          "dps_delta": 1.2029369153011658,
           "alternatives": [
             {
               "item_id": 18497,
@@ -6442,21 +6440,15 @@
         },
         {
           "slot": "hands",
-          "item_id": 20716,
-          "item_name": "Sandworm Skin Gloves",
-          "source": "Armaments of War",
-          "source_kind": "quest",
-          "score": 27.961207525025813,
+          "item_id": 13253,
+          "item_name": "Hands of Power",
+          "source": "Blackrock Spire: Quartermaster Zigris",
+          "source_kind": "dungeon",
+          "sim_dps": 350.54417704732145,
           "verified": true,
+          "swap_note": "beat the scored pick Sandworm Skin Gloves (id 20716) in the sim: +3.8 DPS (350.5 vs 346.7 set DPS)",
+          "dps_delta": 3.8304755950316007,
           "alternatives": [
-            {
-              "item_id": 13253,
-              "item_name": "Hands of Power",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Quartermaster Zigris",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 231589,
               "item_name": "General's Dreadweave Gloves",
@@ -6469,7 +6461,15 @@
               "item_name": "Earth Warder's Gloves",
               "source_kind": "quest",
               "source": "Winterfall Activity",
-              "dps_delta": -3.2857567544253685
+              "dps_delta": -2.8405285150574966
+            },
+            {
+              "item_id": 20716,
+              "item_name": "Sandworm Skin Gloves",
+              "source_kind": "quest",
+              "source": "Armaments of War",
+              "dps_delta": -3.8304755950316007,
+              "verified": true
             }
           ]
         },
@@ -6487,7 +6487,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -4.945562826435946,
+              "dps_delta": -3.2953205698796637,
               "verified": true
             },
             {
@@ -6534,7 +6534,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.8186799841205925,
+              "dps_delta": -2.726936190212257,
               "verified": true
             }
           ]
@@ -6567,18 +6567,17 @@
               "item_name": "Omnicast Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.217824495354762,
+              "dps_delta": -1.2388865625412677,
               "verified": true
             }
           ]
         },
         {
           "slot": "finger1",
-          "item_id": 21210,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Grand Invoker",
-          "source_kind": "quest",
-          "sim_dps": 350.6653523095191,
+          "item_id": 20682,
+          "item_name": "Elemental Focus Band",
+          "source": "Prince Skaldrenox",
+          "source_kind": "world",
           "verified": true,
           "alternatives": [
             {
@@ -6586,32 +6585,31 @@
               "item_name": "Eye of Orgrimmar",
               "source_kind": "quest",
               "source": "The Princess Saved?",
-              "dps_delta": -5.7238210627819335
+              "dps_delta": -2.628605403540294
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.7238210627819335
+              "dps_delta": -2.628605403540294
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -12.166219243858734,
+              "dps_delta": -8.493204130274364,
               "verified": true
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 20682,
-          "item_name": "Elemental Focus Band",
-          "source": "Prince Skaldrenox",
-          "source_kind": "world",
-          "sim_dps": 350.6653523095191,
+          "item_id": 21206,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "The Path of the Invoker",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -6619,42 +6617,74 @@
               "item_name": "Eye of Orgrimmar",
               "source_kind": "quest",
               "source": "The Princess Saved?",
-              "dps_delta": -2.628605403540294
+              "dps_delta": -1.6535693853794198
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.628605403540294
+              "dps_delta": -1.6535693853794198
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.54658201294069,
+              "dps_delta": -8.21456838662948,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 12930,
-          "item_name": "Briarwood Reed",
-          "source": "Blackrock Spire: Jed Runewatcher",
-          "source_kind": "dungeon",
-          "sim_dps": 350.6653523095191,
+          "item_id": 22678,
+          "item_name": "Talisman of Ascendance",
+          "source": "Epic Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +15.4 DPS (350.7 vs 335.3 set DPS)",
-          "dps_delta": 15.393880463724486,
+          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +14.5 DPS over it",
+          "dps_delta": 14.462418698477961,
           "alternatives": [
             {
               "item_id": 18467,
               "item_name": "Royal Seal of Eldre'Thalas",
               "source_kind": "quest",
               "source": "Harnessing Shadows",
-              "dps_delta": -3.3071387707588396
+              "dps_delta": 0
+            },
+            {
+              "item_id": 272438,
+              "item_name": "Weakness Analyzer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 272439,
+              "item_name": "Serenity Field",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
+            }
+          ],
+          "faction_note": "Briarwood Reed (from alliance) and horde's own pick Talisman of Ascendance measure statistically indistinguishable on troll (13.31 ± 1.53 vs 14.97 ± 1.66 DPS gain) -- each faction's own tournament winner kept"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 12930,
+          "item_name": "Briarwood Reed",
+          "source": "Blackrock Spire: Jed Runewatcher",
+          "source_kind": "dungeon",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 18467,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Harnessing Shadows",
+              "dps_delta": -2.4383544299283244,
+              "verified": true
             },
             {
               "item_id": 272438,
@@ -6670,40 +6700,6 @@
               "source": "Pix Xizzix",
               "dps_delta": -8.267846926897098
             }
-          ],
-          "faction_note": "Talisman of Ascendance (from alliance) and horde's own pick Briarwood Reed measure statistically indistinguishable on troll (13.78 ± 1.65 vs 14.60 ± 1.47 DPS gain) -- each faction's own tournament winner kept"
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 22678,
-          "item_name": "Talisman of Ascendance",
-          "source": "Epic Armaments of Battle - Friend of the Dawn",
-          "source_kind": "quest",
-          "sim_dps": 350.6653523095191,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 18467,
-              "item_name": "Royal Seal of Eldre'Thalas",
-              "source_kind": "quest",
-              "source": "Harnessing Shadows",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272438,
-              "item_name": "Weakness Analyzer",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 22268,
-              "item_name": "Draconic Infused Emblem",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -1.628157371994007,
-              "verified": true
-            }
           ]
         },
         {
@@ -6712,7 +6708,6 @@
           "item_name": "Amethyst War Staff",
           "source": "Azure Templar",
           "source_kind": "world",
-          "sim_dps": 350.6653523095191,
           "verified": true,
           "alternatives": [
             {
@@ -6734,7 +6729,7 @@
               "item_name": "Teebu's Blazing Longsword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -18.356978759795652,
+              "dps_delta": -16.400292141146224,
               "verified": true
             }
           ]
@@ -6778,8 +6773,8 @@
           ]
         }
       ],
-      "set_dps": 350.6653523095191,
-      "no_source_count": 1051,
+      "set_dps": 350.54417704732145,
+      "no_source_count": 1063,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6804,18 +6799,18 @@
         "back: Crystalline Threaded Cape",
         "chest: Robe of the Void",
         "wrist: Dryad's Wrist Bindings",
-        "hands: Sandworm Skin Gloves",
+        "hands: Hands of Power",
         "waist: Knowledge of the Timbermaw",
         "legs: Skyshroud Leggings",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Elemental Focus Band",
-        "trinket1: Briarwood Reed",
-        "trinket2: Talisman of Ascendance",
+        "finger1: Elemental Focus Band",
+        "finger2: Signet Ring of the Bronze Dragonflight",
+        "trinket1: Talisman of Ascendance",
+        "trinket2: Briarwood Reed",
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.890218489,
-      "verify_run_seconds": 0.823413773,
+      "weights_run_seconds": 1.2625512460000001,
+      "verify_run_seconds": 1.290750951,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6831,11 +6826,11 @@
         },
         "finger1": {
           "eligible": 377,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 377,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 214,

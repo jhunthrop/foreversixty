@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:37:15Z",
+  "generated_at": "2026-10-01T01:13:41Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -562,8 +562,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.809623202,
-      "verify_run_seconds": 0.94133743,
+      "weights_run_seconds": 1.343446149,
+      "verify_run_seconds": 1.440678096,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1208,8 +1208,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.809623202,
-      "verify_run_seconds": 0.966656348,
+      "weights_run_seconds": 1.343446149,
+      "verify_run_seconds": 1.437001436,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1767,7 +1767,7 @@
           "source_kind": "dungeon",
           "score": 322,
           "verified": true,
-          "swap_note": "confirmed by the sim against Scorn's Focal Dagger (id 23168): kept the pick, +-0.3 DPS (40.1 vs 40.4 set DPS)",
+          "swap_note": "confirmed by the sim against Scorn's Focal Dagger (id 23168): kept the pick, -0.3 DPS (40.1 vs 40.4 set DPS)",
           "dps_delta": -0.2827863370473338,
           "alternatives": [
             {
@@ -1890,8 +1890,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.90523721,
-      "verify_run_seconds": 0.994489672,
+      "weights_run_seconds": 1.4620613599999999,
+      "verify_run_seconds": 1.600780555,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2449,7 +2449,7 @@
           "source_kind": "dungeon",
           "score": 322,
           "verified": true,
-          "swap_note": "confirmed by the sim against Scorn's Focal Dagger (id 23168): kept the pick, +-0.4 DPS (39.4 vs 39.8 set DPS)",
+          "swap_note": "confirmed by the sim against Scorn's Focal Dagger (id 23168): kept the pick, -0.4 DPS (39.4 vs 39.8 set DPS)",
           "dps_delta": -0.39123803853124883,
           "alternatives": [
             {
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.90523721,
-      "verify_run_seconds": 1.020913397,
+      "weights_run_seconds": 1.4620613599999999,
+      "verify_run_seconds": 1.6133562590000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3269,8 +3269,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 0.961321077,
-      "verify_run_seconds": 1.043071816,
+      "weights_run_seconds": 1.547319334,
+      "verify_run_seconds": 1.641669998,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3967,8 +3967,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 0.961321077,
-      "verify_run_seconds": 1.081434076,
+      "weights_run_seconds": 1.547319334,
+      "verify_run_seconds": 1.671495164,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4678,8 +4678,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 0.969516669,
-      "verify_run_seconds": 1.195226871,
+      "weights_run_seconds": 1.596278575,
+      "verify_run_seconds": 1.959851161,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5104,7 +5104,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.4038560287594648
+              "dps_delta": -0.4038560287594646
             },
             {
               "item_id": 6690,
@@ -5388,8 +5388,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 0.969516669,
-      "verify_run_seconds": 1.4205793500000001,
+      "weights_run_seconds": 1.596278575,
+      "verify_run_seconds": 2.123885162,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5548,7 +5548,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "beat the scored pick Embrace of the Lycan (id 9479) in the sim: +2.6 DPS over it",
-          "dps_delta": 2.591349844875623,
+          "dps_delta": 2.6042821823799898,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -5570,7 +5570,7 @@
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -2.591349844875623,
+              "dps_delta": -2.6042821823799898,
               "verified": true
             }
           ]
@@ -5628,7 +5628,7 @@
               "item_name": "Highlander's Lizardhide Shoulders",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -0.8601893805536633,
+              "dps_delta": -0.8003288250255309,
               "verified": true
             },
             {
@@ -5685,7 +5685,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8011957859201049
+              "dps_delta": -0.8011957859201052
             },
             {
               "item_id": 12603,
@@ -5699,7 +5699,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -6.0207619485280475,
+              "dps_delta": -6.004085563792273,
               "verified": true
             }
           ]
@@ -5731,7 +5731,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.093594629954623,
+              "dps_delta": -3.1007198658974744,
               "verified": true
             }
           ]
@@ -5867,38 +5867,6 @@
         },
         {
           "slot": "finger1",
-          "item_id": 21205,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Changing of Paths - Protector No More",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -0.22434510311226136
-            },
-            {
-              "item_id": 17713,
-              "item_name": "Blackstone Ring",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.44324780627948623
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.486522847008416,
-              "verified": true
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 19514,
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
@@ -5906,11 +5874,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -0.021920458393731447
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.17414872046247024
             },
             {
               "item_id": 17713,
@@ -5924,7 +5892,39 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -2.3671075015425345,
+              "dps_delta": -2.3831733281274126,
+              "verified": true
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 19325,
+          "item_name": "Don Julio's Band",
+          "source": "Stormpike Guard",
+          "source_kind": "rep",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.1522282620687388
+            },
+            {
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.21890270316722488
+            },
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -5.191988097805051,
               "verified": true
             }
           ]
@@ -5956,7 +5956,7 @@
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -4.8394525941162385,
+              "dps_delta": -4.828060570992136,
               "verified": true
             }
           ]
@@ -5988,7 +5988,7 @@
               "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
               "source": "General Drakkisath's Demise",
-              "dps_delta": -0.9840350376366871,
+              "dps_delta": -0.9391778613867814,
               "verified": true
             }
           ]
@@ -6001,7 +6001,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "confirmed by the sim against Felstriker (id 12590): kept the pick, +3.4 DPS over it",
-          "dps_delta": 3.427593428641046,
+          "dps_delta": 3.4457242760485087,
           "alternatives": [
             {
               "item_id": 234574,
@@ -6034,7 +6034,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "beat the scored pick The Lobotomizer (id 19324) in the sim: +4.9 DPS over it",
-          "dps_delta": 4.887788185208507,
+          "dps_delta": 4.908355006532645,
           "alternatives": [
             {
               "item_id": 18392,
@@ -6048,7 +6048,7 @@
               "item_name": "The Lobotomizer",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -4.887788185208507,
+              "dps_delta": -4.908355006532645,
               "verified": true
             },
             {
@@ -6087,14 +6087,14 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.602857083307157,
+              "dps_delta": -1.6057254141350086,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 183.29535232765372,
-      "no_source_count": 1358,
+      "set_dps": 182.9786208433266,
+      "no_source_count": 1370,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6123,16 +6123,16 @@
         "waist: Ferocity of the Timbermaw",
         "legs: Devilsaur Leggings",
         "feet: Pads of the Dread Wolf",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Protector's Band",
+        "finger1: Protector's Band",
+        "finger2: Don Julio's Band",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.088146903,
-      "verify_run_seconds": 1.240885339,
+      "weights_run_seconds": 1.578416928,
+      "verify_run_seconds": 2.030175886,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6148,11 +6148,11 @@
         },
         "finger1": {
           "eligible": 366,
-          "sourced": 177
+          "sourced": 165
         },
         "finger2": {
           "eligible": 366,
-          "sourced": 177
+          "sourced": 165
         },
         "hands": {
           "eligible": 414,
@@ -6291,7 +6291,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "beat the scored pick Embrace of the Lycan (id 9479) in the sim: +2.4 DPS over it",
-          "dps_delta": 2.412015556774918,
+          "dps_delta": 2.385204103787572,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -6313,7 +6313,7 @@
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -2.412015556774918,
+              "dps_delta": -2.385204103787572,
               "verified": true
             }
           ]
@@ -6371,7 +6371,7 @@
               "item_name": "Defiler's Lizardhide Shoulders",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -0.8339133864803614,
+              "dps_delta": -0.8038517460235539,
               "verified": true
             },
             {
@@ -6428,7 +6428,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8011957859201049
+              "dps_delta": -0.8011957859201052
             },
             {
               "item_id": 12603,
@@ -6442,7 +6442,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -5.96557293088037,
+              "dps_delta": -5.986615309117894,
               "verified": true
             }
           ]
@@ -6474,7 +6474,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.112944468074204,
+              "dps_delta": -3.096142465937646,
               "verified": true
             }
           ]
@@ -6572,7 +6572,7 @@
               "item_name": "Cadaverous Leggings",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.8196455016009168,
+              "dps_delta": -0.8100544334835718,
               "verified": true
             }
           ]
@@ -6611,51 +6611,12 @@
         },
         {
           "slot": "finger1",
-          "item_id": 21205,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Changing of Paths - Protector No More",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -0.22434510311226116
-            },
-            {
-              "item_id": 11862,
-              "item_name": "White Bone Band",
-              "source_kind": "quest",
-              "source": "Bone-Bladed Weapons",
-              "dps_delta": -0.25498175488365493
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -6.063470042604763,
-              "verified": true
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 19510,
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -0.021920458393731256
-            },
             {
               "item_id": 11862,
               "item_name": "White Bone Band",
@@ -6664,11 +6625,50 @@
               "dps_delta": -0.052557110165125015
             },
             {
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.17414872046247024
+            },
+            {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -2.3882767668149256,
+              "dps_delta": -2.364896819143553,
+              "verified": true
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 19325,
+          "item_name": "Don Julio's Band",
+          "source": "Frostwolf Clan",
+          "source_kind": "rep",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 11862,
+              "item_name": "White Bone Band",
+              "source_kind": "quest",
+              "source": "Bone-Bladed Weapons",
+              "dps_delta": -0.03063665177139357
+            },
+            {
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.1522282620687388
+            },
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -5.797602121376826,
               "verified": true
             }
           ]
@@ -6700,7 +6700,7 @@
               "item_name": "Rune of the Guard Captain",
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village",
-              "dps_delta": -3.865497679855423,
+              "dps_delta": -3.8534259074547776,
               "verified": true
             }
           ]
@@ -6744,7 +6744,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "confirmed by the sim against Felstriker (id 12590): kept the pick, +2.9 DPS over it",
-          "dps_delta": 2.8756823958950406,
+          "dps_delta": 2.9045518693769736,
           "alternatives": [
             {
               "item_id": 234550,
@@ -6777,7 +6777,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "beat the scored pick The Lobotomizer (id 19324) in the sim: +5.4 DPS over it",
-          "dps_delta": 5.44755364337135,
+          "dps_delta": 5.436144468567534,
           "alternatives": [
             {
               "item_id": 18392,
@@ -6791,7 +6791,7 @@
               "item_name": "The Lobotomizer",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -5.44755364337135,
+              "dps_delta": -5.436144468567534,
               "verified": true
             },
             {
@@ -6830,14 +6830,14 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.5855955130889186,
+              "dps_delta": -1.5891028695597527,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 180.9070351182059,
-      "no_source_count": 1355,
+      "set_dps": 180.64544361070222,
+      "no_source_count": 1367,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6866,16 +6866,16 @@
         "waist: Ferocity of the Timbermaw",
         "legs: Devilsaur Leggings",
         "feet: Pads of the Dread Wolf",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Legionnaire's Band",
+        "finger1: Legionnaire's Band",
+        "finger2: Don Julio's Band",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.088146903,
-      "verify_run_seconds": 1.311930496,
+      "weights_run_seconds": 1.578416928,
+      "verify_run_seconds": 2.100476375,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6891,11 +6891,11 @@
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 183
+          "sourced": 171
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 183
+          "sourced": 171
         },
         "hands": {
           "eligible": 414,

@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:35:48Z",
+  "generated_at": "2026-10-01T01:11:18Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 0.858714067,
-      "verify_run_seconds": 0.671357565,
+      "weights_run_seconds": 1.426094508,
+      "verify_run_seconds": 1.079128132,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1157,8 +1157,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 0.858714067,
-      "verify_run_seconds": 0.651124714,
+      "weights_run_seconds": 1.426094508,
+      "verify_run_seconds": 1.086508689,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1801,8 +1801,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 0.823247051,
-      "verify_run_seconds": 0.832187681,
+      "weights_run_seconds": 1.438510086,
+      "verify_run_seconds": 1.391429292,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2450,8 +2450,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 0.823247051,
-      "verify_run_seconds": 0.829532579,
+      "weights_run_seconds": 1.438510086,
+      "verify_run_seconds": 1.40971738,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3091,8 +3091,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 0.845461679,
-      "verify_run_seconds": 0.778612255,
+      "weights_run_seconds": 1.4562240850000001,
+      "verify_run_seconds": 1.301274212,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3733,8 +3733,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 0.845461679,
-      "verify_run_seconds": 0.777628578,
+      "weights_run_seconds": 1.4562240850000001,
+      "verify_run_seconds": 1.318362795,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4391,8 +4391,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 0.870808865,
-      "verify_run_seconds": 0.845900895,
+      "weights_run_seconds": 1.478392892,
+      "verify_run_seconds": 1.4167309750000001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5051,8 +5051,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 0.870808865,
-      "verify_run_seconds": 0.851974208,
+      "weights_run_seconds": 1.478392892,
+      "verify_run_seconds": 1.40523183,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5479,7 +5479,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.14416480749890279
+              "dps_delta": -0.14416480749890218
             },
             {
               "item_id": 14554,
@@ -5539,11 +5539,11 @@
               "dps_delta": -0.012980999657805463
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.08836729632306048
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.146960464913817
             },
             {
               "item_id": 11669,
@@ -5571,11 +5571,11 @@
               "dps_delta": -0.012043313585568562
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.08742961025082359
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.1460227788415801
             },
             {
               "item_id": 11669,
@@ -5695,7 +5695,7 @@
         }
       ],
       "set_dps": 163.29843037352748,
-      "no_source_count": 1662,
+      "no_source_count": 1674,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5730,8 +5730,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 0.865670102,
-      "verify_run_seconds": 0.829468356,
+      "weights_run_seconds": 1.5141857349999999,
+      "verify_run_seconds": 1.383121886,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5747,11 +5747,11 @@
         },
         "finger1": {
           "eligible": 365,
-          "sourced": 176
+          "sourced": 164
         },
         "finger2": {
           "eligible": 365,
-          "sourced": 176
+          "sourced": 164
         },
         "hands": {
           "eligible": 694,
@@ -6228,11 +6228,11 @@
               "dps_delta": -0.012980999657805463
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.08836729632306048
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.146960464913817
             },
             {
               "item_id": 11669,
@@ -6261,11 +6261,11 @@
               "dps_delta": -0.012043313585568562
             },
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.08742961025082359
+              "item_id": 17713,
+              "item_name": "Blackstone Ring",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras",
+              "dps_delta": -0.1460227788415801
             },
             {
               "item_id": 11669,
@@ -6390,7 +6390,7 @@
         }
       ],
       "set_dps": 155.83812581783744,
-      "no_source_count": 1687,
+      "no_source_count": 1699,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6425,8 +6425,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 0.865670102,
-      "verify_run_seconds": 0.759250853,
+      "weights_run_seconds": 1.5141857349999999,
+      "verify_run_seconds": 1.319821021,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -6442,11 +6442,11 @@
         },
         "finger1": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 693,

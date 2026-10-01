@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:33:55Z",
+  "generated_at": "2026-10-01T01:08:13Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -533,8 +533,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 0.880898344,
-      "verify_run_seconds": 1.066690795,
+      "weights_run_seconds": 1.5147253790000001,
+      "verify_run_seconds": 1.621477262,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1165,8 +1165,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 0.880898344,
-      "verify_run_seconds": 1.004405524,
+      "weights_run_seconds": 1.5147253790000001,
+      "verify_run_seconds": 1.6323567730000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1891,8 +1891,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.009922571,
-      "verify_run_seconds": 1.182055982,
+      "weights_run_seconds": 1.629337387,
+      "verify_run_seconds": 1.826221485,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2605,8 +2605,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.009922571,
-      "verify_run_seconds": 1.166066029,
+      "weights_run_seconds": 1.629337387,
+      "verify_run_seconds": 1.8075059759999998,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3279,8 +3279,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.088527573,
-      "verify_run_seconds": 1.2547434960000001,
+      "weights_run_seconds": 1.814514151,
+      "verify_run_seconds": 2.063213102,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3954,8 +3954,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.088527573,
-      "verify_run_seconds": 1.254029946,
+      "weights_run_seconds": 1.814514151,
+      "verify_run_seconds": 1.984685758,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4631,8 +4631,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.104129722,
-      "verify_run_seconds": 1.304799914,
+      "weights_run_seconds": 1.822206847,
+      "verify_run_seconds": 2.13746215,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5307,8 +5307,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.104129722,
-      "verify_run_seconds": 1.463916539,
+      "weights_run_seconds": 1.822206847,
+      "verify_run_seconds": 2.098951996,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5455,10 +5455,10 @@
           "item_name": "Black Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 200.9414400241621,
+          "sim_dps": 199.99256851836964,
           "verified": true,
-          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +3.8 DPS (200.9 vs 197.2 set DPS)",
-          "dps_delta": 3.772546111027964,
+          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +3.7 DPS (200.0 vs 196.3 set DPS)",
+          "dps_delta": 3.7336283802601713,
           "alternatives": [
             {
               "item_id": 231562,
@@ -5479,7 +5479,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.772546111027964,
+              "dps_delta": -3.7336283802601713,
               "verified": true
             }
           ]
@@ -5568,7 +5568,7 @@
               "item_name": "Cloak of the Honor Guard",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -0.5925879469296547,
+              "dps_delta": -0.6054652692707805,
               "verified": true
             },
             {
@@ -5614,7 +5614,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -8.2645090107263,
+              "dps_delta": -8.214413365051087,
               "verified": true
             }
           ]
@@ -5646,7 +5646,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.0345024455741054,
+              "dps_delta": -3.0446719646351426,
               "verified": true
             }
           ]
@@ -5679,7 +5679,7 @@
               "item_name": "Gauntlets of Deftness",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -0.6228185203505916,
+              "dps_delta": -0.5822868819318785,
               "verified": true
             }
           ]
@@ -5726,7 +5726,7 @@
           "score": 112.18258245205709,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +1.2 DPS over it",
-          "dps_delta": 1.223609429716646,
+          "dps_delta": 1.245037498331584,
           "alternatives": [
             {
               "item_id": 231577,
@@ -5747,7 +5747,7 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.2317119729019705
+              "dps_delta": -1.2317119729019712
             }
           ]
         },
@@ -5785,9 +5785,9 @@
         },
         {
           "slot": "finger1",
-          "item_id": 21205,
+          "item_id": 21201,
           "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Changing of Paths - Protector No More",
+          "source": "The Path of the Conqueror",
           "source_kind": "quest",
           "verified": true,
           "alternatives": [
@@ -5796,21 +5796,21 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -1.1984625082937037
+              "dps_delta": -0.48046786459377705
             },
             {
               "item_id": 18500,
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -1.2485315593049044
+              "dps_delta": -0.5305369156049777
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.157415911169608,
+              "dps_delta": -4.2474621361449465,
               "verified": true
             }
           ]
@@ -5842,7 +5842,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.6335417879050738,
+              "dps_delta": -3.620738255937084,
               "verified": true
             }
           ]
@@ -5855,7 +5855,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +7.3 DPS over it",
-          "dps_delta": 7.330303175053501,
+          "dps_delta": 7.28263641371538,
           "alternatives": [
             {
               "item_id": 11815,
@@ -5907,7 +5907,7 @@
               "item_name": "Devilsaur Eye",
               "source_kind": "quest",
               "source": "The Green Drake",
-              "dps_delta": -1.649505719460052,
+              "dps_delta": -1.6459507609453965,
               "verified": true
             }
           ]
@@ -5939,7 +5939,7 @@
               "item_name": "Electrified Dagger",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -5.887527580230426,
+              "dps_delta": -5.8548883294090786,
               "verified": true
             }
           ]
@@ -5976,14 +5976,14 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -7.068710397771639,
+              "dps_delta": -7.048958174046163,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 200.9414400241621,
-      "no_source_count": 1658,
+      "set_dps": 199.99256851836964,
+      "no_source_count": 1670,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6019,8 +6019,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.078968947,
-      "verify_run_seconds": 1.40718476,
+      "weights_run_seconds": 1.787518017,
+      "verify_run_seconds": 2.229865323,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6036,11 +6036,11 @@
         },
         "finger1": {
           "eligible": 364,
-          "sourced": 175
+          "sourced": 163
         },
         "finger2": {
           "eligible": 364,
-          "sourced": 175
+          "sourced": 163
         },
         "hands": {
           "eligible": 594,
@@ -6167,10 +6167,10 @@
           "item_name": "Black Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 203.30664345056624,
+          "sim_dps": 202.39641557757574,
           "verified": true,
-          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +4.3 DPS (203.3 vs 199.1 set DPS)",
-          "dps_delta": 4.252752910290127,
+          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +4.2 DPS (202.4 vs 198.2 set DPS)",
+          "dps_delta": 4.2346918596277305,
           "alternatives": [
             {
               "item_id": 16566,
@@ -6191,7 +6191,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -4.252752910290127,
+              "dps_delta": -4.2346918596277305,
               "verified": true
             }
           ]
@@ -6280,7 +6280,7 @@
               "item_name": "Deathguard's Cloak",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -0.6086250065900174,
+              "dps_delta": -0.6326518874959106,
               "verified": true
             },
             {
@@ -6326,7 +6326,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -8.247858249652523,
+              "dps_delta": -8.225782686962162,
               "verified": true
             }
           ]
@@ -6358,7 +6358,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.0205156327301097,
+              "dps_delta": -3.04176644352259,
               "verified": true
             }
           ]
@@ -6391,7 +6391,7 @@
               "item_name": "Gauntlets of Deftness",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -0.609779675640084,
+              "dps_delta": -0.6050494675766913,
               "verified": true
             }
           ]
@@ -6457,7 +6457,7 @@
               "item_name": "Outrider's Chain Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.3060410921648042,
+              "dps_delta": -1.3320517746681162,
               "verified": true
             }
           ]
@@ -6496,9 +6496,9 @@
         },
         {
           "slot": "finger1",
-          "item_id": 21205,
+          "item_id": 21201,
           "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Changing of Paths - Protector No More",
+          "source": "The Path of the Conqueror",
           "source_kind": "quest",
           "verified": true,
           "alternatives": [
@@ -6507,21 +6507,21 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -1.1984625082937037
+              "dps_delta": -0.48046786459377705
             },
             {
               "item_id": 18500,
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -1.2485315593049044
+              "dps_delta": -0.5305369156049777
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.111131843203168,
+              "dps_delta": -4.218965020875061,
               "verified": true
             }
           ]
@@ -6553,7 +6553,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.6300388166900177,
+              "dps_delta": -3.6176071080467125,
               "verified": true
             }
           ]
@@ -6566,7 +6566,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "confirmed by the sim against Burst of Knowledge (id 11832): kept the pick, +6.2 DPS over it",
-          "dps_delta": 6.1854538214823265,
+          "dps_delta": 6.153163152942739,
           "alternatives": [
             {
               "item_id": 18537,
@@ -6618,7 +6618,7 @@
               "item_name": "Second Wind",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -2.8784803416801594,
+              "dps_delta": -2.8495101949590094,
               "verified": true
             }
           ]
@@ -6650,7 +6650,7 @@
               "item_name": "Glacial Blade",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -5.8440358807922905,
+              "dps_delta": -5.822261048394552,
               "verified": true
             }
           ]
@@ -6687,14 +6687,14 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -6.302392334283724,
+              "dps_delta": -6.29306025503962,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 203.30664345056624,
-      "no_source_count": 1638,
+      "set_dps": 202.39641557757574,
+      "no_source_count": 1650,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6729,8 +6729,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.078968947,
-      "verify_run_seconds": 1.397806112,
+      "weights_run_seconds": 1.787518017,
+      "verify_run_seconds": 2.187300484,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6746,11 +6746,11 @@
         },
         "finger1": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 595,

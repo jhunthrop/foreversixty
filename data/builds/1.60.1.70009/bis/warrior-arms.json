@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:39:28Z",
+  "generated_at": "2026-10-01T01:17:12Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -548,8 +548,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 0.938446587,
-      "verify_run_seconds": 0.843513282,
+      "weights_run_seconds": 1.556240965,
+      "verify_run_seconds": 1.2474296,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 0.938446587,
-      "verify_run_seconds": 0.743216015,
+      "weights_run_seconds": 1.556240965,
+      "verify_run_seconds": 1.224785231,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1867,8 +1867,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.040123047,
-      "verify_run_seconds": 0.943285935,
+      "weights_run_seconds": 1.6717477490000001,
+      "verify_run_seconds": 1.479177756,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2541,8 +2541,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.040123047,
-      "verify_run_seconds": 0.906051555,
+      "weights_run_seconds": 1.6717477490000001,
+      "verify_run_seconds": 1.5100450680000002,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3226,8 +3226,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.2614408639999999,
-      "verify_run_seconds": 0.986648566,
+      "weights_run_seconds": 2.13520145,
+      "verify_run_seconds": 1.509743941,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3910,8 +3910,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.2614408639999999,
-      "verify_run_seconds": 0.992676259,
+      "weights_run_seconds": 2.13520145,
+      "verify_run_seconds": 1.5105928720000001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4603,8 +4603,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.3218401690000001,
-      "verify_run_seconds": 1.171912542,
+      "weights_run_seconds": 2.170997758,
+      "verify_run_seconds": 1.844036938,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5298,8 +5298,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.3218401690000001,
-      "verify_run_seconds": 1.122090781,
+      "weights_run_seconds": 2.170997758,
+      "verify_run_seconds": 1.835112755,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5797,11 +5797,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.2134734890142894
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.371714058384611
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": -0.5723023029915263
             },
             {
               "item_id": 11669,
@@ -5823,11 +5830,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.12442156485282929
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.2826621342231509
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": -0.4832503788300662
             },
             {
               "item_id": 11669,
@@ -5980,7 +5994,7 @@
         }
       ],
       "set_dps": 201.6209490314311,
-      "no_source_count": 1931,
+      "no_source_count": 1943,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6016,8 +6030,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.361208068,
-      "verify_run_seconds": 1.111138101,
+      "weights_run_seconds": 2.188135285,
+      "verify_run_seconds": 1.770683237,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6033,11 +6047,11 @@
         },
         "finger1": {
           "eligible": 364,
-          "sourced": 175
+          "sourced": 163
         },
         "finger2": {
           "eligible": 364,
-          "sourced": 175
+          "sourced": 163
         },
         "hands": {
           "eligible": 685,
@@ -6189,7 +6203,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.37312382553910245
+              "dps_delta": -0.3731238255391029
             },
             {
               "item_id": 226860,
@@ -6445,14 +6459,14 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.17866867813786394
+              "dps_delta": -0.17866867813786483
             },
             {
               "item_id": 22651,
               "item_name": "Outrider's Plate Legguards",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.5247393815441422
+              "dps_delta": -0.5247393815441431
             },
             {
               "item_id": 14554,
@@ -6512,11 +6526,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.2134734890142894
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.371714058384611
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -0.5723023029915263
             },
             {
               "item_id": 11669,
@@ -6538,11 +6559,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21200,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Protector of Kalimdor",
-              "dps_delta": -0.12442156485282929
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.2826621342231509
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -0.4832503788300662
             },
             {
               "item_id": 11669,
@@ -6695,7 +6723,7 @@
         }
       ],
       "set_dps": 195.09106164441727,
-      "no_source_count": 1901,
+      "no_source_count": 1913,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6729,8 +6757,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.361208068,
-      "verify_run_seconds": 1.10963052,
+      "weights_run_seconds": 2.188135285,
+      "verify_run_seconds": 1.7502871899999999,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6746,11 +6774,11 @@
         },
         "finger1": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 367,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 685,

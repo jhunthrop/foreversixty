@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:38:06Z",
+  "generated_at": "2026-10-01T01:15:04Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -519,8 +519,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 0.930471351,
-      "verify_run_seconds": 0.833121813,
+      "weights_run_seconds": 1.536210626,
+      "verify_run_seconds": 1.369562658,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1113,8 +1113,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 0.930471351,
-      "verify_run_seconds": 0.766146608,
+      "weights_run_seconds": 1.536210626,
+      "verify_run_seconds": 1.208302796,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1755,8 +1755,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 0.976829795,
-      "verify_run_seconds": 0.922204331,
+      "weights_run_seconds": 1.5788546110000001,
+      "verify_run_seconds": 1.4571219659999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2400,8 +2400,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 0.976829795,
-      "verify_run_seconds": 0.954169618,
+      "weights_run_seconds": 1.5788546110000001,
+      "verify_run_seconds": 1.412551709,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3023,8 +3023,8 @@
         "finger2: Assault Band",
         "main_hand: The Jackhammer"
       ],
-      "weights_run_seconds": 1.101447767,
-      "verify_run_seconds": 0.978452233,
+      "weights_run_seconds": 1.86770312,
+      "verify_run_seconds": 1.5427383510000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3641,8 +3641,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 1.101447767,
-      "verify_run_seconds": 0.901099606,
+      "weights_run_seconds": 1.86770312,
+      "verify_run_seconds": 1.4142040200000001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4295,8 +4295,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.106223886,
-      "verify_run_seconds": 1.074635692,
+      "weights_run_seconds": 1.915154894,
+      "verify_run_seconds": 1.689825862,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4942,8 +4942,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Fiery War Axe"
       ],
-      "weights_run_seconds": 1.106223886,
-      "verify_run_seconds": 1.072938158,
+      "weights_run_seconds": 1.915154894,
+      "verify_run_seconds": 1.774073791,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5596,7 +5596,7 @@
         }
       ],
       "set_dps": 184.45237845099507,
-      "no_source_count": 1739,
+      "no_source_count": 1751,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5630,8 +5630,8 @@
         "trinket2: Blackhand's Breadth",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.168038706,
-      "verify_run_seconds": 1.062832248,
+      "weights_run_seconds": 1.930830812,
+      "verify_run_seconds": 1.728868807,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5647,11 +5647,11 @@
         },
         "finger1": {
           "eligible": 368,
-          "sourced": 175
+          "sourced": 163
         },
         "finger2": {
           "eligible": 368,
-          "sourced": 175
+          "sourced": 163
         },
         "hands": {
           "eligible": 603,
@@ -6283,7 +6283,7 @@
         }
       ],
       "set_dps": 175.08729369921457,
-      "no_source_count": 1660,
+      "no_source_count": 1672,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6317,8 +6317,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Gravestone War Axe"
       ],
-      "weights_run_seconds": 1.168038706,
-      "verify_run_seconds": 1.027576271,
+      "weights_run_seconds": 1.930830812,
+      "verify_run_seconds": 1.630375786,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6334,11 +6334,11 @@
         },
         "finger1": {
           "eligible": 372,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 372,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 606,

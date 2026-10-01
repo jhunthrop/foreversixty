@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T22:33:26Z",
+  "generated_at": "2026-10-01T01:07:27Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.109643561,
-      "verify_run_seconds": 0.964491823,
+      "weights_run_seconds": 1.887901141,
+      "verify_run_seconds": 1.548533137,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1138,8 +1138,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.109643561,
-      "verify_run_seconds": 0.969486067,
+      "weights_run_seconds": 1.887901141,
+      "verify_run_seconds": 1.53089981,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1780,8 +1780,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.311387097,
-      "verify_run_seconds": 1.152421917,
+      "weights_run_seconds": 2.147123163,
+      "verify_run_seconds": 1.8972116190000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2423,8 +2423,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.311387097,
-      "verify_run_seconds": 1.130882226,
+      "weights_run_seconds": 2.147123163,
+      "verify_run_seconds": 1.887717128,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3062,8 +3062,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.336270418,
-      "verify_run_seconds": 1.206886741,
+      "weights_run_seconds": 2.286616632,
+      "verify_run_seconds": 1.975631061,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3702,8 +3702,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.336270418,
-      "verify_run_seconds": 1.188163312,
+      "weights_run_seconds": 2.286616632,
+      "verify_run_seconds": 1.9770972690000002,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4353,8 +4353,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.314567671,
-      "verify_run_seconds": 1.320675904,
+      "weights_run_seconds": 2.304751892,
+      "verify_run_seconds": 2.146761013,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5008,8 +5008,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.314567671,
-      "verify_run_seconds": 1.300228015,
+      "weights_run_seconds": 2.304751892,
+      "verify_run_seconds": 2.08510387,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5198,7 +5198,7 @@
               "item_name": "Blue Suede Hat",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.5003705094355269,
+              "dps_delta": -1.4279866018213738,
               "verified": true
             }
           ]
@@ -5217,7 +5217,7 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.0908375765021106,
+              "dps_delta": -1.080188806826186,
               "verified": true
             },
             {
@@ -5306,7 +5306,7 @@
           "item_name": "Timbermaw Tunic",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 189.65033048180254,
+          "sim_dps": 188.82556962148294,
           "verified": true,
           "alternatives": [
             {
@@ -5321,14 +5321,14 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.5906209537151106
+              "dps_delta": -1.59062095371511
             },
             {
               "item_id": 23089,
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -7.983520010605787,
+              "dps_delta": -7.93321284556464,
               "verified": true
             }
           ]
@@ -5339,7 +5339,7 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 189.65033048180254,
+          "sim_dps": 188.82556962148294,
           "verified": true,
           "alternatives": [
             {
@@ -5361,7 +5361,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.8719855384912876,
+              "dps_delta": -3.7793252979009253,
               "verified": true
             }
           ]
@@ -5408,19 +5408,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 272396,
+              "item_name": "Shifter's Belt",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -0.8522473636081713,
+              "verified": true
+            },
+            {
               "item_id": 19044,
               "item_name": "Might of the Timbermaw",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.9157203168157446
-            },
-            {
-              "item_id": 272396,
-              "item_name": "Shifter's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -0.9196509822789949,
-              "verified": true
             },
             {
               "item_id": 20216,
@@ -5452,7 +5452,7 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.8831245427324177,
+              "dps_delta": -0.7446173384270196,
               "verified": true
             },
             {
@@ -5502,15 +5502,15 @@
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 189.65033048180254,
+          "sim_dps": 188.82556962148294,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 2246,
-              "item_name": "Myrmidon's Signet",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.6336355245170361
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.6762124294162537
             },
             {
               "item_id": 19325,
@@ -5524,40 +5524,40 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.058990776596829,
+              "dps_delta": -3.003682912684013,
               "verified": true
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 21205,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Changing of Paths - Protector No More",
-          "source_kind": "quest",
-          "sim_dps": 189.65033048180254,
+          "item_id": 2246,
+          "item_name": "Myrmidon's Signet",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 188.82556962148294,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 2246,
-              "item_name": "Myrmidon's Signet",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.5303103760809351
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.042576904899217685
             },
             {
               "item_id": 19325,
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.6792764970812992
+              "dps_delta": -0.14896612100036402
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.0854845969936093,
+              "dps_delta": -2.2607237366740094,
               "verified": true
             }
           ]
@@ -5568,7 +5568,7 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 189.65033048180254,
+          "sim_dps": 188.82556962148294,
           "verified": true,
           "alternatives": [
             {
@@ -5590,7 +5590,7 @@
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -3.5541170291776325,
+              "dps_delta": -3.346003886922688,
               "verified": true
             }
           ]
@@ -5601,7 +5601,7 @@
           "item_name": "Blackhand's Breadth",
           "source": "General Drakkisath's Demise",
           "source_kind": "quest",
-          "sim_dps": 189.65033048180254,
+          "sim_dps": 188.82556962148294,
           "verified": true,
           "alternatives": [
             {
@@ -5633,7 +5633,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 189.65033048180254,
+          "sim_dps": 188.82556962148294,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5656,7 +5656,7 @@
               "item_name": "Seeping Willow",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: The Beast",
-              "dps_delta": -3.529791656564015,
+              "dps_delta": -3.2995658529885077,
               "verified": true
             }
           ]
@@ -5755,8 +5755,8 @@
           "low_value": true
         }
       ],
-      "set_dps": 189.65033048180254,
-      "no_source_count": 1437,
+      "set_dps": 188.82556962148294,
+      "no_source_count": 1449,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5786,14 +5786,14 @@
         "legs: Warbear Woolies",
         "feet: Drudge Boots",
         "finger1: Protector's Band",
-        "finger2: Signet Ring of the Bronze Dragonflight",
+        "finger2: Myrmidon's Signet",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Blackhand's Breadth",
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.36010476,
-      "verify_run_seconds": 1.324148857,
+      "weights_run_seconds": 2.255691921,
+      "verify_run_seconds": 2.067745319,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5809,11 +5809,11 @@
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 175
+          "sourced": 163
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 175
+          "sourced": 163
         },
         "hands": {
           "eligible": 439,
@@ -5982,7 +5982,7 @@
               "item_name": "Blue Suede Hat",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.5024680442640204,
+              "dps_delta": -1.4459352433059394,
               "verified": true
             }
           ]
@@ -6001,7 +6001,7 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.0720309356875077,
+              "dps_delta": -1.0554324916581095,
               "verified": true
             },
             {
@@ -6090,7 +6090,7 @@
           "item_name": "Timbermaw Tunic",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 190.85242260649852,
+          "sim_dps": 188.3865789234747,
           "verified": true,
           "alternatives": [
             {
@@ -6105,14 +6105,14 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.5906209537151106
+              "dps_delta": -1.59062095371511
             },
             {
               "item_id": 23089,
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -7.93289680296283,
+              "dps_delta": -7.860614989963494,
               "verified": true
             }
           ]
@@ -6123,7 +6123,7 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 190.85242260649852,
+          "sim_dps": 188.3865789234747,
           "verified": true,
           "alternatives": [
             {
@@ -6145,7 +6145,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.877411187386741,
+              "dps_delta": -3.779420887785335,
               "verified": true
             }
           ]
@@ -6171,7 +6171,7 @@
               "item_name": "General's Dragonhide Grips",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.39275206815288394
+              "dps_delta": -0.3927520681528847
             },
             {
               "item_id": 227809,
@@ -6196,7 +6196,7 @@
               "item_name": "Shifter's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.9125506256915514,
+              "dps_delta": -0.8642964999016272,
               "verified": true
             },
             {
@@ -6236,7 +6236,7 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.6863684967459562,
+              "dps_delta": -0.6052715451225197,
               "verified": true
             },
             {
@@ -6276,7 +6276,8 @@
               "item_name": "Boots of Ferocity",
               "source_kind": "dungeon",
               "source": "Dire Maul: Isalien",
-              "dps_delta": -0.3819248539867687
+              "dps_delta": -0.5137471040457058,
+              "verified": true
             }
           ]
         },
@@ -6286,15 +6287,15 @@
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 190.85242260649852,
+          "sim_dps": 188.3865789234747,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 2246,
-              "item_name": "Myrmidon's Signet",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.6336355245170361
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.6762124294162537
             },
             {
               "item_id": 19325,
@@ -6308,40 +6309,40 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.0626111038297097,
+              "dps_delta": -2.991111341543018,
               "verified": true
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 21205,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "The Changing of Paths - Protector No More",
-          "source_kind": "quest",
-          "sim_dps": 190.85242260649852,
+          "item_id": 2246,
+          "item_name": "Myrmidon's Signet",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 188.3865789234747,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 2246,
-              "item_name": "Myrmidon's Signet",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.5303103760809351
+              "item_id": 21201,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source_kind": "quest",
+              "source": "The Path of the Conqueror",
+              "dps_delta": -0.042576904899217685
             },
             {
               "item_id": 19325,
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.6792764970812988
+              "dps_delta": -0.14896612100036363
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.711250686888633,
+              "dps_delta": -2.2454070038648126,
               "verified": true
             }
           ]
@@ -6352,10 +6353,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 190.85242260649852,
+          "sim_dps": 188.3865789234747,
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +6.2 DPS (190.9 vs 184.7 set DPS)",
-          "dps_delta": 6.17995809807465,
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +5.5 DPS (188.4 vs 182.9 set DPS)",
+          "dps_delta": 5.535273135114807,
           "alternatives": [
             {
               "item_id": 11815,
@@ -6386,9 +6387,17 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 190.85242260649852,
+          "sim_dps": 188.3865789234747,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "dps_delta": -0.8965351130190697,
+              "verified": true
+            },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
@@ -6401,15 +6410,7 @@
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -1.3063054187786918,
-              "verified": true
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -2.245278932355688
+              "dps_delta": -1.3094339349470634
             }
           ]
         },
@@ -6419,7 +6420,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 190.85242260649852,
+          "sim_dps": 188.3865789234747,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6438,11 +6439,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 12590,
-              "item_name": "Felstriker",
+              "item_id": 12969,
+              "item_name": "Seeping Willow",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.558150342510487,
+              "source": "Blackrock Spire: The Beast",
+              "dps_delta": -3.3298787518936024,
               "verified": true
             }
           ]
@@ -6541,8 +6542,8 @@
           "low_value": true
         }
       ],
-      "set_dps": 190.85242260649852,
-      "no_source_count": 1434,
+      "set_dps": 188.3865789234747,
+      "no_source_count": 1446,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6572,14 +6573,14 @@
         "legs: Warbear Woolies",
         "feet: Drudge Boots",
         "finger1: Legionnaire's Band",
-        "finger2: Signet Ring of the Bronze Dragonflight",
+        "finger2: Myrmidon's Signet",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.36010476,
-      "verify_run_seconds": 1.296816199,
+      "weights_run_seconds": 2.255691921,
+      "verify_run_seconds": 2.037554866,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6595,11 +6596,11 @@
         },
         "finger1": {
           "eligible": 372,
-          "sourced": 181
+          "sourced": 169
         },
         "finger2": {
           "eligible": 372,
-          "sourced": 181
+          "sourced": 169
         },
         "hands": {
           "eligible": 439,
