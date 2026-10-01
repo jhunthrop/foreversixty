@@ -79,6 +79,12 @@ describe('isBarePlannerUrl', () => {
   it('is false when ?race= is present', () => {
     expect(isBarePlannerUrl('?race=orc')).toBe(false);
   });
+  it('is true when only ?spec= is present, so the home page’s own entry can still restore', () => {
+    expect(isBarePlannerUrl('?spec=hunter-beast-mastery')).toBe(true);
+  });
+  it('is false when ?talents= is present, so a stored pointer never wins the race against it', () => {
+    expect(isBarePlannerUrl('?talents=503200000-0-0')).toBe(false);
+  });
 });
 
 describe('decidePlannerLoad', () => {

@@ -21,14 +21,30 @@ import { readCurrent, writeCurrent, type CurrentCharacter } from '../current-cha
 import { characterFromPlanner, plannerHrefFor, specOf } from '../sim/character';
 import { specLabel } from '../sim/spec-label';
 
-/** True when `/planner`'s own URL carries none of `?code=`, `?class=`, `?race=` -- the only
- *  shape a stored pointer is ever allowed to restore into (spec section 1, "opened bare
- *  restore[s] the stored character"). A `?build=` is not part of this list: `/planner` has
- *  no such query of its own, and a 'build' pointer never restores here regardless (see the
- *  header comment and `decidePlannerLoad` below). */
+/** True when `/planner`'s own URL carries none of `?code=`, `?class=`, `?race=`,
+ *  `?talents=` -- the only shape a stored pointer is ever allowed to restore into (spec
+ *  section 1, "opened bare restore[s] the stored character"). A `?build=` is not part of
+ *  this list: `/planner` has no such query of its own, and a 'build' pointer never
+ *  restores here regardless (see the header comment and `decidePlannerLoad` below).
+ *
+ * `?spec=` alone is deliberately NOT in this list (rebuild spec §4.I's entry table): the
+ * home page's "Compare in the planner" link carries `?spec=` with no `?talents=` at all,
+ * precisely so the visitor's OWN current-character talents restore through this same
+ * mechanism -- that is the whole point of that entry row ("the pointer bridge, unchanged").
+ * `?talents=` is excluded for the opposite reason: the BiS page's "Talents in planner" link
+ * (and a guide's "Open this build in the planner") already names a fresh build to load in
+ * full, and without this a stored pointer (a previous visit's own `?code=`/addon paste)
+ * could win the restore race and overwrite what that link asked for before `?talents=`
+ * ever gets a turn -- exactly the silent-overwrite its own "only when empty" rule exists to
+ * prevent. */
 export function isBarePlannerUrl(search: string): boolean {
   const params = new URLSearchParams(search);
-  return params.get('code') === null && params.get('class') === null && params.get('race') === null;
+  return (
+    params.get('code') === null &&
+    params.get('class') === null &&
+    params.get('race') === null &&
+    params.get('talents') === null
+  );
 }
 
 export interface PlannerLoadDecision {
