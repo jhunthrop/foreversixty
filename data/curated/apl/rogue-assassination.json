@@ -18,7 +18,8 @@
   ],
   "engineering_notes": {
     "2": "sim/rogue/venom.go: an untalented rogue has no Venom spell registered.",
-    "5": "sim/rogue/mutilate.go: an untalented rogue has no Mutilate spell registered."
+    "5": "sim/rogue/mutilate.go: an untalented rogue has no Mutilate spell registered.",
+    "3": "Previously starved entirely: Slice and Dice used to sit ahead of this line instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
   },
   "sources": [
     {
@@ -92,7 +93,7 @@
         }
       },
       {
-        "notes": "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented. Checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh. Was starved entirely: Slice and Dice used to sit ahead of this line instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five.",
+        "notes": "Eviscerate at five combo points: the finisher used when Venom isn't talented, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh.",
         "action": {
           "condition": {
             "cmp": {

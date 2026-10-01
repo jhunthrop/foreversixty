@@ -9,7 +9,8 @@
     }
   ],
   "engineering_notes": {
-    "5": "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point builder at all -- the same auraIsKnown/spellIsKnown gate shape mage-fire uses for Improved Scorch (12873)."
+    "5": "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point builder at all -- the same auraIsKnown/spellIsKnown gate shape mage-fire uses for Improved Scorch (12873).",
+    "2": "Previously starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
   },
   "sources": [
     {
@@ -93,7 +94,7 @@
         }
       },
       {
-        "notes": "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh. Was starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five.",
+        "notes": "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh.",
         "action": {
           "condition": {
             "cmp": {

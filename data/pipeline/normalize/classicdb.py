@@ -78,6 +78,8 @@ def merge_class_items(
     wowhead_icons: dict[int, str],
     spells: dict[int, ClassicDbSpell] | None = None,
     client_spell_names: dict[int, str] | None = None,
+    client_icon_file_ids: dict[int, int] | None = None,
+    icon_names: dict[int, str] | None = None,
 ) -> list[ClassItems]:
     """Each class's `items/<class-slug>.json` plus the classic-db supplement
     gear that class may equip (classic-db's own `AllowableClass` mask and the
@@ -88,6 +90,12 @@ def merge_class_items(
     pass `None` (the default) for a caller with neither and every supplement
     row falls all the way back to its bare classic-db spell name, exactly as
     before that lane existed.
+
+    `client_icon_file_ids`/`icon_names` (bis-ranker-integrity-17 lane,
+    2026-09-30) feed `to_gear_item`'s own client-icon-first resolution
+    (`pipeline.classicdb_items._classicdb_client_icon`'s doc); `None` for a
+    caller with neither and every supplement row's icon falls straight to
+    the fork/wowhead chain, exactly as before that lane existed.
     """
     spells = spells or {}
     class_id_by_slug = {slugify(row["Name_lang"]): int(row["ID"]) for row in class_rows}
@@ -103,7 +111,16 @@ def merge_class_items(
         )
         placed += len(allowed)
         new_items = [
-            to_gear_item(item, spell_text, spells, fork_icons, wowhead_icons, client_spell_names)
+            to_gear_item(
+                item,
+                spell_text,
+                spells,
+                fork_icons,
+                wowhead_icons,
+                client_spell_names,
+                client_icon_file_ids,
+                icon_names,
+            )
             for item in allowed
         ]
         for gear_item in new_items:

@@ -347,6 +347,18 @@ def normalize_build(
     fork_icons = load_fork_icons(engine) if engine is not None else {}
     wowhead_icons = load_wowhead_icons(build_dir)
     wowhead_required_levels = load_required_levels(build_dir)
+    # bis-ranker-integrity-17 lane, 2026-09-30: Item.csv's own
+    # IconFileDataID, keyed by id -- populated independently of
+    # ItemSparse (only ~60% populated in this build, classicdb_items'
+    # own module doc), so a classic-db-sourced item (no usable
+    # ItemSparse row at all) can still resolve a real client icon here
+    # even though its stats/required_level stay classic-db's own
+    # (merge_classicdb_class_items below, threaded into to_gear_item).
+    client_icon_file_ids = {
+        int(row["ID"]): int(row["IconFileDataID"])
+        for row in item_rows
+        if row.get("IconFileDataID")
+    }
     try:
         class_items = build_class_items(
             t("ItemSparse"),
@@ -378,6 +390,8 @@ def normalize_build(
                 wowhead_icons,
                 classicdb_spells,
                 spell_names,
+                client_icon_file_ids,
+                icons,
             )
         # Every class is checked against its own previous count before any of
         # them is written -- one class failing the gate must not leave a

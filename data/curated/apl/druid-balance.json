@@ -94,7 +94,7 @@
         }
       },
       {
-        "notes": "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-implemented level-20 DoT that was entirely absent from both this rotation and the guide).",
+        "notes": "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application.",
         "action": {
           "condition": {
             "not": {
@@ -128,5 +128,8 @@
         }
       }
     ]
+  },
+  "engineering_notes": {
+    "4": "Added by audit finding druid.md #3: a real, engine-implemented level-20 DoT that was entirely absent from both this rotation and the community guide it was adapted from."
   }
 }

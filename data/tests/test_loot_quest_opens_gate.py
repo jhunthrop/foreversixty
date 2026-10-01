@@ -207,6 +207,33 @@ def test_a_quest_with_its_own_required_min_rep_faction_is_gated_to_the_rep_phase
     assert entry.required_rep_standing == "exalted"
 
 
+def test_a_quest_requiring_brood_of_nozdormu_is_gated_to_the_rep_phase():
+    """Player-review sweep 15/16, 2026-09-30: the same AQ War Effort
+    problem as Cenarion Circle (faction 609), a second faction id. A
+    synthetic quest whose `QuestSource.required_rep_faction` is 910
+    (Brood of Nozdormu -- the real gate on all three "Signet Ring of the
+    Bronze Dragonflight" variants' quest rewards, confirmed directly off
+    the committed build's own loot.json) is gated to
+    `REP_FACTION_RAID_PHASE_OPENS[910]`, the same "later" AQ phase."""
+    document = LootFile(
+        sources=[],
+        quests={
+            str(ORDINARY_TURN_IN): [
+                QuestSource(
+                    quest_id=8761, name="The Grand Invoker", faction="both", min_level=60,
+                    level=60, level_source="classic-db", required_rep_faction=910,
+                    required_rep_standing="exalted",
+                )
+            ],
+        },
+    )
+    gated = apply_quest_opens_gate(document, classic_sources={})
+    entry = gated.quests[str(ORDINARY_TURN_IN)][0]
+    assert entry.opens == "later"
+    assert entry.required_rep_faction == 910
+    assert entry.required_rep_standing == "exalted"
+
+
 def test_earthstrikes_own_quest_source_inherits_its_items_rep_gate():
     """The real-dump shape this lane's brief names directly: Earthstrike
     (item 21180) has NO `RequiredMinRepFaction` on its own quest_template

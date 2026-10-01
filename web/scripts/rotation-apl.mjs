@@ -26,13 +26,42 @@
 /** @typedef {{ rotation?: { priorityList?: AplStep[] } }} CuratedApl */
 
 /**
- * A file path this codebase would write (a slash-separated path ending in a source or
- * data extension), e.g. "sim/core/debuffs.go" or "ui/warlock/apls/rotation.apl.json".
+ * A file this codebase would write, with or without a directory prefix -- a full,
+ * slash-separated path ("sim/core/debuffs.go", "ui/warlock/apls/rotation.apl.json") or a
+ * bare filename a player-facing note has no business naming ("warrior-arms.json",
+ * "druid.md"). The leading path-segment group is optional so the bare-filename case still
+ * matches: sweep 16 found "warrior-arms.json's own Overpower line" slip through the old,
+ * path-required version of this regex untouched.
  */
-const FILE_PATH_RE = /\b(?:[\w-]+\/)+[\w-]+(?:\.[\w-]+)*\.(?:go|mjs|ts|tsx|json)\b/;
+const FILE_PATH_RE = /\b(?:[\w-]+\/)*[\w-]+(?:\.[\w-]+)*\.(?:go|mjs|ts|tsx|json|py)\b/;
+
+/**
+ * True if `text` contains a multi-word code identifier -- camelCase
+ * ("totemRemainingTime") or PascalCase ("ExtraCastCondition") -- with at least two humps
+ * of three-or-more letters each. The three-letter-plus-lowercase-tail requirement is what
+ * keeps this off ordinary game shorthand that happens to mix case (PvP, AoE, DoT, GCD):
+ * none of those has a lowercase letter after its last capital, so neither pattern below
+ * ever reaches its required trailing `[a-z]+`.
+ * @param {string} text
+ */
+function hasCodeIdentifier(text) {
+  return (
+    /\b[a-z]+(?:[A-Z][a-z]{2,}){2,}\b/.test(text) ||
+    /\b[A-Z][a-z]{2,}(?:[A-Z][a-z]{2,}){1,}\b/.test(text)
+  );
+}
+
+/** An ISO date (`2026-09-29`), the shape of a commit-log timestamp, never player copy. */
+const ISO_DATE_RE = /\b\d{4}-\d{2}-\d{2}\b/;
 
 /** Phrases that only ever show up in engineering commit narrative, never player copy. */
-const LEAK_PHRASES = [/fix round/i, /smoke run/i];
+const LEAK_PHRASES = [
+  /fix round/i,
+  /smoke run/i,
+  /audit finding/i,
+  /not yet implemented/i,
+  /engine['’]s/i,
+];
 
 /**
  * True if `text` contains a 7-40 char token that reads as a hex/commit hash -- i.e. one
@@ -55,6 +84,8 @@ export function engineeringLeakIn(note) {
   const phraseHit = LEAK_PHRASES.find((re) => re.test(note));
   if (phraseHit) return `contains the engineering phrase ${phraseHit}`;
   if (hasCommitLikeToken(note)) return 'contains a hex/commit-looking token';
+  if (hasCodeIdentifier(note)) return 'contains a camelCase/PascalCase code identifier';
+  if (ISO_DATE_RE.test(note)) return `contains an ISO date: ${ISO_DATE_RE.exec(note)?.[0]}`;
   return null;
 }
 

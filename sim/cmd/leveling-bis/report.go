@@ -36,11 +36,23 @@ const finishedSetEpsilon = 0.01
 // raw numbers are added only when primaryDPS itself matches this
 // band's own final setDPS, i.e. this really was the last word on the
 // set's total, not a snapshot a later promotion superseded.
+// bis-ranker-integrity-17 lane, player-review sweep 15/16: delta can be
+// negative here (the "kept the pick" branch's own delta is
+// sw.BaselineDPS - sw.SwapDPS, which is negative the moment the
+// runner-up scored higher but not significantly enough to promote --
+// warlock-destruction band 60 Alliance legs' own repro, -2.65). A
+// literal "+" prefix in front of "%.1f" does not know that: "%.1f"
+// already prints its own "-" for a negative value, so the two
+// combined printed "+-2.7 DPS". "%+.1f" is Go's own sign flag -- it
+// prints "+" for a non-negative value and "-" for a negative one,
+// never both -- so it is the one formatting verb that is correct for
+// both signs without a caller having to branch on delta's own sign
+// first.
 func dpsComparisonPhrase(delta, primaryDPS, otherDPS, setDPS float64) string {
 	if math.Abs(primaryDPS-setDPS) <= finishedSetEpsilon {
-		return fmt.Sprintf("+%.1f DPS (%.1f vs %.1f set DPS)", delta, primaryDPS, otherDPS)
+		return fmt.Sprintf("%+.1f DPS (%.1f vs %.1f set DPS)", delta, primaryDPS, otherDPS)
 	}
-	return fmt.Sprintf("+%.1f DPS over it", delta)
+	return fmt.Sprintf("%+.1f DPS over it", delta)
 }
 
 // slotRow is one slot's line in a band's report: the JSON and the
@@ -834,6 +846,81 @@ func slotItemLevelByID(list []scored, pk slotPick) func(id int) int {
 	return func(id int) int { return byID[id] }
 }
 
+// slotStatsByID is item id -> Stats for the same pool slotItemLevelByID
+// reads, and for the same reason: applyLabelSuffixForNameCollisions'
+// own resolver for roleStatHint, once an item-level suffix can no
+// longer tell two same-named items apart (bis-ranker-integrity-17
+// lane's brief, item 4: three "Signet Ring of the Bronze Dragonflight"
+// rings, all item_level 80, with a tank/melee/caster stat line each).
+func slotStatsByID(list []scored, pk slotPick) func(id int) map[string]float64 {
+	byID := make(map[int]map[string]float64, len(list)+2)
+	for _, c := range list {
+		byID[c.ID] = c.Stats
+	}
+	if pk.Item != nil {
+		byID[pk.Item.ID] = pk.Item.Stats
+	}
+	if pk.RunnerUp != nil {
+		byID[pk.RunnerUp.ID] = pk.RunnerUp.Stats
+	}
+	return func(id int) map[string]float64 { return byID[id] }
+}
+
+// roleStatLabels mirrors web/src/lib/sim/copy.ts's own `statLabel` map
+// (Go and TypeScript do not import each other, the same reason
+// LEVEL_BANDS is a copy in pipeline.addonrotation) for exactly the
+// stats roleStatHint below ever names -- so a label this emits reads
+// identically to the same stat's name everywhere else on the site.
+var roleStatLabels = map[string]string{
+	"defense":      "Defense",
+	"block":        "Block",
+	"parry":        "Parry",
+	"dodge":        "Dodge",
+	"spell_power":  "Spell power",
+	"healing":      "Healing",
+	"attack_power": "Attack power",
+	"agility":      "Agility",
+	"strength":     "Strength",
+	"intellect":    "Intellect",
+	"spirit":       "Spirit",
+}
+
+// roleStatOrder is the priority roleStatHint checks stats in, most
+// role-defining first. A tank-signaling stat (defense/block/parry/
+// dodge) outranks a caster one (spell_power/healing), which outranks a
+// melee one (attack_power/agility), which outranks a plain primary stat
+// (strength/intellect/spirit) -- every one of those beats the generic
+// stats every piece of gear tends to carry regardless of role
+// (stamina, hit, crit, mp5, ...), which is exactly why those generic
+// stats are left out of roleStatLabels entirely: a ring with only
+// stamina and hit never produces a hint, rather than a misleading one.
+var roleStatOrder = []string{
+	"defense", "block", "parry", "dodge",
+	"spell_power", "healing",
+	"attack_power", "agility",
+	"strength", "intellect", "spirit",
+}
+
+// roleStatHint is "(Defense)"/"(Agility)"/"(Spell power)" for the
+// first stat in roleStatOrder this item's own Stats names a nonzero
+// value for, or "" when none of them do (an item whose only stats are
+// generic ones a hint could not usefully distinguish by). Sweep 16's
+// own repro (the three Signet Ring of the Bronze Dragonflight variants,
+// applyLabelSuffixForNameCollisions' own doc) is the case this exists
+// for: {stamina:24, strength:13, defense:7} -> "(Defense)" (a tank
+// ring), {agility:24, stamina:13, hit:10} -> "(Agility)" (a melee
+// ring), {intellect:9, stamina:8, spell_power:28, mp5:5} -> "(Spell
+// power)" (a caster ring) -- three item-level-80 rings an ilvl suffix
+// alone cannot tell apart, each correctly labelled by its own role.
+func roleStatHint(stats map[string]float64) string {
+	for _, key := range roleStatOrder {
+		if stats[key] > 0 {
+			return fmt.Sprintf("(%s)", roleStatLabels[key])
+		}
+	}
+	return ""
+}
+
 // applyLabelSuffixForNameCollisions sets LabelSuffix on row itself and
 // on any row.Alternatives entry whose ItemName equals row.ItemName but
 // whose ItemID differs - two different items sharing one display name
@@ -850,24 +937,56 @@ func slotItemLevelByID(list []scored, pk slotPick) func(id int) int {
 // same-name collision BETWEEN two alternatives down to one row before
 // this ever runs, so the only collision left to catch is the pick's
 // own name against a surviving alternative.
-func applyLabelSuffixForNameCollisions(row *slotRow, itemLevel func(id int) int) {
+//
+// bis-ranker-integrity-17 lane's brief, item 4: an item-level suffix
+// cannot tell apart a collision where the item levels ALSO tie -
+// player-review sweep 15/16's own repro, "Signet Ring of the Bronze
+// Dragonflight" (items 21200/21205/21210), three different rings, all
+// item_level 80, with a tank/melee/caster stat line each. For any
+// colliding alternative whose own item level equals row's (rowTies
+// below), that ONE alternative gets a roleStatHint suffix instead of
+// the useless "(ilvl 80)" both sides would otherwise share; row itself
+// switches to its own roleStatHint the moment ANY alternative ties its
+// level, since row.LabelSuffix is one field covering every collision
+// it is in. A stat map with no role-defining stat at all (roleStatHint
+// returns "") falls back to the ilvl suffix anyway: still true, just
+// no longer the whole story, same as before this existed.
+func applyLabelSuffixForNameCollisions(row *slotRow, itemLevel func(id int) int, statsOf func(id int) map[string]float64) {
 	if row.ItemID == 0 || row.ItemName == "" {
 		return
 	}
 	collides := false
+	rowTiesOnLevel := false
+	rowLevel := itemLevel(row.ItemID)
 	for i := range row.Alternatives {
 		if row.Alternatives[i].ItemName != row.ItemName || row.Alternatives[i].ItemID == row.ItemID {
 			continue
 		}
 		collides = true
-		if lvl := itemLevel(row.Alternatives[i].ItemID); lvl > 0 {
-			row.Alternatives[i].LabelSuffix = fmt.Sprintf("(ilvl %d)", lvl)
+		altID := row.Alternatives[i].ItemID
+		altLevel := itemLevel(altID)
+		if altLevel > 0 && altLevel == rowLevel {
+			rowTiesOnLevel = true
+			if hint := roleStatHint(statsOf(altID)); hint != "" {
+				row.Alternatives[i].LabelSuffix = hint
+				continue
+			}
+		}
+		if altLevel > 0 {
+			row.Alternatives[i].LabelSuffix = fmt.Sprintf("(ilvl %d)", altLevel)
 		}
 	}
-	if collides {
-		if lvl := itemLevel(row.ItemID); lvl > 0 {
-			row.LabelSuffix = fmt.Sprintf("(ilvl %d)", lvl)
+	if !collides {
+		return
+	}
+	if rowTiesOnLevel {
+		if hint := roleStatHint(statsOf(row.ItemID)); hint != "" {
+			row.LabelSuffix = hint
+			return
 		}
+	}
+	if rowLevel > 0 {
+		row.LabelSuffix = fmt.Sprintf("(ilvl %d)", rowLevel)
 	}
 }
 
@@ -1448,7 +1567,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// already collapses two ALTERNATIVES sharing a name down to
 			// one row, so the only collision left to catch here is the
 			// pick's own name against one of its surviving alternatives.
-			applyLabelSuffixForNameCollisions(&row, slotItemLevelByID(bySlot[slot], pk))
+			applyLabelSuffixForNameCollisions(&row, slotItemLevelByID(bySlot[slot], pk), slotStatsByID(bySlot[slot], pk))
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind

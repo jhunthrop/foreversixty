@@ -667,8 +667,24 @@ _MAX_QUEST_GATE_PASSES = 5
 #: directly, and the ranker's OWN table becomes a fallback for whatever
 #: this one is silent on, exactly the same relationship `firstNonEmpty`
 #: already has with a curated raid/dungeon `opens`.
+#: Player-review sweep 15/16, 2026-09-30: the same problem, a second AQ War
+#: Effort faction. "Signet Ring of the Bronze Dragonflight" (items 21200,
+#: 21205, 21210) each have three classic-db quest rewards requiring
+#: `required_rep_faction: 910, required_rep_standing: "exalted"` --
+#: verified directly off the committed `loot.json`'s own `quests` map for
+#: those three item ids, and off this same file's `sources` list, where a
+#: `rep`-kind source names faction_id 910's own `name` as "Brood of
+#: Nozdormu" (also confirmed by the "Brood of Nozdormu Factoin +1000"
+#: buff spell in `spells.json`, the same AQ-raid-tagging mechanic
+#: Cenarion Circle's own spell corroborates it by). Brood of Nozdormu
+#: reputation is earned almost entirely by turning in AQ40 raid tribute
+#: items, the same Gates of Ahn'Qiraj (Patch 1.9) War Effort content
+#: Cenarion Circle is -- a fresh, non-raiding level 60 cannot be Exalted
+#: with it at launch any more than with Cenarion Circle, so it gates the
+#: same way.
 REP_FACTION_RAID_PHASE_OPENS: dict[int, str] = {
     609: "later",  # Cenarion Circle - Gates of Ahn'Qiraj (AQ War Effort)
+    910: "later",  # Brood of Nozdormu - Gates of Ahn'Qiraj (AQ War Effort)
 }
 
 
