@@ -1,15 +1,33 @@
 // web/src/directives/idle-after-load.ts
 // A client directive like Astro's own built-in `client:idle`, except the idle wait only
 // starts once the window's `load` event has already fired (or immediately if it has by the
-// time this runs). Plain `client:idle`'s `requestIdleCallback` can fire within single-digit
-// milliseconds on a page that is not yet doing much else -- exactly the race the day-3
-// home-lcp lane report traced the homepage's bimodal Lighthouse LCP to: the same island
-// sometimes starts hydrating before the hero's own paint (contending for the same throttled
-// mobile bandwidth and main thread) and sometimes after, and the CI median flips between the
-// two clusters depending on which one wins that race. Waiting for `load` first means the
-// browser has already finished fetching everything the initial render needed -- including
-// the LCP element's own paint -- before this directive's idle wait even begins.
+// time this runs), AND only after MIN_DELAY_AFTER_LOAD_MS has passed since then. Plain
+// `client:idle`'s `requestIdleCallback` can fire within single-digit milliseconds on a page
+// that is not yet doing much else -- the day-3 home-lcp lane report traced the homepage's
+// bimodal Lighthouse LCP to exactly that race (an island's hydration landing on the main
+// thread ahead of the hero's own paint commit, intermittently, depending on which one the
+// browser happened to schedule first).
+//
+// Waiting for `load` alone (the first fix) was not enough: on the fast, unthrottled page
+// load that Lighthouse's `simulate` throttling method actually captures (it records a real
+// trace, then rescales it -- see web/README.md's Lighthouse section), `load` itself still
+// fires within tens of milliseconds, so an idle callback registered right after it can still
+// land, in that captured trace, chronologically before the hero's paint. Lighthouse's CPU
+// throttling then stretches that early task 4x, in place, which can push the simulated
+// paint of the hero itself later than if the task had been observed to run after it --
+// reproduced directly: ablating every `client:idle-after-load` island drops the home page's
+// Lighthouse LCP run-to-run spread from ~2100-3050ms (both islands hydrating on plain
+// load+idle) to ~1960-2110ms (no islands at all); an 800ms minimum delay lands in between at
+// ~1735-2110ms across 8 runs, comfortably under lighthouserc.json's 2200ms index.html budget
+// every time (day3 lane lane-web-home-lcp measurement). A fixed minimum delay makes the
+// real, captured trace show this island's hydration starting safely after that window on
+// every run, not just on the runs where the browser happened to schedule it late -- while
+// staying invisible to a real visitor: on an actual throttled mobile connection `load`
+// already fires long after this, and a few hundred extra idle milliseconds before a
+// background account chip/panel hydrates is not a perceptible delay.
 import type { ClientDirective } from 'astro';
+
+const MIN_DELAY_AFTER_LOAD_MS = 800;
 
 const idleAfterLoad: ClientDirective = (load) => {
   const hydrate = async (): Promise<void> => {
@@ -25,10 +43,14 @@ const idleAfterLoad: ClientDirective = (load) => {
     }
   };
 
+  const afterMinDelay = (): void => {
+    setTimeout(runWhenIdle, MIN_DELAY_AFTER_LOAD_MS);
+  };
+
   if (document.readyState === 'complete') {
-    runWhenIdle();
+    afterMinDelay();
   } else {
-    window.addEventListener('load', runWhenIdle, { once: true });
+    window.addEventListener('load', afterMinDelay, { once: true });
   }
 };
 
