@@ -21,6 +21,11 @@ export interface RotationLine {
   spell_id: number;
   name: string;
   condition: string;
+  /** The line's own icon file stem (e.g. `ability_racial_bloodrage`), served at
+   *  `data/builds/<build>/icons/<icon>.webp` -- the same tree `GearRow.astro`'s item icons
+   *  already read via `dataUrl`. Optional: an older build predating this field, or a line
+   *  whose icon the pipeline has not resolved, carries none. */
+  icon?: string;
 }
 
 export interface RotationEntry {
@@ -55,6 +60,14 @@ export function loadRotations(build: string, spec: string): RotationEntry[] | un
 function loadSpellRanks(build: string): SpellRanksFile | undefined {
   const file = path.join(repoRoot(), 'data/builds', build, 'spellranks.json');
   return existsSync(file) ? readJson<SpellRanksFile>(file) : undefined;
+}
+
+/** Whether `build`'s own icon tree actually ships a file for `icon` -- checked the same
+ *  way the rest of this module checks for an optional build file (`existsSync`), since a
+ *  line's own `icon` field naming a stem is not itself a guarantee the pipeline rendered
+ *  that icon into this build's tree. */
+function iconFileExists(build: string, icon: string): boolean {
+  return existsSync(path.join(repoRoot(), 'data/builds', build, 'icons', `${icon}.webp`));
 }
 
 /** The band's own top level (spec §4.C.3): `band + 9` for every band but the last, which is
@@ -95,6 +108,10 @@ export interface RotationLineView {
   name: string;
   rank?: number;
   condition: string;
+  /** Set only when the line names an icon AND this build's own icon tree ships the file --
+   *  `undefined` either way reads as "no icon resolved" (the panel's own placeholder),
+   *  never a broken `<img src>`. */
+  icon?: string;
   /** True when `condition` ends in a literal `…` -- the source data's own sentence is cut
    *  off (spec §4.C.3's named, still-open blocking defect for hunter-marksmanship's level-20
    *  Arcane Shot line), never a mock or CSS truncation. The panel still renders the sentence
@@ -114,6 +131,7 @@ export function rotationLinesFor(entry: RotationEntry, build: string, classSlug:
     name: line.name,
     rank: rankFor(spellRanks, classSlug, line.name, line.spell_id),
     condition: line.condition,
+    icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
     truncatedAtSource: line.condition.endsWith('…'),
   }));
 }

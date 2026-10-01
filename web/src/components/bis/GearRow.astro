@@ -66,34 +66,44 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
   ) : (
     <Fragment>
       <div class="gear-row-pick">
-        <span
-          class="gear-row-item"
-          data-testid={`item-hover-${row.itemId}`}
-          data-bis-item={row.itemId}
-          tabindex="0"
-          role="button"
-          aria-haspopup="true"
-        >
-          {hasRealIcon(row.model?.icon) ? (
-            <img
-              src={dataUrl(build, `icons/${row.model!.icon}.webp`)}
-              alt=""
-              width="40"
-              height="40"
-              loading="lazy"
-              decoding="async"
-              class="gear-row-icon rounded-control border object-cover"
-              style={`border-color:${rarityBorderColorFor(row.model?.quality ?? 1)}`}
-            />
-          ) : (
-            <span
-              class="gear-row-icon gear-row-icon-placeholder rounded-control border"
-              style={`border-color:${rarityBorderColorFor(row.model?.quality ?? 1)}`}
-              aria-hidden="true"
-            />
-          )}
+        <span class="gear-row-item">
+          {/* `display: contents` (below): a pure hover-delegation wrapper, not a layout
+              box -- an `<img>` cannot itself be `data-bis-item`'s host, since
+              `BisTooltipHost.svelte` mounts the tooltip panel INTO its host element, and a
+              void `<img>` never renders a mounted child. Wrapping it like this gives the
+              icon's own pixels the same tooltip the name gets (hover-scope fix,
+              2026-09-30: "the trigger wraps exactly the icon and the name") without this
+              span ever generating a box of its own -- the icon sits exactly where it did
+              before, a direct flex item of `.gear-row-item`, in the layout's eyes. */}
+          <span class="gear-row-icon-trigger" data-bis-item={row.itemId}>
+            {hasRealIcon(row.model?.icon) ? (
+              <img
+                src={dataUrl(build, `icons/${row.model!.icon}.webp`)}
+                alt=""
+                width="40"
+                height="40"
+                loading="lazy"
+                decoding="async"
+                class="gear-row-icon rounded-control border object-cover"
+                style={`border-color:${rarityBorderColorFor(row.model?.quality ?? 1)}`}
+              />
+            ) : (
+              <span
+                class="gear-row-icon gear-row-icon-placeholder rounded-control border"
+                style={`border-color:${rarityBorderColorFor(row.model?.quality ?? 1)}`}
+                aria-hidden="true"
+              />
+            )}
+          </span>
           <span class="gear-row-content">
-            <span class="gear-row-name-line">
+            <span
+              class="gear-row-name-line"
+              data-testid={`item-hover-${row.itemId}`}
+              data-bis-item={row.itemId}
+              tabindex="0"
+              role="button"
+              aria-haspopup="true"
+            >
               <span class="sr-only">{slotLabel}:</span>
               <span class:list={['gear-row-name', rarityClassFor(row.model?.quality ?? 1)]}>
                 {row.itemName}
@@ -307,12 +317,21 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
     min-width: 0;
   }
   .gear-row-item {
+    /* `position: relative` stays here (not on `.gear-row-name-line` below): the tooltip
+       panel BisTooltipHost.svelte mounts into the hover host is still absolutely
+       positioned against the nearest positioned ancestor, and this is it -- unchanged from
+       before the hover-scope fix, so the panel still opens relative to the whole pick, not
+       just the trigger's own small box. */
     position: relative;
     display: flex;
     min-width: 0;
     align-items: flex-start;
     gap: 0.6rem;
-    cursor: pointer;
+  }
+  /* See the markup's own comment: a layout no-op, so the icon stays a direct flex item of
+     `.gear-row-item` exactly as before this fix. */
+  .gear-row-icon-trigger {
+    display: contents;
   }
   /* 40px, 1px border in the item's own quality colour -- the in-game socket look (ruling
      6): a worn slot's icon is bordered in the colour of what fills it, the same way the
@@ -322,6 +341,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
     width: 40px;
     height: 40px;
     object-fit: cover;
+    cursor: pointer;
   }
   .gear-row-icon-placeholder {
     display: flex;
@@ -337,11 +357,48 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
     flex-direction: column;
     gap: 2px;
   }
+  /* The pick's own hover/focus trigger (hover-scope fix, 2026-09-30 -- owner report: the
+     tooltip used to open from anywhere in the cell, including the stats and source lines
+     below). `data-bis-item`/`tabindex`/`role`/`aria-haspopup`/the `item-hover-<id>`
+     testid moved here from the old `.gear-row-item` wrapper, which is now a plain layout
+     box; `.gear-row-stats`/`.gear-row-source`/`.gear-row-evidence` stay its siblings
+     inside `.gear-row-content`, outside this element, so hovering them never opens the
+     tooltip. Nothing in the grid/flex layout itself changes -- this span already held
+     exactly the name text and its same-line badges, so moving the attributes here moves
+     no pixels.
+     The 44px minimum hit height (design system) is added as `padding-top` cancelled by an
+     equal negative `margin-top`: the padding grows this element's own hit/focus box
+     upward (into the blank space above the name, beside the icon) without adding any
+     height to the flex column's own flow, so `.gear-row-stats` right below still starts
+     at its original position -- never downward, which would swallow the stats line into
+     the trigger the owner's report is about. */
   .gear-row-name-line {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.4rem;
+    cursor: pointer;
+    padding-top: 28px;
+    margin-top: -28px;
+  }
+  /* Suppresses the sitewide default ring (global.css's own `:focus-visible`, which would
+     otherwise draw tightly around this element's own small box) in favour of the
+     `::before` below, which is sized to visually cover the icon too. */
+  .gear-row-name-line:focus-visible {
+    outline: none;
+  }
+  .gear-row-name-line:focus-visible::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: calc(-1 * (40px + 0.6rem));
+    width: calc(100% + 40px + 0.6rem);
+    height: 40px;
+    border-radius: var(--radius-control);
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    pointer-events: none;
   }
   .gear-row-name {
     font-weight: 600;

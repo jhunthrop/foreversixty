@@ -1,6 +1,14 @@
 // web/src/lib/bis/rotation-view.test.ts
 import { describe, expect, it } from 'vitest';
-import { bandTopLevel, rotationEntryFor, type RotationEntry } from './rotation-view';
+import {
+  bandTopLevel,
+  loadRotations,
+  rotationEntryFor,
+  rotationLinesFor,
+  type RotationEntry,
+} from './rotation-view';
+
+const BUILD = '1.60.1.70009';
 
 describe('bandTopLevel', () => {
   it('is band + 9 for every band but the last', () => {
@@ -30,5 +38,36 @@ describe('rotationEntryFor', () => {
 
   it('is undefined when nothing qualifies yet', () => {
     expect(rotationEntryFor(entries, 5)).toBeUndefined();
+  });
+});
+
+describe('rotationLinesFor', () => {
+  it("threads a line's own icon stem through to the view when the build ships the file", () => {
+    const entries = loadRotations(BUILD, 'hunter-marksmanship');
+    const entry = entries?.[0];
+    expect(entry).toBeDefined();
+    const views = rotationLinesFor(entry!, BUILD, 'hunter');
+    const serpentSting = views.find((view) => view.name === 'Serpent Sting');
+    expect(serpentSting?.icon).toBe('ability_hunter_quickshot');
+  });
+
+  it('omits icon when the line names no icon at all', () => {
+    const entry: RotationEntry = {
+      level: 10,
+      lines: [{ spell_id: 999999, name: 'No Icon Line', condition: 'x' }],
+    };
+    const views = rotationLinesFor(entry, BUILD, 'hunter');
+    expect(views[0].icon).toBeUndefined();
+  });
+
+  it("omits icon when the build's icon tree has no file for the named stem", () => {
+    const entry: RotationEntry = {
+      level: 10,
+      lines: [
+        { spell_id: 999999, name: 'Missing File Line', condition: 'x', icon: 'does_not_exist_anywhere' },
+      ],
+    };
+    const views = rotationLinesFor(entry, BUILD, 'hunter');
+    expect(views[0].icon).toBeUndefined();
   });
 });
