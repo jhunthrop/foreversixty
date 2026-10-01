@@ -85,19 +85,26 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
     </a>
     <Header path={path}>
       {session ? (
-        // client:idle, not client:load: this was the one eagerly-hydrating island on every
-        // `session` page, including the home page, and Astro's `load` directive hydrates the
-        // moment its module resolves -- no yield to the browser's paint queue, unlike `idle`
-        // (astro/dist/runtime/client/load.js vs idle.js: idle explicitly defers to
-        // requestIdleCallback). On the home page this put AccountMenu's mount, its `/v1/me`
-        // fetch and its two document-level effect listeners on the critical path ahead of the
-        // hero H1's first paint -- Lighthouse's lhci run (mobile, 4x CPU) measured the home
-        // page's LCP render delay at 1809ms and bootup-time attributed to index.html's own
-        // inline scripts at 467ms, the single largest bootup entry on the page (day3 lane
-        // lane-web-home-lcp). The signed-out fallback is unchanged either way -- an invisible
-        // placeholder until the session read resolves, then the real link -- so this changes
-        // only when hydration starts, never what renders.
-        <AccountMenu client:idle slot="session" />
+        // client:idle-after-load, not plain client:idle: moving off client:load (this was
+        // the one eagerly-hydrating island on every `session` page, including the home page,
+        // and Astro's `load` directive hydrates the moment its module resolves -- no yield to
+        // the browser's paint queue, unlike `idle`, astro/dist/runtime/client/load.js vs
+        // idle.js) cut the home page's LCP render delay but did not close it: plain
+        // `client:idle`'s requestIdleCallback can still fire within single-digit
+        // milliseconds on a page not yet doing much else, racing AccountMenu's mount, its
+        // `/v1/me` fetch (the same endpoint HomeAccountPanel.svelte reads) and its two
+        // document-level effect listeners against the hero's own first paint for the same
+        // throttled mobile bandwidth and main thread -- the exact race
+        // src/directives/idle-after-load.ts exists to close, which HomeAccountPanel.svelte
+        // already opted into for this reason but this island had not (day3 lane
+        // lane-web-home-lcp, follow-up: lighthouserc.json's index.html row still measured a
+        // bimodal LCP, 1813-2504ms, after the first fix). Waiting for `load` first means
+        // every resource the initial render needed -- including the LCP element's own paint
+        // -- has already finished before this directive's idle wait even begins. The
+        // signed-out fallback is unchanged either way -- an invisible placeholder until the
+        // session read resolves, then the real link -- so this changes only when hydration
+        // starts, never what renders.
+        <AccountMenu client:idle-after-load slot="session" />
       ) : (
         <a
           slot="session"
