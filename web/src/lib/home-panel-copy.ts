@@ -37,23 +37,84 @@ export const homePanelCopy = {
 
 /**
  * Home rebuild spec §3.B.2's three next-action cards (Best in slot / Talents / Simulator)
- * and §3.B.3's "Your upgrades" panel. Best in slot, Your upgrades and Talents each name a
- * real, live comparison the site cannot compute yet -- no source joins a signed-in
- * character's actually-worn gear against a BiS list, and no function compares spent talents
- * against a band's recommended build -- so rather than a skeleton that shimmers forever
- * with nothing ever arriving behind it (which tells a screen-reader user "Loading" for a
- * fetch that will never resolve), these show one honest, settled line instead: labelled as
- * not yet available and naming the real reason, never a fabricated figure (tenet 8). Review
- * round 1's exact wording -- one sentence, not a label plus a second line. The Simulator
- * card carries no such gap (the visitor's own saved sim already exists, `lib/home/
- * next-steps.ts`'s `simCardLine`), so it alone keeps a real loading/ready/empty state.
+ * and §3.B.3's "Your upgrades" panel, now that `MeCharacter.build.gear`/`.talents` exist
+ * (the API lane's own extension to the contract, landed alongside this lane) and
+ * `lib/home/upgrades.ts`/`talent-delta.ts` compute the real comparison. Three states remain
+ * genuinely unavailable, each named by its own real reason rather than a generic spinner
+ * (tenet 8, never a fabricated figure):
+ *
+ *   - no spec at all (`character.spec` undefined) -- nothing to compare against;
+ *   - a spec, but no addon gear/talent export yet (`build.gear`/`build.talents` undefined);
+ *   - a spec and an export, but no published BiS file/band for it yet.
  */
 export const homeHeroCardsCopy = {
   bestInSlotLabel: 'Best in slot',
-  /** Best in slot card and the "Your upgrades" panel name the identical real gap, so they
-   *  read the same sentence rather than two different ways of saying it. */
-  bestInSlotNotAvailable: 'Not available yet: the addon does not send worn gear.',
+  /** §4's "no spec yet" state, named once and shared by the Best in slot and Talents cards
+   *  (both are blocked on the identical missing fact). */
+  pickASpec: 'Pick a spec',
+  pickASpecLine: 'Set a spec in the planner to see this.',
+  /** Reworded (home rebuild spec §4, "Empty states stay honest") from the pre-contract
+   *  "the addon does not send worn gear" -- now that the addon CAN send it, the honest gap
+   *  is this one character's own export, not a site-wide limitation. Best in slot card and
+   *  the "Your upgrades" panel name the identical real gap, so they read the same sentence
+   *  rather than two different ways of saying it. */
+  bestInSlotNotAvailable:
+    'Not available yet: no gear export for this character. Open the addon once to send it.',
+  /** A spec and a gear export both exist, but this build has no published BiS list for the
+   *  spec/band pair yet -- distinct from `bestInSlotNotAvailable` (that names a gap in THIS
+   *  character's own data; this one names a gap in the site's own published data). */
+  bestInSlotNoListYet: 'No best in slot list published yet for this spec and band.',
+  /** §3.B.2: `N upgrades` zero-upgrades figure/line, the "don't hide a win" case. */
+  bestInSlotFigure: (upgradeCount: number): string =>
+    `${upgradeCount} upgrade${upgradeCount === 1 ? '' : 's'}`,
+  bestInSlotAllMatchFigure: 'Best in slot',
+  bestInSlotAllMatchLine: (bandLabel: string): string => `every slot matches the ${bandLabel} list`,
+  /** Fix round 1 item A.1: `notSimCheckedCount` names how many upgrade slots this band's own
+   *  figure excludes (a weapon slot with no sim-verified alternative, `lib/home/upgrades.ts`'s
+   *  own `notSimChecked`) -- said here rather than silently dropped, so the total always adds
+   *  up to a number a player can audit against the table below it. */
+  bestInSlotUpgradesLine: (bandLabel: string, totalGainDps: number, notSimCheckedCount: number): string => {
+    const base = `in your band, ${bandLabel} · +${totalGainDps.toFixed(1)} DPS together`;
+    if (notSimCheckedCount === 0) return base;
+    const clause = notSimCheckedCount === 1 ? 'one slot' : `${notSimCheckedCount} slots`;
+    return `${base}, ${clause} not sim-checked`;
+  },
   talentsLabel: 'Talents',
-  talentsNotAvailable: 'Not available yet: the addon does not send talents.',
+  talentsNotAvailable:
+    'Not available yet: no talent export for this character. Open the addon once to send it.',
+  talentsNoListYet: 'No talent build published yet for this spec and band.',
+  talentsOptimizedFigure: 'Optimized',
+  talentsUnoptimizedFigure: 'Unoptimized',
+  /** Fix round 1 item A.3: names whose points the denominator counts (the band's own build),
+   *  not just a bare number next to an unrelated band label. */
+  talentsLine: (pointsDiffer: number, bandTalentPoints: number, bandLabel: string): string =>
+    `${pointsDiffer} of the ${bandTalentPoints} points in the ${bandLabel} build differ · compare in the planner`,
   simulatorLabel: 'Simulator',
+  /** §3.B.2's "Y.Y in band best in slot" clause, appended to the visitor's own saved-sim
+   *  line only once the band's own `set_dps` is known -- never a pairing the band file does
+   *  not actually publish. */
+  simulatorBandSuffix: (bandSetDps: number): string => `${bandSetDps.toFixed(1)} in band best in slot`,
+} as const;
+
+/**
+ * §3.B.3's "Your upgrades" panel -- the full worn-vs-BiS table, once `lib/home/upgrades.ts`
+ * has a real comparison to show. Shares `homeHeroCardsCopy`'s own not-yet-available/no-spec/
+ * no-list sentences (the identical real gaps), so only the table's own rows/footer need
+ * their own strings here.
+ */
+export const homeUpgradesCopy = {
+  heading: 'Your upgrades',
+  slotHeader: 'Slot',
+  youWearHeader: 'You wear',
+  bestInSlotHeader: 'Best in slot',
+  gainHeader: 'Gain',
+  youWearThis: 'you wear this',
+  noItemEquipped: 'No item equipped',
+  unknownItem: 'Unknown item',
+  /** `Full list for Marksmanship 20 to 29` -- the panel's own header aside link. */
+  fullListLink: (specName: string, bandLabel: string): string => `Full list for ${specName} ${bandLabel}`,
+  alreadyBestInSlotPrefix: 'Already best in slot:',
+  moreSlots: (count: number): string => `${count} more slot${count === 1 ? '' : 's'}`,
+  everySlotMatches: (bandLabel: string): string =>
+    `Every slot in the ${bandLabel} list already matches what you wear.`,
 } as const;

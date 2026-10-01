@@ -18,7 +18,7 @@ import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import HomeGetSetUp, { HOME_GET_SET_UP_SIGNED_OUT_ID } from '../components/HomeGetSetUp.svelte';
 import RecentReports from '../components/RecentReports.svelte';
 import HomeTopGuilds from '../components/HomeTopGuilds.svelte';
-import { HOME_SIGNED_OUT_ID, homeHeroCardsCopy, homePanelCopy } from '../lib/home-panel-copy';
+import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 import {
   homeAroundTheSiteCopy,
   homeClassPickerCopy,
@@ -264,29 +264,17 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
         </div>
       </section>
 
-      <section class="flex flex-col gap-[14px]" data-signed-in-only data-testid="home-upgrades">
-        <div id="upgrades" class="flex items-baseline justify-between">
-          <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">Your upgrades</h2>
-          <a
-            href={homeClassPickerCopy.allSpecsHref}
-            class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
-          >
-            {homeClassPickerCopy.allSpecsLink}
-          </a>
-        </div>
-        <div class="bg-raised border-line rounded-panel border px-5 py-[18px]">
-          <!-- Blocking gap (spec §3.B.3): nothing today joins a signed-in character's
-               actually-worn gear against a BiS list (`MeCharacter` carries no equipped-item
-               list at all), so this region cannot render the mock's worn-vs-BiS rows
-               without inventing item names on a real character -- tenet 8 forbids that.
-               One honest line instead, until the addon sync reports equipped items. -->
-          <p
-            class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]"
-            data-testid="home-upgrades-not-yet-available"
-          >
-            <span class="text-muted">{homeHeroCardsCopy.bestInSlotNotAvailable}</span>
-          </p>
-        </div>
+      <section id="upgrades" class="flex flex-col gap-[14px]" data-signed-in-only data-testid="home-upgrades">
+        <!-- Home rebuild spec §3.B.3: the real worn-vs-BiS table now that `MeCharacter.
+             build.gear` exists (the API lane's own extension to the contract). The header
+             row's own aside link names the real spec/band ("Full list for Marksmanship 20
+             to 29"), which cannot be known before `/v1/me` and the BiS file both answer, so
+             the whole region -- header and body -- is one mounted island
+             (`HomeUpgradesPanel.svelte`, mounted by `HomeAccountPanel.svelte` the same
+             dynamic-import-once-signed-in way as the hero cards and Switch character), not
+             split between static Astro markup and a slot. `min-h` approximates the ready
+             panel's own height so the mount does not visibly shift "Five doors" beneath it. -->
+        <div class="min-h-[220px]" data-testid="home-upgrades-slot"></div>
       </section>
 
       <section class="flex flex-col gap-[14px]" data-testid="home-five-doors">
