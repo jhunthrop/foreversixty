@@ -61,19 +61,50 @@ export interface MeCharacter {
   /** The site's newest export for this character, when it has one (spec 2026-09-22 §5):
    *  `'addon'` for a paste or companion push, `'blizzard'` for one built from the
    *  Battle.net profile. Omitted exactly when the site holds no build for the character --
-   *  never inferred from anything else on this row. */
-  build?: { source: 'addon' | 'blizzard'; captured_at: string };
+   *  never inferred from anything else on this row.
+   *
+   *  Home rebuild spec §3.B: `gear`/`talents`/`level`/`data_build` are the addon export's
+   *  own worn-gear and talent snapshot (the API lane's extension to this contract, landed
+   *  alongside this lane) -- all optional, and omitted together on a `build` row the addon
+   *  export predates (an older paste, or a Battle.net-only `build`, which never carries
+   *  worn items at all). Every reader treats a missing `gear`/`talents` as "not synced yet",
+   *  never an empty set. */
+  build?: {
+    source: 'addon' | 'blizzard';
+    captured_at: string;
+    /** Export slot name (`addon/ForeverSixty/Export.lua`'s own `INVENTORY_SLOTS`, identical
+     *  vocabulary to `planner/types.ts`'s `SLOTS` -- no mapping needed, see that file's
+     *  `Slot` type) -> the worn item's id. Omitted entirely for a slot with nothing
+     *  equipped, the same "absent means empty" convention `Gear` (`planner/types.ts`)
+     *  already uses. */
+    gear?: Record<string, number>;
+    /** Three per-tree rank strings in tree order (`"503200000"`, one digit per talent
+     *  cell, the identical convention a leveling-BiS band's own `talents` string uses per
+     *  segment -- `lib/home/talent-delta.ts` compares the two directly) and the point sum
+     *  per tree. */
+    talents?: { trees: string[]; points: number[] };
+    /** The character's level at the moment this build was captured -- distinct from the
+     *  character row's own top-level `level` (Battle.net's, refreshed on its own cadence);
+     *  this one is the addon's own snapshot, so a gear/talent comparison against a BiS band
+     *  can use the figure that actually matches the equipped items above. */
+    level?: number;
+    /** The game build the addon captured this snapshot against (e.g. `"1.60.1.70009"`),
+     *  for a future reader that needs to know which item/talent table the ids above resolve
+     *  against; this lane's own BiS/item lookups use the site's own active build
+     *  (`data/active-build.json`) instead, the same build every other BiS comparison on the
+     *  site reads against. */
+    data_build?: string;
+  };
   /** Omitted when the character has no `guild_characters` row at all. */
   guild?: MeCharacterGuild;
   /**
-   * TODO(api): `GET /v1/me` does not send this field yet -- talent spec or primary tree
-   * ("Marksmanship", "Fury", "Holy") is no field on any account payload today, confirmed
-   * absent from this interface and from `POST /v1/me/exports`'s response shape alike.
-   * Home rebuild review round 1 item 2 asks the signed-in hero's descriptor to include it;
-   * this field documents the contract's own shape for the day that route ships it (likely
-   * parsed from the addon's own talent split, the way `talentPointsFromSplit`,
-   * `web/src/lib/sim/sources.ts`, already reads points-per-tree). Every reader treats a
-   * missing value as "not known yet" and omits the clause -- never a placeholder string.
+   * The talent spec or primary tree name ("Marksmanship", "Fury", "Holy") -- the API lane's
+   * own extension to this contract, landed alongside this one (home rebuild spec §3.B):
+   * `level`, `race`, `faction` and `realm` now arrive for an addon-only character too, not
+   * only one that has been through the Battle.net import, but `spec` can still be absent
+   * (an addon export with no learned talent, or a character the addon has not captured a
+   * build for at all) -- every reader treats a missing value as "not known yet" and omits
+   * the clause, never a placeholder string.
    */
   spec?: string;
 }

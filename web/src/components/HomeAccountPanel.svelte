@@ -112,6 +112,29 @@
     };
   });
 
+  /**
+   * §3.B.3's "Your upgrades" table, mounted into `index.astro`'s own `home-upgrades-slot`
+   * the identical dynamic-import-once-signed-in way as the switch panel and the hero cards
+   * above -- its own BiS-file and item-table fetches never reach a signed-out visitor's
+   * browser either.
+   */
+  $effect(() => {
+    if (!ready || me === null || hero === null) return;
+    const slot = document.querySelector<HTMLElement>('[data-testid="home-upgrades-slot"]');
+    if (slot === null) return;
+    const current = hero;
+    let panel: Record<string, unknown> | null = null;
+    let cancelled = false;
+    void import('./character/HomeUpgradesPanel.svelte').then(({ default: HomeUpgradesPanel }) => {
+      if (cancelled) return;
+      panel = mount(HomeUpgradesPanel, { target: slot, props: { hero: current } });
+    });
+    return () => {
+      cancelled = true;
+      if (panel !== null) void unmount(panel);
+    };
+  });
+
   function switchTo(character: MeCharacter): void {
     homeHero.switchTo(character);
   }

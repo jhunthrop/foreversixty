@@ -1,10 +1,41 @@
-import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { expect, test, type Page } from '@playwright/test';
+import { meAddonFixture } from '../../src/fixtures/me-addon';
 
 const fulfil = (body: unknown, status = 200) => ({
   status,
   contentType: 'application/json',
   body: JSON.stringify(body),
 });
+
+// §3.B.2/§3.B.3's comparison needs a real BiS file and a real item table for the fixture's
+// own classes -- routed straight from `data/builds/<build>/`, same as the real pipeline
+// publishes, rather than whatever `FOREVER_DATA` happened to seed `public/data/<build>/`
+// with for this run (the committed fallback fixture at `src/data/fixtures/bis/` carries
+// different item ids entirely, which would make `meAddonFixture`'s own worn-gear ids match
+// nothing). The same precedent other e2e specs already use for a planner data file
+// (`sim-unsimulated-spec.spec.ts`'s own `stubDruidTalents`).
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
+const GEAR_BUILD = '1.60.1.70009';
+
+function realDataFile(relativePath: string): string {
+  return readFileSync(path.join(REPO_ROOT, 'data/builds', GEAR_BUILD, relativePath), 'utf8');
+}
+
+async function stubRealGearData(page: Page): Promise<void> {
+  for (const relativePath of [
+    'bis/hunter-marksmanship.json',
+    'items/hunter.json',
+    'bis/mage-frost.json',
+    'items/mage.json',
+  ]) {
+    await page.route(`**/data/*/${relativePath}`, (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: realDataFile(relativePath) }),
+    );
+  }
+}
 
 const NO_SIMS_PAGE = { rows: [], total: 0, page: 1, per_page: 20 };
 const NO_RATING = null;
@@ -133,20 +164,20 @@ test('a signed-in hero shows the descriptor, the three next-action cards, and hi
   await expect(descriptor).toContainText('<Sample Guild>');
   await expect(panel.getByTestId('home-hero-guild')).toContainText('Sample Guild');
   await expect(panel.getByTestId('home-hero-sync')).toContainText('from the addon');
-  // Best in slot / Talents: not yet computable against live worn-gear data (§3.B.2) --
-  // an honest, settled line, never a fabricated figure.
-  await expect(panel.getByTestId('home-hero-card-bis')).toContainText('Not available yet');
-  await expect(panel.getByTestId('home-hero-card-talents')).toContainText('Not available yet');
+  // Best in slot / Talents: this fixture's Zulmara carries no `spec` yet, so both cards
+  // show the honest "Pick a spec" state -- never a fabricated figure (§3.B.2).
+  await expect(panel.getByTestId('home-hero-card-bis')).toContainText('Pick a spec');
+  await expect(panel.getByTestId('home-hero-card-talents')).toContainText('Pick a spec');
   // Simulator: the one card with a real, live figure -- no saved sim for this fixture, so
   // the existing empty-state copy/action shows.
   await expect(panel.getByTestId('home-hero-card-sim')).toContainText('No sim yet.');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
   // §3.A.4/§3.B.3/§3.B.5: the signed-out class-picker row is gone, replaced by the
-  // signed-in-only "Your upgrades" (not-yet-available) and "Another class" regions.
+  // signed-in-only "Your upgrades" (no spec yet) and "Another class" regions.
   await expect(page.getByTestId('home-class-picker-large')).toBeHidden();
   await expect(page.getByTestId('home-upgrades')).toBeVisible();
-  await expect(page.getByTestId('home-upgrades-not-yet-available')).toBeVisible();
+  await expect(page.getByTestId('home-upgrades-no-spec')).toBeVisible();
   await expect(page.getByTestId('home-another-class').getByTestId(/^class-crest-/)).toHaveCount(9);
 });
 
@@ -329,4 +360,58 @@ test('a returning signed-in visitor sees the hub from the session snapshot befor
   await page.goto('/');
   await expect(page.getByTestId('home-account-panel')).toBeVisible({ timeout: 3000 });
   await expect(page.getByTestId('home-signed-out')).toBeHidden();
+});
+
+test("a signed-in hero with a real gear/talent export sees real Best in slot, Talents and Your upgrades figures, matching the SignedIn mock's own state", async ({
+  page,
+  context,
+}) => {
+  await stubHeroExtras(page);
+  await stubRealGearData(page);
+  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil({ ok: true, data: meAddonFixture, error: null, request_id: 'r' })),
+  );
+  await page.goto('/');
+
+  const panel = page.getByTestId('home-account-panel');
+  await expect(panel.getByRole('heading', { name: 'Zulmara', level: 1 })).toBeVisible();
+  const descriptor = panel.getByTestId('home-hero-descriptor');
+  await expect(descriptor).toContainText('Level 24 Troll Marksmanship Hunter');
+  await expect(descriptor).toContainText('Horde');
+  await expect(descriptor).toContainText('<Sample Guild>');
+  await expect(descriptor).toContainText('Skyborne-US');
+
+  // Best in slot (§3.B.2): 4 real upgrades against the committed
+  // data/builds/1.60.1.70009/bis/hunter-marksmanship.json band 20 (horde).
+  const bisCard = panel.getByTestId('home-hero-card-bis');
+  await expect(bisCard.getByTestId('home-hero-card-bis-value')).toHaveText('4 upgrades', { timeout: 10_000 });
+  await expect(bisCard).toContainText('20 to 29');
+  await expect(bisCard).toContainText('+11.7 DPS together');
+
+  // Talents (§3.B.2): 2 points differ from the band's own 11-point build.
+  const talentsCard = panel.getByTestId('home-hero-card-talents');
+  await expect(talentsCard.getByTestId('home-hero-card-talents-value')).toHaveText('Unoptimized');
+  await expect(talentsCard).toContainText('2 of 11 points differ from the 20 to 29 build');
+
+  // "Your upgrades" (§3.B.3): the four real rows, each slot the fixture's own worn item
+  // differs from the band's pick -- head, neck, feet, ranged.
+  await expect(page.getByTestId('home-upgrades-list')).toBeVisible();
+  for (const slot of ['head', 'neck', 'feet', 'ranged']) {
+    await expect(page.getByTestId(`home-upgrade-row-${slot}`)).toBeVisible();
+  }
+  const alreadyBis = page.getByTestId('home-upgrades-already-bis');
+  await expect(alreadyBis).toContainText('Already best in slot:');
+  await expect(alreadyBis).toContainText('more slot');
+
+  // Switch character (§3.B.4): Frostspine's own real 2-upgrade count, and Grokmar (no spec
+  // yet) shows no fabricated stat at all.
+  const switchPanel = page.getByTestId('home-switch-character-panel');
+  await expect(switchPanel.getByTestId('current-character-bar-switch-current')).toBeVisible();
+  await expect(
+    switchPanel.getByTestId('current-character-bar-switch-upgrades-us/normal/frostspine'),
+  ).toHaveText('2 upgrades', { timeout: 10_000 });
+  await expect(
+    switchPanel.getByTestId('current-character-bar-switch-upgrades-us/normal/grokmar'),
+  ).toHaveCount(0);
 });
