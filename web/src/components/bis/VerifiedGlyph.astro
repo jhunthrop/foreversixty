@@ -31,26 +31,35 @@ const { size = 13, title = bisCopy.verifiedGlyphTitle, decorative = false } = As
   aria-hidden={decorative ? 'true' : undefined}
   aria-label={decorative ? undefined : title}
 >
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2.4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
     <use href="#bis-verified" />
   </svg>
 </span>
 
-<style>
+<style is:global>
+  /* `is:global` (deploy-gate LCP fix, 2026-09-30): this used to be a scoped `<style>`, which
+     stamps a `data-astro-cid-*` attribute on every element this component renders -- this
+     glyph alone accounts for ~800 of those across the BiS page. Every selector below stays
+     namespaced under `.verified-glyph`, this component's own class, so going global widens
+     nothing: it still only ever matches this component's own markup, the same as scoped CSS
+     did. */
   .verified-glyph {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
     color: var(--color-gold, #c9a35e);
+  }
+  /* Presentation attributes that used to sit on every one of this glyph's ~800 <svg>
+     wrappers (fill/stroke/stroke-width/stroke-linecap/stroke-linejoin) moved here -- same
+     rendering, none of it varies per instance, so it belongs in the stylesheet once rather
+     than repeated as attribute bytes on every glyph (deploy-gate LCP fix, 2026-09-30). Only
+     width/height (the `size` prop: 11/12/13 depending on caller) stay as attributes since
+     they genuinely vary. */
+  .verified-glyph svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 </style>
