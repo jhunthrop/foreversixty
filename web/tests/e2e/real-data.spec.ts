@@ -168,12 +168,10 @@ test('a 31/20/0 warrior is spent and read back as 31/20/0', async ({ page }) => 
   await spend(page, arms.id, 31);
   await spend(page, fury.id, 20);
 
-  await expect(page.getByTestId('planner-split')).toHaveText('31/20/0');
   await expect(page.getByTestId('planner-spent')).toHaveText('51/51');
   await expect(page.getByTestId('planner-remaining')).toHaveText('0');
-  // A bare build has no current character, so Level is not shown (spec 2026-09-25 §6);
-  // planner.spec.ts covers the Level readout for a build opened from an addon code.
-  await expect(page.getByTestId('planner-level')).toHaveCount(0);
+  // Level is always shown now (review finding 2) and reads the base level plus every point.
+  await expect(page.getByTestId('planner-level')).toHaveText('60');
   await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
   await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
 });
@@ -270,12 +268,14 @@ test('a build shared on the new trees reopens from its link, on desktop and on a
   );
 
   await page.goto('/b/real1234');
-  await expect(page.getByTestId('planner-split')).toHaveText('31/20/0');
+  await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
+  await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
   await expect(page.getByLabel('Class')).toBeDisabled();
 
   await page.setViewportSize({ width: 390, height: 800 });
   await page.reload();
-  await expect(page.getByTestId('planner-split')).toHaveText('31/20/0');
+  await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
+  await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );

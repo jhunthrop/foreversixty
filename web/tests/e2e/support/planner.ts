@@ -6,21 +6,6 @@ import { expect, type Page } from '@playwright/test';
 const MD_BREAKPOINT = 768;
 
 /**
- * Brings the gear panel on screen. From md up it is always directly under the tree row (in
- * the rail layout's own left column from lg, or last in the stack between md and lg); below
- * md it is the last tab, so it has to be selected first. Both Playwright projects run the
- * gear specs and the mobile one is narrower than md, so every gear move goes through here
- * rather than assuming the panel is already on screen.
- */
-export async function openGear(page: Page): Promise<void> {
-  if ((page.viewportSize()?.width ?? MD_BREAKPOINT) >= MD_BREAKPOINT) {
-    await expect(page.getByTestId('gear-panel')).toBeVisible();
-    return;
-  }
-  await page.getByRole('tab', { name: 'Gear' }).click();
-}
-
-/**
  * Opens the point order panel's content. From md up it is always open (design loop, planner
  * round); below md it is a native, closed-by-default `<details>`, so its own summary has to
  * be clicked first. Every spec that reads the strip's list goes through here rather than

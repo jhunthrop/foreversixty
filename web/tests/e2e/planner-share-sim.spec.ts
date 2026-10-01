@@ -145,7 +145,7 @@ test('unticking the box after a failed save drops Retry and reopens a fresh conf
   await expect(checkbox).toBeChecked();
 
   await shareBuild(page);
-  await expect(page.getByRole('alert')).toContainText('build is not valid');
+  await expect(page.getByTestId('share-panel').getByRole('alert')).toContainText('build is not valid');
   await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
   expect(buildCalls).toBe(1);
 
@@ -154,7 +154,7 @@ test('unticking the box after a failed save drops Retry and reopens a fresh conf
   // The failed outcome (and Retry with it) is gone: unticking the box is treated as an
   // edit, the same as a talent change would be.
   await expect(page.getByRole('button', { name: 'Retry' })).not.toBeVisible();
-  await expect(page.getByRole('alert')).not.toBeVisible();
+  await expect(page.getByTestId('share-panel').getByRole('alert')).not.toBeVisible();
   expect(buildCalls).toBe(1);
 
   // Share opens a fresh confirm -- not a re-save -- and it no longer names a sim.

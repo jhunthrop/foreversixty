@@ -74,6 +74,14 @@ test('a talent click never moves the trees: the summary bar keeps its height thr
   // Measured against the document, not the viewport: a click may scroll the page, and that
   // is not the trees moving.
   const top = (): Promise<number> => cell.evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+  // Planner rebuild (2026-10-01): the header now carries real Cinzel text of its own
+  // (the h1's class/race/level/spec suffix, PlannerHeader.svelte) rather than the old
+  // static "Build planner" title, and that text settles a few pixels once the font swaps
+  // in -- unrelated to anything this test is about (a talent click moving nothing). The
+  // settle happens once, well under a second, and never again; waiting it out here is
+  // what isolates the one shift this test actually exists to catch.
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(500);
   const before = await top();
 
   // Finishing the build brings the figure (or, on a phone, the button that asks for it).

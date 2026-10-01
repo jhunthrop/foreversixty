@@ -47,7 +47,7 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
   await page.goto('/b/k7x2qm4a');
 
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
-  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('tree-points-161')).toHaveText('3');
   await expect(page.getByTestId('planner-level')).toHaveText('12');
   await expect(page.getByLabel('Class')).toBeDisabled();
 

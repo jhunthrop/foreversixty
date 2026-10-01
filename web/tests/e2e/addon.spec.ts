@@ -3,7 +3,7 @@ import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';
 import { ACTIVE_BUILD } from './support/active-build';
-import { openGear, openImportBox } from './support/planner';
+import { openImportBox } from './support/planner';
 
 // Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`. fsb1.ts used to
 // import PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module
@@ -38,17 +38,9 @@ test.describe('the addon flows', () => {
     // The e2e fixture (FOREVER_DATA=fixture) ships a two-tree warrior with talent ids
     // 1001-1004 and no paladin at all, so this exercises the planner's default class.
     await page.goto('/planner');
-    // Spend a point and equip something, so the code carries both halves. Talent 1001
-    // (Improved Heroic Strike) is spendable from an empty build.
+    // Rebuild spec §11 (owner ruling): the gear panel left the planner entirely -- this
+    // code now carries talents alone, which `decodeFSB1`'s own `gear.length` of 0 proves.
     await page.getByTestId('talent-1001').click();
-    // Below md the gear panel is the last tab rather than part of the column, so the slot
-    // has to be brought on screen before it can be clicked. The talent click comes first
-    // because selecting the Gear tab hides the tree grid it needs.
-    await openGear(page);
-    await page.getByTestId('slot-head').click();
-    // The picker's header carries its own "Close" button ahead of the item rows, so the
-    // item rows are matched by their own testid rather than "first button in the panel".
-    await page.getByTestId('item-picker').locator('[data-testid^="item-"]').first().click();
 
     await page.getByTestId('copy-addon-code').click();
     await expect(page.getByTestId('copy-addon-code')).toHaveText(addonCopy.copiedAddonCode);
@@ -61,7 +53,7 @@ test.describe('the addon flows', () => {
     expect(decoded.ok).toBe(true);
     if (!decoded.ok) return;
     expect(decoded.build.order.length).toBe(1);
-    expect(decoded.build.gear.length).toBe(1);
+    expect(decoded.build.gear.length).toBe(0);
   });
 
   test('pasting an export string shows the tree and the approximated-order note', async ({ page }) => {
@@ -118,37 +110,8 @@ test.describe('the addon flows', () => {
     await expect(page.getByTestId('planner-load-error')).toBeVisible();
   });
 
-  test('the item picker sorts by score', async ({ page }) => {
-    // No ?class=paladin: the fixture (FOREVER_DATA=fixture) has no paladin data at all, so
-    // this runs against the planner's default class, the fixture's own two-tree warrior.
-    // The head slot carries the fixture's only two head items (Lionheart Helm, Helm of
-    // Wrath), which is enough to exercise the sort.
-    await page.goto('/planner');
-    await openGear(page);
-    await page.getByTestId('slot-head').click();
-    const picker = page.getByTestId('item-picker');
-    await picker.getByTestId('sort-by-score').check();
-
-    const scores = await picker.getByTestId('item-score').allTextContents();
-    expect(scores.length).toBeGreaterThan(1);
-    const numbers = scores.map(Number);
-    expect(numbers).toEqual([...numbers].sort((a, b) => b - a));
-  });
-
-  test('the gear panel shows the spec’s weights with their sources', async ({ page }) => {
-    await page.goto('/planner');
-    await openGear(page);
-    const weights = page.getByTestId('gear-weights');
-    // `toContainText` reads textContent, which a closed <details> still has -- so the proof
-    // that the disclosure actually opened has to come first, and from its `open` state.
-    await expect(weights).not.toHaveAttribute('open');
-    await weights.click();
-    await expect(weights).toHaveAttribute('open', '');
-    await expect(weights).toContainText(addonCopy.weightsAreOpinions);
-    // The weights list reads its stats through `statLabel`, the same table the totals above
-    // it use -- "Attack power", never the raw contract id `attack_power`.
-    await expect(weights).toContainText('Attack power');
-    await expect(weights).not.toContainText('attack_power');
-    await expect(weights.getByRole('link').first()).toHaveAttribute('href', /^https:/);
-  });
+  // Rebuild spec §11 (owner ruling): GearPanel/ItemPicker (and their score sort, and the
+  // stat-weights disclosure) left the planner page entirely -- the simulator keeps its own
+  // gear step, and the BiS page keeps the weights rail. No replacement test lives here:
+  // neither surface is this spec's own scope.
 });

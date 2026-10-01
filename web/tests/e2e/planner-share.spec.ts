@@ -96,7 +96,7 @@ test('a rate-limited save keeps the build and explains the wait', async ({ page 
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
   await shareBuild(page);
-  await expect(page.getByRole('alert')).toContainText(
+  await expect(page.getByTestId('share-panel').getByRole('alert')).toContainText(
     'Too many saves from this connection; try again in an hour.',
   );
   await expect(page.getByTestId('planner-spent')).toHaveText('1/51');
@@ -126,7 +126,9 @@ test('a rejected build shows the API field message and retries', async ({ page }
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
   await shareBuild(page);
-  await expect(page.getByRole('alert')).toContainText('Talent 1001 is not in this class');
+  await expect(page.getByTestId('share-panel').getByRole('alert')).toContainText(
+    'Talent 1001 is not in this class',
+  );
   await page.getByRole('button', { name: 'Retry' }).click();
   await expect(page.getByTestId('share-link')).toBeVisible();
 });
