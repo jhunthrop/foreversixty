@@ -867,6 +867,20 @@ paths:
   /v1/me:
     get:
       summary: The signed-in account, its characters and its guilds
+      description: >-
+        Each character's build (present whenever addon_exports has a row for it, source
+        "addon" or "blizzard") decodes its stored FS1 export string and adds, whenever the
+        string actually carries the fact: gear (export slot name -> item id, exactly the
+        slot names the export uses -- head, neck, shoulder, back, chest, wrist, hands,
+        waist, legs, feet, finger1, finger2, trinket1, trinket2, main_hand, off_hand,
+        ranged), talents ({ trees: the three per-tree rank strings in tree order exactly as
+        the export carries them, points: each tree's digit-sum total }), level and
+        data_build. A character also gains, filled from the same decode only where
+        Battle.net has not already set them (Battle.net always wins): level, race (display
+        name), faction and realm. spec is the character's primary talent tree by points
+        (the tree with strictly the most) -- omitted on a tie, when no points are spent, or
+        whenever any of the above cannot be read. A malformed or out-of-date export never
+        fails this route; it simply leaves every one of these fields absent.
       responses:
         '200':
           description: OK

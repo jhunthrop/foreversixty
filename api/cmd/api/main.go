@@ -497,7 +497,7 @@ func serve(log *slog.Logger) error {
 		ResendCooldown: resendCooldown, MaxSendsPerHour: maxSendsPerHour,
 	}
 
-	authStore := &auth.Store{Pool: pool}
+	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log}
 	entStore := &entitlements.Store{Pool: pool}
 	authenticator := &auth.Authenticator{
 		Store: authStore, CookieDomain: cfg.SessionCookieDomain,
