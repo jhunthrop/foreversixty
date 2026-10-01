@@ -20,25 +20,28 @@ const { kind, class: className = '' } = Astro.props;
 const glyphKey = sourceKindGlyphKey(kind);
 ---
 
-<svg
-  class={`bis-source-kind-icon ${className}`}
-  width="13"
-  height="13"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="1.8"
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  aria-hidden="true"
-  focusable="false"
->
+<svg class={`bis-source-kind-icon ${className}`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
   <use href={`#bis-kind-${glyphKey}`} />
 </svg>
 
-<style>
+<style is:global>
+  /* `is:global` (deploy-gate LCP fix, 2026-09-30): see VerifiedGlyph.astro's own note --
+     same trade, same guarantee (selector stays namespaced under this component's own
+     class, so nothing broadens). */
   .bis-source-kind-icon {
     flex-shrink: 0;
     opacity: 0.75;
+    /* width/height/fill/stroke/stroke-width/stroke-linecap/stroke-linejoin used to be
+       attributes on every one of this glyph's instances (every row's source line, every
+       alternative's source line) -- none of it varies per instance, so it moved here
+       (deploy-gate LCP fix, 2026-09-30). `focusable="false"` and `aria-hidden="true"` stay
+       as attributes: real per-browser/AT behaviour, not styling. */
+    width: 13px;
+    height: 13px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 </style>

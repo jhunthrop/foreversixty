@@ -100,7 +100,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
               </span>
               {isNew && (
                 <span
-                  class="new-pill"
+                  class="gear-row-new-pill"
                   data-testid="bis-row-new"
                   title={bisCopy.newPillTitle(row.replacedName)}
                 >
@@ -116,7 +116,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
               )}
               {row.notSimChecked && (
                 <span
-                  class="flag-tag"
+                  class="gear-row-flag-tag"
                   data-testid="bis-row-not-sim-checked"
                   title={bisCopy.notSimCheckedTitle}
                 >
@@ -125,7 +125,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
               )}
               {row.effectUnmodelled && (
                 <span
-                  class="flag-tag"
+                  class="gear-row-flag-tag"
                   data-testid="bis-row-effect-unmodelled"
                   title={bisCopy.effectUnmodelledTitle}
                 >
@@ -134,7 +134,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
               )}
               {row.model?.clientUnconfirmed && (
                 <span
-                  class="flag-tag"
+                  class="gear-row-flag-tag"
                   data-testid="bis-row-client-unconfirmed"
                   title={bisCopy.clientUnconfirmedTitle}
                 >
@@ -142,7 +142,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                 </span>
               )}
               {row.lowValue && (
-                <span class="flag-tag" data-testid="bis-row-low-value" title={bisCopy.lowValueTitle}>
+                <span class="gear-row-flag-tag" data-testid="bis-row-low-value" title={bisCopy.lowValueTitle}>
                   {bisCopy.lowValueTag}
                 </span>
               )}
@@ -205,7 +205,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                     </span>
                     {alt.effectUnmodelled && (
                       <span
-                        class="flag-tag flag-tag-tiny"
+                        class="gear-row-flag-tag gear-row-flag-tag-tiny"
                         data-testid="bis-alt-effect-unmodelled"
                         title={bisCopy.effectUnmodelledTitle}
                       >
@@ -214,7 +214,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                     )}
                     {alt.model?.clientUnconfirmed && (
                       <span
-                        class="flag-tag flag-tag-tiny"
+                        class="gear-row-flag-tag gear-row-flag-tag-tiny"
                         data-testid="bis-alt-client-unconfirmed"
                         title={bisCopy.clientUnconfirmedTitle}
                       >
@@ -255,7 +255,15 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
   )}
 </li>
 
-<style>
+<style is:global>
+  /* `is:global` (deploy-gate LCP fix, 2026-09-30): this used to be a scoped `<style>`, which
+     stamps a `data-astro-cid-*` attribute on every element this component renders -- at 10
+     rows x up to ~6 alternatives each x 10 bands/factions on this page, that's the single
+     largest source of the page's bloat. Every selector below is namespaced under either
+     `.gear-row-*` or one of `.gear-row-new-pill`/`.gear-row-flag-tag*` (renamed from
+     `.new-pill`/`.flag-tag*` in this same change so every selector here carries the
+     component's own prefix), so going global widens nothing: confirmed no other component
+     in src/ defines any of these class names (grepped before this change). */
   /* Design system's Pick row grid: 90px slot label, the pick, the runners-up, and (only
      once real worn-gear data exists) a 190px You column -- 90px/1fr/1fr today, spec §4.D's
      own explicit "never a 4th column rendered blank" rule for the blocked state. */
@@ -351,7 +359,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
   .gear-row-ilvl {
     color: var(--color-muted, #999);
   }
-  .new-pill {
+  .gear-row-new-pill {
     display: inline-flex;
     align-items: center;
     border-radius: 999px;
@@ -363,11 +371,11 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
     font-weight: 700;
     text-transform: uppercase;
   }
-  /* Muted sibling of `.new-pill` for a pick or alternative's own flags (`effect_unmodelled`,
+  /* Muted sibling of `.gear-row-new-pill` for a pick or alternative's own flags (`effect_unmodelled`,
      `low_value`, fourth wow-player sweep day 3): same shape, no gold -- these mark a
      limitation of the pick, not an achievement of it, so they never borrow the "new" pill's
      celebratory colour. */
-  .flag-tag {
+  .gear-row-flag-tag {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -380,7 +388,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
     text-transform: uppercase;
     white-space: nowrap;
   }
-  .flag-tag-tiny {
+  .gear-row-flag-tag-tiny {
     padding: 0 0.3rem;
     font-size: 9px;
   }

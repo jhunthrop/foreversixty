@@ -47,7 +47,10 @@ const { itemId, model, build, class: className = '' } = Astro.props;
   )}
 </span>
 
-<style>
+<style is:global>
+  /* `is:global` (deploy-gate LCP fix, 2026-09-30): see VerifiedGlyph.astro's own note --
+     same trade, same guarantee (selector stays namespaced under this component's own
+     class, so nothing broadens). */
   .item-pill {
     position: relative;
   }
