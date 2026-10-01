@@ -1,0 +1,46 @@
+# web/fonts/glyphs.txt
+# Explicit glyph inventory for the five self-hosted font subsets (Cinzel 700, Barlow
+# 400/600/700, JetBrains Mono 500). Every character the site may render in these faces
+# must appear here; web/scripts/check-glyph-coverage.mjs verifies that against a fixture
+# build of dist/ (HTML and the client JS bundles -- Svelte islands' copy only exists in
+# the latter), the markdown content, and the game data JSON. Generation command and
+# rationale: web/fonts/README.md.
+#
+# Printable ASCII, 0x20-0x7E.
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+#
+# Latin-1 Supplement letters and punctuation, U+00A0-U+00FF (covers non-breaking space,
+# degree, plus-minus, multiplication sign, middle dot, section sign and accented Latin
+# letters, among others).
+ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ
+#
+# General punctuation used in copy: en dash, em dash, left/right single and double
+# quotes, ellipsis, bullet, narrow no-break space, minus sign.
+–—‘’“”…• −
+#
+# Found by web/scripts/check-glyph-coverage.mjs scanning the built client JS bundles
+# (this copy is Svelte component text, never present in server-rendered HTML):
+#   U+2192 rightwards arrow -- src/lib/home-landing-copy.ts, src/lib/sim/copy.ts
+#     ("Set up the companion", "1 -> 5 over the pull")
+#   U+2190 leftwards arrow  -- src/components/GuildClaim.svelte ("Back to guild")
+#   U+2020 dagger           -- src/lib/report/format.ts and several report components,
+#     marking a figure the summary cannot rescope to a window
+#   U+203A single right angle quote -- report disclosure affordances (NightView.svelte,
+#     ActorRow.svelte: "per pull \u203a")
+# None of Cinzel/Barlow/JetBrains Mono's `latin` cmap contains U+2190, U+2192 or U+2020
+# (checked with fontTools against the source @fontsource files, before any subsetting), so
+# those three already render through the fallback stack in tokens.css today, with or
+# without this file -- pyftsubset can't add a glyph the source face never had. U+203A IS in
+# all three source cmaps and so is genuinely included in the subsets below. All four are
+# listed here anyway so the inventory stays an honest record of every character the site
+# renders, and so a future font swap that does carry one of the first three picks it up for
+# free; web/src/assets/fonts/fonts.generated.test.ts documents this exact exception list
+# rather than asserting the subsets cover 100% of this file's code points.
+→←†›
+#
+# U+2039 (single left-pointing angle quote, the mirror of U+203A above) is not used in any
+# copy, but pyftsubset's GSUB/GPOS closure (kept in full per `--layout-features='*'`) pulls
+# its glyph in as soon as U+203A's glyph is kept -- confirmed with fontTools: the two map to
+# distinct glyph ids, so this is a second real outline, not a zero-cost side effect. Listed
+# explicitly rather than left as an undocumented stowaway.
+‹

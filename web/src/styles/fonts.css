@@ -13,24 +13,65 @@
    fallback stack in tokens.css and the real face swaps in once it downloads, rather than
    blocking render or being skipped entirely.
 
-   Every import below uses Fontsource's `latin-*` subset file (one @font-face rule, no
-   unicode-range split across latin/latin-ext/vietnamese/etc.) instead of the combined `*.css`
-   entry point. The app is English-only, so the extra subsets are dead weight -- and with
-   `inlineStylesheets: 'always'` shipping this CSS inside every HTML document, that weight was
-   inflating the document itself (not just an external, cacheable request), which cost real
-   LCP time under lighthouserc.json's mobile budget.
+   Each face below is declared against web/src/assets/fonts/<family>-<weight>-subset.woff2,
+   a custom subset of the same @fontsource file, rather than against Fontsource's `latin-*.css`
+   entry point (which this file imported until the web-font-subsets lane). The five latin
+   subsets Fontsource ships cover far more than this English-only site ever renders --
+   combining diacritics, the Euro and trademark signs, guillemets, OE/dotless-i -- and still
+   charge for every one of them on every page load, since all five faces are loaded by both
+   routes above. web/fonts/glyphs.txt is the explicit inventory of every character the site
+   can render (printable ASCII, the full Latin-1 Supplement block, and the handful of
+   typographic punctuation/arrows/dagger/angle-quote actually used in copy, found by
+   web/scripts/check-glyph-coverage.mjs scanning a fixture build's HTML and JS bundles plus
+   the markdown and game-data content). web/fonts/README.md has the exact `pyftsubset`
+   command, and web/src/assets/fonts/fonts.generated.test.ts pins each subset's cmap against
+   that inventory so a glyph the site needs is never silently missing from the subset. All
+   five subsets keep hinting and every OpenType layout feature (kerning, mark positioning)
+   exactly as Fontsource's source file has them -- subsetting only drops unused glyphs, cmap
+   entries and the table bytes that existed solely to serve them; hhea/OS2 vertical metrics
+   (ascent, descent, lineGap) are verified byte-identical to the source in that same test, so
+   the Barlow Fallback face below still matches exactly.
 
-   No font is preloaded. Both `<link rel="preload">` strategies in the task-11 fix-round-1
-   review (Barlow preloaded/Cinzel not, and the reverse) measured within noise of preloading
-   nothing at all once all five font files (Cinzel 700, Barlow 400/600/700, JetBrains Mono
-   500) are in play -- see that fix report for the full measurement table. Preloading only
-   mattered back when two or three font files were competing for bandwidth; at five files the
-   bottleneck is the total bytes needed before paint, which preloading doesn't reduce. */
-@import '@fontsource/cinzel/latin-700.css';
-@import '@fontsource/barlow/latin-400.css';
-@import '@fontsource/barlow/latin-600.css';
-@import '@fontsource/barlow/latin-700.css';
-@import '@fontsource/jetbrains-mono/latin-500.css';
+   No font is preloaded here; src/layouts/Base.astro preloads the three faces every page
+   paints with (Cinzel 700, Barlow 400/600) -- see that file for why those three and not the
+   other two. That preloading decision is unchanged by subsetting: the three preloaded URLs
+   just point at the smaller subset files now, at the same hashed-URL mechanism Vite already
+   gave the Fontsource imports. */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/cinzel-700-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-400-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-600-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-700-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/jetbrains-mono-500-subset.woff2') format('woff2');
+}
 
 /* Barlow needs a size-adjusted fallback face: it is the family behind the LCP-candidate text
    on every audited page (the homepage's hero label, a dungeon page's lead paragraph), and a
