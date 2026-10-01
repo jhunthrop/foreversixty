@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T01:07:27Z",
+  "generated_at": "2026-10-01T13:36:08Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.887901141,
-      "verify_run_seconds": 1.548533137,
+      "weights_run_seconds": 1.259526217,
+      "verify_run_seconds": 1.040213303,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1138,8 +1138,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.887901141,
-      "verify_run_seconds": 1.53089981,
+      "weights_run_seconds": 1.259526217,
+      "verify_run_seconds": 1.020588727,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1780,8 +1780,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.147123163,
-      "verify_run_seconds": 1.8972116190000001,
+      "weights_run_seconds": 1.365354161,
+      "verify_run_seconds": 1.27150883,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2423,8 +2423,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.147123163,
-      "verify_run_seconds": 1.887717128,
+      "weights_run_seconds": 1.365354161,
+      "verify_run_seconds": 1.2935906560000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3062,8 +3062,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.286616632,
-      "verify_run_seconds": 1.975631061,
+      "weights_run_seconds": 1.4950698949999999,
+      "verify_run_seconds": 1.302106727,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3702,8 +3702,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.286616632,
-      "verify_run_seconds": 1.9770972690000002,
+      "weights_run_seconds": 1.4950698949999999,
+      "verify_run_seconds": 1.322564591,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4353,8 +4353,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 2.304751892,
-      "verify_run_seconds": 2.146761013,
+      "weights_run_seconds": 1.421279542,
+      "verify_run_seconds": 1.373066667,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5008,8 +5008,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 2.304751892,
-      "verify_run_seconds": 2.08510387,
+      "weights_run_seconds": 1.421279542,
+      "verify_run_seconds": 1.342108546,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5314,7 +5314,7 @@
               "item_name": "Field Marshal's Dragonhide Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.3887675361078387
+              "dps_delta": -1.3887675361078393
             },
             {
               "item_id": 14637,
@@ -5387,7 +5387,7 @@
               "item_name": "Marshal's Dragonhide Grips",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.39275206815288394
+              "dps_delta": -0.3927520681528847
             },
             {
               "item_id": 227809,
@@ -5792,8 +5792,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.255691921,
-      "verify_run_seconds": 2.067745319,
+      "weights_run_seconds": 1.580313759,
+      "verify_run_seconds": 1.367910983,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6171,7 +6171,7 @@
               "item_name": "General's Dragonhide Grips",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.3927520681528847
+              "dps_delta": -0.39275206815288394
             },
             {
               "item_id": 227809,
@@ -6302,7 +6302,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.7826016455173996
+              "dps_delta": -0.7826016455174001
             },
             {
               "item_id": 11669,
@@ -6335,7 +6335,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.14896612100036363
+              "dps_delta": -0.14896612100036402
             },
             {
               "item_id": 11669,
@@ -6579,8 +6579,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.255691921,
-      "verify_run_seconds": 2.037554866,
+      "weights_run_seconds": 1.580313759,
+      "verify_run_seconds": 1.328315174,
       "coverage": {
         "back": {
           "eligible": 451,

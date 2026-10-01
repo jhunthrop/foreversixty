@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T01:11:39Z",
+  "generated_at": "2026-10-01T13:38:53Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -941,8 +941,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.874181039,
-      "verify_run_seconds": 1.034984239,
+      "weights_run_seconds": 0.608170933,
+      "verify_run_seconds": 0.658836568,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -2027,8 +2027,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.874181039,
-      "verify_run_seconds": 0.960391506,
+      "weights_run_seconds": 0.608170933,
+      "verify_run_seconds": 0.629552285,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2730,8 +2730,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.784490639,
-      "verify_run_seconds": 0.752904779,
+      "weights_run_seconds": 0.514984792,
+      "verify_run_seconds": 0.473844696,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3431,8 +3431,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.784490639,
-      "verify_run_seconds": 0.78787232,
+      "weights_run_seconds": 0.514984792,
+      "verify_run_seconds": 0.500989702,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4100,8 +4100,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.744710978,
-      "verify_run_seconds": 0.67659835,
+      "weights_run_seconds": 0.523581179,
+      "verify_run_seconds": 0.485372777,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4764,8 +4764,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.744710978,
-      "verify_run_seconds": 0.798506898,
+      "weights_run_seconds": 0.523581179,
+      "verify_run_seconds": 0.509891611,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5460,8 +5460,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.775189024,
-      "verify_run_seconds": 0.798661469,
+      "weights_run_seconds": 0.513593035,
+      "verify_run_seconds": 0.507494678,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6151,8 +6151,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.775189024,
-      "verify_run_seconds": 0.787056874,
+      "weights_run_seconds": 0.513593035,
+      "verify_run_seconds": 0.519123849,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6319,7 +6319,7 @@
           "item_name": "Virtuous Cowl",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 50.561083598473154,
+          "score": 50.56108359847315,
           "verified": true,
           "alternatives": [
             {
@@ -6886,8 +6886,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.821525241,
-      "verify_run_seconds": 0.821590445,
+      "weights_run_seconds": 0.543390253,
+      "verify_run_seconds": 0.515882503,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7054,7 +7054,7 @@
           "item_name": "Virtuous Cowl",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 50.56108359847315,
+          "score": 50.561083598473154,
           "verified": true,
           "alternatives": [
             {
@@ -7617,8 +7617,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.821525241,
-      "verify_run_seconds": 0.846096633,
+      "weights_run_seconds": 0.543390253,
+      "verify_run_seconds": 0.531330352,
       "coverage": {
         "back": {
           "eligible": 450,

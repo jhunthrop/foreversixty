@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T01:17:56Z",
+  "generated_at": "2026-10-01T13:43:07Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -604,8 +604,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.5958356679999999,
-      "verify_run_seconds": 1.469306979,
+      "weights_run_seconds": 1.059598272,
+      "verify_run_seconds": 0.964444076,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1277,8 +1277,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.5958356679999999,
-      "verify_run_seconds": 1.444597753,
+      "weights_run_seconds": 1.059598272,
+      "verify_run_seconds": 1.020138775,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1976,8 +1976,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.666431835,
-      "verify_run_seconds": 1.524164388,
+      "weights_run_seconds": 1.095626319,
+      "verify_run_seconds": 1.019956284,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2679,8 +2679,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.666431835,
-      "verify_run_seconds": 1.5425426,
+      "weights_run_seconds": 1.095626319,
+      "verify_run_seconds": 1.039718526,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3372,8 +3372,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.979298298,
-      "verify_run_seconds": 1.726948641,
+      "weights_run_seconds": 1.209594936,
+      "verify_run_seconds": 1.15823024,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4067,8 +4067,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.979298298,
-      "verify_run_seconds": 1.787925522,
+      "weights_run_seconds": 1.209594936,
+      "verify_run_seconds": 1.178895737,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4233,7 +4233,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -1.4898607004997257
+              "dps_delta": -1.4898607004997253
             },
             {
               "item_id": 14849,
@@ -4781,8 +4781,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.10841521,
-      "verify_run_seconds": 2.293361591,
+      "weights_run_seconds": 1.3029545630000001,
+      "verify_run_seconds": 1.470201434,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5511,8 +5511,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.10841521,
-      "verify_run_seconds": 2.305803014,
+      "weights_run_seconds": 1.3029545630000001,
+      "verify_run_seconds": 1.482843682,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6272,8 +6272,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.1328500200000002,
-      "verify_run_seconds": 2.233363136,
+      "weights_run_seconds": 1.341480419,
+      "verify_run_seconds": 1.414822021,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7025,8 +7025,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.1328500200000002,
-      "verify_run_seconds": 2.2278788,
+      "weights_run_seconds": 1.341480419,
+      "verify_run_seconds": 1.428370411,
       "coverage": {
         "back": {
           "eligible": 450,

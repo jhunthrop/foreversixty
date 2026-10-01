@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T01:10:01Z",
+  "generated_at": "2026-10-01T13:37:49Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.820469647,
-      "verify_run_seconds": 0.782570833,
+      "weights_run_seconds": 0.617258366,
+      "verify_run_seconds": 0.542185984,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.820469647,
-      "verify_run_seconds": 0.75024657,
+      "weights_run_seconds": 0.617258366,
+      "verify_run_seconds": 0.483104277,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.848082779,
-      "verify_run_seconds": 0.826671294,
+      "weights_run_seconds": 0.529518413,
+      "verify_run_seconds": 0.548244519,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.848082779,
-      "verify_run_seconds": 0.800241886,
+      "weights_run_seconds": 0.529518413,
+      "verify_run_seconds": 0.51134587,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.97793599,
-      "verify_run_seconds": 0.843422938,
+      "weights_run_seconds": 0.675085336,
+      "verify_run_seconds": 0.528328938,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.97793599,
-      "verify_run_seconds": 0.820796228,
+      "weights_run_seconds": 0.675085336,
+      "verify_run_seconds": 0.528938631,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4626,8 +4626,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.007653491,
-      "verify_run_seconds": 0.96548871,
+      "weights_run_seconds": 0.646386969,
+      "verify_run_seconds": 0.633382626,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5306,8 +5306,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.007653491,
-      "verify_run_seconds": 0.986263405,
+      "weights_run_seconds": 0.646386969,
+      "verify_run_seconds": 0.606390799,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5745,7 +5745,7 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.7231494216329497
+              "dps_delta": -2.7231494216329524
             },
             {
               "item_id": 13170,
@@ -6036,8 +6036,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.999324165,
-      "verify_run_seconds": 0.950005629,
+      "weights_run_seconds": 0.701579593,
+      "verify_run_seconds": 0.621889152,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6766,8 +6766,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.999324165,
-      "verify_run_seconds": 0.969781108,
+      "weights_run_seconds": 0.701579593,
+      "verify_run_seconds": 0.609151897,
       "coverage": {
         "back": {
           "eligible": 450,

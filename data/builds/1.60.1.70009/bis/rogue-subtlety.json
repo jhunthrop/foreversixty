@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T01:13:41Z",
+  "generated_at": "2026-10-01T13:40:16Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -562,8 +562,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.343446149,
-      "verify_run_seconds": 1.440678096,
+      "weights_run_seconds": 0.898227398,
+      "verify_run_seconds": 0.926203799,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1208,8 +1208,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.343446149,
-      "verify_run_seconds": 1.437001436,
+      "weights_run_seconds": 0.898227398,
+      "verify_run_seconds": 0.943530591,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1890,8 +1890,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.4620613599999999,
-      "verify_run_seconds": 1.600780555,
+      "weights_run_seconds": 0.979221664,
+      "verify_run_seconds": 1.043218434,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.4620613599999999,
-      "verify_run_seconds": 1.6133562590000001,
+      "weights_run_seconds": 0.979221664,
+      "verify_run_seconds": 1.190546641,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3269,8 +3269,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.547319334,
-      "verify_run_seconds": 1.641669998,
+      "weights_run_seconds": 1.148375184,
+      "verify_run_seconds": 1.175410023,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3967,8 +3967,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.547319334,
-      "verify_run_seconds": 1.671495164,
+      "weights_run_seconds": 1.148375184,
+      "verify_run_seconds": 1.076137526,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4148,7 +4148,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9187700190351911
+              "dps_delta": -0.9187700190351908
             }
           ]
         },
@@ -4678,8 +4678,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.596278575,
-      "verify_run_seconds": 1.959851161,
+      "weights_run_seconds": 1.029248213,
+      "verify_run_seconds": 1.281523231,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5388,8 +5388,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.596278575,
-      "verify_run_seconds": 2.123885162,
+      "weights_run_seconds": 1.029248213,
+      "verify_run_seconds": 1.35036645,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5685,7 +5685,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8011957859201052
+              "dps_delta": -0.8011957859201049
             },
             {
               "item_id": 12603,
@@ -6131,8 +6131,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.578416928,
-      "verify_run_seconds": 2.030175886,
+      "weights_run_seconds": 1.023385985,
+      "verify_run_seconds": 1.34396835,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6428,7 +6428,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8011957859201052
+              "dps_delta": -0.8011957859201049
             },
             {
               "item_id": 12603,
@@ -6874,8 +6874,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.578416928,
-      "verify_run_seconds": 2.100476375,
+      "weights_run_seconds": 1.023385985,
+      "verify_run_seconds": 1.314921209,
       "coverage": {
         "back": {
           "eligible": 451,

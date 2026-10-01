@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T01:06:42Z",
+  "generated_at": "2026-10-01T13:35:38Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -544,8 +544,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.7648190480000001,
-      "verify_run_seconds": 0.899189882,
+      "weights_run_seconds": 1.118712761,
+      "verify_run_seconds": 0.639047177,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1172,8 +1172,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.7648190480000001,
-      "verify_run_seconds": 0.876653637,
+      "weights_run_seconds": 1.118712761,
+      "verify_run_seconds": 0.662958627,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1833,8 +1833,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.7902969359999998,
-      "verify_run_seconds": 1.008941708,
+      "weights_run_seconds": 1.427316574,
+      "verify_run_seconds": 0.803406801,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2495,8 +2495,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.7902969359999998,
-      "verify_run_seconds": 1.029057621,
+      "weights_run_seconds": 1.427316574,
+      "verify_run_seconds": 0.817151911,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3147,8 +3147,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.892523457,
-      "verify_run_seconds": 1.079609286,
+      "weights_run_seconds": 1.281975333,
+      "verify_run_seconds": 0.789471982,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3799,8 +3799,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.892523457,
-      "verify_run_seconds": 1.163050746,
+      "weights_run_seconds": 1.281975333,
+      "verify_run_seconds": 0.722226145,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4471,8 +4471,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.959101559,
-      "verify_run_seconds": 1.241827578,
+      "weights_run_seconds": 1.33371667,
+      "verify_run_seconds": 0.885415002,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5142,8 +5142,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.959101559,
-      "verify_run_seconds": 1.247730544,
+      "weights_run_seconds": 1.33371667,
+      "verify_run_seconds": 0.820718745,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5923,8 +5923,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.974896206,
-      "verify_run_seconds": 1.225586355,
+      "weights_run_seconds": 1.358135142,
+      "verify_run_seconds": 0.868676058,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6189,7 +6189,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.5676451078027265
+              "dps_delta": -0.5676451078027257
             }
           ]
         },
@@ -6199,7 +6199,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.599091006201114,
+          "score": 30.59909100620111,
           "verified": true,
           "alternatives": [
             {
@@ -6207,21 +6207,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5812794036652734
+              "dps_delta": -0.5812794036652731
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381239
+              "dps_delta": -0.6702785051381236
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -0.9277997417784324
+              "dps_delta": -0.927799741778432
             }
           ]
         },
@@ -6711,8 +6711,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.974896206,
-      "verify_run_seconds": 1.191979376,
+      "weights_run_seconds": 1.358135142,
+      "verify_run_seconds": 0.829014775,
       "coverage": {
         "back": {
           "eligible": 451,

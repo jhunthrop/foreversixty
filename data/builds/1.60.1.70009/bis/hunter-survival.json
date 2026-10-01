@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T01:09:40Z",
+  "generated_at": "2026-10-01T13:37:34Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.944013752,
-      "verify_run_seconds": 1.804278446,
+      "weights_run_seconds": 1.2859086419999999,
+      "verify_run_seconds": 1.146579362,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1211,8 +1211,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.944013752,
-      "verify_run_seconds": 1.7379244630000001,
+      "weights_run_seconds": 1.2859086419999999,
+      "verify_run_seconds": 1.103677386,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.029355949,
-      "verify_run_seconds": 1.901597223,
+      "weights_run_seconds": 1.312389451,
+      "verify_run_seconds": 1.247843108,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2583,8 +2583,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.029355949,
-      "verify_run_seconds": 1.861585007,
+      "weights_run_seconds": 1.312389451,
+      "verify_run_seconds": 1.200938201,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3275,8 +3275,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.992684342,
-      "verify_run_seconds": 1.8954924480000002,
+      "weights_run_seconds": 1.310489922,
+      "verify_run_seconds": 1.198634834,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.992684342,
-      "verify_run_seconds": 1.8683222769999999,
+      "weights_run_seconds": 1.310489922,
+      "verify_run_seconds": 1.188259012,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4687,8 +4687,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.00927541,
-      "verify_run_seconds": 2.110929942,
+      "weights_run_seconds": 1.319168155,
+      "verify_run_seconds": 1.342438783,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5412,8 +5412,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.00927541,
-      "verify_run_seconds": 2.053258967,
+      "weights_run_seconds": 1.319168155,
+      "verify_run_seconds": 1.303129944,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5716,7 +5716,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.24012213979209307
+              "dps_delta": -0.24012213979209235
             },
             {
               "item_id": 23089,
@@ -6160,8 +6160,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.9970320099999999,
-      "verify_run_seconds": 2.089799435,
+      "weights_run_seconds": 1.2957784430000001,
+      "verify_run_seconds": 1.336275862,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6595,7 +6595,7 @@
               "item_name": "Legionnaire's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.11616481513570816
+              "dps_delta": -0.11616481513570852
             },
             {
               "item_id": 15052,
@@ -6654,7 +6654,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.08360115868060386
+              "dps_delta": -0.08360115868060368
             },
             {
               "item_id": 21201,
@@ -6687,7 +6687,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.02057113777797091
+              "dps_delta": -0.02057113777797073
             },
             {
               "item_id": 21201,
@@ -6909,8 +6909,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.9970320099999999,
-      "verify_run_seconds": 2.094124349,
+      "weights_run_seconds": 1.2957784430000001,
+      "verify_run_seconds": 1.55421438,
       "coverage": {
         "back": {
           "eligible": 450,
