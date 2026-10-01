@@ -383,26 +383,35 @@ test("a signed-in hero with a real gear/talent export sees real Best in slot, Ta
   await expect(descriptor).toContainText('Skyborne-US');
 
   // Best in slot (§3.B.2): 4 real upgrades against the committed
-  // data/builds/1.60.1.70009/bis/hunter-marksmanship.json band 20 (horde).
+  // data/builds/1.60.1.70009/bis/hunter-marksmanship.json band 20 (horde). Fix round 1 item
+  // A.1: the total is +2.3 DPS (never the pre-fix +11.7, which mixed the Ranger Bow's
+  // full-sim `score` against a `scoreItem`-only worn-gun estimate) -- head/neck/feet/ranged
+  // all resolve through either `scoreItem` (head) or the band's own sim-verified
+  // `alternatives[].dps_delta` (neck, feet, ranged), never the two mixed together.
   const bisCard = panel.getByTestId('home-hero-card-bis');
   await expect(bisCard.getByTestId('home-hero-card-bis-value')).toHaveText('4 upgrades', { timeout: 10_000 });
   await expect(bisCard).toContainText('20 to 29');
-  await expect(bisCard).toContainText('+11.7 DPS together');
+  await expect(bisCard).toContainText('+2.3 DPS together');
 
   // Talents (§3.B.2): 2 points differ from the band's own 11-point build.
   const talentsCard = panel.getByTestId('home-hero-card-talents');
   await expect(talentsCard.getByTestId('home-hero-card-talents-value')).toHaveText('Unoptimized');
-  await expect(talentsCard).toContainText('2 of 11 points differ from the 20 to 29 build');
+  await expect(talentsCard).toContainText('2 of the 11 points in the 20 to 29 build differ');
 
   // "Your upgrades" (§3.B.3): the four real rows, each slot the fixture's own worn item
-  // differs from the band's pick -- head, neck, feet, ranged.
+  // differs from the band's pick -- head, neck, feet, ranged. The ranged row (fix round 1
+  // item A.1) reads the band's own sim-verified gain, +0.7 DPS, never the mixed-scorer +10.1.
   await expect(page.getByTestId('home-upgrades-list')).toBeVisible();
   for (const slot of ['head', 'neck', 'feet', 'ranged']) {
     await expect(page.getByTestId(`home-upgrade-row-${slot}`)).toBeVisible();
   }
+  await expect(page.getByTestId('home-upgrade-gain-ranged')).toHaveText('+0.7 DPS');
   const alreadyBis = page.getByTestId('home-upgrades-already-bis');
   await expect(alreadyBis).toContainText('Already best in slot:');
   await expect(alreadyBis).toContainText('more slot');
+  // Fix round 1 item A.2: every already-best-in-slot name carries its rarity colour and the
+  // shared item tooltip, the same as every other item name on this page.
+  await expect(alreadyBis.locator('[data-testid^="item-hover-"]').first()).toBeVisible();
 
   // Switch character (§3.B.4): Frostspine's own real 2-upgrade count, and Grokmar (no spec
   // yet) shows no fabricated stat at all.

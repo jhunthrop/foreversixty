@@ -19,9 +19,10 @@
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import { specDisplayName } from '../../lib/sim/spec-label';
   import { dataUrl } from '../../lib/planner/load';
-  import { rarityBorderColorFor } from '../../lib/planner/items';
+  import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
   import UpgradeRow from './UpgradeRow.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+  import ItemHover from '../ItemHover.svelte';
 
   let { hero }: { hero: MeCharacter } = $props();
 
@@ -132,17 +133,22 @@
         {#each shownAlreadyBis as entry, index (entry.slot)}
           {#if index > 0}<span class="text-muted">·</span>{/if}
           {@const item = ctx?.items.get(entry.itemId)}
-          <img
-            src={dataUrl(activeBuild.build, `icons/${item?.icon ?? ''}.webp`)}
-            alt=""
-            width="18"
-            height="18"
-            loading="lazy"
-            decoding="async"
-            class="rounded-control border object-cover"
-            style={`border-color:${rarityBorderColorFor(item?.quality ?? 1)}`}
-          />
-          <span class="text-strong">{entry.itemName}</span>
+          <!-- Fix round 1 item A.2: the same rarity colour + shared hover-tooltip host every
+               other item name on this page already uses (`UpgradeRow.svelte`) -- a plain
+               `text-strong` name here was the one piece of chrome that didn't meet that bar. -->
+          <ItemHover itemId={entry.itemId} {classSlug} build={activeBuild.build} class="cursor-pointer">
+            <img
+              src={dataUrl(activeBuild.build, `icons/${item?.icon ?? ''}.webp`)}
+              alt=""
+              width="18"
+              height="18"
+              loading="lazy"
+              decoding="async"
+              class="rounded-control border object-cover"
+              style={`border-color:${rarityBorderColorFor(item?.quality ?? 1)}`}
+            />
+            <span class={rarityClassFor(item?.quality ?? 1)}>{entry.itemName}</span>
+          </ItemHover>
         {/each}
         {#if extraAlreadyBisCount > 0}
           <span class="text-muted">· {homeUpgradesCopy.moreSlots(extraAlreadyBisCount)}</span>

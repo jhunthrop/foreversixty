@@ -98,6 +98,13 @@
 
   const CARD_CLASS =
     'flex flex-col gap-[6px] p-[14px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150';
+
+  /** Fix round 1 item B.4 (ux-designer): the card's own answer is the one primary element and
+   *  reads at the design system's "stat figure" treatment (`design/DESIGN-SYSTEM.md`'s type
+   *  table: "Display | Cinzel 600-800 | ... stat figures 22px") -- Cinzel, uppercase, 22px,
+   *  not the `text-[15px] font-semibold` body-text size the mock's own three cards never use
+   *  for their headline number. The line underneath it stays Barlow 12px muted, unchanged. */
+  const CARD_FIGURE_CLASS = 'font-display text-[22px] font-bold uppercase tracking-[0.01em] text-strong';
 </script>
 
 <div class="reveal grid grid-cols-1 gap-3 sm:grid-cols-3" data-testid="home-hero-cards">
@@ -109,21 +116,29 @@
     {:else if hero.build?.gear === undefined}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.bestInSlotNotAvailable}</span>
     {:else if bandStatus === 'loading'}
-      <Skeleton lines={2} rowHeight="h-3" testid="home-hero-card-bis-skeleton" />
+      <!-- Fix round 1 item C.9 (tenet 13, no layout shift): sized for the ready figure's
+           own 22px Cinzel line (`CARD_FIGURE_CLASS`), not the 15px body-text line this
+           skeleton was built for before item B.4's display-stat treatment landed -- `h-3`
+           left the ready state ~30px taller than its own loading skeleton. -->
+      <Skeleton lines={3} rowHeight="h-4" testid="home-hero-card-bis-skeleton" />
     {:else if bandStatus === 'no-list-yet'}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.bestInSlotNoListYet}</span>
     {:else if upgrades !== null}
       {#if upgrades.upgrades.length === 0}
-        <span class="text-strong text-[15px] font-semibold" data-testid="home-hero-card-bis-value">
+        <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-bis-value">
           {homeHeroCardsCopy.bestInSlotAllMatchFigure}
         </span>
         <span class="text-muted text-[12px]">{homeHeroCardsCopy.bestInSlotAllMatchLine(bandLabel)}</span>
       {:else}
-        <span class="text-strong text-[15px] font-semibold" data-testid="home-hero-card-bis-value">
+        <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-bis-value">
           {homeHeroCardsCopy.bestInSlotFigure(upgrades.upgrades.length)}
         </span>
         <span class="text-muted text-[12px]">
-          {homeHeroCardsCopy.bestInSlotUpgradesLine(bandLabel, upgrades.totalGainDps)}
+          {homeHeroCardsCopy.bestInSlotUpgradesLine(
+            bandLabel,
+            upgrades.totalGainDps,
+            upgrades.notSimCheckedCount,
+          )}
         </span>
       {/if}
     {/if}
@@ -136,11 +151,12 @@
     {:else if hero.build?.talents === undefined}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
     {:else if bandStatus === 'loading'}
-      <Skeleton lines={2} rowHeight="h-3" testid="home-hero-card-talents-skeleton" />
+      <!-- Fix round 1 item C.9: same height fix as the Best in slot card's own skeleton. -->
+      <Skeleton lines={3} rowHeight="h-4" testid="home-hero-card-talents-skeleton" />
     {:else if bandStatus === 'no-list-yet'}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNoListYet}</span>
     {:else if talentDelta !== null && ctx !== null}
-      <span class="text-strong text-[15px] font-semibold" data-testid="home-hero-card-talents-value">
+      <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-talents-value">
         {talentDelta === 0
           ? homeHeroCardsCopy.talentsOptimizedFigure
           : homeHeroCardsCopy.talentsUnoptimizedFigure}
@@ -157,12 +173,14 @@
     {:else if simStatus === 'failed'}
       <span class="text-muted text-[12px]">{homePanelCopy.noSimYet}</span>
     {:else if latestSim !== null}
-      <span class="text-strong text-[13px] font-semibold" data-testid="home-hero-card-sim-value">
+      <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
         {simCardLine(latestSim)}
-        {#if ctx !== null}
-          <span class="mono text-muted">· {homeHeroCardsCopy.simulatorBandSuffix(ctx.band.set_dps)}</span>
-        {/if}
       </span>
+      {#if ctx !== null}
+        <span class="text-muted font-mono text-[12px]"
+          >{homeHeroCardsCopy.simulatorBandSuffix(ctx.band.set_dps)}</span
+        >
+      {/if}
     {:else}
       <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
       <span class="text-nav text-[12px] font-semibold">{homePanelCopy.runAction}</span>

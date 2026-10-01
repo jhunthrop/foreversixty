@@ -72,7 +72,8 @@ describe('weightsRecordFor', () => {
 describe('upgradesFor', () => {
   const PICK = pick('head', 1, 'Band Pick Hood', 10); // 5 agility * weight 2 = score 10
 
-  it('flags a slot an upgrade when the worn item differs from the pick, with the DPS gain converted via reference_dps_per_point', () => {
+  // --- rule (c): non-weapon slot, no alternative match -> scoreItem diff ------------------
+  it('rule (c): flags a slot an upgrade when the worn item differs from the pick, with the DPS gain converted via reference_dps_per_point', () => {
     const items = new Map([
       [1, item(1, 'Band Pick Hood', { agility: 5 })],
       [2, item(2, 'Starter Cap', { agility: 0 })],
@@ -89,7 +90,8 @@ describe('upgradesFor', () => {
     expect(result.alreadyBis).toHaveLength(0);
   });
 
-  it('treats wearing the pick itself as already best in slot, not an upgrade', () => {
+  // --- rule (a): worn item is the pick itself -> not an upgrade --------------------------
+  it('rule (a): treats wearing the pick itself as already best in slot, not an upgrade', () => {
     const items = new Map([[1, item(1, 'Band Pick Hood', { agility: 5 })]]);
     const character: Pick<MeCharacter, 'build'> = {
       build: { source: 'addon', captured_at: '', gear: { head: 1 } },
@@ -99,7 +101,7 @@ describe('upgradesFor', () => {
     expect(result.alreadyBis).toEqual([{ slot: 'head', itemId: 1, itemName: 'Band Pick Hood' }]);
   });
 
-  it('treats a listed alternative with dps_delta 0 as a tie, not an upgrade', () => {
+  it('rule (a): treats a listed alternative with dps_delta 0 as a tie, not an upgrade', () => {
     const pickWithTie: BisSlot = {
       ...PICK,
       alternatives: [
@@ -118,7 +120,78 @@ describe('upgradesFor', () => {
     expect(result.alreadyBis).toEqual([{ slot: 'head', itemId: 3, itemName: 'Tied Alt' }]);
   });
 
-  it("counts an empty slot (nothing equipped) as an upgrade, with the pick's full score as the gain", () => {
+  // --- rule (b): worn item is a listed (non-zero) alternative -> -dps_delta, never scoreItem ----
+  it('rule (b): a worn item listed as an alternative uses the sim-verified -dps_delta, never scoreItem, even for a non-weapon slot', () => {
+    const pickWithAlt: BisSlot = {
+      ...PICK,
+      alternatives: [
+        {
+          item_id: 4,
+          item_name: 'Runner-up Hood',
+          source: 'World drop',
+          source_kind: 'world_drop',
+          dps_delta: -0.5,
+        },
+      ],
+    };
+    // scoreItem would score this item identically to the tied alt in the test above (agility
+    // 5 == the pick's own 5), which would wrongly read as a tie by stat weight alone -- the
+    // real, sim-verified dps_delta (-0.5) must win instead.
+    const items = new Map([
+      [1, item(1, 'Band Pick Hood', { agility: 5 })],
+      [4, item(4, 'Runner-up Hood', { agility: 5 })],
+    ]);
+    const character: Pick<MeCharacter, 'build'> = {
+      build: { source: 'addon', captured_at: '', gear: { head: 4 } },
+    };
+    const result = upgradesFor(character, band({ slots: [pickWithAlt] }), items);
+    expect(result.upgrades).toHaveLength(1);
+    expect(result.upgrades[0]).toMatchObject({ wornItemId: 4, gainDps: 0.5, notSimChecked: false });
+    expect(result.totalGainDps).toBeCloseTo(0.5);
+  });
+
+  it("rule (b): reproduces the real fixture's Ranger Bow gain from the band's own dps_delta, not a scoreItem diff", () => {
+    // The exact regression fix round 1 found: data/builds/1.60.1.70009/bis/hunter-
+    // marksmanship.json band 20 (horde) ranged.alternatives names Lil Timmy's Peashooter
+    // (13136) at dps_delta -0.7432720066167775 against the Ranger Bow pick (score 178.445,
+    // which bakes in the bow's own weapon DPS -- a figure scoreItem cannot reproduce from
+    // `agility: 4` alone, which is why this must route through the alternative, not the
+    // score-unit diff).
+    const rangerBow: BisSlot = {
+      slot: 'ranged',
+      item_id: 3021,
+      item_name: 'Ranger Bow',
+      source: 'World drop',
+      source_kind: 'world_drop',
+      score: 178.44547117657908,
+      verified: true,
+      alternatives: [
+        {
+          item_id: 13136,
+          item_name: "Lil Timmy's Peashooter",
+          source: 'World drop',
+          source_kind: 'world_drop',
+          dps_delta: -0.7432720066167775,
+          verified: true,
+        },
+      ],
+    };
+    const items = new Map([[13136, item(13136, "Lil Timmy's Peashooter", { agility: 4 })]]);
+    const character: Pick<MeCharacter, 'build'> = {
+      build: { source: 'addon', captured_at: '', gear: { ranged: 13136 } },
+    };
+    const result = upgradesFor(
+      character,
+      band({ slots: [rangerBow], reference_dps_per_point: 0.059705486370807484 }),
+      items,
+    );
+    expect(result.upgrades).toHaveLength(1);
+    expect(result.upgrades[0]!.notSimChecked).toBe(false);
+    expect(result.upgrades[0]!.gainDps).toBeCloseTo(0.7432720066167775, 5);
+    expect(result.totalGainDps).toBeCloseTo(0.7432720066167775, 5);
+  });
+
+  it("rule (c): counts an empty slot (nothing equipped) as an upgrade, with the pick's full score as the gain", () => {
     const items = new Map([[1, item(1, 'Band Pick Hood', { agility: 5 })]]);
     const character: Pick<MeCharacter, 'build'> = { build: { source: 'addon', captured_at: '', gear: {} } };
     const result = upgradesFor(character, band({ slots: [PICK] }), items);
@@ -127,19 +200,25 @@ describe('upgradesFor', () => {
     expect(result.upgrades[0]!.gainDps).toBeCloseTo(1); // (10 - 0) * 0.1
   });
 
-  it("never fabricates a gain for a worn item id this build's item table does not carry", () => {
+  it("rule (c): never fabricates a gain for a worn item id this build's item table does not carry", () => {
     const items = new Map([[1, item(1, 'Band Pick Hood', { agility: 5 })]]);
     const character: Pick<MeCharacter, 'build'> = {
       build: { source: 'addon', captured_at: '', gear: { head: 999 } },
     };
     const result = upgradesFor(character, band({ slots: [PICK] }), items);
     expect(result.upgrades).toHaveLength(1);
-    expect(result.upgrades[0]).toMatchObject({ wornItemId: 999, wornUnknown: true, gainDps: null });
+    expect(result.upgrades[0]).toMatchObject({
+      wornItemId: 999,
+      wornUnknown: true,
+      gainDps: null,
+      notSimChecked: false,
+    });
     expect(result.totalGainDps).toBe(0);
   });
 
-  it('never fabricates a gain for a sim-decided pick that carries no score', () => {
-    const simDecidedPick = pick('ranged', 5, 'Sim Decided Bow', undefined);
+  // --- rule (d): weapon slot, no alternative match -> gain unknown, notSimChecked ---------
+  it('rule (d): a weapon slot with no alternative match is still an upgrade, but the gain is unknown and excluded from the total', () => {
+    const weaponPick = pick('ranged', 5, 'Sim Decided Bow', undefined);
     const items = new Map([
       [5, item(5, 'Sim Decided Bow', {})],
       [6, item(6, 'Old Bow', {})],
@@ -147,9 +226,27 @@ describe('upgradesFor', () => {
     const character: Pick<MeCharacter, 'build'> = {
       build: { source: 'addon', captured_at: '', gear: { ranged: 6 } },
     };
-    const result = upgradesFor(character, band({ slots: [simDecidedPick] }), items);
+    const result = upgradesFor(character, band({ slots: [weaponPick] }), items);
     expect(result.upgrades).toHaveLength(1);
-    expect(result.upgrades[0]!.gainDps).toBeNull();
+    expect(result.upgrades[0]).toMatchObject({ gainDps: null, notSimChecked: true });
+    expect(result.totalGainDps).toBe(0);
+    expect(result.notSimCheckedCount).toBe(1);
+  });
+
+  it('rule (d): a weapon slot never uses scoreItem even when the pick does carry a score', () => {
+    // If this fell through to the scoreItem path (as it did before fix round 1), it would
+    // compute a large, wrong "gain" from the pick's full-sim score. It must not.
+    const weaponPickWithScore = pick('main_hand', 7, 'Big Score Axe', 500);
+    const items = new Map([
+      [7, item(7, 'Big Score Axe', { agility: 1 })],
+      [8, item(8, 'Starter Axe', { agility: 1 })],
+    ]);
+    const character: Pick<MeCharacter, 'build'> = {
+      build: { source: 'addon', captured_at: '', gear: { main_hand: 8 } },
+    };
+    const result = upgradesFor(character, band({ slots: [weaponPickWithScore] }), items);
+    expect(result.upgrades).toHaveLength(1);
+    expect(result.upgrades[0]).toMatchObject({ gainDps: null, notSimChecked: true });
   });
 
   it('skips a slot the band has no known source for entirely -- neither an upgrade nor already best in slot', () => {

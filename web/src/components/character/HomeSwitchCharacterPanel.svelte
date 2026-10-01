@@ -87,7 +87,13 @@
           <div class="flex min-h-11 items-center gap-3">
             {@render rowCrest(character)}
             {@render rowText(character)}
-            <span class="text-muted text-[12px]" data-testid="current-character-bar-switch-current">
+            <!-- Fix round 1 item B.5: the mock's own gold-outline pill (§3.B.4's "the pill
+                 `Current` (gold outline..."), not a plain muted label -- the same bordered,
+                 transparent-fill recipe `GearRow.astro`'s own "New" pill uses. -->
+            <span
+              class="border-gold text-gold shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-bold tracking-[0.08em] uppercase"
+              data-testid="current-character-bar-switch-current"
+            >
               {currentCharacterCopy.switchCurrentMarker}
             </span>
           </div>
@@ -103,7 +109,7 @@
             {@render rowText(character)}
             {#if upgradeCount !== undefined}
               <span
-                class="mono text-muted shrink-0 text-[12px]"
+                class="text-muted shrink-0 font-mono text-[12px]"
                 data-testid={`current-character-bar-switch-upgrades-${character.key}`}
               >
                 {currentCharacterCopy.switchUpgradesStat(upgradeCount)}

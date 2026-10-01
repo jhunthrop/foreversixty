@@ -19,6 +19,13 @@ import { hasKnownSource } from '../bis/source-cell';
 import type { BisBand, BisSlot } from '../bis/types';
 import { SLOTS, type Item, type Slot } from '../planner/types';
 
+/** The slots a weapon can occupy -- `scoreItem` only sums `item.stats`, so it cannot
+ *  reproduce a weapon's own damage-based score term (its published `score` bakes that in,
+ *  `scoreItem` does not), which is exactly the ~13x overstatement fix round 1 caught on the
+ *  Ranger Bow row. A weapon slot's gain is only ever read off a sim-verified
+ *  `BisAlternative.dps_delta` (`alternativeGainDps`); never `scoreItem`-diffed. */
+const WEAPON_SLOTS: ReadonlySet<string> = new Set(['main_hand', 'off_hand', 'ranged']);
+
 /** One slot where the character's worn item differs from the band's own pick (and is not a
  *  scored tie with it -- see `tiesWithPick`). */
 export interface SlotUpgrade {
@@ -34,18 +41,31 @@ export interface SlotUpgrade {
    *  export naming an id the site cannot score (a data gap, not an empty slot). */
   wornUnknown: boolean;
   /**
-   * The pick's own score minus the worn item's score, converted from the band's
-   * `reference_stat_points` units to real DPS via the band's own `reference_dps_per_point`
-   * (the identical conversion the BiS page's weight rail already documents for turning a
-   * normalized scale factor into "DPS per point" -- see `BisStatWeight.dps_per_point`'s own
-   * doc). `null` when either half of that subtraction cannot be honestly computed: the
-   * band's own pick carries no `score` at all (a sim-decided row -- see `BisSlot.score`'s
-   * own doc, "absent on a row the ranker's own sim decided"), the band carries no
-   * `reference_dps_per_point` (a file published before that field existed), or the worn
-   * item's id is not in this build's item table (`wornUnknown`). Never a raw score-unit
-   * number badged as DPS, and never a fabricated figure for an item this site cannot score.
+   * The pick's own advantage over the worn item, in real DPS, computed one of two ways (fix
+   * round 1: never mix them against each other):
+   *
+   *   1. The worn item is a listed `alternatives` entry: `-alt.dps_delta`, the ranker's own
+   *      sim-verified gap (`BisAlternative.dps_delta` is the pick's advantage over the
+   *      alternative, so negating it gives the alternative's -- the worn item's -- own
+   *      advantage from switching to the pick). A listed alternative with `dps_delta === 0`
+   *      is a tie, handled by `tiesWithPick` before this is ever computed.
+   *   2. Otherwise, for a non-weapon slot, `(pick.score - scoreItem(worn, weights)) *
+   *      reference_dps_per_point` -- the band's own `reference_stat_points` score delta,
+   *      converted to DPS the same way the BiS page's weight rail documents
+   *      (`BisStatWeight.dps_per_point`'s own doc).
+   *
+   * `null` (never a fabricated number) when neither path applies: a weapon slot
+   * (`notSimChecked`) with no alternative match, the band carries no
+   * `reference_dps_per_point`, the pick carries no `score` at all (a sim-decided row), or the
+   * worn item's id is not in this build's item table (`wornUnknown`).
    */
   gainDps: number | null;
+  /** True when `gainDps` is null specifically because this is a weapon slot with no
+   *  sim-verified alternative to compare against -- `scoreItem` is never used for a weapon,
+   *  so this is a real "we don't have a verified number," not a data gap elsewhere. Renders
+   *  as the BiS page's own muted "not sim-checked" tag (`bisCopy.notSimCheckedTag`) and is
+   *  excluded from `totalGainDps`/the card line's own DPS sum. */
+  notSimChecked: boolean;
 }
 
 export interface UpgradesResult {
@@ -56,8 +76,12 @@ export interface UpgradesResult {
    *  it), for the "Already best in slot" footer line -- never claims a slot the band itself
    *  has no known source for. */
   alreadyBis: { slot: Slot; itemId: number; itemName: string }[];
-  /** The sum of every known (non-null) `gainDps` across `upgrades`. */
+  /** The sum of every known (non-null) `gainDps` across `upgrades` -- never includes a
+   *  `notSimChecked` row. */
   totalGainDps: number;
+  /** How many `upgrades` are `notSimChecked` -- the card line's own "N slots not sim-checked"
+   *  clause reads this count rather than re-deriving it. */
+  notSimCheckedCount: number;
 }
 
 /** `band.weights` (an array of `{stat, weight}` rows) as the `Record<string, number>`
@@ -66,6 +90,14 @@ export interface UpgradesResult {
  *  identical scorer without this module caring which one it was given. */
 export function weightsRecordFor(band: Pick<BisBand, 'weights'>): SpecWeights {
   return Object.fromEntries(band.weights.map((weight) => [weight.stat, weight.weight]));
+}
+
+/** The worn item's own listed-alternative row, when `pick.alternatives` names it -- `undefined`
+ *  for an item the pick's own runner-up list does not carry at all (most worn items: the
+ *  ranker only publishes a handful of runners-up per slot). */
+function alternativeFor(pick: BisSlot, wornItemId: number | undefined) {
+  if (wornItemId === undefined) return undefined;
+  return (pick.alternatives ?? []).find((alt) => alt.item_id === wornItemId);
 }
 
 /**
@@ -77,7 +109,7 @@ export function weightsRecordFor(band: Pick<BisBand, 'weights'>): SpecWeights {
 function tiesWithPick(pick: BisSlot, wornItemId: number | undefined): boolean {
   if (wornItemId === undefined) return false;
   if (pick.item_id === wornItemId) return true;
-  return (pick.alternatives ?? []).some((alt) => alt.item_id === wornItemId && alt.dps_delta === 0);
+  return alternativeFor(pick, wornItemId)?.dps_delta === 0;
 }
 
 /**
@@ -99,6 +131,7 @@ export function upgradesFor(
   const upgrades: SlotUpgrade[] = [];
   const alreadyBis: UpgradesResult['alreadyBis'] = [];
   let totalGainDps = 0;
+  let notSimCheckedCount = 0;
 
   for (const slot of SLOTS) {
     const pick = bySlot.get(slot);
@@ -118,31 +151,57 @@ export function upgradesFor(
 
     const wornItem = wornItemId === undefined ? undefined : items.get(wornItemId);
     const wornUnknown = wornItemId !== undefined && wornItem === undefined;
-    const gainDps = gainDpsFor(pick, wornItem, wornUnknown, band, weights);
+    const { gainDps, notSimChecked } = gainFor(slot, pick, wornItemId, wornItem, wornUnknown, band, weights);
     if (gainDps !== null) totalGainDps += gainDps;
+    if (notSimChecked) notSimCheckedCount += 1;
 
-    upgrades.push({ slot, pick, wornItemId, wornItemName: wornItem?.name, wornUnknown, gainDps });
+    upgrades.push({
+      slot,
+      pick,
+      wornItemId,
+      wornItemName: wornItem?.name,
+      wornUnknown,
+      gainDps,
+      notSimChecked,
+    });
   }
 
   upgrades.sort((a, b) => (b.gainDps ?? Number.NEGATIVE_INFINITY) - (a.gainDps ?? Number.NEGATIVE_INFINITY));
-  return { upgrades, alreadyBis, totalGainDps };
+  return { upgrades, alreadyBis, totalGainDps, notSimCheckedCount };
 }
 
-function gainDpsFor(
+/** Rule (fix round 1): (a) a tie is filtered out before this runs; (b) a worn item listed in
+ *  the pick's own `alternatives` always wins -- the ranker's own sim-verified number, never
+ *  second-guessed by `scoreItem`; (c) otherwise, for a non-weapon slot, the `scoreItem`
+ *  stat-weight diff; (d) otherwise (a weapon slot with no alternative match), the gain is
+ *  unknown -- never diff a full-sim `score` (which bakes in weapon DPS) against a
+ *  `scoreItem` approximation (which cannot). */
+function gainFor(
+  slot: Slot,
   pick: BisSlot,
+  wornItemId: number | undefined,
   wornItem: Item | undefined,
   wornUnknown: boolean,
   band: BisBand,
   weights: SpecWeights,
-): number | null {
+): { gainDps: number | null; notSimChecked: boolean } {
+  const alternative = alternativeFor(pick, wornItemId);
+  if (alternative !== undefined) {
+    // tiesWithPick already filtered out dps_delta === 0; every alternative reaching here is a
+    // real, sim-verified gain.
+    return { gainDps: -alternative.dps_delta, notSimChecked: false };
+  }
+  if (WEAPON_SLOTS.has(slot)) {
+    return { gainDps: null, notSimChecked: true };
+  }
   if (
     pick.score === undefined ||
     band.reference_dps_per_point === undefined ||
-    band.reference_dps_per_point === null
+    band.reference_dps_per_point === null ||
+    wornUnknown
   ) {
-    return null;
+    return { gainDps: null, notSimChecked: false };
   }
-  if (wornUnknown) return null;
   const wornScore = wornItem === undefined ? 0 : scoreItem(wornItem, weights);
-  return (pick.score - wornScore) * band.reference_dps_per_point;
+  return { gainDps: (pick.score - wornScore) * band.reference_dps_per_point, notSimChecked: false };
 }

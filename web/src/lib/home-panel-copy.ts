@@ -69,16 +69,26 @@ export const homeHeroCardsCopy = {
     `${upgradeCount} upgrade${upgradeCount === 1 ? '' : 's'}`,
   bestInSlotAllMatchFigure: 'Best in slot',
   bestInSlotAllMatchLine: (bandLabel: string): string => `every slot matches the ${bandLabel} list`,
-  bestInSlotUpgradesLine: (bandLabel: string, totalGainDps: number): string =>
-    `in your band, ${bandLabel} · +${totalGainDps.toFixed(1)} DPS together`,
+  /** Fix round 1 item A.1: `notSimCheckedCount` names how many upgrade slots this band's own
+   *  figure excludes (a weapon slot with no sim-verified alternative, `lib/home/upgrades.ts`'s
+   *  own `notSimChecked`) -- said here rather than silently dropped, so the total always adds
+   *  up to a number a player can audit against the table below it. */
+  bestInSlotUpgradesLine: (bandLabel: string, totalGainDps: number, notSimCheckedCount: number): string => {
+    const base = `in your band, ${bandLabel} · +${totalGainDps.toFixed(1)} DPS together`;
+    if (notSimCheckedCount === 0) return base;
+    const clause = notSimCheckedCount === 1 ? 'one slot' : `${notSimCheckedCount} slots`;
+    return `${base}, ${clause} not sim-checked`;
+  },
   talentsLabel: 'Talents',
   talentsNotAvailable:
     'Not available yet: no talent export for this character. Open the addon once to send it.',
   talentsNoListYet: 'No talent build published yet for this spec and band.',
   talentsOptimizedFigure: 'Optimized',
   talentsUnoptimizedFigure: 'Unoptimized',
+  /** Fix round 1 item A.3: names whose points the denominator counts (the band's own build),
+   *  not just a bare number next to an unrelated band label. */
   talentsLine: (pointsDiffer: number, bandTalentPoints: number, bandLabel: string): string =>
-    `${pointsDiffer} of ${bandTalentPoints} points differ from the ${bandLabel} build · compare in the planner`,
+    `${pointsDiffer} of the ${bandTalentPoints} points in the ${bandLabel} build differ · compare in the planner`,
   simulatorLabel: 'Simulator',
   /** §3.B.2's "Y.Y in band best in slot" clause, appended to the visitor's own saved-sim
    *  line only once the band's own `set_dps` is known -- never a pairing the band file does

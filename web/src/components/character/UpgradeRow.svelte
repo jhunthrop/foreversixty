@@ -9,6 +9,7 @@
 <script lang="ts">
   import type { SlotUpgrade } from '../../lib/home/upgrades';
   import { homeUpgradesCopy } from '../../lib/home-panel-copy';
+  import { bisCopy } from '../../lib/bis/copy';
   import { slotSourceLine } from '../../lib/home/source-line';
   import { dataUrl } from '../../lib/planner/load';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
@@ -101,9 +102,22 @@
     </ItemHover>
   </span>
 
-  <span class="upgrade-row-gain mono" data-testid={`home-upgrade-gain-${upgrade.slot}`}>
-    {gainLabel}
-  </span>
+  {#if upgrade.notSimChecked}
+    <!-- Fix round 1 item A.1(d): a weapon slot with no sim-verified alternative never shows a
+         scoreItem-diffed number (that's the exact ~13x Ranger Bow overstatement the regression
+         was). The BiS page's own vocabulary for "ranked, but no full sim run behind it." -->
+    <span
+      class="upgrade-row-gain-unchecked"
+      data-testid={`home-upgrade-gain-${upgrade.slot}`}
+      title={bisCopy.notSimCheckedTitle}
+    >
+      {bisCopy.notSimCheckedTag}
+    </span>
+  {:else}
+    <span class="upgrade-row-gain font-mono" data-testid={`home-upgrade-gain-${upgrade.slot}`}>
+      {gainLabel}
+    </span>
+  {/if}
 </li>
 
 <style>
@@ -167,16 +181,30 @@
     font-weight: 700;
     color: var(--color-kill, #7fd48a);
   }
+  .upgrade-row-gain-unchecked {
+    text-align: right;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-muted, #999);
+  }
 
   @media (max-width: 720px) {
     .upgrade-row {
       grid-template-columns: 1fr;
       row-gap: 6px;
     }
+    /* Spec §3.B.3/§5: the stacked phone row keeps the connecting arrow, rotated 90° to point
+       down from the worn item to the BiS pick instead of sideways -- never hidden (fix round
+       1 item B.6: this used to be `display: none`, dropping the one glyph that tells a
+       player which item is "you" and which is "the upgrade" once the two columns stack). */
     .upgrade-row-arrow {
-      display: none;
+      display: block;
+      transform: rotate(90deg);
     }
-    .upgrade-row-gain {
+    .upgrade-row-gain,
+    .upgrade-row-gain-unchecked {
       text-align: left;
     }
   }
