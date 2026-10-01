@@ -5,10 +5,9 @@
 // without this the container throws NoMatchingRenderer rather than rendering an empty
 // shell. sim/specs.astro takes no `session` prop and would pass either way; it shares the
 // container for one setup rather than two.
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
-import { loadRenderers } from 'astro:container';
+import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { VIEW_GAP } from '../lib/current-character-layout';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
@@ -19,8 +18,7 @@ import Specs from './sim/specs.astro';
 let container: AstroContainer;
 
 beforeAll(async () => {
-  const renderers = await loadRenderers([getContainerRenderer()]);
-  container = await AstroContainer.create({ renderers });
+  container = await createPageContainer();
 });
 
 const OG_HOOKS = [

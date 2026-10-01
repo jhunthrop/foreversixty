@@ -6,9 +6,8 @@
 // The Svelte renderer has to be handed to the container explicitly, exactly as
 // _planner.test.ts does: logs.astro mounts the Account island directly, and Astro's
 // integrations are not loaded in a unit test, so without this the island fails to render.
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
-import { loadRenderers } from 'astro:container';
+import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import companion from '../data/companion.json';
 import { logsCompanionCopy } from '../lib/reports/copy';
@@ -17,8 +16,7 @@ import Logs from './logs.astro';
 let container: AstroContainer;
 
 beforeAll(async () => {
-  const renderers = await loadRenderers([getContainerRenderer()]);
-  container = await AstroContainer.create({ renderers });
+  container = await createPageContainer();
 });
 
 describe('/logs', () => {

@@ -8,9 +8,7 @@
 // it is asserted off the rendered output rather than as a literal substring of the source,
 // same as the page it replaces.
 import { readFileSync } from 'node:fs';
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
-import { loadRenderers } from 'astro:container';
+import { createPageContainer } from '../test-support/page-container';
 import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
 import { SETUP_NAV_ITEM } from '../lib/nav';
@@ -55,8 +53,7 @@ const STRING_COPY_KEYS = [
 let html: string;
 
 beforeAll(async () => {
-  const renderers = await loadRenderers([getContainerRenderer()]);
-  const container = await AstroContainer.create({ renderers });
+  const container = await createPageContainer();
   html = await container.renderToString(SetupPage);
 });
 

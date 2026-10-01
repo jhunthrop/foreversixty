@@ -5,9 +5,8 @@
 //
 // The Svelte renderer has to be handed to the container explicitly: Astro's integrations
 // are not loaded in a unit test, so without this the island renders as an empty shell.
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
-import { loadRenderers } from 'astro:container';
+import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Planner from './planner.astro';
 import activeBuild from '../data/active-build.json';
@@ -15,8 +14,7 @@ import activeBuild from '../data/active-build.json';
 let container: AstroContainer;
 
 beforeAll(async () => {
-  const renderers = await loadRenderers([getContainerRenderer()]);
-  container = await AstroContainer.create({ renderers });
+  container = await createPageContainer();
 });
 
 describe('planner.astro', () => {

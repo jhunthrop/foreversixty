@@ -1,7 +1,6 @@
 // web/src/pages/_sim-tools.test.ts
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
-import { loadRenderers } from 'astro:container';
+import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Gear from './sim/gear.astro';
 import Talents from './sim/talents.astro';
@@ -12,8 +11,7 @@ import { TOOL_SKELETONS } from '../lib/sim/bulk-skeleton';
 let container: AstroContainer;
 
 beforeAll(async () => {
-  const renderers = await loadRenderers([getContainerRenderer()]);
-  container = await AstroContainer.create({ renderers });
+  container = await createPageContainer();
 });
 
 const OG_HOOKS = [
