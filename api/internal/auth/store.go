@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 // ErrNotFound is returned when a row that must exist does not: an unknown
@@ -131,12 +133,36 @@ type Character struct {
 	// Guild is this character's current guild membership, omitted when
 	// it has none.
 	Guild *CharacterGuild `json:"guild,omitempty"`
+	// Spec is the character's primary talent tree, named from Build's decoded talent
+	// split (buildFieldsFromExport): the tree with strictly the most points. Omitted
+	// when Build is nil, when its export does not decode, when the split ties between
+	// two or more trees, or when no points are spent at all — "not known yet" to the
+	// web, same as an absent Build.
+	Spec string `json:"spec,omitempty"`
 }
 
 // CharacterBuild is a character's addon_exports row, as GET /v1/me exposes it.
 type CharacterBuild struct {
 	Source     string    `json:"source"`
 	CapturedAt time.Time `json:"captured_at"`
+	// Gear, Talents, Level and DataBuild come from decoding this row's export string
+	// (fs1.Decode) — the facts the account page needs to compute upgrades and a point
+	// split without the web ever parsing an addon export itself. Each is omitted,
+	// independently, whenever the export does not decode at all or simply carries
+	// nothing for that one field (an addon or Battle.net build older than this
+	// contract, or one with no level=/who= section) — buildFieldsFromExport never
+	// fabricates a value Decode did not actually read.
+	Gear      map[string]int `json:"gear,omitempty"`
+	Talents   *BuildTalents  `json:"talents,omitempty"`
+	Level     *int           `json:"level,omitempty"`
+	DataBuild string         `json:"data_build,omitempty"`
+}
+
+// BuildTalents is a character's decoded talent split: Trees' per-tree rank string
+// exactly as the export carries it, Points its digit-sum total, both in tree order.
+type BuildTalents struct {
+	Trees  []string `json:"trees"`
+	Points []int    `json:"points"`
 }
 
 // CharacterGuild is a character's guild_characters row, as GET /v1/me
@@ -168,7 +194,26 @@ type Guild struct {
 // Store is every account read and write. One type rather than one per
 // table: they are all small, they all belong to sign-in, and the handlers
 // take them as one dependency.
-type Store struct{ Pool *pgxpool.Pool }
+type Store struct {
+	Pool *pgxpool.Pool
+	// Trees is the loaded client build data buildFieldsFromExport uses to turn a
+	// decoded export's race and class slugs into Character's Race/Faction/Spec
+	// fields. Nil is safe (every character simply keeps whatever Battle.net already
+	// set, and never gets a Spec) for a test harness or a deployment that has not
+	// wired it up.
+	Trees *trees.Data
+	// Log is used only for the debug line buildFieldsFromExport writes when a stored
+	// export fails to decode at all — never for routine operation. Defaults to
+	// slog.Default() when nil.
+	Log *slog.Logger
+}
+
+func (s *Store) logger() *slog.Logger {
+	if s.Log != nil {
+		return s.Log
+	}
+	return slog.Default()
+}
 
 const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, bnet_imported_at, main_character_key`
 
@@ -393,7 +438,7 @@ const characterColumns = `c.key, c.region, c.ruleset, c.name, coalesce(c.class, 
 	        coalesce(c.realm_name, ''), c.level, coalesce(c.faction, ''), c.source,
 	        coalesce(c.race, ''), coalesce(c.gender, ''), c.equipped_item_level,
 	        c.avatar_url, c.render_url,
-	        ae.source, ae.captured_at,
+	        ae.source, ae.captured_at, coalesce(ae.export, ''),
 	        g.id, g.name, gc.rank, gc.rank_index, gc.verified_at is not null`
 
 // characterFrom is the join every character read shares: a character with its addon_exports
@@ -406,14 +451,16 @@ const characterFrom = `from characters c
 
 // scanCharacterRows reads every row of a characterColumns/characterFrom
 // query into Characters, attaching a CharacterGuild wherever the guild
-// join matched.
-func scanCharacterRows(rows pgx.Rows) ([]Character, error) {
+// join matched and decoding the row's export string (buildFieldsFromExport)
+// into Build's and the character's own gap-filling fields.
+func (s *Store) scanCharacterRows(rows pgx.Rows) ([]Character, error) {
 	defer rows.Close()
 	out := []Character{}
 	for rows.Next() {
 		var c Character
 		var buildSource *string
 		var buildCapturedAt *time.Time
+		var export string
 		var guildID *int64
 		var guildName, rank *string
 		var rankIndex *int
@@ -422,12 +469,13 @@ func scanCharacterRows(rows pgx.Rows) ([]Character, error) {
 			&c.Realm, &c.Level, &c.Faction, &c.Source,
 			&c.Race, &c.Gender, &c.ItemLevel,
 			&c.AvatarURL, &c.RenderURL,
-			&buildSource, &buildCapturedAt,
+			&buildSource, &buildCapturedAt, &export,
 			&guildID, &guildName, &rank, &rankIndex, &verified); err != nil {
 			return nil, fmt.Errorf("auth: scan characters: %w", err)
 		}
 		if buildSource != nil && buildCapturedAt != nil {
 			c.Build = &CharacterBuild{Source: *buildSource, CapturedAt: *buildCapturedAt}
+			s.buildFieldsFromExport(&c, export)
 		}
 		if guildID != nil {
 			c.Guild = &CharacterGuild{
@@ -447,7 +495,7 @@ func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, erro
 	if err != nil {
 		return nil, fmt.Errorf("auth: list characters: %w", err)
 	}
-	return scanCharacterRows(rows)
+	return s.scanCharacterRows(rows)
 }
 
 // CharactersByKeys reads the same per-character shape Characters does,
@@ -462,7 +510,7 @@ func (s *Store) CharactersByKeys(ctx context.Context, keys []string) ([]Characte
 	if err != nil {
 		return nil, fmt.Errorf("auth: characters by keys: %w", err)
 	}
-	return scanCharacterRows(rows)
+	return s.scanCharacterRows(rows)
 }
 
 // LinkCharacter records a character as belonging to an account. It
