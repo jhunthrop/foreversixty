@@ -302,6 +302,11 @@
        matters at the single-row tier, so it is scoped there too. */
     display: grid;
     grid-template-columns: repeat(2, auto);
+    /* The 2x2 tier hugs its facts too: signed out at 1024 the header's left column is the
+       whole content width, and a grid left to stretch spread two facts across 870px. */
+    width: fit-content;
+    max-width: 100%;
+    justify-content: start;
     gap: 36px;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-panel);
