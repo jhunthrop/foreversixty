@@ -54,8 +54,11 @@ permissions:
   contents: read
 env:
   PUBLIC_API_BASE_URL: https://api.foreversixty.gg
+# The scheduled lhci-nightly run must never cancel a push deploy on the same ref (it did on
+# 2026-10-02: the 07:15 UTC schedule fired while a push's deploy was mid-flight and the
+# deploy was cancelled, leaving main undeployed), so the group carries the event name.
 concurrency:
-  group: web-${{ github.ref }}
+  group: web-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build:
