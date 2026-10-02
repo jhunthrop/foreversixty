@@ -45,8 +45,7 @@
   import ImportBox from './ImportBox.svelte';
   import { importFromAddon } from '../../lib/addon/import';
   import OrderStrip from './OrderStrip.svelte';
-  import PlannerCharacterCard from './PlannerCharacterCard.svelte';
-  import PlannerHeader from './PlannerHeader.svelte';
+  import PlannerHeaderBand from './PlannerHeaderBand.svelte';
   import PlannerToolbar from './PlannerToolbar.svelte';
   import SummaryBar from './SummaryBar.svelte';
   import TreeTabs from './TreeTabs.svelte';
@@ -414,7 +413,7 @@
       // `loadReference` produces (both only need `store.treeVersion`/`slug`, already known),
       // so starting it here instead of after `reference` resolves turns two sequential round
       // trips into one. Planner rebuild, fix round 1: this is also what the header's own
-      // background art (`PlannerHeader.svelte`'s `headerArtSrc`, which needs `store.
+      // background art (`PlannerHeaderBand.svelte`'s `headerArtSrc`, which needs `store.
       // talentIndex`) now waits on, so halving this wait is half of the Lighthouse LCP
       // budget back. `.catch(() => {})` on a throwaway reference only silences the
       // "unhandled rejection" warning a promise nobody has awaited yet can raise while
@@ -566,18 +565,13 @@
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   {#if standalone}
-    <!-- Rebuild spec §4.A/§4.B: `ArtPanel` + `ClassHeader` + `CharacterCard`, the same
-         header family the BiS and home rebuilds shipped, replaces the bare page title and
-         the old current-character spine band (which duplicated Copy addon code, now in the
-         Share panel below). Fix round 1, item 2.a: the facts rail (Points left/Spent/Level/
-         DPS) now lives inside `PlannerHeader` itself, as the mock's own header bottom row --
-         `items-start`, not `items-center`, since the header is taller than the card now. -->
-    <div class="flex flex-col gap-4 px-[18px] md:px-0 lg:flex-row lg:items-start lg:gap-6">
-      <div class="min-w-0 lg:flex-1">
-        <PlannerHeader {store} {live} {gate} onshowdps={() => (dpsOptedIn = true)} />
-      </div>
-      <PlannerCharacterCard />
-    </div>
+    <!-- Rebuild spec §4.A/§4.B, fix round 5: `PlannerHeaderBand` owns the full-bleed band
+         (the same shape the BiS page's `ArtPanel` + `.header-row` ships), `PlannerHeader`
+         and `PlannerCharacterCard` as its own two grid columns -- replaces the bare page
+         title, the old current-character spine band (which duplicated Copy addon code, now
+         in the Share panel below), and the prior round's boxed header beside a separate
+         character-card panel. -->
+    <PlannerHeaderBand {store} {live} {gate} onshowdps={() => (dpsOptedIn = true)} />
   {:else}
     <!-- The non-standalone inline embed (Top Gear's "add a build", TalentCandidates.svelte)
          keeps its own pre-fix-round layout: no header, no rail -- just the flat facts bar
@@ -784,7 +778,8 @@
        spec.ts's own two footer tests first found at 360px on the `desktop` project only --
        diagnosing it directly (measuring the reserve element itself across both states)
        showed it pinned at the reserved figure in both, unmoving. The real source sat
-       outside this region entirely: `PlannerCharacterCard` (beside the header, §4.B) makes
+       outside this region entirely: `PlannerCharacterCard` (the band's own right column
+       from fix round 5, beside the header's own content before that, §4.B) makes
        its own `/v1/me` request, and those two tests alone left it unrouted, so it hit the
        real (unreachable here) API and resolved on its own schedule -- a second, unrelated
        async transition landing inside the exact window these tests measure. Fixed at the
