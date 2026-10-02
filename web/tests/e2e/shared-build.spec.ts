@@ -65,6 +65,54 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
   await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
 });
 
+// Fix round 2, item 7 (wow-player review finding 3): a populated shared build -- real
+// points spent, a real differs count against the build's own band -- confirming cells are
+// genuinely inert for a viewer (no click spends or removes a point on someone else's link)
+// rather than merely looking disabled. The fixture's hunter class pairs with its own
+// published `bis/hunter-marksmanship.json` (the fixture warrior's two trees, Arms/Fury,
+// have no published band file at all); 5 points in Lethal Shots (4001, tier 0, no prereq --
+// legal in one click each) against that file's own all-zero band 20 string differ by
+// exactly 5, with 4001 itself the one marked cell.
+const POPULATED_RECORD = {
+  id: 'hunterpop1',
+  class_id: 3,
+  race_id: 2,
+  tree_version: ACTIVE_BUILD,
+  point_order: [4001, 4001, 4001, 4001, 4001],
+  gear: {},
+  title: 'Shared Marksmanship build',
+  created_at: '2026-10-01T00:00:00Z',
+  views: 4,
+};
+const populatedSharedPage = pageFor(JSON.stringify(POPULATED_RECORD));
+
+test('a populated read-only build keeps every cell inert, in both directions', async ({ page }) => {
+  await page.route('**/b/hunterpop1', (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: populatedSharedPage }),
+  );
+  await page.goto('/b/hunterpop1');
+
+  await expect(page.getByTestId('talent-4001')).toHaveAttribute('data-rank', '5');
+  await expect(page.getByTestId('tree-points-302')).toHaveText('5');
+
+  // Differs-marked and counted against the build's own band, Load hidden (nothing to
+  // overwrite into on a read-only build), Fork offered in its place.
+  await expect(page.getByTestId('band-compare')).toContainText('5');
+  await expect(page.getByTestId('talent-differs-4001')).toBeVisible();
+  await expect(page.getByTestId('band-compare-load')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Fork' })).toBeVisible();
+
+  // Left-click an unspent cell: no point is added.
+  await page.getByTestId('talent-4002').click();
+  await expect(page.getByTestId('talent-4002')).toHaveAttribute('data-rank', '0');
+  await expect(page.getByTestId('planner-spent')).toHaveText('5/51');
+
+  // Right-click an already-spent cell: no point is removed either.
+  await page.getByTestId('talent-4001').click({ button: 'right' });
+  await expect(page.getByTestId('talent-4001')).toHaveAttribute('data-rank', '5');
+  await expect(page.getByTestId('planner-spent')).toHaveText('5/51');
+});
+
 // The API writes data-build itself, so malformed JSON there means the API is broken, not the
 // visitor. The island logs it and mounts anyway rather than leaving a blank page: an empty
 // planner someone can use beats nothing at all, and it cannot be read-only -- there is no

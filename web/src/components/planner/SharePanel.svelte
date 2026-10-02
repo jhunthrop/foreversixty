@@ -11,7 +11,6 @@
   import { tick } from 'svelte';
   import { addonCopy } from '../../lib/addon/copy';
   import { plannerCopy } from '../../lib/planner/copy';
-  import { levelReached } from '../../lib/planner/derive';
   import { plannerAddonCode, unsavedPlannerHref } from '../../lib/planner/current-character-planner';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import {
@@ -88,12 +87,7 @@
     const index = store.talentIndex;
     if (index === null || store.classRow === null || store.raceRow === null) return '';
     const trees = index.trees.map((tree, i) => ({ name: tree.name, points: store.split[i] ?? 0 }));
-    return plannerCopy.shareTextSummary(
-      store.raceRow.name,
-      store.classRow.name,
-      trees,
-      levelReached(store.order),
-    );
+    return plannerCopy.shareTextSummary(store.raceRow.name, store.classRow.name, trees, store.level);
   });
 
   async function copyToClipboard(text: string, source: 'link' | 'addon' | 'unsaved' | 'text'): Promise<void> {

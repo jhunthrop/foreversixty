@@ -20,7 +20,6 @@
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
   import { classColorVar } from '../../lib/report/format';
-  import { levelReached } from '../../lib/planner/derive';
   import { plannerHeaderCopy } from '../../lib/planner/copy';
   import { dataUrl } from '../../lib/planner/load';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
@@ -86,17 +85,24 @@
 </script>
 
 <div class="planner-header" data-testid="planner-header">
-  <!-- A CSS background-image, not an <img>: the Largest Contentful Paint API never
-       considers a CSS background as an LCP candidate (only <img>/<video>/text nodes are),
-       so this art -- which cannot even start its own fetch until `store.talentIndex`
-       resolves, several round trips after first paint -- never pushes the page's own LCP
-       out to whenever that late fetch finally lands. The crest/h1 (known from the URL
-       alone, no fetch) stay the real LCP candidates, same as before this art existed. A
-       missing or failed image needs no onerror fallback either: `.planner-header`'s own
-       flat `--color-raised` background already shows through, the same "ships flat" floor
-       §4.A/§7 always guaranteed. -->
+  <!-- A CSS background-image, not an <img>: a nicer fit for a decorative, `aria-hidden`
+       backdrop (no onerror fallback needed -- `.planner-header`'s own flat `--color-raised`
+       background already shows through a missing or still-loading image, the same "ships
+       flat" floor §4.A/§7 always guaranteed) -- but, contrary to this comment's own earlier
+       round-1 claim, NOT a way to dodge LCP candidacy: Chrome counts a CSS background the
+       moment it is visibly painted, `<img>`/`<video>`/text or not.
+
+       Fix round 2, item 3 (ux-designer review): the header renders flat -- this div painted
+       at `opacity:0`, nothing drawn -- until `store.talentIndex` resolves and names the
+       dominant tree's own background, several round trips after first paint the crest/h1
+       already won on (known from the URL alone, no fetch). An animated fade-in was tried
+       here first and measured worse, not better (see `.planner-header-art`'s own style
+       comment below for the numbers): Chrome still names this div the LCP element either
+       way, so the fade bought nothing and cost real milliseconds. The swap is instant once
+       the data is in hand instead. -->
   <div
     class="planner-header-art"
+    class:planner-header-art-visible={headerArtSrc !== null}
     style={headerArtSrc !== null ? `background-image:url(${headerArtSrc})` : undefined}
     aria-hidden="true"
   ></div>
@@ -122,7 +128,7 @@
         <h1 class="planner-header-h1" style={`color:${color}`} data-testid="planner-header-h1">
           {plannerHeaderCopy.h1(store.classRow?.name ?? store.classSlug)}
           <span class="planner-header-suffix">
-            · {store.raceRow?.name ?? ''} · Level {levelReached(store.order)}{specSuffix}
+            · {store.raceRow?.name ?? ''} · Level {store.level}{specSuffix}
           </span>
         </h1>
         <p class="planner-header-description">{plannerHeaderCopy.description}</p>
@@ -230,6 +236,27 @@
     height: 100%;
     background-size: cover;
     background-position: center;
+    /* Flat until the data resolves (fix round 2, item 3): opacity 0 so the element paints
+       nothing at first render, whatever `.planner-header`'s own flat background already
+       shows through is the only "floor" on first paint.
+
+       No `transition` here deliberately -- an animated fade was tried first and measured
+       with Lighthouse (mobile-throttled, real data): it moved the LCP timestamp *later*
+       (3660ms vs 3273ms; performance 0.89 vs 0.92, under this repo's own 0.90 floor for
+       this page) for no candidacy benefit at all, since Chrome still names this element
+       the LCP candidate the instant it is first painted at non-zero opacity, transition or
+       not (`largest-contentful-paint-element` names `.planner-header-art` in both a
+       transitioned and an un-transitioned build -- a CSS background-image is always LCP-
+       eligible once visible; nothing about *how* it becomes visible changes that). An
+       instant swap costs nothing extra once the image has already decoded off the critical
+       path, which an animated one does not get back. See the build report's "Fix round 2 /
+       item 3" section for the measurements and the real, still-open fix this would take (a
+       build-time class-to-background map, or shrinking the art below the h1's own
+       footprint) -- neither fits this round's scope. */
+    opacity: 0;
+  }
+  .planner-header-art-visible {
+    opacity: 1;
   }
   .planner-header-gradient {
     position: absolute;

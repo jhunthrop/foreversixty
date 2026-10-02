@@ -9,6 +9,7 @@
   import { untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { fetchMeOnce, type Me } from '../../lib/account/api';
+  import { heroCharacter } from '../../lib/account/hero-character';
   import { mainCharacter } from '../../lib/account/main-character';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { clearCurrent, readCurrent } from '../../lib/current-character';
@@ -20,7 +21,10 @@
     isBarePlannerUrl,
     writePlannerPointer,
   } from '../../lib/planner/current-character-planner';
-  import { ranksByTalent } from '../../lib/planner/derive';
+  import { bisCopy } from '../../lib/bis/copy';
+  import { bandForLevel } from '../../lib/bis/hover';
+  import { plannerCopy } from '../../lib/planner/copy';
+  import { levelReached, ranksByTalent } from '../../lib/planner/derive';
   import { encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
@@ -118,7 +122,12 @@
   type CodeNote =
     | { kind: 'message'; text: string }
     | { kind: 'tree-count'; got: string; want: string }
-    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean };
+    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean }
+    // Fix round 2 (ux-designer review finding 2): a band load (`?talents=`, or BandCompare's
+    // own Load button) is never a character or an addon import -- the 'reconstructed' note's
+    // own "Talents loaded from a character" wording is false for it, so it gets its own kind
+    // and its own copy rather than a borrowed branch of that one.
+    | { kind: 'band'; bandLabel: string };
 
   /** Set when the build came in as an FS1 code: either why it could not be read, or that its
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
@@ -197,6 +206,23 @@
     // beyond the class's own default, and still on the class this mount opened with.
     if (mainClassSlug === undefined || mainClassSlug === store.classSlug || store.order.length > 0) return;
     store.selectClass(mainClassSlug);
+  });
+
+  // Fix round 2 (wow-player review finding 1): Level must read the same real character the
+  // Character card beside this page shows, not a reconstructed figure that can openly
+  // disagree with it. The same hero-character lookup `createCharacterCardState` (Planner
+  // CharacterCard.svelte's own hook) makes, read from this mount's own session so the two
+  // panels can never pick two different characters. `null` (an anonymous visit, or before
+  // the session resolves) leaves `store.level` on its existing `levelReached(order)`
+  // fallback, unchanged for every bare build.
+  $effect(() => {
+    if (session === null) return;
+    const hero =
+      session.data === null
+        ? null
+        : (heroCharacter(readCurrent(), session.data.characters) ??
+          mainCharacter(session.data.characters, session.data.main_character_key));
+    store.setCharacterLevel(hero?.level ?? null);
   });
 
   // The chip's "Copy addon code" link; shared with SharePanel's own button (Task 10).
@@ -449,7 +475,8 @@
         talentsApplied = true;
         const rebuilt = loadFromBand(store.talentIndex, talentsParam);
         store.applyOrder(rebuilt.order, {});
-        codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length, gearOnly: false };
+        const bandLabel = bisCopy.bandRangeLabel(bandForLevel(levelReached(rebuilt.order)));
+        codeNote = { kind: 'band', bandLabel };
       }
 
       // Task 10: a `?code=`/restored code just applied above, or this mount's `record`.
@@ -575,6 +602,8 @@
           that no legal order reaches. The order is a reconstruction: the game does not record the order points
           were spent in.
         {/if}
+      {:else if codeNote.kind === 'band'}
+        {plannerCopy.bandLoadedNote(codeNote.bandLabel)}
       {:else}
         {codeNote.text}
       {/if}
@@ -821,21 +850,33 @@
           <div class="contents lg:col-span-4 lg:flex lg:flex-col lg:gap-8">
             <!-- Rebuild spec §4.D/§6: the new rail panel, answering review findings 1 and
                  3. `order-first` is the phone placement fix (§6: full width, above the tree
-                 row, never collapsed); `lg:order-none` leaves its desktop position -- first
-                 in this rail -- to plain DOM order. -->
+                 row, never collapsed); on desktop it stays first too (its own DOM position
+                 in this rail already puts it there, so no `lg:order-*` override is needed). -->
             <BandCompare
               {store}
               specOverride={specParam ?? undefined}
               onbanddiff={(diff) => (bandDiff = diff)}
-              onloaded={(dropped) => (codeNote = { kind: 'reconstructed', dropped, gearOnly: false })}
-              class="order-first lg:order-none"
+              onloaded={(bandLabel) => (codeNote = { kind: 'band', bandLabel })}
+              class="order-first"
             />
 
-            <!-- Fix round 1, item 2.a (the mock): "Sim this build" leaves the facts rail
-                 (now inside `PlannerHeader`) and lives here instead -- its own outlined gold
-                 secondary button, in the rail, directly above the Share panel. -->
+            <!-- Fix round 2 (ux-designer review finding 1): the desktop rail reads
+                 BandCompare -> Point order -> Sim this build -> Share -> Import, per the
+                 mock and §4.F -- a different order than phone's own (BandCompare -> Point
+                 order -> Import -> Sim -> Share), so desktop needs its own explicit
+                 `lg:order-*` set rather than cancelling back to plain DOM position
+                 (fix round 1's `lg:order-none` left Point order in its own DOM position,
+                 last, with nothing after it to share the rail's stretched height -- the
+                 ~215px gap the review measured). Point order moves first in markup order
+                 too (nearest its own `order-1`), right after BandCompare, so the two visual
+                 orders agree as closely as the mobile/desktop split allows. -->
+            <OrderStrip {store} class="order-1 lg:order-1" />
+
+            <!-- "Sim this build" leaves the facts rail (now inside `PlannerHeader`) and
+                 lives here instead -- its own outlined gold secondary button, directly
+                 under Point order on desktop, above the Share panel. -->
             <a
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-none"
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2"
               href={simHref}
               data-testid="planner-sim-link"
             >
@@ -843,7 +884,7 @@
             </a>
 
             <div
-              class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-none"
+              class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-3"
               data-testid="planner-toolbar"
             >
               <PlannerToolbar {store} {live} bind:confirmingReset />
@@ -863,15 +904,9 @@
                 }}
                 onwrongclass={standalone ? switchClassForImport : undefined}
                 phone={collapsesOnPhone}
-                class="order-2 mx-[18px] md:mx-0 lg:order-none"
+                class="order-2 mx-[18px] md:mx-0 lg:order-4"
               />
             {/if}
-
-            <!-- Rebuild spec §4.F: promoted from a phone `<details>` to the planner's
-                 primary leveling lens -- never collapsed on phone (no `phone` prop at all,
-                 so `OrderStrip` always renders its open `<section>` variant) and moved,
-                 via `order-1`, to sit directly under the active tree panel on phone. -->
-            <OrderStrip {store} class="order-1 lg:order-none" />
           </div>
         </div>
       </div>

@@ -42,10 +42,10 @@
      *  can draw the per-cell "differs from this band" marker (spec §4.E.4) from the same
      *  computation, rather than a second fetch/derivation of its own. */
     onbanddiff?: (diff: BandDiffView | null) => void;
-    /** Fires once a load actually applies, with how many of the band's own ranks the
-     *  reconstruction had to drop -- Planner.svelte reuses its existing addon-import note
-     *  for this, rather than a new message. */
-    onloaded?: (dropped: number) => void;
+    /** Fires once a load actually applies, with the band's own label -- fix round 2
+     *  (ux-designer review finding 2): a band load is never a character/addon import and
+     *  must never claim to be one in Planner.svelte's own reconstruction note. */
+    onloaded?: (bandLabel: string) => void;
     /** Merged onto the root element -- spec §6's phone placement (above the tree row,
      *  never collapsed) needs an `order-first` the rail's own desktop position does not. */
     class?: string;
@@ -126,7 +126,7 @@
     if (store.talentIndex === null || bandEntry === undefined) return;
     const result = loadFromBand(store.talentIndex, bandEntry.talents);
     store.applyOrder(result.order, {});
-    onloaded?.(result.dropped.length);
+    onloaded?.(bandLabel);
   }
 
   function requestLoad(): void {
@@ -233,7 +233,10 @@
       data-testid="band-compare-gear-link"
     >
       <span class="text-muted">{bandCompareCopy.gearRowLabel(bandLabel)}</span>
-      <span class="text-gold font-semibold">{bandCompareCopy.bestInSlotList}</span>
+      <span class="text-gold flex items-center gap-1 font-semibold">
+        {bandCompareCopy.bestInSlotList}
+        <span aria-hidden="true">→</span>
+      </span>
     </a>
   {/if}
 </section>

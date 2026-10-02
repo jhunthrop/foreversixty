@@ -70,6 +70,17 @@ export function createPlannerStore(init: PlannerInit) {
   let readOnly = $state(init.readOnly ?? false);
   let sourceId = $state<string | null>(init.sourceId ?? null);
   let refusal = $state<string | null>(null);
+  /** The signed-in visitor's own real character level, when one is loaded beside this page
+   *  (fix round 2, wow-player review finding 1) -- `null` for an anonymous visit, where
+   *  `level` stays the reconstructed `levelReached(order)` figure the spec's own "a bare
+   *  build's own level is a real, always-computable fact" reasoning asks for. Set once by
+   *  the same hero-character lookup `PlannerCharacterCard`'s own session read already makes
+   *  (`Planner.svelte`), never derived here: a build's own point count can honestly disagree
+   *  with a real character's level (not every point unlocked is spent immediately), and the
+   *  Character card beside this page is the one place that number belongs to -- every other
+   *  reader of `level` must agree with it instead of silently recomputing a different
+   *  answer. */
+  let characterLevel = $state<number | null>(null);
 
   let talents = $state<TalentFile | null>(null);
   let itemFile = $state<ItemFile | null>(null);
@@ -181,8 +192,11 @@ export function createPlannerStore(init: PlannerInit) {
     get spent() {
       return order.length;
     },
+    /** The real character's level once one is loaded beside this page (`setCharacterLevel`),
+     *  otherwise the reconstructed `levelReached(order)` figure a bare/anonymous build has
+     *  always shown (fix round 2, wow-player review finding 1). */
     get level() {
-      return levelReached(order);
+      return characterLevel ?? levelReached(order);
     },
     get split() {
       return split;
@@ -329,6 +343,14 @@ export function createPlannerStore(init: PlannerInit) {
 
     clearRefusal(): void {
       refusal = null;
+    },
+
+    /** `null` for an anonymous visit (or before the session read resolves); a real level
+     *  once a signed-in visitor's own character is loaded beside this page. Not gated by
+     *  `editable()`: this is never a mutation to the build itself, just which number
+     *  `level` reports, and it has to keep working on a read-only shared build too. */
+    setCharacterLevel(level: number | null): void {
+      characterLevel = level;
     },
 
     reset(): void {

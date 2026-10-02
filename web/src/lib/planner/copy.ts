@@ -34,6 +34,13 @@ export const plannerCopy = {
     level: number,
   ): string =>
     `${raceName} ${className} · ${trees.map((tree) => `${tree.name} ${tree.points}`).join('/')} · Level ${level}`,
+  /** Fix round 2 (ux-designer review finding 2): a band load (the BiS page's "Talents in
+   *  planner" link, a guide's "Open this build in the planner", or `BandCompare`'s own Load
+   *  button) is never a character or an addon import -- the reconstruction note's existing
+   *  "Talents loaded from a character" wording is false for it, so it gets its own, honest
+   *  copy naming the band instead. */
+  bandLoadedNote: (bandLabel: string): string =>
+    `Loaded the ${bandLabel} build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.`,
 } as const;
 
 /** Rebuild spec §4.A: the header's own copy -- crest, h1, suffix. */
