@@ -16,7 +16,8 @@
   import { API_BASE_URL } from '../../lib/planner/config';
   import { mainCharacter, pointerForCharacter } from '../../lib/account/main-character';
   import { writeCurrent, CURRENT_CHARACTER_CHANGED } from '../../lib/current-character';
-  import CharacterPortrait from '../character/CharacterPortrait.svelte';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import { factionMarkSrc } from '../../lib/faction-mark';
 
   // One `/v1/me` read, shared with every other island through the client cache
   // (web/src/lib/data/query.ts) -- see Account.svelte and HomeAccountPanel.svelte's own
@@ -87,19 +88,79 @@
 
 <div class="flex items-center gap-3 text-[13px]" data-testid="session-nav" bind:this={root}>
   {#if session.status === 'loading'}
-    <span class="invisible inline-flex min-h-11 items-center px-2 md:min-h-0 md:px-0" aria-hidden="true">
+    <!-- Owner-reported defect, 2026-10-01: "signed-in status refreshes on every page
+         load" -- this island only replaces the signed-out shell above once it hydrates
+         (client:idle-after-load: `load` plus an 800ms floor) and its own /v1/me read
+         answers, so a returning signed-in visitor saw "Sign in" flash on every single
+         page for most of a second. Base.astro's own pre-paint inline script (reading the
+         exact persisted cache entry this component's `/v1/me` query writes, via
+         lib/data/query.ts's `storageKey`/lib/account/api.ts's `meKey`/`ME_TTL_MS`/
+         `ME_QUERY_VERSION`) fills this shell and marks it `data-ready` before first paint
+         when a fresh cached session exists -- the CSS below shows it, and hides the
+         invisible fallback span, only once that happens. Hydration then renders the exact
+         same chip from the exact same cached data (see the `signedIn` branch below), so
+         there is nothing to visibly swap; a stale/missing cache (or JS not running the
+         pre-paint script at all) simply leaves this exactly as it always rendered. -->
+    <div class="preflight-chip flex items-center gap-2 px-1" data-testid="account-menu-preflight">
+      <img
+        width="32"
+        height="32"
+        alt=""
+        decoding="async"
+        class="preflight-crest bg-raised shrink-0 rounded-full object-cover"
+        data-testid="account-menu-preflight-crest"
+      />
+      <img
+        width="16"
+        height="16"
+        alt=""
+        decoding="async"
+        class="hidden shrink-0"
+        data-testid="account-menu-preflight-faction"
+      />
+      <span class="text-nav" data-testid="account-menu-preflight-name"></span>
+    </div>
+    <span
+      class="preflight-fallback invisible inline-flex min-h-11 items-center px-2 md:min-h-0 md:px-0"
+      aria-hidden="true"
+      data-testid="account-menu-preflight-fallback"
+    >
       Sign in
     </span>
   {:else if signedIn}
     <details bind:open bind:this={detailsEl} data-testid="account-menu" class="relative">
       <summary class="flex min-h-11 list-none items-center gap-2 px-1 marker:content-none md:min-h-0">
-        {#if main !== null}
-          <CharacterPortrait character={main} size="sm" testid="account-menu-portrait" />
+        <!-- Owner-reported defect, 2026-10-01: the chip drew CharacterPortrait's square
+             class-icon shape; the approved mocks (SignedIn.png) show the circular ringed
+             class crest, then the faction emblem, then the battletag -- ClassCrestRing.svelte
+             is this recipe's one shared Svelte copy (see that component's own header). -->
+        {#if main !== null && main.class !== undefined}
+          <ClassCrestRing characterClass={main.class} size={32} testid="account-menu-portrait" />
+        {:else if main !== null}
+          <span
+            class="bg-raised border-line inline-block h-8 w-8 shrink-0 rounded-full border"
+            aria-hidden="true"
+            data-testid="account-menu-portrait-fallback"
+          ></span>
         {:else}
           <span
             class="bg-raised border-line text-text flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold"
             >{initial}</span
           >
+        {/if}
+        {#if main !== null && main.faction !== undefined}
+          <!-- Never a placeholder: a main character the import has not learned a faction
+               for yet simply omits the emblem rather than guessing one. -->
+          <img
+            src={factionMarkSrc(main.faction)}
+            alt=""
+            width="16"
+            height="16"
+            loading="lazy"
+            decoding="async"
+            class="inline-block shrink-0"
+            data-testid="account-menu-faction"
+          />
         {/if}
         <span class="text-nav hover:text-strong">{battletag}</span>
       </summary>
@@ -115,7 +176,22 @@
                 data-testid={`account-menu-character-${character.key}`}
                 onclick={() => onSwitch(character)}
               >
-                <CharacterPortrait {character} size="sm" testid={`account-menu-portrait-${character.key}`} />
+                <!-- One crest language across the chip and this menu (owner-reported
+                     defect 2026-10-01): CharacterPortrait's `sm` size always drew the same
+                     square (avatar, class icon, or letter), never this chip's circular ring. -->
+                {#if character.class !== undefined}
+                  <ClassCrestRing
+                    characterClass={character.class}
+                    size={32}
+                    testid={`account-menu-portrait-${character.key}`}
+                  />
+                {:else}
+                  <span
+                    class="bg-raised border-line inline-block h-8 w-8 shrink-0 rounded-full border"
+                    aria-hidden="true"
+                    data-testid={`account-menu-portrait-${character.key}-fallback`}
+                  ></span>
+                {/if}
                 <span>{character.name}</span>
               </button>
             {/each}
@@ -145,3 +221,33 @@
     </a>
   {/if}
 </div>
+
+<style>
+  /* Hidden until Base.astro's pre-paint script marks it ready (see this file's own note
+     on the `loading` branch above) -- a cache miss or stale cache leaves this exactly as
+     it has always rendered: the invisible fallback alone, reserving the "Sign in" link's
+     own width until hydration answers for real. */
+  .preflight-chip {
+    display: none;
+  }
+  /* `:global(...)`, not a plain scoped selector: `data-ready` is never set through a
+     Svelte binding (an `is:inline` script in Base.astro sets it with a plain
+     `setAttribute`, invisible to Svelte's static template analysis), so Svelte's
+     unused-CSS-selector pruning silently dropped both of these rules entirely without
+     it -- confirmed by inspecting the compiled output; there is no dev-time warning for
+     this one. */
+  :global(.preflight-chip[data-ready='1']) {
+    display: flex;
+  }
+  :global(.preflight-chip[data-ready='1'] ~ .preflight-fallback) {
+    display: none;
+  }
+  /* ClassCrestRing.svelte's own ring recipe, duplicated here rather than imported: this
+     element is filled by plain DOM writes from an `is:inline` script, never by Svelte, so
+     it never becomes a `<ClassCrestRing>` instance. Rest-state only (55% ring) -- this
+     shell is never interactive, and hydration replaces it with the real, interactive chip
+     (ClassCrestRing's own hover/focus states) before a pointer or keyboard could reach it. */
+  .preflight-crest {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c, var(--color-line)) 55%, transparent);
+  }
+</style>
