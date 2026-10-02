@@ -134,6 +134,9 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
 
   test('keyboard focus opens the tooltip and Escape closes it', async ({ page }) => {
     await page.goto('/bis/hunter/marksmanship');
+    // The shared host is a client:idle island; it opens for an already-focused row on
+    // mount, but waiting for its ready marker keeps this test free of that race entirely.
+    await page.locator('html[data-tooltip-host="ready"]').waitFor({ state: 'attached' });
     const icon = firstVisibleBand(page).locator('[data-testid^="item-hover-"]').first();
 
     await icon.focus();

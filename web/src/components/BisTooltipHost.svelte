@@ -172,7 +172,15 @@
     document.addEventListener('focusout', onFocusOut);
     document.addEventListener('click', onClick);
     document.addEventListener('keydown', onKeyDown);
+    // A keyboard user who tabbed onto a row before this island hydrated (the island is
+    // client:idle, and under CPU contention idle can come late) must still get the
+    // tooltip: open for the element that already holds focus, then mark the document so
+    // tests and any other code can wait for the host instead of racing it.
+    const alreadyFocused = hostFor(document.activeElement);
+    if (alreadyFocused !== null) openHost(alreadyFocused);
+    document.documentElement.dataset.tooltipHost = 'ready';
     return () => {
+      delete document.documentElement.dataset.tooltipHost;
       document.removeEventListener('pointerenter', onPointerEnter, true);
       document.removeEventListener('pointerleave', onPointerLeave, true);
       document.removeEventListener('focusin', onFocusIn);
