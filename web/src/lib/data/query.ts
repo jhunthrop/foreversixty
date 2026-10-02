@@ -54,7 +54,13 @@ function hashKey(key: string): string {
   return (h >>> 0).toString(16);
 }
 
-function storageKey(key: string): string {
+/** Exported for Base.astro's pre-paint account-chip script (owner-reported defect
+ *  2026-10-01): that script reads the same persisted `/v1/me` entry this module writes,
+ *  so it needs this module's own storage key for a given query key rather than a second,
+ *  drifting copy of `hashKey`'s algorithm. Astro's frontmatter runs server-side, so it can
+ *  import this and bake the resolved key into the inline script as a literal -- the inline
+ *  script itself never needs to hash anything at runtime. */
+export function storageKey(key: string): string {
   return `${STORAGE_PREFIX}${hashKey(key)}`;
 }
 

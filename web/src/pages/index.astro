@@ -121,8 +121,15 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
                 {homeHeroCopy.headline}
               </h1>
               <p class="max-w-[560px] text-[15px] leading-relaxed text-[#c9c2b2]">{homeHeroCopy.sentence}</p>
+              <!-- Owner-reported defect, 2026-10-01: `overflow-x-auto` forces the vertical
+                   axis to clip too, flattening every crest's outside ring/focus outline at
+                   this row's top and bottom. Padding (ring + focus-outline clearance: 6px
+                   top/bottom, 4px sides) cancelled by an equal negative margin on the same
+                   box widens the scrollport's clip boundary without moving this row in the
+                   hero's own flow (margin-box unchanged) -- the "Another class" row below
+                   (§3.B.5) needed the identical fix. -->
               <div
-                class="flex min-w-0 gap-3 overflow-x-auto pb-1 md:max-w-[760px] md:gap-2"
+                class="-mx-1 -my-1.5 flex min-w-0 gap-3 overflow-x-auto px-1 py-1.5 md:max-w-[760px] md:gap-2"
                 data-testid="home-class-picker"
               >
                 {classes.map((c) => (
@@ -322,15 +329,26 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             {homeClassPickerCopy.allSpecsLink}
           </a>
         </div>
-        <div class="bg-raised border-line rounded-panel flex min-w-0 gap-4 overflow-x-auto border px-6 py-[14px] md:justify-between md:gap-4">
-          {classes.map((c) => (
-            <a href={`/guides/${c.slug}`} class="flex shrink-0 flex-col items-center gap-[6px]">
-              <ClassCrest slug={c.slug} size={44} />
-              <span class="font-display text-[10px] font-bold" style={`color: ${c.color}`}>
-                {c.name}
-              </span>
-            </a>
-          ))}
+        <div class="bg-raised border-line rounded-panel border px-6 py-[14px]">
+          <!-- Owner-reported defect, 2026-10-01: `overflow-x-auto` forces the vertical axis
+               to clip too (CSS Overflow's "non-visible on one axis computes the other to
+               auto"), which cut ClassCrest's outside ring and focus outline flat at this
+               row's top/bottom. The scroll/clip boundary lives on this inner wrapper, not
+               the bordered panel above, so the fix never grows or shifts the panel's own
+               border/background -- matching padding (ring + focus-outline clearance: 6px
+               top/bottom, 4px sides) and negative margin on the SAME box cancel exactly in
+               the page's flow (margin-box unchanged), while the padding box each crest's
+               ring sits inside grows by that same amount. -->
+          <div class="-mx-1 -my-1.5 flex min-w-0 gap-4 overflow-x-auto px-1 py-1.5 md:justify-between md:gap-4">
+            {classes.map((c) => (
+              <a href={`/guides/${c.slug}`} class="flex shrink-0 flex-col items-center gap-[6px]">
+                <ClassCrest slug={c.slug} size={44} />
+                <span class="font-display text-[10px] font-bold" style={`color: ${c.color}`}>
+                  {c.name}
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 

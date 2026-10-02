@@ -378,9 +378,18 @@ export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null
   }
 }
 
-const ME_TTL_MS = 10 * 60 * 1000;
+/** Exported (with `meKey`/`ME_QUERY_VERSION` below) for Base.astro's pre-paint account-chip
+ *  script, owner-reported defect 2026-10-01: that script reads this exact query's persisted
+ *  entry out of `query.ts`'s localStorage cache before AccountMenu.svelte hydrates, and
+ *  needs this module's own TTL/version rather than a second, drifting copy of either. */
+export const ME_TTL_MS = 10 * 60 * 1000;
 
-function meKey(apiBase: string): string {
+/** `query.ts`'s `getOrCreateEntry` defaults a caller's omitted `version` to `0`; named here
+ *  (and passed explicitly below) so Base.astro's pre-paint script has one real export to
+ *  import instead of having to know that implicit default itself. */
+export const ME_QUERY_VERSION = 0;
+
+export function meKey(apiBase: string): string {
   return `${apiBase}/v1/me`;
 }
 
@@ -395,6 +404,7 @@ export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> 
   return query<Me | null>(meKey(apiBase), () => fetchMe(apiBase), {
     scope: 'private',
     ttlMs: ME_TTL_MS,
+    version: ME_QUERY_VERSION,
   });
 }
 
