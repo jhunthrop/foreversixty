@@ -73,7 +73,14 @@
     return best;
   });
 
+  /** Spec §13 (2026-10-02): the header ships flat. Art painted by this island after talent
+   *  data resolves is always the page's largest paint and lands at ~3.3 s under the audit's
+   *  throttling, which put the merged build at 0.89 against the 0.90 performance floor. The
+   *  art comes back when the planner can paint it from the first byte (per-class static
+   *  routes or a server-rendered class); flipping this constant is the whole switch. */
+  const HEADER_ART_ENABLED = false;
   const headerArtSrc = $derived.by(() => {
+    if (!HEADER_ART_ENABLED) return null;
     const tree = store.talentIndex?.trees[dominantTreeIndex];
     return tree ? dataUrl(store.treeVersion, `trees/${tree.background}.webp`) : null;
   });
