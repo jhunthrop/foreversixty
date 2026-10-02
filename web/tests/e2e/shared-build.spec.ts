@@ -141,5 +141,9 @@ test('a reference fetch that fails still mounts, and Planner offers the retry', 
   await page.goto('/b/k7x2qm4a');
 
   await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
+  // Fix round 4: the planner's own tree-load retry has its own accessible name now
+  // (LoadError's `retryAriaLabel`), distinct from PlannerCharacterCard's "Reload your
+  // character" -- CI's sandboxed network cannot reach the real /v1/me at all, so both can
+  // be on screen together here and `{ name: 'Try again' }` alone is ambiguous.
+  await expect(page.getByRole('button', { name: 'Reload talents' })).toBeVisible();
 });

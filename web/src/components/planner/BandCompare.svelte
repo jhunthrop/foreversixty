@@ -158,7 +158,17 @@
   </header>
 
   {#if file === undefined}
-    <Skeleton lines={3} rowHeight="h-4" testid="band-compare-skeleton" />
+    <!-- Fix round 4 (CI: the facts-rail/footer position tests this panel's own loading-to-
+         ready swap was moving, 18-33.5px, now that it reliably finishes mid-test instead of
+         before it): this panel's own ready state measures 88px total, at every width and
+         points-spent state checked, against this skeleton's old `lines={3}` default at
+         140.5px -- a real 52.5px the outer reserve divs (Planner.svelte, tuned for the
+         bigger talent-data swap) never accounted for, because this panel's own `bis/<spec>.
+         json` fetch resolves on its own schedule, independent of and after that swap. One
+         row at 20px plus this section's own header/gap/padding overhead (68.5px, measured
+         the same way) lands within a pixel of that same 88px -- close enough that nothing
+         downstream moves when this panel settles. -->
+    <Skeleton lines={1} rowHeight="h-5" testid="band-compare-skeleton" />
   {:else if file === null || bandEntry === undefined}
     <p class="text-muted text-[13px]" data-testid="band-compare-empty">
       {bandCompareCopy.noLevelingList(specKey !== null ? specDisplayName(specKey) : '')}

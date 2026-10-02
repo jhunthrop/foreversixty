@@ -123,6 +123,13 @@ test.describe('planner on a phone', () => {
 
     await page.goto('/planner');
     await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
+    // Fix round 4 (CI, under its own worker contention: this test's own "loading" snapshot
+    // landed while the routed /v1/me above was still resolving, not after -- the same race
+    // this describe block's beforeEach already names, just not fully closed by routing
+    // alone. A mocked response still costs a promise tick; waiting for the card's own
+    // loading placeholder to clear first guarantees that tick has already happened,
+    // whatever else the worker is doing, before either measurement below.
+    await page.getByTestId('planner-character-card-loading').waitFor({ state: 'detached' });
     const loading = await footerTop(page);
 
     land();
@@ -138,6 +145,8 @@ test.describe('planner on a phone', () => {
 
     await page.goto('/planner');
     await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
+    // Fix round 4: see the identical wait's own comment above.
+    await page.getByTestId('planner-character-card-loading').waitFor({ state: 'detached' });
     const loading = await footerTop(page);
 
     land();
