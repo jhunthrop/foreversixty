@@ -28,6 +28,23 @@ const SETTLED_PX = 4;
 test.describe('planner on a phone', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
+  // Rebuild spec §4.B: `PlannerCharacterCard` sits beside the header and makes its own
+  // `/v1/me` request, independent of the talent-data load these tests measure. Left
+  // unrouted, that request hits the real (unreachable in this suite) API and resolves on
+  // its own schedule, which is exactly the kind of unrelated, timing-dependent layout
+  // shift the footer-stability tests below exist to rule out. Routing it here as a fast,
+  // deterministic signed-out response keeps the card's own loading->omitted transition out
+  // of a window these tests are not about.
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/v1/me', (route) =>
+      route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: false, data: null, error: null, request_id: 'e2e' }),
+      }),
+    );
+  });
+
   test('shows one panel at a time behind a tab switcher', async ({ page }) => {
     await page.goto('/planner');
     const tabs = page.getByRole('tab');

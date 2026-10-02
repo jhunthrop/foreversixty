@@ -19,9 +19,12 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await showLastTalent(page);
-  // One point short: no figure, a line saying why, and nothing asked of the pool.
+  // One point short: no figure. Fix round 1, item 2.a: the dynamic "{n} points to go" count
+  // now lives under "Points left" (so it never repeats the DPS figure's own number); the
+  // facts rail's DPS slot reads a plain, static explainer instead.
   await expect(page.getByTestId('planner-dps')).toHaveText('—');
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('1 point to go');
+  await expect(page.getByTestId('planner-dps-error')).toHaveText('live when the build reaches 51 points');
+  await expect(page.getByTestId('planner-remaining-note')).toHaveText('1 point to go');
   await page.waitForTimeout(600);
   expect(simAssetRequests).toEqual([]);
 
@@ -33,7 +36,8 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
   // (dimmed) rather than blanking -- "a number that vanishes and reappears on every click is
   // worse than a stale number that dims" is the whole design decision this asserts.
   await page.getByTestId(LAST_TALENT).click({ button: 'right' });
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('1 point to go');
+  await expect(page.getByTestId('planner-dps-error')).toHaveText('live when the build reaches 51 points');
+  await expect(page.getByTestId('planner-remaining-note')).toHaveText('1 point to go');
   await expect(page.getByTestId('planner-dps')).not.toHaveText('—');
 
   // Spending it again settles into a fresh estimate of its own.
@@ -119,42 +123,32 @@ test('a phone is asked before anything runs, and the answer holds for the visit'
   await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
 });
 
-// The DPS column is one line taller than its neighbours (the ± line). Centring the bar's
-// columns put its caption and figure above everyone else's.
-test('the DPS caption and figure sit on the same lines as the rest of the summary bar', async ({
+// Fix round 1, item 2.a (the mock): "Sim this build" left the facts rail entirely -- it is
+// now its own outlined gold button in the rail, above the Share panel, no longer bundled
+// with the DPS figure. This replaces the old same-row alignment test with the layout it
+// actually describes now.
+test('"Sim this build" sits in the rail, above the Share panel, not beside the DPS figure', async ({
   page,
-}, testInfo) => {
+}) => {
   await page.goto(NEARLY_FINISHED_BUILD);
-  // Both first: the button mounts before the figure does, and a button measured while the
-  // figure's slot is still empty sits where the figure will be (the CI runner, slower than a
-  // Mac, read exactly that).
-  await expect(page.getByTestId('planner-dps')).toBeVisible();
-  await expect(page.getByTestId('planner-sim-link')).toBeVisible();
-  const top = (testid: string): Promise<number> =>
-    page.getByTestId(testid).evaluate((el) => Math.round(el.getBoundingClientRect().top));
-  const bottom = (testid: string): Promise<number> =>
-    page.getByTestId(testid).evaluate((el) => Math.round(el.getBoundingClientRect().bottom));
-  // The figure and "Sim this build" share a row from md (PlannerDps.svelte's `md:flex-row`)
-  // and stack on a phone, the button under the figure: side by side at phone width, the CI
-  // runner's wider fallback font wrapped the pair a row apart where a Mac never did.
-  if (testInfo.project.name === 'mobile') {
-    expect(await top('planner-sim-link')).toBeGreaterThanOrEqual(await bottom('planner-dps'));
-  } else {
-    expect(await top('planner-sim-link')).toBe(await top('planner-dps'));
-  }
-  // Desktop has the width to spare, so Spent and DPS stay neighbours there, same as before.
-  // Mobile does not: spec 2026-09-25 §6 widened "Left" to "Points left", which alone no
-  // longer fits beside Class/Race/Level and drops to Split/Spent's row -- the row DPS used
-  // to share -- leaving no room left for DPS once a real figure (wider than the placeholder
-  // em dash) is showing. DPS wrapping to its own row is what keeps its own width reservation
-  // (PlannerDps.svelte's `min-w-[7ch]`, same task) from ever fighting for that room instead.
-  if (testInfo.project.name === 'mobile') {
-    // With the Sim button under the figure (design loop) the DPS column is narrow enough
-    // to sit beside Spent again on some phones and drops below it on others; either way
-    // its caption never lands above Spent's row.
-    expect(await top('planner-dps')).toBeGreaterThanOrEqual(await top('planner-spent'));
-  } else {
-    expect(await top('planner-dps')).toBe(await top('planner-spent'));
-    expect(await bottom('planner-dps')).toBe(await bottom('planner-spent'));
-  }
+  const simLink = page.getByTestId('planner-sim-link');
+  const shareSection = page.getByTestId('planner-share-section');
+  await expect(simLink).toBeVisible();
+  await expect(shareSection).toBeVisible();
+  const simTop = await simLink.evaluate((el) => el.getBoundingClientRect().top);
+  const shareTop = await shareSection.evaluate((el) => el.getBoundingClientRect().top);
+  expect(simTop).toBeLessThan(shareTop);
+});
+
+// The facts rail (now inside PlannerHeader) must not change height as the figure fills in --
+// the same CLS concern the old row-sharing test guarded, applied to its new home.
+test('the facts rail keeps its own height as the DPS figure fills in', async ({ page }) => {
+  await page.goto(NEARLY_FINISHED_BUILD);
+  await showLastTalent(page);
+  const facts = page.getByTestId('planner-facts');
+  const height = (): Promise<number> => facts.evaluate((el) => el.getBoundingClientRect().height);
+  const before = await height();
+  await finishBuild(page);
+  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  expect(await height()).toBe(before);
 });

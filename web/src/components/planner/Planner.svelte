@@ -27,11 +27,12 @@
   import { DATA_LOAD_FAILED, DataLoadError, loadReference, loadTalents } from '../../lib/planner/load';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
-  import { treeRowColumnsClass } from '../../lib/planner/styles';
+  import { SECONDARY_BUTTON_FIXED, treeRowColumnsClass } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
   import { plannerSearchFor } from '../../lib/planner/url';
   import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
+  import { simCopy } from '../../lib/sim/copy';
   import { specRow } from '../../lib/sim/spec-label';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import LoadError from '../ui/LoadError.svelte';
@@ -383,13 +384,26 @@
 
     status = 'loading';
     try {
+      // Fired together, not one after the other: `loadTalents` depends on nothing
+      // `loadReference` produces (both only need `store.treeVersion`/`slug`, already known),
+      // so starting it here instead of after `reference` resolves turns two sequential round
+      // trips into one. Planner rebuild, fix round 1: this is also what the header's own
+      // background art (`PlannerHeader.svelte`'s `headerArtSrc`, which needs `store.
+      // talentIndex`) now waits on, so halving this wait is half of the Lighthouse LCP
+      // budget back. `.catch(() => {})` on a throwaway reference only silences the
+      // "unhandled rejection" warning a promise nobody has awaited yet can raise while
+      // `reference` is still in flight below -- the real rejection still reaches the
+      // `await talentsPromise` inside the nested `try`, unaffected by this one.
+      const talentsPromise = loadTalents(store.treeVersion, slug);
+      talentsPromise.catch(() => {});
+
       const reference = await loadReference(store.treeVersion);
       if (stale()) return;
       store.setReference(reference);
 
       let talents: TalentFile;
       try {
-        talents = await loadTalents(store.treeVersion, slug);
+        talents = await talentsPromise;
       } catch (error) {
         // A class this planner has no talent data for will never load no matter how many
         // times this is retried, so that -- and only that -- earns the code its one turn even
@@ -528,15 +542,21 @@
     <!-- Rebuild spec §4.A/§4.B: `ArtPanel` + `ClassHeader` + `CharacterCard`, the same
          header family the BiS and home rebuilds shipped, replaces the bare page title and
          the old current-character spine band (which duplicated Copy addon code, now in the
-         Share panel below). -->
-    <div class="flex flex-col gap-4 px-[18px] md:px-0 lg:flex-row lg:items-center lg:gap-6">
+         Share panel below). Fix round 1, item 2.a: the facts rail (Points left/Spent/Level/
+         DPS) now lives inside `PlannerHeader` itself, as the mock's own header bottom row --
+         `items-start`, not `items-center`, since the header is taller than the card now. -->
+    <div class="flex flex-col gap-4 px-[18px] md:px-0 lg:flex-row lg:items-start lg:gap-6">
       <div class="min-w-0 lg:flex-1">
-        <PlannerHeader {store} />
+        <PlannerHeader {store} {live} {gate} onshowdps={() => (dpsOptedIn = true)} />
       </div>
       <PlannerCharacterCard />
     </div>
+  {:else}
+    <!-- The non-standalone inline embed (Top Gear's "add a build", TalentCandidates.svelte)
+         keeps its own pre-fix-round layout: no header, no rail -- just the flat facts bar
+         with "Sim this build" bundled into the DPS figure, unchanged. -->
+    <SummaryBar {store} {live} {simHref} {gate} {standalone} onshowdps={() => (dpsOptedIn = true)} />
   {/if}
-  <SummaryBar {store} {live} {simHref} {gate} {standalone} onshowdps={() => (dpsOptedIn = true)} />
 
   {#if codeNote !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">
@@ -723,8 +743,25 @@
        phone (BandCompare, never collapsed, sits above the tree row there) but shorter from
        md up, where the gear panel's own 17-slot grid, stat totals and weights table were
        the larger of the two swaps. Same convention as every figure above: 24px over the
-       Mac-measured natural for the CI runner's fonts, rounded up -- 1202 / 1158 / 874. -->
-  <div class="flex min-h-[1202px] flex-col gap-[22px] md:min-h-[1158px] md:gap-8 lg:min-h-[874px]">
+       Mac-measured natural for the CI runner's fonts, rounded up -- 1202 / 1158 / 874.
+
+       Fix round 1, item 2.a (the mock): "Sim this build" moved out of the facts rail (now
+       inside `PlannerHeader`, outside this reserve) into this rail, as its own button above
+       the Share panel -- one more 44px control plus its own gap added to every branch this
+       reserve covers. Re-measured the identical way: 1244 at 360px, 1209.5 at 800px, 926 at
+       1280px, each 24px over for the CI runner's fonts and rounded up -- 1268 / 1234 / 950.
+
+       This reserve was never the source of a 33.5px footer-stability gap planner-phone.
+       spec.ts's own two footer tests first found at 360px on the `desktop` project only --
+       diagnosing it directly (measuring the reserve element itself across both states)
+       showed it pinned at the reserved figure in both, unmoving. The real source sat
+       outside this region entirely: `PlannerCharacterCard` (beside the header, §4.B) makes
+       its own `/v1/me` request, and those two tests alone left it unrouted, so it hit the
+       real (unreachable here) API and resolved on its own schedule -- a second, unrelated
+       async transition landing inside the exact window these tests measure. Fixed at the
+       test level (planner-phone.spec.ts now routes `/v1/me` as a fast, deterministic
+       signed-out response for this describe block), not by padding this reserve further. -->
+  <div class="flex min-h-[1268px] flex-col gap-[22px] md:min-h-[1234px] md:gap-8 lg:min-h-[950px]">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -794,8 +831,19 @@
               class="order-first lg:order-none"
             />
 
+            <!-- Fix round 1, item 2.a (the mock): "Sim this build" leaves the facts rail
+                 (now inside `PlannerHeader`) and lives here instead -- its own outlined gold
+                 secondary button, in the rail, directly above the Share panel. -->
+            <a
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-none"
+              href={simHref}
+              data-testid="planner-sim-link"
+            >
+              {simCopy.simThisBuild}
+            </a>
+
             <div
-              class="order-3 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-none"
+              class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-none"
               data-testid="planner-toolbar"
             >
               <PlannerToolbar {store} {live} bind:confirmingReset />

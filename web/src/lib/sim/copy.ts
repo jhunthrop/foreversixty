@@ -214,6 +214,10 @@ export const simCopy = {
   plannerDpsLabel: 'DPS',
   /** Under the figure while points are unspent: the live estimate waits for a whole build. */
   plannerDpsPointsToGo: (left: number): string => (left === 1 ? '1 point to go' : `${left} points to go`),
+  /** The header facts rail's own static DPS caption (fix round 1, item 2.a) -- the dynamic
+   *  "{n} points to go" count moved under "Points left" instead, so this slot reads a plain
+   *  explainer rather than repeating the same number twice. */
+  plannerDpsLiveCaption: 'live when the build reaches 51 points',
   /** On a phone or a data-saver connection the estimate is asked for, never assumed. */
   plannerDpsShow: 'Show DPS',
   plannerDpsShowNote: 'Runs on this device',

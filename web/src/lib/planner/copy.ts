@@ -40,6 +40,14 @@ export const plannerCopy = {
 export const plannerHeaderCopy = {
   eyebrow: 'Build planner',
   h1: (className: string): string => `${className} talents`,
+  /** Fix round 1, item 2.a (the approved mock, `day3/shots/boards/Planner.png`): one line
+   *  under the h1, always the same sentence -- never computed, this page has one job. */
+  description:
+    "Spend your points, compare them with the band's build, and send the result to the addon or the simulator.",
+  /** Sits beside the race select: the planner has no separate FactionToggle (§4.A's own
+   *  reasoning -- a second faction control would ask the visitor to agree with their race
+   *  twice), and the mock names that choice explicitly rather than leaving it unsaid. */
+  factionFollowsRace: 'Faction follows your race',
 } as const;
 
 /** Rebuild spec §4.B: the Character card paired with the header, signed in only. */
