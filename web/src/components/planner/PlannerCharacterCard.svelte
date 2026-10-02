@@ -46,11 +46,36 @@
     <Skeleton lines={1} rowHeight="h-10" />
   </div>
 {:else if state.status === 'failed'}
+  <!-- Fix round 4 (CI: a real race, not a flake -- this card's own `/v1/me` resolving
+       between a test's two position snapshots, 18-33.5px, confirmed by `--workers=1`
+       passing every time and the default parallel run failing almost every time: more
+       workers means more contention, which gives this fetch's own callback a wider window
+       to land mid-test instead of before it). The fix is this file's own `.character-card`
+       rule below, raised from 140px to 159px: measured directly, the loading skeleton is
+       158px and the real card (once one loads) is 159px -- already within a pixel of each
+       other -- but this error state's own `LoadError` is a single alert line, exactly the
+       old 140px floor, 18-19px short of either. Reserving the taller of the three here
+       means this card's own settle, whichever state it lands on, never moves anything
+       below it. (A `min-h-*` utility class on this one div loses the cascade to the
+       scoped `.character-card` rule below -- same specificity, but Svelte's own scoping
+       attribute makes the component style win -- so the shared rule itself is what
+       changed, for all three states uniformly; loading and shown were already within a
+       pixel of 159px, so neither visibly moves.) The one state that stays unreserved on
+       purpose is "nothing" (`character === null`, confirmed signed-out, no markup at
+       all) -- spec §4.B's own rule against a dead gap for the common, anonymous visit. -->
   <div
     class="panel-box character-card w-full lg:w-[440px] lg:shrink-0"
     data-testid="planner-character-card-error"
   >
-    <LoadError message={plannerCharacterCardCopy.loadError} onRetry={() => state.refresh()} />
+    <!-- Fix round 4: this card's own retry sits beside Planner's own tree-load retry
+         (both LoadError, both "Try again") whenever a visitor is signed in and the talent
+         fetch also fails -- distinct accessible names so neither button is ambiguous to a
+         screen reader or `getByRole('button', { name: ... })`. -->
+    <LoadError
+      message={plannerCharacterCardCopy.loadError}
+      onRetry={() => state.refresh()}
+      retryAriaLabel="Reload your character"
+    />
   </div>
 {:else if character !== null}
   {@const color = classColorVar(character.class)}
@@ -99,7 +124,8 @@
     flex-direction: column;
     gap: 12px;
     padding: 16px 20px;
-    min-height: 140px;
+    /* Fix round 4: 159px, not 140px -- see the error-state branch's own comment above. */
+    min-height: 159px;
   }
   .character-card-label {
     display: flex;

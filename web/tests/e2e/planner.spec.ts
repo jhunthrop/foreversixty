@@ -98,7 +98,7 @@ test('a failed talent fetch shows the reason and a working retry', async ({ page
   });
   await page.goto('/planner');
   await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Try again' }).click();
+  await page.getByRole('button', { name: 'Reload talents' }).click();
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
 });
 
@@ -441,7 +441,7 @@ test('a good code survives a transient failure on its own class, and still appli
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
   await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Try again' }).click();
+  await page.getByRole('button', { name: 'Reload talents' }).click();
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
   await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');

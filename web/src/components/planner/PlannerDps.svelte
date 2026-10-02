@@ -130,9 +130,23 @@
   </div>
   <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
        once a run is ready, and removing the line while the next run was pending made the
-       whole summary bar one line shorter on every talent click, which moved the trees. -->
+       whole summary bar one line shorter on every talent click, which moved the trees.
+
+       Fix round 4 (CI: `expect(await top()).toBe(before)` off by exactly one line-height,
+       1501.875 vs 1483.875, `[mobile]`): `unfinishedNote="static"`'s own caption --
+       `simCopy.plannerDpsLiveCaption`, "live when the build reaches 51 points" -- is the one
+       note string in this slot long enough to wrap at the header facts rail's own column
+       width (measured: 157px available, this string's own `scrollHeight` is 36px against an
+       18px box, a real second line silently overflowing past the box's bottom edge rather
+       than pushed into by `getBoundingClientRect` reliably everywhere this renders). Every
+       other string this slot ever shows ("N points to go", "± N", "Runs on this device") is
+       short enough to fit the one line the 'dynamic' embed (`SummaryBar.svelte`, which never
+       reaches this length) still reserves. Reserving the full two lines only for the
+       'static' header variant keeps every other caller's height exactly as it was. -->
   <span
-    class="tabular text-muted block h-[18px] font-mono text-[12px] leading-[18px]"
+    class={`tabular text-muted block font-mono text-[12px] leading-[18px] ${
+      unfinishedNote === 'static' ? 'h-[36px]' : 'h-[18px]'
+    }`}
     data-testid="planner-dps-error">{note}</span
   >
   {#if ownGearCaveat}

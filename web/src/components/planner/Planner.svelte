@@ -810,6 +810,7 @@
           message={`Build ${store.treeVersion} did not return the files the planner needs.`}
           onRetry={() => (attempt += 1)}
           testid="planner-load-error"
+          retryAriaLabel="Reload talents"
         />
       </div>
     {:else if store.talentIndex}
