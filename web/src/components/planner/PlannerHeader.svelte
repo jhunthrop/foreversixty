@@ -9,19 +9,17 @@
      not build-time frontmatter; `ClassHeader.astro`'s own markup is server-rendered once per
      faction and has no runtime state to read at all (see that component's header comment).
 
-     Fix round 1, item 2.b: the mock's background is the dominant tree's own client art
-     (TreeGrid.svelte's identical `dataUrl(store.treeVersion, 'trees/{background}.webp')`
-     call, same "before one tree leads, the first tree's art" inference the h1 suffix already
-     uses) behind a night-to-bg gradient at ~50% -- the coordinator's own ruling that the
-     mock is the confirmation spec §4.A/§7's "ship flat until confirmed" clause asked for, so
-     this no longer ships the flat `ArtPanel` fallback. The crest still inlines `ClassCrest.
-     astro`'s own recipe (a Svelte file cannot import an `.astro` one at all, the same
-     constraint `CharacterCard.svelte` already documents). -->
+     Fix round 5: this component is now the band's own LEFT COLUMN content only -- no
+     background, no border, no radius, no art. `PlannerHeaderBand.svelte` (its only caller)
+     owns all of that at the band level, full-bleed across both grid columns (this header's
+     own content and `PlannerCharacterCard`'s), which a box scoped to this component's own
+     column could never reach. The crest still inlines `ClassCrest.astro`'s own recipe (a
+     Svelte file cannot import an `.astro` one at all, the same constraint `CharacterCard.
+     svelte` already documents). -->
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
   import { classColorVar } from '../../lib/report/format';
   import { plannerHeaderCopy } from '../../lib/planner/copy';
-  import { dataUrl } from '../../lib/planner/load';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
@@ -61,29 +59,6 @@
       : '',
   );
 
-  /** The dominant tree's own index -- the same "most points, ties to the first tree"
-   *  inference `specKeyFor`/the h1 suffix already use, read here for the background art
-   *  instead of the spec label. */
-  const dominantTreeIndex = $derived.by(() => {
-    const split = store.split;
-    let best = 0;
-    for (let i = 1; i < split.length; i += 1) {
-      if (split[i] > split[best]) best = i;
-    }
-    return best;
-  });
-
-  /** Spec §13 (2026-10-02): the header ships flat. Art painted by this island after talent
-   *  data resolves is always the page's largest paint and lands at ~3.3 s under the audit's
-   *  throttling, which put the merged build at 0.89 against the 0.90 performance floor. The
-   *  art comes back when the planner can paint it from the first byte (per-class static
-   *  routes or a server-rendered class); flipping this constant is the whole switch. */
-  const HEADER_ART_ENABLED = false;
-  const headerArtSrc = $derived.by(() => {
-    if (!HEADER_ART_ENABLED) return null;
-    const tree = store.talentIndex?.trees[dominantTreeIndex];
-    return tree ? dataUrl(store.treeVersion, `trees/${tree.background}.webp`) : null;
-  });
   // The bar's one refusal line already carries the planner's own refusals (an illegal move,
   // a read-only build); a failed live estimate is the same kind of fact, so it goes in the
   // same line rather than a second one (SummaryBar.svelte's own reasoning, moved here with
@@ -92,28 +67,6 @@
 </script>
 
 <div class="planner-header" data-testid="planner-header">
-  <!-- A CSS background-image, not an <img>: a nicer fit for a decorative, `aria-hidden`
-       backdrop (no onerror fallback needed -- `.planner-header`'s own flat `--color-raised`
-       background already shows through a missing or still-loading image, the same "ships
-       flat" floor §4.A/§7 always guaranteed) -- but, contrary to this comment's own earlier
-       round-1 claim, NOT a way to dodge LCP candidacy: Chrome counts a CSS background the
-       moment it is visibly painted, `<img>`/`<video>`/text or not.
-
-       Fix round 2, item 3 (ux-designer review): the header renders flat -- this div painted
-       at `opacity:0`, nothing drawn -- until `store.talentIndex` resolves and names the
-       dominant tree's own background, several round trips after first paint the crest/h1
-       already won on (known from the URL alone, no fetch). An animated fade-in was tried
-       here first and measured worse, not better (see `.planner-header-art`'s own style
-       comment below for the numbers): Chrome still names this div the LCP element either
-       way, so the fade bought nothing and cost real milliseconds. The swap is instant once
-       the data is in hand instead. -->
-  <div
-    class="planner-header-art"
-    class:planner-header-art-visible={headerArtSrc !== null}
-    style={headerArtSrc !== null ? `background-image:url(${headerArtSrc})` : undefined}
-    aria-hidden="true"
-  ></div>
-  <div class="planner-header-gradient" aria-hidden="true"></div>
   <div class="planner-header-content">
     <p class="label planner-header-eyebrow">
       <i class="planner-header-eyebrow-rule" aria-hidden="true"></i>
@@ -173,22 +126,22 @@
       <span class="planner-header-faction-note">{plannerHeaderCopy.factionFollowsRace}</span>
     </div>
 
-    <!-- The facts rail (spec §4.C, moved here by fix round 1 item 2.a): Points left, Spent,
-       Level and DPS now sit inside the header's own panel as its bottom row, matching the
-       mock exactly -- the same four facts `SummaryBar.svelte` has always computed, just
-       relocated. "Sim this build" is no longer bundled with the DPS figure here; it is its
-       own outlined gold button in the rail, above the Share panel. -->
-    <div
-      class="planner-header-facts grid grid-cols-2 items-start gap-x-5 gap-y-3 sm:grid-cols-4"
-      data-testid="planner-facts"
-    >
+    <!-- The facts rail (spec §4.C, moved here by fix round 1 item 2.a; fix round 5: a
+       compact row, not a stretched grid -- the mock's own panel wraps tight around its
+       four facts, 36px apart, not a 4-column grid stretched to the header box's own full
+       width with acres of empty space past DPS). Points left, Spent, Level and DPS sit
+       inside the header's own panel as its bottom row -- the same four facts
+       `SummaryBar.svelte` has always computed, just relocated. "Sim this build" is no
+       longer bundled with the DPS figure here; it is its own outlined gold button in the
+       rail, above the Share panel. -->
+    <div class="planner-header-facts flex flex-wrap items-start gap-9" data-testid="planner-facts">
       <div class="flex flex-col gap-1">
         <span class="label text-muted">Points left</span>
         <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-remaining">
           {MAX_POINTS - store.spent}
         </span>
         <span
-          class="tabular text-muted block h-[18px] font-mono text-[12px] leading-[18px]"
+          class="tabular text-muted block h-[14px] font-mono text-[11px] leading-[14px]"
           data-testid="planner-remaining-note"
         >
           {gate === 'unfinished' ? simCopy.plannerDpsPointsToGo(MAX_POINTS - store.spent) : ''}
@@ -214,67 +167,30 @@
         showSimLink={false}
         unfinishedNote="static"
       />
-      <p
-        role="status"
-        aria-live="polite"
-        class="text-muted col-span-2 min-h-[20px] w-full text-[13px] leading-tight sm:col-span-4"
-        data-testid="planner-refusal"
-      >
-        {statusLine}
-      </p>
     </div>
+    <p
+      role="status"
+      aria-live="polite"
+      class="text-muted min-h-[20px] w-full text-[13px] leading-tight"
+      data-testid="planner-refusal"
+    >
+      {statusLine}
+    </p>
   </div>
 </div>
 
 <style>
+  /* Fix round 5: a plain content column, no background/border/radius/overflow of its own --
+     `PlannerHeaderBand.svelte` (this component's only caller) owns the band's background,
+     full-bleed across both of its grid columns, which a box scoped to this one could never
+     reach. */
   .planner-header {
-    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
-    overflow: hidden;
-    border-radius: var(--radius-panel);
-    background: var(--color-raised);
-  }
-  .planner-header-art {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    /* Flat until the data resolves (fix round 2, item 3): opacity 0 so the element paints
-       nothing at first render, whatever `.planner-header`'s own flat background already
-       shows through is the only "floor" on first paint.
-
-       No `transition` here deliberately -- an animated fade was tried first and measured
-       with Lighthouse (mobile-throttled, real data): it moved the LCP timestamp *later*
-       (3660ms vs 3273ms; performance 0.89 vs 0.92, under this repo's own 0.90 floor for
-       this page) for no candidacy benefit at all, since Chrome still names this element
-       the LCP candidate the instant it is first painted at non-zero opacity, transition or
-       not (`largest-contentful-paint-element` names `.planner-header-art` in both a
-       transitioned and an un-transitioned build -- a CSS background-image is always LCP-
-       eligible once visible; nothing about *how* it becomes visible changes that). An
-       instant swap costs nothing extra once the image has already decoded off the critical
-       path, which an animated one does not get back. See the build report's "Fix round 2 /
-       item 3" section for the measurements and the real, still-open fix this would take (a
-       build-time class-to-background map, or shrinking the art below the h1's own
-       footprint) -- neither fits this round's scope. */
-    opacity: 0;
-  }
-  .planner-header-art-visible {
-    opacity: 1;
-  }
-  .planner-header-gradient {
-    position: absolute;
-    inset: 0;
-    /* Night-to-bg gradient at ~50% (fix round 1, item 2.b): the art reads behind it at full
-       strength, tinted top to bottom, rather than washed out by an opaque overlay. */
-    background: linear-gradient(180deg, var(--color-night) 0%, var(--color-bg) 100%);
-    opacity: 0.5;
+    min-width: 0;
   }
   .planner-header-content {
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -364,13 +280,14 @@
     color: var(--color-muted);
   }
   .planner-header-facts {
-    /* Layout itself is the Tailwind grid classes on the element (fix round 1: a fixed
-       column count, 2 base / 4 from sm, so the row never organically reflows the way a
-       flex-wrap row does as the DPS figure's own width changes -- that reflow was this
-       panel's own CLS regression, caught by planner-dps.spec.ts's height-stability tests). */
+    /* Fix round 5: fit-content, not a full-width stretch -- the mock's own compact panel,
+       wrapping tight around its facts rather than a grid stretched to the header's full
+       column width with empty space past DPS. 36px gaps are the Tailwind `gap-9` utility
+       on the element itself, kept there (not here) so this rule stays pure box styling. */
+    width: fit-content;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-panel);
-    background: color-mix(in srgb, var(--color-raised) 70%, transparent);
-    padding: 16px 20px;
+    background: color-mix(in srgb, var(--color-raised) 90%, transparent);
+    padding: 14px 20px;
   }
 </style>

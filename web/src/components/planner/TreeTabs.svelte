@@ -133,8 +133,8 @@
          the same "icon - name - point count" order the BiS header's own SpecTabs use (spec
          §4.E.1). Not a button: a planner build spans every tree in one page, so this is a
          label, never a second navigation control beside the phone strip above. -->
-      <header class="border-line-soft flex items-center justify-between gap-2 border-b pb-2">
-        <span class="flex min-w-0 items-center gap-2">
+      <header class="border-line-soft flex items-start justify-between gap-2 border-b pb-2">
+        <span class="flex min-w-0 items-center gap-1.5">
           {#if icon !== undefined}
             <!-- `loading="eager"` (fix round 3, ux-designer review): the tree panel's own
                  header spec icon -- see TalentCell.svelte's identical comment. -->
@@ -148,7 +148,13 @@
               class="rounded-control border-line h-7 w-7 shrink-0 border"
             />
           {/if}
-          <h2 class="section-title truncate text-[15px]">{tree.name}</h2>
+          <!-- Fix round 5: never truncate a tree name -- `truncate` (text-overflow:
+               ellipsis) read "PROTECTI…" at 1024px, where three tree panels share a
+               narrower row than this header was designed around. `min-w-0` on the row
+               above still lets this wrap onto a second line rather than overflow the
+               panel; the smaller icon gap (gap-1.5, not gap-2) buys the name a little more
+               room back before it ever needs to. -->
+          <h2 class="section-title text-[15px]">{tree.name}</h2>
         </span>
         <span class="tabular text-gold font-mono text-[15px]" data-testid={`tree-points-${tree.id}`}>
           {store.split[i] ?? 0}
