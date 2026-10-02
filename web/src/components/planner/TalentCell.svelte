@@ -128,12 +128,22 @@
       {talent.name.slice(0, 2)}
     </span>
   {:else}
+    <!-- `loading="eager"` (fix round 3, ux-designer + wow-player review): this icon is this
+         page's own content, not a below-the-fold decoration -- every tree panel this build
+         has renders in the first viewport from `md` up (TreeTabs.svelte renders all of
+         them, CSS-hidden rather than unmounted on phone), so `lazy` left scattered cells
+         and whole columns undecoded at the exact moment three acceptance screenshots were
+         taken (`cold-hunter-1440.png`, `signed-in-compare-entry.png`,
+         `met-connector-band-60-1440.png`) -- a real bug a visitor's own browser would hit
+         too, not a screenshot-only artifact. 51 icons at roughly 200 bytes each is a
+         trivial cost next to that; the home page's own crest row made the identical call
+         for the identical reason (`ClassCrest.astro`'s `priority` prop). -->
     <img
       src={iconSrc}
       alt=""
       width="40"
       height="40"
-      loading="lazy"
+      loading="eager"
       decoding="async"
       class={`rounded-control h-10 w-10 object-cover md:h-11 md:w-11 lg:h-12 lg:w-12 ${CELL_FACE[state]}`}
       onerror={() => (iconBroken = true)}

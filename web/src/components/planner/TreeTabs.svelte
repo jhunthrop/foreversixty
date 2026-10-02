@@ -96,12 +96,15 @@
       onclick={() => (activeTree = i)}
     >
       {#if icon !== undefined}
+        <!-- `loading="eager"` (fix round 3, ux-designer review): the phone tab strip's own
+             spec icon -- see TalentCell.svelte's identical comment on why these small icons
+             are not deferred. -->
         <img
           src={dataUrl(store.treeVersion, `icons/${icon}.webp`)}
           alt=""
           width="28"
           height="28"
-          loading="lazy"
+          loading="eager"
           decoding="async"
           class="rounded-control border-line h-7 w-7 border"
         />
@@ -133,12 +136,14 @@
       <header class="border-line-soft flex items-center justify-between gap-2 border-b pb-2">
         <span class="flex min-w-0 items-center gap-2">
           {#if icon !== undefined}
+            <!-- `loading="eager"` (fix round 3, ux-designer review): the tree panel's own
+                 header spec icon -- see TalentCell.svelte's identical comment. -->
             <img
               src={dataUrl(store.treeVersion, `icons/${icon}.webp`)}
               alt=""
               width="28"
               height="28"
-              loading="lazy"
+              loading="eager"
               decoding="async"
               class="rounded-control border-line h-7 w-7 shrink-0 border"
             />

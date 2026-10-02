@@ -86,14 +86,21 @@
   {#if tree.background && !artBroken}
     <!-- The client's own panel, cropped and processed in the pipeline. `object-cover`
          fills the whole box whatever its aspect and crops the excess evenly around the
-         centre, so the art reads as the grid's own backdrop rather than a strip beside it. -->
+         centre, so the art reads as the grid's own backdrop rather than a strip beside it.
+
+         `loading="eager"` (fix round 3, ux-designer review): this art, like the talent
+         icons below it (`TalentCell.svelte`'s own identical comment), is this page's own
+         content, in the first viewport at every desktop width this lane supports (all
+         three trees render side by side from `md`) -- `lazy` left it undecoded at capture
+         time in three of the acceptance screenshots, a real, visible bug, not just a
+         screenshot artifact. Three small webps is a trivial cost next to that. -->
     <img
       src={backgroundSrc}
       alt=""
       aria-hidden="true"
       width="300"
       height="331"
-      loading="lazy"
+      loading="eager"
       decoding="async"
       data-testid={`tree-art-${tree.id}`}
       class="rounded-control pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
