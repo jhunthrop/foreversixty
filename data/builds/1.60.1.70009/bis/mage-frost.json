@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T13:38:18Z",
+  "generated_at": "2026-10-02T12:58:36Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.529190133,
-      "verify_run_seconds": 0.454245399,
+      "weights_run_seconds": 0.720570441,
+      "verify_run_seconds": 0.654637059,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.529190133,
-      "verify_run_seconds": 0.498073121,
+      "weights_run_seconds": 0.720570441,
+      "verify_run_seconds": 0.715537963,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.524812827,
-      "verify_run_seconds": 0.479034154,
+      "weights_run_seconds": 0.74379592,
+      "verify_run_seconds": 0.681751221,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2584,8 +2584,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.524812827,
-      "verify_run_seconds": 0.494915464,
+      "weights_run_seconds": 0.74379592,
+      "verify_run_seconds": 0.699553122,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3253,8 +3253,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.52769567,
-      "verify_run_seconds": 0.436525516,
+      "weights_run_seconds": 0.752856882,
+      "verify_run_seconds": 0.627078044,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3917,8 +3917,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.52769567,
-      "verify_run_seconds": 0.459675266,
+      "weights_run_seconds": 0.752856882,
+      "verify_run_seconds": 0.665890032,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4100,7 +4100,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9363347449468022
+              "dps_delta": -0.9363347449468018
             },
             {
               "item_id": 15999,
@@ -4612,8 +4612,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.49711452,
-      "verify_run_seconds": 0.506102821,
+      "weights_run_seconds": 0.705436391,
+      "verify_run_seconds": 0.733751138,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5298,8 +5298,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.49711452,
-      "verify_run_seconds": 0.486960537,
+      "weights_run_seconds": 0.705436391,
+      "verify_run_seconds": 0.741990562,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5596,7 +5596,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 60.58532939692046,
+          "score": 60.58532939692045,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5605,14 +5605,14 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.23375912147596162
+              "dps_delta": -0.23375912147596076
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -1.7056306619554267
+              "dps_delta": -1.7056306619554258
             },
             {
               "item_id": 226932,
@@ -5745,7 +5745,7 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.020961811570389566
+              "dps_delta": -0.020961811570388695
             },
             {
               "item_id": 227109,
@@ -6043,8 +6043,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.527596687,
-      "verify_run_seconds": 0.478704026,
+      "weights_run_seconds": 0.766152926,
+      "verify_run_seconds": 0.738948268,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6782,8 +6782,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.527596687,
-      "verify_run_seconds": 0.495135409,
+      "weights_run_seconds": 0.766152926,
+      "verify_run_seconds": 0.739304794,
       "coverage": {
         "back": {
           "eligible": 450,

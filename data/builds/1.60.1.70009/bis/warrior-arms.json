@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T13:42:38Z",
+  "generated_at": "2026-10-02T13:04:56Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -548,8 +548,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.04054699,
-      "verify_run_seconds": 0.902927058,
+      "weights_run_seconds": 1.564617597,
+      "verify_run_seconds": 1.249898749,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.04054699,
-      "verify_run_seconds": 0.926468006,
+      "weights_run_seconds": 1.564617597,
+      "verify_run_seconds": 1.19192339,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1867,8 +1867,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.237969525,
-      "verify_run_seconds": 1.10945167,
+      "weights_run_seconds": 1.709020614,
+      "verify_run_seconds": 1.44901923,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2541,8 +2541,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.237969525,
-      "verify_run_seconds": 0.978461677,
+      "weights_run_seconds": 1.709020614,
+      "verify_run_seconds": 1.46293757,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3226,8 +3226,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.395325516,
-      "verify_run_seconds": 1.051496419,
+      "weights_run_seconds": 2.038247851,
+      "verify_run_seconds": 1.5253466740000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3910,8 +3910,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.395325516,
-      "verify_run_seconds": 1.029281583,
+      "weights_run_seconds": 2.038247851,
+      "verify_run_seconds": 1.578741124,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4603,8 +4603,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.43720465,
-      "verify_run_seconds": 1.217665564,
+      "weights_run_seconds": 2.19657674,
+      "verify_run_seconds": 1.834045981,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5298,8 +5298,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.43720465,
-      "verify_run_seconds": 1.169709937,
+      "weights_run_seconds": 2.19657674,
+      "verify_run_seconds": 1.829390013,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5730,14 +5730,14 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.17866867813786483
+              "dps_delta": -0.17866867813786394
             },
             {
               "item_id": 15065,
               "item_name": "Warbear Woolies",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7182087225864485
+              "dps_delta": -0.7182087225864476
             },
             {
               "item_id": 14554,
@@ -6030,8 +6030,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.5374523519999999,
-      "verify_run_seconds": 1.186311734,
+      "weights_run_seconds": 2.168456643,
+      "verify_run_seconds": 1.8237476,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6203,7 +6203,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.37312382553910245
+              "dps_delta": -0.3731238255391029
             },
             {
               "item_id": 226860,
@@ -6757,8 +6757,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.5374523519999999,
-      "verify_run_seconds": 1.141787713,
+      "weights_run_seconds": 2.168456643,
+      "verify_run_seconds": 1.7452424579999999,
       "coverage": {
         "back": {
           "eligible": 450,

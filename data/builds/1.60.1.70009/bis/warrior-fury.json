@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T13:43:07Z",
+  "generated_at": "2026-10-02T13:05:40Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -604,8 +604,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.059598272,
-      "verify_run_seconds": 0.964444076,
+      "weights_run_seconds": 1.57342117,
+      "verify_run_seconds": 1.453402364,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1277,8 +1277,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.059598272,
-      "verify_run_seconds": 1.020138775,
+      "weights_run_seconds": 1.57342117,
+      "verify_run_seconds": 1.451250781,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1976,8 +1976,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.095626319,
-      "verify_run_seconds": 1.019956284,
+      "weights_run_seconds": 1.7143432650000001,
+      "verify_run_seconds": 1.52683802,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2679,8 +2679,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.095626319,
-      "verify_run_seconds": 1.039718526,
+      "weights_run_seconds": 1.7143432650000001,
+      "verify_run_seconds": 1.535829152,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3372,8 +3372,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.209594936,
-      "verify_run_seconds": 1.15823024,
+      "weights_run_seconds": 1.927688386,
+      "verify_run_seconds": 1.722963982,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4067,8 +4067,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.209594936,
-      "verify_run_seconds": 1.178895737,
+      "weights_run_seconds": 1.927688386,
+      "verify_run_seconds": 1.7997737489999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4781,8 +4781,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.3029545630000001,
-      "verify_run_seconds": 1.470201434,
+      "weights_run_seconds": 2.098414833,
+      "verify_run_seconds": 2.27400887,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5511,8 +5511,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.3029545630000001,
-      "verify_run_seconds": 1.482843682,
+      "weights_run_seconds": 2.098414833,
+      "verify_run_seconds": 2.270655052,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6272,8 +6272,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.341480419,
-      "verify_run_seconds": 1.414822021,
+      "weights_run_seconds": 2.116821915,
+      "verify_run_seconds": 2.229068525,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6575,7 +6575,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.9330240728615861
+              "dps_delta": -0.933024072861587
             },
             {
               "item_id": 23087,
@@ -7025,8 +7025,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.341480419,
-      "verify_run_seconds": 1.428370411,
+      "weights_run_seconds": 2.116821915,
+      "verify_run_seconds": 2.237017318,
       "coverage": {
         "back": {
           "eligible": 450,

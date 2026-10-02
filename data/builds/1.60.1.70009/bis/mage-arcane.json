@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T13:37:49Z",
+  "generated_at": "2026-10-02T12:57:53Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.617258366,
-      "verify_run_seconds": 0.542185984,
+      "weights_run_seconds": 0.792276712,
+      "verify_run_seconds": 0.802180625,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.617258366,
-      "verify_run_seconds": 0.483104277,
+      "weights_run_seconds": 0.792276712,
+      "verify_run_seconds": 0.752193851,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.529518413,
-      "verify_run_seconds": 0.548244519,
+      "weights_run_seconds": 0.844520283,
+      "verify_run_seconds": 0.839424572,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.529518413,
-      "verify_run_seconds": 0.51134587,
+      "weights_run_seconds": 0.844520283,
+      "verify_run_seconds": 0.782683908,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.675085336,
-      "verify_run_seconds": 0.528328938,
+      "weights_run_seconds": 0.987088829,
+      "verify_run_seconds": 0.814127144,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.675085336,
-      "verify_run_seconds": 0.528938631,
+      "weights_run_seconds": 0.987088829,
+      "verify_run_seconds": 0.816588625,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4626,8 +4626,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.646386969,
-      "verify_run_seconds": 0.633382626,
+      "weights_run_seconds": 0.948904014,
+      "verify_run_seconds": 0.927624485,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5306,8 +5306,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.646386969,
-      "verify_run_seconds": 0.606390799,
+      "weights_run_seconds": 0.948904014,
+      "verify_run_seconds": 0.924531963,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5704,7 +5704,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 34.77556569118171,
+          "score": 34.77556569118172,
           "verified": true,
           "alternatives": [
             {
@@ -5720,14 +5720,14 @@
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -4.510706026907105
+              "dps_delta": -4.5107060269071075
             },
             {
               "item_id": 20047,
               "item_name": "Highlander's Cloth Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -4.608410250459442
+              "dps_delta": -4.608410250459444
             }
           ]
         },
@@ -5745,7 +5745,7 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.7231494216329524
+              "dps_delta": -2.7231494216329497
             },
             {
               "item_id": 13170,
@@ -6036,8 +6036,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.701579593,
-      "verify_run_seconds": 0.621889152,
+      "weights_run_seconds": 1.022572223,
+      "verify_run_seconds": 0.972992821,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6475,7 +6475,7 @@
               "item_name": "General's Silk Trousers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.7231494216329497
+              "dps_delta": -2.7231494216329524
             },
             {
               "item_id": 13170,
@@ -6766,8 +6766,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.701579593,
-      "verify_run_seconds": 0.609151897,
+      "weights_run_seconds": 1.022572223,
+      "verify_run_seconds": 0.956548311,
       "coverage": {
         "back": {
           "eligible": 450,

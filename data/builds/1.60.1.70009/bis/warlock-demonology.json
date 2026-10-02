@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T13:41:48Z",
+  "generated_at": "2026-10-02T13:03:42Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -561,8 +561,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.045117822,
-      "verify_run_seconds": 0.893063439,
+      "weights_run_seconds": 1.467651748,
+      "verify_run_seconds": 1.139160972,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1203,8 +1203,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.045117822,
-      "verify_run_seconds": 0.891500989,
+      "weights_run_seconds": 1.467651748,
+      "verify_run_seconds": 1.196699745,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1920,8 +1920,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.0794057320000001,
-      "verify_run_seconds": 0.78759412,
+      "weights_run_seconds": 1.447933844,
+      "verify_run_seconds": 1.165627739,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2636,8 +2636,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.0794057320000001,
-      "verify_run_seconds": 0.840074625,
+      "weights_run_seconds": 1.447933844,
+      "verify_run_seconds": 1.1439621500000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3325,8 +3325,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.903090795,
-      "verify_run_seconds": 0.728427743,
+      "weights_run_seconds": 1.337364563,
+      "verify_run_seconds": 1.04502024,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4003,8 +4003,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.903090795,
-      "verify_run_seconds": 0.737071254,
+      "weights_run_seconds": 1.337364563,
+      "verify_run_seconds": 1.016545682,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4502,7 +4502,7 @@
               "item_name": "Sergeant Major's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -3.422510506008946
+              "dps_delta": -3.4225105060089462
             }
           ]
         },
@@ -4713,8 +4713,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.986903071,
-      "verify_run_seconds": 0.83921116,
+      "weights_run_seconds": 1.3090543000000001,
+      "verify_run_seconds": 1.155215791,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5426,8 +5426,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.986903071,
-      "verify_run_seconds": 0.83068685,
+      "weights_run_seconds": 1.3090543000000001,
+      "verify_run_seconds": 1.158540952,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6171,8 +6171,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.9474407,
-      "verify_run_seconds": 0.757110463,
+      "weights_run_seconds": 1.371334657,
+      "verify_run_seconds": 1.100699579,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6576,7 +6576,7 @@
               "item_name": "Deathmist Wraps",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -0.5072561645388607
+              "dps_delta": -0.5072561645388604
             }
           ]
         },
@@ -6920,8 +6920,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.9474407,
-      "verify_run_seconds": 0.785583603,
+      "weights_run_seconds": 1.371334657,
+      "verify_run_seconds": 1.099147739,
       "coverage": {
         "back": {
           "eligible": 450,

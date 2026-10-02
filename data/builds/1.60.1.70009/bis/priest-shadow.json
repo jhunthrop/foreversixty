@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-01T13:38:53Z",
+  "generated_at": "2026-10-02T12:59:29Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -941,8 +941,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.608170933,
-      "verify_run_seconds": 0.658836568,
+      "weights_run_seconds": 0.88017318,
+      "verify_run_seconds": 1.037764292,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -2027,8 +2027,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.608170933,
-      "verify_run_seconds": 0.629552285,
+      "weights_run_seconds": 0.88017318,
+      "verify_run_seconds": 0.961408889,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2730,8 +2730,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.514984792,
-      "verify_run_seconds": 0.473844696,
+      "weights_run_seconds": 0.728103332,
+      "verify_run_seconds": 0.725355289,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3431,8 +3431,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.514984792,
-      "verify_run_seconds": 0.500989702,
+      "weights_run_seconds": 0.728103332,
+      "verify_run_seconds": 0.718040789,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4100,8 +4100,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.523581179,
-      "verify_run_seconds": 0.485372777,
+      "weights_run_seconds": 0.757288185,
+      "verify_run_seconds": 0.68388267,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4764,8 +4764,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.523581179,
-      "verify_run_seconds": 0.509891611,
+      "weights_run_seconds": 0.757288185,
+      "verify_run_seconds": 0.746866539,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5202,7 +5202,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.7497260913494576
+              "dps_delta": -0.7497260913494572
             },
             {
               "item_id": 10807,
@@ -5460,8 +5460,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.513593035,
-      "verify_run_seconds": 0.507494678,
+      "weights_run_seconds": 0.745408992,
+      "verify_run_seconds": 0.758767166,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5651,7 +5651,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.2699444807178655
+              "dps_delta": -1.2699444807178657
             }
           ]
         },
@@ -6151,8 +6151,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.513593035,
-      "verify_run_seconds": 0.519123849,
+      "weights_run_seconds": 0.745408992,
+      "verify_run_seconds": 0.767982228,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6886,8 +6886,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.543390253,
-      "verify_run_seconds": 0.515882503,
+      "weights_run_seconds": 0.788363633,
+      "verify_run_seconds": 0.77590693,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7617,8 +7617,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.543390253,
-      "verify_run_seconds": 0.531330352,
+      "weights_run_seconds": 0.788363633,
+      "verify_run_seconds": 0.802122363,
       "coverage": {
         "back": {
           "eligible": 450,
