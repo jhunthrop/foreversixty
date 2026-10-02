@@ -77,7 +77,7 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
   <nav
     aria-label="Primary"
     data-testid="primary-nav"
-    class="col-span-2 row-start-2 md:row-auto grid grid-cols-3 gap-x-3 gap-y-2 md:flex md:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
+    class="col-span-2 row-start-2 md:row-auto grid grid-cols-3 gap-x-3 gap-y-2 md:flex md:flex-wrap xl:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
   >
     {NAV_ITEMS.map((item) => {
       const current = isNavItemCurrent(item, path);

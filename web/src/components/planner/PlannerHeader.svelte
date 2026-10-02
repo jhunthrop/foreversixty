@@ -134,14 +134,24 @@
        `SummaryBar.svelte` has always computed, just relocated. "Sim this build" is no
        longer bundled with the DPS figure here; it is its own outlined gold button in the
        rail, above the Share panel. -->
-    <div class="planner-header-facts flex flex-wrap items-start gap-9" data-testid="planner-facts">
+    <div class="planner-header-facts items-start" data-testid="planner-facts">
       <div class="flex flex-col gap-1">
         <span class="label text-muted">Points left</span>
         <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-remaining">
           {MAX_POINTS - store.spent}
         </span>
+        <!-- Fix round 6 (e2e: the facts rail's own height-stability tests, caught on
+             mobile): `repeat(2, auto)` sizes each grid COLUMN from the widest content any
+             row puts in it -- DPS's own long "live when the build reaches 51 points" note
+             (column 2) forces column 1 down to barely wider than "42" while that note is
+             showing, and without `whitespace-nowrap` here too, THIS note wrapped to a
+             second line in that narrow column, inflating the whole panel's height exactly
+             until DPS's own note goes short (`± N`) or empty and column 1 gets its width
+             back. `whitespace-nowrap` (matching `PlannerDps.svelte`'s own identical fix)
+             means this note overflows its cell rather than wraps it -- the cell's own
+             height never moves, whatever column 1 is given. -->
         <span
-          class="tabular text-muted block h-[14px] font-mono text-[11px] leading-[14px]"
+          class="tabular text-muted block h-[14px] font-mono text-[11px] leading-[14px] whitespace-nowrap"
           data-testid="planner-remaining-note"
         >
           {gate === 'unfinished' ? simCopy.plannerDpsPointsToGo(MAX_POINTS - store.spent) : ''}
@@ -282,12 +292,27 @@
   .planner-header-facts {
     /* Fix round 5: fit-content, not a full-width stretch -- the mock's own compact panel,
        wrapping tight around its facts rather than a grid stretched to the header's full
-       column width with empty space past DPS. 36px gaps are the Tailwind `gap-9` utility
-       on the element itself, kept there (not here) so this rule stays pure box styling. */
-    width: fit-content;
+       column width with empty space past DPS.
+
+       Fix round 6, item 4 (player review): a real 2x2 grid below 1100px, not organic
+       flex-wrap -- DPS alone wrapping to its own orphan row (three facts fit one row, the
+       fourth didn't) read as a layout bug because it was one: `flex-wrap` breaks wherever
+       the row runs out of space, not at a deliberate point. `repeat(2, auto)` always pairs
+       Points left/Spent and Level/DPS, 36px apart either way; `width: fit-content` only
+       matters at the single-row tier, so it is scoped there too. */
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 36px;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-panel);
     background: color-mix(in srgb, var(--color-raised) 90%, transparent);
     padding: 14px 20px;
+  }
+  @media (min-width: 1100px) {
+    .planner-header-facts {
+      display: flex;
+      flex-wrap: wrap;
+      width: fit-content;
+    }
   }
 </style>

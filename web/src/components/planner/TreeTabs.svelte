@@ -133,30 +133,44 @@
          the same "icon - name - point count" order the BiS header's own SpecTabs use (spec
          §4.E.1). Not a button: a planner build spans every tree in one page, so this is a
          label, never a second navigation control beside the phone strip above. -->
-      <header class="border-line-soft flex items-start justify-between gap-2 border-b pb-2">
-        <span class="flex min-w-0 items-center gap-1.5">
-          {#if icon !== undefined}
-            <!-- `loading="eager"` (fix round 3, ux-designer review): the tree panel's own
-                 header spec icon -- see TalentCell.svelte's identical comment. -->
-            <img
-              src={dataUrl(store.treeVersion, `icons/${icon}.webp`)}
-              alt=""
-              width="28"
-              height="28"
-              loading="eager"
-              decoding="async"
-              class="rounded-control border-line h-7 w-7 shrink-0 border"
-            />
-          {/if}
-          <!-- Fix round 5: never truncate a tree name -- `truncate` (text-overflow:
-               ellipsis) read "PROTECTI…" at 1024px, where three tree panels share a
-               narrower row than this header was designed around. `min-w-0` on the row
-               above still lets this wrap onto a second line rather than overflow the
-               panel; the smaller icon gap (gap-1.5, not gap-2) buys the name a little more
-               room back before it ever needs to. -->
-          <h2 class="section-title text-[15px]">{tree.name}</h2>
-        </span>
-        <span class="tabular text-gold font-mono text-[15px]" data-testid={`tree-points-${tree.id}`}>
+      <!-- Fix round 6 (player review, item 3): a flat flex row, not an icon+name span
+           fighting the count for space with `justify-between` -- the overlap at 1024px
+           ("MARKSMANSHIP" under the point count) was two flex items each sized by their
+           own content with nothing telling either to give way. The name gets `min-w-0` so
+           it can actually shrink below its own text's width instead of forcing the row
+           wider than the panel, `flex-1` so it (not the count) absorbs any slack,
+           `whitespace-nowrap` so it never silently wraps mid-word, and steps down to 14px
+           with 0.02em tracking at md -- checked against the longest real tree names
+           (data/builds/1.60.1.70009/talents/*.json: "Beast Mastery", "Marksmanship",
+           "Protection", "Restoration", "Demonology", "Destruction", "Discipline",
+           "Enhancement", "Subtlety", "Assassination") so every one fits a four-column
+           panel's own header on one line at md. The count is pinned right with `ml-auto`
+           and never shrinks (`shrink-0`); `flex-wrap` on the row is the named fallback --
+           if a future name still cannot fit, the count drops under the icon instead of
+           overlapping, it never truncates and it never overlaps. -->
+      <header class="border-line-soft flex flex-wrap items-center gap-2 border-b pb-2">
+        {#if icon !== undefined}
+          <!-- `loading="eager"` (fix round 3, ux-designer review): the tree panel's own
+               header spec icon -- see TalentCell.svelte's identical comment. -->
+          <img
+            src={dataUrl(store.treeVersion, `icons/${icon}.webp`)}
+            alt=""
+            width="28"
+            height="28"
+            loading="eager"
+            decoding="async"
+            class="rounded-control border-line h-7 w-7 shrink-0 border"
+          />
+        {/if}
+        <h2
+          class="section-title min-w-0 flex-1 text-[15px] whitespace-nowrap md:text-[14px] md:tracking-[0.02em]"
+        >
+          {tree.name}
+        </h2>
+        <span
+          class="tabular text-gold ml-auto shrink-0 font-mono text-[15px]"
+          data-testid={`tree-points-${tree.id}`}
+        >
           {store.split[i] ?? 0}
         </span>
       </header>

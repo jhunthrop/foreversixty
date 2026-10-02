@@ -817,22 +817,32 @@
              responsive box: a flex column on phone, where DOM order is visual order (nothing
              below needs an `order` class to read right there), a two-column grid from md
              (no rail yet -- Share and Import share a row, everything else spans both
-             columns), and a twelve-column grid from lg, where explicit `order` values (not
+             columns), and a twelve-column grid from xl, where explicit `order` values (not
              DOM position) put Gear directly under the tree row in an 8-column left side and
              Share/Import/Point order in a 4-column rail on the right. CSS grid's own
              auto-placement fills each row from the low end of `order` up, wrapping to the
              next row only once a span no longer fits -- TreeRow(8)+Share(4) share row one,
              Notice(8)+Import(4) row two, Gear(8)+OrderStrip(4) row three -- which is what
              turns six flat siblings into two visual columns without any explicit
-             `grid-row` (build review round 1, findings 1-4). -->
-        <div class="flex flex-col gap-[22px] md:gap-8 lg:grid lg:grid-cols-12 lg:items-start">
-          <!-- Two real columns from lg (trees, notice and gear on the left; share, import and
+             `grid-row` (build review round 1, findings 1-4).
+
+             Fix round 6, item 2's own addendum (player review): this split used to fire at
+             `lg` (1024px), squeezing three tree panels into 8 of 12 columns -- about 190px
+             each, well under the ~280px a four-column grid of (then-)56px cells needs, so
+             neighbouring cells overlapped and painted over each other's rank pills. Moved
+             to `xl` (1280px); from 1024 to 1279 the tree row keeps the full content width
+             (three panels of roughly 300px, comfortably over the floor) and the rail
+             becomes its own two-column grid below it instead of the stacked single column
+             phone still gets (see the rail wrapper's own comment below). -->
+        <div class="flex flex-col gap-[22px] md:gap-8 xl:grid xl:grid-cols-12 xl:items-start">
+          <!-- Two real columns from xl (trees, notice and gear on the left; share, import and
                point order in the rail), each its own flex column so no row height is shared
                across columns: one flat auto-placed grid put the one-line notice in the same
                row as the Import panel and left a panel-tall void above Gear (review round 2).
-               Below lg both wrappers are `contents`, so their children stack in DOM order:
-               trees, gear (the same tab-switched slot), notice, share, import, point order. -->
-          <div class="contents lg:col-span-8 lg:flex lg:flex-col lg:gap-8">
+               Below xl both wrappers are `contents` (phone) or the tablet-only rail grid
+               below, so their children stack in DOM order: trees, gear (the same tab-
+               switched slot), notice, share, import, point order. -->
+          <div class="contents xl:col-span-8 xl:flex xl:flex-col xl:gap-8">
             <!-- The phone tab strip and the tree row it switches between, split into their
                  own component (design loop, planner round) so this file stays under the
                  project's file-size guideline. -->
@@ -843,11 +853,26 @@
             </p>
           </div>
 
-          <div class="contents lg:col-span-4 lg:flex lg:flex-col lg:gap-8">
+          <!-- Fix round 6 (player review, item 2's own addendum): a real two-column grid
+               from lg (1024) to just under xl (1280), not `contents` straight through from
+               phone to the xl split -- the tablet width this lane never had its own rail
+               shape for before, so it fell into the 12-column split 256px too early
+               instead. `lg:gap-8` matches xl's own rail gap; the five children's existing
+               `order-*`/`lg:order-*` values (set for the xl single-column rail) turn out to
+               place them exactly right here too with no changes: BandCompare(order-first),
+               Point order(order-1) fill row one; "Sim this build" (order-2, `lg:col-span-2`
+               added below) spans row two alone; Share(order-3), Import(order-4) fill row
+               three -- the same order the phone list already reads, just two per row
+               instead of one. `xl:contents` hands the same five children back to the
+               12-column grid above once the split does take over. -->
+          <div
+            class="contents lg:grid lg:grid-cols-2 lg:gap-8 xl:col-span-4 xl:contents xl:flex xl:flex-col xl:gap-8"
+          >
             <!-- Rebuild spec §4.D/§6: the new rail panel, answering review findings 1 and
                  3. `order-first` is the phone placement fix (§6: full width, above the tree
-                 row, never collapsed); on desktop it stays first too (its own DOM position
-                 in this rail already puts it there, so no `lg:order-*` override is needed). -->
+                 row, never collapsed); it stays first at every wider width too (its own DOM
+                 position in this rail already puts it there, so no `order-*` override is
+                 ever needed for it specifically). -->
             <BandCompare
               {store}
               specOverride={specParam ?? undefined}
@@ -870,9 +895,12 @@
 
             <!-- "Sim this build" leaves the facts rail (now inside `PlannerHeader`) and
                  lives here instead -- its own outlined gold secondary button, directly
-                 under Point order on desktop, above the Share panel. -->
+                 under Point order on desktop, above the Share panel. `lg:col-span-2`: the
+                 tablet rail's own second row, spanning both columns (fix round 6) --
+                 harmless at xl, where this wrapper is `contents` again and `col-span` has
+                 no grid to act inside. -->
             <a
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2"
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2 lg:col-span-2"
               href={simHref}
               data-testid="planner-sim-link"
             >
