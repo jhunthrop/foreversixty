@@ -155,8 +155,15 @@
       }}
     />
   {/if}
+  <!-- Fix round 6, item 2 (player review, kept as a guard -- the actual 1024px clipping
+       was neighbouring cells overlapping from the tree row being squeezed into 8 of 12
+       columns too early, fixed in Planner.svelte/TreeTabs.svelte, not here): `whitespace-
+       nowrap` so this text can never wrap even if something upstream someday constrains
+       this cell's own width again. No ancestor here sets `overflow: hidden` -- the pill
+       stays free to hang outside the cell by its own -4px offset at every width, the same
+       as it always has at lg. -->
   <span
-    class={`tabular rounded-pill bg-bg absolute -right-1 -bottom-1 border px-1 font-mono text-[11px] leading-[14px] ${CELL_PILL[state]}`}
+    class={`tabular rounded-pill bg-bg absolute -right-1 -bottom-1 border px-1 font-mono text-[11px] leading-[14px] whitespace-nowrap ${CELL_PILL[state]}`}
   >
     {rank}/{talent.max_rank}
   </span>
