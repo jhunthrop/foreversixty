@@ -42,4 +42,11 @@ describe('SharePanel', () => {
     const { body } = render(SharePanel, { props: { store: fixtureStore(), live: fixtureLive } });
     expect(body).toContain('data-testid="share-open"');
   });
+
+  it('computes the plain-text summary (review finding 8), never a placeholder-filled template', () => {
+    const { body } = render(SharePanel, { props: { store: fixtureStore(), live: fixtureLive } });
+    expect(body).toContain('Human Warrior · Arms 1/Fury 0 · Level 10');
+    expect(body).toContain('data-testid="copy-as-text"');
+    expect(body).toContain('>Copy as text<');
+  });
 });

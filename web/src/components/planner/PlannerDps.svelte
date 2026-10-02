@@ -14,14 +14,18 @@
 
   let {
     live,
-    href,
+    href = '',
     gate,
     pointsLeft,
     onshow,
     ownGearCaveat = false,
+    showSimLink = true,
+    unfinishedNote = 'dynamic',
   }: {
     live: LiveDps;
-    href: string;
+    /** Unused when `showSimLink` is false (the planner rebuild's header facts rail -- the
+     *  link itself moved to the rail, above the Share panel, spec fix round 1 item 2.a). */
+    href?: string;
     gate: LiveGate;
     pointsLeft: number;
     onshow: () => void;
@@ -35,6 +39,15 @@
      * number is wrong, this one is just never the player's own gear once a build is pasted.
      */
     ownGearCaveat?: boolean;
+    /** False inside `PlannerHeader`'s own facts rail (fix round 1): "Sim this build" is now
+     *  its own outlined gold button in the rail, above the Share panel, not bundled with the
+     *  figure. Still true (default) for the non-standalone inline embed, unchanged. */
+    showSimLink?: boolean;
+    /** 'static' inside the header's facts rail: the dynamic "{n} points to go" count now
+     *  lives under "Points left" instead (so the two never repeat the same number twice),
+     *  and this slot reads a plain explainer of what the figure is waiting for. 'dynamic'
+     *  (default) keeps the non-standalone embed's original behaviour. */
+    unfinishedNote?: 'dynamic' | 'static';
   } = $props();
 
   // `off` with a figure still held is a build that stopped being simmed -- a point came out,
@@ -57,7 +70,9 @@
   // The line under the figure says why there is no fresh number, when there is not one.
   const note = $derived(
     gate === 'unfinished'
-      ? simCopy.plannerDpsPointsToGo(pointsLeft)
+      ? unfinishedNote === 'static'
+        ? simCopy.plannerDpsLiveCaption
+        : simCopy.plannerDpsPointsToGo(pointsLeft)
       : gate === 'ask'
         ? simCopy.plannerDpsShowNote
         : band,
@@ -107,9 +122,11 @@
          the shrinking PRIMARY_BUTTON: no other control in this lane shrinks its target on
          desktop, and a summary-bar row is exactly where a mouse-only "it's fine above 44px on
          desktop" argument would first break the pattern. -->
-    <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
-      {simCopy.simThisBuild}
-    </a>
+    {#if showSimLink}
+      <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
+        {simCopy.simThisBuild}
+      </a>
+    {/if}
   </div>
   <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
        once a run is ready, and removing the line while the next run was pending made the

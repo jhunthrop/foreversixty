@@ -16,12 +16,20 @@
     focused,
     onfocuscell,
     readOnly = false,
+    differs = false,
+    bandRankLine = null,
   }: {
     store: PlannerStore;
     talent: Talent;
     focused: boolean;
     onfocuscell: () => void;
     readOnly?: boolean;
+    /** Rebuild spec §4.E.4: true once a band has loaded and this cell's own rank differs
+     *  from it -- draws the gold "differs from this band" dot, top-left. */
+    differs?: boolean;
+    /** The tooltip's own extra line for a marked cell (`bandCompareCopy.bandRankTooltipLine`),
+     *  or `null` before any band has loaded. */
+    bandRankLine?: string | null;
   } = $props();
 
   const LONG_PRESS_MS = 500;
@@ -120,14 +128,24 @@
       {talent.name.slice(0, 2)}
     </span>
   {:else}
+    <!-- `loading="eager"` (fix round 3, ux-designer + wow-player review): this icon is this
+         page's own content, not a below-the-fold decoration -- every tree panel this build
+         has renders in the first viewport from `md` up (TreeTabs.svelte renders all of
+         them, CSS-hidden rather than unmounted on phone), so `lazy` left scattered cells
+         and whole columns undecoded at the exact moment three acceptance screenshots were
+         taken (`cold-hunter-1440.png`, `signed-in-compare-entry.png`,
+         `met-connector-band-60-1440.png`) -- a real bug a visitor's own browser would hit
+         too, not a screenshot-only artifact. 51 icons at roughly 200 bytes each is a
+         trivial cost next to that; the home page's own crest row made the identical call
+         for the identical reason (`ClassCrest.astro`'s `priority` prop). -->
     <img
       src={iconSrc}
       alt=""
       width="40"
       height="40"
-      loading="lazy"
+      loading="eager"
       decoding="async"
-      class={`rounded-control h-10 w-10 object-cover ${CELL_FACE[state]}`}
+      class={`rounded-control h-10 w-10 object-cover md:h-11 md:w-11 lg:h-12 lg:w-12 ${CELL_FACE[state]}`}
       onerror={() => (iconBroken = true)}
       onload={(event) => {
         // A 1x1 file is the data pipeline's placeholder for art it has not produced yet
@@ -142,6 +160,19 @@
   >
     {rank}/{talent.max_rank}
   </span>
+  {#if differs}
+    <!-- Rebuild spec §4.E.4 (review finding 3's per-cell half): gold, not green or grey --
+         a prompt ("this could change"), never mistaken for CELL_BORDER's own "you have
+         this"/"locked" states. Top-left, the one corner the rank pill (bottom-right)
+         never uses. Absent until a band has loaded and this cell's own rank differs from
+         it (the `differs` prop itself already carries that condition; no second check
+         here, tenet 8: no claim without data). -->
+    <span
+      class="bg-gold border-bg absolute -top-1 -left-1 h-2 w-2 rounded-full border"
+      aria-hidden="true"
+      data-testid={`talent-differs-${talent.id}`}
+    ></span>
+  {/if}
 {/snippet}
 
 <div class="relative">
@@ -214,6 +245,13 @@
             <span class="label text-muted">Next rank</span>
             {talent.ranks[rank].description}
           </p>
+        {/if}
+        {#if bandRankLine !== null}
+          <!-- Rebuild spec §4.E.4: one more line in the cell's own existing tooltip, never
+             a second tooltip mechanism (tenet 10). -->
+          <span class="text-gold text-[12px] font-semibold" data-testid={`talent-band-line-${talent.id}`}>
+            {bandRankLine}
+          </span>
         {/if}
       </div>
     {/if}

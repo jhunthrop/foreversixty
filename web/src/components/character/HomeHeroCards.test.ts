@@ -36,6 +36,11 @@ describe('HomeHeroCards', () => {
     );
   });
 
+  it('links the Talents card to the planner with ?spec= for a character with a learned spec', () => {
+    const { body } = render(HomeHeroCards, { props: { hero: HERO_WITH_SPEC } });
+    expect(body).toContain('href="/planner?spec=hunter-marksmanship"');
+  });
+
   it('links the Simulator card to the armory sim href for this character', () => {
     const { body } = render(HomeHeroCards, { props: { hero: HERO } });
     expect(body).toContain('href="/sim?source=armory&amp;ref=us%2Fnormal%2Fzulmara"');

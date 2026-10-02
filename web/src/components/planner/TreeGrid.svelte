@@ -3,7 +3,9 @@
      tree is tabbable and arrow keys move it. Enter adds a point through the cell's own
      native button activation; Backspace and Delete remove one, handled here. -->
 <script lang="ts">
+  import type { BandDiffView } from '../../lib/planner/band-compare';
   import { connectorsFor, gridViewBox } from '../../lib/planner/connectors';
+  import { bandCompareCopy } from '../../lib/planner/copy';
   import { gridCells, gridSize, moveFocus, type GridCell } from '../../lib/planner/grid';
   import { dataUrl } from '../../lib/planner/load';
   import { CONNECTOR_STROKE } from '../../lib/planner/styles';
@@ -15,7 +17,16 @@
     store,
     tree,
     readOnly = false,
-  }: { store: PlannerStore; tree: TalentTree; readOnly?: boolean } = $props();
+    bandDiff = null,
+  }: {
+    store: PlannerStore;
+    tree: TalentTree;
+    readOnly?: boolean;
+    /** Rebuild spec §4.D/§4.E.4: `BandCompare`'s own diff, once a band has loaded, so this
+     *  grid can mark every cell whose rank differs from it. `null` before any band has
+     *  loaded -- no cell ever claims a difference without real data (tenet 8). */
+    bandDiff?: BandDiffView | null;
+  } = $props();
 
   const cells = $derived(gridCells(tree));
   const size = $derived(gridSize(tree));
@@ -75,14 +86,21 @@
   {#if tree.background && !artBroken}
     <!-- The client's own panel, cropped and processed in the pipeline. `object-cover`
          fills the whole box whatever its aspect and crops the excess evenly around the
-         centre, so the art reads as the grid's own backdrop rather than a strip beside it. -->
+         centre, so the art reads as the grid's own backdrop rather than a strip beside it.
+
+         `loading="eager"` (fix round 3, ux-designer review): this art, like the talent
+         icons below it (`TalentCell.svelte`'s own identical comment), is this page's own
+         content, in the first viewport at every desktop width this lane supports (all
+         three trees render side by side from `md`) -- `lazy` left it undecoded at capture
+         time in three of the acceptance screenshots, a real, visible bug, not just a
+         screenshot artifact. Three small webps is a trivial cost next to that. -->
     <img
       src={backgroundSrc}
       alt=""
       aria-hidden="true"
       width="300"
       height="331"
-      loading="lazy"
+      loading="eager"
       decoding="async"
       data-testid={`tree-art-${tree.id}`}
       class="rounded-control pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
@@ -96,6 +114,18 @@
     aria-hidden="true"
   >
     {#each connectors as connector (connector.id)}
+      <!-- Rebuild spec §4.E.2: a dark halo under the coloured line, sharing the same `d` --
+         two stacked paths, not a new shape, so the halo moves and sizes with the line it
+         sits under for free. -->
+      <path
+        d={connector.d}
+        aria-hidden="true"
+        fill="none"
+        stroke-width="5"
+        stroke-linecap="round"
+        style="vector-effect: non-scaling-stroke"
+        class={CONNECTOR_STROKE.halo}
+      />
       <path
         d={connector.d}
         data-testid={`connector-${connector.id}`}
@@ -138,6 +168,14 @@
                 focused={focused?.talent.id === cell.talent.id}
                 onfocuscell={() => (focusedId = cell.talent.id)}
                 {readOnly}
+                differs={bandDiff !== null && bandDiff.diffTalentIds.has(cell.talent.id)}
+                bandRankLine={bandDiff !== null
+                  ? bandCompareCopy.bandRankTooltipLine(
+                      bandDiff.bandLabel,
+                      bandDiff.bandRankById.get(cell.talent.id) ?? 0,
+                      cell.talent.max_rank,
+                    )
+                  : null}
               />
             {/if}
           </div>

@@ -81,10 +81,16 @@ export const CELL_PILL: Record<CellState, string> = {
  * holds the rank its dependent needs, the same grey `border-line` uses otherwise. A
  * `stroke-` utility rather than `border-`, so it lives beside CELL_BORDER/CELL_PILL
  * instead of inside either of them.
+ *
+ * Rebuild spec §4.E.2 (review finding 4): a tree's own art sits directly behind these
+ * lines, so each connector now renders twice -- `halo` first, a wide `--bg` stroke under
+ * the line, then the coloured stroke on top -- the same "dark outline under a thin line"
+ * treatment a map or a wiring diagram uses to stay legible over a busy backdrop.
  */
-export const CONNECTOR_STROKE: Record<'met' | 'unmet', string> = {
+export const CONNECTOR_STROKE: Record<'met' | 'unmet' | 'halo', string> = {
   met: 'stroke-gold',
   unmet: 'stroke-line',
+  halo: 'stroke-bg',
 };
 
 /**

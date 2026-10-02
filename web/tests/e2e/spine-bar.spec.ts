@@ -62,11 +62,25 @@ test.describe('the spine bar opens every door on the current character', () => {
     await expect.poll(() => requestedClass).toBe('warrior');
   });
 
-  test("the bar mounts on /planner and /sim, above each page's own chip", async ({ page }) => {
-    await pasteAndGoTo(page, '/planner');
-    await expect(page.getByTestId('current-character-bar')).toBeVisible();
+  test("the bar mounts on /sim, above the page's own chip", async ({ page }) => {
     await pasteAndGoTo(page, '/sim');
     await expect(page.getByTestId('current-character-bar')).toBeVisible();
+  });
+
+  // Planner rebuild spec §3: the spine band is replaced on this one page by the new
+  // header/CharacterCard family -- the pointer bridge itself is unchanged (`decidePlannerLoad`
+  // still restores a bare /planner from the pasted export), so this proves the restore
+  // rather than a chip that no longer renders here.
+  test('/planner restores the pasted export on a bare load, with no spine chip of its own', async ({
+    page,
+  }) => {
+    await pasteAndGoTo(page, '/planner');
+    await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
+    await expect(page.getByLabel('Class')).toHaveValue('warrior');
+    // "5530515" base-36 digits sum to 24 points in Fury, nothing dropped (the same fixture
+    // string current-character.spec.ts's own restore test and sim-saved.spec.ts's fixture
+    // result, "0-5530515-", both already rely on).
+    await expect(page.getByTestId('tree-points-164')).toHaveText('24');
   });
 });
 

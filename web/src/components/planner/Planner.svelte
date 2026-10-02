@@ -1,50 +1,52 @@
 <!-- web/src/components/planner/Planner.svelte -->
 <!-- The planner island. Mounted two ways: by src/pages/planner.astro with client:load, and
      by src/planner-island.ts on the API-rendered /b/:id page, where `record` is supplied and
-     the build starts read-only. Desktop lays the trees out side by side with the gear panel
-     under them; phone shows one panel at a time behind a tab switcher (Tasks 9 and 17). -->
+     the build starts read-only. Desktop lays the trees out side by side with the rail
+     (`BandCompare`, Share, Import, Point order) beside them; phone shows one tree at a time
+     behind a tab switcher (Tasks 9 and 17). Rebuild spec §11 (owner ruling): the gear panel
+     left this page entirely -- the simulator keeps its own gear step. -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import type { WeightsFile } from '../../lib/addon/score';
   import activeBuild from '../../data/active-build.json';
   import { fetchMeOnce, type Me } from '../../lib/account/api';
+  import { heroCharacter } from '../../lib/account/hero-character';
   import { mainCharacter } from '../../lib/account/main-character';
   import { createQueryState } from '../../lib/data/query.svelte';
-  import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
+  import { clearCurrent, readCurrent } from '../../lib/current-character';
   import { API_BASE_URL, DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
+  import type { BandDiffView } from '../../lib/planner/band-compare';
+  import { loadFromBand } from '../../lib/planner/band-compare';
   import {
     decidePlannerLoad,
     isBarePlannerUrl,
     writePlannerPointer,
   } from '../../lib/planner/current-character-planner';
-  import { ranksByTalent } from '../../lib/planner/derive';
+  import { bisCopy } from '../../lib/bis/copy';
+  import { bandForLevel } from '../../lib/bis/hover';
+  import { plannerCopy } from '../../lib/planner/copy';
+  import { levelReached, ranksByTalent } from '../../lib/planner/derive';
   import { encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
-  import {
-    DATA_LOAD_FAILED,
-    DataLoadError,
-    loadItems,
-    loadReference,
-    loadSets,
-    loadTalents,
-    loadWeights,
-  } from '../../lib/planner/load';
+  import { DATA_LOAD_FAILED, DataLoadError, loadReference, loadTalents } from '../../lib/planner/load';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
-  import { treeRowColumnsClass } from '../../lib/planner/styles';
+  import { SECONDARY_BUTTON_FIXED, treeRowColumnsClass } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
   import { plannerSearchFor } from '../../lib/planner/url';
   import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
+  import { simCopy } from '../../lib/sim/copy';
+  import { specRow } from '../../lib/sim/spec-label';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
-  import CurrentCharacterBar from '../CurrentCharacterBar.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
-  import GearPanel from './GearPanel.svelte';
+  import BandCompare from './BandCompare.svelte';
   import ImportBox from './ImportBox.svelte';
   import { importFromAddon } from '../../lib/addon/import';
   import OrderStrip from './OrderStrip.svelte';
+  import PlannerCharacterCard from './PlannerCharacterCard.svelte';
+  import PlannerHeader from './PlannerHeader.svelte';
   import PlannerToolbar from './PlannerToolbar.svelte';
   import SummaryBar from './SummaryBar.svelte';
   import TreeTabs from './TreeTabs.svelte';
@@ -86,6 +88,17 @@
     return new URLSearchParams(window.location.search).get(name) ?? undefined;
   }
 
+  // Rebuild spec §4.I: `?spec=` (new, from the BiS page/a guide/the home Talents card)
+  // derives `?class=` when `?class=` itself is absent -- `specRow(spec).class_slug`, the
+  // same spec catalogue `specKeyFor`/`specOf` already read. Read once, untracked, same as
+  // every other URL param this component reads on mount.
+  const specParam = fromQuery('spec') ?? null;
+  const specClassSlug = specParam !== null ? (specRow(specParam)?.class_slug ?? undefined) : undefined;
+  // `?talents=` (new): a band's own digit string, applied once on arrival -- see the
+  // `talentsApplied` flag and its one call site inside `load()`, below.
+  const talentsParam = fromQuery('talents') ?? null;
+  let talentsApplied = false;
+
   // Current-character pointer (Task 10, spec section 1) -- decision in current-character-
   // planner.ts. `codeParam` is `?code=` itself, or a restored pointer's code, same path.
   const plannerLoad = untrack(() => {
@@ -94,15 +107,13 @@
     return decidePlannerLoad(urlCode, isBarePlannerUrl(search), record !== null, standalone, readCurrent());
   });
   const { codeParam, decoded } = plannerLoad;
-  let restored = $state(plannerLoad.restored);
-  let pointer = $state<CurrentCharacter | null>(plannerLoad.pointer);
   // A dead restored pointer is forgotten, not shown as an error. Runs once, on mount.
   $effect(() => {
     if (plannerLoad.deadPointer) clearCurrent();
   });
 
   // A parsed count inside one of these renders in a tabular, monospace span, the same as every
-  // other number the planner shows (OrderStrip, SummaryBar, GearPanel, TalentCell, ItemPicker).
+  // other number the planner shows (OrderStrip, SummaryBar, BandCompare, TalentCell).
   // This stays a small discriminated union rather than a plain string so the template can wrap
   // just the digits with a real element -- `decoded.message` (current-character-planner.ts's
   // own `decodeFS1` call, above) stays flat text (its exact wording is pinned by fs1.test.ts
@@ -111,7 +122,12 @@
   type CodeNote =
     | { kind: 'message'; text: string }
     | { kind: 'tree-count'; got: string; want: string }
-    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean };
+    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean }
+    // Fix round 2 (ux-designer review finding 2): a band load (`?talents=`, or BandCompare's
+    // own Load button) is never a character or an addon import -- the 'reconstructed' note's
+    // own "Talents loaded from a character" wording is false for it, so it gets its own kind
+    // and its own copy rather than a borrowed branch of that one.
+    | { kind: 'band'; bandLabel: string };
 
   /** Set when the build came in as an FS1 code: either why it could not be read, or that its
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
@@ -157,7 +173,7 @@
         ? classSlug
         : decoded?.ok
           ? decoded.build.classSlug
-          : (fromQuery('class') ?? plannerLoad.initialClassSlug ?? classSlug),
+          : (fromQuery('class') ?? specClassSlug ?? plannerLoad.initialClassSlug ?? classSlug),
       raceSlug: record
         ? (raceSlug ?? '')
         : decoded?.ok
@@ -192,12 +208,33 @@
     store.selectClass(mainClassSlug);
   });
 
+  // Fix round 2 (wow-player review finding 1): Level must read the same real character the
+  // Character card beside this page shows, not a reconstructed figure that can openly
+  // disagree with it. The same hero-character lookup `createCharacterCardState` (Planner
+  // CharacterCard.svelte's own hook) makes, read from this mount's own session so the two
+  // panels can never pick two different characters. `null` (an anonymous visit, or before
+  // the session resolves) leaves `store.level` on its existing `levelReached(order)`
+  // fallback, unchanged for every bare build.
+  $effect(() => {
+    if (session === null) return;
+    const hero =
+      session.data === null
+        ? null
+        : (heroCharacter(readCurrent(), session.data.characters) ??
+          mainCharacter(session.data.characters, session.data.main_character_key));
+    store.setCharacterLevel(hero?.level ?? null);
+  });
+
   // The chip's "Copy addon code" link; shared with SharePanel's own button (Task 10).
 
   // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
   // no-op inline or before talent data has loaded.
+  // The chip this used to feed (CurrentCharacterBar's spine mode) is gone with it (rebuild
+  // spec §3: replaced by the header/CharacterCard family) -- the write itself still matters
+  // (the site-wide current-character bridge every other tool page reads), so this keeps
+  // calling it and simply has nothing of its own left to do with the fresh pointer back.
   function writePointer(source: 'code' | 'addon' | 'build', ref: string, cls: string, title?: string): void {
-    pointer = writePlannerPointer(store, standalone, source, ref, cls, title);
+    writePlannerPointer(store, standalone, source, ref, cls, title);
   }
 
   // An addon export for another class: switch the planner to it and import once that
@@ -313,20 +350,17 @@
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let attempt = $state(0);
-  /** The build's stat weights (Task 19). Empty until loaded, or on a build with none. */
-  let weights = $state<WeightsFile>([]);
   // Reset asks in the toolbar rather than through window.confirm: a browser dialog cannot be
   // styled, cannot say what it is about to clear, and reads badly on phone.
   let confirmingReset = $state(false);
-  // Which panel the phone shows: a tree by index, or the gear panel last. Desktop ignores it
-  // and lays every tree out side by side with the gear panel under them.
+  // Which tree tab the phone shows. Desktop ignores it and lays every tree out side by
+  // side.
   let activeTree = $state(0);
 
-  // Gear is the optional half of a build: a class the build ships no item file for has an
-  // empty index, so it gets no panel and no tab. The tab sits after the trees, which is both
-  // where it belongs in the strip and why its index can never collide with a tree's.
-  const hasGear = $derived(store.itemIndex.size > 0);
-  const gearTabIndex = $derived(store.talentIndex ? store.talentIndex.trees.length : 0);
+  /** `BandCompare`'s own diff, once a band has loaded (spec §4.D/§4.E.4) -- shared with
+   *  every `TreeGrid` through `TreeTabs`, so the per-cell marker is one computation, not a
+   *  second one forked by the tree row. */
+  let bandDiff = $state<BandDiffView | null>(null);
 
   // The tree row's own column count -- one class per tree count so Tailwind keeps every
   // literal this can render (design loop, planner round; build review round 1, finding 2).
@@ -376,13 +410,26 @@
 
     status = 'loading';
     try {
+      // Fired together, not one after the other: `loadTalents` depends on nothing
+      // `loadReference` produces (both only need `store.treeVersion`/`slug`, already known),
+      // so starting it here instead of after `reference` resolves turns two sequential round
+      // trips into one. Planner rebuild, fix round 1: this is also what the header's own
+      // background art (`PlannerHeader.svelte`'s `headerArtSrc`, which needs `store.
+      // talentIndex`) now waits on, so halving this wait is half of the Lighthouse LCP
+      // budget back. `.catch(() => {})` on a throwaway reference only silences the
+      // "unhandled rejection" warning a promise nobody has awaited yet can raise while
+      // `reference` is still in flight below -- the real rejection still reaches the
+      // `await talentsPromise` inside the nested `try`, unaffected by this one.
+      const talentsPromise = loadTalents(store.treeVersion, slug);
+      talentsPromise.catch(() => {});
+
       const reference = await loadReference(store.treeVersion);
       if (stale()) return;
       store.setReference(reference);
 
       let talents: TalentFile;
       try {
-        talents = await loadTalents(store.treeVersion, slug);
+        talents = await talentsPromise;
       } catch (error) {
         // A class this planner has no talent data for will never load no matter how many
         // times this is retried, so that -- and only that -- earns the code its one turn even
@@ -414,6 +461,22 @@
         // through as all zeros. The note says so rather than claiming talents loaded.
         const gearOnly = codeForThisClass.build.treeRanks.every((tree) => tree.every((rank) => rank === 0));
         codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length, gearOnly };
+      } else if (
+        talentsParam !== null &&
+        !talentsApplied &&
+        store.talentIndex !== null &&
+        store.order.length === 0
+      ) {
+        // Rebuild spec §4.D/§4.I: the BiS page's "Talents in planner" link (and a guide's
+        // "Open this build in the planner") carries a band's own talents string directly.
+        // `?code=` always wins when both are present (unchanged precedence, checked above);
+        // this only ever gets a turn on a build that is still empty, same "never silently
+        // overwrite a build already in progress" rule `?code=` already follows.
+        talentsApplied = true;
+        const rebuilt = loadFromBand(store.talentIndex, talentsParam);
+        store.applyOrder(rebuilt.order, {});
+        const bandLabel = bisCopy.bandRangeLabel(bandForLevel(levelReached(rebuilt.order)));
+        codeNote = { kind: 'band', bandLabel };
       }
 
       // Task 10: a `?code=`/restored code just applied above, or this mount's `record`.
@@ -422,62 +485,16 @@
         writePointer('code', codeParam, codeForThisClass.build.classSlug);
       }
 
-      // Planner TBT lane (2026-09-28): `status` used to wait on sets/items/weights too, so
-      // the trees, toolbar, import box and order strip -- none of which read gear data --
-      // sat behind the same gate as the gear panel and all mounted in one synchronous
-      // Svelte flush the instant the slowest of the three resolved. Profiling (Chrome's
-      // long-tasks audit plus a CPU/trace capture of /planner.html under the mobile
-      // throttling lighthouserc.json uses) named that flush -- not the fetch or the JSON
-      // parse of the class's items file -- as the actual blocking work: a single task in
-      // the hydration bundle for mounting every ready-state panel at once. `status` now
-      // flips as soon as the trees have something to show; gear loads after, in its own
-      // turn, so its own (much smaller) first mount of GearPanel is a separate task rather
-      // than added onto this one.
+      // Planner rebuild §11 (owner ruling): the gear panel left the planner entirely --
+      // GearPanel/ItemPicker/BisSlotPopover and their own sets/items/weights fetch are gone
+      // with it (the simulator keeps its own gear step). `status` flips the moment the
+      // trees have something to show; nothing else is fetched after it.
       status = 'ready';
-      void loadGear(store.treeVersion, slug, stale);
     } catch {
       // A stale run's failure is not this class's failure: the run that replaced it owns the
       // status, and reporting this one would put a working planner behind a Retry button.
       if (stale()) return;
       status = 'failed';
-    }
-  }
-
-  /**
-   * Sets, items and weights -- gear data, none of it needed for the trees, toolbar, import
-   * box or order strip already on screen by the time this runs (see `load`'s own comment).
-   * Fetched after `status` flips to `'ready'` rather than before it, so gear's own first
-   * mount of GearPanel lands in a later, separate task instead of growing the one above.
-   *
-   * Unlike `load`, a genuine failure here (anything but the two documented 404s, which mean
-   * "this build ships none of this") does not send the planner to its failure panel: the
-   * trees are already live and useful, and yanking them for a Retry button over a gear file
-   * the visitor may not even open would be a worse outcome than a gear panel that stays
-   * absent. It fails the same way loadItems already treats a class with no item file --
-   * quietly, leaving the gear tab out -- rather than inventing a second failure state this
-   * lane's scope does not call for.
-   */
-  async function loadGear(treeVersion: string, slug: string, stale: () => boolean): Promise<void> {
-    try {
-      const sets = await loadSets(treeVersion);
-      if (stale()) return;
-      store.setSets(sets);
-
-      try {
-        const items = await loadItems(treeVersion, slug);
-        if (stale()) return;
-        store.setItems(items);
-      } catch (error) {
-        if (!(error instanceof DataLoadError) || error.status !== 404) throw error;
-        if (stale()) return;
-        store.setItems({ build: treeVersion, class_slug: slug, items: [] });
-      }
-
-      weights = await loadWeights(treeVersion);
-      if (stale()) return;
-    } catch {
-      // Left as the pre-load state (no sets, no items, no weights): the gear tab stays
-      // absent, same as a class whose build ships no item file at all.
     }
   }
 
@@ -549,25 +566,24 @@
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   {#if standalone}
-    <!-- The spine bar is the one current-character band on the planner; the share panel
-         below carries Copy addon code, which the old chip duplicated. -->
-    <CurrentCharacterBar spine currentDoor="plan" {restored} />
+    <!-- Rebuild spec §4.A/§4.B: `ArtPanel` + `ClassHeader` + `CharacterCard`, the same
+         header family the BiS and home rebuilds shipped, replaces the bare page title and
+         the old current-character spine band (which duplicated Copy addon code, now in the
+         Share panel below). Fix round 1, item 2.a: the facts rail (Points left/Spent/Level/
+         DPS) now lives inside `PlannerHeader` itself, as the mock's own header bottom row --
+         `items-start`, not `items-center`, since the header is taller than the card now. -->
+    <div class="flex flex-col gap-4 px-[18px] md:px-0 lg:flex-row lg:items-start lg:gap-6">
+      <div class="min-w-0 lg:flex-1">
+        <PlannerHeader {store} {live} {gate} onshowdps={() => (dpsOptedIn = true)} />
+      </div>
+      <PlannerCharacterCard />
+    </div>
+  {:else}
+    <!-- The non-standalone inline embed (Top Gear's "add a build", TalentCandidates.svelte)
+         keeps its own pre-fix-round layout: no header, no rail -- just the flat facts bar
+         with "Sim this build" bundled into the DPS figure, unchanged. -->
+    <SummaryBar {store} {live} {simHref} {gate} {standalone} onshowdps={() => (dpsOptedIn = true)} />
   {/if}
-  <!-- Final-review fix (states lane): "bare build" (spec section 6 -- Level hidden unless a
-       character is loaded) means "no real character or build data", not just "no pointer".
-       A pointer-less standalone /planner has neither, so Level still hides there. But /b/:id
-       mounts with a populated `record` and no pointer (a fresh browser has no localStorage
-       entry) -- that build's Level is exactly as meaningful as a pointer-loaded character's,
-       so `record !== null` also counts as "has a character" here. -->
-  <SummaryBar
-    {store}
-    {live}
-    {simHref}
-    {gate}
-    {standalone}
-    hasCharacter={pointer !== null || record !== null}
-    onshowdps={() => (dpsOptedIn = true)}
-  />
 
   {#if codeNote !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">
@@ -586,6 +602,8 @@
           that no legal order reaches. The order is a reconstruction: the game does not record the order points
           were spent in.
         {/if}
+      {:else if codeNote.kind === 'band'}
+        {plannerCopy.bandLoadedNote(codeNote.bandLabel)}
       {:else}
         {codeNote.text}
       {/if}
@@ -743,8 +761,36 @@
        the reserve removed in-page, the loaded naturals are 958.5 at 390px, 1454.5 at 800px
        (md, everything stacked) and 871.5 at 1280px (lg, the rail beside the trees). Three
        values now, since one md figure cannot serve both a stacked tablet and a two-column
-       desktop: 983 / 1479 / 896, each 24px above its natural for the CI runner's fonts. -->
-  <div class="flex min-h-[983px] flex-col gap-[22px] md:min-h-[1479px] md:gap-8 lg:min-h-[896px]">
+       desktop: 983 / 1479 / 896, each 24px above its natural for the CI runner's fonts.
+
+       Planner rebuild (2026-10-01): `GearPanel`/`ItemPicker`/`BisSlotPopover` left this
+       region entirely (spec §11, owner ruling -- the simulator keeps its own gear step),
+       and `BandCompare` (spec §4.D) joined the rail in their place. Re-measured the same
+       way -- load /planner, drop this element's min-height, read
+       `getBoundingClientRect().height` at 360px, 800px (md) and 1280px (lg) -- the fixture
+       build's naturals are now 1178 at 360px, 1133.5 at 800px and 850 at 1280px: taller on
+       phone (BandCompare, never collapsed, sits above the tree row there) but shorter from
+       md up, where the gear panel's own 17-slot grid, stat totals and weights table were
+       the larger of the two swaps. Same convention as every figure above: 24px over the
+       Mac-measured natural for the CI runner's fonts, rounded up -- 1202 / 1158 / 874.
+
+       Fix round 1, item 2.a (the mock): "Sim this build" moved out of the facts rail (now
+       inside `PlannerHeader`, outside this reserve) into this rail, as its own button above
+       the Share panel -- one more 44px control plus its own gap added to every branch this
+       reserve covers. Re-measured the identical way: 1244 at 360px, 1209.5 at 800px, 926 at
+       1280px, each 24px over for the CI runner's fonts and rounded up -- 1268 / 1234 / 950.
+
+       This reserve was never the source of a 33.5px footer-stability gap planner-phone.
+       spec.ts's own two footer tests first found at 360px on the `desktop` project only --
+       diagnosing it directly (measuring the reserve element itself across both states)
+       showed it pinned at the reserved figure in both, unmoving. The real source sat
+       outside this region entirely: `PlannerCharacterCard` (beside the header, §4.B) makes
+       its own `/v1/me` request, and those two tests alone left it unrouted, so it hit the
+       real (unreachable here) API and resolved on its own schedule -- a second, unrelated
+       async transition landing inside the exact window these tests measure. Fixed at the
+       test level (planner-phone.spec.ts now routes `/v1/me` as a fast, deterministic
+       signed-out response for this describe block), not by padding this reserve further. -->
+  <div class="flex min-h-[1268px] flex-col gap-[22px] md:min-h-[1234px] md:gap-8 lg:min-h-[950px]">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -794,28 +840,7 @@
             <!-- The phone tab strip and the tree row it switches between, split into their
                  own component (design loop, planner round) so this file stays under the
                  project's file-size guideline. -->
-            <TreeTabs
-              {store}
-              talentIndex={store.talentIndex}
-              bind:activeTree
-              {hasGear}
-              {gearTabIndex}
-              {treeColumnsClass}
-            />
-
-            <!-- Gear sits right after the tree row: on a phone the two are the same
-               tab-switched slot, so whichever is hidden costs no height. Hidden by a class
-               rather than the `hidden` attribute, which `md:flex` could not override. -->
-            {#if hasGear}
-              <div
-                id="gear-tabpanel"
-                role="tabpanel"
-                aria-labelledby="gear-tab"
-                class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
-              >
-                <GearPanel {store} {weights} />
-              </div>
-            {/if}
+            <TreeTabs {store} talentIndex={store.talentIndex} bind:activeTree {treeColumnsClass} {bandDiff} />
 
             <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-tree-source">
               {treeSourceNotice(store.treeVersion)}
@@ -823,7 +848,45 @@
           </div>
 
           <div class="contents lg:col-span-4 lg:flex lg:flex-col lg:gap-8">
-            <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
+            <!-- Rebuild spec §4.D/§6: the new rail panel, answering review findings 1 and
+                 3. `order-first` is the phone placement fix (§6: full width, above the tree
+                 row, never collapsed); on desktop it stays first too (its own DOM position
+                 in this rail already puts it there, so no `lg:order-*` override is needed). -->
+            <BandCompare
+              {store}
+              specOverride={specParam ?? undefined}
+              onbanddiff={(diff) => (bandDiff = diff)}
+              onloaded={(bandLabel) => (codeNote = { kind: 'band', bandLabel })}
+              class="order-first"
+            />
+
+            <!-- Fix round 2 (ux-designer review finding 1): the desktop rail reads
+                 BandCompare -> Point order -> Sim this build -> Share -> Import, per the
+                 mock and §4.F -- a different order than phone's own (BandCompare -> Point
+                 order -> Import -> Sim -> Share), so desktop needs its own explicit
+                 `lg:order-*` set rather than cancelling back to plain DOM position
+                 (fix round 1's `lg:order-none` left Point order in its own DOM position,
+                 last, with nothing after it to share the rail's stretched height -- the
+                 ~215px gap the review measured). Point order moves first in markup order
+                 too (nearest its own `order-1`), right after BandCompare, so the two visual
+                 orders agree as closely as the mobile/desktop split allows. -->
+            <OrderStrip {store} class="order-1 lg:order-1" />
+
+            <!-- "Sim this build" leaves the facts rail (now inside `PlannerHeader`) and
+                 lives here instead -- its own outlined gold secondary button, directly
+                 under Point order on desktop, above the Share panel. -->
+            <a
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2"
+              href={simHref}
+              data-testid="planner-sim-link"
+            >
+              {simCopy.simThisBuild}
+            </a>
+
+            <div
+              class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-3"
+              data-testid="planner-toolbar"
+            >
               <PlannerToolbar {store} {live} bind:confirmingReset />
             </div>
 
@@ -841,11 +904,9 @@
                 }}
                 onwrongclass={standalone ? switchClassForImport : undefined}
                 phone={collapsesOnPhone}
-                class="mx-[18px] md:mx-0"
+                class="order-2 mx-[18px] md:mx-0 lg:order-4"
               />
             {/if}
-
-            <OrderStrip {store} phone={collapsesOnPhone} />
           </div>
         </div>
       </div>

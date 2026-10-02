@@ -23,11 +23,18 @@ test.describe('current character', () => {
     await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
+    // Planner rebuild spec §3: the spine chip (and its Forget control) that used to prove
+    // a restore on this page is replaced by the header/CharacterCard family -- the pointer
+    // bridge itself is unchanged (`decidePlannerLoad` still restores a bare /planner from
+    // the stored 'code'/'addon' pointer), so the proof here is the restored build itself:
+    // the fixture's Fury Warrior string reconstructs to 24 points in Fury with nothing
+    // dropped (sim-saved.spec.ts's own fixture result carries the identical final string,
+    // "0-5530515-").
     await page.goto('/planner');
-    // The restored note is desktop-only (the phone row keeps its six doors on one line);
-    // on every project the restored pointer shows as the Forget control being present.
-    await expect(page.getByTestId('current-character-restored')).toBeAttached();
-    await expect(page.getByTestId('current-character-forget')).toBeVisible();
+    await expect(page.getByLabel('Class')).toHaveValue('warrior');
+    await expect(page.getByLabel('Race')).toHaveValue('orc');
+    await expect(page.getByTestId('tree-points-164')).toHaveText('24');
+    await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   });
 
   test('Forget on the restored chip clears the pointer for the next bare load', async ({ page }) => {

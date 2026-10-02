@@ -30,6 +30,38 @@ function loaded(overrides: Parameters<typeof createPlannerStore>[0] | null = nul
   return store;
 }
 
+// Fix round 2 (wow-player review finding 1): Level must agree with the Character card
+// beside the page once a real character is loaded, rather than silently recomputing a
+// different figure from points spent -- not every unlocked point is spent immediately.
+describe('level', () => {
+  it('reads the reconstructed levelReached(order) figure with no character loaded', () => {
+    const store = loaded();
+    store.addPoint(1001);
+    expect(store.level).toBe(10);
+  });
+
+  it('reads the real character level once one is set, regardless of points spent', () => {
+    const store = loaded();
+    store.addPoint(1001);
+    store.setCharacterLevel(24);
+    expect(store.level).toBe(24);
+  });
+
+  it('falls back to levelReached(order) again once the character level is cleared', () => {
+    const store = loaded();
+    store.addPoint(1001);
+    store.setCharacterLevel(24);
+    store.setCharacterLevel(null);
+    expect(store.level).toBe(10);
+  });
+
+  it('works on a read-only build too -- it is not a mutation `editable()` can refuse', () => {
+    const store = loaded({ treeVersion: BUILD, classSlug: 'warrior', raceSlug: 'human', readOnly: true });
+    store.setCharacterLevel(24);
+    expect(store.level).toBe(24);
+  });
+});
+
 describe('spending points', () => {
   it('adds a legal point, tracks the level and the split, and clears the refusal', () => {
     const store = loaded();

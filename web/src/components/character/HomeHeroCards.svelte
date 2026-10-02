@@ -27,7 +27,7 @@
   import { simCardLine } from '../../lib/home/next-steps';
   import type { SimListRow } from '../../lib/sim/types';
   import Skeleton from '../ui/Skeleton.svelte';
-  import { loadBisContextFor, type BisContext } from '../../lib/home/upgrades-loader';
+  import { loadBisContextFor, specKeyForCharacter, type BisContext } from '../../lib/home/upgrades-loader';
   import { upgradesFor } from '../../lib/home/upgrades';
   import { talentDeltaFor } from '../../lib/home/talent-delta';
   import { bisCopy } from '../../lib/bis/copy';
@@ -96,6 +96,18 @@
       : talentDeltaFor(hero.build.talents.trees, ctx.band.talents),
   );
 
+  /** Planner rebuild spec §4.I: "Compare in the planner" carries `?spec=` so the planner
+   *  opens already mid-comparison against the visitor's own band -- `?band=` is dropped
+   *  (owner ruling §12; `BandCompare` always reads the build's own level band). The same
+   *  class+spec-name -> canonical spec key lookup `loadBisContextFor` already uses for
+   *  this exact character (`specKeyForCharacter`), not `hero.spec` itself -- that field is
+   *  a display name ("Marksmanship"), not the `hunter-marksmanship` key `?spec=` needs. No
+   *  spec learned yet, or an unrecognised class/spec pair, links to a bare planner. */
+  const talentsHref = $derived.by(() => {
+    const specKey = specKeyForCharacter(hero);
+    return specKey === undefined ? '/planner' : `/planner?spec=${specKey}`;
+  });
+
   const CARD_CLASS =
     'flex flex-col gap-[6px] p-[14px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150';
 
@@ -143,7 +155,7 @@
       {/if}
     {/if}
   </a>
-  <a href="/planner" class={CARD_CLASS} data-testid="home-hero-card-talents">
+  <a href={talentsHref} class={CARD_CLASS} data-testid="home-hero-card-talents">
     <span class="label text-gold">{homeHeroCardsCopy.talentsLabel}</span>
     {#if bandStatus === 'no-spec'}
       <span class="text-strong text-[15px] font-semibold">{homeHeroCardsCopy.pickASpec}</span>

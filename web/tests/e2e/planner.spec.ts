@@ -13,9 +13,10 @@ const ACTIVE_BUILD_NOTICE = treeSourceNotice(ACTIVE_BUILD);
 test('the planner opens on the default class with an empty build', async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto('/planner');
-  // A bare /planner has no current-character pointer, so Level -- which reads as a real
-  // character's level -- is not shown for a build nobody has loaded (spec 2026-09-25 §6).
-  await expect(page.getByTestId('planner-level')).toHaveCount(0);
+  // Rebuild spec §4.C, review finding 2: Level is now always shown -- it needs no
+  // character, only `levelReached(order)`, which a bare build already computes (9, the
+  // base level, before any point is spent).
+  await expect(page.getByTestId('planner-level')).toHaveText('9');
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
   await expect(page.getByLabel('Class')).toHaveValue('warrior');
   await expect(page.getByText(ACTIVE_BUILD_NOTICE)).toBeVisible();
@@ -27,7 +28,7 @@ test('the planner opens on the default class with an empty build', async ({ page
   expect(errors).toEqual([]);
 });
 
-test('Level appears once a build opens from an addon code (a real character)', async ({ page }) => {
+test('Level climbs with the points spent in a build opened from an addon code', async ({ page }) => {
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
   await expect(page.getByTestId('planner-level')).toBeVisible();
   await expect(page.getByTestId('planner-level')).toHaveText('12');
@@ -178,11 +179,11 @@ test('clicking a talent spends points and the counters follow', async ({ page })
   await improvedHeroicStrike.click();
   await expect(improvedHeroicStrike).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('planner-spent')).toHaveText('3/51');
-  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
-  // This is a bare build (no current-character pointer), so Level is not shown here at all
-  // (spec 2026-09-25 §6) -- the Level-appears/tracks-a-real-character case is covered by
-  // 'Level appears once a build opens from an addon code (a real character)', above.
-  await expect(page.getByTestId('planner-level')).toHaveCount(0);
+  // Rebuild spec §4.C/§4.E.1: the unlabelled Split field is gone -- the same three numbers
+  // now live, correctly labelled, on each tree's own header.
+  await expect(page.getByTestId('tree-points-161')).toHaveText('3');
+  // Level is always shown now (review finding 2) and climbs by one per point.
+  await expect(page.getByTestId('planner-level')).toHaveText('12');
 });
 
 test('a locked tier refuses the point and says why', async ({ page }) => {
@@ -296,26 +297,15 @@ test('the order strip lists every point with the level it was spent at', async (
   await expect(points.nth(0)).toContainText('Improved Heroic Strike');
 });
 
-// Design loop, planner round: from md up the panel is always open, with no collapse control
-// at all (build review round 1, finding 4 -- reserving a full section for a short, often
-// empty list was disproportionate); below md it folds behind a native <details>, closed by
-// default, in place of the custom expand/collapse button this test used to pin.
-test('from md up, point order has no collapse control and is always open', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop', 'md-and-up layout only');
+// Rebuild spec §4.F (review findings 2 and 10): Point order is the planner's primary
+// leveling lens now -- never collapsed on any viewport, with no collapse control at all,
+// desktop or phone.
+test('point order has no collapse control and is always open, on every viewport', async ({ page }) => {
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
   await expect(page.getByRole('button', { name: /point order/i })).toHaveCount(0);
-  await expect(page.getByTestId('order-strip').getByRole('list')).toBeVisible();
-});
-
-test('below md, point order is a native disclosure that opens on tap', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'mobile', 'below-md layout only');
-  await page.goto('/planner');
-  await page.getByTestId('talent-1001').click();
   const strip = page.getByTestId('order-strip');
-  expect(await strip.evaluate((el) => el.tagName)).toBe('DETAILS');
-  await expect(strip.getByRole('list')).toBeHidden();
-  await strip.locator('summary').click();
+  expect(await strip.evaluate((el) => el.tagName)).not.toBe('DETAILS');
   await expect(strip.getByRole('list')).toBeVisible();
 });
 
@@ -386,7 +376,7 @@ test('a build opens from an addon code in the URL, with the order noted as recon
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
 
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
-  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('tree-points-161')).toHaveText('3');
   await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
 });
 
@@ -453,7 +443,7 @@ test('a good code survives a transient failure on its own class, and still appli
 
   await page.getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
-  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('tree-points-161')).toHaveText('3');
   await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
 });
 
@@ -474,6 +464,10 @@ test('each tree draws its own art and counts its own points', async ({ page }) =
 test('opening /planner bare with a stored, non-restorable (armory) pointer still loads cleanly', async ({
   page,
 }) => {
+  // Rebuild spec §3: the current-character spine band (which used to show a "restored"
+  // chip) is replaced by the header/CharacterCard family -- this pointer is not one of the
+  // two sources ('code'/'addon') the planner ever restores from, so the only real
+  // assertion left is that the page still loads cleanly rather than erroring on it.
   await page.addInitScript(() => {
     window.localStorage.setItem(
       'fs.currentCharacter',
@@ -486,10 +480,11 @@ test('opening /planner bare with a stored, non-restorable (armory) pointer still
       }),
     );
   });
+  const errors = collectPageErrors(page);
   await page.goto('/planner');
-  await expect(page.getByTestId('current-character-bar')).toBeVisible();
-  await expect(page.getByTestId('current-character-restored')).toHaveCount(0);
   await expect(page.getByTestId('planner')).toBeVisible();
+  await expect(page.getByTestId('planner-header')).toBeVisible();
+  expect(errors).toEqual([]);
 });
 
 test('focusing a talent cell opens its tooltip, and Escape dismisses it without moving focus', async ({
