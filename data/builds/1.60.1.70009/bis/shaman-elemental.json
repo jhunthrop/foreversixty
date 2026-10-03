@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-02T13:02:04Z",
+  "generated_at": "2026-10-03T12:02:35Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -539,8 +539,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.647642404,
-      "verify_run_seconds": 1.094279598,
+      "weights_run_seconds": 1.639160355,
+      "verify_run_seconds": 1.129699271,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1168,8 +1168,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.647642404,
-      "verify_run_seconds": 1.071273627,
+      "weights_run_seconds": 1.639160355,
+      "verify_run_seconds": 1.07321118,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1818,8 +1818,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.784196106,
-      "verify_run_seconds": 1.112793988,
+      "weights_run_seconds": 1.777823301,
+      "verify_run_seconds": 1.110385329,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2497,8 +2497,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 1.784196106,
-      "verify_run_seconds": 1.110403512,
+      "weights_run_seconds": 1.777823301,
+      "verify_run_seconds": 1.047915768,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3139,8 +3139,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.929856615,
-      "verify_run_seconds": 1.167997522,
+      "weights_run_seconds": 1.909352873,
+      "verify_run_seconds": 1.204231053,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3783,8 +3783,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.929856615,
-      "verify_run_seconds": 1.237913335,
+      "weights_run_seconds": 1.909352873,
+      "verify_run_seconds": 1.2537581389999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4466,8 +4466,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.954097672,
-      "verify_run_seconds": 1.388968766,
+      "weights_run_seconds": 1.957938758,
+      "verify_run_seconds": 1.378564082,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5139,8 +5139,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.954097672,
-      "verify_run_seconds": 1.345245767,
+      "weights_run_seconds": 1.957938758,
+      "verify_run_seconds": 1.345750948,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5829,8 +5829,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 1.967787102,
-      "verify_run_seconds": 1.363882191,
+      "weights_run_seconds": 1.985760666,
+      "verify_run_seconds": 1.386730049,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6005,7 +6005,7 @@
               "item_name": "Blue Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3093966123309019
+              "dps_delta": -0.30939661233090127
             },
             {
               "item_id": 231663,
@@ -6526,8 +6526,8 @@
         "trinket2: Second Wind",
         "main_hand: Hammer of Divine Might"
       ],
-      "weights_run_seconds": 1.967787102,
-      "verify_run_seconds": 1.307308925,
+      "weights_run_seconds": 1.985760666,
+      "verify_run_seconds": 1.315976115,
       "coverage": {
         "back": {
           "eligible": 451,

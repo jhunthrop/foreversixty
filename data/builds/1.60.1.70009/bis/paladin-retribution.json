@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-02T12:59:08Z",
+  "generated_at": "2026-10-03T11:59:39Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.388962028,
-      "verify_run_seconds": 1.092608472,
+      "weights_run_seconds": 1.388279498,
+      "verify_run_seconds": 1.07971977,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1157,8 +1157,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.388962028,
-      "verify_run_seconds": 1.038656555,
+      "weights_run_seconds": 1.388279498,
+      "verify_run_seconds": 1.04906835,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1801,8 +1801,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.394694757,
-      "verify_run_seconds": 1.389681426,
+      "weights_run_seconds": 1.399820216,
+      "verify_run_seconds": 1.356437272,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2450,8 +2450,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.394694757,
-      "verify_run_seconds": 1.383036838,
+      "weights_run_seconds": 1.399820216,
+      "verify_run_seconds": 1.354906035,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3091,8 +3091,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.399986024,
-      "verify_run_seconds": 1.303026737,
+      "weights_run_seconds": 1.411068582,
+      "verify_run_seconds": 1.31135111,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3733,8 +3733,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.399986024,
-      "verify_run_seconds": 1.296546875,
+      "weights_run_seconds": 1.411068582,
+      "verify_run_seconds": 1.313257693,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4391,8 +4391,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.460253598,
-      "verify_run_seconds": 1.4160850919999999,
+      "weights_run_seconds": 1.463498944,
+      "verify_run_seconds": 1.414844426,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5051,8 +5051,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.460253598,
-      "verify_run_seconds": 1.418928739,
+      "weights_run_seconds": 1.463498944,
+      "verify_run_seconds": 1.411608746,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5479,7 +5479,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.14416480749890279
+              "dps_delta": -0.14416480749890218
             },
             {
               "item_id": 14554,
@@ -5730,8 +5730,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.48878056,
-      "verify_run_seconds": 1.365961971,
+      "weights_run_seconds": 1.496086075,
+      "verify_run_seconds": 1.385465408,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6160,7 +6160,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.14416480749890279
+              "dps_delta": -0.14416480749890218
             },
             {
               "item_id": 22651,
@@ -6425,8 +6425,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.48878056,
-      "verify_run_seconds": 1.262110852,
+      "weights_run_seconds": 1.496086075,
+      "verify_run_seconds": 1.2942633749999999,
       "coverage": {
         "back": {
           "eligible": 449,

@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-02T13:01:29Z",
+  "generated_at": "2026-10-03T12:01:59Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -562,8 +562,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.3290952919999999,
-      "verify_run_seconds": 1.376041109,
+      "weights_run_seconds": 1.332475278,
+      "verify_run_seconds": 1.403660729,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1208,8 +1208,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.3290952919999999,
-      "verify_run_seconds": 1.411145512,
+      "weights_run_seconds": 1.332475278,
+      "verify_run_seconds": 1.419035125,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1890,8 +1890,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.466985748,
-      "verify_run_seconds": 1.5461573880000001,
+      "weights_run_seconds": 1.45597994,
+      "verify_run_seconds": 1.565152976,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.466985748,
-      "verify_run_seconds": 1.5773564530000002,
+      "weights_run_seconds": 1.45597994,
+      "verify_run_seconds": 1.567813764,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3269,8 +3269,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.545437028,
-      "verify_run_seconds": 1.592703314,
+      "weights_run_seconds": 1.5847701330000001,
+      "verify_run_seconds": 1.587008421,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3967,8 +3967,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.545437028,
-      "verify_run_seconds": 1.626809995,
+      "weights_run_seconds": 1.5847701330000001,
+      "verify_run_seconds": 1.634891794,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4148,7 +4148,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9187700190351908
+              "dps_delta": -0.9187700190351911
             }
           ]
         },
@@ -4678,8 +4678,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.537217316,
-      "verify_run_seconds": 1.937119607,
+      "weights_run_seconds": 1.5835430019999999,
+      "verify_run_seconds": 1.9246872750000001,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5104,7 +5104,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.4038560287594648
+              "dps_delta": -0.4038560287594646
             },
             {
               "item_id": 6690,
@@ -5388,8 +5388,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.537217316,
-      "verify_run_seconds": 2.067441839,
+      "weights_run_seconds": 1.5835430019999999,
+      "verify_run_seconds": 2.068209775,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6131,8 +6131,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.573241976,
-      "verify_run_seconds": 1.969069943,
+      "weights_run_seconds": 1.5669478529999998,
+      "verify_run_seconds": 1.978156555,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6874,8 +6874,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.573241976,
-      "verify_run_seconds": 2.023573579,
+      "weights_run_seconds": 1.5669478529999998,
+      "verify_run_seconds": 2.0250566,
       "coverage": {
         "back": {
           "eligible": 451,

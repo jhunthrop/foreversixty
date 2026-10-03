@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-02T12:57:32Z",
+  "generated_at": "2026-10-03T11:58:03Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.9335628470000001,
-      "verify_run_seconds": 1.748214919,
+      "weights_run_seconds": 1.909927489,
+      "verify_run_seconds": 1.778441578,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1211,8 +1211,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.9335628470000001,
-      "verify_run_seconds": 1.707278737,
+      "weights_run_seconds": 1.909927489,
+      "verify_run_seconds": 1.7063342879999999,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.009298951,
-      "verify_run_seconds": 1.911309543,
+      "weights_run_seconds": 2.030378092,
+      "verify_run_seconds": 1.899729438,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2583,8 +2583,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.009298951,
-      "verify_run_seconds": 1.847295331,
+      "weights_run_seconds": 2.030378092,
+      "verify_run_seconds": 1.825380126,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3275,8 +3275,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.010682821,
-      "verify_run_seconds": 1.849895334,
+      "weights_run_seconds": 1.997799815,
+      "verify_run_seconds": 1.847517549,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.010682821,
-      "verify_run_seconds": 1.840504101,
+      "weights_run_seconds": 1.997799815,
+      "verify_run_seconds": 1.8452920339999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4687,8 +4687,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.018105738,
-      "verify_run_seconds": 2.092403757,
+      "weights_run_seconds": 2.022752464,
+      "verify_run_seconds": 2.049356519,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5412,8 +5412,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.018105738,
-      "verify_run_seconds": 2.006132387,
+      "weights_run_seconds": 2.022752464,
+      "verify_run_seconds": 2.015118293,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6160,8 +6160,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.9976055289999999,
-      "verify_run_seconds": 2.090447241,
+      "weights_run_seconds": 2.016023569,
+      "verify_run_seconds": 2.080654477,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6406,7 +6406,7 @@
               "item_name": "Champion's Chain Pauldrons",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.27411170972436
+              "dps_delta": -0.27411170972436033
             }
           ]
         },
@@ -6464,7 +6464,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.24012213979209235
+              "dps_delta": -0.24012213979209307
             },
             {
               "item_id": 23089,
@@ -6909,8 +6909,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.9976055289999999,
-      "verify_run_seconds": 2.0513792730000002,
+      "weights_run_seconds": 2.016023569,
+      "verify_run_seconds": 2.043373669,
       "coverage": {
         "back": {
           "eligible": 450,

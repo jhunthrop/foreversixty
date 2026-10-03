@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-02T12:57:53Z",
+  "generated_at": "2026-10-03T11:58:24Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.792276712,
-      "verify_run_seconds": 0.802180625,
+      "weights_run_seconds": 0.782821517,
+      "verify_run_seconds": 0.762575789,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.792276712,
-      "verify_run_seconds": 0.752193851,
+      "weights_run_seconds": 0.782821517,
+      "verify_run_seconds": 0.702677766,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.844520283,
-      "verify_run_seconds": 0.839424572,
+      "weights_run_seconds": 0.836509578,
+      "verify_run_seconds": 0.822789056,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.844520283,
-      "verify_run_seconds": 0.782683908,
+      "weights_run_seconds": 0.836509578,
+      "verify_run_seconds": 0.747836291,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.987088829,
-      "verify_run_seconds": 0.814127144,
+      "weights_run_seconds": 0.974056626,
+      "verify_run_seconds": 0.797993347,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.987088829,
-      "verify_run_seconds": 0.816588625,
+      "weights_run_seconds": 0.974056626,
+      "verify_run_seconds": 0.824212888,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4626,8 +4626,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.948904014,
-      "verify_run_seconds": 0.927624485,
+      "weights_run_seconds": 0.96996122,
+      "verify_run_seconds": 0.965759026,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5306,8 +5306,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.948904014,
-      "verify_run_seconds": 0.924531963,
+      "weights_run_seconds": 0.96996122,
+      "verify_run_seconds": 0.94103394,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5474,7 +5474,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 31.078295120662364,
+          "score": 31.078295120662368,
           "verified": true,
           "alternatives": [
             {
@@ -5497,7 +5497,7 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.30753890822220814
+              "dps_delta": -0.30753890822220936
             }
           ]
         },
@@ -5614,7 +5614,7 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.2497099584868985
+              "dps_delta": -2.249709958486901
             },
             {
               "item_id": 18385,
@@ -6036,8 +6036,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.022572223,
-      "verify_run_seconds": 0.972992821,
+      "weights_run_seconds": 1.005247726,
+      "verify_run_seconds": 0.933166517,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6204,7 +6204,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 31.078295120662364,
+          "score": 31.078295120662368,
           "verified": true,
           "alternatives": [
             {
@@ -6227,7 +6227,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.30753890822220814
+              "dps_delta": -0.30753890822220936
             }
           ]
         },
@@ -6475,7 +6475,7 @@
               "item_name": "General's Silk Trousers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.7231494216329524
+              "dps_delta": -2.7231494216329497
             },
             {
               "item_id": 13170,
@@ -6766,8 +6766,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.022572223,
-      "verify_run_seconds": 0.956548311,
+      "weights_run_seconds": 1.005247726,
+      "verify_run_seconds": 0.928114285,
       "coverage": {
         "back": {
           "eligible": 450,
