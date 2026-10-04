@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-03T12:03:47Z",
+  "generated_at": "2026-10-04T12:44:01Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.355560828,
-      "verify_run_seconds": 1.115216454,
+      "weights_run_seconds": 1.053607056,
+      "verify_run_seconds": 0.83418979,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.355560828,
-      "verify_run_seconds": 1.124847959,
+      "weights_run_seconds": 1.053607056,
+      "verify_run_seconds": 0.881687847,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.366822067,
-      "verify_run_seconds": 1.1843030190000001,
+      "weights_run_seconds": 1.077785612,
+      "verify_run_seconds": 0.916195331,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.366822067,
-      "verify_run_seconds": 1.167971597,
+      "weights_run_seconds": 1.077785612,
+      "verify_run_seconds": 0.918283603,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3270,8 +3270,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.207842012,
-      "verify_run_seconds": 1.042345714,
+      "weights_run_seconds": 0.925938636,
+      "verify_run_seconds": 0.798149245,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3940,8 +3940,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.207842012,
-      "verify_run_seconds": 1.043785564,
+      "weights_run_seconds": 0.925938636,
+      "verify_run_seconds": 0.805468306,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4637,8 +4637,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.2724370839999999,
-      "verify_run_seconds": 1.318040921,
+      "weights_run_seconds": 0.996542648,
+      "verify_run_seconds": 1.010219217,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5116,7 +5116,7 @@
               "item_name": "First Sergeant's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
-              "dps_delta": -3.3853862951068785
+              "dps_delta": -3.385386295106878
             }
           ]
         },
@@ -5340,8 +5340,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.2724370839999999,
-      "verify_run_seconds": 1.323036064,
+      "weights_run_seconds": 0.996542648,
+      "verify_run_seconds": 1.014026718,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5986,7 +5986,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -2.004029075855467
+              "dps_delta": -2.004029075855463
             },
             {
               "item_id": 1728,
@@ -6073,8 +6073,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.264683839,
-      "verify_run_seconds": 1.199740257,
+      "weights_run_seconds": 0.989141468,
+      "verify_run_seconds": 0.954061589,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6722,7 +6722,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -2.004029075855467
+              "dps_delta": -2.004029075855463
             },
             {
               "item_id": 1728,
@@ -6809,8 +6809,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.264683839,
-      "verify_run_seconds": 1.316653742,
+      "weights_run_seconds": 0.989141468,
+      "verify_run_seconds": 1.012426518,
       "coverage": {
         "back": {
           "eligible": 450,

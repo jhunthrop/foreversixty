@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-03T12:04:45Z",
+  "generated_at": "2026-10-04T12:44:46Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -563,8 +563,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.478354209,
-      "verify_run_seconds": 1.222386318,
+      "weights_run_seconds": 1.145736927,
+      "verify_run_seconds": 0.946618877,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1204,8 +1204,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.478354209,
-      "verify_run_seconds": 1.256161351,
+      "weights_run_seconds": 1.145736927,
+      "verify_run_seconds": 0.982861858,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1923,8 +1923,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.536061355,
-      "verify_run_seconds": 1.175557051,
+      "weights_run_seconds": 1.109103831,
+      "verify_run_seconds": 0.917825432,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2640,8 +2640,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.536061355,
-      "verify_run_seconds": 1.173790249,
+      "weights_run_seconds": 1.109103831,
+      "verify_run_seconds": 0.900734227,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3326,8 +3326,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.415077349,
-      "verify_run_seconds": 1.065578962,
+      "weights_run_seconds": 1.107039149,
+      "verify_run_seconds": 0.812827107,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4008,8 +4008,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.415077349,
-      "verify_run_seconds": 1.034856092,
+      "weights_run_seconds": 1.107039149,
+      "verify_run_seconds": 0.814325386,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4721,8 +4721,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.471573169,
-      "verify_run_seconds": 1.303187744,
+      "weights_run_seconds": 1.092331092,
+      "verify_run_seconds": 0.974838404,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5442,8 +5442,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.471573169,
-      "verify_run_seconds": 1.292294069,
+      "weights_run_seconds": 1.092331092,
+      "verify_run_seconds": 0.994775401,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6181,8 +6181,8 @@
         "main_hand: Crackling Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.926069573,
-      "verify_run_seconds": 1.253204138,
+      "weights_run_seconds": 3.735051764,
+      "verify_run_seconds": 0.954467202,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6357,7 +6357,7 @@
           "item_name": "Deathmist Mask",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 49.33978633963785,
+          "score": 49.33978633963784,
           "verified": true,
           "alternatives": [
             {
@@ -6372,7 +6372,7 @@
               "item_name": "Champion's Dreadweave Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.8292365734016688
+              "dps_delta": -0.8292365734016677
             },
             {
               "item_id": 16686,
@@ -6920,8 +6920,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.926069573,
-      "verify_run_seconds": 1.228673863,
+      "weights_run_seconds": 3.735051764,
+      "verify_run_seconds": 0.95421487,
       "coverage": {
         "back": {
           "eligible": 450,

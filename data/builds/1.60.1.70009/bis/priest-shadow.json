@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-03T11:59:59Z",
+  "generated_at": "2026-10-04T12:41:07Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -941,8 +941,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.881736281,
-      "verify_run_seconds": 1.01163555,
+      "weights_run_seconds": 0.67968975,
+      "verify_run_seconds": 0.721786477,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -2027,8 +2027,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.881736281,
-      "verify_run_seconds": 0.947250219,
+      "weights_run_seconds": 0.67968975,
+      "verify_run_seconds": 0.764694512,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2730,8 +2730,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.743271794,
-      "verify_run_seconds": 0.718138541,
+      "weights_run_seconds": 0.562364983,
+      "verify_run_seconds": 0.548902786,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3431,8 +3431,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.743271794,
-      "verify_run_seconds": 0.750388358,
+      "weights_run_seconds": 0.562364983,
+      "verify_run_seconds": 0.571940897,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4100,8 +4100,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.744987586,
-      "verify_run_seconds": 0.685421849,
+      "weights_run_seconds": 0.624467031,
+      "verify_run_seconds": 0.506269267,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4764,8 +4764,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.744987586,
-      "verify_run_seconds": 0.733810118,
+      "weights_run_seconds": 0.624467031,
+      "verify_run_seconds": 0.570469765,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4947,7 +4947,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.2699444807178657
+              "dps_delta": -1.2699444807178655
             },
             {
               "item_id": 10041,
@@ -5460,8 +5460,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.751228486,
-      "verify_run_seconds": 0.790973427,
+      "weights_run_seconds": 0.565992157,
+      "verify_run_seconds": 0.588323991,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6151,8 +6151,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.751228486,
-      "verify_run_seconds": 0.7874955,
+      "weights_run_seconds": 0.565992157,
+      "verify_run_seconds": 0.543298731,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6886,8 +6886,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.81350712,
-      "verify_run_seconds": 0.785895249,
+      "weights_run_seconds": 0.623045602,
+      "verify_run_seconds": 0.595174855,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7617,8 +7617,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.81350712,
-      "verify_run_seconds": 0.779427677,
+      "weights_run_seconds": 0.623045602,
+      "verify_run_seconds": 0.614457227,
       "coverage": {
         "back": {
           "eligible": 450,
