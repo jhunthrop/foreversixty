@@ -69,7 +69,19 @@ func (g Guild) activeClaimant(now time.Time) (claimant int64, ok bool) {
 }
 
 // Store is every guild-mutation read and write.
-type Store struct{ Pool *pgxpool.Pool }
+type Store struct {
+	Pool *pgxpool.Pool
+	// Accounts resolves a user id to a battletag - the guild control centre's own
+	// claimed_by_name (home) and loot award attribution (loot) need this the same way
+	// Service.Accounts already does; optional, nil in a test harness that never reads
+	// either field (claimed_by_name/awarded_to.by_name are simply omitted/empty then).
+	Accounts Accounts
+	// DataDir is the BiS band reader's own root (api/internal/bis.LoadBand) - the same
+	// TreeDataDir config every other build-scoped read in this service uses. Empty in a
+	// harness that does not need gear-gap data; LoadBand treats an empty dataDir as "no
+	// band available" rather than an error.
+	DataDir string
+}
 
 func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	var g Guild
