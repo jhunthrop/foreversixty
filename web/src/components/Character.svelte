@@ -7,7 +7,7 @@
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { characterKey, parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
-  import { classColorVar, formatAmount, percentileToken, rowLink } from '../lib/report/format';
+  import { formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
@@ -91,37 +91,25 @@
     <CurrentCharacterBar spine />
     <header class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
-        {#if data.character.render_url === undefined}
-          <CharacterIdentity
-            character={{
-              key: characterKey(resolved.region, resolved.ruleset, data.character.name),
-              ...data.character,
-            }}
-            size="lg"
-            descriptor="none"
-            heading
-            nameTestid="character-name"
-          >
-            {#snippet below()}
-              <p class="text-muted text-[13px]">
-                {rulesetLabel(resolved.ruleset)}
-                {resolved.region.toUpperCase()}
-                {#if data.character.class}· {data.character.class}{/if}
-                · <span class="tabular font-mono">{data.history.length}</span> ranked fights
-              </p>
-            {/snippet}
-          </CharacterIdentity>
-        {:else}
-          <h1 class="section-title text-[18px]" style={`color: ${classColorVar(data.character.class)}`}>
-            {data.character.name}
-          </h1>
-          <p class="text-muted text-[13px]">
-            {rulesetLabel(resolved.ruleset)}
-            {resolved.region.toUpperCase()}
-            {#if data.character.class}· {data.character.class}{/if}
-            · <span class="tabular font-mono">{data.history.length}</span> ranked fights
-          </p>
-        {/if}
+        <CharacterIdentity
+          character={{
+            key: characterKey(resolved.region, resolved.ruleset, data.character.name),
+            ...data.character,
+          }}
+          size="lg"
+          descriptor="none"
+          heading
+          nameTestid="character-name"
+        >
+          {#snippet below()}
+            <p class="text-muted text-[13px]">
+              {rulesetLabel(resolved.ruleset)}
+              {resolved.region.toUpperCase()}
+              {#if data.character.class}· {data.character.class}{/if}
+              · <span class="tabular font-mono">{data.history.length}</span> ranked fights
+            </p>
+          {/snippet}
+        </CharacterIdentity>
         <CharacterHandoffLinks path={resolved} />
       </div>
       {#if data.character.render_url !== undefined}

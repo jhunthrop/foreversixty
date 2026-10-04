@@ -66,12 +66,12 @@ describe('CharacterIdentity', () => {
     const { body } = render(CharacterIdentity, {
       props: { character: CHAR, size: 'md', descriptor: 'none' },
     });
-    expect(body).toContain('data-testid="character-avatar-fallback"');
+    expect(body).toContain('data-testid="character-avatar"');
 
     const custom = render(CharacterIdentity, {
       props: { character: CHAR, size: 'md', descriptor: 'none', testid: 'home-hero' },
     });
-    expect(custom.body).toContain('data-testid="home-hero-avatar-fallback"');
+    expect(custom.body).toContain('data-testid="home-hero-avatar"');
   });
 
   it('wraps the name link in an <h1> when heading is set (Ruling 5)', () => {

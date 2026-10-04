@@ -4,47 +4,37 @@ import { describe, expect, it } from 'vitest';
 import CharacterPortrait from './CharacterPortrait.svelte';
 
 describe('CharacterPortrait', () => {
-  it('shows the avatar image when avatar_url is set', () => {
+  it('draws the circular ringed class crest, never an avatar or a letter square', () => {
     const { body } = render(CharacterPortrait, {
       props: {
-        character: { name: 'Thoradin', class: 'warrior', avatar_url: '/a.jpg' },
+        character: { class: 'warrior', avatar_url: '/a.jpg' } as { class: string },
         size: 'md',
         testid: 't',
       },
     });
     expect(body).toContain('data-testid="t-avatar"');
-    expect(body).toContain('src="/a.jpg"');
-    expect(body).toContain('alt=""');
-    expect(body).toContain('loading="lazy"');
+    expect(body).toContain('/icons/hd/crests/warrior.webp');
+    expect(body).toContain('rounded-full');
+    expect(body).not.toContain('/a.jpg');
+    expect(body).not.toContain('rounded-[3px]');
     expect(body).not.toContain('data-testid="t-avatar-fallback"');
   });
 
-  it('shows the class icon over the letter square when there is no avatar', () => {
+  it('shows a neutral ringed disc for a character with no class on file', () => {
     const { body } = render(CharacterPortrait, {
-      props: { character: { name: 'Thoradin', class: 'warrior' }, size: 'md', testid: 't' },
+      props: { character: {}, size: 'md', testid: 't' },
     });
     expect(body).toContain('data-testid="t-avatar-fallback"');
-    expect(body).toContain('t-avatar-fallback">W');
-    expect(body).toContain('data-testid="t-class-icon"');
-    expect(body).toContain('classicon_warrior.jpg');
+    expect(body).toContain('rounded-full');
     expect(body).not.toContain('data-testid="t-avatar"');
   });
 
-  it('shows the letter square alone for a class with no known icon', () => {
-    const { body } = render(CharacterPortrait, {
-      props: { character: { name: 'Elyra' }, size: 'md', testid: 't' },
-    });
-    expect(body).toContain('data-testid="t-avatar-fallback"');
-    expect(body).toContain('t-avatar-fallback">E');
-    expect(body).not.toContain('data-testid="t-class-icon"');
-  });
-
-  it('sizes the box for sm, md and lg', () => {
-    const sm = render(CharacterPortrait, { props: { character: { name: 'E' }, size: 'sm', testid: 't' } });
-    expect(sm.body).toContain('h-7 w-7');
-    const md = render(CharacterPortrait, { props: { character: { name: 'E' }, size: 'md', testid: 't' } });
-    expect(md.body).toContain('h-9 w-9');
-    const lg = render(CharacterPortrait, { props: { character: { name: 'E' }, size: 'lg', testid: 't' } });
-    expect(lg.body).toContain('h-11 w-11');
+  it('sizes the crest 28 / 36 / 44px for sm, md and lg and responsively for xl', () => {
+    const at = (size: 'sm' | 'md' | 'lg' | 'xl') =>
+      render(CharacterPortrait, { props: { character: { class: 'priest' }, size, testid: 't' } }).body;
+    expect(at('sm')).toContain('width: 28px');
+    expect(at('md')).toContain('width: 36px');
+    expect(at('lg')).toContain('width: 44px');
+    expect(at('xl')).toContain('lg:h-[84px]');
   });
 });

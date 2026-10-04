@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { characterDescriptor, classSquare, homeHeroLevelRaceClassLine } from './character-descriptor';
+import { characterDescriptor, homeHeroLevelRaceClassLine } from './character-descriptor';
 import type { MeCharacter } from './api';
 
 const FULL: MeCharacter = {
@@ -44,19 +44,5 @@ describe('homeHeroLevelRaceClassLine', () => {
     expect(homeHeroLevelRaceClassLine({ ...FULL, spec: 'Marksmanship' })).toBe(
       'Level 25 Night Elf Marksmanship Hunter',
     );
-  });
-});
-
-describe('classSquare', () => {
-  it("uses the class's own colour and first letter when a class is known", () => {
-    const square = classSquare(FULL);
-    expect(square.letter).toBe('H');
-    expect(square.color).not.toBe('var(--color-text)');
-  });
-
-  it("falls back to the character's own name and the text colour when no class is on file", () => {
-    const square = classSquare(BARE);
-    expect(square.letter).toBe('T');
-    expect(square.color).toBe('var(--color-text)');
   });
 });

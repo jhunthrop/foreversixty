@@ -9,7 +9,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { classColorVar } from '../../lib/report/format';
-  import { classIconUrl } from '../../lib/account/character-descriptor';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { rarityClassFor, wornItemLabel } from '../../lib/planner/items';
   import { dataUrl, loadItemNames, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
@@ -98,7 +98,6 @@
   const talentIndex = $derived<TalentIndex | null>(talents === null ? null : indexTalents(talents));
 
   const colour = $derived(classColorVar(character.class_slug));
-  const classIcon = $derived(classIconUrl({ class: character.class_slug }));
 
   // Names for worn items the per-class files leave out, fetched once and only when a slot
   // needs one (a quality-1 keepsake ring, a totem): the row then names the item and says it
@@ -151,22 +150,7 @@
   data-testid="sim-character"
 >
   <div class="flex flex-wrap items-center gap-3">
-    {#if classIcon !== undefined}
-      <img
-        src={classIcon}
-        alt=""
-        width="36"
-        height="36"
-        loading="lazy"
-        decoding="async"
-        class="rounded-control h-9 w-9 shrink-0 border object-cover"
-        style={`border-color: ${colour}`}
-        data-testid="sim-character-class-icon"
-      />
-    {:else}
-      <span class="rounded-control h-9 w-9 shrink-0" style={`background: ${colour}`} aria-hidden="true"
-      ></span>
-    {/if}
+    <ClassCrestRing characterClass={character.class_slug} size={36} testid="sim-character-class-icon" />
     <span class="text-[17px] font-semibold" style={`color: ${colour}`} data-testid="sim-character-name">
       {character.name}
     </span>

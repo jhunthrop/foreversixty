@@ -62,28 +62,13 @@ describe('CharacterList', () => {
     expect(body).toContain(characterListCopy.setAsMain);
   });
 
-  it('shows the class icon over the letter square when a character has no avatar', () => {
-    const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
-    expect(body).toContain('character-class-icon');
-    expect(body).toContain('classicon_warrior.jpg');
-    expect(body).toContain('character-avatar-fallback');
-  });
-
-  it('shows a class-coloured letter square and the race/class/level/realm descriptor', () => {
-    const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(body).toContain('data-testid="character-avatar-fallback"');
-    expect(body).toContain('"character-avatar-fallback">P'); // Priest's initial
-    expect(body).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
-    expect(body).not.toContain('data-testid="character-avatar"');
-  });
-
-  it('shows the avatar image, not the letter square, when avatar_url is set', () => {
-    const { body } = render(CharacterList, { props: { characters: [WITH_AVATAR] } });
-    expect(body).toContain('data-testid="character-avatar"');
-    expect(body).toContain('src="/fixtures/avatar-placeholder.jpg"');
-    expect(body).toContain('alt=""');
-    expect(body).toContain('loading="lazy"');
+  it('draws the circular class crest for every row, never an avatar or a letter square', () => {
+    const { body } = render(CharacterList, { props: { characters: [GUILDED, WITH_AVATAR] } });
+    expect(body).toContain('/icons/hd/crests/priest.webp');
+    expect(body).toContain('/icons/hd/crests/warrior.webp');
+    expect(body).not.toContain('/fixtures/avatar-placeholder.jpg');
     expect(body).not.toContain('data-testid="character-avatar-fallback"');
+    expect(body).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
   });
 
   it('shows a guilded, verified character with the guild line and a verified pill', () => {
