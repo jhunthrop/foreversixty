@@ -1,0 +1,203 @@
+{
+  "250528": {
+    "name": "Veteran's Silvered Chain Helm",
+    "icon": "inv_helmet_39",
+    "slot": "head",
+    "quality": 3,
+    "item_level": 25,
+    "required_level": 20,
+    "stats": {
+      "stamina": 9,
+      "strength": 10
+    }
+  },
+  "20444": {
+    "name": "Sentinel's Medallion",
+    "icon": "inv_jewelry_necklace_13",
+    "slot": "neck",
+    "quality": 3,
+    "item_level": 23,
+    "required_level": 18,
+    "stats": {
+      "agility": 6,
+      "stamina": 2
+    }
+  },
+  "3480": {
+    "name": "Rough Bronze Shoulders",
+    "icon": "inv_shoulder_05",
+    "slot": "shoulder",
+    "quality": 2,
+    "item_level": 22,
+    "required_level": 17,
+    "stats": {
+      "stamina": 4,
+      "strength": 3
+    }
+  },
+  "4706": {
+    "name": "Lambent Scale Cloak",
+    "icon": "inv_misc_cape_06",
+    "slot": "back",
+    "quality": 2,
+    "item_level": 24,
+    "required_level": 19,
+    "stats": {
+      "strength": 4,
+      "spirit": 2
+    }
+  },
+  "6627": {
+    "name": "Mutant Scale Breastplate",
+    "icon": "inv_chest_plate08",
+    "slot": "chest",
+    "quality": 3,
+    "item_level": 23,
+    "required_level": 18,
+    "stats": {
+      "strength": 10,
+      "stamina": 4
+    }
+  },
+  "2868": {
+    "name": "Patterned Bronze Bracers",
+    "icon": "inv_bracer_07",
+    "slot": "wrist",
+    "quality": 2,
+    "item_level": 25,
+    "required_level": 20,
+    "stats": {
+      "strength": 5
+    }
+  },
+  "12994": {
+    "name": "Thorbia's Gauntlets",
+    "icon": "inv_gauntlets_11",
+    "slot": "hands",
+    "quality": 3,
+    "item_level": 23,
+    "required_level": 18,
+    "stats": {
+      "strength": 8,
+      "stamina": 3
+    }
+  },
+  "10403": {
+    "name": "Blackened Defias Belt",
+    "icon": "inv_belt_26",
+    "slot": "waist",
+    "quality": 3,
+    "item_level": 22,
+    "required_level": 17,
+    "stats": {
+      "attack_power": 18
+    }
+  },
+  "6087": {
+    "name": "Chausses of Westfall",
+    "icon": "inv_pants_03",
+    "slot": "legs",
+    "quality": 3,
+    "item_level": 24,
+    "required_level": 14,
+    "stats": {
+      "stamina": 5,
+      "strength": 11
+    }
+  },
+  "252439": {
+    "name": "Brawler's Leather Boots",
+    "icon": "inv_boots_09",
+    "slot": "feet",
+    "quality": 3,
+    "item_level": 22,
+    "required_level": 17,
+    "stats": {
+      "agility": 5,
+      "stamina": 4,
+      "strength": 5
+    }
+  },
+  "20439": {
+    "name": "Protector's Band",
+    "icon": "inv_jewelry_ring_10",
+    "slot": "finger",
+    "quality": 3,
+    "item_level": 23,
+    "required_level": 18,
+    "stats": {
+      "strength": 4,
+      "agility": 4,
+      "stamina": 2
+    }
+  },
+  "12054": {
+    "name": "Demon Band",
+    "icon": "inv_jewelry_ring_04",
+    "slot": "finger",
+    "quality": 2,
+    "item_level": 24,
+    "required_level": 19,
+    "stats": {
+      "strength": 4,
+      "stamina": 2,
+      "spirit": 2
+    }
+  },
+  "1482": {
+    "name": "Shadowfang",
+    "icon": "inv_sword_13",
+    "slot": "main_hand",
+    "quality": 3,
+    "item_level": 24,
+    "required_level": 19,
+    "stats": {}
+  },
+  "1292": {
+    "name": "Butcher's Cleaver",
+    "icon": "inv_axe_23",
+    "slot": "main_hand",
+    "quality": 3,
+    "item_level": 25,
+    "required_level": 20,
+    "stats": {
+      "strength": 5,
+      "agility": 2
+    }
+  },
+  "285279": {
+    "name": "Cracked Blacksmith Hammer",
+    "icon": "inv_hammer_20",
+    "slot": "ranged",
+    "quality": 2,
+    "item_level": 22,
+    "required_level": 17,
+    "stats": {
+      "strength": 2
+    }
+  },
+  "21120": {
+    "name": "Defiler's Talisman",
+    "icon": "inv_jewelry_talisman_05",
+    "slot": "trinket",
+    "quality": 3,
+    "item_level": 33,
+    "required_level": 28,
+    "stats": {
+      "stamina": 6
+    }
+  },
+  "250488": {
+    "name": "Veteran's Chain Shirt",
+    "icon": "inv_chest_chain_07",
+    "slot": "chest",
+    "quality": 3,
+    "item_level": 20,
+    "required_level": 15,
+    "stats": {
+      "agility": 4,
+      "stamina": 5,
+      "strength": 7
+    }
+  }
+}

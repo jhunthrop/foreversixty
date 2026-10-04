@@ -1,0 +1,135 @@
+{
+  "build": "1.60.1.70009",
+  "tree": {
+    "name": "Fury",
+    "id": 164,
+    "talents": [
+      {
+        "tier": 0,
+        "column": 1,
+        "name": "Booming Voice",
+        "max_rank": 5,
+        "icon": "spell_nature_purge"
+      },
+      {
+        "tier": 0,
+        "column": 2,
+        "name": "Cruelty",
+        "max_rank": 5,
+        "icon": "ability_rogue_eviscerate"
+      },
+      {
+        "tier": 1,
+        "column": 1,
+        "name": "Iron Will",
+        "max_rank": 5,
+        "icon": "spell_magic_magearmor"
+      },
+      {
+        "tier": 1,
+        "column": 2,
+        "name": "Unbridled Wrath",
+        "max_rank": 5,
+        "icon": "spell_nature_stoneclawtotem"
+      },
+      {
+        "tier": 2,
+        "column": 0,
+        "name": "Improved Cleave",
+        "max_rank": 3,
+        "icon": "ability_warrior_cleave"
+      },
+      {
+        "tier": 2,
+        "column": 1,
+        "name": "Piercing Howl",
+        "max_rank": 1,
+        "icon": "spell_shadow_deathscream"
+      },
+      {
+        "tier": 2,
+        "column": 2,
+        "name": "Blood Craze",
+        "max_rank": 3,
+        "icon": "spell_shadow_summonimp"
+      },
+      {
+        "tier": 2,
+        "column": 3,
+        "name": "Boundless Rage",
+        "max_rank": 3,
+        "icon": "ability_warrior_intensifyrage"
+      },
+      {
+        "tier": 3,
+        "column": 0,
+        "name": "Dual Wield Specialization",
+        "max_rank": 5,
+        "icon": "ability_dualwield"
+      },
+      {
+        "tier": 3,
+        "column": 1,
+        "name": "Raging Blows",
+        "max_rank": 1,
+        "icon": "ability_whirlwind"
+      },
+      {
+        "tier": 3,
+        "column": 2,
+        "name": "Enrage",
+        "max_rank": 5,
+        "icon": "spell_shadow_unholyfrenzy"
+      },
+      {
+        "tier": 3,
+        "column": 3,
+        "name": "Improved Execute",
+        "max_rank": 2,
+        "icon": "inv_sword_48"
+      },
+      {
+        "tier": 4,
+        "column": 0,
+        "name": "Precision",
+        "max_rank": 3,
+        "icon": "ability_marksmanship"
+      },
+      {
+        "tier": 4,
+        "column": 1,
+        "name": "Death Wish",
+        "max_rank": 1,
+        "icon": "spell_shadow_deathpact"
+      },
+      {
+        "tier": 4,
+        "column": 3,
+        "name": "Improved Intercept",
+        "max_rank": 2,
+        "icon": "ability_rogue_sprint"
+      },
+      {
+        "tier": 5,
+        "column": 0,
+        "name": "Improved Berserker Rage",
+        "max_rank": 2,
+        "icon": "spell_nature_ancestralguardian"
+      },
+      {
+        "tier": 5,
+        "column": 2,
+        "name": "Flurry",
+        "max_rank": 5,
+        "icon": "ability_ghoulfrenzy"
+      },
+      {
+        "tier": 6,
+        "column": 1,
+        "name": "Bloodthirst",
+        "max_rank": 1,
+        "icon": "spell_nature_bloodlust"
+      }
+    ]
+  }
+}

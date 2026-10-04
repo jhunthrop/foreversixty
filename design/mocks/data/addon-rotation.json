@@ -1,0 +1,32 @@
+{
+  "build": "1.60.1.70009",
+  "band": {
+    "level": 20,
+    "lines": [
+      {
+        "spell_id": 29131,
+        "name": "Bloodrage",
+        "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
+        "icon": "ability_racial_bloodrage"
+      },
+      {
+        "spell_id": 12328,
+        "name": "Death Wish",
+        "condition": "Death Wish on cooldown.",
+        "icon": "spell_shadow_deathpact"
+      },
+      {
+        "spell_id": 5242,
+        "name": "Battle Shout",
+        "condition": "Keep Battle Shout up.",
+        "icon": "ability_warrior_battleshout"
+      },
+      {
+        "spell_id": 285,
+        "name": "Heroic Strike",
+        "condition": "Heroic Strike as the rage dump, never below 40 rage.",
+        "icon": "ability_rogue_ambush"
+      }
+    ]
+  }
+}
