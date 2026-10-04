@@ -29,11 +29,27 @@ import type { ClientDirective } from 'astro';
 
 const MIN_DELAY_AFTER_LOAD_MS = 800;
 
+/** Base.astro's pre-paint script stamps `<html data-session="1">` from the session cookie
+ *  before anything renders. Lighthouse's budget run is signed out, so the floor above only
+ *  ever protected the signed-out LCP; for a signed-in visitor it was 800ms-plus-idle of
+ *  nothing before the hero, the account chip or the upgrades table could even start (owner
+ *  2026-10-04: "it takes a while to load even with postgres warm" -- measured 1.75s from
+ *  navigation to the first island request on a warm desktop whose `load` fired at 290ms). */
+function signedInHint(): boolean {
+  return document.documentElement.dataset.session === '1';
+}
+
 const idleAfterLoad: ClientDirective = (load) => {
   const hydrate = async (): Promise<void> => {
     const start = await load();
     await start();
   };
+
+  if (signedInHint()) {
+    if (document.readyState === 'complete') void hydrate();
+    else window.addEventListener('load', () => void hydrate(), { once: true });
+    return;
+  }
 
   const runWhenIdle = (): void => {
     if ('requestIdleCallback' in window) {

@@ -14,8 +14,9 @@
   import { bisPageHref } from '../../lib/bis/hover';
   import { bisCopy } from '../../lib/bis/copy';
   import { homeHeroCardsCopy, homeUpgradesCopy } from '../../lib/home-panel-copy';
-  import { loadBisContextFor, type BisContext } from '../../lib/home/upgrades-loader';
-  import { upgradesFor, type UpgradesResult } from '../../lib/home/upgrades';
+  import { cachedUpgradesFor, type CachedUpgrades } from '../../lib/home/upgrades-loader';
+  import type { Item } from '../../lib/planner/types';
+  import type { UpgradesResult } from '../../lib/home/upgrades';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import { specDisplayName } from '../../lib/sim/spec-label';
   import { dataUrl } from '../../lib/planner/load';
@@ -29,8 +30,11 @@
   type Status = 'loading' | 'no-spec' | 'no-gear' | 'no-list-yet' | 'ready';
 
   let status = $state<Status>('loading');
-  let ctx = $state<BisContext | null>(null);
+  let ctx = $state<CachedUpgrades | null>(null);
   let result = $state<UpgradesResult | null>(null);
+  const itemMap = $derived<ReadonlyMap<number, Item>>(
+    new Map((ctx?.items ?? []).map((item) => [item.id, item])),
+  );
 
   $effect(() => {
     const current = hero;
@@ -45,24 +49,22 @@
       return;
     }
     status = 'loading';
-    void loadBisContextFor(current).then((loaded) => {
+    void cachedUpgradesFor(current).then((loaded) => {
       if (current !== hero) return;
       if (loaded === null) {
         status = 'no-list-yet';
         return;
       }
       ctx = loaded;
-      result = upgradesFor(current, loaded.band, loaded.items);
+      result = loaded.result;
       status = 'ready';
     });
   });
 
   const classSlug = $derived(classSlugFromName(hero.class ?? ''));
-  const bandLabel = $derived(ctx === null ? '' : bisCopy.bandRangeLabel(ctx.band.band));
+  const bandLabel = $derived(ctx === null ? '' : bisCopy.bandRangeLabel(ctx.band));
   const fullListHref = $derived(
-    ctx === null || hero.faction === undefined
-      ? undefined
-      : bisPageHref(ctx.specKey, hero.faction, ctx.band.band),
+    ctx === null || hero.faction === undefined ? undefined : bisPageHref(ctx.specKey, hero.faction, ctx.band),
   );
   const fullListLabel = $derived(
     ctx === null ? '' : homeUpgradesCopy.fullListLink(specDisplayName(ctx.specKey), bandLabel),
@@ -116,8 +118,8 @@
         {#each result.upgrades as upgrade (upgrade.slot)}
           <UpgradeRow
             {upgrade}
-            wornItem={upgrade.wornItemId === undefined ? undefined : ctx?.items.get(upgrade.wornItemId)}
-            pickItem={ctx?.items.get(upgrade.pick.item_id)}
+            wornItem={upgrade.wornItemId === undefined ? undefined : itemMap.get(upgrade.wornItemId)}
+            pickItem={itemMap.get(upgrade.pick.item_id)}
             build={activeBuild.build}
             {classSlug}
           />
@@ -132,7 +134,7 @@
         <span class="text-muted font-semibold">{homeUpgradesCopy.alreadyBestInSlotPrefix}</span>
         {#each shownAlreadyBis as entry, index (entry.slot)}
           {#if index > 0}<span class="text-muted">·</span>{/if}
-          {@const item = ctx?.items.get(entry.itemId)}
+          {@const item = itemMap.get(entry.itemId)}
           <!-- Fix round 1 item A.2: the same rarity colour + shared hover-tooltip host every
                other item name on this page already uses (`UpgradeRow.svelte`) -- a plain
                `text-strong` name here was the one piece of chrome that didn't meet that bar. -->

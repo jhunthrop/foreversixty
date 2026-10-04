@@ -28,8 +28,7 @@
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import { homeHeroLevelRaceClassLine } from '../../lib/account/character-descriptor';
   import { classCrestSrc } from '../../lib/class-crest';
-  import { loadBisContextFor } from '../../lib/home/upgrades-loader';
-  import { upgradesFor } from '../../lib/home/upgrades';
+  import { cachedUpgradesFor } from '../../lib/home/upgrades-loader';
 
   let {
     me,
@@ -56,10 +55,9 @@
     for (const character of characters) {
       if (character.key === currentKey) continue;
       if (character.build?.gear === undefined) continue;
-      void loadBisContextFor(character).then((ctx) => {
-        if (ctx === null) return;
-        const result = upgradesFor(character, ctx.band, ctx.items);
-        upgradeCounts = { ...upgradeCounts, [character.key]: result.upgrades.length };
+      void cachedUpgradesFor(character).then((cached) => {
+        if (cached === null) return;
+        upgradeCounts = { ...upgradeCounts, [character.key]: cached.result.upgrades.length };
       });
     }
   });

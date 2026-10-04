@@ -12,8 +12,10 @@ import activeBuild from '../../data/active-build.json';
 import type { MeCharacter } from '../account/api';
 import { bandEntryFor, bandForLevel, fetchBisFile } from '../bis/hover';
 import type { BisBand, BisFile } from '../bis/types';
+import { query } from '../data/query';
 import { loadItems } from '../planner/load';
 import type { Item } from '../planner/types';
+import { upgradesFor, type UpgradesResult } from './upgrades';
 import { classSlugFromName } from '../report/tree-sizes';
 import { SPECS } from '../sim/specs';
 
@@ -72,4 +74,70 @@ export async function loadBisContextFor(
   const band = bandEntryFor(bisFile, bandForLevel(character.level), character.faction);
   if (band === undefined) return null;
   return { specKey, bisFile, band, items };
+}
+
+/** The home page's own answer for one character, small enough to persist: the comparison
+ *  result plus only the item rows it names (worn items, picks, already-BiS items), so the
+ *  panel and the Switch-character counts paint from localStorage on a repeat visit instead of
+ *  waiting on a 4-6MB class item table to download and parse first (owner 2026-10-04, "are we
+ *  caching the upgrades?" -- we were not). `band` is the band number; `specKey` and it are
+ *  all the panel's "Full list for …" link needs. */
+export interface CachedUpgrades {
+  specKey: string;
+  band: number;
+  result: UpgradesResult;
+  items: Item[];
+}
+
+/** One hour, the same shelf life as the data files it is computed from (public/_headers). */
+export const UPGRADES_TTL_MS = 60 * 60 * 1000;
+
+/** The cache key names everything the answer depends on: data build, the character, their
+ *  level and faction (band choice) and the exact worn set, so a new addon export or a level-up
+ *  is a different key, never a stale hit. */
+export function upgradesCacheKey(
+  character: Pick<MeCharacter, 'key' | 'level' | 'faction' | 'build'>,
+  build: string = activeBuild.build,
+): string {
+  const gear = character.build?.gear ?? {};
+  const worn = Object.keys(gear)
+    .sort()
+    .map((slot) => `${slot}=${gear[slot]}`)
+    .join(',');
+  return `fs.upgrades:${build}:${character.key}:${character.level ?? ''}:${character.faction ?? ''}:${worn}`;
+}
+
+function itemsNamedBy(result: UpgradesResult, items: ReadonlyMap<number, Item>): Item[] {
+  const ids = new Set<number>();
+  for (const upgrade of result.upgrades) {
+    if (upgrade.wornItemId !== undefined) ids.add(upgrade.wornItemId);
+    ids.add(upgrade.pick.item_id);
+  }
+  for (const entry of result.alreadyBis) ids.add(entry.itemId);
+  return [...ids].flatMap((id) => {
+    const item = items.get(id);
+    return item === undefined ? [] : [item];
+  });
+}
+
+/**
+ * `loadBisContextFor` + `upgradesFor` for one character, remembered per visitor (private
+ * scope: cleared with the session) for an hour. A fresh persisted answer resolves instantly
+ * and revalidates in the background through `query`'s stale-while-revalidate; `null` means
+ * the same "not available" `loadBisContextFor` means, and is cached too so a character with
+ * no published list does not re-fetch on every visit.
+ */
+export function cachedUpgradesFor(
+  character: Pick<MeCharacter, 'key' | 'class' | 'spec' | 'level' | 'faction' | 'build'>,
+): Promise<CachedUpgrades | null> {
+  return query<CachedUpgrades | null>(
+    upgradesCacheKey(character),
+    async () => {
+      const ctx = await loadBisContextFor(character);
+      if (ctx === null) return null;
+      const result = upgradesFor(character, ctx.band, ctx.items);
+      return { specKey: ctx.specKey, band: ctx.band.band, result, items: itemsNamedBy(result, ctx.items) };
+    },
+    { scope: 'private', ttlMs: UPGRADES_TTL_MS },
+  );
 }
