@@ -1,22 +1,38 @@
 ---
 // web/src/pages/guides/index.astro
+// Rebuild (spec 2026-10-04, §4.A): the nine-crest class picker, replacing the old flat
+// `ClassTile` + text-link-row list (spec §3). Not built on `Content.astro` -- this index
+// has no sources/confidence of its own (it aggregates, it does not assert), the same reason
+// the pre-rebuild page used `Base.astro` directly; that stays unchanged here.
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import ClassTile from '../../components/ClassTile.astro';
+import GuidesClassPicker, { type ClassCardEntry } from '../../components/guides/GuidesClassPicker.astro';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import classes from '../../data/classes.json';
+import { guidesCopy } from '../../lib/guides/copy';
+import { readSpecCatalog } from '../../lib/bis/load';
 import { latest } from '../../lib/dates';
 
 const guides = await getCollection('guides');
 const updated = latest(guides.map((g) => g.data.updated));
-const specGuidesByClass = new Map(
-  classes.map((c) => [
-    c.slug,
-    guides
-      .filter((g) => g.data.classSlug === c.slug && g.data.spec !== undefined)
-      .sort((a, b) => a.data.title.localeCompare(b.data.title)),
-  ]),
+const specGuideTitle = new Map(
+  guides.filter((g) => g.data.spec !== undefined).map((g) => [g.id, g.data.title]),
 );
+
+// Tree order (`tree_index` ascending), the same order `SpecTabs` already uses elsewhere on
+// the site (spec §4.A/§4.B's shared "reuse the token" rule) -- not the old page's own
+// alphabetical-by-title sort.
+const catalog = readSpecCatalog();
+const entries: ClassCardEntry[] = classes.map((c) => ({
+  slug: c.slug,
+  specs: catalog
+    .filter((s) => s.class_slug === c.slug)
+    .sort((a, b) => a.tree_index - b.tree_index)
+    .map((s) => ({
+      name: specGuideTitle.get(`${c.slug}/${s.spec_slug}`) ?? `${s.name} ${c.name}`,
+      href: `/guides/${c.slug}/${s.spec_slug}`,
+    })),
+}));
 ---
 
 <Base
@@ -24,34 +40,166 @@ const specGuidesByClass = new Map(
   description="Class and spec guides for World of Warcraft: Forever, with a beta-honesty note on every projection."
   path="/guides"
 >
-  <main
-    id="main"
-    tabindex="-1"
-    class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5"
-  >
-    <header class="flex flex-col gap-2">
-      <h1 class="text-[28px] font-bold tracking-[0.02em]">Guides</h1>
+  <main id="main" tabindex="-1" class="guides-index">
+    <header class="guides-index-header">
+      <p class="label guides-index-eyebrow">
+        <i class="guides-index-eyebrow-rule" aria-hidden="true"></i>
+        {guidesCopy.eyebrow}
+      </p>
+      <h1 class="guides-index-h1">Guides</h1>
       <UpdatedStamp date={updated} />
+      <p class="guides-index-honesty">{guidesCopy.indexHonestyLine}</p>
+      <div id="guides-signed-in-callout" data-testid="guides-signed-in-callout-root">
+        <div
+          class="guides-callout-skeleton"
+          role="status"
+          aria-busy="true"
+          data-testid="guides-signed-in-callout-skeleton"
+        >
+          <span class="sr-only">Loading</span>
+          <span class="skeleton-block guides-callout-skeleton-crest" aria-hidden="true"></span>
+          <span class="skeleton-block guides-callout-skeleton-text" aria-hidden="true"></span>
+        </div>
+      </div>
     </header>
-    <p class="text-muted text-[14px]">
-      The beta caps at level 30. Anything about level 60 play is a projection from the demo trees and 1.12
-      knowledge until we can confirm it against a live raid, and each guide's Overview says so.
-    </p>
-    <div class="flex flex-col gap-3">
-      {classes.map((c) => (
-        <section class="rounded-control bg-raised border border-line p-4">
-          <div class="grid grid-cols-[84px_1fr] gap-4 items-start">
-            <ClassTile name={c.name} slug={c.slug} />
-            <ul class="flex flex-wrap gap-x-4 gap-y-1 list-none p-0 m-0 text-[13px]">
-              {(specGuidesByClass.get(c.slug) ?? []).map((spec) => (
-                <li>
-                  <a href={`/guides/${spec.id}`}>{spec.data.title}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      ))}
+    <div class="guides-index-body">
+      <GuidesClassPicker entries={entries} />
     </div>
   </main>
 </Base>
+
+<script>
+  // The index's own signed-in callout (spec §4.A): no Svelte island (the rebuild's own
+  // budget keeps every guide page static beyond the one existing `GuideBuildTree` island) --
+  // a plain module script fetches the shared, cached `/v1/me` session read and swaps this
+  // skeleton for the real callout, or removes it entirely signed-out / on a session with no
+  // usable character (never blocks the grid beside it, which needs nothing from this fetch).
+  import { fetchMeOnce } from '../../lib/account/api';
+  import { signedInCalloutView } from '../../lib/guides/signed-in-callout';
+
+  async function mount(): Promise<void> {
+    const root = document.getElementById('guides-signed-in-callout');
+    if (root === null) return;
+    const me = await fetchMeOnce().catch(() => null);
+    const view = signedInCalloutView(me?.characters[0]);
+    if (view === undefined) {
+      root.remove();
+      return;
+    }
+    const link = document.createElement('a');
+    link.className = 'guides-callout';
+    link.href = view.href;
+    link.dataset.testid = 'guides-signed-in-callout';
+    const img = document.createElement('img');
+    img.src = view.crestSrc;
+    img.alt = '';
+    img.width = 36;
+    img.height = 36;
+    img.className = 'guides-callout-crest';
+    img.style.setProperty('--c', view.crestColorVar);
+    const text = document.createElement('span');
+    text.className = 'guides-callout-text';
+    text.textContent = view.text;
+    link.append(img, text);
+    root.replaceChildren(link);
+  }
+
+  void mount();
+</script>
+
+<style>
+  .guides-index {
+    display: flex;
+    flex-direction: column;
+  }
+  .guides-index-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 28px 48px 0 48px;
+    max-width: 1344px;
+  }
+  .guides-index-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-gold);
+  }
+  .guides-index-eyebrow-rule {
+    width: 28px;
+    height: 1px;
+    background: var(--color-gold);
+    display: inline-block;
+  }
+  .guides-index-h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--color-strong);
+  }
+  .guides-index-honesty {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-text);
+    max-width: 70ch;
+  }
+  .guides-index-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 48px 32px 48px;
+    max-width: 1344px;
+  }
+
+  /* Signed-in callout: skeleton and ready state share the same box height (44px line +
+     14px/18px padding = 72px) so the swap never shifts layout (spec §8's own rule). */
+  .guides-callout-skeleton {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    min-height: 72px;
+    box-sizing: border-box;
+  }
+  .guides-callout-skeleton-crest {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .guides-callout-skeleton-text {
+    width: 220px;
+    height: 16px;
+  }
+  :global(.guides-callout) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    min-height: 72px;
+    box-sizing: border-box;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-panel);
+    background: color-mix(in srgb, var(--color-gold) 6%, transparent);
+  }
+  :global(.guides-callout-crest) {
+    flex-shrink: 0;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px var(--c);
+    background: var(--color-raised);
+    object-fit: cover;
+  }
+  :global(.guides-callout-text) {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-gold);
+  }
+
+  @media (max-width: 1023px) {
+    .guides-index-header,
+    .guides-index-body {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+  }
+</style>

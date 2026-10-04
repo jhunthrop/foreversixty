@@ -1,0 +1,104 @@
+---
+// web/src/components/guides/GuidesClassPicker.astro
+// The `/guides` index's own nine-crest grid (rebuild spec §4.A): a `grid-cols-3` (desktop) /
+// `grid-cols-1` (phone) row of nine class cards, each a real HD ringed crest (tenet 7), the
+// class name in its own colour, and its three spec guides listed underneath in tree order --
+// replaces the old page's flat `ClassTile` + text-link-row layout (spec §3's own "plain list
+// where a panel was expected" defect).
+import ClassCrest from '../ClassCrest.astro';
+import classes from '../../data/classes.json';
+
+export interface ClassCardSpec {
+  name: string;
+  href: string;
+}
+
+export interface ClassCardEntry {
+  slug: string;
+  specs: ClassCardSpec[];
+}
+
+interface Props {
+  entries: ClassCardEntry[];
+}
+
+const { entries } = Astro.props;
+
+function nameFor(slug: string): string {
+  return classes.find((c) => c.slug === slug)?.name ?? slug;
+}
+function colorFor(slug: string): string {
+  return classes.find((c) => c.slug === slug)?.color ?? '#ffffff';
+}
+---
+
+<div class="class-picker" data-testid="guides-class-picker">
+  {entries.map((entry) => (
+    <div class="class-card panel" data-testid={`guides-class-card-${entry.slug}`}>
+      <ClassCrest slug={entry.slug} size={56} priority />
+      <div class="class-card-body">
+        <span class="class-card-name" style={`color:${colorFor(entry.slug)}`}>
+          {nameFor(entry.slug)}
+        </span>
+        <ul class="class-card-specs">
+          {entry.specs.map((spec) => (
+            <li>
+              <a href={spec.href}>{spec.name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .panel {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .class-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .class-card {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 20px;
+  }
+  .class-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .class-card-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .class-card-specs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .class-card-specs a {
+    font-size: 13px;
+    color: var(--color-nav);
+  }
+
+  @media (max-width: 1023px) {
+    .class-picker {
+      grid-template-columns: 1fr;
+    }
+    .class-card {
+      min-height: 44px;
+    }
+  }
+</style>

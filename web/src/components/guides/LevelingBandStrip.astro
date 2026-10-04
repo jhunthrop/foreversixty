@@ -1,0 +1,148 @@
+---
+// web/src/components/guides/LevelingBandStrip.astro
+// The Leveling section's planted band strip (rebuild spec §4.D, proposed ruling §10.1):
+// one row per this spec's own BiS band (one faction, the guide's own first
+// `recommendedRaces` entry decides which -- `classLandingSetDps`'s own sibling rule),
+// each showing the real talent-point total and a direct "Load in planner" link built from
+// that band's own verified talent string -- the identical href shape `bis/[class]/
+// [spec].astro` already builds for its own band panels. Desktop also gets a per-row
+// thumbnail of that band's own LIT talents (round-1 mock review finding 5), decoded with
+// the same `decodeBandTalents` the rail's Build card and the full tree already share;
+// phone drops the thumbnail so nineteen icons never crowd the row's own 44px
+// "Load in planner" tap target (spec §4.D's own explicit instruction).
+import { decodeBandTalents, litTalents } from '../../lib/guides/build-tree';
+import { guidesCopy } from '../../lib/guides/copy';
+import { dataUrl } from '../../lib/planner/load';
+
+export interface LevelingBandRow {
+  bandLabel: string;
+  points: number;
+  plannerHref: string;
+  talents: string;
+}
+
+interface Props {
+  build: string;
+  classSlug: string;
+  rows: LevelingBandRow[];
+}
+
+const { build, classSlug, rows } = Astro.props;
+---
+
+<div class="panel-box leveling-strip" data-testid="guide-leveling-strip">
+  {rows.map((row) => {
+    const trees = decodeBandTalents(build, classSlug, row.talents);
+    const lit = trees === undefined ? [] : litTalents(trees);
+    return (
+      <div class="leveling-row" data-testid={`guide-leveling-row-${row.bandLabel.replace(/\s+/g, '-')}`}>
+        <div class="leveling-row-top">
+          <span class="font-mono tabular leveling-row-band">{row.bandLabel}</span>
+          <span class="text-muted leveling-row-points">{guidesCopy.levelingPointsLabel(row.points)}</span>
+          <a class="leveling-row-link" href={row.plannerHref}>
+            {guidesCopy.loadInPlanner}
+          </a>
+        </div>
+        {lit.length > 0 && (
+          <div class="leveling-row-thumb" aria-hidden="true" data-testid="guide-leveling-row-thumbnail">
+            {lit.map((talent) => (
+              <span class="leveling-row-thumb-cell">
+                <img
+                  src={dataUrl(build, `icons/${talent.icon}.webp`)}
+                  alt=""
+                  width="16"
+                  height="16"
+                  loading="lazy"
+                  decoding="async"
+                />
+                {talent.rank > 1 && (
+                  <span class="font-mono tabular leveling-row-thumb-rank">{talent.rank}</span>
+                )}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .panel-box {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .leveling-strip {
+    padding: 4px 20px 6px 20px;
+  }
+  .leveling-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .leveling-row:last-child {
+    border-bottom: none;
+  }
+  .leveling-row-top {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .leveling-row-band {
+    font-size: 13px;
+    color: var(--color-strong);
+  }
+  .leveling-row-points {
+    font-size: 13px;
+  }
+  .leveling-row-link {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .leveling-row-thumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+  .leveling-row-thumb-cell {
+    position: relative;
+    display: inline-flex;
+  }
+  .leveling-row-thumb-cell img {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid var(--color-line);
+  }
+  .leveling-row-thumb-rank {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    font-size: 7px;
+    background: var(--color-line-soft);
+    color: var(--color-gold);
+    border-radius: 2px;
+    padding: 0 1px;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 1023px) {
+    .leveling-row-thumb {
+      display: none;
+    }
+    .leveling-row-top {
+      grid-template-columns: 70px 1fr auto;
+      gap: 10px;
+    }
+  }
+</style>
