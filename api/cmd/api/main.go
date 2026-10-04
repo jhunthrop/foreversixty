@@ -470,7 +470,9 @@ func serve(log *slog.Logger) error {
 	if err := partitions.Run(ctx); err != nil {
 		return fmt.Errorf("partitions: %w", err)
 	}
-	guildStore := &guilds.Store{Pool: pool}
+	// DataDir backs the guild control centre's own BiS band reads (api/internal/bis) -
+	// the same TreeDataDir every other build-scoped read in this file uses.
+	guildStore := &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir}
 	membership := &guilds.MembershipJob{Store: guildStore, Log: log}
 	if err := membership.Run(ctx); err != nil {
 		return fmt.Errorf("guilds membership sweep: %w", err)
@@ -498,6 +500,10 @@ func serve(log *slog.Logger) error {
 	}
 
 	authStore := &auth.Store{Pool: pool, Trees: treeData, Log: log}
+	// The guild control centre's own claimed_by_name (home) and loot award
+	// attribution (loot) resolve a user id to a battletag through this, the same
+	// Accounts dependency guilds.Service already takes below.
+	guildStore.Accounts = authStore
 	entStore := &entitlements.Store{Pool: pool}
 	authenticator := &auth.Authenticator{
 		Store: authStore, CookieDomain: cfg.SessionCookieDomain,

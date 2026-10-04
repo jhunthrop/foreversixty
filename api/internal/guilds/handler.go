@@ -66,10 +66,26 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	accept := httpx.RateLimitPer(inviteAcceptPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/guilds/invite/{token}/accept", accept(auth.RequireSession(s.acceptInvite)))
 	mux.HandleFunc("POST /v1/guilds/{id}/characters/{region}/{ruleset}/{name}/approve", auth.RequireSession(s.approveCharacter))
+	mux.HandleFunc("POST /v1/guilds/{id}/roster/approve-all", auth.RequireSession(s.approveAll))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/characters/{region}/{ruleset}/{name}", auth.RequireSession(s.removeCharacter))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))
 	mux.HandleFunc("GET /v1/guilds/{id}/home", auth.RequireSession(s.home))
+	// Raids is reachable signed-out (design spec §4.0: public reports only) - no
+	// RequireSession wrap; the handler reads whatever actor the auth middleware already
+	// put in context (the zero Actor for an anonymous request) and the visibility clause
+	// does the rest.
+	mux.HandleFunc("GET /v1/guilds/{id}/raids", s.raids)
+	// Progression is fully public (design spec §4.0) and, matching
+	// rankings.Store.Guild's own choice for this kind of aggregate, not gated by
+	// individual report visibility - no RequireSession wrap, no actor read at all.
+	mux.HandleFunc("GET /v1/guilds/{id}/progression", s.progression)
+	// Readiness is member/officer only (design spec §4.0: "Not shown" to the public).
+	mux.HandleFunc("GET /v1/guilds/{id}/readiness", auth.RequireSession(s.readiness))
+	// Loot is member-and-officer (member read-only, officer gets the Award control).
+	mux.HandleFunc("GET /v1/guilds/{id}/loot", auth.RequireSession(s.loot))
+	mux.HandleFunc("POST /v1/guilds/{id}/loot/awards", auth.RequireSession(s.createLootAward))
+	mux.HandleFunc("DELETE /v1/guilds/{id}/loot/awards/{award_id}", auth.RequireSession(s.deleteLootAward))
 	// No auth.RequireSession wrap (item 4, fourth security review
 	// response): the handler itself answers 404 for a non-moderator,
 	// including an unauthenticated caller, so the route's existence is

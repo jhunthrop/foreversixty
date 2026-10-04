@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
@@ -72,6 +73,41 @@ type HomeReport struct {
 	CreatedAt  time.Time `json:"created_at"`
 	FightCount int       `json:"fight_count"`
 	KillCount  int       `json:"kill_count"`
+	// DurationMS is the night's own elapsed wall-clock span - the last fight's end minus
+	// the first fight's start, 0 for a report with no fights yet.
+	DurationMS int64 `json:"duration_ms"`
+}
+
+// Attendance is a character's presence over the guild's last 8 reports (contract's own
+// window), design spec §4.B.
+type Attendance struct {
+	Present int `json:"present"`
+	Nights  int `json:"nights"`
+}
+
+// BestParse is a roster row's single best fight_metrics row - contract's own shape for
+// GET .../home's roster[].best_parse, distinct from progression's ParseRef (progression.go):
+// this one identifies the fight, not the character (the roster row it sits on already does
+// that).
+type BestParse struct {
+	Metric     string   `json:"metric"`
+	Value      float64  `json:"value"`
+	Percentile *float64 `json:"percentile"`
+	Encounter  string   `json:"encounter"`
+	ReportID   string   `json:"report_id"`
+	FightIndex int      `json:"fight_index"`
+}
+
+// RatingView is a roster row's rating_scores overall plus its six components - contract's
+// own shape, null when the character has no rated fight.
+type RatingView struct {
+	Overall     float64 `json:"overall"`
+	Output      float64 `json:"output"`
+	Survival    float64 `json:"survival"`
+	Mechanics   float64 `json:"mechanics"`
+	Utility     float64 `json:"utility"`
+	Preparation float64 `json:"preparation"`
+	Activity    float64 `json:"activity"`
 }
 
 // RosterRow is one guild_characters row as the home shows it. Class,
@@ -90,7 +126,17 @@ type RosterRow struct {
 	Consent        string  `json:"consent"`
 	Class          *string `json:"class,omitempty"`
 	Spec           *string `json:"spec,omitempty"`
+	Role           *string `json:"role,omitempty"`
 	ItemLevel      *int    `json:"item_level,omitempty"`
+	// LoggedAt is addon_exports.updated_at - the contract's own replacement for
+	// logged_recently (kept below too, unchanged, per the contract's own instruction).
+	LoggedAt     time.Time   `json:"logged_at"`
+	Attendance   Attendance  `json:"attendance"`
+	BestParse    *BestParse  `json:"best_parse,omitempty"`
+	Rating       *RatingView `json:"rating,omitempty"`
+	Professions  []string    `json:"professions,omitempty"`
+	AccountKey   string      `json:"account_key"`
+	LastReportAt *time.Time  `json:"last_report_at"`
 	// MayRemove is computed server-side from the exact same
 	// mayRemoveRow rule the DELETE .../characters/{key} route enforces
 	// (item 7, fourth security review response), from the viewpoint of
@@ -98,17 +144,66 @@ type RosterRow struct {
 	// control exactly where it would actually succeed, never a control
 	// that then answers 403.
 	MayRemove bool `json:"may_remove"`
-	// ownerUserID is gc.user_id: read to compute MayRemove against the
-	// viewing actor, never marshaled into the response itself.
+	// MayApprove is true exactly when the viewer is a verified officer/leader and this
+	// row is not already verified - the Roster tab's own Approve control (contract's
+	// own field, mirroring MayRemove's convention).
+	MayApprove bool `json:"may_approve"`
+	// ownerUserID is gc.user_id: read to compute MayRemove/MayApprove/AccountKey against
+	// the viewing actor, never marshaled into the response itself.
 	ownerUserID int64
+	// faction/className/specName/export/gear/enchants/bags/talentPointsSpent/hasTalents
+	// back this row's own standing/readiness computation (standing.go) without a second
+	// query - never marshaled.
+	faction            string
+	className, specStr string
+	gear, enchants     map[string]int
+	bags               []int
+	hasBagsSection     bool
+	talentPointsSpent  int
+	hasTalents         bool
+}
+
+// ViewerView is the home endpoint's own "who is asking" object.
+type ViewerView struct {
+	Role         string  `json:"role"`
+	CharacterKey *string `json:"character_key,omitempty"`
+	Verified     bool    `json:"verified"`
+}
+
+// SummaryView is the Overview tab's own glance row (design spec §4.A).
+type SummaryView struct {
+	Raiders             int       `json:"raiders"`
+	WaitingForApproval  int       `json:"waiting_for_approval"`
+	BelowRatingFloor    int       `json:"below_rating_floor"`
+	NamedEncountersDown int       `json:"named_encounters_down"`
+	PullsThisTier       int       `json:"pulls_this_tier"`
+	UpdatedAt           time.Time `json:"updated_at"`
+}
+
+// StandingView is the member/officer-only "where do I stand" line (design spec §4.A.1),
+// nil whenever it cannot be derived (no known spec/class for the viewer, no gear consent,
+// or an unverified viewer character).
+type StandingView struct {
+	Spec                string   `json:"spec"`
+	Class               string   `json:"class"`
+	SameSpecCount       int      `json:"same_spec_count"`
+	RankByItemLevel     int      `json:"rank_by_item_level"`
+	ItemLevel           int      `json:"item_level"`
+	NeedsBeforeNextRaid []string `json:"needs_before_next_raid"`
 }
 
 type HomeView struct {
 	Guild      GuildIdentity  `json:"guild"`
+	Viewer     ViewerView     `json:"viewer"`
 	Claim      ClaimStateView `json:"claim"`
+	Summary    SummaryView    `json:"summary"`
+	Standing   *StandingView  `json:"standing,omitempty"`
 	Reports    []HomeReport   `json:"reports"`
 	NextCursor string         `json:"next_cursor,omitempty"`
 	Roster     []RosterRow    `json:"roster"`
+	// Pending is every unverified roster row, officer view only - empty, never omitted,
+	// for everyone else (contract: "others: []").
+	Pending []RosterRow `json:"pending"`
 }
 
 // HomeReports lists this guild's reports from the trailing week, newest
@@ -123,7 +218,9 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 	since := time.Now().Add(-homeReportsWindow)
 	const columns = `r.id, r.title, r.zone, r.created_at,
 	       (select count(*) from fights f where f.report_id = r.id),
-	       (select count(*) from fights f where f.report_id = r.id and f.kill)`
+	       (select count(*) from fights f where f.report_id = r.id and f.kill),
+	       coalesce((select max(f.start_ms + f.duration_ms) - min(f.start_ms)
+	                 from fights f where f.report_id = r.id), 0)`
 	visibility := `(r.owner_id = $3 or r.visibility = 'public')`
 	if verified {
 		visibility = `(r.owner_id = $3 or r.visibility = 'public' or r.visibility = 'guild')`
@@ -147,7 +244,7 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 	out := []HomeReport{}
 	for rows.Next() {
 		var h HomeReport
-		if err := rows.Scan(&h.ID, &h.Title, &h.Zone, &h.CreatedAt, &h.FightCount, &h.KillCount); err != nil {
+		if err := rows.Scan(&h.ID, &h.Title, &h.Zone, &h.CreatedAt, &h.FightCount, &h.KillCount, &h.DurationMS); err != nil {
 			return nil, fmt.Errorf("guilds: home reports: %w", err)
 		}
 		out = append(out, h)
@@ -170,15 +267,18 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID int64, moderator, verifiedOfficer bool) ([]RosterRow, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select gc.character_key, gc.user_id, ae.region, ae.ruleset, ae.name, gc.rank, gc.verified_at is not null,
-		       ae.updated_at >= now() - interval '24 hours', gm.consent,
+		       ae.updated_at >= now() - interval '24 hours', ae.updated_at, gm.consent,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.class end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.spec end,
-		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end
+		       case when gm.consent in ('gear', 'gear_bags') then fm.role end,
+		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end,
+		       case when gm.consent in ('gear', 'gear_bags') then fm.faction end,
+		       case when gm.consent in ('gear', 'gear_bags') then ae.export end
 		from guild_characters gc
 		join addon_exports ae on ae.character_key = gc.character_key
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
 		left join lateral (
-		  select class, spec, ilvl from fight_metrics
+		  select class, spec, role, ilvl, faction from fight_metrics
 		  where player_key = gc.character_key order by fought_at desc limit 1
 		) fm on true
 		where gc.guild_id = $1 and gc.character_key not like 'account:%'
@@ -191,14 +291,62 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID 
 	out := []RosterRow{}
 	for rows.Next() {
 		var row RosterRow
+		var export, faction *string
 		if err := rows.Scan(&row.CharacterKey, &row.ownerUserID, &row.Region, &row.Ruleset, &row.Name, &row.Rank,
-			&row.Verified, &row.LoggedRecently, &row.Consent, &row.Class, &row.Spec, &row.ItemLevel); err != nil {
+			&row.Verified, &row.LoggedRecently, &row.LoggedAt, &row.Consent, &row.Class, &row.Spec, &row.Role,
+			&row.ItemLevel, &faction, &export); err != nil {
 			return nil, fmt.Errorf("guilds: home roster: %w", err)
 		}
+		if faction != nil {
+			row.faction = *faction
+		}
 		row.MayRemove = mayRemoveRow(g, actorID, row.ownerUserID, row.Rank, moderator, verifiedOfficer)
+		row.MayApprove = verifiedOfficer && !row.Verified
+		row.AccountKey = accountKeyFor(row.ownerUserID)
+		if row.Class != nil {
+			row.className = *row.Class
+		}
+		if row.Spec != nil {
+			row.specStr = *row.Spec
+		}
+		if export != nil {
+			decoded, ok := fs1.Decode(*export)
+			if ok {
+				row.gear, row.enchants = decoded.Gear, decoded.Enchants
+				row.bags, row.hasBagsSection = decoded.Bags, hasBagsSection(*export)
+				row.Professions = decoded.Professions
+				row.talentPointsSpent, row.hasTalents = sumPoints(decoded.Talents.Points), true
+			}
+		}
 		out = append(out, row)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if err := s.enrichRoster(ctx, guildID, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// accountKeyFor is the contract's own "same value for a main and its alts" grouping key.
+func accountKeyFor(userID int64) string { return fmt.Sprintf("u:%d", userID) }
+
+// sumPoints totals a decoded talent split's per-tree points into the single spent-points
+// figure the readiness board's unspent-points check needs.
+func sumPoints(points []int) int {
+	total := 0
+	for _, p := range points {
+		total += p
+	}
+	return total
+}
+
+// hasBagsSection reports whether export's pipe sections include a bags= entry at all
+// (distinguishing "no bags= section" from "an empty one," both of which fs1.Decode reads as
+// an empty slice) - the consumables check's own "unknown" vs "short" distinction needs this.
+func hasBagsSection(export string) bool {
+	return strings.Contains(export, "|bags=") || strings.HasPrefix(export, "bags=")
 }
 
 // Home assembles the signed-in guild home shell: identity, claim state,
@@ -218,10 +366,53 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	if err != nil {
 		return HomeView{}, err
 	}
+	claim := claimState(g, time.Now())
+	if claim.State == "claimed" && g.ClaimedBy != nil && s.Accounts != nil {
+		if u, uerr := s.Accounts.User(ctx, *g.ClaimedBy); uerr == nil {
+			name := u.PublicName()
+			claim.ClaimedByName = &name
+		}
+	}
+
+	summary, err := s.homeSummary(ctx, guildID, roster)
+	if err != nil {
+		return HomeView{}, err
+	}
+
+	pending := []RosterRow{}
+	if verifiedOfficer {
+		for _, row := range roster {
+			if !row.Verified {
+				pending = append(pending, row)
+			}
+		}
+	}
+
+	role := "member"
+	switch {
+	case moderator:
+		role = "moderator"
+	case verifiedOfficer:
+		role = "officer"
+	}
+	var viewerKey *string
+	for i := range roster {
+		if roster[i].ownerUserID == userID {
+			key := roster[i].CharacterKey
+			viewerKey = &key
+			if roster[i].Verified {
+				break // a verified character is the more representative "who is this" pick
+			}
+		}
+	}
+
 	view := HomeView{
-		Guild:   GuildIdentity{ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name},
-		Claim:   claimState(g, time.Now()),
-		Reports: reports, Roster: roster,
+		Guild:    GuildIdentity{ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name},
+		Viewer:   ViewerView{Role: role, CharacterKey: viewerKey, Verified: verified},
+		Claim:    claim,
+		Summary:  summary,
+		Standing: standingFor(s, roster, userID),
+		Reports:  reports, Roster: roster, Pending: pending,
 	}
 	if len(reports) == HomeReportsPerPage {
 		last := reports[len(reports)-1]
