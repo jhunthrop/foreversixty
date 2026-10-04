@@ -85,20 +85,21 @@ def panel(title, body, aside=''):
 
 def report_row(title, day, fights, kills, guild=None):
     g = f'<span style="font-size:12px;color:{MUTED}">{guild}</span>' if guild else ''
-    return (f'<div style="display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:baseline;padding:10px 0;border-bottom:1px solid {SOFT}">'
+    cols = '1fr' if PHONE else '1fr auto'
+    return (f'<div style="display:grid;grid-template-columns:{cols};gap:4px 16px;align-items:baseline;padding:10px 0;border-bottom:1px solid {SOFT}">'
             f'<span style="display:flex;flex-direction:column;gap:2px;min-width:0"><a href="#r" style="font-weight:600;color:{TEXT}">{title}</a>{g}</span>'
             f'{mono(f"{day} · {fights} fights · {kills} kills", MUTED, 13)}</div>')
 
 
 if SIGNED_IN:
     tabs = f'<div style="display:flex;gap:6px">{tab("Mine", True)}{tab("Olympus XXVII")}</div>'
-    rows = report_row('Sanguine Depths', hero_day, R['fight_count'], R['kill_count']) + report_row('Deadmines, first clear', '2026-09-28', 24, 6) + report_row('Wailing Caverns', '2026-09-24', 31, 7)
+    rows = report_row('Sanguine Depths', hero_day, R['fight_count'], R['kill_count']) + report_row('Deadmines, first clear', '2026-09-12', 24, 6) + report_row('Wailing Caverns', '2026-09-08', 31, 7)
     mine = panel('Your reports', tabs + f'<div>{rows}</div><span style="font-size:12px;color:{MUTED}">Newest first. A guild tab shows the reports your guild shared with its members.</span>')
 else:
     mine = panel('Your reports', f'<span style="font-size:14px;color:{BODY}">Sign in to see the reports you own. <a href="#email">Use an email link instead.</a></span><span>{btn("Sign in with Battle.net", "#signin", fill=True)}</span>')
 recent = panel('Recent public reports', f'<span style="font-size:14px;color:{BODY}">No public reports yet. The first raid logs land in December; dungeon logs are welcome now.</span>')
 
-status = (f'<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:{BODY}"><i style="width:8px;height:8px;border-radius:50%;background:{GREEN};display:inline-block"></i>MacBook Pro · macOS · last seen {mono("4 min ago", BODY, 13)}</div>' if SIGNED_IN else '')
+status = (f'<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:{BODY}">MacBook Pro · macOS · last seen {mono("4 min ago", BODY, 13)}</div>' if SIGNED_IN else '')
 pointer = f'<span style="font-size:14px;color:{BODY}">Downloads and the in-game /combatlog step are on the setup page. <a href="#setup" style="text-decoration:underline">Get set up</a></span>'
 if SIGNED_IN:
     pairing = (f'<div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid {SOFT}"><span class="label">Pair another device</span>'
@@ -134,6 +135,6 @@ if not PHONE:
 else:
     body = f'''<div class="band" style="display:flex;flex-direction:column;flex-shrink:0">{nav_phone(SIGNED_IN, ZULMARA)}
 <div style="display:flex;flex-direction:column;gap:12px;padding:18px 18px 22px 18px">{hero}</div></div>
-<div style="display:flex;flex-direction:column;gap:16px;padding:0 18px 24px 18px">{spine}{mine}{recent}{companion}{upload}{framing}</div>{footer(phone=True)}'''
+<div style="display:flex;flex-direction:column;gap:16px;padding:0 18px 24px 18px">{spine}{framing}{mine}{recent}{companion}{upload}</div>{footer(phone=True)}'''
     out = write(f'logs-phone-{STATE}.html', page(body, 390))
 print(out)
