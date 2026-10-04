@@ -153,29 +153,31 @@ const levelingRows: LevelingBandRow[] =
 >
   <Fragment slot="beforeMain">
     <ArtPanel classSlug={classSlug}>
-      <ClassHeader
-        classSlug={classSlug}
-        className={className}
-        specName={specName}
-        specTabs={specTabs}
-        bands={[]}
-        build={build}
-        minimal
-        eyebrow={guidesCopy.eyebrow}
-        summaryOverride={entry.data.description}
-      />
-      {buildCode !== undefined && (
-        <div class="guide-rail-wrap">
-          <GuideActionRail
-            build={build}
-            buildCode={buildCode}
-            primaryTree={primaryTree}
-            rotationBandLabel={rotationBandLabel}
-            rotationLines={rotationLines.slice(0, 4)}
-            statRows={statRows}
-          />
-        </div>
-      )}
+      <div class="guide-band-inner">
+        <ClassHeader
+          classSlug={classSlug}
+          className={className}
+          specName={specName}
+          specTabs={specTabs}
+          bands={[]}
+          build={build}
+          minimal
+          eyebrow={guidesCopy.eyebrow}
+          summaryOverride={entry.data.description}
+        />
+        {buildCode !== undefined && (
+          <div class="guide-rail-wrap">
+            <GuideActionRail
+              build={build}
+              buildCode={buildCode}
+              primaryTree={primaryTree}
+              rotationBandLabel={rotationBandLabel}
+              rotationLines={rotationLines.slice(0, 4)}
+              statRows={statRows}
+            />
+          </div>
+        )}
+      </div>
     </ArtPanel>
   </Fragment>
   <SpecTableOfContents />
@@ -204,9 +206,16 @@ const levelingRows: LevelingBandRow[] =
 </Content>
 
 <style>
+  /* Owner 2026-10-04: above 1440px the band's content sat flush left while the prose
+     column below was centred. The band stays full-bleed; its content is capped at 1344px
+     and centred, the same inner width every other band uses. */
+  .guide-band-inner {
+    max-width: 1344px;
+    margin-inline: auto;
+    width: 100%;
+  }
   .guide-rail-wrap {
     padding: 24px 48px 28px 48px;
-    max-width: 1344px;
   }
   @media (max-width: 1023px) {
     .guide-rail-wrap {

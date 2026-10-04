@@ -151,8 +151,12 @@ function talentsByTier(tree: DecodedTreeView): DecodedTalentView[][] {
      widths because both rules now live in this one stylesheet. */
   .guide-rail {
     display: grid;
-    grid-template-columns: repeat(var(--guide-rail-cols, 3), 1fr);
+    grid-template-columns: repeat(var(--guide-rail-cols, 3), minmax(0, 1fr));
     gap: 16px;
+    /* A 1-up or 2-up rail (a healer with no ranked list or rotation lines) keeps each card
+       at its 3-up width instead of stretching one card across the page (owner 2026-10-04,
+       Holy Paladin): 3 x 405px + 2 x 16px = the 1248px inner width at 1344 - 2 x 48. */
+    max-width: calc(var(--guide-rail-cols, 3) * 405px + (var(--guide-rail-cols, 3) - 1) * 16px);
   }
   .panel-box {
     background: var(--color-raised);
