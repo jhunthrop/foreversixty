@@ -8,6 +8,7 @@
   import { recentReportsCopy } from '../lib/reports/copy';
   import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { fetchRecentReports, type RecentReport } from '../lib/reports/recent';
+  import sampleReport from '../data/sample-report.json';
   import ReportRow from './ReportRow.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -33,7 +34,12 @@
     status = 'loading';
     try {
       const result = await fetchRecentReports(cursor);
-      rows = compact ? result.rows.slice(0, COMPACT_ROWS) : result.rows;
+      // Logs landing spec (2026-10-04) §4.C.2, review finding 2: the canonical sample
+      // report is the header hero's own, explicitly-labelled example -- it must never
+      // double as a live feed entry, or this feed's genuinely-empty state (and its
+      // already-correct empty copy) is never reachable.
+      const filtered = result.rows.filter((row) => row.id !== sampleReport.id);
+      rows = compact ? filtered.slice(0, COMPACT_ROWS) : filtered;
       nextCursor = result.next_cursor;
       status = 'ready';
     } catch {

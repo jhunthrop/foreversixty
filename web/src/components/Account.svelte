@@ -14,6 +14,7 @@
     fetchMeOnce,
     listDevices,
     pairDevice,
+    refreshDevices,
     revokeDevice,
     requestEmailLink,
     setAnonymize,
@@ -40,6 +41,8 @@
   import { mainCharacter, pointerForCharacter } from '../lib/account/main-character';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
+  import { pairingCopy } from '../lib/reports/copy';
+  import { createPairingPoll, type PairingPoll } from '../lib/reports/pairing-poll';
   import { API_BASE_URL } from '../lib/planner/config';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { relativeTime } from '../lib/dates';
@@ -92,6 +95,18 @@
   let pairing = $state<PairingCode | null>(null);
   let busy = $state(false);
   let guildBusy = $state<number | null>(null);
+
+  // Logs landing spec (2026-10-04) §4.D.2: once a code is shown, poll for the companion
+  // actually using it. `pairedDevice` is the poll's own success state, distinct from
+  // `devices` (which it also appends to, so the devices panel's own list stays current
+  // without a second fetch); `activePoll` is not `$state` -- it is plumbing, never read by
+  // a template, and `$state`-wrapping a mutable timer handle would gain nothing.
+  let pairedDevice = $state<Device | null>(null);
+  let activePoll: PairingPoll | null = null;
+
+  $effect(() => {
+    return () => activePoll?.stop();
+  });
 
   const signedIn = $derived(me !== null);
   const displayName = $derived(me?.user.battletag ?? me?.user.email ?? 'Your account');
@@ -273,7 +288,22 @@
 
   const onPair = (): void =>
     void run(async () => {
-      pairing = await pairDevice();
+      activePoll?.stop();
+      pairedDevice = null;
+      const beforeIds = new Set(devices.map((device) => device.id));
+      const code = await pairDevice();
+      pairing = code;
+      activePoll = createPairingPoll(
+        () => refreshDevices(),
+        beforeIds,
+        (device) => {
+          pairedDevice = device;
+          pairing = null;
+          devices = [...devices, device];
+        },
+        { expiresInMs: code.expires_in * 1000 },
+      );
+      activePoll.start();
     });
 
   const onRevoke = (id: string): void =>
@@ -430,7 +460,7 @@
        `client:visible` had nothing to ever intersect and the island never hydrated at all. -->
   <div class="min-h-[88px]">
     {#if status === 'ready'}
-      <MyReports {signedIn} heading={false} />
+      <MyReports {signedIn} heading={false} guilds={me?.guilds ?? []} />
     {/if}
   </div>
 {:else if mode === 'pairing'}
@@ -442,6 +472,10 @@
       <p class="text-muted text-[14px]">Checking whether you are signed in.</p>
     {:else if !signedIn}
       <SignInPrompt line="Sign in to pair the companion with your account." testid="pairing-signin" compact />
+    {:else if pairedDevice !== null}
+      <!-- §4.D.2: replaces the code block in place once the companion actually uses it;
+           the expiry line is answered and removed with it. -->
+      <p class="text-[14px]" data-testid="pairing-success">{pairingCopy.success(pairedDevice.name)}</p>
     {:else if pairing === null}
       <p class="text-[14px]">Signed in as {displayName}. Show a code, then type it into the companion.</p>
       <button
@@ -631,7 +665,11 @@
                     {/each}
                   </ul>
                 {/if}
-                {#if pairing === null}
+                {#if pairedDevice !== null}
+                  <p class="text-[14px]" data-testid="pairing-success">
+                    {pairingCopy.success(pairedDevice.name)}
+                  </p>
+                {:else if pairing === null}
                   <button
                     class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
                     onclick={onPair}
