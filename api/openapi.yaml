@@ -1444,6 +1444,25 @@ paths:
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '404': { description: "No such character", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/guilds/{id}/reports:
+    get:
+      summary: A guild's own reports, newest first (session)
+      description: >-
+        Shaped exactly like GET /v1/reports?mine=1 (rows, total, page, per_page): each row
+        carries id, title, zone, status, visibility, created_at, fight_count and kill_count.
+        The rows are the guild's own guild-visibility reports plus its public ones, the set a
+        member already sees on any one of that guild's reports. Authorized the same way: a
+        verified member of the guild (any rank) may list it; a signed-in caller with no
+        standing in the guild gets 404, the same answer an unknown guild id gets, never a 403
+        that would confirm the guild exists.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: "rows, total, page, per_page (100)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "page must be 1 or more", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Unknown guild, or not a member", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
