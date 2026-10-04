@@ -5,27 +5,46 @@
 // writePlannerPointer and sim's sources.ts already write the current-character pointer
 // unconditionally whenever their page loads with a ?code=, so there is nothing for a click
 // handler here to do that the destination page does not already do on arrival.
+//
+// The guide rebuild (spec §4.C.1) plants a second copy of this pair in the action rail,
+// above the fold -- two links on one page sharing the visible text "Load this build" need
+// distinct accessible names (WCAG 2.4.4/2.4.9, this site's own tenet 9), so the rail's own
+// caller passes `loadAriaLabel`/`simAriaLabel` (and its own `loadTestId`/`simTestId`, so a
+// test can target either copy unambiguously); the copy under the full tree keeps the
+// defaults, unchanged from before this rebuild.
 import { guidesCopy } from '../../lib/guides/copy';
 import { loadBuildHref, simBuildHref } from '../../lib/guides/build-links';
 
 interface Props {
   code: string;
+  loadTestId?: string;
+  simTestId?: string;
+  loadAriaLabel?: string;
+  simAriaLabel?: string;
 }
-const { code } = Astro.props;
+const {
+  code,
+  loadTestId = 'guide-load-build',
+  simTestId = 'guide-sim-build',
+  loadAriaLabel,
+  simAriaLabel,
+} = Astro.props;
 ---
 
 <div class="flex flex-wrap gap-3" data-testid="guide-build-actions">
   <a
     href={loadBuildHref(code)}
     class="rounded-control border-line-warm text-text inline-flex min-h-11 items-center border px-4 text-[14px] font-semibold"
-    data-testid="guide-load-build"
+    data-testid={loadTestId}
+    aria-label={loadAriaLabel}
   >
     {guidesCopy.loadThisBuild}
   </a>
   <a
     href={simBuildHref(code)}
     class="rounded-control border-line-warm text-text inline-flex min-h-11 items-center border px-4 text-[14px] font-semibold"
-    data-testid="guide-sim-build"
+    data-testid={simTestId}
+    aria-label={simAriaLabel}
   >
     {guidesCopy.simThisBuild}
   </a>

@@ -1,57 +1,184 @@
 ---
 // web/src/pages/guides/[class]/index.astro
-// The class landing page: content/guides/<class>/index.md, id `<class>/index`. Links out to
-// every spec guide for the class (content/guides/<class>/<spec>.md).
-import { getCollection, render } from 'astro:content';
+// Rebuild (spec 2026-10-04, §4.B): crest + identity paragraph + three illustrated spec
+// cards, replacing the old bare two-link paragraph plus a plain `<ul>` of spec names
+// (spec §3's own "Replaced" list). `Content.astro`'s own article/aside-less grid, Sources
+// footer and footer-placed confidence line are kept (`hideHeader`+`wide`: the new
+// `ArtPanel`+`ClassHeader` region replaces this layout's own plain `<h1>` block, and the
+// identity paragraph + spec-card row read at the header's own 1344px width).
+import { getCollection } from 'astro:content';
+import ArtPanel from '../../../components/ArtPanel.astro';
+import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.astro';
+import SpecCard from '../../../components/guides/SpecCard.astro';
 import Content from '../../../layouts/Content.astro';
-import { bisCopy } from '../../../lib/bis/copy';
+import classes from '../../../data/classes.json';
+import activeBuild from '../../../data/active-build.json';
+import { classLandingSetDps } from '../../../lib/guides/class-dps';
+import { guidesCopy } from '../../../lib/guides/copy';
+import { splitFirstParagraph } from '../../../lib/guides/first-paragraph';
+import { renderGuideMarkdown } from '../../../lib/guides/markdown';
+import { trimToClause } from '../../../lib/guides/trim-to-clause';
 import { readSpecCatalog } from '../../../lib/bis/load';
-import { plannerHref } from '../../../lib/planner/reference';
+import { specTabIcon } from '../../../lib/bis/spec-icon';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
   const landings = guides.filter((g) => g.data.spec === undefined);
   return landings.map((entry) => {
-    const classSlug = entry.id.split('/')[0];
-    const specGuides = guides
-      .filter((g) => g.data.classSlug === entry.data.classSlug && g.data.spec !== undefined)
-      .sort((a, b) => a.data.title.localeCompare(b.data.title));
+    const classSlug = entry.id.split('/')[0]!;
+    const specGuides = guides.filter(
+      (g) => g.data.classSlug === entry.data.classSlug && g.data.spec !== undefined,
+    );
     return { params: { class: classSlug }, props: { entry, specGuides } };
   });
 }
 const { entry, specGuides } = Astro.props;
-const { Content: Body } = await render(entry);
-const hasBisSpecs = readSpecCatalog().some((spec) => spec.class_slug === entry.data.classSlug);
+const build = activeBuild.build;
+const classSlug = entry.data.classSlug;
+const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
+
+const { first, rest } = splitFirstParagraph(entry.body ?? '');
+const identityHtml = await renderGuideMarkdown(first);
+const restHtml = await renderGuideMarkdown(rest);
+
+// Tree order (`tree_index` ascending) -- the same order `SpecTabs` already uses.
+const catalogEntries = readSpecCatalog()
+  .filter((s) => s.class_slug === classSlug)
+  .sort((a, b) => a.tree_index - b.tree_index);
+
+const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
+  specSlug: s.spec_slug,
+  name: s.name,
+  icon: specTabIcon(build, classSlug, s.tree_index),
+  href: `/guides/${classSlug}/${s.spec_slug}`,
+  active: false,
+}));
+
+const specGuideBySlug = new Map(specGuides.map((g) => [g.data.spec, g]));
+
+interface SpecCardView {
+  specSlug: string;
+  specName: string;
+  role: 'dps' | 'healer' | 'tank';
+  description: string;
+  icon?: string;
+  dps?: number;
+  href: string;
+}
+
+const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => {
+  const guide = specGuideBySlug.get(s.spec_slug);
+  if (guide === undefined || guide.data.role === undefined) return [];
+  return [
+    {
+      specSlug: s.spec_slug,
+      specName: s.name,
+      role: guide.data.role,
+      description: trimToClause(guide.data.description ?? ''),
+      icon: specTabIcon(build, classSlug, s.tree_index),
+      dps: classLandingSetDps(build, `${classSlug}-${s.spec_slug}`, classSlug, guide.data.recommendedRaces),
+      href: `/guides/${classSlug}/${s.spec_slug}`,
+    },
+  ];
+});
 ---
 
 <Content
   title={entry.data.title}
   description={entry.data.description}
-  path={`/guides/${entry.data.classSlug}`}
+  path={`/guides/${classSlug}`}
   updated={entry.data.updated}
   confidence={entry.data.confidence}
   sources={entry.data.sources}
   confidencePlacement="footer"
+  hideHeader
+  wide
 >
-  <p>
-    <a href={plannerHref(entry.data.classSlug)}>Open the planner for this class</a>
-  </p>
-  {hasBisSpecs && (
-    <p>
-      <a href={`/bis#${entry.data.classSlug}`}>{bisCopy.classGuideLink}</a>
-    </p>
-  )}
-  <Body />
-  {specGuides.length > 0 && (
-    <nav aria-label="Spec guides" class="flex flex-col gap-2">
-      <h2 class="section-title text-[14px]">Spec guides</h2>
-      <ul class="flex flex-col gap-1 list-none p-0 m-0">
-        {specGuides.map((spec) => (
-          <li>
-            <a href={`/guides/${spec.id}`}>{spec.data.title}</a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  )}
+  <Fragment slot="beforeMain">
+    <ArtPanel classSlug={classSlug}>
+      <ClassHeader
+        classSlug={classSlug}
+        className={className}
+        specName=""
+        specTabs={specTabs}
+        bands={[]}
+        build={build}
+        minimal
+        eyebrow={guidesCopy.eyebrow}
+        titleOverride={entry.data.title}
+      />
+    </ArtPanel>
+  </Fragment>
+  <div class="class-landing-identity" set:html={identityHtml} />
+  <div class="class-landing-cards" data-testid="guide-class-spec-cards">
+    {specCards.map((card) => (
+      <SpecCard
+        classSlug={classSlug}
+        className={className}
+        classColor={classes.find((c) => c.slug === classSlug)?.color ?? '#ffffff'}
+        specSlug={card.specSlug}
+        specName={card.specName}
+        role={card.role}
+        description={card.description}
+        icon={card.icon}
+        dps={card.dps}
+        href={card.href}
+        build={build}
+      />
+    ))}
+  </div>
+  <Fragment set:html={restHtml} />
 </Content>
+
+<script type="application/json" id="guide-class-slug" set:html={JSON.stringify(classSlug)}></script>
+<script>
+  // The class landing's own "Your spec" match (spec §4.B): no new client island -- a plain
+  // module script reads the shared, cached `/v1/me` session read (the same mechanism the
+  // `/guides` index's own signed-in callout uses) and, only when the visitor's own
+  // character is on THIS class, tags the matching spec card's role label with the pill.
+  import { fetchMeOnce } from '../../../lib/account/api';
+  import { classSlugFromName } from '../../../lib/report/tree-sizes';
+
+  async function mount(): Promise<void> {
+    const slugScript = document.getElementById('guide-class-slug');
+    if (slugScript === null) return;
+    const pageClassSlug = JSON.parse(slugScript.textContent ?? 'null') as string | null;
+    if (pageClassSlug === null) return;
+
+    const me = await fetchMeOnce().catch(() => null);
+    const character = me?.characters[0];
+    if (character?.class === undefined || character.spec === undefined) return;
+    if (classSlugFromName(character.class) !== pageClassSlug) return;
+
+    const specSlug = classSlugFromName(character.spec);
+    const label = document.querySelector(`[data-spec-slug="${specSlug}"]`);
+    if (label === null || label.querySelector('.your-spec-pill') !== null) return;
+    const pill = document.createElement('span');
+    pill.className = 'pill pill-site your-spec-pill';
+    pill.textContent = 'Your spec';
+    label.appendChild(pill);
+  }
+
+  void mount();
+</script>
+
+<style>
+  .class-landing-identity {
+    margin: 0;
+  }
+  .class-landing-identity :global(p) {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .class-landing-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 1023px) {
+    .class-landing-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,162 @@
+---
+// web/src/components/guides/SpecCard.astro
+// The class landing's own spec card (rebuild spec §4.B): icon, role, one summary line, the
+// Set DPS line (only when the spec's own band-60 BiS file resolves one -- `classLandingSetDps`,
+// never a zero or dash standing in for missing data), and a "Read the guide" button. A small
+// "Your spec" pill sits beside the role label when this card matches the signed-in visitor's
+// own character (server-rendered: the page already knows this at build time via the request's
+// own session read -- see the class landing page's own header comment for why this stays a
+// build-time prop rather than a client fetch).
+import { guidesCopy } from '../../lib/guides/copy';
+import { dataUrl } from '../../lib/planner/load';
+
+interface Props {
+  classSlug: string;
+  className: string;
+  classColor: string;
+  specSlug: string;
+  specName: string;
+  role: 'dps' | 'healer' | 'tank';
+  description: string;
+  icon?: string;
+  dps?: number;
+  href: string;
+  build: string;
+  isYourSpec?: boolean;
+}
+
+const {
+  specSlug,
+  className,
+  classColor,
+  specName,
+  role,
+  description,
+  icon,
+  dps,
+  href,
+  build,
+  isYourSpec = false,
+} = Astro.props;
+---
+
+<div class="spec-card panel" data-testid={`guide-spec-card-${specName.toLowerCase().replace(/\s+/g, '-')}`}>
+  <div class="spec-card-head">
+    {icon !== undefined ? (
+      <img
+        src={dataUrl(build, `icons/${icon}.webp`)}
+        alt=""
+        width="40"
+        height="40"
+        loading="eager"
+        decoding="async"
+        class="spec-card-icon"
+      />
+    ) : (
+      <span class="spec-card-icon spec-card-icon-placeholder" aria-hidden="true" />
+    )}
+    <div class="spec-card-titles">
+      <span
+        class="label spec-card-role"
+        data-spec-slug={specSlug}
+        data-testid={`guide-spec-card-role-${specSlug}`}
+      >
+        {guidesCopy.roleLabel(role)}
+        {isYourSpec && <span class="pill pill-site spec-card-your-spec">{guidesCopy.yourSpecPill}</span>}
+      </span>
+      <span class="spec-card-name" style={`color:${classColor}`}>
+        {specName} {className}
+      </span>
+    </div>
+  </div>
+  <p class="spec-card-description">{description}</p>
+  {dps !== undefined && (
+    <span class="font-mono tabular spec-card-dps" data-testid="guide-spec-card-dps">
+      {guidesCopy.setDpsLine(dps)} <span class="spec-card-dps-suffix">{guidesCopy.setDpsLineSuffix}</span>
+    </span>
+  )}
+  <a
+    href={href}
+    class="rounded-control border-line-warm spec-card-button"
+    aria-label={guidesCopy.readTheGuideAriaLabel(specName, className)}
+  >
+    {guidesCopy.readTheGuide}
+  </a>
+</div>
+
+<style>
+  .panel {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .spec-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 20px;
+  }
+  .spec-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .spec-card-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    object-fit: cover;
+  }
+  .spec-card-icon-placeholder {
+    background: var(--color-bg);
+  }
+  .spec-card-titles {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .spec-card-role {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .spec-card-your-spec {
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  .spec-card-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .spec-card-description {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-text);
+  }
+  .spec-card-dps {
+    font-size: 13px;
+    color: var(--color-strong);
+  }
+  .spec-card-dps-suffix {
+    color: var(--color-muted);
+    font-weight: 400;
+    font-family: var(--font-body);
+  }
+  .spec-card-button {
+    margin-top: auto;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    border-color: var(--color-gold);
+  }
+</style>

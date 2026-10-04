@@ -1,24 +1,44 @@
 ---
 // web/src/pages/guides/[class]/[spec].astro
-// One spec guide: content/guides/<class>/<spec>.md, id `<class>/<spec>`. The nine-section
-// structure (SPEC_SECTIONS) still renders in order with the same jump-list table of contents,
-// boxed at the top on narrow screens and a sticky rail beside the article at lg (Content's
-// aside slot); three of the nine sections now also carry a planted component (spec 5): the
-// embedded read-only tree and its two buttons under "Talents and builds", an ordered pill
-// row before the "Stat priority" prose, and a race pill row before the "Races" prose. No MDX
-// is installed in this project, so a markdown file cannot embed a component directly --
-// splitSpecSections/renderGuideMarkdown (lib/guides/) render each of the nine sections
-// independently instead of the whole body as one `<Body />`, which is what makes planting
-// possible while every heading keeps its exact id (renderGuideMarkdown uses the very
-// processor Astro's own content pipeline does).
+// Rebuild (spec 2026-10-04, §4.C/§4.D): the plain `<h1>` title with no class identity
+// (spec §3's own "Replaced" list) becomes the full `ArtPanel`+`ClassHeader` band, matching
+// `/bis`, with the new `GuideActionRail` (Build/Rotation/Stat priority, §4.C) directly
+// under it, inside the same `ArtPanel`. The nine-section structure (SPEC_SECTIONS) still
+// renders in its existing fixed order with the same jump-list table of contents, boxed at
+// the top on narrow screens and a sticky rail beside the article at lg (Content's aside
+// slot); the Leveling section gains a fourth planted component, `LevelingBandStrip` (§4.D,
+// proposed ruling §10.1), the same planting convention `proseOnly` already uses for Stat
+// priority and Races. No MDX is installed in this project, so a markdown file cannot embed
+// a component directly -- splitSpecSections/renderGuideMarkdown (lib/guides/) render each
+// of the nine sections independently instead of the whole body as one `<Body />`, which is
+// what makes planting possible while every heading keeps its exact id.
 import { getCollection } from 'astro:content';
+import ArtPanel from '../../../components/ArtPanel.astro';
+import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.astro';
 import BuildActionButtons from '../../../components/guides/BuildActionButtons.astro';
+import GuideActionRail from '../../../components/guides/GuideActionRail.astro';
 import GuideBuildTree from '../../../components/guides/GuideBuildTree.svelte';
+import LevelingBandStrip, { type LevelingBandRow } from '../../../components/guides/LevelingBandStrip.astro';
 import RacePillRow from '../../../components/guides/RacePillRow.astro';
 import StatPriorityPills from '../../../components/guides/StatPriorityPills.astro';
 import SpecTableOfContents from '../../../components/SpecTableOfContents.astro';
 import Content from '../../../layouts/Content.astro';
+import classes from '../../../data/classes.json';
+import activeBuild from '../../../data/active-build.json';
+import { bisCopy } from '../../../lib/bis/copy';
+import { readSpecCatalog } from '../../../lib/bis/load';
+import {
+  bandTopLevel,
+  loadRotations,
+  rotationEntryFor,
+  rotationLinesFor,
+} from '../../../lib/bis/rotation-view';
+import { specTabIcon } from '../../../lib/bis/spec-icon';
+import { decodeBuildTrees, primaryTree as primaryTreeOf } from '../../../lib/guides/build-tree';
+import { factionForFirstRace, rankedBisFile } from '../../../lib/guides/class-dps';
+import { guidesCopy } from '../../../lib/guides/copy';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
+import { railStatRows } from '../../../lib/guides/rail-stats';
 import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
 
 export async function getStaticPaths() {
@@ -39,7 +59,7 @@ const { entry } = Astro.props;
 // is built to consume, and it must be byte-identical to what _sections.test.ts validates.
 const sections = splitSpecSections(entry.body ?? '');
 
-/** A section's raw markdown, minus its own `## Heading` line -- for the two sections that
+/** A section's raw markdown, minus its own `## Heading` line -- for the three sections that
  *  plant a component between the heading and the guide's own prose. */
 function proseOnly(section: SpecSection): string {
   const raw = sections.get(section) ?? '';
@@ -57,9 +77,68 @@ const enchantsHtml = await renderGuideMarkdown(sections.get('Enchants and consum
 const racesHeadingHtml = await renderGuideMarkdown('## Races');
 const racesProseHtml = await renderGuideMarkdown(proseOnly('Races'));
 const professionsHtml = await renderGuideMarkdown(sections.get('Professions') ?? '');
-const levelingHtml = await renderGuideMarkdown(sections.get('Leveling') ?? '');
+const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
+const levelingProseHtml = await renderGuideMarkdown(proseOnly('Leveling'));
 
 const buildCode = entry.data.build;
+const build = activeBuild.build;
+const classSlug = entry.data.classSlug;
+const specSlug = entry.id.split('/')[1]!;
+const fullSpecId = `${classSlug}-${specSlug}`;
+const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
+
+// SpecTabs: every spec of this class, in the talent tree's own left-to-right order --
+// identical convention `/bis`'s own header already uses.
+const catalogEntries = readSpecCatalog()
+  .filter((s) => s.class_slug === classSlug)
+  .sort((a, b) => a.tree_index - b.tree_index);
+const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
+  specSlug: s.spec_slug,
+  name: s.name,
+  icon: specTabIcon(build, classSlug, s.tree_index),
+  href: `/guides/${classSlug}/${s.spec_slug}`,
+  active: s.spec_slug === specSlug,
+}));
+const specName = catalogEntries.find((s) => s.spec_slug === specSlug)?.name ?? specSlug;
+
+// Rail: Build card's primary-tree thumbnail (the tree the build spends the most points in).
+const primaryTree =
+  buildCode === undefined ? undefined : primaryTreeOf(decodeBuildTrees(build, buildCode) ?? []);
+
+// Rail: Rotation card's first four level-60 lines (spec §4.C.2) -- the card is omitted
+// entirely when no rotation entry applies yet (spec §5's own state table), never a card
+// with zero lines standing in for "no data".
+const rotationEntries = loadRotations(build, fullSpecId) ?? [];
+const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(60));
+const rotationLines = rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, classSlug);
+const rotationBandLabel = String(bandTopLevel(60));
+
+// Rail: Stat priority card's real per-point numbers, and the Leveling band strip -- both
+// read the spec's own band-60/per-band BiS data, at the faction the guide's first
+// `recommendedRaces` entry resolves to (the same rule, stated once, `class-dps.ts` shares
+// with the class landing's own Set DPS line). `rankedBisFile` only ever reads the real
+// pipeline file, never the `/bis` dev fixture (see that module's own doc comment).
+const ranked = rankedBisFile(build, fullSpecId);
+const faction = factionForFirstRace(classSlug, entry.data.recommendedRaces);
+const band60 =
+  ranked !== undefined && faction !== undefined
+    ? ranked.bands.find((b) => b.band === 60 && b.faction === faction)
+    : undefined;
+const statRows =
+  band60 === undefined ? [] : railStatRows(entry.data.statPriority, band60.weights, fullSpecId);
+
+const levelingRows: LevelingBandRow[] =
+  ranked === undefined || faction === undefined
+    ? []
+    : [...ranked.bands]
+        .filter((b) => b.faction === faction)
+        .sort((a, b) => a.band - b.band)
+        .map((b) => ({
+          bandLabel: bisCopy.bandRangeLabel(b.band),
+          points: b.talent_points,
+          plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
+          talents: b.talents,
+        }));
 ---
 
 <Content
@@ -70,12 +149,35 @@ const buildCode = entry.data.build;
   confidence={entry.data.confidence}
   sources={entry.data.sources}
   confidencePlacement="footer"
+  hideHeader
 >
-  <!-- The build's two actions first, under the title: they are what a raider opens the
-       guide for. The same pair repeats under the tree for whoever read down to it. The old
-       generic "open the planner for this class" link went: it opened an empty planner, not
-       this build. -->
-  {buildCode !== undefined && <BuildActionButtons code={buildCode} />}
+  <Fragment slot="beforeMain">
+    <ArtPanel classSlug={classSlug}>
+      <ClassHeader
+        classSlug={classSlug}
+        className={className}
+        specName={specName}
+        specTabs={specTabs}
+        bands={[]}
+        build={build}
+        minimal
+        eyebrow={guidesCopy.eyebrow}
+        summaryOverride={entry.data.description}
+      />
+      {buildCode !== undefined && (
+        <div class="guide-rail-wrap">
+          <GuideActionRail
+            build={build}
+            buildCode={buildCode}
+            primaryTree={primaryTree}
+            rotationBandLabel={rotationBandLabel}
+            rotationLines={rotationLines.slice(0, 4)}
+            statRows={statRows}
+          />
+        </div>
+      )}
+    </ArtPanel>
+  </Fragment>
   <SpecTableOfContents />
   <SpecTableOfContents slot="aside" placement="rail" />
   <Fragment set:html={overviewHtml} />
@@ -96,5 +198,19 @@ const buildCode = entry.data.build;
   <RacePillRow classSlug={entry.data.classSlug} recommendedRaces={entry.data.recommendedRaces} />
   <Fragment set:html={racesProseHtml} />
   <Fragment set:html={professionsHtml} />
-  <Fragment set:html={levelingHtml} />
+  <Fragment set:html={levelingHeadingHtml} />
+  {levelingRows.length > 0 && <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} />}
+  <Fragment set:html={levelingProseHtml} />
 </Content>
+
+<style>
+  .guide-rail-wrap {
+    padding: 24px 48px 28px 48px;
+    max-width: 1344px;
+  }
+  @media (max-width: 1023px) {
+    .guide-rail-wrap {
+      padding: 18px 18px 22px 18px;
+    }
+  }
+</style>

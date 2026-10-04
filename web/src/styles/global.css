@@ -128,12 +128,20 @@
     font-size: 16px;
     margin: 20px 0 8px;
   }
+  /* Guide rebuild (spec §4.D): the article column is 820px wide, which at Barlow 16px/1.6
+     runs roughly 95-100 characters per line -- past the 60-75ch comfortable-reading range.
+     Headings, the planted components (tree, pills, race row, the Leveling band strip) and
+     the class landing's wider spec-card row all stay their own full column width; only
+     running paragraph and list text narrows. */
   .prose-forever p {
     margin: 0 0 14px;
+    max-width: 68ch;
   }
-  .prose-forever ul {
+  .prose-forever ul,
+  .prose-forever ol {
     padding-left: 20px;
     margin: 0 0 14px;
+    max-width: 68ch;
   }
   .prose-forever table {
     width: 100%;

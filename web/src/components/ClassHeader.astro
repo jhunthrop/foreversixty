@@ -55,6 +55,24 @@ interface Props {
    *  `FactionToggle`, race select) are dropped -- there is no band to name, no faction to
    *  toggle, and no list to jump around in. */
   minimal?: boolean;
+  /** The guide rebuild's own third render mode (spec §4.C): `minimal` (no band/faction
+   *  suffix, no controls row -- a guide is not banded or factioned content) PLUS this one
+   *  caller-supplied summary sentence, which `minimal` alone always drops. A guide's own h1
+   *  carries less information than BiS's banded h1 does, so the one-line summary earns its
+   *  place here specifically -- one new optional prop rather than a fourth boolean flag
+   *  maze (spec §9: no growing prop list on this component for a future caller's own need).
+   *  Ignored when `minimal` is false (the non-minimal band-text variants already supply
+   *  their own summary). */
+  summaryOverride?: string;
+  /** The label row above the crest ("Best in slot · leveling" on `/bis`, "Guides" on the
+   *  guide rebuild's own three surfaces, spec §6's copy table) -- defaults to `/bis`'s own
+   *  wording so every existing caller is unaffected. */
+  eyebrow?: string;
+  /** The class landing page's own h1 (spec §4.B: `"{className} in Forever"`, the content
+   *  file's own `title` frontmatter, unchanged) -- a different shape than this component's
+   *  default `"{specName} {className}"` (a guide/BiS page always names a specific spec; a
+   *  class landing names none). Ignored unless `minimal` is also true. */
+  titleOverride?: string;
 }
 
 const {
@@ -68,6 +86,9 @@ const {
   raceOptions = [],
   build,
   minimal = false,
+  summaryOverride,
+  eyebrow = bisCopy.headerEyebrow,
+  titleOverride,
 } = Astro.props;
 
 const color = classColorVar(className);
@@ -90,13 +111,13 @@ const bandTextVariants = bands.map((band) => ({
 <div class="class-header">
   <p class="label class-header-eyebrow">
     <i class="class-header-eyebrow-rule" aria-hidden="true"></i>
-    {bisCopy.headerEyebrow}
+    {eyebrow}
   </p>
   <div class="class-header-identity">
     <ClassCrest slug={classSlug} size={64} />
     <div class="class-header-titles">
       <h1 class="class-header-h1" style={`color:${color}`}>
-        {specName} {className}{' '}
+        {minimal && titleOverride !== undefined ? titleOverride : `${specName} ${className}`}{' '}
         {!minimal && (
           <span class="class-header-suffix">
             ·{' '}
@@ -115,6 +136,7 @@ const bandTextVariants = bands.map((band) => ({
             {variant.summary}
           </p>
         ))}
+      {minimal && summaryOverride !== undefined && <p class="class-header-summary">{summaryOverride}</p>}
     </div>
   </div>
 
@@ -398,6 +420,16 @@ const bandTextVariants = bands.map((band) => ({
   @media (max-width: 1023px) {
     .class-header {
       padding: 22px 18px 0 18px;
+    }
+    /* Guide rebuild spec §7.B: "Crest + h1 (stacked, not side by side, under 1024px --
+       ClassHeader's own existing max-width:1023px breakpoint already does this)" -- the
+       breakpoint existed but this rule did not; `.class-header-identity` stayed a row at
+       every width. Stacking here also benefits `/bis`, which never had a documented reason
+       to stay side-by-side under 1024px either. */
+    .class-header-identity {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
     }
     .class-header-controls {
       flex-direction: column;
