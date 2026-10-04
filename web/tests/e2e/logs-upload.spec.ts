@@ -105,7 +105,15 @@ test('a failed part shows what went wrong instead of a spinner', async ({ page }
   });
   await page.getByTestId('upload-start').click();
 
-  await expect(page.getByTestId('upload-error')).toContainText('part 1', { timeout: 20_000 });
+  // Fix round 1 (2026-10-04, build review): the player-facing line is generic now -- no
+  // part number, no storage vendor, no doubled "did not finish" wrapper. The technical
+  // detail still reaches devtools (Upload.svelte's own console.error), not this assertion.
+  await expect(page.getByTestId('upload-error')).toHaveText(
+    'The upload did not finish. Try again; the file is still chosen.',
+    { timeout: 20_000 },
+  );
+  await expect(page.getByTestId('upload-error')).not.toContainText('R2');
+  await expect(page.getByTestId('upload-error')).not.toContainText('part 1');
 });
 
 // The signal was only read between parts and nothing ever called xhr.abort(), so there was

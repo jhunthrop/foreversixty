@@ -17,6 +17,14 @@
   import SignInPrompt from './SignInPrompt.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
+  /** The one line a player ever sees on a failed upload (logs build review, fix round 1,
+   *  2026-10-04): multipart.ts's own thrown messages carry real diagnostic detail -- a
+   *  retry count, "R2 answered 500", a doubled "did not finish" wrapper -- none of which
+   *  belongs on screen. That detail is still logged (see the catch block below), just not
+   *  rendered. The file stays chosen either way (only `phase`/`error` reset on failure), so
+   *  "Try again" really does mean one click, not re-picking the file. */
+  const UPLOAD_FAILED_LINE = 'The upload did not finish. Try again; the file is still chosen.';
+
   const VISIBILITIES = [
     { id: 'public', label: 'Public', note: 'Listed, ranked, anyone can open it.' },
     { id: 'unlisted', label: 'Unlisted', note: 'Ranked, but only people with the link can open it.' },
@@ -115,7 +123,11 @@
         return;
       }
       phase = 'failed';
-      error = message;
+      // One honest, generic line on screen; multipart.ts's own technical detail (part
+      // number, retry count, the storage backend's status) goes to the console instead,
+      // never the page -- see UPLOAD_FAILED_LINE's own comment above.
+      error = UPLOAD_FAILED_LINE;
+      console.error('Upload failed:', thrown);
     } finally {
       if (inFlight === controller) inFlight = null;
     }
@@ -176,7 +188,7 @@
         <p class="text-muted text-[13px]">or drag <code class="font-mono">WoWCombatLog.txt</code> here</p>
       {:else}
         <p class="text-muted tabular font-mono text-[13px] break-all" data-testid="upload-size">
-          {file.name} · {formatAmount(file.size)} bytes
+          {file.name} · {formatAmount(file.size)} byte{file.size === 1 ? '' : 's'}
         </p>
       {/if}
     </div>
@@ -188,7 +200,7 @@
         class={FIELD}
         type="text"
         maxlength="60"
-        placeholder="Molten Core, week 3"
+        placeholder="Optional"
         bind:value={title}
         disabled={locked}
       />
