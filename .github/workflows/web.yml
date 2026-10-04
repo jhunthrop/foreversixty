@@ -94,8 +94,15 @@ jobs:
           name: web-dist
           path: web/dist
           retention-days: 1
+  # BUILD MODE (owner, 2026-10-04): until the page pass is done, a push to main deploys on the
+  # `build` job alone (check, lint, format, unit tests, fixture build). build-real, e2e and
+  # lhci still run on schedule / workflow_dispatch so the suites keep being exercised, but
+  # they no longer gate deploy. To re-enable: restore `needs: [build, build-real, e2e, lhci]`
+  # on deploy and the three `if:` lines below to `github.event_name != 'schedule'` (e2e, lhci)
+  # and none (build-real).
   build-real:
     needs: build
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
     steps:
@@ -118,7 +125,7 @@ jobs:
       - run: npm run build
   e2e:
     needs: build
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
     strategy:
@@ -186,7 +193,7 @@ jobs:
           retention-days: 7
   lhci:
     needs: build
-    if: github.event_name != 'schedule'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
     strategy:
@@ -243,7 +250,7 @@ jobs:
         env:
           FOREVER_DATA: fixture
   deploy:
-    needs: [build, build-real, e2e, lhci]
+    needs: [build]
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
