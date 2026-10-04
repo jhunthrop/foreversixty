@@ -21,6 +21,7 @@ import type {
   GuildRaidsPage,
   GuildRosterRow,
 } from '../../lib/guild/api';
+import type { GuildPage } from '../../lib/rankings/api';
 
 export const GUILD_ID = 2024;
 export const GUILD = { id: GUILD_ID, name: 'Olympus XXVII', region: 'us', ruleset: 'pvp' } as const;
@@ -314,6 +315,55 @@ export function buildMockHome(viewerName: string | null): GuildHome {
       })),
     roster,
     pending,
+  };
+}
+
+/** The public `GET /v1/guilds/{region}/{ruleset}/{slug}` shape (`rankings/api.ts`'s
+ *  `GuildPage`) -- what a signed-out visitor's header/Overview/Raids/Progression tabs read
+ *  before (or regardless of) the member-gated `home` fetch resolves. Carries no kill/wipe
+ *  counts on its reports (the real endpoint's own shape), and v1's own "roster bests"
+ *  feature, carried forward unchanged into the Progression tab. */
+export function buildMockGuildPage(): GuildPage {
+  return {
+    guild: GUILD,
+    progression: [
+      {
+        encounter: 'Onyxia',
+        encounter_id: ONYXIA_ENCOUNTER_ID,
+        difficulty: 1,
+        kills: ONYXIA_PULLS.filter((p) => p[3] === 'kill').length,
+        pull_count: ONYXIA_PULLS.length,
+        first_kill_at: '2026-12-15T19:45:00Z',
+      },
+    ],
+    roster_best: [
+      {
+        player: { key: 'us/pvp/pyrewisp', name: 'Pyrewisp', class: 'mage', spec: 'Fire' },
+        encounter: 'Onyxia',
+        encounter_id: ONYXIA_ENCOUNTER_ID,
+        metric: 'dps',
+        value: 358.2,
+        fought_at: '2026-12-20T20:30:00Z',
+        execution_score: 1.02,
+      },
+      {
+        player: { key: 'us/pvp/lightbrand', name: 'Lightbrand', class: 'priest', spec: 'Holy' },
+        encounter: 'Onyxia',
+        encounter_id: ONYXIA_ENCOUNTER_ID,
+        metric: 'hps',
+        value: 301.9,
+        fought_at: '2026-12-15T19:45:00Z',
+        execution_score: 0.97,
+      },
+    ],
+    reports: NIGHTS.slice(-3)
+      .reverse()
+      .map(([zone, date], i) => ({
+        id: `fixtureguildraid${i}`,
+        title: `${zone} · raid night`,
+        zone,
+        created_at: `${date}T19:00:00Z`,
+      })),
   };
 }
 

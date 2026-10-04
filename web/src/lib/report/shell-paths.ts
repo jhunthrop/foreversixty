@@ -44,6 +44,13 @@ export const FIXTURE_GUILD_CLAIM_PATH = `${FIXTURE_GUILD_PATH}/claim`;
 export const FIXTURE_GUILD_SETTINGS_PATH = `${FIXTURE_GUILD_PATH}/settings`;
 export const FIXTURE_GUILD_INVITE_TOKEN = 'fixtureinvitetoken1';
 
+// The guild control-centre's own fixture guild (design/specs/2026-10-04-guild-page.md v2,
+// docs/contracts/2026-10-04-guild-centre-api.md): same pairing as FIXTURE_GUILD_PATH, and
+// the same region/ruleset/name `web/src/fixtures/guild/mock-guild.ts` and
+// `design/mocks/gen_guild.py` both use ("Olympus XXVII"), so a capture of this prerendered
+// path and the acceptance boards show the identical guild identity.
+export const FIXTURE_GUILD_CENTRE_PATH = 'us/pvp/olympus-xxvii';
+
 export function fixtureCharacterPaths(): { params: { path: string } }[] {
   return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_CHARACTER_PATH } }] : [];
 }
@@ -56,6 +63,7 @@ export function fixtureGuildPaths(): { params: { path: string } }[] {
     { params: { path: FIXTURE_GUILD_CLAIM_PATH } },
     { params: { path: FIXTURE_GUILD_SETTINGS_PATH } },
     { params: { path: `invite/${FIXTURE_GUILD_INVITE_TOKEN}` } },
+    { params: { path: FIXTURE_GUILD_CENTRE_PATH } },
   ];
 }
 

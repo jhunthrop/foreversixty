@@ -10,8 +10,10 @@
   import type { GuildRosterRow } from '../../lib/guild/api';
   import {
     DEFAULT_ROSTER_FILTERS,
-    orderRosterForTab,
+    applyRosterFilters,
+    pinOwnRowFirst,
     ratingFloor,
+    sortRoster,
     type RosterFilters,
     type RosterRoleFilter,
     type RosterSortKey,
@@ -54,7 +56,23 @@
   let sortKey = $state<RosterSortKey>('ilvl');
 
   const floor = $derived(ratingFloor(roster));
-  const ordered = $derived(orderRosterForTab(roster, { filters, floor, sortKey, myCharacterKey }));
+  // Verified rows only -- `pending`'s own explicit unverified block above already covers
+  // every unverified row (spec §4.B), so this must never also lead with them (that doubled
+  // every unverified raider in the roster-rows region and pushed the pinned viewer row
+  // down, found on this round's own e2e run).
+  const ordered = $derived(
+    pinOwnRowFirst(
+      sortRoster(
+        applyRosterFilters(
+          roster.filter((row) => row.verified),
+          filters,
+          floor,
+        ),
+        sortKey,
+      ),
+      myCharacterKey,
+    ),
+  );
   const classOptions = $derived(
     [...new Set(roster.map((r) => r.class).filter((c): c is string => c !== undefined))].sort(),
   );

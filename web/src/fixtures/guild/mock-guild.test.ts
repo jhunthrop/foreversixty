@@ -7,6 +7,7 @@ import {
   GUILD_ID,
   VIEWER_MEMBER,
   VIEWER_OFFICER,
+  buildMockGuildPage,
   buildMockHome,
   buildMockLoot,
   buildMockProgression,
@@ -112,6 +113,19 @@ describe('buildMockLoot', () => {
     for (const item of loot.items) {
       if (item.awarded_to === null) continue;
       expect(item.candidates.some((c) => c.character_key === item.awarded_to?.character_key)).toBe(true);
+    }
+  });
+});
+
+describe('buildMockGuildPage', () => {
+  it('matches the same guild id every other endpoint fixture uses', () => {
+    expect(buildMockGuildPage().guild.id).toBe(GUILD_ID);
+  });
+
+  it('carries no kill/wipe counts on its reports -- the real public endpoint’s own shape', () => {
+    for (const report of buildMockGuildPage().reports) {
+      expect(report).not.toHaveProperty('fight_count');
+      expect(report).not.toHaveProperty('kill_count');
     }
   });
 });

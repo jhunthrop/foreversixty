@@ -45,19 +45,28 @@
   import { guildHomeCopy } from '../lib/guild/copy';
   import { needsBeforeThursdaySentence, standingSentence } from '../lib/guild/standing';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import GuildOverview from './guild/GuildOverview.svelte';
-  import GuildProgression from './guild/GuildProgression.svelte';
-  import GuildRaids from './guild/GuildRaids.svelte';
-  import GuildReadiness from './guild/GuildReadiness.svelte';
-  import GuildLoot from './guild/GuildLoot.svelte';
-  import GuildRosterTable from './guild/GuildRosterTable.svelte';
-  import GuildSettingsTab from './guild/GuildSettingsTab.svelte';
   import GuildTabs, { tabFromHash, tabsForRole, type GuildTabId } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { GUILD_LOADING } from '../lib/guild/layout';
+
+  // Spec §8: "never all seven tabs' data fetched on first paint" extends to their own JS --
+  // Overview (and the tab strip itself) load eagerly with GuildShell's own entry chunk;
+  // each of the other six tabs is its own dynamically imported chunk, fetched the first
+  // time its tab is actually opened (the same `createLazyComponent` idiom the report
+  // island's non-landing modes already use). Found necessary during this round's own
+  // build: with all seven tabs statically imported, the GuildShell island's entry chunk
+  // exceeded `scripts/check-island-size.mjs`'s 16KB gzip budget.
+  const rosterLazy = createLazyComponent(() => import('./guild/GuildRosterTable.svelte'));
+  const raidsLazy = createLazyComponent(() => import('./guild/GuildRaids.svelte'));
+  const progressionLazy = createLazyComponent(() => import('./guild/GuildProgression.svelte'));
+  const readinessLazy = createLazyComponent(() => import('./guild/GuildReadiness.svelte'));
+  const lootLazy = createLazyComponent(() => import('./guild/GuildLoot.svelte'));
+  const settingsLazy = createLazyComponent(() => import('./guild/GuildSettingsTab.svelte'));
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -280,6 +289,18 @@
     activeTab = tab;
     if (typeof window !== 'undefined') window.history.replaceState(null, '', `#${tab}`);
   }
+
+  /** Starts the chunk fetch for whichever tab is now active -- `load()` is itself a no-op
+   *  once a chunk has resolved or is already in flight, so this is safe to re-run on every
+   *  `activeTab` change. */
+  $effect(() => {
+    if (activeTab === 'roster') rosterLazy.load();
+    else if (activeTab === 'raids') raidsLazy.load();
+    else if (activeTab === 'progression') progressionLazy.load();
+    else if (activeTab === 'readiness') readinessLazy.load();
+    else if (activeTab === 'loot') lootLazy.load();
+    else if (activeTab === 'settings') settingsLazy.load();
+  });
 
   // ---------------------------------------------------------------------------------------
   // Per-tab lazy fetches (spec §8): each of Raids/Progression/Readiness/Loot mounts only
@@ -521,41 +542,48 @@
         onSelectTab={selectTab}
       />
     {:else if activeTab === 'roster' && home !== null}
-      <GuildRosterTable
-        roster={home.roster}
-        pending={home.pending ?? []}
-        officer={role === 'officer' || role === 'moderator'}
-        {myCharacterKey}
-        {rosterBusy}
-        {rosterActionError}
-        frozen={home.claim.frozen}
-        {removeOverridesFrozen}
-        onApprove={(row) => void onApprove(row)}
-        onRemove={(row) => void onRemove(row)}
-        onApproveAll={() => void onApproveAll()}
-        {rowPath}
-      />
+      {#if rosterLazy.current}
+        <rosterLazy.current
+          roster={home.roster}
+          pending={home.pending ?? []}
+          officer={role === 'officer' || role === 'moderator'}
+          {myCharacterKey}
+          {rosterBusy}
+          {rosterActionError}
+          frozen={home.claim.frozen}
+          {removeOverridesFrozen}
+          onApprove={(row) => void onApprove(row)}
+          onRemove={(row) => void onRemove(row)}
+          onApproveAll={() => void onApproveAll()}
+          {rowPath}
+        />
+      {:else}
+        <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />
+        {@render lazyFallback(rosterLazy)}
+      {/if}
     {:else if activeTab === 'raids'}
-      {#if raidsStatus === 'loading'}
+      {#if raidsStatus === 'loading' || (raidsStatus === 'ready' && !raidsLazy.current)}
         <Skeleton lines={5} minHeight="min-h-[240px]" testid="guild-raids-skeleton" />
+        {@render lazyFallback(raidsLazy)}
       {:else if raidsStatus === 'missing'}
         <EmptyState
           message="Raid night detail isn't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
           testid="guild-raids-missing"
         />
-      {:else}
-        <GuildRaids rows={raids?.rows ?? []} officer={role === 'officer' || role === 'moderator'} />
+      {:else if raidsLazy.current}
+        <raidsLazy.current rows={raids?.rows ?? []} officer={role === 'officer' || role === 'moderator'} />
       {/if}
     {:else if activeTab === 'progression'}
-      {#if progressionStatus === 'loading'}
+      {#if progressionStatus === 'loading' || (progressionStatus === 'ready' && !progressionLazy.current)}
         <Skeleton lines={5} minHeight="min-h-[240px]" testid="guild-progression-skeleton" />
+        {@render lazyFallback(progressionLazy)}
       {:else if progressionStatus === 'missing' && (data?.roster_best ?? []).length === 0}
         <EmptyState
           message="Progression detail isn't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
           testid="guild-progression-missing"
         />
-      {:else}
-        <GuildProgression
+      {:else if progressionLazy.current}
+        <progressionLazy.current
           progression={progressionStatus === 'ready' ? progression : null}
           rosterBest={data?.roster_best ?? []}
           region={resolved.region}
@@ -563,30 +591,32 @@
         />
       {/if}
     {:else if activeTab === 'readiness' && home !== null}
-      {#if readinessStatus === 'loading'}
+      {#if readinessStatus === 'loading' || (readinessStatus === 'ready' && !readinessLazy.current)}
         <Skeleton lines={6} minHeight="min-h-[280px]" testid="guild-readiness-skeleton" />
+        {@render lazyFallback(readinessLazy)}
       {:else if readinessStatus === 'missing'}
         <EmptyState
           message="Readiness checks aren't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
           testid="guild-readiness-missing"
         />
-      {:else}
-        <GuildReadiness
+      {:else if readinessLazy.current}
+        <readinessLazy.current
           rows={readiness?.rows ?? []}
           officer={role === 'officer' || role === 'moderator'}
           {myCharacterKey}
         />
       {/if}
     {:else if activeTab === 'loot'}
-      {#if lootStatus === 'loading'}
+      {#if lootStatus === 'loading' || (lootStatus === 'ready' && !lootLazy.current)}
         <Skeleton lines={5} minHeight="min-h-[240px]" testid="guild-loot-skeleton" />
+        {@render lazyFallback(lootLazy)}
       {:else if lootStatus === 'missing'}
         <EmptyState
           message="Loot ranking isn't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
           testid="guild-loot-missing"
         />
-      {:else}
-        <GuildLoot
+      {:else if lootLazy.current}
+        <lootLazy.current
           loot={lootStatus === 'ready' ? loot : null}
           officer={role === 'officer' || role === 'moderator'}
           memberReadOnly={role === 'member'}
@@ -598,7 +628,27 @@
           </p>{/if}
       {/if}
     {:else if activeTab === 'settings' && (role === 'officer' || role === 'moderator')}
-      <GuildSettingsTab path={resolved} />
+      {#if settingsLazy.current}
+        <settingsLazy.current path={resolved} />
+      {:else}
+        <Skeleton lines={6} minHeight="min-h-[400px]" testid="guild-settings-skeleton" />
+        {@render lazyFallback(settingsLazy)}
+      {/if}
     {/if}
   </div>
 {/if}
+
+{#snippet lazyFallback(lazy: LazyLoadState)}
+  {#if lazy.error !== ''}
+    <p class="text-muted text-[13px]" role="alert">
+      {lazy.error}
+      <button
+        type="button"
+        class="text-strong ml-1 inline-flex items-center underline"
+        onclick={() => lazy.load()}
+      >
+        Try again
+      </button>
+    </p>
+  {/if}
+{/snippet}

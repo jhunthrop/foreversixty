@@ -25,7 +25,15 @@
     myCharacterKey,
   }: { rows: GuildReadinessRow[]; officer: boolean; myCharacterKey: string | null } = $props();
 
-  const ordered = $derived(pinReadinessOwnRow(sortReadinessWorstFirst(rows), myCharacterKey));
+  // Spec §4.0's visibility matrix: Readiness pins the viewer's own row first for a MEMBER
+  // only ("own row pinned first, no Nudge button"); an officer's own matrix cell reads
+  // "Nudge on every row" with no pin clause -- the officer board stays strictly
+  // worst-first throughout, exactly the raid leader's own pre-pull triage order.
+  const ordered = $derived(
+    officer
+      ? sortReadinessWorstFirst(rows)
+      : pinReadinessOwnRow(sortReadinessWorstFirst(rows), myCharacterKey),
+  );
 
   let copiedKey = $state<string | null>(null);
 
@@ -111,8 +119,19 @@
         {/if}
       </div>
 
-      <!-- Phone stacked card -->
-      <div class="guild-readiness-card md:hidden" class:is-pinned={pinned}>
+      <!-- Phone stacked card. `flex flex-col` is a Tailwind utility, not the scoped
+           <style> block below, on purpose: a scoped `display:flex` here previously beat
+           Tailwind's own `md:hidden` at desktop widths (both are single-class selectors,
+           and this component's own <style> block loads after Tailwind's utilities in the
+           built stylesheet), so the phone card and the desktop grid were BOTH visible
+           above the md breakpoint -- found when e2e's Nudge-button count came back double
+           the roster's own verified count. Tailwind's responsive utilities keep their own
+           cascade order consistent, so display now lives there exclusively. -->
+      <div
+        class="guild-readiness-card flex flex-col md:hidden"
+        class:is-pinned={pinned}
+        data-testid={`guild-readiness-row-${row.character_key}`}
+      >
         <div class="flex items-center justify-between gap-2">
           <span class="flex min-w-0 items-center gap-2">
             <ClassCrestRing characterClass={row.class} size={26} />
@@ -168,8 +187,6 @@
     border-bottom: 1px solid var(--color-border-soft);
   }
   .guild-readiness-card {
-    display: flex;
-    flex-direction: column;
     gap: 10px;
     padding: 10px 4px;
   }
