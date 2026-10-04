@@ -8,6 +8,14 @@ Built for guild id 2, "OLYMPUS XXVII" (region `us`, ruleset `pvp`), owner battle
 `hunthrop#1894`, but takes both as flags and works against any guild the owner's account
 already holds a (verified or unverified) character in.
 
+## Deploy the API first
+
+This tool does not run migrations. The `seed_rows` table comes from migration
+`0029_seed_rows`, applied by the API's own startup migrate; run the seed only after the API
+build that carries 0029 is live, or it stops with a plain message. (On 2026-10-04 an earlier
+version migrated from here ahead of the deployed binary and took the API down for six
+minutes: golang-migrate refuses to start a build whose source lacks the database's version.)
+
 ## What it writes
 
 - **The guild claim.** The owner's account claims guild `--guild`, with

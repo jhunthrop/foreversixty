@@ -18,6 +18,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"os"
 	"time"
 
@@ -51,13 +52,19 @@ func run(args []string) error {
 	if url == "" {
 		return fmt.Errorf("DATABASE_URL is not set")
 	}
-	if err := db.Migrate(url); err != nil {
-		return err
-	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	pool, err := db.Connect(ctx, url)
 	if err != nil {
+		return err
+	}
+	// Never migrate from here. On 2026-10-04 this tool ran migration 0029 against
+	// production before the API build that carried it had deployed; the running
+	// build's startup migrate then refused "no migration found for version 29" and
+	// every instance failed its probe for six minutes. Migrations are the API's own
+	// startup job: this tool only requires that the deployed API has already applied
+	// the one table it needs, and says so when it has not.
+	if err := requireSeedRowsTable(ctx, pool); err != nil {
 		return err
 	}
 	defer pool.Close()
@@ -78,4 +85,19 @@ func run(args []string) error {
 		return nil
 	}
 	return ApplySeed(ctx, pool, *guildID, *ownerBattletag)
+}
+
+// requireSeedRowsTable fails with a plain instruction when migration 0029 has not
+// reached this database yet, instead of applying it from a tool that runs ahead of the
+// deployed API binary.
+func requireSeedRowsTable(ctx context.Context, pool *pgxpool.Pool) error {
+	var exists bool
+	err := pool.QueryRow(ctx, `select exists(select 1 from information_schema.tables where table_name = 'seed_rows')`).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("seedguild: checking for seed_rows: %w", err)
+	}
+	if !exists {
+		return fmt.Errorf("seedguild: the seed_rows table is missing: deploy the API build that carries migration 0029 first, then run this tool")
+	}
+	return nil
 }
