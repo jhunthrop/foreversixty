@@ -75,6 +75,10 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// put in context (the zero Actor for an anonymous request) and the visibility clause
 	// does the rest.
 	mux.HandleFunc("GET /v1/guilds/{id}/raids", s.raids)
+	// Progression is fully public (design spec §4.0) and, matching
+	// rankings.Store.Guild's own choice for this kind of aggregate, not gated by
+	// individual report visibility - no RequireSession wrap, no actor read at all.
+	mux.HandleFunc("GET /v1/guilds/{id}/progression", s.progression)
 	// No auth.RequireSession wrap (item 4, fourth security review
 	// response): the handler itself answers 404 for a non-moderator,
 	// including an unauthenticated caller, so the route's existence is
