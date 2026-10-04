@@ -81,6 +81,10 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("GET /v1/guilds/{id}/progression", s.progression)
 	// Readiness is member/officer only (design spec §4.0: "Not shown" to the public).
 	mux.HandleFunc("GET /v1/guilds/{id}/readiness", auth.RequireSession(s.readiness))
+	// Loot is member-and-officer (member read-only, officer gets the Award control).
+	mux.HandleFunc("GET /v1/guilds/{id}/loot", auth.RequireSession(s.loot))
+	mux.HandleFunc("POST /v1/guilds/{id}/loot/awards", auth.RequireSession(s.createLootAward))
+	mux.HandleFunc("DELETE /v1/guilds/{id}/loot/awards/{award_id}", auth.RequireSession(s.deleteLootAward))
 	// No auth.RequireSession wrap (item 4, fourth security review
 	// response): the handler itself answers 404 for a non-moderator,
 	// including an unauthenticated caller, so the route's existence is
