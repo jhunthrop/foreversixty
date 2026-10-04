@@ -70,6 +70,11 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))
 	mux.HandleFunc("GET /v1/guilds/{id}/home", auth.RequireSession(s.home))
+	// Raids is reachable signed-out (design spec §4.0: public reports only) - no
+	// RequireSession wrap; the handler reads whatever actor the auth middleware already
+	// put in context (the zero Actor for an anonymous request) and the visibility clause
+	// does the rest.
+	mux.HandleFunc("GET /v1/guilds/{id}/raids", s.raids)
 	// No auth.RequireSession wrap (item 4, fourth security review
 	// response): the handler itself answers 404 for a non-moderator,
 	// including an unauthenticated caller, so the route's existence is
