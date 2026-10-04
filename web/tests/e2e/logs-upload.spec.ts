@@ -1,5 +1,6 @@
 // web/tests/e2e/logs-upload.spec.ts
 import { expect, test, type Page } from '@playwright/test';
+import { routeSampleReportMeta } from './support/logs-hero-fixture';
 
 const fulfil = (body: unknown, status = 200) => ({
   status,
@@ -25,7 +26,12 @@ const SIGNED_IN = {
  *  drives the form is signed in. */
 async function signIn(page: Page): Promise<void> {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(SIGNED_IN)));
-  await page.route('**/v1/devices', (route) => route.fulfill(fulfil({ devices: [] })));
+  // `listDevices()` (lib/account/api.ts) expects the envelope's `data` to be a bare
+  // `Device[]`, matching the real API -- not `{ devices: [] }`. Harmless before the pairing
+  // poll (logs landing spec §4.D.2) started reading `devices` itself in `onPair`, which is
+  // what surfaced the mismatch: a non-array `devices.map` threw and silently swallowed the
+  // "Show pairing code" click.
+  await page.route('**/v1/devices', (route) => route.fulfill(fulfil([])));
   await page.route('**/v1/reports?mine=1**', (route) =>
     route.fulfill(fulfil({ rows: [], total: 0, page: 1, per_page: 100 })),
   );
@@ -175,10 +181,19 @@ test('a signed-out visitor is told to sign in before they pick a file', async ({
   await openLogs(page);
 
   // Three places need an account, and each says so with a real button rather than a link
-  // buried in a sentence.
-  // The reports panel hydrates only once it is on screen (client:visible), so the page is
-  // scrolled to its end before the prompts are looked for.
-  await page.getByRole('contentinfo').scrollIntoViewIfNeeded();
+  // buried in a sentence. Each of the three islands hydrates only once its own placeholder
+  // -- not the signin prompt nested inside it, which does not exist in the DOM until then
+  // -- has crossed the viewport at least once (client:visible); the header band grew taller
+  // once it started reserving its own ready height (logs landing spec §8), so one scroll to
+  // the footer at the top of this test no longer reliably carries "Your reports" along with
+  // it the way it did when the band was shorter. Each panel's own static container (always
+  // rendered, hydrated or not) is scrolled to individually instead.
+  // "Your reports"' own island root sits in the panel body below its heading, which can
+  // still be a few pixels past a short mobile viewport's bottom edge even once the heading
+  // itself is on screen -- scrolling to the next panel down carries the whole body with it.
+  await page.getByRole('heading', { name: 'Recent public reports' }).scrollIntoViewIfNeeded();
+  await page.locator('#companion').scrollIntoViewIfNeeded();
+  await page.locator('#upload').scrollIntoViewIfNeeded();
   // Every sign-in link's default landed on the hub, not /logs, once this lane's "sign-in
   // defaults" change shipped (SignInPrompt.svelte's own `next = '/account?signed_in=1'`
   // fallback) -- none of these three prompts passes its own `next`, so all three now fall
@@ -194,10 +209,15 @@ test('a signed-out visitor is told to sign in before they pick a file', async ({
   await expect(page.getByTestId('upload-start')).toHaveCount(0);
 });
 
-test('the two ways in are the first thing on the page and lead to their panels', async ({ page }) => {
+test('the two ways in are in the header hero and lead to their panels', async ({ page }) => {
+  // The intro's own two links moved into the hero's description (LogsHero.svelte, logs
+  // landing spec 2026-10-04 §4.A) when the plain "Logs" <h1> was replaced by the header
+  // band; the sample hero (this test is signed out) still carries them.
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
+  await routeSampleReportMeta(page);
   await openLogs(page);
-  const entries = page.getByTestId('logs-entries').getByRole('link');
+  const description = page.getByTestId('logs-hero-description');
+  const entries = description.getByRole('link');
   await expect(entries).toHaveCount(2);
   await entries.nth(1).click();
   await expect(page).toHaveURL(/#upload$/);

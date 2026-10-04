@@ -140,6 +140,17 @@ test('the spine bar mounts on /logs and "Your reports" is the first panel for a 
   await expect(page.getByTestId('current-character-bar')).toBeVisible();
   const myReports = page.getByTestId('my-reports');
   const companion = page.locator('#companion');
+  // "Your reports" is an `Account` island (`client:visible`): the `data-testid="my-reports"`
+  // element inside it does not exist in the DOM until its own placeholder has crossed the
+  // viewport at least once. The header band reserving its own ready height (logs landing
+  // spec §8) made the page taller, so "Your reports"' own heading is no longer reliably in
+  // the initial viewport on a short mobile screen -- and scrolling to that heading itself
+  // is not enough either, since the island's own root sits in the panel body below it,
+  // which can still be a few pixels past the viewport's bottom edge. Scrolling to the next
+  // panel down ("Recent public reports", stacked below it on a narrow viewport) guarantees
+  // the whole "Your reports" body, island root included, has crossed into view first.
+  await page.getByRole('heading', { name: 'Recent public reports' }).scrollIntoViewIfNeeded();
+  await myReports.waitFor();
   const myReportsBox = await myReports.boundingBox();
   const companionBox = await companion.boundingBox();
   expect(myReportsBox).not.toBeNull();
