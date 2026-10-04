@@ -5,7 +5,7 @@ Derived from the approved "Cinematic" direction and the live-game homepage mocku
 ## Principles
 
 1. **Helper, not pitch.** The site exists to make one character play better. Every page leads with the player's class or character and the next thing that improves it; no marketing hero, no feature-list pitch. The front door is "pick your class" (the nine crests) or "your character", under the one line the site is allowed to say about itself: "Play your class better." Reference facts (dates, sources, the changelog) stay, one level down.
-7. **The game's own icons, high definition.** Class crests, spec icons and item icons are the client's own art, upscaled 4x, bezel cropped, framed by us (rounded square with a 1px line, or the circle crest: the whole icon at an 80% fit over a disc made from the icon itself, blurred and darkened, with a class ring). Never redrawn, never restyled; the Forever Sixty design system artifact carries the sets and the rules.
+7. **The game's own icons, high definition.** Class crests, spec icons and item icons are the client's own art, upscaled 4x, bezel cropped, framed by us (rounded square with a 1px line, or the circle crest: the whole icon at an 80% fit over a disc made from the icon itself, blurred and darkened, with a class ring). Never redrawn, never restyled; the Forever Sixty design system artifact carries the sets and the rules. **One crest language:** wherever a character or class is pictured (headers, character cards, the current-character bar, account menu and rows, switch lists, report rosters, rankings), it is the circular ringed crest (`ClassCrest.astro` / `ClassCrestRing.svelte`), never a square class icon, a letter square or a Blizzard avatar thumbnail.
 2. **Second screen first.** Dark by default, high contrast, 44px minimum hit targets, pages that paint before the player alt-tabs back.
 3. **Every fact is dated and sourced, quietly.** A page header carries one "Updated" stamp and nothing else about provenance. Source pills (Blizzard, Datamined, Community, This site) live where the source changes what a player does: on a feed row (a datamined change is not a confirmed one), in the Sources footer of a content page, and beside a single-source claim in prose. Never in a page header, hero or title line; the player came for the answer, and the sites players actually use (Wowhead, Icy Veins) put provenance under the content, not over it.
 4. **The game's own colors do the wayfinding.** WoW class colors and item-rarity colors are used consistently and never repurposed.
@@ -100,7 +100,6 @@ Self-host all three faces (Google Fonts license permits it) so no third-party re
 - **State panel** ("This week"): label with a glowing gold dot, two-column key/value rows, a Sample or Updated stamp on the right.
 - **Tool card**: icon, title, one-line description; the whole card is the link.
 - **Feed row**: date (mono, muted), source pill, title link, optional one-line note.
-- **Character row**: class-colored 36px square, name in class color, muted descriptor, right-aligned mono stat, progress bar.
 - **Class tile**: 84px tall, 2px inset class-color top stroke, class name in class color.
 - **Progress bar**: 6px, `--border-soft` track, filled with the relevant accent.
 - **Secondary button**: 36px, warm border, uppercase 12px 700 with 0.06em tracking. There is no primary marketing button.

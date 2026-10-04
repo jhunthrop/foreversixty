@@ -153,6 +153,6 @@ describe('CharacterStrip’s class icon', () => {
   it('shows the class icon, framed in the class colour, instead of a bare coloured square', () => {
     const { body } = render(CharacterStrip, { props: { ...requiredProps, character: base } });
     expect(body).toContain('data-testid="sim-character-class-icon"');
-    expect(body).toContain('classicon_');
+    expect(body).toContain('/icons/hd/crests/');
   });
 });
