@@ -740,9 +740,98 @@ def build_gear_board():
 
 
 # ---------------------------------------------------------------------------
+# Board 5: addon-guild
+#
+# Data note (round-3): no live guild roster is reachable. Verified before drawing this
+# board: GET /v1/rankings/guilds?kind=progress on the live API returns `{"rows":[]}`
+# (pre-launch -- the Logs page's own copy already says "the first raid logs land in
+# December"); the public sample report (logs-sample-report.json) carries no guild_id;
+# the account page requires a session this lane has none of. Per the coordinator's own
+# instruction, this board draws the honest states instead of a fabricated roster:
+# "Iron Vanguard" is not invented -- it is the guild name already committed to this
+# repo's own codec test fixtures (tools/gen-codec-vectors.mjs's FS1_CODES vector,
+# addon/tests/fixtures/codec-vectors.json / web/src/fixtures/addon/codec-vectors.json),
+# the one guild name that exists anywhere in this codebase as real, checked-in data.
+# Standing is drawn as "Data addon not installed" (Ratings.status().available = false,
+# one of the three honest fallbacks named in the brief) -- true for both panels, since
+# GetGuildInfo (name, rank) is a pure client call independent of the data addon, but
+# Ratings.forGuild needs it. The one illustrative figure on the board (one pending
+# approval) is marked with the site's own "Sample" pill (design/DESIGN-SYSTEM.md's
+# `pill-sample` convention, the same device the Logs page uses for its labelled sample
+# report) rather than presented as a real count -- never a bare, unmarked number.
+GUILD_NAME = "Iron Vanguard"
+
+
+def guild_content(rank_name, officer):
+    S_ = S
+    pad, gap = S_["padding"], S_["gap"]
+    parts = [
+        label(GUILD_NAME, "gold", 16, 700),
+        label(rank_name, "muted", 11),
+    ]
+    note = label("Install the Forever Sixty Data addon to see ratings and guild standings "
+                  "in game. It updates every night.", "warning", 11)
+    parts.append(f'<div style="max-width:490px">{note}</div>')
+    if officer:
+        claim_row = row([
+            label("OFFICER", "gold", 9, 700, tracking="1.5px"),
+            label("Claimed", "success", 11),
+        ], gap=10)
+        approval_row = row([
+            label("1 pending approval", "body", 12),
+            pill("Sample", "muted"),
+        ], gap=8)
+        review_btn = secondary_button("Review on the site", width=160)
+        officer_block = panel(
+            col([claim_row, approval_row, f'<div style="padding-top:2px">{review_btn}</div>'], gap=8),
+            width=506, pad=12)
+        parts.append(officer_block)
+    roster_note = label("ROSTER BY RATING — hidden: GuildView.apply only shows this title "
+                         "when the roster has at least one row (Theme reads the data addon's "
+                         "own nightly file); none is reachable for this guild yet.",
+                         "muted", 10)
+    parts.append(f'<div style="max-width:506px;font-style:italic">{roster_note}</div>')
+    content = col(parts, gap=14)
+    return f'<div style="padding:{pad}px;box-sizing:border-box">{content}</div>'
+
+
+def guild_panel(rank_name, officer, left, top, role_label):
+    content = guild_content(rank_name, officer)
+    window = addon_window("guild", content, left=left, top=top)
+    head = caption(role_label, left, top - 30, width=400)
+    return head + window
+
+
+def build_guild_board():
+    gap = 40
+    left_x, right_x = gap, gap + S["windowWidth"] + gap
+    top = 120
+    body = ""
+    body += caption(f'"{GUILD_NAME}" is the guild name already committed to this repo\'s own codec test '
+                     'fixtures (tools/gen-codec-vectors.mjs) — not invented for this board. No live guild '
+                     'roster is reachable (verified: GET /v1/rankings/guilds?kind=progress returns {"rows":[]} '
+                     'pre-launch); standing reads the honest "Data addon not installed" state on both panels. '
+                     'The one pending-approval figure is marked Sample (design/DESIGN-SYSTEM.md\'s own '
+                     'pill-sample convention) — an illustration of the row shape, never a claimed real count.',
+                     left_x, 20, width=1480)
+    body += guild_panel("Member", False, left_x, top, 'MEMBER — GetGuildInfo rank "Member"')
+    body += guild_panel("Guild Master", True, right_x, top, 'OFFICER / LEADER — GetGuildInfo rank "Guild Master" (rankIndex 0)')
+    body += caption('Member (left): standing only — the private claim/approval block never renders here '
+                     '(round-3 ruling: officer-only toggle, spec §10). Officer (right): the same standing line, '
+                     'plus the OFFICER block — claim state and the pending-approval count, both read from the '
+                     "companion's own private inbox message (MessageGuild), never the public data addon. "
+                     '"Review on the site" is a pointer, not a button that approves in-game: the addon has no '
+                     'network (docs/superpowers/specs/2026-09-28-addon-character-aware-design.md §5), so '
+                     "approving a character can only happen through the site's own officer settings page.",
+                     left_x, top + S["windowHeight"] + 20, width=1480)
+    return addon_page(body, left_x + S["windowWidth"] + gap + S["windowWidth"] + gap, 900)
+
+
+# ---------------------------------------------------------------------------
 if __name__ == "__main__":
     write("addon-tooltip.html", build_tooltip_board())
     write("addon-overview.html", build_overview_board())
     write("addon-talents.html", build_talents_board())
     write("addon-gear.html", build_gear_board())
-    print("wrote addon-tooltip, addon-overview, addon-talents, addon-gear")
+    write("addon-guild.html", build_guild_board())
+    print("wrote addon-tooltip, addon-overview, addon-talents, addon-gear, addon-guild")
