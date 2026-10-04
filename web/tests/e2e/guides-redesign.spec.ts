@@ -4,10 +4,27 @@
 // guide's 3-up action rail, and the Leveling band strip's own planner links -- at desktop
 // and phone, with the site's own "nothing scrolls sideways" sweep every page-level spec
 // runs (layout.spec.ts's own convention).
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { parse as parseYaml } from 'yaml';
 import { expect, test } from '@playwright/test';
 
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
+
+/** A guide's own `description` frontmatter, read straight off disk -- round-1 fix (must
+ *  fix, tenet 4): the class landing's spec cards used to clip this to ~90 characters at a
+ *  clause break; they now show it in full, so this reads the same source of truth the page
+ *  itself renders rather than hardcoding a copy of the sentence here. */
+function guideDescription(classSlug: string, specSlug: string): string {
+  const path = fileURLToPath(
+    new URL(`../../src/content/guides/${classSlug}/${specSlug}.md`, import.meta.url),
+  );
+  const raw = readFileSync(path, 'utf8');
+  const [, frontmatterBlock] = raw.split('---');
+  const data = parseYaml(frontmatterBlock ?? '') as { description: string };
+  return data.description;
+}
 
 test.describe('desktop', () => {
   test.use({ viewport: DESKTOP });
@@ -27,6 +44,16 @@ test.describe('desktop', () => {
     const dpsLines = page.locator('[data-testid="guide-spec-card-dps"]');
     // Arms and Fury both carry a ranked band-60 BiS file; Protection does not.
     await expect(dpsLines).toHaveCount(2);
+  });
+
+  test('every spec card shows its guide’s full frontmatter description, never clipped', async ({ page }) => {
+    await page.goto('/guides/warrior');
+    for (const specSlug of ['arms', 'fury', 'protection']) {
+      const card = page
+        .locator('[data-testid="guide-class-spec-cards"] > div')
+        .filter({ has: page.getByTestId(`guide-spec-card-role-${specSlug}`) });
+      await expect(card.locator('.spec-card-description')).toHaveText(guideDescription('warrior', specSlug));
+    }
   });
 
   test('/guides/warrior/fury rail shows four rotation lines with icons, Load/Sim buttons and stat priority lines', async ({
@@ -52,6 +79,23 @@ test.describe('desktop', () => {
       'Load this build in the planner (summary)',
     );
     await expect(page.getByTestId('guide-load-build')).toHaveAccessibleName('Load this build');
+  });
+
+  test('/guides/warrior/protection omits the Stat priority and Rotation rail cards (no ranked BiS file, no rotation lines) and runs 1-up', async ({
+    page,
+  }) => {
+    // Ruling (round-1 fix): a card with nothing real to show is omitted, never rendered
+    // empty. Protection has no ranked band-60 BiS file (no Stat priority numbers) AND no
+    // rotation prose yet (every addon-data.json entry for warrior-protection carries zero
+    // lines) -- so its rail is Build-only, 1-up. A spec with real rotation data but no
+    // ranked file (none exist on current data) would be 2-up instead; see the build
+    // report's own round-1 note for the worked 1-up/2-up/3-up rule.
+    await page.goto('/guides/warrior/protection');
+    await expect(page.getByTestId('guide-rail-build')).toBeVisible();
+    await expect(page.getByTestId('guide-rail-rotation')).toHaveCount(0);
+    await expect(page.getByTestId('guide-rail-stat-priority')).toHaveCount(0);
+    const rail = page.getByTestId('guide-action-rail');
+    await expect(rail).toHaveCSS('grid-template-columns', /^[\d.]+px$/);
   });
 
   test('the Leveling band strip has five rows, each Load in planner link carrying that band’s talent string', async ({

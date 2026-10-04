@@ -47,4 +47,42 @@ Branch `web-guides`, built against `design/specs/2026-10-04-guides.md` (§12 ame
 - **Per-visitor "Your spec" card match and the index signed-in callout are vanilla-script-driven, not server-known or Svelte islands** — the task's hard rule caps new client islands at the existing `GuideBuildTree`; a plain module script reading the shared `/v1/me` cache satisfies the spec's behavior with zero added framework runtime.
 - **Lighthouse (`lhci`) was not run** — not in this task's required TESTS list; the budget rows (`web/lighthouserc.json`) are unchanged, and the rail adds no new network round trip beyond `GuideBuildTree`'s existing one, per spec §8.
 - **Only Warrior (index/class/fury) was captured**, per the explicit capture list; the other 26 spec guides and 8 other class landings were not individually screenshotted, though `build.ts`/`astro build` succeeded for all 36 guide pages and spot-checked output (DPS figures, card counts, leveling-row counts) on a second class (Protection) confirmed graceful degradation.
-- **The Stat priority rail card on a spec with no ranked BiS file** (e.g. Protection) renders with just its label and no rows, rather than being omitted entirely — the spec's state table doesn't rule on this case explicitly; omitting would also have been defensible, but an empty-but-present card never fabricates a number, so this was the lower-risk default.
+- **The Stat priority rail card on a spec with no ranked BiS file** (e.g. Protection) renders with just its label and no rows, rather than being omitted entirely — the spec's state table doesn't rule on this case explicitly; omitting would also have been defensible, but an empty-but-present card never fabricates a number, so this was the lower-risk default. **Superseded in round 1 below** — this was fixed; the card is now omitted.
+
+---
+
+## Round 1 (owner side-by-side fix pass)
+
+Three findings from a side-by-side against `design/mocks/renders/build/guides-warrior-1440.png`.
+
+### 1. [must fix, tenet 4] Spec-card descriptions were clipped mid-sentence
+
+`trimToClause` (90-character cap at a clause break) was applied to the class landing's spec-card description, so Arms/Fury/Protection all ended on a trailing comma instead of their guide's full sentence. Removed the call entirely; `SpecCard` now renders `guide.data.description` verbatim and the card grows to fit (no `max-height`/line-clamp anywhere in its styles, confirmed). The now-unused `lib/guides/trim-to-clause.ts` and its test were deleted outright (dead code, never kept "just in case"). Added `tests/e2e/guides-redesign.spec.ts`'s `"every spec card shows its guide's full frontmatter description, never clipped"` test, which reads each of the three warrior guides' `description` frontmatter straight off disk and asserts the rendered card text equals it exactly.
+
+### 2. [must fix] Stat priority rail card with no rows
+
+Ruling (applied in `GuideActionRail.astro`): a card with nothing real to show is **omitted**, never rendered with just a label. The rail is 3-up when Build + Rotation + Stat priority all have content, 2-up when one of Rotation/Stat priority is empty, 1-up (Build only) when both are. On real data today: **Protection is 1-up**, not 2-up as first assumed — its band-60 BiS file doesn't exist (no Stat priority numbers) *and* every one of its `addon-data.json` rotation entries carries zero lines (no rotation prose has been written for the tank spec yet), so both cards are absent, not just one. Pinned with `tests/e2e/guides-redesign.spec.ts`'s `/guides/warrior/protection` test, which asserts both cards are absent (`toHaveCount(0)`, not just hidden) and the rail's own `grid-template-columns` computes to a single column.
+
+Implementation note: the column count is set through a CSS custom property (`--guide-rail-cols`) read by the stylesheet's `grid-template-columns: repeat(var(--guide-rail-cols, 3), 1fr)`, **not** a literal inline `grid-template-columns` — the first attempt used an inline style, which (correctly, by CSS cascade rules) outranks every stylesheet rule including the phone `@media (max-width: 1023px)` override, silently pinning the rail at 3 columns past that breakpoint and overflowing 390px. Caught by the recapture/test pass, not the side-by-side itself; see "Found while fixing" below.
+
+### 3. [polish] Rail buttons now use the shared secondary-button recipe
+
+`BuildActionButtons.astro`'s two links rendered in sentence case (`text-[14px] font-semibold`) with no relation to `design/DESIGN-SYSTEM.md`'s secondary button (uppercase, 12px, 700 weight, 0.06em tracking — `SECONDARY_BUTTON`/`SECONDARY_BUTTON_FIXED`, `lib/planner/styles.ts`). Switched to `SECONDARY_BUTTON_FIXED` specifically, not the plain `SECONDARY_BUTTON`: this component's own pre-existing unit test (`BuildActionButtons.test.ts`, predates this branch) pins a 44px hit target on **both** links at **every** breakpoint, a guarantee only the `_FIXED` variant (no `md:h-9` desktop shrink) keeps. Updated that test's assertion from the old literal `min-h-11` class-string check to the new recipe's own markers (`h-11`, no `md:h-9`, `uppercase`) rather than leaving a stale, failing assertion.
+
+### Found while fixing (not in the owner's three findings)
+
+- **Phone overflow regression at 390px** on `/guides/warrior/fury`, introduced by fix #2's own first implementation (the inline `grid-template-columns` described above). Caught by `npx playwright test tests/e2e/guides*.spec.ts`, not visually — the "no horizontal overflow" sweep failed with `scrollWidth: 543` against a 390px viewport. Fixed with the CSS-custom-property approach described above.
+- **`/guides/warrior/protection`'s rail is 1-up, not 2-up** — my own round-1 test first assumed 2-up (Build + Rotation) by analogy with the owner's finding text; the real `addon-data.json` has zero rotation lines for every warrior-protection entry, so Rotation is also absent. Corrected the test to assert the true 1-up state rather than adjust the product code to match a wrong assumption.
+
+### Re-run results (verbatim)
+
+- `npx astro check` — 0 errors, 0 warnings, 10 hints (758 files).
+- `npm run lint` — clean.
+- `npm run format:check` — "All matched files use Prettier code style!"
+- `npx vitest run` (guides-scoped: `src/lib/guides/`, `src/pages/guides/`, `src/content/guides/`) — 13 test files, 305 tests, all passing.
+- `npx vitest run` (full suite) — **296 test files passed, 3055 tests passed, 1 skipped** (0 failed; one file count lower than the first build report's 297/3058 because `trim-to-clause.ts`/`.test.ts` were deleted).
+- `npx playwright test tests/e2e/guides*.spec.ts` (desktop + mobile) — **30 passed, 2 skipped** (0 failed; the 2 skips are the pre-existing `guides.spec.ts` real-build-load smoke test, both projects, guarded `FOREVER_DATA=real`-only).
+
+### Recaptures
+
+`guides-warrior-1440.png` and `guides-warrior-fury-1440.png` re-shot against real build data (same `sync`/fixture-restore discipline as the first pass). Descriptions now run the full sentence on all three spec cards (Protection's: "Talents, tanking priority, stat priority, and race picks for Protection Warrior in Forever, with beta-versus-projection called out."); Fury's rail buttons read `LOAD THIS BUILD`/`SIM THIS BUILD` in both the rail and under the full tree.

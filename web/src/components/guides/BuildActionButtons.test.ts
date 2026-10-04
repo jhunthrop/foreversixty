@@ -32,11 +32,19 @@ describe('BuildActionButtons', () => {
     expect(html).toContain('data-testid="guide-sim-build"');
   });
 
-  it('gives both links a 44px hit target', async () => {
+  it('gives both links a 44px hit target at every breakpoint', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(BuildActionButtons, { props: { code: CODE } });
     const anchors = html.match(/<a[^>]*>/g) ?? [];
     expect(anchors).toHaveLength(2);
-    for (const anchor of anchors) expect(anchor).toContain('min-h-11');
+    // SECONDARY_BUTTON_FIXED (lib/planner/styles.ts): h-11 on every breakpoint, never the
+    // plain SECONDARY_BUTTON's md:h-9 desktop shrink -- round-1 fix (polish) swapped the
+    // old sentence-case `min-h-11` class string for the design system's shared secondary
+    // button recipe (uppercase 12px 700, 0.06em tracking), which keeps this guarantee.
+    for (const anchor of anchors) {
+      expect(anchor).toContain('h-11');
+      expect(anchor).not.toContain('md:h-9');
+      expect(anchor).toContain('uppercase');
+    }
   });
 });

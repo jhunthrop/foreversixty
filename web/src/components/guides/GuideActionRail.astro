@@ -27,6 +27,15 @@ interface Props {
 
 const { build, buildCode, primaryTree, rotationBandLabel, rotationLines, statRows } = Astro.props;
 
+// Ruling (round-1 fix, owner): a spec with no ranked BiS file (Protection) has no real
+// per-point numbers to show, so the Stat priority card is omitted rather than rendered with
+// a label and no rows -- the rail becomes 2-up (Build + Rotation), or 1-up if the spec also
+// has no rotation entry at this band (neither exists on real data today, but the layout
+// degrades honestly either way). Never a card standing in for missing data (tenet 8).
+const hasRotation = rotationLines.length > 0;
+const hasStatPriority = statRows.length > 0;
+const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
+
 function talentsByTier(tree: DecodedTreeView): DecodedTalentView[][] {
   const byTier = new Map<number, DecodedTalentView[]>();
   for (const talent of tree.talents) {
@@ -38,7 +47,7 @@ function talentsByTier(tree: DecodedTreeView): DecodedTalentView[][] {
 }
 ---
 
-<div class="guide-rail" data-testid="guide-action-rail">
+<div class="guide-rail" data-testid="guide-action-rail" style={`--guide-rail-cols: ${cardCount}`}>
   <div class="panel-box guide-rail-card" data-testid="guide-rail-build">
     <span class="label">{guidesCopy.buildRailLabel}</span>
     {primaryTree !== undefined && (
@@ -71,65 +80,78 @@ function talentsByTier(tree: DecodedTreeView): DecodedTalentView[][] {
     />
   </div>
 
-  <div class="panel-box guide-rail-card" data-testid="guide-rail-rotation">
-    <span class="label">{guidesCopy.rotationRailLabel(rotationBandLabel)}</span>
-    <ul class="guide-rail-rotation-lines">
-      {rotationLines.map((line) => (
-        <li class="guide-rail-rotation-line" data-testid={`guide-rail-rotation-line-${line.spellId}`}>
-          {line.icon !== undefined ? (
-            <img
-              src={dataUrl(build, `icons/${line.icon}.webp`)}
-              alt=""
-              width="28"
-              height="28"
-              loading="eager"
-              decoding="async"
-              class="guide-rail-rotation-icon"
-            />
-          ) : (
-            <span class="guide-rail-rotation-icon guide-rail-rotation-icon-placeholder" aria-hidden="true" />
-          )}
-          <span class="guide-rail-rotation-body">
-            <span class="guide-rail-rotation-name-line">
-              <span class="guide-rail-rotation-name">{line.name}</span>
-              {line.rank !== undefined && (
-                <span class="text-muted guide-rail-rotation-rank">Rank {line.rank}</span>
-              )}
+  {hasRotation && (
+    <div class="panel-box guide-rail-card" data-testid="guide-rail-rotation">
+      <span class="label">{guidesCopy.rotationRailLabel(rotationBandLabel)}</span>
+      <ul class="guide-rail-rotation-lines">
+        {rotationLines.map((line) => (
+          <li class="guide-rail-rotation-line" data-testid={`guide-rail-rotation-line-${line.spellId}`}>
+            {line.icon !== undefined ? (
+              <img
+                src={dataUrl(build, `icons/${line.icon}.webp`)}
+                alt=""
+                width="28"
+                height="28"
+                loading="eager"
+                decoding="async"
+                class="guide-rail-rotation-icon"
+              />
+            ) : (
+              <span
+                class="guide-rail-rotation-icon guide-rail-rotation-icon-placeholder"
+                aria-hidden="true"
+              />
+            )}
+            <span class="guide-rail-rotation-body">
+              <span class="guide-rail-rotation-name-line">
+                <span class="guide-rail-rotation-name">{line.name}</span>
+                {line.rank !== undefined && (
+                  <span class="text-muted guide-rail-rotation-rank">Rank {line.rank}</span>
+                )}
+              </span>
+              <span class="guide-rail-rotation-condition">{line.condition}</span>
             </span>
-            <span class="guide-rail-rotation-condition">{line.condition}</span>
-          </span>
-        </li>
-      ))}
-    </ul>
-    <a class="guide-rail-full-priority" href="#rotation-and-priority">
-      {guidesCopy.fullPriorityLink}
-    </a>
-  </div>
-
-  <div class="panel-box guide-rail-card" data-testid="guide-rail-stat-priority">
-    <span class="label">{guidesCopy.statPriorityRailLabel}</span>
-    <div class="guide-rail-stat-rows">
-      {statRows.map((row, index) => (
-        <div class="guide-rail-stat-row">
-          <span class="guide-rail-stat-label">
-            <span class="font-mono tabular guide-rail-stat-index">{index + 1}</span>
-            {row.label}
-          </span>
-          {row.value === undefined ? (
-            <span class="text-muted guide-rail-stat-value">Not significant</span>
-          ) : (
-            <span class="font-mono tabular guide-rail-stat-value">{row.value.toFixed(2)}</span>
-          )}
-        </div>
-      ))}
+          </li>
+        ))}
+      </ul>
+      <a class="guide-rail-full-priority" href="#rotation-and-priority">
+        {guidesCopy.fullPriorityLink}
+      </a>
     </div>
-  </div>
+  )}
+
+  {hasStatPriority && (
+    <div class="panel-box guide-rail-card" data-testid="guide-rail-stat-priority">
+      <span class="label">{guidesCopy.statPriorityRailLabel}</span>
+      <div class="guide-rail-stat-rows">
+        {statRows.map((row, index) => (
+          <div class="guide-rail-stat-row">
+            <span class="guide-rail-stat-label">
+              <span class="font-mono tabular guide-rail-stat-index">{index + 1}</span>
+              {row.label}
+            </span>
+            {row.value === undefined ? (
+              <span class="text-muted guide-rail-stat-value">Not significant</span>
+            ) : (
+              <span class="font-mono tabular guide-rail-stat-value">{row.value.toFixed(2)}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
 </div>
 
 <style>
+  /* Round-1 fix: the column count comes through a custom property (set inline, read here),
+     never a literal inline `grid-template-columns` -- an inline style outranks every
+     stylesheet rule regardless of specificity, which silently defeated the phone media
+     query below (the rail stayed 3-up past 1023px wide, overflowing 390px, round-1
+     side-by-side finding). The media query's own literal `1fr` still wins at narrow
+     widths because both rules now live in this one stylesheet. */
   .guide-rail {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--guide-rail-cols, 3), 1fr);
     gap: 16px;
   }
   .panel-box {

@@ -12,8 +12,16 @@
 // caller passes `loadAriaLabel`/`simAriaLabel` (and its own `loadTestId`/`simTestId`, so a
 // test can target either copy unambiguously); the copy under the full tree keeps the
 // defaults, unchanged from before this rebuild.
+//
+// Round-1 fix (polish): these links rendered in sentence case with no shared recipe --
+// design/DESIGN-SYSTEM.md's secondary button is uppercase 12px 700 with 0.06em tracking
+// (`SECONDARY_BUTTON`, `lib/planner/styles.ts`), the same recipe `StatWeightsPanel`'s own
+// addon button already uses. `SECONDARY_BUTTON_FIXED` specifically (not the plain, md:h-9-
+// shrinking `SECONDARY_BUTTON`): this component's own pre-existing test pins a 44px hit
+// target on BOTH links at every breakpoint, which only the FIXED recipe guarantees.
 import { guidesCopy } from '../../lib/guides/copy';
 import { loadBuildHref, simBuildHref } from '../../lib/guides/build-links';
+import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 
 interface Props {
   code: string;
@@ -34,7 +42,7 @@ const {
 <div class="flex flex-wrap gap-3" data-testid="guide-build-actions">
   <a
     href={loadBuildHref(code)}
-    class="rounded-control border-line-warm text-text inline-flex min-h-11 items-center border px-4 text-[14px] font-semibold"
+    class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text justify-center px-4`}
     data-testid={loadTestId}
     aria-label={loadAriaLabel}
   >
@@ -42,7 +50,7 @@ const {
   </a>
   <a
     href={simBuildHref(code)}
-    class="rounded-control border-line-warm text-text inline-flex min-h-11 items-center border px-4 text-[14px] font-semibold"
+    class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text justify-center px-4`}
     data-testid={simTestId}
     aria-label={simAriaLabel}
   >

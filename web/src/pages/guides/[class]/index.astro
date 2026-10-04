@@ -17,7 +17,6 @@ import { classLandingSetDps } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
 import { splitFirstParagraph } from '../../../lib/guides/first-paragraph';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
-import { trimToClause } from '../../../lib/guides/trim-to-clause';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import { specTabIcon } from '../../../lib/bis/spec-icon';
 
@@ -74,7 +73,7 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
       specSlug: s.spec_slug,
       specName: s.name,
       role: guide.data.role,
-      description: trimToClause(guide.data.description ?? ''),
+      description: guide.data.description ?? '',
       icon: specTabIcon(build, classSlug, s.tree_index),
       dps: classLandingSetDps(build, `${classSlug}-${s.spec_slug}`, classSlug, guide.data.recommendedRaces),
       href: `/guides/${classSlug}/${s.spec_slug}`,
