@@ -45,8 +45,71 @@ func TestDecodeOmitsAbsentSections(t *testing.T) {
 	if len(d.Gear) != 0 {
 		t.Fatalf("gear = %v, want empty", d.Gear)
 	}
+	if len(d.Enchants) != 0 {
+		t.Fatalf("enchants = %v, want empty", d.Enchants)
+	}
+	if len(d.Professions) != 0 {
+		t.Fatalf("professions = %v, want empty", d.Professions)
+	}
+	if len(d.Bags) != 0 {
+		t.Fatalf("bags = %v, want empty", d.Bags)
+	}
 	if d.HasLevel || d.HasWho {
 		t.Fatalf("hasLevel=%v hasWho=%v, want both false", d.HasLevel, d.HasWho)
+	}
+}
+
+func TestDecodeReadsEnchantsProfessionsAndBags(t *testing.T) {
+	// chest carries an enchant (41); wrist carries an enchant plus a suffix (724:1234);
+	// head carries no enchant at all - the three real shapes Codec.lua's encodeItemParts
+	// writes.
+	export := "FS1:1.60.1.70009:hunter:troll:503200000/0/0:head=12640,chest=11726:41,wrist=1234:724:1234" +
+		"|professions=skinning,leatherworking,first-aid|bags=13510,13444:0,232433"
+	d, ok := Decode(export)
+	if !ok {
+		t.Fatal("ok = false, want true")
+	}
+	wantGear := map[string]int{"head": 12640, "chest": 11726, "wrist": 1234}
+	if !reflect.DeepEqual(d.Gear, wantGear) {
+		t.Fatalf("gear = %v, want %v", d.Gear, wantGear)
+	}
+	wantEnchants := map[string]int{"chest": 41, "wrist": 724}
+	if !reflect.DeepEqual(d.Enchants, wantEnchants) {
+		t.Fatalf("enchants = %v, want %v", d.Enchants, wantEnchants)
+	}
+	wantProfessions := []string{"skinning", "leatherworking", "first-aid"}
+	if !reflect.DeepEqual(d.Professions, wantProfessions) {
+		t.Fatalf("professions = %v, want %v", d.Professions, wantProfessions)
+	}
+	wantBags := []int{13510, 13444, 232433}
+	if !reflect.DeepEqual(d.Bags, wantBags) {
+		t.Fatalf("bags = %v, want %v", d.Bags, wantBags)
+	}
+}
+
+func TestDecodeGearWithZeroEnchantRecordsNoEnchant(t *testing.T) {
+	d, ok := Decode("FS1:1.60.1.69893:warrior:orc:0/0/0:chest=11726:0")
+	if !ok {
+		t.Fatal("ok = false, want true")
+	}
+	if d.Gear["chest"] != 11726 {
+		t.Fatalf("gear[chest] = %v, want 11726", d.Gear["chest"])
+	}
+	if _, present := d.Enchants["chest"]; present {
+		t.Fatalf("enchants[chest] present = true, want absent for an explicit enchant=0")
+	}
+}
+
+func TestDecodeMalformedProfessionsAndBagsEntriesAreSkipped(t *testing.T) {
+	d, ok := Decode("FS1:1.60.1.69893:warrior:orc:0/0/0:|professions=,skinning,|bags=notanumber,13510")
+	if !ok {
+		t.Fatal("ok = false, want true")
+	}
+	if want := []string{"skinning"}; !reflect.DeepEqual(d.Professions, want) {
+		t.Fatalf("professions = %v, want %v", d.Professions, want)
+	}
+	if want := []int{13510}; !reflect.DeepEqual(d.Bags, want) {
+		t.Fatalf("bags = %v, want %v", d.Bags, want)
 	}
 }
 
