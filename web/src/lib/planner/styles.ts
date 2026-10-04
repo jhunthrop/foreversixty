@@ -7,17 +7,26 @@
  * 36px tall -- 44px on phone, where it has to clear the hit-target minimum. Callers add the
  * border and text colour they want, and their own horizontal padding. The one action a page
  * exists for takes PRIMARY_BUTTON instead.
+ *
+ * Logs build review, fix round 1 (2026-10-04): a Secondary button carried no hover state at
+ * all (caught on `LogsHero.svelte`'s "Open this report", which is this token with no hover
+ * override of its own) -- design/DESIGN-SYSTEM.md's own "120ms hover transitions on cards and
+ * links" budget applies here too, so it is added to the shared token rather than to one
+ * caller: a hover-variant class always outranks a caller's own plain `border-*`/`text-*`
+ * class in CSS, regardless of which comes first in the concatenated string, so every existing
+ * caller's own colours are untouched outside `:hover`.
  */
-export const SECONDARY_BUTTON =
-  'rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
+const SECONDARY_BUTTON_HOVER =
+  'transition-colors duration-[120ms] hover:border-gold-hover hover:text-gold-hover';
+
+export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9 ${SECONDARY_BUTTON_HOVER}`;
 
 /**
  * Same recipe as SECONDARY_BUTTON, but 44px tall on every breakpoint instead of shrinking to
  * 36px on desktop. For controls outside the planner -- the homepage subscribe button -- where
  * the 44px hit target is a fixed requirement, not just a phone-only minimum.
  */
-export const SECONDARY_BUTTON_FIXED =
-  'rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase';
+export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase ${SECONDARY_BUTTON_HOVER}`;
 
 /**
  * The primary button: the same recipe filled gold, for the single action a page is for

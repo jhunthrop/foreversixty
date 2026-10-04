@@ -439,6 +439,17 @@ export function listDevices(apiBase: string = API_BASE_URL): Promise<Device[]> {
   );
 }
 
+/**
+ * Logs landing spec (2026-10-04) §4.D.2's pairing poll needs a real read every tick, not
+ * `listDevices`'s own cached one (`query()`'s "an entry this page has already loaded is
+ * served as is" rule -- query.ts's `Entry.validated` -- would otherwise hand every poll
+ * tick back the same stale array forever). Invalidating first forces exactly that.
+ */
+export async function refreshDevices(apiBase: string = API_BASE_URL): Promise<Device[]> {
+  invalidate(devicesKey(apiBase));
+  return listDevices(apiBase);
+}
+
 export async function pairDevice(apiBase: string = API_BASE_URL): Promise<PairingCode> {
   const code = await call<PairingCode>('/v1/devices/pair', apiBase, { method: 'POST' });
   if (code === null) throw new AccountError(ACCOUNT_FAILED, 0);
@@ -543,6 +554,32 @@ export async function listMyReports(page: number = 1, apiBase: string = API_BASE
         throw error;
       }
     },
+    { scope: 'private', ttlMs: MY_REPORTS_TTL_MS },
+  );
+}
+
+function guildReportsKey(apiBase: string, guildId: number, page: number): string {
+  return `${apiBase}/v1/guilds/${guildId}/reports?page=${page}`;
+}
+
+/**
+ * `Your reports`' guild tab (logs landing spec 2026-10-04 §4.C.1): a guild's own
+ * `guild`-visibility reports, in the same `MyReportPage` shape (and the same page-number
+ * pagination) `listMyReports` returns, from the API lane's new `GET /v1/guilds/{id}/reports`
+ * endpoint -- authorized the same way a report `patch` already requires guild standing for
+ * (`api/internal/reports/handler.go`'s `guildReports`). A signed-out visitor never reaches
+ * this call at all (the tab itself only exists for a signed-in member, §4.C.1), so there is
+ * no "empty page for no session" case to swallow the way `listMyReports` does.
+ */
+export async function listGuildReports(
+  guildId: number,
+  page: number = 1,
+  apiBase: string = API_BASE_URL,
+): Promise<MyReportPage> {
+  return query<MyReportPage>(
+    guildReportsKey(apiBase, guildId, page),
+    async () =>
+      (await call<MyReportPage>(`/v1/guilds/${guildId}/reports?page=${page}`, apiBase)) ?? EMPTY_REPORT_PAGE,
     { scope: 'private', ttlMs: MY_REPORTS_TTL_MS },
   );
 }

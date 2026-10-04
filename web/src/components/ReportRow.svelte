@@ -4,9 +4,15 @@
      report's own visibility and `status` shows a pill while it is still processing) and
      RecentReports.svelte (the public feed, where `meta` is the report's guild name and
      `status` is always complete, so it never shows). Extracted so the row markup that used
-     to live only in MyReports.svelte exists in exactly one place. -->
+     to live only in MyReports.svelte exists in exactly one place.
+
+     Player review ruling, logs mock (2026-10-04) finding 3: under 640px the facts line
+     stacks under the title rather than sharing its line with it -- a title and a pinned
+     date must never be left to collide on one line. `flex-col` is the default (phone); the
+     facts group only joins the title's own line from `sm:` (640px) up. -->
+
 <script lang="ts">
-  const day = (iso: string): string => iso.slice(0, 10);
+  import { reportDay } from '../lib/reports/hero';
 
   let {
     href,
@@ -30,19 +36,21 @@
 </script>
 
 <li
-  class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b py-2 text-[14px]"
+  class="border-line-soft flex min-h-11 flex-col gap-1 border-b py-2 text-[14px] sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-1"
   data-testid="report-row"
 >
   <a {href} class="font-semibold">{title}</a>
-  <span class="text-muted tabular font-mono text-[13px]">{day(createdAt)}</span>
-  <span class="text-muted text-[13px]">
-    <span class="tabular font-mono">{fightCount} fights · {killCount} kills</span>{meta === ''
-      ? ''
-      : ` · ${meta}`}
+  <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
+    <span class="text-muted tabular font-mono text-[13px]">{reportDay(createdAt)}</span>
+    <span class="text-muted text-[13px]">
+      <span class="tabular font-mono">{fightCount} fights · {killCount} kills</span>{meta === ''
+        ? ''
+        : ` · ${meta}`}
+    </span>
+    {#if status !== '' && status !== 'complete'}
+      <!-- Outline, not the filled gold: that fill is the account page's Main pill, and one
+           solid gold shape should mean one thing on a page. -->
+      <span class="pill pill-sample" data-testid="report-status">{status}</span>
+    {/if}
   </span>
-  {#if status !== '' && status !== 'complete'}
-    <!-- Outline, not the filled gold: that fill is the account page's Main pill, and one
-         solid gold shape should mean one thing on a page. -->
-    <span class="pill pill-sample" data-testid="report-status">{status}</span>
-  {/if}
 </li>
