@@ -35,15 +35,31 @@ function row(overrides: Partial<GuildReadinessRow> = {}): GuildReadinessRow {
 
 describe('readinessScore / sortReadinessWorstFirst', () => {
   it('sorts failCount*100 + gearGainDps worst-first', () => {
-    const low = row({ character_key: 'a', failing: 1, gear_gap: { upgrades: 1, gain_dps: 10, not_sim_checked: 0 } });
-    const high = row({ character_key: 'b', failing: 3, gear_gap: { upgrades: 3, gain_dps: 5, not_sim_checked: 0 } });
+    const low = row({
+      character_key: 'a',
+      failing: 1,
+      gear_gap: { upgrades: 1, gain_dps: 10, not_sim_checked: 0 },
+    });
+    const high = row({
+      character_key: 'b',
+      failing: 3,
+      gear_gap: { upgrades: 3, gain_dps: 5, not_sim_checked: 0 },
+    });
     expect(readinessScore(high)).toBeGreaterThan(readinessScore(low));
     expect(sortReadinessWorstFirst([low, high]).map((r) => r.character_key)).toEqual(['b', 'a']);
   });
 
   it('breaks ties on the bigger gear gain', () => {
-    const smaller = row({ character_key: 'a', failing: 2, gear_gap: { upgrades: 2, gain_dps: 10, not_sim_checked: 0 } });
-    const bigger = row({ character_key: 'b', failing: 2, gear_gap: { upgrades: 2, gain_dps: 40, not_sim_checked: 0 } });
+    const smaller = row({
+      character_key: 'a',
+      failing: 2,
+      gear_gap: { upgrades: 2, gain_dps: 10, not_sim_checked: 0 },
+    });
+    const bigger = row({
+      character_key: 'b',
+      failing: 2,
+      gear_gap: { upgrades: 2, gain_dps: 40, not_sim_checked: 0 },
+    });
     expect(sortReadinessWorstFirst([smaller, bigger]).map((r) => r.character_key)).toEqual(['b', 'a']);
   });
 

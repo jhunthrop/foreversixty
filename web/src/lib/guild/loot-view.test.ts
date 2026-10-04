@@ -16,8 +16,26 @@ function item(overrides: Partial<GuildLootItem> = {}): GuildLootItem {
     slot: 'head',
     awarded_to: null,
     candidates: [
-      { character_key: 'a', name: 'Kraggor', class: 'warrior', spec: 'Protection', gain_dps: 40, not_sim_checked: false, attendance: { present: 8, nights: 8 }, already_equivalent: false },
-      { character_key: 'b', name: 'Grimtotem', class: 'warrior', spec: 'Fury', gain_dps: 12, not_sim_checked: false, attendance: { present: 6, nights: 8 }, already_equivalent: false },
+      {
+        character_key: 'a',
+        name: 'Kraggor',
+        class: 'warrior',
+        spec: 'Protection',
+        gain_dps: 40,
+        not_sim_checked: false,
+        attendance: { present: 8, nights: 8 },
+        already_equivalent: false,
+      },
+      {
+        character_key: 'b',
+        name: 'Grimtotem',
+        class: 'warrior',
+        spec: 'Fury',
+        gain_dps: 12,
+        not_sim_checked: false,
+        attendance: { present: 6, nights: 8 },
+        already_equivalent: false,
+      },
     ],
     ...overrides,
   };
@@ -39,7 +57,10 @@ describe('bossPickerLabel', () => {
 
 describe('nextUnkilledEncounter', () => {
   it('finds the first unkilled encounter', () => {
-    const rows = [encounter({ encounter_id: 1, killed: true }), encounter({ encounter_id: 2, killed: false })];
+    const rows = [
+      encounter({ encounter_id: 1, killed: true }),
+      encounter({ encounter_id: 2, killed: false }),
+    ];
     expect(nextUnkilledEncounter(rows)?.encounter_id).toBe(2);
   });
 
@@ -55,13 +76,26 @@ describe('candidateAction', () => {
 
   it('reads "equivalent" for a candidate who already holds the item', () => {
     const withEquivalent = item({
-      candidates: [{ character_key: 'c', name: 'Sunderfel', class: 'warrior', spec: 'Arms', gain_dps: 0, not_sim_checked: false, attendance: { present: 8, nights: 8 }, already_equivalent: true }],
+      candidates: [
+        {
+          character_key: 'c',
+          name: 'Sunderfel',
+          class: 'warrior',
+          spec: 'Arms',
+          gain_dps: 0,
+          not_sim_checked: false,
+          attendance: { present: 8, nights: 8 },
+          already_equivalent: true,
+        },
+      ],
     });
     expect(candidateAction(withEquivalent, 'c')).toEqual({ kind: 'equivalent' });
   });
 
   it('marks exactly the awardee "awarded" and every other candidate "awarded to {name}"', () => {
-    const awarded = item({ awarded_to: { character_key: 'a', name: 'Kraggor', at: '2026-12-15T00:00:00Z', by_name: 'Kraggor' } });
+    const awarded = item({
+      awarded_to: { character_key: 'a', name: 'Kraggor', at: '2026-12-15T00:00:00Z', by_name: 'Kraggor' },
+    });
     expect(candidateAction(awarded, 'a')).toEqual({ kind: 'awarded' });
     expect(candidateAction(awarded, 'b')).toEqual({ kind: 'awarded-to-other', label: 'Awarded to Kraggor' });
   });

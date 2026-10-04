@@ -208,9 +208,16 @@ function professionsFor(name: string): [string, string] {
   return PROFESSIONS_BY_CLASS[rowByName(name)[1]];
 }
 
+/** `guild_characters.user_id` grouping (EXISTS): an alt shares its main's own `account_key`
+ *  (`gen_guild.py`'s own `ALT_OF`), so the Roster tab's "alt of {main}" tag has a real
+ *  account to group on rather than a fixture-only coincidence of name. */
+function accountKeyFor(name: string): string {
+  const mainName = ALT_OF[name] ?? name;
+  return `u:${1000 + ROSTER_SEED.findIndex((r) => r[0] === mainName)}`;
+}
+
 function toRosterRow(name: string): GuildRosterRow {
   const [raiderName, cls, spec, rank, verified, logged, consent, ilvl] = rowByName(name);
-  const gap = gearGapFor(name);
   const parses = parsesFor(name);
   const hasGear = consent === 'gear' || consent === 'gear_bags';
   return {
@@ -238,7 +245,7 @@ function toRosterRow(name: string): GuildRosterRow {
     },
     rating: ratingFor(name),
     professions: professionsFor(name),
-    account_key: `u:${1000 + ROSTER_SEED.findIndex((r) => r[0] === name)}`,
+    account_key: accountKeyFor(name),
     last_report_at: logged ? '2026-12-22T21:40:00Z' : '2026-12-15T19:00:00Z',
     may_approve: !verified,
     may_remove: hasGear && rank !== 'leader',
@@ -254,14 +261,17 @@ export function buildMockHome(viewerName: string | null): GuildHome {
   const pending = roster.filter((r) => !r.verified);
   const verifiedCount = roster.filter((r) => r.verified).length;
   const belowFloor = roster.filter((r) => (r.rating?.overall ?? 100) < 55).length;
-  const viewerRow = viewerName === null ? null : roster.find((r) => r.name === viewerName) ?? null;
-  const role: 'public' | 'member' | 'officer' = viewerName === null ? 'public' : viewerName === VIEWER_OFFICER ? 'officer' : 'member';
+  const viewerRow = viewerName === null ? null : (roster.find((r) => r.name === viewerName) ?? null);
+  const role: 'public' | 'member' | 'officer' =
+    viewerName === null ? 'public' : viewerName === VIEWER_OFFICER ? 'officer' : 'member';
 
   const standing =
     viewerRow === null
       ? null
       : (() => {
-          const peers = roster.filter((r) => r.class === viewerRow.class && r.spec === viewerRow.spec && r.item_level !== undefined);
+          const peers = roster.filter(
+            (r) => r.class === viewerRow.class && r.spec === viewerRow.spec && r.item_level !== undefined,
+          );
           const ranked = [...peers].sort((a, b) => (b.item_level ?? 0) - (a.item_level ?? 0));
           const rank = ranked.findIndex((r) => r.character_key === viewerRow.character_key) + 1;
           const fails = readinessFailsFor(viewerRow.name);
@@ -314,7 +324,8 @@ export function readinessFailsFor(name: string): string[] {
     fails.push(`${gap.upgrades} gear upgrades waiting (${gap.gain} DPS)`);
   }
   const missing = missingEnchantsFor(name);
-  if (missing.length > 0) fails.push(`no enchant: ${missing.map((s) => s[0].toUpperCase() + s.slice(1)).join(', ')}`);
+  if (missing.length > 0)
+    fails.push(`no enchant: ${missing.map((s) => s[0].toUpperCase() + s.slice(1)).join(', ')}`);
   if (!consumablesOkFor(name)) fails.push('bags short on consumables');
   const pts = unspentPointsFor(name);
   if (pts > 0) fails.push(`${pts} unspent talent point${pts > 1 ? 's' : ''}`);
@@ -331,7 +342,7 @@ export function buildMockRaids(): GuildRaidsPage {
         .slice(0, 20)
         .map((r) => ({ character_key: r.character_key, name: r.name, class: r.class ?? '' }));
       const fights = isOnyxia
-        ? ONYXIA_PULLS.filter((p) => p[0] === date).map(([, n, d, result], idx) => ({
+        ? ONYXIA_PULLS.filter((p) => p[0] === date).map(([, , d, result], idx) => ({
             index: idx,
             name: 'Onyxia',
             encounter_id: ONYXIA_ENCOUNTER_ID,
@@ -369,7 +380,6 @@ export function buildMockRaids(): GuildRaidsPage {
 }
 
 export function buildMockProgression(): GuildProgressionPage {
-  const totalPulls = NIGHTS.reduce((sum, n) => sum + n[3], 0);
   const barrowPulls = NIGHTS.filter((n) => n[0] === 'Barrow Deeps').reduce((sum, n) => sum + n[3], 0);
   const hyjalPulls = NIGHTS.filter((n) => n[0] === 'Hyjal Summit').reduce((sum, n) => sum + n[3], 0);
   const onyxiaPullsByNight = ['2026-12-15', '2026-12-20'].map((date, i) => ({
@@ -379,7 +389,12 @@ export function buildMockProgression(): GuildProgressionPage {
     killed: ONYXIA_PULLS.some((p) => p[0] === date && p[3] === 'kill'),
   }));
   return {
-    tier: { name: 'First tier', raids: ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"], named_encounters: 1, down: 1 },
+    tier: {
+      name: 'First tier',
+      raids: ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"],
+      named_encounters: 1,
+      down: 1,
+    },
     encounters: [
       {
         encounter_id: ONYXIA_ENCOUNTER_ID,
@@ -392,14 +407,38 @@ export function buildMockProgression(): GuildProgressionPage {
         pulls_by_night: onyxiaPullsByNight,
         deaths_per_pull: 1.4,
         best_by_role: {
-          dps: { name: 'Pyrewisp', class: 'mage', spec: 'Fire', metric: 'dps', value: 358.2, report_id: 'fixtureguildraid0', fight_index: 1 },
-          healer: { name: 'Lightbrand', class: 'priest', spec: 'Holy', metric: 'hps', value: 301.9, report_id: 'fixtureguildraid0', fight_index: 2 },
+          dps: {
+            name: 'Pyrewisp',
+            class: 'mage',
+            spec: 'Fire',
+            metric: 'dps',
+            value: 358.2,
+            report_id: 'fixtureguildraid0',
+            fight_index: 1,
+          },
+          healer: {
+            name: 'Lightbrand',
+            class: 'priest',
+            spec: 'Holy',
+            metric: 'hps',
+            value: 301.9,
+            report_id: 'fixtureguildraid0',
+            fight_index: 2,
+          },
         },
       },
     ],
     unnamed: [
-      { zone: 'Barrow Deeps', pulls: barrowPulls, nights: NIGHTS.filter((n) => n[0] === 'Barrow Deeps').length },
-      { zone: 'Hyjal Summit', pulls: hyjalPulls, nights: NIGHTS.filter((n) => n[0] === 'Hyjal Summit').length },
+      {
+        zone: 'Barrow Deeps',
+        pulls: barrowPulls,
+        nights: NIGHTS.filter((n) => n[0] === 'Barrow Deeps').length,
+      },
+      {
+        zone: 'Hyjal Summit',
+        pulls: hyjalPulls,
+        nights: NIGHTS.filter((n) => n[0] === 'Hyjal Summit').length,
+      },
     ],
   };
 }
@@ -421,7 +460,13 @@ export function buildMockReadiness(): GuildReadinessPage {
         consent: r.consent,
         gear_gap: hasGear ? { upgrades: gap.upgrades, gain_dps: gap.gain, not_sim_checked: 0 } : null,
         enchants: { missing_slots: missing, checked: hasGear },
-        consumables: { state: hasBags ? (consumablesOkFor(r.name) ? ('stocked' as const) : ('short' as const)) : ('unknown' as const) },
+        consumables: {
+          state: hasBags
+            ? consumablesOkFor(r.name)
+              ? ('stocked' as const)
+              : ('short' as const)
+            : ('unknown' as const),
+        },
         talent_points_unspent: unspentPointsFor(r.name),
         item_level: r.item_level ?? null,
         item_level_delta: r.item_level === undefined ? null : r.item_level - MEDIAN_ILVL,
@@ -436,7 +481,9 @@ export function buildMockReadiness(): GuildReadinessPage {
 export function buildMockLoot(): GuildLootPage {
   const roster = buildMockRoster();
   const items = ONYXIA_DROPS.slice(0, 6).map(([name, slot, classes], i) => {
-    const eligible = roster.filter((r) => r.verified && classes.includes(r.class ?? '') && gearGapFor(r.name).gain !== null);
+    const eligible = roster.filter(
+      (r) => r.verified && classes.includes(r.class ?? '') && gearGapFor(r.name).gain !== null,
+    );
     const candidates = [...eligible]
       .sort((a, b) => (gearGapFor(b.name).gain ?? 0) - (gearGapFor(a.name).gain ?? 0))
       .slice(0, 4)
@@ -458,7 +505,12 @@ export function buildMockLoot(): GuildLootPage {
       quality: 4,
       slot,
       awarded_to: isAwarded
-        ? { character_key: candidates[0].character_key, name: candidates[0].name, at: '2026-12-15T20:10:00Z', by_name: 'Kraggor' }
+        ? {
+            character_key: candidates[0].character_key,
+            name: candidates[0].name,
+            at: '2026-12-15T20:10:00Z',
+            by_name: 'Kraggor',
+          }
         : null,
       candidates,
     };

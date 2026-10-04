@@ -7,7 +7,6 @@
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { CharacterPath } from '../../lib/characters';
-  import { characterSlug } from '../../lib/characters';
   import type { GuildRosterRow } from '../../lib/guild/api';
   import {
     DEFAULT_ROSTER_FILTERS,
@@ -29,6 +28,7 @@
     rosterBusy,
     rosterActionError,
     frozen,
+    removeOverridesFrozen = () => false,
     onApprove,
     onRemove,
     onApproveAll,
@@ -41,6 +41,9 @@
     rosterBusy: string | null;
     rosterActionError: string;
     frozen: boolean;
+    /** Unchanged v1 rule: a contested claim freezes Remove for everyone except the row's
+     *  own account or a site moderator. */
+    removeOverridesFrozen?: (row: GuildRosterRow) => boolean;
     onApprove: (row: GuildRosterRow) => void;
     onRemove: (row: GuildRosterRow) => void;
     onApproveAll: () => void;
@@ -51,10 +54,10 @@
   let sortKey = $state<RosterSortKey>('ilvl');
 
   const floor = $derived(ratingFloor(roster));
-  const ordered = $derived(
-    orderRosterForTab(roster, { filters, floor, sortKey, myCharacterKey }),
+  const ordered = $derived(orderRosterForTab(roster, { filters, floor, sortKey, myCharacterKey }));
+  const classOptions = $derived(
+    [...new Set(roster.map((r) => r.class).filter((c): c is string => c !== undefined))].sort(),
   );
-  const classOptions = $derived([...new Set(roster.map((r) => r.class).filter((c): c is string => c !== undefined))].sort());
 
   function toggle(key: 'verifiedOnly' | 'belowFloorOnly'): void {
     filters = { ...filters, [key]: !filters[key] };
@@ -132,7 +135,10 @@
         <div class="guild-roster-row">
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
           <div class="flex min-w-[150px] flex-col">
-            <span class="font-display text-[14px] font-bold" style={`color:${classColorVar(row.class ?? '')}`}>
+            <span
+              class="font-display text-[14px] font-bold"
+              style={`color:${classColorVar(row.class ?? '')}`}
+            >
               {row.name}
             </span>
             <span class="text-muted text-[12px]">{row.spec ?? ''}</span>
@@ -176,7 +182,10 @@
         <div class="guild-roster-row" class:is-pinned={pinned}>
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
           <div class="flex min-w-[150px] flex-col">
-            <span class="font-display text-[14px] font-bold" style={`color:${classColorVar(row.class ?? '')}`}>
+            <span
+              class="font-display text-[14px] font-bold"
+              style={`color:${classColorVar(row.class ?? '')}`}
+            >
               {row.name}{pinned ? ' (you)' : ''}
             </span>
             <span class="text-muted text-[12px]">{row.spec ?? ''}</span>
@@ -185,7 +194,10 @@
             <span class="pill pill-site">{row.rank === 'leader' ? 'Leader' : 'Officer'}</span>
           {/if}
           {#if row.logged_recently}
-            <span class="pill" style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)">
+            <span
+              class="pill"
+              style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
+            >
               Logged in the last day
             </span>
           {/if}
@@ -193,7 +205,9 @@
             <span class="tabular font-mono text-[13px]">ilvl {row.item_level}</span>
           {/if}
           {#if row.attendance !== undefined}
-            <span class="text-muted tabular font-mono text-[12px]">{row.attendance.present}/{row.attendance.nights} nights</span>
+            <span class="text-muted tabular font-mono text-[12px]"
+              >{row.attendance.present}/{row.attendance.nights} nights</span
+            >
           {/if}
           {#if row.best_parse !== undefined && row.best_parse !== null}
             <span class="text-muted tabular font-mono text-[12px]">
@@ -216,7 +230,7 @@
               <button
                 class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
                 onclick={() => onRemove(row)}
-                disabled={rosterBusy === row.character_key || frozen}
+                disabled={rosterBusy === row.character_key || (frozen && !removeOverridesFrozen(row))}
                 aria-label={`Remove ${row.name}`}
                 data-testid="guild-roster-remove"
               >

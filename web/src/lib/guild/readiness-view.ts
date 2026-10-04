@@ -23,7 +23,9 @@ export function pinReadinessOwnRow(
   myCharacterKey: string | null,
 ): GuildReadinessRow[] {
   if (myCharacterKey === null) return [...rows];
-  return [...rows].sort((a, b) => Number(b.character_key === myCharacterKey) - Number(a.character_key === myCharacterKey));
+  return [...rows].sort(
+    (a, b) => Number(b.character_key === myCharacterKey) - Number(a.character_key === myCharacterKey),
+  );
 }
 
 export const NO_GEAR_CONSENT = 'no gear consent';
@@ -88,7 +90,9 @@ export function readinessFails(row: GuildReadinessRow): string[] {
   }
   if (row.consumables.state === 'short') fails.push('bags short on consumables');
   if (row.talent_points_unspent > 0) {
-    fails.push(`${row.talent_points_unspent} unspent talent point${row.talent_points_unspent > 1 ? 's' : ''}`);
+    fails.push(
+      `${row.talent_points_unspent} unspent talent point${row.talent_points_unspent > 1 ? 's' : ''}`,
+    );
   }
   return fails;
 }

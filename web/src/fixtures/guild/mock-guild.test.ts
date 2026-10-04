@@ -102,7 +102,9 @@ describe('buildMockReadiness', () => {
 describe('buildMockLoot', () => {
   it('names only Onyxia as the killed encounter', () => {
     const loot = buildMockLoot();
-    expect(loot.encounters).toEqual([{ encounter_id: 1084, name: 'Onyxia', zone: "Onyxia's Lair", killed: true }]);
+    expect(loot.encounters).toEqual([
+      { encounter_id: 1084, name: 'Onyxia', zone: "Onyxia's Lair", killed: true },
+    ]);
   });
 
   it('every awarded item has exactly one candidate carrying the award', () => {

@@ -8,7 +8,9 @@ import type { GuildLootEncounter, GuildLootItem } from './api';
  *  unkilled: none, farm" (today's real case, Onyxia); an unkilled boss just names itself. */
 export function bossPickerLabel(selected: GuildLootEncounter | undefined): string {
   if (selected === undefined) return 'No bosses killed yet this tier';
-  return selected.killed ? `${selected.name} · next unkilled: none, farm` : `${selected.name} · not yet killed`;
+  return selected.killed
+    ? `${selected.name} · next unkilled: none, farm`
+    : `${selected.name} · not yet killed`;
 }
 
 /** The first encounter in the list the API has not marked killed -- the boss picker's own

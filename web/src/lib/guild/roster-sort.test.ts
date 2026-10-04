@@ -33,7 +33,10 @@ function row(overrides: Partial<GuildRosterRow> = {}): GuildRosterRow {
 describe('ratingFloor / isBelowRatingFloor', () => {
   it('is the 25th percentile of the roster’s own rated population', () => {
     const rows = [10, 20, 30, 40, 50, 60, 70, 80].map((overall, i) =>
-      row({ character_key: `c${i}`, rating: { overall, output: 0, survival: 0, mechanics: 0, utility: 0, preparation: 0, activity: 0 } }),
+      row({
+        character_key: `c${i}`,
+        rating: { overall, output: 0, survival: 0, mechanics: 0, utility: 0, preparation: 0, activity: 0 },
+      }),
     );
     expect(ratingFloor(rows)).toBe(30);
   });
@@ -56,7 +59,11 @@ describe('applyRosterFilters', () => {
   ];
 
   it('combines filters as AND', () => {
-    const result = applyRosterFilters(rows, { ...DEFAULT_ROSTER_FILTERS, role: 'healer', classFilter: 'priest' }, null);
+    const result = applyRosterFilters(
+      rows,
+      { ...DEFAULT_ROSTER_FILTERS, role: 'healer', classFilter: 'priest' },
+      null,
+    );
     expect(result.map((r) => r.character_key)).toEqual(['healer']);
   });
 
@@ -67,8 +74,30 @@ describe('applyRosterFilters', () => {
 
   it('filters below-rating-floor', () => {
     const withRatings = [
-      row({ character_key: 'low', rating: { overall: 10, output: 0, survival: 0, mechanics: 0, utility: 0, preparation: 0, activity: 0 } }),
-      row({ character_key: 'high', rating: { overall: 90, output: 0, survival: 0, mechanics: 0, utility: 0, preparation: 0, activity: 0 } }),
+      row({
+        character_key: 'low',
+        rating: {
+          overall: 10,
+          output: 0,
+          survival: 0,
+          mechanics: 0,
+          utility: 0,
+          preparation: 0,
+          activity: 0,
+        },
+      }),
+      row({
+        character_key: 'high',
+        rating: {
+          overall: 90,
+          output: 0,
+          survival: 0,
+          mechanics: 0,
+          utility: 0,
+          preparation: 0,
+          activity: 0,
+        },
+      }),
     ];
     const result = applyRosterFilters(withRatings, { ...DEFAULT_ROSTER_FILTERS, belowFloorOnly: true }, 50);
     expect(result.map((r) => r.character_key)).toEqual(['low']);
@@ -83,8 +112,30 @@ describe('sortRoster', () => {
 
   it('sorts by rating descending', () => {
     const rows = [
-      row({ character_key: 'a', rating: { overall: 40, output: 0, survival: 0, mechanics: 0, utility: 0, preparation: 0, activity: 0 } }),
-      row({ character_key: 'b', rating: { overall: 90, output: 0, survival: 0, mechanics: 0, utility: 0, preparation: 0, activity: 0 } }),
+      row({
+        character_key: 'a',
+        rating: {
+          overall: 40,
+          output: 0,
+          survival: 0,
+          mechanics: 0,
+          utility: 0,
+          preparation: 0,
+          activity: 0,
+        },
+      }),
+      row({
+        character_key: 'b',
+        rating: {
+          overall: 90,
+          output: 0,
+          survival: 0,
+          mechanics: 0,
+          utility: 0,
+          preparation: 0,
+          activity: 0,
+        },
+      }),
     ];
     expect(sortRoster(rows, 'rating').map((r) => r.character_key)).toEqual(['b', 'a']);
   });
@@ -140,6 +191,11 @@ describe('orderRosterForTab', () => {
       sortKey: 'ilvl',
       myCharacterKey: 'mine',
     });
-    expect(ordered.map((r) => r.character_key)).toEqual(['unverified', 'mine', 'verified-high', 'verified-low']);
+    expect(ordered.map((r) => r.character_key)).toEqual([
+      'unverified',
+      'mine',
+      'verified-high',
+      'verified-low',
+    ]);
   });
 });

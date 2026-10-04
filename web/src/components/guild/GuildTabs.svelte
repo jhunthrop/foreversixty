@@ -6,7 +6,8 @@
      view programmatically on load (spec §7: a 2px gold sliver off-screen is not enough on
      its own to say which tab is active). -->
 <script lang="ts" module>
-  export type GuildTabId = 'overview' | 'roster' | 'raids' | 'progression' | 'readiness' | 'loot' | 'settings';
+  export type GuildTabId =
+    'overview' | 'roster' | 'raids' | 'progression' | 'readiness' | 'loot' | 'settings';
 
   export const GUILD_TABS: { id: GuildTabId; label: string }[] = [
     { id: 'overview', label: 'Overview' },
@@ -19,7 +20,14 @@
   ];
 
   const PUBLIC_TABS: readonly GuildTabId[] = ['overview', 'raids', 'progression'];
-  const MEMBER_TABS: readonly GuildTabId[] = ['overview', 'roster', 'raids', 'progression', 'readiness', 'loot'];
+  const MEMBER_TABS: readonly GuildTabId[] = [
+    'overview',
+    'roster',
+    'raids',
+    'progression',
+    'readiness',
+    'loot',
+  ];
   const OFFICER_TABS: readonly GuildTabId[] = [...MEMBER_TABS, 'settings'];
 
   /** Spec §4.0's visibility matrix, stated once: which tab ids a role may ever reach,
@@ -42,8 +50,11 @@
     active,
     role,
     onSelect,
-  }: { active: GuildTabId; role: 'public' | 'member' | 'officer' | 'moderator'; onSelect: (tab: GuildTabId) => void } =
-    $props();
+  }: {
+    active: GuildTabId;
+    role: 'public' | 'member' | 'officer' | 'moderator';
+    onSelect: (tab: GuildTabId) => void;
+  } = $props();
 
   const allowed = $derived(tabsForRole(role));
   let stripEl = $state<HTMLDivElement | undefined>(undefined);
