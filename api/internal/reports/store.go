@@ -59,6 +59,33 @@ func (s *Store) Get(ctx context.Context, id string) (Report, error) {
 	return scanReport(s.Pool.QueryRow(ctx, `select `+reportColumns+` from reports where id = $1`, id))
 }
 
+// reportSummaryColumns is the Summary projection OwnedBy and ForGuild
+// both select: each one's own fight and kill counts alongside the
+// report's own columns. The two differ only in their where clause -
+// one caller's own reports, the other a guild's - so the column list
+// and the scan that reads it (scanSummaries) are shared rather than
+// copied, per DRY.
+const reportSummaryColumns = `r.id, r.title, r.zone, r.status, r.visibility, r.created_at,
+	        (select count(*) from fights f where f.report_id = r.id),
+	        (select count(*) from fights f where f.report_id = r.id and f.kill
+	           and f.encounter_id is not null)`
+
+// scanSummaries reads every row of a query built on
+// reportSummaryColumns, in the column order it lists.
+func scanSummaries(rows pgx.Rows) ([]Summary, error) {
+	defer rows.Close()
+	out := []Summary{}
+	for rows.Next() {
+		var s Summary
+		if err := rows.Scan(&s.ID, &s.Title, &s.Zone, &s.Status, &s.Visibility,
+			&s.CreatedAt, &s.FightCount, &s.KillCount); err != nil {
+			return nil, fmt.Errorf("reports: scan summary: %w", err)
+		}
+		out = append(out, s)
+	}
+	return out, rows.Err()
+}
+
 // OwnedBy lists a user's own reports, newest first, with the count of
 // fights each one holds.
 func (s *Store) OwnedBy(ctx context.Context, userID int64, page, perPage int) ([]Summary, int, error) {
@@ -68,26 +95,45 @@ func (s *Store) OwnedBy(ctx context.Context, userID int64, page, perPage int) ([
 		return nil, 0, fmt.Errorf("reports: count of %d: %w", userID, err)
 	}
 	rows, err := s.Pool.Query(ctx,
-		`select r.id, r.title, r.zone, r.status, r.visibility, r.created_at,
-		        (select count(*) from fights f where f.report_id = r.id),
-		        (select count(*) from fights f where f.report_id = r.id and f.kill
-		           and f.encounter_id is not null)
+		`select `+reportSummaryColumns+`
 		 from reports r where r.owner_id = $1
 		 order by r.created_at desc limit $2 offset $3`, userID, perPage, (page-1)*perPage)
 	if err != nil {
 		return nil, 0, fmt.Errorf("reports: list of %d: %w", userID, err)
 	}
-	defer rows.Close()
-	out := []Summary{}
-	for rows.Next() {
-		var s Summary
-		if err := rows.Scan(&s.ID, &s.Title, &s.Zone, &s.Status, &s.Visibility,
-			&s.CreatedAt, &s.FightCount, &s.KillCount); err != nil {
-			return nil, 0, fmt.Errorf("reports: list of %d: %w", userID, err)
-		}
-		out = append(out, s)
+	out, err := scanSummaries(rows)
+	if err != nil {
+		return nil, 0, fmt.Errorf("reports: list of %d: %w", userID, err)
 	}
-	return out, total, rows.Err()
+	return out, total, nil
+}
+
+// ForGuild lists a guild's own reports, newest first: its
+// guild-visibility reports plus its public ones - the same set a
+// member's mayView already grants them on any one report of that
+// guild's (handler.go). Shaped and queried exactly like OwnedBy, whose
+// column list and scan it shares (reportSummaryColumns, scanSummaries);
+// only the where clause differs.
+func (s *Store) ForGuild(ctx context.Context, guildID int64, page, perPage int) ([]Summary, int, error) {
+	var total int
+	if err := s.Pool.QueryRow(ctx,
+		`select count(*) from reports where guild_id = $1 and visibility in ($2, $3)`,
+		guildID, GuildTo, Public).Scan(&total); err != nil {
+		return nil, 0, fmt.Errorf("reports: count for guild %d: %w", guildID, err)
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select `+reportSummaryColumns+`
+		 from reports r where r.guild_id = $1 and r.visibility in ($2, $3)
+		 order by r.created_at desc limit $4 offset $5`,
+		guildID, GuildTo, Public, perPage, (page-1)*perPage)
+	if err != nil {
+		return nil, 0, fmt.Errorf("reports: list for guild %d: %w", guildID, err)
+	}
+	out, err := scanSummaries(rows)
+	if err != nil {
+		return nil, 0, fmt.Errorf("reports: list for guild %d: %w", guildID, err)
+	}
+	return out, total, nil
 }
 
 // Recent lists the newest complete public reports, keyset-paged on

@@ -32,7 +32,7 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		"/v1/auth/battlenet/start", "/v1/auth/battlenet/callback",
 		"/v1/auth/email", "/v1/auth/email/callback", "/v1/auth/logout", "/v1/sessions", "/v1/me",
 		"/v1/devices/pair", "/v1/devices/claim", "/v1/devices", "/v1/devices/{id}",
-		"/v1/reports", "/v1/reports/{id}", "/v1/reports/{id}/visibility",
+		"/v1/reports", "/v1/reports/{id}", "/v1/guilds/{id}/reports", "/v1/reports/{id}/visibility",
 		"/v1/reports/{id}/access", "/v1/reports/{id}/files/{path}",
 		"/v1/reports/{id}/fights/{n}", "/v1/reports/{id}/fights/{n}/live",
 		"/v1/reports/{id}/raw", "/v1/reports/{id}/complete",

@@ -89,6 +89,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("POST /v1/reports", auth.Require(s.create))
 	mux.HandleFunc("GET /v1/reports", auth.RequireSession(s.mine))
 	mux.HandleFunc("GET /v1/reports/recent", s.recent)
+	mux.HandleFunc("GET /v1/guilds/{id}/reports", auth.RequireSession(s.guildReports))
 	mux.HandleFunc("GET /v1/reports/{id}", s.get)
 	mux.HandleFunc("PATCH /v1/reports/{id}", auth.Require(s.patch))
 	mux.HandleFunc("GET /v1/reports/{id}/visibility", s.visibility)
@@ -200,6 +201,53 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 	rows, total, err := s.Store.OwnedBy(r.Context(), auth.ActorFrom(r.Context()).UserID, page, MinePerPage)
 	if err != nil {
 		s.fail(w, r, "mine", err, "could not list your reports just now")
+		return
+	}
+	httpx.CachePrivate(w)
+	httpx.WriteOK(w, r, http.StatusOK, MinePage{
+		Rows: rows, Total: total, Page: page, PerPage: MinePerPage,
+	})
+}
+
+// guildReports lists a guild's own reports, newest first: the guild tab
+// on "Your reports" (design/specs/2026-10-04-logs-landing.md §4.C.1).
+// Shaped exactly like MinePage, the body GET /v1/reports?mine=1 already
+// returns, so the page's existing row-rendering component serves this
+// list unchanged. Authorized the same way mayView already grants a
+// guild member read access to one of that guild's own guild-visibility
+// reports: a verified member (any rank) sees the set; everyone else -
+// including a caller who is signed in but not a member - gets the same
+// 404 a stranger gets reading a private report, never a 403 that would
+// confirm the guild's existence or this caller's absence from it.
+func (s *Service) guildReports(w http.ResponseWriter, r *http.Request) {
+	guildID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil || guildID < 1 {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+		return
+	}
+	a := auth.ActorFrom(r.Context())
+	if !a.IsModerator() {
+		if _, ok, err := s.Accounts.GuildRank(r.Context(), guildID, a.UserID); err != nil {
+			s.fail(w, r, "guildReports", err, "could not list that guild's reports just now")
+			return
+		} else if !ok {
+			httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+			return
+		}
+	}
+	page := 1
+	if v := r.URL.Query().Get("page"); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 1 {
+			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "page must be 1 or more",
+				map[string]string{"page": "a page number from 1"})
+			return
+		}
+		page = n
+	}
+	rows, total, err := s.Store.ForGuild(r.Context(), guildID, page, MinePerPage)
+	if err != nil {
+		s.fail(w, r, "guildReports", err, "could not list that guild's reports just now")
 		return
 	}
 	httpx.CachePrivate(w)
