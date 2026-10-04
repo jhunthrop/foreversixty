@@ -29,14 +29,17 @@ import type { ClientDirective } from 'astro';
 
 const MIN_DELAY_AFTER_LOAD_MS = 800;
 
-/** Base.astro's pre-paint script stamps `<html data-session="1">` from the session cookie
- *  before anything renders. Lighthouse's budget run is signed out, so the floor above only
- *  ever protected the signed-out LCP; for a signed-in visitor it was 800ms-plus-idle of
- *  nothing before the hero, the account chip or the upgrades table could even start (owner
- *  2026-10-04: "it takes a while to load even with postgres warm" -- measured 1.75s from
- *  navigation to the first island request on a warm desktop whose `load` fired at 290ms). */
+/** The readable half of the session cookie pair (query.ts's `sessionHinted`, repeated here
+ *  because a directive module must stay dependency-free -- it is inlined into every page's
+ *  head). Lighthouse's budget run is signed out, so the floor above only ever protected the
+ *  signed-out LCP; for a signed-in visitor it was 800ms-plus-idle of nothing before the hero,
+ *  the account chip or the upgrades table could even start (owner 2026-10-04: "it takes a
+ *  while to load even with postgres warm" -- measured 1.75s from navigation to the first
+ *  island request on a warm desktop whose `load` fired at 290ms). Read from the cookie, not
+ *  `<html data-session>`: Base.astro's inline script stamps that at the end of the body, after
+ *  the header island's directive has already run. */
 function signedInHint(): boolean {
-  return document.documentElement.dataset.session === '1';
+  return /(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie);
 }
 
 const idleAfterLoad: ClientDirective = (load) => {
