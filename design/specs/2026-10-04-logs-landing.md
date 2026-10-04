@@ -479,3 +479,13 @@ mock board is a required deliverable for every state captured below.
 
 **Lighthouse budget:** `web/lighthouserc.json`'s existing `/logs.html` targets, unchanged
 (§8) — performance >=0.90, accessibility/SEO >=0.95, LCP <=2200ms, TBT <=100ms, CLS <=0.05.
+
+## 12. Amendments from the mock reviews, 2026-10-04
+
+- §4.A.1 / §6: the hook line reads `Last kill, {fight name}: {Name} · {dps} DPS · Gear in the planner | Sim`; the lead-in names the fight the row comes from. DPS prints with one decimal under 1,000 and as a whole number with a thousands separator at or above 1,000.
+- §4.C / §5: the sign-in action inside `Your reports` (and every sign-in action on this page) is the outline Secondary button, as `SignInPrompt.svelte` already renders it; the filled gold button stays the home page's alone.
+- §7: the dungeon framing line sits directly under the spine on every viewport, before `Your reports`.
+- §4.C: no caption under the `Your reports` list.
+- §4.A: the description's two anchors use the text-nav colour with underline.
+- §4.D.1: no coloured dot beside the device status line; text only.
+- Mock boards: `LOGS_PAIR=success` renders the pairing-success state and the "paired, not seen yet" device line.

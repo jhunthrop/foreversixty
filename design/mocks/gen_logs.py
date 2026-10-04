@@ -43,14 +43,14 @@ def mono(s, color=MUTED, size=14):
 sample_pill = '' if SIGNED_IN else '<span class="pill pill-sample" style="margin-left:10px;vertical-align:4px">Sample</span>'
 facts = mono(f'{hero_day}&nbsp;·&nbsp;{R["fight_count"]} fights&nbsp;·&nbsp;{R["kill_count"]} kills')
 desc = (f'<span style="font-size:14px;color:{BODY};max-width:62ch">Every pull, ranked: damage, healing, deaths, buffs, casts and threat. '
-        f'<a href="#companion" style="color:{BODY};text-decoration:underline">Log live with the companion</a> or '
-        f'<a href="#upload" style="color:{BODY};text-decoration:underline">upload a log file</a>.</span>')
-dps_text = f"{top['dps']:,} DPS"
+        f'<a href="#companion" style="color:#b9b3a4;text-decoration:underline">Log live with the companion</a> or '
+        f'<a href="#upload" style="color:#b9b3a4;text-decoration:underline">upload a log file</a>.</span>')
+dps_text = (f"{top['dps']:,} DPS" if top['dps'] >= 1000 else f"{top['dps']:.1f} DPS")
 if SIGNED_IN:
     hook = (f'<span style="font-size:13px;color:{MUTED};display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
             f'<span>Last kill, {html.escape(fight["name"])}:</span>'
             f'<span class="display" style="font-size:14px;font-weight:700;color:{CLASS_COLOR.get(top["class"].lower(), TEXT)}">{top["name"]}</span>'
-            f'{mono(dps_text, TEXT, 13)}'
+            f'<span style="color:{SOFT}">·</span>{mono(dps_text, TEXT, 13)}<span style="color:{SOFT}">·</span>'
             f'<a href="#planner" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">Gear in the planner</a>'
             f'<span style="color:{SOFT}">|</span><a href="#sim" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">Sim</a></span>')
 else:
@@ -94,14 +94,19 @@ def report_row(title, day, fights, kills, guild=None):
 if SIGNED_IN:
     tabs = f'<div style="display:flex;gap:6px">{tab("Mine", True)}{tab("Olympus XXVII")}</div>'
     rows = report_row('Sanguine Depths', hero_day, R['fight_count'], R['kill_count']) + report_row('Deadmines, first clear', '2026-09-12', 24, 6) + report_row('Wailing Caverns', '2026-09-08', 31, 7)
-    mine = panel('Your reports', tabs + f'<div>{rows}</div><span style="font-size:12px;color:{MUTED}">Newest first. A guild tab shows the reports your guild shared with its members.</span>')
+    mine = panel('Your reports', tabs + f'<div>{rows}</div>')
 else:
-    mine = panel('Your reports', f'<span style="font-size:14px;color:{BODY}">Sign in to see the reports you own. <a href="#email">Use an email link instead.</a></span><span>{btn("Sign in with Battle.net", "#signin", fill=True)}</span>')
+    mine = panel('Your reports', f'<span style="font-size:14px;color:{BODY}">Sign in to see the reports you own. <a href="#email">Use an email link instead.</a></span><span>{btn("Sign in with Battle.net", "#signin")}</span>')
 recent = panel('Recent public reports', f'<span style="font-size:14px;color:{BODY}">No public reports yet. The first raid logs land in December; dungeon logs are welcome now.</span>')
 
 status = (f'<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:{BODY}">MacBook Pro · macOS · last seen {mono("4 min ago", BODY, 13)}</div>' if SIGNED_IN else '')
 pointer = f'<span style="font-size:14px;color:{BODY}">Downloads and the in-game /combatlog step are on the setup page. <a href="#setup" style="text-decoration:underline">Get set up</a></span>'
-if SIGNED_IN:
+PAIRED = os.environ.get('LOGS_PAIR') == 'success'
+if SIGNED_IN and PAIRED:
+    status = (f'<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:{BODY}">MacBook Pro · macOS · paired, not seen yet</div>')
+    pairing = (f'<div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid {SOFT}"><span class="label">Pair another device</span>'
+               f'<span style="font-size:14px;color:{TEXT}">MacBook Pro paired. It starts uploading as soon as you are logging.</span></div>')
+elif SIGNED_IN:
     pairing = (f'<div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid {SOFT}"><span class="label">Pair another device</span>'
                f'<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span class="mono" style="font-size:26px;letter-spacing:.18em;color:{TEXT};padding:8px 14px;border:1px dashed {BORDER};border-radius:4px">7K3Q-P2ND</span>'
                f'<span style="font-size:13px;color:{MUTED}">Type this into the companion within {mono("9 minutes", MUTED, 13)}. This panel confirms the moment it pairs.</span></div></div>')
@@ -131,7 +136,7 @@ if not PHONE:
 <div style="display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:start">{mine}{recent}</div>
 <div style="display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:start">{companion}{upload}</div>
 </div>{footer()}'''
-    out = write(f'logs-{STATE}.html', page(body, 1440))
+    out = write(f'logs-{STATE}{"-paired" if PAIRED else ""}.html', page(body, 1440))
 else:
     body = f'''<div class="band" style="display:flex;flex-direction:column;flex-shrink:0">{nav_phone(SIGNED_IN, ZULMARA)}
 <div style="display:flex;flex-direction:column;gap:12px;padding:18px 18px 22px 18px">{hero}</div></div>
