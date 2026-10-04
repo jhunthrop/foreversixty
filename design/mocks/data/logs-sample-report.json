@@ -1,0 +1,86 @@
+{
+ "report": {
+  "id": "5lop7n5kwysf",
+  "title": "Sanguine Depths, sample log",
+  "created_at": "2026-09-15T12:55:13.815851Z",
+  "fight_count": 63,
+  "kill_count": 12
+ },
+ "fight": {
+  "index": 62,
+  "name": "Nalthor the Rimebinder",
+  "duration_s": 172,
+  "kill": true
+ },
+ "dps": [
+  {
+   "name": "Reglitch",
+   "class": "Priest",
+   "spec": "Shadow",
+   "role": "dps",
+   "dps": 2364,
+   "deaths": 0
+  },
+  {
+   "name": "Mishvamp",
+   "class": "Shaman",
+   "spec": "Elemental",
+   "role": "dps",
+   "dps": 2231,
+   "deaths": 0
+  },
+  {
+   "name": "Hanabanana",
+   "class": "Priest",
+   "spec": "Shadow",
+   "role": "dps",
+   "dps": 1774,
+   "deaths": 0
+  },
+  {
+   "name": "Hobolol",
+   "class": "Paladin",
+   "spec": "Protection",
+   "role": "tank",
+   "dps": 1377,
+   "deaths": 0
+  },
+  {
+   "name": "Yesbruvmw",
+   "class": "Monk",
+   "spec": "Mistweaver",
+   "role": "healer",
+   "dps": 242,
+   "deaths": 0
+  }
+ ],
+ "hps": [
+  {
+   "name": "Yesbruvmw",
+   "class": "Monk",
+   "hps": 2505
+  },
+  {
+   "name": "Hobolol",
+   "class": "Paladin",
+   "hps": 941
+  },
+  {
+   "name": "Reglitch",
+   "class": "Priest",
+   "hps": 483
+  },
+  {
+   "name": "Mishvamp",
+   "class": "Shaman",
+   "hps": 392
+  },
+  {
+   "name": "Hanabanana",
+   "class": "Priest",
+   "hps": 277
+  }
+ ],
+ "deaths": [],
+ "mechanics": []
+}
