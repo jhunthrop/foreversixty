@@ -102,8 +102,7 @@ func rollDeaths(rng *rand.Rand, roster []mockCharacter, kill, isTrash bool) map[
 
 // buildFightMetrics generates one row per roster character for a single fight.
 func buildFightMetrics(roster []mockCharacter, keys []string, plan fightPlan, rng *rand.Rand) []fightMetricRow {
-	isTrash := plan.EncounterID == 0
-	deaths := rollDeaths(rng, roster, plan.Kill, isTrash)
+	deaths := rollDeaths(rng, roster, plan.Kill, plan.Trash)
 	rows := make([]fightMetricRow, len(roster))
 	for i, c := range roster {
 		activeFrac := 0.85 + rng.Float64()*0.13

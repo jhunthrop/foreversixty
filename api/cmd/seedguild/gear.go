@@ -24,7 +24,8 @@ const fs1DataBuild = "1.60.1.70009"
 
 // fs1Level is every mock character's level. Forever's beta caps leveling at 30 as this
 // tool is written (2026-10), but the guild page this seed exists to let the owner design
-// against is the launch raid picture — a 24-raider, level-60 Molten Core/Onyxia roster —
+// against is the launch raid picture — a 24-raider, level-60 Barrow Deeps/Hyjal Summit/
+// Onyxia's Lair roster (Forever's real first raid tier, see raid.go's own header) —
 // so the mock characters are seeded at level 60 regardless of what the beta itself allows
 // today.
 const fs1Level = 60

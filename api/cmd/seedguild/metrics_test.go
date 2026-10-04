@@ -11,7 +11,7 @@ func TestBuildFightMetricsOneRowPerCharacter(t *testing.T) {
 	for i, c := range roster {
 		keys[i] = c.Name
 	}
-	plan := fightPlan{Name: "Lucifron", EncounterID: encLucifron, Kill: true, DurationMS: 240_000}
+	plan := fightPlan{Name: "Onyxia", EncounterID: encOnyxia, Kill: true, DurationMS: 240_000}
 	rows := buildFightMetrics(roster, keys, plan, rand.New(rand.NewSource(1)))
 	if len(rows) != len(roster) {
 		t.Fatalf("len(rows) = %d, want %d", len(rows), len(roster))
@@ -35,7 +35,7 @@ func TestBuildFightMetricsOneRowPerCharacter(t *testing.T) {
 func TestBuildFightMetricsTrashNeverHasDeaths(t *testing.T) {
 	roster := mockRoster()
 	keys := make([]string, len(roster))
-	plan := fightPlan{Name: "Trash", Kill: true, DurationMS: 60_000}
+	plan := fightPlan{Name: "Trash", Kill: true, Trash: true, DurationMS: 60_000}
 	for seed := int64(0); seed < 20; seed++ {
 		rows := buildFightMetrics(roster, keys, plan, rand.New(rand.NewSource(seed)))
 		for _, row := range rows {
@@ -49,7 +49,7 @@ func TestBuildFightMetricsTrashNeverHasDeaths(t *testing.T) {
 func TestBuildFightMetricsWipesCanHaveDeaths(t *testing.T) {
 	roster := mockRoster()
 	keys := make([]string, len(roster))
-	plan := fightPlan{Name: "Garr", EncounterID: encGarr, Kill: false, DurationMS: 300_000}
+	plan := fightPlan{Name: "Onyxia", EncounterID: encOnyxia, Kill: false, DurationMS: 300_000}
 	anyDeath := false
 	for seed := int64(0); seed < 20; seed++ {
 		rows := buildFightMetrics(roster, keys, plan, rand.New(rand.NewSource(seed)))

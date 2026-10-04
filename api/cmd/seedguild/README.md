@@ -37,10 +37,18 @@ already holds a (verified or unverified) character in.
   have unspent talent points; every raider carries a `professions=` section (its class's
   own gathering/crafting pair plus first aid); the one `gear_bags`-consent raider carries
   a `bags=` section of real level-60 raid consumables.
-- **4 raid nights** (2 Molten Core, 2 Onyxia's Lair), 6–10 fights each with 1–2 wipes,
-  owned by the owner's account, `visibility = 'guild'`, `status = 'complete'`. Encounter
-  ids and names come from `logs/engine/mechanics/encounters.json` (read from the Forever
-  client itself), not invented.
+- **4 raid nights across Forever's real first raid tier** — 2 Onyxia's Lair, 1 Barrow
+  Deeps, 1 Hyjal Summit (`data/curated/loot/forever-raid-phases.json`'s own notes field:
+  "the first tier opens on 9 December and is Barrow Deeps, Hyjal Summit and Onyxia";
+  Molten Core is a later, unscheduled "Era" raid and is not used here) — 6–10 fights each
+  with 1–2 wipes, owned by the owner's account, `visibility = 'guild'`,
+  `status = 'complete'`. Onyxia is the only one of the three with a published encounter
+  (`logs/engine/mechanics/encounters.json`: id 1084 "Onyxia", read from the Forever client
+  itself) — both Onyxia nights end in a kill. Barrow Deeps and Hyjal Summit have no
+  published encounter or boss name at all (that same file's own
+  `no_client_rows_yet.raids` list); their pulls carry a null `encounter_id` and a generic
+  "Pull N" name rather than an invented boss, matching the design spec's own ruling
+  (`design/specs/2026-10-04-guild-page.md` §12.1: "no named encounter published").
 - **`seed_rows` (migration `0029_seed_rows`).** One row per created/mutated row this tool
   is responsible for, keyed by a tag derived from the guild id
   (`seedguild-<guild id>`). A created row (`users`, `reports`) has `prior = null`;
@@ -73,11 +81,11 @@ database row.** This tool schedules its four raid nights relative to the moment 
 *runs* — the last four raid-size nights before `now` (`raid.go`'s `DaysAgo`), two within
 the trailing 7 days and two older — not the spec's own fixed 12-10/12-15/12-17/12-22
 dates. Once this tool is actually run after 9 December 2026, "the last four raid-size
-nights before now" lands after that date on its own, and the Molten Core/level-60 picture
-stops being a stand-in and starts being the literal production launch-raid; until then, it
-is clearly labelled one (see the header comment in `gear.go`). Report titles name the
-*actual* weekday `created_at` falls on (`raid.go`'s `titleFor`), never a hardcoded day
-name that could disagree with the real row.
+nights before now" lands after that date on its own, and the Barrow Deeps/Hyjal Summit/
+Onyxia level-60 picture stops being a stand-in and starts being the literal production
+launch-raid; until then, it is clearly labelled one (see the header comment in `gear.go`
+and `raid.go`). Report titles name the *actual* weekday `created_at` falls on (`raid.go`'s
+`titleFor`), never a hardcoded day name that could disagree with the real row.
 
 ## FS1 fidelity
 

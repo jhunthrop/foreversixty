@@ -127,7 +127,7 @@ func TestMockRosterPairedAccountsShareConsent(t *testing.T) {
 
 func TestMockRosterAttendanceWithinEighteenToTwentyTwoPerNight(t *testing.T) {
 	roster := mockRoster()
-	for _, tag := range []string{"mc1", "mc2", "ony1", "ony2"} {
+	for _, tag := range []string{"barrow", "hyjal", "ony1", "ony2"} {
 		n := countBy(roster, func(c mockCharacter) bool { return c.attends(tag) })
 		if n < 18 || n > 22 {
 			t.Errorf("%s: %d attendees, want 18-22", tag, n)
@@ -136,7 +136,7 @@ func TestMockRosterAttendanceWithinEighteenToTwentyTwoPerNight(t *testing.T) {
 }
 
 func TestMockRosterExactlyTwoAttendOnlyOneNight(t *testing.T) {
-	tags := []string{"mc1", "mc2", "ony1", "ony2"}
+	tags := []string{"barrow", "hyjal", "ony1", "ony2"}
 	oneNightOnly := countBy(mockRoster(), func(c mockCharacter) bool {
 		attended := 0
 		for _, tag := range tags {

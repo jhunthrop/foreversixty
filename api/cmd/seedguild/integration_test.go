@@ -172,7 +172,7 @@ func TestApplyThenRemoveRoundTrips(t *testing.T) {
 		t.Fatal("rankings.Guild: ok = false")
 	}
 	if len(page.Progression) == 0 {
-		t.Error("progression is empty, want Molten Core/Onyxia encounters")
+		t.Error("progression is empty, want Onyxia's encounter")
 	}
 	for _, p := range page.Progression {
 		if p.PullCount == 0 {

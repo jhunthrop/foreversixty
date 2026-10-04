@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -59,23 +60,52 @@ func TestScheduleOrdersFightsSequentially(t *testing.T) {
 	}
 }
 
-func TestEncounterIDsMatchMoltenCoreAndOnyxiaZones(t *testing.T) {
+func TestEncounterIDsOnlyOnyxiaIsNamed(t *testing.T) {
 	for _, p := range raidPlans() {
 		for _, f := range p.Fights {
-			if f.EncounterID == 0 {
-				continue // trash
-			}
 			switch p.Zone {
-			case zoneMoltenCore:
-				if f.EncounterID < encLucifron || f.EncounterID > encMajordomoExecutus {
-					t.Errorf("%s: encounter %d outside Molten Core's id range", p.Tag, f.EncounterID)
-				}
 			case zoneOnyxia:
-				if f.EncounterID != encOnyxia {
-					t.Errorf("%s: encounter %d is not Onyxia", p.Tag, f.EncounterID)
+				if !f.Trash && f.EncounterID != encOnyxia {
+					t.Errorf("%s: real pull's encounter %d is not Onyxia", p.Tag, f.EncounterID)
+				}
+			case zoneBarrowDeeps, zoneHyjal:
+				// Neither zone has a published encounter yet
+				// (logs/engine/mechanics/encounters.json's own "no_client_rows_yet.raids"
+				// list) - every pull carries a null encounter_id, never an invented one.
+				if f.EncounterID != 0 {
+					t.Errorf("%s: %s pull carries encounter %d, want 0 (none published)", p.Tag, p.Zone, f.EncounterID)
 				}
 			default:
 				t.Errorf("unexpected zone %q", p.Zone)
+			}
+		}
+	}
+}
+
+func TestOnyxiaNightsBothEndInAKill(t *testing.T) {
+	for _, p := range raidPlans() {
+		if p.Zone != zoneOnyxia {
+			continue
+		}
+		last := p.Fights[len(p.Fights)-1]
+		if last.EncounterID != encOnyxia || !last.Kill {
+			t.Errorf("%s: last fight = %+v, want a killed Onyxia pull", p.Tag, last)
+		}
+	}
+}
+
+func TestBarrowAndHyjalPullsAreNamedPullNAndNeverTrash(t *testing.T) {
+	for _, p := range raidPlans() {
+		if p.Zone != zoneBarrowDeeps && p.Zone != zoneHyjal {
+			continue
+		}
+		for i, f := range p.Fights {
+			if f.Trash {
+				t.Errorf("%s: pull %d is marked Trash, want a real (if unnamed) attempt", p.Tag, i)
+			}
+			want := fmt.Sprintf("Pull %d", i+1)
+			if f.Name != want {
+				t.Errorf("%s: pull %d name = %q, want %q", p.Tag, i, f.Name, want)
 			}
 		}
 	}
