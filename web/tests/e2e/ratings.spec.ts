@@ -1,17 +1,15 @@
 // web/tests/e2e/ratings.spec.ts
-// /ratings is a static content page: no client JavaScript, no layout shift, and it must
+// /ratings is a static content page: no client JavaScript beyond the layout's account menu, no layout shift, and it must
 // publish every fact spec section 6.3 requires -- the weight table, the percentile-vs
 // -absolute rule, the cap in the coordinator's exact words, and that a rating comes only
 // from a public report.
 import { expect, test } from '@playwright/test';
 
-test('ships no client JavaScript', async ({ page }) => {
-  const scripts: string[] = [];
-  page.on('request', (r) => {
-    if (r.resourceType() === 'script') scripts.push(r.url());
-  });
+test("ships only the layout's account menu island", async ({ page }) => {
   await page.goto('/ratings');
-  expect(scripts).toEqual([]);
+  const islands = page.locator('astro-island');
+  await expect(islands).toHaveCount(1);
+  await expect(islands.first()).toHaveAttribute('component-url', /AccountMenu/);
 });
 
 test('publishes the weight table for all three roles', async ({ page }) => {

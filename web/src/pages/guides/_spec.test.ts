@@ -12,19 +12,17 @@
 // without depending on Astro's content layer being primed.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
-import { loadRenderers } from 'astro:container';
+import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { parse as parseYaml } from 'yaml';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { guideSchema } from '../../content.config';
 import SpecPage from './[class]/[spec].astro';
+import { createPageContainer } from '../../test-support/page-container';
 
 let container: AstroContainer;
 
 beforeAll(async () => {
-  const renderers = await loadRenderers([getContainerRenderer()]);
-  container = await AstroContainer.create({ renderers });
+  container = await createPageContainer();
 });
 
 function loadGuideEntry(id: string) {

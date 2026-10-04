@@ -47,19 +47,10 @@ interface Props {
   title: string;
   description: string;
   path: string;
-  /**
-   * True on a page that already runs client JavaScript (the tools, logs, account): the header
-   * link hydrates and shows who is signed in. False, the default, on a content page: those
-   * ship no client JavaScript at all (home.spec.ts pins it, and the Lighthouse budgets have
-   * no room for a framework runtime behind one link), so the header carries a plain "Sign
-   * in" link instead. It is never a dead end: /login tells a signed-in visitor so and links
-   * to their account.
-   */
-  session?: boolean;
   /** Extra JSON-LD nodes for this page; the homepage always carries the WebSite node. */
   jsonLd?: object[];
 }
-const { title, description, path, session = false, jsonLd = [] } = Astro.props;
+const { title, description, path, jsonLd = [] } = Astro.props;
 const site = SITE_URL;
 const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -103,37 +94,12 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       Skip to content
     </a>
     <Header path={path}>
-      {session ? (
-        // client:idle-after-load, not plain client:idle: moving off client:load (this was
-        // the one eagerly-hydrating island on every `session` page, including the home page,
-        // and Astro's `load` directive hydrates the moment its module resolves -- no yield to
-        // the browser's paint queue, unlike `idle`, astro/dist/runtime/client/load.js vs
-        // idle.js) cut the home page's LCP render delay but did not close it: plain
-        // `client:idle`'s requestIdleCallback can still fire within single-digit
-        // milliseconds on a page not yet doing much else, racing AccountMenu's mount, its
-        // `/v1/me` fetch (the same endpoint HomeAccountPanel.svelte reads) and its two
-        // document-level effect listeners against the hero's own first paint for the same
-        // throttled mobile bandwidth and main thread -- the exact race
-        // src/directives/idle-after-load.ts exists to close, which HomeAccountPanel.svelte
-        // already opted into for this reason but this island had not (day3 lane
-        // lane-web-home-lcp, follow-up: lighthouserc.json's index.html row still measured a
-        // bimodal LCP, 1813-2504ms, after the first fix). Waiting for `load` first means
-        // every resource the initial render needed -- including the LCP element's own paint
-        // -- has already finished before this directive's idle wait even begins. The
-        // signed-out fallback is unchanged either way -- an invisible placeholder until the
-        // session read resolves, then the real link -- so this changes only when hydration
-        // starts, never what renders.
-        <AccountMenu client:idle-after-load slot="session" />
-      ) : (
-        <a
-          slot="session"
-          href="/login"
-          class="text-nav hover:text-strong inline-flex min-h-11 items-center px-2 text-[13px] whitespace-nowrap md:min-h-0 md:px-0"
-          data-testid="session-nav-static"
-        >
-          Sign in
-        </a>
-      )}
+      {/* Every page carries the same account menu (owner 2026-10-04: "it should always be
+          on and always be the same" -- content pages used to opt out to ship zero client
+          JavaScript, so /guides and /bis showed "Sign in" to a signed-in visitor). The
+          island hydrates after load (src/directives/idle-after-load.ts) and paints the
+          signed-in chip pre-paint from the cached /v1/me entry, see the inline script below. */}
+      <AccountMenu client:idle-after-load slot="session" />
     </Header>
     <slot />
     <Footer />

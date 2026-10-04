@@ -23,14 +23,14 @@ test.describe('phone layout', () => {
   });
 });
 
-test('Sign in is in the header of a content page that passes no session prop, as plain HTML', async ({
-  page,
-}) => {
-  // /guides ships no client JavaScript, so its Sign in is a link in the markup rather than
-  // a hydrated island; nav.spec.ts pins that no script is requested for it.
+test('a content page carries the same account menu as every other page', async ({ page }) => {
+  // Owner 2026-10-04: /guides used to render a static "Sign in" while every tool page showed
+  // the signed-in chip. The layout now mounts AccountMenu everywhere; signed out, it
+  // resolves to the Sign in link.
   await page.goto('/guides');
+  await expect(page.locator('astro-island[component-url*="AccountMenu"]')).toHaveCount(1);
   await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toHaveAttribute(
     'href',
-    '/login',
+    /\/login/,
   );
 });

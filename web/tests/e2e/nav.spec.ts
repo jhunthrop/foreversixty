@@ -99,13 +99,12 @@ test.describe('sign in on every page', () => {
     });
   }
 
-  test('a content page gets its Sign in link without shipping a script for it', async ({ page }) => {
-    const scripts: string[] = [];
-    page.on('request', (request) => {
-      if (request.resourceType() === 'script') scripts.push(request.url());
-    });
+  test('a content page gets the same account menu island as the tool pages', async ({ page }) => {
     await page.goto('/guides');
-    await expect(page.getByTestId('session-nav-static')).toHaveAttribute('href', '/login');
-    expect(scripts).toEqual([]);
+    await expect(page.locator('astro-island[component-url*="AccountMenu"]')).toHaveCount(1);
+    await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toHaveAttribute(
+      'href',
+      /\/login/,
+    );
   });
 });

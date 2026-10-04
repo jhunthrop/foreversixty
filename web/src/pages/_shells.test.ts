@@ -8,16 +8,13 @@
 // SessionNav client:load on every page, and Astro's integrations are not loaded in a unit
 // test, so without this the container throws NoMatchingRenderer rather than rendering an
 // empty shell.
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
-import { loadRenderers } from 'astro:container';
 import { describe, expect, it } from 'vitest';
 import Reports from './reports.astro';
+import { createPageContainer } from '../test-support/page-container';
 
 describe('the report shell', () => {
   it('carries every data-og hook src/worker.ts rewrites', async () => {
-    const renderers = await loadRenderers([getContainerRenderer()]);
-    const container = await AstroContainer.create({ renderers });
+    const container = await createPageContainer();
     const html = await container.renderToString(Reports);
     for (const selector of [
       'data-og="title"',
@@ -33,8 +30,7 @@ describe('the report shell', () => {
   });
 
   it('carries the island’s mount element and an empty state that names where logs come from', async () => {
-    const renderers = await loadRenderers([getContainerRenderer()]);
-    const container = await AstroContainer.create({ renderers });
+    const container = await createPageContainer();
     const html = await container.renderToString(Reports);
     expect(html).toContain('data-report-mount');
     expect(html).toContain('id="report"');

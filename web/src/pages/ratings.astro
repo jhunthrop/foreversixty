@@ -3,8 +3,8 @@
 // The public explanation page spec section 6.3 requires: the exact weight table, the
 // formulas in plain language, the percentile-vs-absolute rule, the cap in the
 // coordinator's own words, and that a rating comes only from a public report -- linked
-// from every rating surface ("How is this calculated?"). No client JavaScript: a content
-// page, per Base.astro's session prop (omitted here, its default is false).
+// from every rating surface ("How is this calculated?"). A content page: no client
+// JavaScript of its own beyond the layout's account menu island.
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
 import { ratingCopy } from '../lib/rating/copy';

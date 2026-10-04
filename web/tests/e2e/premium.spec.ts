@@ -1,12 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test('ships no client JavaScript', async ({ page }) => {
-  const scripts: string[] = [];
-  page.on('request', (r) => {
-    if (r.resourceType() === 'script') scripts.push(r.url());
-  });
+test("ships only the layout's account menu island", async ({ page }) => {
   await page.goto('/premium');
-  expect(scripts).toEqual([]);
+  const islands = page.locator('astro-island');
+  await expect(islands).toHaveCount(1);
+  await expect(islands.first()).toHaveAttribute('component-url', /AccountMenu/);
 });
 
 test('states what is free forever, the two plans, and that there are no ads', async ({ page }) => {
