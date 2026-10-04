@@ -226,3 +226,116 @@ e2e (commit `9cbc1a8e`): `web/tests/e2e/logs-{hero,guild-tabs,companion,widths}.
 `web/tests/e2e/logs-{upload,recent-reports}.spec.ts` (changed).
 
 Captures: `design/mocks/renders/logs-build/*.png` (git-ignored, not committed).
+
+---
+
+## Fix round 1 (2026-10-04)
+
+Both reviewers said FIX — `design/reviews/2026-10-04-logs-build-ux-designer.md` and
+`design/reviews/2026-10-04-logs-build-wow-player.md`. Five items, all addressed; commit
+`57ff52ea`.
+
+### 1. The 360px hero swap — cause: capture-script artifact, not an app bug
+
+Both reviewers flagged `signed-in-reports-360.png` showing the sample hero and
+`signed-in-zero-360.png` showing the real report — the mirror of every other width — as the
+single worst failure mode this page could ship with, and asked for the cause to be proven,
+not assumed. It is a **capture-script artifact**, confirmed by source read, not a rendering
+bug:
+
+`web/src/lib/data/query.ts` persists every `'private'`-scope read to `localStorage`
+unconditionally (`writePersisted` carries no session gate — only `readPersisted` does), and
+serves a persisted entry **synchronously**, before any revalidation, whenever it is still
+within its TTL (`query()`'s own "fresh" branch, `age < options.ttlMs`). My first capture
+pass reused one `browser.newContext()` (one origin-scoped `localStorage`) across all 33+
+captures. Each state's loop (`signed-out`, `signed-in-reports`, `signed-in-zero`, …) iterates
+widths `[360, 390, 1024, …]` in that order, so **360 is always the first page load after
+switching simulated account state** — and the first read of `listMyReports`/`listDevices`
+on that fresh page could synchronously return the *previous* state's own cached answer,
+written to `localStorage` moments earlier by that previous loop's own capture, before this
+page's own background revalidation (triggered because a freshly-created in-memory cache
+entry always starts `validated: false`) landed and corrected it. By the time the *next*
+width in the same loop loaded, that correction had already written through, which is
+exactly why every width past 360 was correct. The same mechanism produced finding 3/item 4
+below.
+
+**Fix:** every capture now gets its own fresh `browser.newContext()`, closed immediately
+after — full isolation, the guarantee a real distinct visitor already has. No apps code
+changed; the capture script is not committed (git-ignored captures directory). Re-shot
+cleanly: `signed-in-reports-360.png` now shows "Molten Core, week 3" with its hook line and
+a matching `Your reports` row; `signed-in-zero-360.png` now shows "Sanguine Depths, sample
+log" with the `Sample` pill, `Your reports`' own empty state, and `Gaming PC · Windows ·
+paired, not seen yet`. Verified visually.
+
+### 2. Upload error copy and byte pluralisation
+
+`Upload.svelte`'s catch block rendered `thrown.message` directly — `multipart.ts`'s own
+technical detail (`${UPLOAD_FAILED}: part ${n} failed three times (${lastError.message})`,
+itself already carrying a nested `R2 answered ${status}`) reached the page verbatim. Fixed:
+the rendered line is now one constant, `UPLOAD_FAILED_LINE = 'The upload did not finish. Try
+again; the file is still chosen.'` — checked against `uploadParts`' own restart/resume
+behaviour (`lib/upload/multipart.ts`'s own comment on `uploadParts`) before wording it:
+nothing in this system resumes a partial upload — an expired-signature restart and a manual
+retry after a failed part are both a **fresh** upload from part 1 (`POST /v1/uploads` mints
+a new object key every time), so the coordinator's suggested "the parts already sent are
+kept" would have been false. What genuinely stays is the visitor's own file selection, title
+and visibility choice (only `phase`/`error` reset on failure) — "the file is still chosen"
+is the true claim this system can make. The technical detail is still `console.error`'d for
+devtools diagnosis, never rendered. Also fixed: `WoWCombatLog.txt · 1 bytes` → `1 byte`
+(singular), via a plain ternary on `file.size === 1`.
+
+### 3. Title field placeholder
+
+Was a fixed example, `"Molten Core, week 3"`, on every state including signed out — now
+`"Optional"`. The existing helper line directly under it (`Optional. Without one the report
+is named after its zone.`, unchanged, already correct) does the explaining the designer
+asked for.
+
+### 4. Duplicate companion-status capture — same cause as item 1
+
+`companion-status-seen.png` and `companion-status-never-seen.png` were byte-identical.
+Confirmed same root cause as finding 1: the "never seen" capture was the first page load
+right after the "seen" capture wrote its own device list into the shared `localStorage`
+cache. Fixed by the same context-isolation change; the two captures now differ (MD5
+confirmed) and show the correct device fixture each (`MacBook Pro · macOS · last seen 4
+minutes ago` / `Gaming PC · Windows · paired, not seen yet`).
+
+### 5. Hover state on Secondary buttons
+
+Added to the shared token, not just `LogsHero.svelte`'s button, per the reviewer's own
+suggestion: `lib/planner/styles.ts`'s `SECONDARY_BUTTON`/`SECONDARY_BUTTON_FIXED` now carry
+`transition-colors duration-[120ms] hover:border-gold-hover hover:text-gold-hover` —
+design/DESIGN-SYSTEM.md's own documented "120ms hover transitions on cards and links"
+budget. A hover-variant class always outranks a caller's own plain `border-*`/`text-*` class
+in the generated stylesheet regardless of concatenation order, so every existing caller's
+default-state colours are unchanged; only `:hover` is new. This affects every Secondary
+button on the site (~30 call sites), which is the scope the reviewer asked for. Re-captured
+`hover-open-this-report.png`: the button now shows a visible gold border/text shift; a
+focus-visible recapture was not needed (that state already passed review) but
+`focus-visible-guild-pill.png` was re-shot alongside it in the same isolated-context pass.
+
+### Gates, re-run in full after all fixes
+
+- `npm run lint` — clean, exit 0.
+- `npm run format:check` — clean, exit 0.
+- `npx astro check` — 743 files, 0 errors, 0 warnings, 9 pre-existing hints, exit 0.
+- `npx vitest run` — 290 files, 3033 passed, 1 skipped, exit 0 (unchanged from the base
+  build; this round touched no unit-tested lib code).
+- `playwright test --project=desktop --project=mobile`, no file filter — **1197 passed, 67
+  skipped, 0 failed, exit 0** (`/tmp/e2e-fix1.log`), including the updated
+  `logs-upload.spec.ts` assertion for the new error copy.
+- `FOREVER_DATA=fixture LHCI_PUSH_SHARD=2 npm run lhci:push` (the official gate, shard 2
+  carries `/logs.html`'s own assertMatrix pattern via its `planner.html` representative) —
+  0 assertion failures, exit 0.
+- Supplementary direct `/logs.html` audit (same method as the base report, for my own
+  verification) — exit 0, CLS 0 across all 3 runs, consistent with the base build's own fix.
+
+### Captures re-shot to the same names
+
+`signed-in-reports-360.png`, `signed-in-zero-360.png`, `companion-status-seen.png`,
+`companion-status-never-seen.png`, `hover-open-this-report.png`,
+`focus-visible-guild-pill.png`, `upload-error.png`, `upload-idle.png`, `upload-chosen.png`
+(Title placeholder now reads "Optional" in every capture that shows it), plus a full clean
+re-run of every other capture under the new per-capture context isolation (33 files total,
+same set as the base report). `side-by-side-1440.png` rebuilt from the fresh
+`signed-in-reports-1440.png`; reviewed visually again before writing this section.
