@@ -66,6 +66,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	accept := httpx.RateLimitPer(inviteAcceptPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/guilds/invite/{token}/accept", accept(auth.RequireSession(s.acceptInvite)))
 	mux.HandleFunc("POST /v1/guilds/{id}/characters/{region}/{ruleset}/{name}/approve", auth.RequireSession(s.approveCharacter))
+	mux.HandleFunc("POST /v1/guilds/{id}/roster/approve-all", auth.RequireSession(s.approveAll))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/characters/{region}/{ruleset}/{name}", auth.RequireSession(s.removeCharacter))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))

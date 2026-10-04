@@ -268,3 +268,81 @@ func TestApproveCharacterRecordsVerifiedByOfficer(t *testing.T) {
 		t.Fatalf("verified_by = %q, want officer", by)
 	}
 }
+
+// TestApproveAllVerifiesEveryUnverifiedRow checks the bulk approve: a plain member is
+// refused, an officer approving verifies every unverified row and leaves an
+// already-verified one's own verified_by alone, and a frozen (contested) guild refuses too.
+func TestApproveAllVerifiesEveryUnverifiedRow(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+
+	officer := seedUser(t, h.pool, "approve-all-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/approveallofficer", "officer", true)
+	recomputeMembership(t, h.pool, gid, officer)
+
+	unverifiedA := seedUser(t, h.pool, "approve-all-a@example.com")
+	seedCharacter(t, h.pool, gid, unverifiedA, "us/hardcore/approvealla", "member", false)
+	unverifiedB := seedUser(t, h.pool, "approve-all-b@example.com")
+	seedCharacter(t, h.pool, gid, unverifiedB, "us/hardcore/approveallb", "member", false)
+
+	member := seedUser(t, h.pool, "approve-all-member@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/approveallmember", "member", true)
+	recomputeMembership(t, h.pool, gid, member)
+
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/roster/approve-all", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("a plain member approving all = %d, want 403", res.StatusCode)
+	}
+
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+	res = h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/roster/approve-all", gid), "")
+	var body struct{ Approved []string }
+	h.data(res, &body)
+	if len(body.Approved) != 2 {
+		t.Fatalf("approved = %v, want exactly the 2 unverified characters", body.Approved)
+	}
+
+	for _, key := range []string{"us/hardcore/approvealla", "us/hardcore/approveallb"} {
+		var verified bool
+		if err := h.pool.QueryRow(ctx,
+			`select verified_at is not null from guild_characters where guild_id = $1 and character_key = $2`,
+			gid, key).Scan(&verified); err != nil {
+			t.Fatal(err)
+		}
+		if !verified {
+			t.Errorf("%s verified = false after approve-all, want true", key)
+		}
+	}
+
+	// A second call is a no-op - nothing left to approve.
+	res = h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/roster/approve-all", gid), "")
+	h.data(res, &body)
+	if len(body.Approved) != 0 {
+		t.Fatalf("second approve-all = %v, want empty", body.Approved)
+	}
+}
+
+// TestApproveAllIsFrozenDuringAContestedClaim mirrors TestAContestedClaimFreezesApproveAndRemove
+// for the bulk route.
+func TestApproveAllIsFrozenDuringAContestedClaim(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	officer := seedUser(t, h.pool, "approve-all-frozen-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/approveallfrozenofficer", "officer", true)
+	recomputeMembership(t, h.pool, gid, officer)
+	if _, err := h.pool.Exec(ctx,
+		`update guilds set claim_contested_at = now(), claimed_by = $2 where id = $1`, gid, officer); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/roster/approve-all", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("approve-all during a contested claim = %d, want 409", res.StatusCode)
+	}
+}

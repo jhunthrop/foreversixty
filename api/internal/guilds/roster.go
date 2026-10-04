@@ -342,3 +342,87 @@ func (s *Service) leaveGuild(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "left"})
 	}
 }
+
+// ApproveAll verifies every currently-unverified guild_characters row in guildID in one
+// transaction (contract's own POST .../roster/approve-all) - the Roster tab's own bulk
+// action for a guild that has simply never run the per-character Approve button. Returns
+// the character keys it verified, newest-unapproved-first is not meaningful here so the
+// order is whatever the UPDATE...RETURNING happens to produce.
+func (s *Store) ApproveAll(ctx context.Context, guildID int64) ([]string, error) {
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: approve all: begin: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	rows, err := tx.Query(ctx, `
+		update guild_characters set verified_at = coalesce(verified_at, now()),
+		  verified_by = coalesce(verified_by, 'officer')
+		where guild_id = $1 and verified_at is null
+		returning character_key, user_id`, guildID)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: approve all: %w", err)
+	}
+	keys := []string{}
+	userIDs := map[int64]bool{}
+	for rows.Next() {
+		var key string
+		var userID int64
+		if err := rows.Scan(&key, &userID); err != nil {
+			rows.Close()
+			return nil, fmt.Errorf("guilds: approve all: %w", err)
+		}
+		keys = append(keys, key)
+		userIDs[userID] = true
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("guilds: approve all: %w", err)
+	}
+
+	for userID := range userIDs {
+		if err := RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
+			return nil, err
+		}
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("guilds: approve all: commit: %w", err)
+	}
+	return keys, nil
+}
+
+// approveAll is the HTTP handler for POST .../roster/approve-all, gated and frozen
+// identically to approveCharacter.
+func (s *Service) approveAll(w http.ResponseWriter, r *http.Request) {
+	guildID, ok := guildIDFrom(r)
+	if !ok {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+		return
+	}
+	actor := auth.ActorFrom(r.Context())
+	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
+	if err != nil {
+		s.fail(w, r, "approve_all", err, "could not approve the roster just now")
+		return
+	}
+	if !allowed {
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
+			"you must be a verified officer of this guild to approve the roster", nil)
+		return
+	}
+	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
+		s.fail(w, r, "approve_all", err, "could not approve the roster just now")
+		return
+	} else if frozen {
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
+			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+		return
+	}
+	keys, err := s.Store.ApproveAll(r.Context(), guildID)
+	if err != nil {
+		s.fail(w, r, "approve_all", err, "could not approve the roster just now")
+		return
+	}
+	s.logger().Info("guilds", "op", "roster_approve_all", "guild_id", guildID, "count", len(keys), "user_id", actor.UserID)
+	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"approved": keys})
+}
