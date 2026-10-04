@@ -43,10 +43,13 @@ describe('/logs', () => {
     expect(html).not.toContain('latest/download/foreversixty-companion_windows_amd64.exe');
   });
 
-  it('opens with the two ways in, each a link to its own panel', async () => {
+  it('names the two ways in panels, each with the id its hero links to', async () => {
+    // The two anchors themselves now live in the hero's own description
+    // (LogsHero.svelte, logs landing spec §4.A), a client-fetched island whose markup is
+    // a loading skeleton during a container test's server render (no hydration, no
+    // effect) -- covered for real by tests/e2e/logs-upload.spec.ts's "two ways in" test
+    // instead. This only asserts the two panels these links point at still exist.
     const html = await container.renderToString(Logs);
-    expect(html).toContain('href="#companion"');
-    expect(html).toContain('href="#upload"');
     expect(html).toContain('id="companion"');
     expect(html).toContain('id="upload"');
   });
@@ -74,26 +77,30 @@ describe('/logs', () => {
     expect(html.split('Recent public reports').length - 1).toBe(1);
   });
 
-  it('names itself before the first panel: the heading and its two ways in precede Your reports', async () => {
-    // Design loop, logs round: the page used to open on "Your reports" with its own h1 a
-    // panel further down, and two explainer cards restated the two panels beneath them. Now
-    // the heading and intro come first, and the intro's two links are the only "two ways in".
+  it('leads with the full-bleed header band, before the spine and Your reports', async () => {
+    // Logs landing spec (2026-10-04) §4.A: the band carrying a real report's hero replaces
+    // the old plain "Logs" <h1> as the page's first content.
     const html = await container.renderToString(Logs);
-    const headingAt = html.indexOf('>Logs</h1>');
+    const bandAt = html.indexOf('data-testid="logs-hero-band"');
     const mineAt = html.indexOf('>Your reports<');
-    expect(headingAt).toBeGreaterThan(-1);
-    expect(headingAt).toBeLessThan(mineAt);
-    expect(html).not.toContain('Log live with the companion');
+    expect(bandAt).toBeGreaterThan(-1);
+    expect(bandAt).toBeLessThan(mineAt);
   });
 
-  it('mounts the spine bar as the first child of main', async () => {
+  it('mounts the spine bar directly under the header band, before Your reports', async () => {
+    // §4.B: the spine stays, immediately under the band -- the framing sentence (§ ux
+    // review ruling, 2026-10-04) sits between the two.
     const html = await container.renderToString(Logs);
     const mainAt = html.indexOf('id="main"');
+    const bandAt = html.indexOf('data-testid="logs-hero-band"');
     const barAt = html.indexOf('data-testid="current-character-bar"');
+    const framingAt = html.indexOf('data-testid="logs-framing"');
     const mineAt = html.indexOf('>Your reports<');
     expect(mainAt).toBeGreaterThan(-1);
-    expect(barAt).toBeGreaterThan(mainAt);
-    expect(barAt).toBeLessThan(mineAt);
+    expect(bandAt).toBeGreaterThan(mainAt);
+    expect(barAt).toBeGreaterThan(bandAt);
+    expect(framingAt).toBeGreaterThan(barAt);
+    expect(framingAt).toBeLessThan(mineAt);
   });
 
   it('uses no emoji, and no exclamation marks in its copy', async () => {
