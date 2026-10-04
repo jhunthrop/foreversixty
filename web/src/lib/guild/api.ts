@@ -47,6 +47,51 @@ export interface ClaimStateView {
   state: ClaimState;
   since?: string;
   frozen: boolean;
+  /** Control-centre contract addition (2026-10-04): who holds a `claimed` guild, for the
+   *  officer tools strip's "Claimed · by {name}" line. Absent on an unclaimed/pending/
+   *  contested guild, and absent until every caller of this type is updated -- never
+   *  rendered as a blank "by" when missing. */
+  claimed_by_name?: string;
+}
+
+/** `GET .../home`'s `viewer` (control-centre contract, 2026-10-04): the server's own answer
+ *  to "who is asking," read directly instead of re-derived from `/v1/me`'s guild list. A
+ *  home response from before this contract landed carries no `viewer` at all -- every
+ *  reader of this falls back to the pre-existing `/v1/me`-membership derivation in that
+ *  case (`GuildViewerRole | undefined`). */
+export type GuildViewerRole = 'public' | 'member' | 'officer' | 'moderator';
+
+export interface GuildViewerView {
+  role: GuildViewerRole;
+  character_key: string | null;
+  verified: boolean;
+}
+
+/** `GET .../home`'s `summary` -- the Overview tab's roster/progression glance, computed
+ *  server-side so the page never re-derives a below-rating-floor count from a partial
+ *  roster page. */
+export interface GuildHomeSummary {
+  raiders: number;
+  waiting_for_approval: number;
+  below_rating_floor: number;
+  named_encounters_down: number;
+  pulls_this_tier: number;
+  updated_at: string;
+}
+
+/** `GET .../home`'s `standing` -- member and officer only; `null` when the viewer has no
+ *  ranked peers to compare against (never a fabricated rank of 1 of 1). */
+export interface GuildHomeStanding {
+  spec: string;
+  class: string;
+  same_spec_count: number;
+  rank_by_item_level: number;
+  item_level: number;
+  /** Up to 3 of the viewer's own failing readiness checks, server-phrased short clauses
+   *  (e.g. "Enchant chest") -- the Overview tab's "before Thursday" sentence joins these
+   *  directly, never re-deriving its own phrasing from the Readiness endpoint (spec §8: no
+   *  new round trip from Overview). */
+  needs_before_next_raid: string[];
 }
 
 export interface MemberRef {
@@ -79,6 +124,32 @@ export interface GuildHomeReport {
  * reconciliation record, item 3) — "is this my own row" is derived from
  * `Me.characters[].key` instead, which already exact-matches `character_key`.
  */
+/** `rating_scores.overall` and its six components (control-centre contract) -- `null`
+ *  (never present-but-zero) when no `rating_scores` row exists yet for this character. */
+export interface GuildRosterRating {
+  overall: number;
+  output: number;
+  survival: number;
+  mechanics: number;
+  utility: number;
+  preparation: number;
+  activity: number;
+}
+
+export interface GuildRosterAttendance {
+  present: number;
+  nights: number;
+}
+
+export interface GuildRosterBestParse {
+  metric: string;
+  value: number;
+  percentile: number | null;
+  encounter: string;
+  report_id: string;
+  fight_index: number;
+}
+
 export interface GuildRosterRow {
   character_key: string;
   region: string;
@@ -86,13 +157,32 @@ export interface GuildRosterRow {
   name: string;
   class?: string;
   spec?: string;
+  /** Control-centre contract addition: the roster/readiness filter bar's "Role" column,
+   *  server-derived from `spec` -- never re-derived client-side from a spec-to-role table
+   *  that could drift from the server's own (the web lane's earlier plan before this
+   *  contract landed; superseded now that the field is sent directly). */
+  role?: 'tank' | 'healer' | 'dps';
   rank: GuildRank;
   verified: boolean;
   /** addon_exports.updated_at within the last 24h (spec section 4.1, RULING 9). */
   logged_recently: boolean;
+  /** `addon_exports.updated_at` itself (control-centre contract: "replaces logged_recently;
+   *  keep logged_recently too"), for the Roster tab's "Last seen" sort column. */
+  logged_at?: string;
   /** Present only at gear/gear_bags consent (spec section 3.2's fail-closed query rule). */
   item_level?: number;
   consent: GuildConsent;
+  attendance?: GuildRosterAttendance;
+  best_parse?: GuildRosterBestParse | null;
+  rating?: GuildRosterRating | null;
+  professions?: string[];
+  /** `guild_characters.user_id`, same value for a main and its alts (control-centre
+   *  contract) -- the Roster tab's "alt of {main}" tag groups on this, never on name
+   *  similarity. */
+  account_key?: string;
+  /** Newest report this character's account uploaded; `null` when none. */
+  last_report_at?: string | null;
+  may_approve?: boolean;
   /**
    * Computed server-side (a later security-review response, item 7) from the exact same
    * rank-protects-rank rule the DELETE .../characters/{key} route itself enforces, from
@@ -107,10 +197,18 @@ export interface GuildRosterRow {
 
 export interface GuildHome {
   guild: GuildSummary;
+  /** Control-centre contract addition: the server's own answer to "who is asking" --
+   *  absent on a pre-contract home response, in which case callers fall back to the
+   *  pre-existing `/v1/me`-membership derivation. */
+  viewer?: GuildViewerView;
   claim: ClaimStateView;
+  summary?: GuildHomeSummary;
+  standing?: GuildHomeStanding | null;
   reports: GuildHomeReport[];
   next_cursor?: string;
   roster: GuildRosterRow[];
+  /** Officer: every unverified member; member/public: `[]`. */
+  pending?: GuildRosterRow[];
 }
 
 export interface GuildSettingsData {
@@ -356,6 +454,307 @@ export async function updateConsent(
 
 export async function leaveGuild(guildId: number, apiBase: string = API_BASE_URL): Promise<LeftResult> {
   const data = await call<LeftResult>(`/v1/guilds/${guildId}/members/me`, apiBase, { method: 'DELETE' });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
+}
+
+// ---------------------------------------------------------------------------------------
+// Control-centre contract (docs/contracts/2026-10-04-guild-centre-api.md): Raids,
+// Progression, Readiness and Loot. Every read goes through the same `call`/`query` pair
+// above; every tab component that calls one of these catches a 404 itself (the api lane
+// builds these in a separate worktree, so a tab must render its own honest empty state --
+// never a crash -- until each endpoint exists) rather than this module swallowing it.
+// ---------------------------------------------------------------------------------------
+
+export interface GuildRaidFight {
+  index: number;
+  name: string | null;
+  encounter_id: number | null;
+  kill: boolean;
+  duration_ms: number;
+  deaths: number;
+  players: number;
+}
+
+export interface GuildRaidPresentPlayer {
+  character_key: string;
+  name: string;
+  class: string;
+}
+
+export interface GuildRaidTopParse {
+  name: string;
+  class: string;
+  metric: string;
+  value: number;
+}
+
+export interface GuildRaidRow {
+  id: string;
+  title: string;
+  zone: string;
+  created_at: string;
+  duration_ms: number;
+  fight_count: number;
+  kill_count: number;
+  wipe_count: number;
+  raiders: number;
+  deaths: number;
+  top_parse: GuildRaidTopParse | null;
+  fights: GuildRaidFight[];
+  present: GuildRaidPresentPlayer[];
+}
+
+export interface GuildRaidsPage {
+  rows: GuildRaidRow[];
+  next_cursor: string | null;
+}
+
+function guildRaidsKey(guildId: number, cursor: string | undefined, apiBase: string): string {
+  return `${apiBase}/v1/guilds/${guildId}/raids${cursor === undefined ? '' : `?cursor=${cursor}`}`;
+}
+
+export function fetchGuildRaids(
+  guildId: number,
+  cursor?: string,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildRaidsPage> {
+  const path = cursor === undefined ? '' : `?cursor=${encodeURIComponent(cursor)}`;
+  return query<GuildRaidsPage>(
+    guildRaidsKey(guildId, cursor, apiBase),
+    () => call<GuildRaidsPage>(`/v1/guilds/${guildId}/raids${path}`, apiBase),
+    { scope: 'private', ttlMs: GUILD_TTL_MS },
+  );
+}
+
+export interface GuildParseRef {
+  name: string;
+  class: string;
+  spec?: string;
+  metric: string;
+  value: number;
+  report_id: string;
+  fight_index: number;
+}
+
+export interface GuildProgressionPullsByNight {
+  report_id: string;
+  date: string;
+  pulls: number;
+  killed: boolean;
+}
+
+export interface GuildProgressionEncounter {
+  encounter_id: number;
+  name: string;
+  zone: string;
+  first_kill_at: string | null;
+  pulls: number;
+  kills: number;
+  best_kill_ms: number | null;
+  pulls_by_night: GuildProgressionPullsByNight[];
+  deaths_per_pull: number;
+  best_by_role: { tank?: GuildParseRef; healer?: GuildParseRef; dps?: GuildParseRef };
+}
+
+export interface GuildProgressionUnnamed {
+  zone: string;
+  pulls: number;
+  nights: number;
+}
+
+export interface GuildProgressionTier {
+  name: string;
+  raids: string[];
+  named_encounters: number;
+  down: number;
+}
+
+export interface GuildProgressionPage {
+  tier: GuildProgressionTier;
+  encounters: GuildProgressionEncounter[];
+  unnamed: GuildProgressionUnnamed[];
+}
+
+function guildProgressionKey(guildId: number, apiBase: string): string {
+  return `${apiBase}/v1/guilds/${guildId}/progression`;
+}
+
+export function fetchGuildProgression(
+  guildId: number,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildProgressionPage> {
+  return query<GuildProgressionPage>(
+    guildProgressionKey(guildId, apiBase),
+    () => call<GuildProgressionPage>(`/v1/guilds/${guildId}/progression`, apiBase),
+    { scope: 'private', ttlMs: GUILD_TTL_MS },
+  );
+}
+
+export interface GuildReadinessGearGap {
+  upgrades: number | null;
+  gain_dps: number | null;
+  not_sim_checked: number;
+}
+
+export interface GuildReadinessEnchants {
+  missing_slots: string[];
+  checked: boolean;
+}
+
+export interface GuildReadinessConsumables {
+  state: 'stocked' | 'short' | 'unknown';
+}
+
+export interface GuildReadinessRow {
+  character_key: string;
+  name: string;
+  class: string;
+  spec: string;
+  consent: GuildConsent;
+  gear_gap: GuildReadinessGearGap | null;
+  enchants: GuildReadinessEnchants;
+  consumables: GuildReadinessConsumables;
+  talent_points_unspent: number;
+  item_level: number | null;
+  item_level_delta: number | null;
+  logged_at: string;
+  failing: number;
+  /** Officer only. */
+  nudge_text?: string;
+}
+
+export interface GuildReadinessPage {
+  median_item_level: number;
+  generated_at: string;
+  rows: GuildReadinessRow[];
+}
+
+function guildReadinessKey(guildId: number, apiBase: string): string {
+  return `${apiBase}/v1/guilds/${guildId}/readiness`;
+}
+
+export function fetchGuildReadiness(
+  guildId: number,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildReadinessPage> {
+  return query<GuildReadinessPage>(
+    guildReadinessKey(guildId, apiBase),
+    () => call<GuildReadinessPage>(`/v1/guilds/${guildId}/readiness`, apiBase),
+    { scope: 'private', ttlMs: GUILD_TTL_MS },
+  );
+}
+
+export interface GuildLootEncounter {
+  encounter_id: number;
+  name: string;
+  zone: string;
+  killed: boolean;
+}
+
+export interface GuildLootCandidate {
+  character_key: string;
+  name: string;
+  class: string;
+  spec: string;
+  gain_dps: number;
+  not_sim_checked: boolean;
+  attendance: GuildRosterAttendance;
+  already_equivalent: boolean;
+}
+
+export interface GuildLootAwardedTo {
+  character_key: string;
+  name: string;
+  at: string;
+  by_name: string;
+}
+
+export interface GuildLootItem {
+  item_id: number;
+  name: string;
+  icon: string;
+  quality: number;
+  slot: string;
+  awarded_to: GuildLootAwardedTo | null;
+  candidates: GuildLootCandidate[];
+}
+
+export interface GuildLootPage {
+  encounters: GuildLootEncounter[];
+  selected: number | null;
+  items: GuildLootItem[];
+}
+
+function guildLootKey(guildId: number, encounterId: number | undefined, apiBase: string): string {
+  return `${apiBase}/v1/guilds/${guildId}/loot${encounterId === undefined ? '' : `?encounter_id=${encounterId}`}`;
+}
+
+export function fetchGuildLoot(
+  guildId: number,
+  encounterId?: number,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildLootPage> {
+  const qs = encounterId === undefined ? '' : `?encounter_id=${encounterId}`;
+  return query<GuildLootPage>(
+    guildLootKey(guildId, encounterId, apiBase),
+    () => call<GuildLootPage>(`/v1/guilds/${guildId}/loot${qs}`, apiBase),
+    { scope: 'private', ttlMs: GUILD_TTL_MS },
+  );
+}
+
+export interface LootAwardResult {
+  id: string;
+  encounter_id: number;
+  item_id: number;
+  character_key: string;
+  awarded_at: string;
+}
+
+/** Awards and un-awards invalidate every cached loot page for this guild, not just the
+ *  currently-selected encounter -- a loot decision can be read back from any encounter
+ *  query once the API supports filtering by item rather than encounter alone. */
+function invalidateGuildLoot(guildId: number, apiBase: string): void {
+  invalidate(`${apiBase}/v1/guilds/${guildId}/loot`);
+}
+
+export async function awardLoot(
+  guildId: number,
+  body: { encounter_id: number; item_id: number; character_key: string },
+  apiBase: string = API_BASE_URL,
+): Promise<LootAwardResult> {
+  const data = await call<LootAwardResult>(`/v1/guilds/${guildId}/loot/awards`, apiBase, {
+    method: 'POST',
+    body,
+  });
+  invalidateGuildLoot(guildId, apiBase);
+  return data;
+}
+
+export async function unawardLoot(
+  guildId: number,
+  awardId: string,
+  apiBase: string = API_BASE_URL,
+): Promise<{ status: 'removed' }> {
+  const data = await call<{ status: 'removed' }>(`/v1/guilds/${guildId}/loot/awards/${awardId}`, apiBase, {
+    method: 'DELETE',
+  });
+  invalidateGuildLoot(guildId, apiBase);
+  return data;
+}
+
+export interface ApproveAllResult {
+  approved: string[];
+}
+
+export async function approveAllRoster(
+  guildId: number,
+  apiBase: string = API_BASE_URL,
+): Promise<ApproveAllResult> {
+  const data = await call<ApproveAllResult>(`/v1/guilds/${guildId}/roster/approve-all`, apiBase, {
+    method: 'POST',
+  });
   invalidate(guildHomeKey(guildId, undefined, apiBase));
   invalidate(guildSettingsKey(guildId, apiBase));
   return data;
