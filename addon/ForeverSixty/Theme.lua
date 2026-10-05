@@ -104,6 +104,26 @@ Theme.SIZES = {
 	rotationRowHeight = 34,
 	--- The rotation card's header strip icon.
 	rotationHeaderIcon = 14,
+	--- The character header's own circular ringed class crest (design
+	--- section 2 / section 4.5.1, round-2 owner ruling), and the gap
+	--- between it and the name beside it.
+	headerCrest = 36,
+	headerCrestGap = 10,
+	--- The Overview's "Send to the site" card (round-2 owner fix): the
+	--- same crest, smaller, beside the character's own name and level.
+	overviewSyncCrest = 28,
+	--- Gear page (design section 4.5.4, round-2/3 fixes): the slot-label
+	--- column, the Planned/Equipped name columns (equal widths, sized to
+	--- clear the longest band-20 item name without truncating), the
+	--- green tick glyph that replaces the old "As planned" text tag, and
+	--- the gap between the three columns.
+	gearSlotLabelWidth = 50,
+	gearNameWidth = 232,
+	gearPlannedTick = 14,
+	gearRowGap = 12,
+	--- The one note that is still prose, not a glyph or a short tag: an
+	--- unplanned-but-equipped slot's "No plan for this slot".
+	gearNoPlanWidth = 96,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -131,7 +151,68 @@ Theme.FALLBACK_FONT = { path = "Fonts\\FRIZQT__.TTF", size = 12 }
 --- template can be named here again without touching a caller.
 Theme.TEMPLATES = { gameTooltip = "GameTooltipTemplate" }
 
-Theme.MEDIA = { minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap" }
+Theme.MEDIA = {
+	minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap",
+	--- The character header's own class-colour ring (design section 2's
+	--- own crest bullet): one plain white ring, class-coloured at
+	--- runtime through SetVertexColor (Window.applyHeader), rather than
+	--- nine near-identical ring files.
+	crestRing = "Interface\\AddOns\\ForeverSixty\\media\\crests\\ring",
+	--- The Gear page's own green tick glyph (round-3 fix, section 4.5.4):
+	--- the client's own ready-check icon, already green, so this addon
+	--- ships no new art for it.
+	gearTick = "Interface\\RaidFrame\\ReadyCheck-Ready",
+}
+
+--- The nine classes this addon ships a crest for (addon/tools/
+--- make_class_crests.py), keyed by UnitClass's own second return
+--- ("WARRIOR", not "warrior") -- the same token Theme.classColor and
+--- Theme.SLOT_ICONS' neighbours already key by.
+Theme.CREST_CLASSES = {
+	WARRIOR = true, PALADIN = true, HUNTER = true, ROGUE = true, PRIEST = true,
+	SHAMAN = true, MAGE = true, WARLOCK = true, DRUID = true,
+}
+
+--- The character's own crest texture for a class token, or nil for a
+--- token this addon ships no crest for (a class Forever adds later, or
+--- a test double with none) -- Theme.paintCrest falls back to the
+--- neutral tile rather than a blank space on nil, same as every other
+--- icon in this addon. The crest ships pre-cropped to a circular disc
+--- (make_class_crests.py's own check of the source webp's corner alpha),
+--- so unlike Theme.icon this never needs a runtime circular-crop
+--- capability (MaskTexture) at all -- there is no square card left to
+--- crop once the file itself is round.
+function Theme.crestPath(token)
+	if type(token) ~= "string" or not Theme.CREST_CLASSES[token] then
+		return nil
+	end
+	return "Interface\\AddOns\\ForeverSixty\\media\\crests\\" .. token:lower()
+end
+
+--- A crest + ring texture pair, `size` square: the character header's
+--- own 36px crest (Window.lua) and the Overview's sync card's smaller
+--- one (OverviewView.lua) share this one builder rather than each
+--- repeating the CreateTexture/SetPoint calls. Plain textures, not
+--- Theme.icon: the crest ships pre-cropped to a circular disc, so
+--- Theme.icon's own bevel-trim texture coords -- meant for square
+--- inventory icons -- would cut into the circle rather than clean it up.
+function Theme.buildCrest(parent, size)
+	local crest = parent:CreateTexture(nil, "ARTWORK")
+	crest:SetSize(size, size)
+	local ring = parent:CreateTexture(nil, "OVERLAY")
+	ring:SetAllPoints(crest)
+	ring:SetTexture(Theme.MEDIA.crestRing)
+	return crest, ring
+end
+
+--- Paints a Theme.buildCrest pair for `classToken`: the crest's own
+--- texture (the neutral tile for a class this addon ships none for --
+--- never a blank space) and the ring's class-colour tint (gold,
+--- Theme.classColor's own fallback).
+function Theme.paintCrest(crest, ring, classToken)
+	crest:SetTexture(Theme.crestPath(classToken) or Theme.UNKNOWN_ICON)
+	ring:SetVertexColor(Theme.classColor(classToken))
+end
 
 --- The four edges of a rectangle, for outline().
 Theme.EDGES = {
@@ -243,16 +324,22 @@ function Theme.applyFont(region, fontKey)
 	return region
 end
 
---- Colour a texture. SetColorTexture is the modern name; a client without
---- it takes the colour through SetTexture's four-argument form.
-function Theme.paint(texture, hexKey, alpha)
-	local r, g, b, a = Theme.rgb(Theme.HEX[hexKey], alpha)
+--- Colour a texture from raw 0..1 floats -- a class colour, say, which
+--- names no Theme.HEX key of its own. SetColorTexture is the modern
+--- name; a client without it takes the colour through SetTexture's
+--- four-argument form.
+function Theme.paintRGB(texture, r, g, b, a)
 	if type(texture.SetColorTexture) == "function" then
-		texture:SetColorTexture(r, g, b, a)
+		texture:SetColorTexture(r, g, b, a or 1)
 	else
-		texture:SetTexture(r, g, b, a)
+		texture:SetTexture(r, g, b, a or 1)
 	end
 	return texture
+end
+
+--- Colour a texture by one of Theme.HEX's own named keys.
+function Theme.paint(texture, hexKey, alpha)
+	return Theme.paintRGB(texture, Theme.rgb(Theme.HEX[hexKey], alpha))
 end
 
 function Theme.texture(parent, layer, hexKey, alpha)

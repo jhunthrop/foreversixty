@@ -95,6 +95,27 @@ describe("Window", function()
 		assert.are.equal("paladin-holy", header.specLine)
 	end)
 
+	-- The character header's circular ringed class crest (design section
+	-- 2 / section 4.5.1, round-2 owner ruling).
+	it("draws the crest for the character's own class and tints the ring to match", function()
+		start()
+		Window.open()
+		assert.are.equal(Theme.crestPath("PALADIN"), mock.lastCall(Window.crest, "SetTexture")[1])
+		local ring = mock.lastCall(Window.crestRing, "SetVertexColor")
+		assert.are.same({ Theme.classColor("PALADIN") }, { ring[1], ring[2], ring[3], ring[4] })
+	end)
+
+	it("falls back to the neutral tile, still ringed, for a class this addon ships no crest for", function()
+		start({
+			class = { name = "Death Knight", token = "DEATHKNIGHT" },
+			race = { name = "Human", token = "Human" },
+			realm = "Ashbringer",
+		})
+		Window.open()
+		assert.are.equal(Theme.UNKNOWN_ICON, mock.lastCall(Window.crest, "SetTexture")[1])
+		assert.is_not_nil(mock.lastCall(Window.crestRing, "SetVertexColor"))
+	end)
+
 	it("says there is no spec rather than leaving the line blank", function()
 		start()
 		local bare = { build = DATA.build, classes = {}, weights = {} }

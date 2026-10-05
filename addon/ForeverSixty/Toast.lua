@@ -34,7 +34,10 @@ function Toast.model(data, build, ranks, level)
 	end
 	local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
 	local have = (ranks[point.tab] or {})[Talents.cellKey(point.tier, point.column)] or 0
-	local name = talent and talent.name or string.format(L.followUnknownCell, point.tier, point.column)
+	-- 1-indexed for the player (Talents.displayTier, round-2 ruling 4);
+	-- point.tier itself stays the raw Data.lua value for the cellKey lookup above.
+	local name = talent and talent.name
+		or string.format(L.followUnknownCell, Talents.displayTier(point.tier), point.column)
 	local maxRank = talent and talent.maxRank or (have + 1)
 	return { text = string.format(L.toastMessage, level or 0, name, have + 1, maxRank) }
 end

@@ -174,6 +174,22 @@ local L = {
 	gearSlotRow = "%s  %s",
 	gearUpgradeRow = "%+.0f",
 	gearItemUnknown = "Item %d",
+	-- Round-2 ruling: a slot the build never planned, with something
+	-- worn there anyway -- never a false "Different from the plan", and
+	-- never the silence this read as before the ruling.
+	gearNoPlanForSlot = "No plan for this slot",
+	-- Round-3 fix (§4.5.4): the slot-label column, the client's own slot
+	-- vocabulary -- one entry per Export.INVENTORY_SLOTS. A table value
+	-- here, like exportSteps above, not seventeen near-duplicate keys.
+	gearSlotLabels = {
+		head = "Head", neck = "Neck", shoulder = "Shoulder", back = "Back", chest = "Chest",
+		wrist = "Wrist", hands = "Hands", waist = "Waist", legs = "Legs", feet = "Feet",
+		finger1 = "Finger", finger2 = "Finger", trinket1 = "Trinket", trinket2 = "Trinket",
+		main_hand = "Main Hand", off_hand = "Off Hand", ranged = "Ranged",
+	},
+	-- The tick glyph's own hover tooltip (round-3 fix): the words it used
+	-- to spell out as row text, moved here rather than lost.
+	gearPlannedTickTooltip = "As planned",
 
 	-- Inbox
 	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",
@@ -223,12 +239,13 @@ local L = {
 	overviewTreesEyebrow = "TALENT POINTS",
 	overviewTreesNone = "No points spent yet. Talents open at level 10.",
 	overviewSyncEyebrow = "SEND TO THE SITE",
-	overviewSyncTitle = "Your character, for the planner and the simulator",
 	overviewSyncNothing = "There is nothing to send yet.",
+	-- Round-2 owner fix: there is always something to send -- the
+	-- character itself -- so the card leads with the crest, the name
+	-- and the level rather than the generic title above, which now
+	-- shows only on Export.string's genuine class-unknown refusal.
+	overviewSyncLevel = "Level %d",
 	overviewSyncCopy = "Copy code",
-	-- The first characters of the code and its length: proof the code is
-	-- there, on a card too small to show all of it (the Export page does).
-	overviewSyncPreview = "%s… (%d characters)",
 	overviewSyncCopied = "Selected. Press Ctrl+C",
 	siteName = "foreversixty.gg",
 	headerLevelLine = "Level %d %s %s",
@@ -292,7 +309,12 @@ local L = {
 	-- "<label> <score>" for one component in the advanced breakdown,
 	-- joined with exportTreeSeparator: "Output 82 · Survival 91".
 	overviewRatingComponent = "%s %d",
-	ratingsNotRated = "No rating yet for this character.",
+	-- Round-2 owner fix: the empty state says what produces a rating,
+	-- with a link, not a bare "no rating yet" dead end -- replaces
+	-- ratingsNotRated ("No rating yet for this character."), now
+	-- deleted, in this card's own empty state.
+	overviewRatingNone = "Upload a log or run the companion to get one.",
+	overviewRatingSetup = "Get set up",
 	-- The Guild page.
 	tabGuild = "Guild",
 	guildNone = "Not in a guild",
@@ -304,6 +326,14 @@ local L = {
 	guildUnrated = "No rating yet",
 	guildNotOnSite = "This guild has no logs on foreversixty.gg yet. "
 		.. "Upload a raid night and it appears here the next day.",
+	-- The member standing line (wave-1 scope item 4, shown first, ahead
+	-- of the roster): the rank half is never invented -- the data addon
+	-- carries no item level or spec per guild member yet -- the gap half
+	-- is this addon's own Gear.upgrades, real the instant a build loads.
+	guildStandingNoRank = "Your item-level rank among guildmates isn't in your data addon yet.",
+	guildStandingGap = "Your biggest gear gap: %s, +%.0f by our weights.",
+	guildStandingGapNone = "Nothing in your gear is behind your plan right now.",
+	guildStandingGapNoBuild = "Load a build on the Talents page to see your gear gap.",
 
 	-- Wave C additions (docs/superpowers/specs/2026-09-28-addon-character-
 	-- aware-design.md §3, §4, §6): the typed inbox messages -- upgrade,
@@ -319,7 +349,12 @@ local L = {
 	guildClaimContested = "Claim contested",
 	guildPendingApprovals = "%d pending approval(s)",
 	guildYourRank = "Your rank: %s",
-	inboxUpgradeLine = "Your top upgrade: %s for %s, +%.0f",
+	-- Wave-1 scope item 5, wired into OverviewView: the companion inbox's
+	-- own "upgrade" message. Extended with the DPS unit and the sim's own
+	-- date (the whole inbox's `generated_at` stamp -- the message itself
+	-- carries none) when this key was first added but never wired to a
+	-- surface.
+	inboxUpgradeLine = "Your top upgrade: %s for %s, +%.0f DPS, from your sim (%s)",
 	inboxWeightsLine = "Weights updated for %s",
 	inboxGuildLine = "Guild news: %s",
 

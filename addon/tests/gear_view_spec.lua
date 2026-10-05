@@ -197,6 +197,76 @@ describe("GearView", function()
 		assert.is_truthy(view.upgrades.rows[1].text:GetText():find("Bagged Helm", 1, true))
 	end)
 
+	-- Round-3 fix (§4.5.4): the slot-label column.
+	it("names the slot in its own column, the client's own vocabulary", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		assert.are.equal(L.gearSlotLabels.head, view.slots.rows[1].label:GetText())
+	end)
+
+	-- Round-3 fix (§4.5.4): the tick glyph replaces "As planned" as row
+	-- text, carrying the words as a hover tooltip instead.
+	it("shows the tick glyph, not row text, when the worn piece matches the plan", function()
+		start({ equipped = { [1] = "|Hitem:10|h" }, itemStats = {
+			["|Hitem:10|h"] = { __itemId = 10, __slot = "INVTYPE_HEAD", __name = "Planned Helm", __quality = 2 },
+		} })
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		local row = view.slots.rows[1]
+		assert.are.equal("", row.equipped.right:GetText())
+		assert.is_true(row.equipped.tick:IsShown())
+	end)
+
+	it("hides the tick glyph and shows text for every other note", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		local row = view.slots.rows[1]
+		assert.is_false(row.equipped.tick:IsShown())
+		assert.are.equal(string.format(L.gearYoursBetter, 6), row.equipped.right:GetText())
+	end)
+
+	-- Round-3 fix (§4.5.4): the one note that is prose, not a glyph or a
+	-- short tag, gets its own wider reserved strip so it never overlaps
+	-- the equipped item's own name.
+	it("widens the equipped note's own strip for the prose 'No plan for this slot' case", function()
+		start()
+		-- Only legs is planned; head is worn (item 11) with no plan at
+		-- all for it, the unplanned-but-equipped case.
+		assert(Follow.load("FSB1:1.60.1.69893:paladin:111:legs=77:strength=5", DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		local row = view.slots.rows[1]
+		assert.are.equal(L.gearNoPlanForSlot, row.equipped.right:GetText())
+		assert.is_false(row.equipped.tick:IsShown())
+		assert.are.equal(require("Theme").SIZES.gearNoPlanWidth, row.equipped.right:GetWidth())
+	end)
+
+	-- §10 ruling 5's own fix: the section used to draw its header and
+	-- nothing under it when the bag-upgrade list was genuinely empty.
+	it("says nothing beats what is worn when the bag-upgrade list is empty", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), {
+			data = DATA, contentWidth = 520, select = function() end,
+		})
+		-- The fixture's own upgrades come from Gear.upgrades(ctx.data,
+		-- build), already non-empty for CODE; forcing the model's own
+		-- empty list proves the copy wires to the count, not to the
+		-- fixture's own data.
+		GearView.apply(view, GearView.rows(DATA, require("Follow").build,
+			{ [1] = { ["1:1"] = 1 } }, GearView.readEquipped(), {}))
+		assert.is_true(view.upgradesEmpty:IsShown())
+		assert.are.equal(L.gearNone, view.upgradesEmpty:GetText())
+	end)
+
+	it("hides the empty-state copy once the bag-upgrade list has rows", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		assert.is_false(view.upgradesEmpty:IsShown())
+	end)
+
 	it("shows the planned item next to what is actually equipped, not just one of them", function()
 		start()
 		assert(Follow.load(CODE, DATA))
@@ -301,9 +371,14 @@ describe("GearView", function()
 			assert.are.equal("muted", GearView.noteColor({ better = false, differs = true }))
 		end)
 
-		it("says nothing for a slot the build has no plan for", function()
+		it("says there is no plan for this slot, in muted text, for one worn with no sourced pick", function()
+			-- Round-3 fix (§4.5.4): a slot the build never planned, with
+			-- something worn there anyway, is distinct from a silently
+			-- correctly-geared slot -- it was blank before this fix.
 			start()
-			assert.are.equal("", GearView.noteFor({ equippedItemId = 11, differs = false, better = false }))
+			local row = { equippedItemId = 11, differs = false, better = false }
+			assert.are.equal(L.gearNoPlanForSlot, GearView.noteFor(row))
+			assert.are.equal("muted", GearView.noteColor(row))
 		end)
 	end)
 end)

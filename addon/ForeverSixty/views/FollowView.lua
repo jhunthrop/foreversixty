@@ -86,8 +86,11 @@ function FollowView.rows(data, build, ranks)
 			tabName = Talents.tabName(data, build.classSlug, cell.tab) or "",
 			tier = cell.tier,
 			column = cell.column,
+			-- 1-indexed for the player (Talents.displayTier, round-2
+			-- ruling 4); cell.tier itself stays raw for every lookup
+			-- above (Talents.cellKey, stateOf's own comparison).
 			name = talent and talent.name
-				or string.format(L.followUnknownCell, cell.tier, cell.column),
+				or string.format(L.followUnknownCell, Talents.displayTier(cell.tier), cell.column),
 			icon = Talents.iconFor(talent),
 			have = have,
 			want = cell.want,
@@ -100,7 +103,11 @@ function FollowView.rows(data, build, ranks)
 		list = FollowView.withHeadings(rows),
 		spent = nextPoint ~= nil and (nextPoint.index - 1) or total,
 		total = total,
-		name = build.name or string.format(L.followBuildName, build.classSlug),
+		-- Title-cased (Talents.titleCase, round-2 ruling 3): neither code
+		-- format carries a build name, and "paladin build" read as
+		-- ungroomed next to every other title-cased label this window
+		-- shows (Window.specLabel's own spec line, right beside this one).
+		name = build.name or string.format(L.followBuildName, Talents.titleCase(build.classSlug)),
 		done = nextPoint == nil,
 		empty = false,
 	}

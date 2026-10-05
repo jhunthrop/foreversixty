@@ -73,6 +73,19 @@ describe("Toast", function()
 		assert.are.equal(string.format(L.toastMessage, 12, "Divine Strength", 2, 5), model.text)
 	end)
 
+	it("names an unknown cell by its 1-indexed tier, not Data.lua's raw zero-based one", function()
+		-- Round-2 ruling 4: a code naming a cell this addon's data has no
+		-- talent for (tab 1, tier 9, column 1) falls back to naming the
+		-- cell, the same as Follow.line and FollowView.rows -- and all
+		-- three now read it the same way a player would from the real
+		-- talent window.
+		start()
+		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:191:", DATA))
+		local model = Toast.model(DATA, build, { [1] = {} }, 12)
+		local unknownName = string.format(L.followUnknownCell, 10, 1)
+		assert.are.equal(string.format(L.toastMessage, 12, unknownName, 1, 1), model.text)
+	end)
+
 	it("reads the unspent count from a client that answers", function()
 		start({ traits = { configID = 7, ranks = {} } })
 		_G.C_Traits.GetConfigInfo = function(configID)

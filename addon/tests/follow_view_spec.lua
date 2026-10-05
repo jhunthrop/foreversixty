@@ -126,18 +126,23 @@ describe("FollowView", function()
 		assert.are.equal("Deep Holy", FollowView.rows(DATA, build, { [1] = {}, [2] = {} }).name)
 	end)
 
-	it("falls back to naming the class when the code carried no name", function()
+	it("falls back to naming the class, title-cased, when the code carried no name", function()
+		-- Round-2 ruling 3: "paladin build" read as ungroomed; the class
+		-- segment is title-cased the same way Window.specLabel already
+		-- title-cases the spec line beside it.
 		start()
 		local build = assert(Follow.load(CODE, DATA))
-		assert.are.equal(string.format(L.followBuildName, "paladin"),
+		assert.are.equal(string.format(L.followBuildName, "Paladin"),
 			FollowView.rows(DATA, build, { [1] = {}, [2] = {} }).name)
 	end)
 
-	it("names a cell this addon's data has no talent for by its position", function()
+	it("names a cell this addon's data has no talent for by its position, tier 1-indexed", function()
+		-- Round-2 ruling 4: Data.lua's own tier 9 reads as 10 to the
+		-- player, matching the real talent window's Tier 1-8 labelling.
 		start()
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:191:", DATA))
 		local model = FollowView.rows(DATA, build, { [1] = {} })
-		assert.are.equal(string.format(L.followUnknownCell, 9, 1), model.rows[1].name)
+		assert.are.equal(string.format(L.followUnknownCell, 10, 1), model.rows[1].name)
 	end)
 
 	it("puts a tree heading before the first row of each tree", function()
@@ -192,7 +197,7 @@ describe("FollowView", function()
 		view.code:SetText(CODE)
 		view.load:GetScript("OnClick")(view.load)
 		assert.are.equal(string.format(L.followProgress, 0, 4), view.progress:GetText())
-		assert.are.equal(string.format(L.followBuildName, "paladin"), view.name:GetText())
+		assert.are.equal(string.format(L.followBuildName, "Paladin"), view.name:GetText())
 		-- A tree heading is an eyebrow over its rows, not a row of its own kind.
 		assert.are.equal("HOLY", view.list.rows[1].heading:GetText())
 		assert.are.equal("", view.list.rows[1].text:GetText())
@@ -211,7 +216,7 @@ describe("FollowView", function()
 		view.code:SetText("FS9:nope")
 		view.load:GetScript("OnClick")(view.load)
 		assert.is_truthy(view.error:GetText():find("FS9", 1, true))
-		assert.are.equal(string.format(L.followBuildName, "paladin"), view.name:GetText())
+		assert.are.equal(string.format(L.followBuildName, "Paladin"), view.name:GetText())
 	end)
 
 	it("clears the tab when the build is forgotten", function()

@@ -237,4 +237,33 @@ describe("Talents", function()
 			assert.is_nil(helper.load("Talents").iconFor({ node = 100 }))
 		end)
 	end)
+
+	-- Round-2 ruling 3's fix: Window.specLabel and Follow's build-name
+	-- fallback both title-case a slug through this one function.
+	describe("Talents.titleCase", function()
+		it("capitalises a bare word", function()
+			assert.are.equal("Paladin", require("Talents").titleCase("paladin"))
+		end)
+
+		it("capitalises each hyphen-separated word", function()
+			assert.are.equal("Beast Mastery", require("Talents").titleCase("beast-mastery"))
+		end)
+
+		it("answers an empty string for nil rather than erroring", function()
+			assert.are.equal("", require("Talents").titleCase(nil))
+		end)
+	end)
+
+	-- Round-2 ruling 4's fix: the tracker, the toast and the Talents
+	-- page all print Data.lua's own zero-based tier plus one.
+	describe("Talents.displayTier", function()
+		it("adds one to the raw, zero-based Data.lua tier", function()
+			assert.are.equal(1, require("Talents").displayTier(0))
+			assert.are.equal(8, require("Talents").displayTier(7))
+		end)
+
+		it("treats a missing tier as the first row rather than erroring", function()
+			assert.are.equal(1, require("Talents").displayTier(nil))
+		end)
+	end)
 end)

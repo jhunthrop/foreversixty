@@ -444,4 +444,23 @@ describe("Theme", function()
 		assert.are.same({}, Theme.diagnostics())
 		assert.are.same({}, Theme.templates)
 	end)
+
+	-- The character header's circular ringed class crest (design section 2 /
+	-- section 4.5.1, round-2 owner ruling).
+	describe("Theme.crestPath", function()
+		it("names the crest media path for a class this addon ships one for", function()
+			start()
+			assert.are.equal("Interface\\AddOns\\ForeverSixty\\media\\crests\\warrior", Theme.crestPath("WARRIOR"))
+		end)
+
+		it("answers nil for a class this addon ships no crest for", function()
+			start()
+			assert.is_nil(Theme.crestPath("DEATHKNIGHT"))
+		end)
+
+		it("answers nil with no token at all", function()
+			start()
+			assert.is_nil(Theme.crestPath(nil))
+		end)
+	end)
 end)

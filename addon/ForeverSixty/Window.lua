@@ -105,16 +105,15 @@ end
 
 --- "warrior-arms" reads as "Arms", "hunter-beast-mastery" as "Beast
 --- Mastery": the slug is the site's key, not something to show a player.
+--- Talents.titleCase does the capitalising -- the same function Follow's
+--- build-name fallback uses on a bare class slug (round-2 ruling 3), kept
+--- in one place rather than copied a second time.
 function Window.specLabel(slug)
 	if slug == nil then
 		return L.headerNoSpec
 	end
 	local name = slug:match("^[^-]+-(.+)$") or slug
-	local words = {}
-	for word in name:gmatch("[^-]+") do
-		words[#words + 1] = word:sub(1, 1):upper() .. word:sub(2)
-	end
-	return table.concat(words, " ")
+	return Talents.titleCase(name)
 end
 
 function Window.headerModel(data)
@@ -251,9 +250,22 @@ local function hairline(frame, fromPoint, toPoint, x, y, horizontal)
 	return rule
 end
 
+--- The crest and its ring, left-aligned in the header and vertically
+--- centred in it (design section 4.5.1, round-2 owner ruling).
+local function buildCrest(frame)
+	local S = Theme.SIZES
+	local crestLeft = Window.pageLeft() + S.padding
+	local crestCenterY = -(S.titleBarHeight + S.headerHeight / 2)
+	Window.crest, Window.crestRing = Theme.buildCrest(frame, S.headerCrest)
+	Window.crest:SetPoint("LEFT", frame, "TOPLEFT", crestLeft, crestCenterY)
+	return Window.crest
+end
+
 local function buildHeader(frame)
 	local S = Theme.SIZES
-	local left, top = Window.pageLeft() + S.padding, -(S.titleBarHeight + S.gap * 3)
+	buildCrest(frame)
+	local left = Window.pageLeft() + S.padding + S.headerCrest + S.headerCrestGap
+	local top = -(S.titleBarHeight + S.gap * 3)
 	Window.characterName = Widgets.label(frame, "", "gold", "large")
 	Window.characterName:SetPoint("TOPLEFT", frame, "TOPLEFT", left, top)
 	Window.levelLine = Widgets.label(frame, "", "muted", "small")
@@ -330,6 +342,11 @@ end
 
 local function applyHeader(data)
 	local header = Window.headerModel(data)
+	-- The neutral tile (never a blank space) for a token this addon ships
+	-- no crest for; the ring still tints -- gold, Theme.classColor's own
+	-- fallback -- so an unknown class reads as "a plain squared, ringed
+	-- tile", round-2's own named fallback, not a broken image.
+	Theme.paintCrest(Window.crest, Window.crestRing, header.classToken)
 	Window.characterName:SetText(header.name)
 	Window.characterName:SetTextColor(Theme.classColor(header.classToken))
 	Window.levelLine:SetText(header.levelLine)
