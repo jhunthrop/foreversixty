@@ -110,12 +110,26 @@ for it; when the BiS file carries no enchant data for the slot, the slot is not 
     "item_id": 16955, "name": "Helm of Wrath", "icon": "inv_helmet_71", "quality": 4, "slot": "head",
     "awarded_to": { "character_key": "...", "name": "Grimtotem", "at": "...", "by_name": "Kraggor" } | null,
     "candidates": [ { "character_key": "...", "name": "...", "class": "...", "spec": "...",
-                      "gain_dps": 40.0, "not_sim_checked": false, "attendance": { "present": 8, "nights": 8 },
-                      "already_equivalent": false } ]
+                      "gain_dps": 40.0, "not_sim_checked": false, "ilvl_delta": null,
+                      "attendance": { "present": 8, "nights": 8 }, "already_equivalent": false } ]
   } ] }
 ```
-Candidates: every roster character whose spec BiS band (level 60 band, their faction) names the
-item as the pick or an alternative for that slot, ranked by `gain_dps` desc, then attendance.
+Candidates, two tiers:
+- **Tier 0 (BiS-matched)**: every roster character whose spec BiS band (level 60 band, their
+  faction) names the item as the pick or an alternative for that slot — `gain_dps`/`not_sim_checked`
+  from the normal gear-gap rule, `ilvl_delta` always `null`.
+- **Tier 1 (fallback)**, added 2026-10-04 (loot candidates must not read empty on real data —
+  no BiS file in this build names any raid-tier item, so tier 0 is empty for every item today):
+  a character with no tier-0 match is still a candidate when (a) their class can use the item
+  at all, read from the build's own per-class item table (`data/builds/<build>/items/<class>.json`
+  — presence there is itself the class/armor-type restriction) and (b) the item's own item level
+  is higher than what they wear in that slot (from the export), or the slot is empty. A tier-1
+  candidate carries `gain_dps: null`, `not_sim_checked: true`, and `ilvl_delta` (item item level
+  minus worn item level, or the item's own item level when the slot is empty).
+
+Ranking: every tier-0 candidate ranks ahead of every tier-1 candidate, regardless of either's own
+numbers. Within tier 0: `gain_dps` desc (`null` sorts last within the tier). Within tier 1:
+`ilvl_delta` desc. Either tier, attendance (`present`) breaks the remaining tie.
 
 ## POST /v1/guilds/{id}/loot/awards  (officer)   body `{ "encounter_id", "item_id", "character_key" }`
 ## DELETE /v1/guilds/{id}/loot/awards/{award_id}  (officer)

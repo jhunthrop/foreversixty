@@ -3,6 +3,19 @@
 Contract: `docs/contracts/2026-10-04-guild-centre-api.md`. All 7 build steps shipped, one
 commit each on branch `api-guild-centre`.
 
+**Follow-up (same branch):** loot candidates no longer read empty on real data. Added a
+tier-1 fallback to `loot.go`'s `lootCandidates`: when a roster character has no tier-0
+(BiS-band) match for an item, they still qualify when their class can use it at all (checked
+against the build's own per-class item table, `data/builds/<build>/items/<class>.json`, read
+through `api/internal/trees` — the API's existing per-class item loader, wired onto
+`guilds.Store` as a new `Trees *trees.Data` field) and the item's own item level beats what
+they wear in that slot (or the slot is empty). Tier-1 candidates carry `gain_dps: null`,
+`not_sim_checked: true`, and a new `ilvl_delta` field; tier 0 always ranks ahead of tier 1.
+`docs/contracts/2026-10-04-guild-centre-api.md`'s loot section documents both tiers and the
+new field. The integration test now asserts every real (non-slotless) Onyxia drop has at
+least one candidate from the seeded 24-character roster — it does, entirely via tier 1,
+since (per the original report below) no BiS band in this repo names a raid-tier item yet.
+
 ## Endpoints and where each number comes from
 
 | Endpoint | Source |

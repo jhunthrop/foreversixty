@@ -11,6 +11,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -18,6 +19,8 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/spec"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 // onyxiaEncounterID/onyxiaZone are progression.go's own constants, reused here under this
@@ -80,16 +83,27 @@ type AwardedTo struct {
 	ByName       string `json:"by_name"`
 }
 
-// LootCandidate is one roster character this item's slot band names, ranked.
+// LootCandidate is one roster character this item names them a candidate for, ranked.
+// Every candidate comes from one of two tiers (contract's own follow-up,
+// docs/contracts/2026-10-04-guild-centre-api.md's loot section): a BiS-matched candidate
+// (tier 0 - this character's own spec band names the item as its slot's pick or a listed
+// alternative, GainDps a real number or nil when the band has the item but never measured
+// a worn-vs-pick gap for it) or a fallback candidate (tier 1 - no band match, but the
+// character's class can use the item at all and it is a real item-level upgrade over
+// what they wear, or the slot is empty; GainDps always nil, NotSimChecked always true,
+// IlvlDelta the item's own level advantage). tier itself is never marshaled - it is this
+// struct's own sort key, read by lootCandidateLess.
 type LootCandidate struct {
 	CharacterKey      string     `json:"character_key"`
 	Name              string     `json:"name"`
 	Class             string     `json:"class"`
 	Spec              string     `json:"spec"`
-	GainDps           float64    `json:"gain_dps"`
+	GainDps           *float64   `json:"gain_dps"`
 	NotSimChecked     bool       `json:"not_sim_checked"`
+	IlvlDelta         *int       `json:"ilvl_delta"`
 	Attendance        Attendance `json:"attendance"`
 	AlreadyEquivalent bool       `json:"already_equivalent"`
+	tier              int
 }
 
 // LootItemView is one of Onyxia's own 22 drops, as the Loot tab shows it.
@@ -167,37 +181,28 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 	return view, nil
 }
 
-// lootCandidates ranks every verified roster character whose own BiS band names item for
-// its own slot - the pick or any listed alternative - by gain_dps desc, then attendance
-// desc. A slotless item (a quest/reputation/crafting drop, six of Onyxia's twenty-two)
-// never has candidates: no character's BiS band recommends a quest item.
+// lootCandidates ranks every verified roster character this item names a candidate for,
+// in two tiers (see LootCandidate's own doc comment): tier 0, this character's own BiS
+// band names the item for its own slot (the pick or a listed alternative); tier 1
+// (follow-up fix - loot candidates must not read empty on real data, since no BiS band in
+// this repo today names any raid-tier item at all, see CONTROL_CENTRE.md), no band match
+// but the character's class can use the item at all (data/builds/<build>/items/<class>.
+// json, read through api/internal/trees the same way every other build-scoped reader in
+// this service already loads it) and it is a real item-level upgrade over what they wear,
+// or the slot is empty. A slotless item (a quest/reputation/crafting drop, six of Onyxia's
+// twenty-two) never has candidates in either tier: there is no slot to compare against.
 func (s *Store) lootCandidates(roster []RosterRow, item lootItem, present map[string]int, nights int) []LootCandidate {
 	out := []LootCandidate{}
 	if item.Slot == "" {
 		return out
 	}
 	for _, row := range roster {
-		if !row.Verified || row.className == "" || row.specStr == "" {
+		if !row.Verified || row.className == "" {
 			continue
 		}
-		band, hasBand := s.loadBandFor(row.className, row.specStr, row.faction)
-		if !hasBand {
-			continue
-		}
-		pick, named := band.BySlot()[item.Slot]
-		if !named || pick.ItemID <= 0 {
-			continue
-		}
-		if !namesItem(pick, item.ItemID) {
-			continue
-		}
-		wornID, hasWorn := row.gear[item.Slot]
-		verdict := bis.VerdictFor(pick, wornID, hasWorn)
 		cand := LootCandidate{
 			CharacterKey: row.CharacterKey, Name: row.Name,
-			AlreadyEquivalent: !verdict.Upgrade,
-			NotSimChecked:     verdict.NotSimChecked,
-			Attendance:        Attendance{Present: present[row.CharacterKey], Nights: nights},
+			Attendance: Attendance{Present: present[row.CharacterKey], Nights: nights},
 		}
 		if row.Class != nil {
 			cand.Class = *row.Class
@@ -205,13 +210,101 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem, present map[st
 		if row.Spec != nil {
 			cand.Spec = *row.Spec
 		}
-		if verdict.GainDps != nil {
-			cand.GainDps = *verdict.GainDps
+
+		if verdict, ok := s.bisMatch(row, item); ok {
+			cand.tier = 0
+			cand.GainDps = verdict.GainDps
+			cand.NotSimChecked = verdict.NotSimChecked
+			cand.AlreadyEquivalent = !verdict.Upgrade
+			out = append(out, cand)
+			continue
 		}
-		out = append(out, cand)
+
+		if delta, ok := s.fallbackMatch(row, item); ok {
+			cand.tier = 1
+			cand.NotSimChecked = true
+			cand.IlvlDelta = &delta
+			out = append(out, cand)
+		}
 	}
 	sortLootCandidates(out)
 	return out
+}
+
+// bisMatch is lootCandidates' own tier-0 test: row's spec band names item for its own slot
+// (the pick or a listed alternative), scored the normal gear-gap way.
+func (s *Store) bisMatch(row RosterRow, item lootItem) (bis.SlotVerdict, bool) {
+	if row.specStr == "" {
+		return bis.SlotVerdict{}, false
+	}
+	band, hasBand := s.loadBandFor(row.className, row.specStr, row.faction)
+	if !hasBand {
+		return bis.SlotVerdict{}, false
+	}
+	pick, named := band.BySlot()[item.Slot]
+	if !named || pick.ItemID <= 0 || !namesItem(pick, item.ItemID) {
+		return bis.SlotVerdict{}, false
+	}
+	wornID, hasWorn := row.gear[item.Slot]
+	return bis.VerdictFor(pick, wornID, hasWorn), true
+}
+
+// fallbackMatch is lootCandidates' own tier-1 test: row's class can use item at all (read
+// from the build's own per-class item table), and item.ItemLevel either outranks the
+// worn item in item's own slot or that slot carries nothing - delta mirrors
+// fallbackVerdict's own semantics, computed from real, build-resolved item levels.
+func (s *Store) fallbackMatch(row RosterRow, item lootItem) (int, bool) {
+	dropItem, ok := s.buildItemFor(row.className, item.ItemID)
+	if !ok {
+		return 0, false
+	}
+	wornID, hasWorn := row.gear[item.Slot]
+	if !hasWorn {
+		return fallbackVerdict(dropItem.ItemLevel, nil)
+	}
+	wornItem, ok := s.buildItemFor(row.className, wornID)
+	if !ok {
+		// The worn item's own level cannot be resolved (an id this class's item table
+		// does not carry) - conservatively not a fallback candidate rather than guessing.
+		return 0, false
+	}
+	level := wornItem.ItemLevel
+	return fallbackVerdict(dropItem.ItemLevel, &level)
+}
+
+// fallbackVerdict is pure: given the drop's own item level and the worn item's level (nil
+// for an empty slot), decides the fallback tier's own item-level-upgrade test. Class
+// eligibility is the caller's own, separate check (buildItemFor's ok return already
+// answers it) - this function only ever answers the item-level half.
+func fallbackVerdict(dropItemLevel int, wornItemLevel *int) (delta int, qualifies bool) {
+	if wornItemLevel == nil {
+		return dropItemLevel, true
+	}
+	d := dropItemLevel - *wornItemLevel
+	if d <= 0 {
+		return 0, false
+	}
+	return d, true
+}
+
+// buildItemFor resolves itemID through classSlug's own per-class item table
+// (data/builds/<build>/items/<classSlug>.json via api/internal/trees) - presence there is
+// itself the class-usability test (armor type and class restrictions the data pipeline
+// already applied when it built that per-class file), not a second check this package
+// would otherwise have to reimplement.
+func (s *Store) buildItemFor(classSlug string, itemID int) (trees.Item, bool) {
+	if s.Trees == nil {
+		return trees.Item{}, false
+	}
+	build, ok := s.Trees.Build(bisDataBuild)
+	if !ok {
+		return trees.Item{}, false
+	}
+	classID, ok := spec.New(build).ClassID(classSlug)
+	if !ok {
+		return trees.Item{}, false
+	}
+	return build.Item(classID, itemID)
 }
 
 // namesItem reports whether itemID is pick's own top choice or one of its listed
@@ -237,13 +330,40 @@ func sortLootCandidates(cands []LootCandidate) {
 	}
 }
 
-// lootCandidateLess reports whether a ranks ahead of b: gain_dps desc, then attendance
-// (present) desc.
+// lootCandidateLess reports whether a ranks ahead of b: tier 0 (BiS-matched) always ahead
+// of tier 1 (fallback); within tier 0, gain_dps desc (a nil gain sorts last within the
+// tier, never ahead of a measured one); within tier 1, ilvl_delta desc; either tier,
+// attendance (present) desc breaks the remaining tie.
 func lootCandidateLess(a, b LootCandidate) bool {
-	if a.GainDps != b.GainDps {
-		return a.GainDps > b.GainDps
+	if a.tier != b.tier {
+		return a.tier < b.tier
+	}
+	if a.tier == 0 {
+		ag, bg := gainOrLowest(a.GainDps), gainOrLowest(b.GainDps)
+		if ag != bg {
+			return ag > bg
+		}
+	} else {
+		ad, bd := deltaOrZero(a.IlvlDelta), deltaOrZero(b.IlvlDelta)
+		if ad != bd {
+			return ad > bd
+		}
 	}
 	return a.Attendance.Present > b.Attendance.Present
+}
+
+func gainOrLowest(g *float64) float64 {
+	if g == nil {
+		return math.Inf(-1)
+	}
+	return *g
+}
+
+func deltaOrZero(d *int) int {
+	if d == nil {
+		return 0
+	}
+	return *d
 }
 
 // lootAwards reads every current award for guildID's encounterID, keyed by item id, with
