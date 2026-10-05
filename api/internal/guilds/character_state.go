@@ -16,10 +16,10 @@ import (
 // 28-addon-character-aware-design.md §3, §4), and nothing more — this is
 // not the public roster/progression the data addon already carries.
 type CharacterGuildState struct {
-	Name             string
-	Region           string
-	Ruleset          string
-	Claim            ClaimStateView
+	Name    string
+	Region  string
+	Ruleset string
+	Claim   ClaimStateView
 	// PendingApprovals is the guild's unverified-roster count. It is
 	// left at zero for a member who is not an officer or leader:
 	// approving a character is an officer action, so a member has no

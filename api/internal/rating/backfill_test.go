@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"strings"
 	"testing"
 	"time"
 
@@ -105,12 +106,20 @@ func TestBackfillIsBoundedPerRun(t *testing.T) {
 	if n != 2 {
 		t.Fatalf("recomputed %d fights, want exactly 2 (batchSize 2 of 3 stale, all reads succeed)", n)
 	}
-	remaining, err := ratingStore.staleFights(ctx, 10)
+	remaining, err := ratingStore.staleFights(ctx, 100)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(remaining) != 1 {
-		t.Fatalf("staleFights after a bounded run = %d, want 1 (3 stale - 2 recomputed)", len(remaining))
+	// Count only this test's own fights: the shared test database may hold stale rows
+	// another package's tests left behind, and those are not this test's concern.
+	ours := 0
+	for _, f := range remaining {
+		if strings.HasPrefix(f.ReportID, "backfill-bounded-") {
+			ours++
+		}
+	}
+	if ours != 1 {
+		t.Fatalf("staleFights after a bounded run = %d of ours, want 1 (3 stale - 2 recomputed)", ours)
 	}
 }
 

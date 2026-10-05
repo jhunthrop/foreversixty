@@ -177,6 +177,13 @@ func TestHomeBestParseAndRatingReadTheNewestKillFight(t *testing.T) {
 		 values ('parse-report', 0, $1, 65, $2, 'test', now(), true)`, key, components); err != nil {
 		t.Fatal(err)
 	}
+	// The shared test database outlives this test: a rating row left behind with a
+	// non-default model_version reads as a stale fight to internal/rating's backfill
+	// tests (CI run 37245554639 failed exactly that way), so remove both rows here.
+	t.Cleanup(func() {
+		h.pool.Exec(ctx, `delete from rating_scores where report_id = 'parse-report' and player_key = $1`, key)
+		h.pool.Exec(ctx, `delete from fight_metrics where report_id = 'parse-report' and player_key = $1`, key)
+	})
 
 	h.actor = auth.Actor{UserID: uid, Role: "user", Method: "session"}
 	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
