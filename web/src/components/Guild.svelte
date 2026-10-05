@@ -46,6 +46,7 @@
     type GuildViewerRole,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
+  import { guildMarkSrc } from '../lib/guild/mark';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { needsBeforeThursdaySentence, standingSentence } from '../lib/guild/standing';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
@@ -190,6 +191,13 @@
     home?.viewer?.role ?? (home === null ? 'public' : canManage ? 'officer' : 'member'),
   );
   const guildId = $derived(home?.guild.id ?? data?.guild.id ?? null);
+  /** Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): `home.guild` (the
+   *  member-gated fetch) wins once it resolves -- it is the one place a just-saved/removed
+   *  crest shows up without a reload (`onCrestChanged` below re-fetches `home`, nothing
+   *  else) -- `data.guild` (the public fetch) is the first-paint fallback, same precedence
+   *  `guildId` above uses. `guildMarkSrc` is the one helper that picks crest vs. faction
+   *  logo vs. null; this component never re-derives that rule itself. */
+  const guildMark = $derived(guildMarkSrc(home?.guild ?? data?.guild ?? null));
   const myCharacterKey = $derived(
     home?.viewer?.character_key ??
       (home !== null
@@ -310,6 +318,21 @@
       contestError = guildHomeCopy.contestRecordedRefreshFailed;
     } finally {
       contestBusy = false;
+    }
+  }
+
+  /** Guild crest round: `putGuildCrest`/`deleteGuildCrest` already invalidate the cached
+   *  home/settings queries themselves (the same pattern every other guild mutation in
+   *  `lib/guild/api.ts` follows) -- this just re-fetches so the header ring picks up the
+   *  change without a page reload, mirroring `onContest`'s own refresh above. Best-effort:
+   *  the crest block already showed its own success before calling this, so a failed
+   *  refetch here is silent rather than a second error message fighting the first. */
+  async function onCrestChanged(): Promise<void> {
+    if (home === null) return;
+    try {
+      home = await fetchGuildHome(home.guild.id);
+    } catch {
+      // See comment above: silent.
     }
   }
 
@@ -568,7 +591,7 @@
             Guild
           </span>
           <div class="flex items-center gap-4 lg:gap-[18px]">
-            <FactionCrest {faction} testid="guild-faction-crest" />
+            <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
             <h1 class="font-display text-strong text-[22px] font-bold">{data.guild.name}</h1>
           </div>
           {#if home?.summary?.updated_at !== undefined}
@@ -799,10 +822,12 @@
         <settingsLazy.current
           path={resolved}
           {home}
+          {role}
           {isClaimantAccount}
           {contestBusy}
           {contestError}
           {showContestConfirm}
+          onCrestChanged={() => void onCrestChanged()}
           onContestStart={() => {
             showContestConfirm = true;
             contestError = '';

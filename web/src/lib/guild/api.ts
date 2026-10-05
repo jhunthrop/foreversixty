@@ -36,6 +36,12 @@ export interface GuildSummary {
    *  empty roster that resolves to none, read identically -- neutral band, no emblem, no
    *  watermark. */
   faction?: 'alliance' | 'horde' | null;
+  /** Guild crest contract (docs/contracts/2026-10-05-guild-crest-api.md): the uploaded
+   *  crest's served URL, carrying the object's own hash as `?v=` so a re-upload is a new
+   *  URL (never a stale cached image). Optional and `null` both mean "no crest" -- read
+   *  through `guild/mark.ts`'s `guildMarkSrc`, never compared directly, so every caller
+   *  falls back to the faction logo the same way. */
+  crest_url?: string | null;
 }
 
 export type ClaimState = 'unclaimed' | 'pending' | 'claimed' | 'contested';
@@ -271,10 +277,18 @@ export interface UpdatedMember {
  * `get()`: failure is read off the HTTP status (requestEnvelope's own contract), and a
  * resolved-but-null `data` becomes a GuildApiError using the envelope's own message.
  */
+/**
+ * `allowEmpty` is for the crest DELETE route, the one endpoint in this module whose
+ * contract success response is a bare 204 (docs/contracts/2026-10-05-guild-crest-api.md)
+ * rather than an envelope carrying a `data` payload -- every other call here still throws
+ * on a successful-but-empty response, since that would otherwise mean the API changed
+ * shape under it silently.
+ */
 async function call<T>(
   path: string,
   apiBase: string,
   init: { method?: string; body?: unknown } = {},
+  allowEmpty = false,
 ): Promise<T> {
   let result: EnvelopeResult<T>;
   try {
@@ -283,8 +297,10 @@ async function call<T>(
     if (error instanceof AccountError) throw new GuildApiError(error.message, error.status);
     throw new GuildApiError(GUILD_API_FAILED, 0);
   }
-  if (result.data === null) throw new GuildApiError(result.message ?? GUILD_API_FAILED, result.status);
-  return result.data;
+  if (result.data === null && !allowEmpty) {
+    throw new GuildApiError(result.message ?? GUILD_API_FAILED, result.status);
+  }
+  return result.data as T;
 }
 
 const GUILD_TTL_MS = 5 * 60 * 1000;
@@ -775,4 +791,49 @@ export async function approveAllRoster(
   invalidate(guildHomeKey(guildId, undefined, apiBase));
   invalidate(guildSettingsKey(guildId, apiBase));
   return data;
+}
+
+// ---------------------------------------------------------------------------------------
+// Guild crest (docs/contracts/2026-10-05-guild-crest-api.md). Officer or leader of a
+// claimed guild; a moderator may remove but the web lane only ever offers the block to
+// `role === 'officer'` (Guild.svelte/GuildSettingsTab.svelte).
+// ---------------------------------------------------------------------------------------
+
+export interface GuildCrestResult {
+  crest_url: string;
+}
+
+/**
+ * Multipart, field `image`. The body is a `FormData`, which `account/api.ts`'s
+ * `requestEnvelope` now passes straight to `fetch` without JSON-encoding or setting its
+ * own `content-type` -- the browser writes the `multipart/form-data; boundary=...` header
+ * itself, which is why this never sets one by hand.
+ */
+export async function putGuildCrest(
+  guildId: number,
+  file: File,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildCrestResult> {
+  const body = new FormData();
+  body.append('image', file);
+  const data = await call<GuildCrestResult>(`/v1/guilds/${guildId}/crest`, apiBase, {
+    method: 'PUT',
+    body,
+  });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
+}
+
+/** 204 on success (the contract's own wording) -- `call`'s `allowEmpty` reads that as
+ *  success rather than "the envelope carried no data," the only route in this module that
+ *  needs it. */
+export async function deleteGuildCrest(
+  guildId: number,
+  apiBase: string = API_BASE_URL,
+): Promise<{ status: 'removed' }> {
+  await call<null>(`/v1/guilds/${guildId}/crest`, apiBase, { method: 'DELETE' }, true);
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return { status: 'removed' };
 }
