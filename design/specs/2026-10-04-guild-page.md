@@ -585,6 +585,21 @@ real page's own `mx-auto max-w-[1344px]` wrapper (`Guild.svelte` line 489) — t
 mock-only inaccuracy, not a live-site defect; flagged so nobody "fixes" the real component
 against a bug that was only ever in the Python mock.
 
+**The art layer must never leave the band (round-3 fix).** The owner's own review of the
+real rendered boards found the faction wash and the watermark logo running below the band into
+the body content underneath it (the "This week's raid nights" panel). The band's own inner
+`overflow:hidden` wrapper (around the header's text content alone) was not the true clip
+boundary for an absolutely-positioned art layer whose own pixel box could, depending on board
+role (an officer board's taller header vs. a member board's shorter one, no officer-tools
+panel), extend past that inner wrapper's own edge before the browser clips it. Rule, stated
+once: **`overflow:hidden` sits on the band container itself — nav, header text, the art layer
+and the tab strip together — not on an inner wrapper around the text alone.** The band's own
+last child is the tab strip; nothing the art layer draws may render past that same boundary.
+Fixed in `design/mocks/gen_guild_header.py`'s `build_header_board()` (the `.band` wrapper's own
+inline style gains `overflow:hidden`, scoped to this file's boards only — `mocklib.py`'s shared
+`.band` class, used by the other eight `gen_guild.py` boards, is untouched). Verified clipped
+cleanly on every board this rule applies to, officer and member alike, at 1440, 2000 and 390.
+
 **Chosen design — option B, the emblem watermark.** The identity-mark crest beside the h1 is
 unchanged from round 1 of this study (`FactionCrest`, 64px/44px, ringed — see below). Two
 layers over the band's right portion, both built from nothing but the real emblem and the

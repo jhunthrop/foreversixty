@@ -286,7 +286,16 @@ def build_header_board(name: str, faction: str, role: str, style: str, width_tag
                + (f'<p style="margin:0;font-size:12px;color:{MUTED};font-style:italic">{caption}</p>' if caption else '')
                + '</div>')
 
-    band_wrap = f'<div class="band" style="display:flex;flex-direction:column;flex-shrink:0">{nav_html}{band}</div>'
+    # Owner review fix (2026-10-04, third round on the art): the faction wash and the
+    # watermark logo ran below the band into the body on the real render -- the inner
+    # `overflow:hidden` wrapper around the header content alone was not the true clip
+    # boundary; the band itself (nav + header + tab strip, everything inside `.band`) is.
+    # `overflow:hidden` added here, inline, scoped to this file's own boards only --
+    # mocklib.py's shared `.band` class is unchanged, so the other eight gen_guild.py
+    # boards are unaffected. The band ends right after `tabs_row`, its own last child, so
+    # this is also the literal answer to "the band ends under the tab strip."
+    band_wrap = (f'<div class="band" style="display:flex;flex-direction:column;flex-shrink:0;'
+                 f'overflow:hidden">{nav_html}{band}</div>')
     out_html = QUIET_LINK_STYLE + band_wrap + content + footer(phone=phone)
     width = 390 if phone else (2000 if width_tag == '2000' else 1440)
     return write(f'{name}.html', page(out_html, width)).as_posix()
