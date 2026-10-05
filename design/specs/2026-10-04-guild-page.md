@@ -553,3 +553,185 @@ desktop, and one capture at 2000px confirming every tab's content stays centred 
   13px, gold — louder than the raider's own name, the row's actual subject. Fixed: 12px,
   muted, gold only on hover/focus-visible (`.quiet-link`), so the name, pills and figures lead
   and the hand-off reads as the footnote action it is everywhere else on the site.
+
+### 12.2 Header art round (2026-10-04, same day — owner direction: "use faction emblems and a
+hero fade type of header from the faction as an art")
+
+Scope: the header band only (§4.0's eyebrow/h1/Updated/facts/standing/officer-strip/tab strip
+region, as it ships today — confirmed by reading the live band, `web/src/components/
+Guild.svelte` lines 488-615). Nothing else on the page changes; every element named in the
+owner's own framing ("the eyebrow, h1, Updated, facts, standing/sign-in line, officer strip
+and tab strip exactly as they are today") keeps its current copy, order and mechanism. This
+round adds exactly two new visual elements and nothing else.
+
+**Reference, and exactly what is borrowed.** `ClassCrest.astro`'s own shipped ring recipe
+(`border-radius:999px; box-shadow:0 0 0 2px <colour>; background:var(--color-raised)`, the
+same component every class picker on the site already uses) is the identity-mark recipe,
+applied to the faction emblem instead of a class icon. `FactionMark.astro`'s own header
+comment states this component ships deliberately ring-less, "no ring, no background, unlike
+ClassCrest" — nine existing callers (the nav chip, row descriptors, `ClassHeader`'s faction
+toggle pills) depend on that staying true, so this round does **not** edit `FactionMark.astro`;
+it adds a new, tiny, single-purpose mark instead (ruling 12.2.A below). `design/DESIGN-
+SYSTEM.md`'s own tenet-7 crest recipe ("the whole icon at an 80% fit over a disc made from the
+icon itself, blurred and darkened") is the hero-fade recipe, at atmosphere scale instead of
+identity-mark scale — this is the one place on the page large enough to use it as a backdrop,
+the same job principle 5's night gradient already does ("atmosphere in the header only").
+`design/specs/2026-10-04-logs-landing.md`'s `LogsHeroBand` is the precedent for "how a band
+takes a hero fade": a full-bleed band whose content column stays capped and centred at 1344px
+while the band's own background bleeds edge to edge — this round's fade is positioned inside
+that same 1344px content column (not the raw viewport), for the identical reason `LogsHeroBand`
+centres: so it reads the same at 1280px and 1920px instead of drifting toward the physical
+browser edge as the viewport widens (verified on `guild-header-2000`, below).
+
+**Why the raw emblem alone is not "faction-coloured."** Sampled directly from the shipped
+assets (`web/public/icons/hd/faction/{alliance,horde}.webp`, 72×72): the Alliance lion shield
+is dominated by gold/tan/black pixels (the lion and its rim), not blue — the shield's blue
+field is a minority of the art. The Horde disc is dominated by near-black. A plain blur of
+either reads gold or a dark smudge, never recognisably Alliance-blue or Horde-red. Fixed the
+same way `design/DESIGN-SYSTEM.md`'s own rarity section already fixes a real-but-illegible
+colour for a different use (the rare/epic text lightening): the blurred layer is desaturated,
+then colourised with the faction's own documented bar colour (`#2f6fd6` Alliance, `#c0392b`
+Horde — "Faction" section) via `background-blend-mode:color`. The glow's *shape* stays the
+real emblem's own blurred silhouette (never invented art, tenet "the game's own icons"); its
+*hue* is the one colour the design system already names for this faction. This is a correction
+made during this round's own mock review — the first render (plain `filter:blur()+brightness()`
+on the raw asset, no colourising) is on file in this round's git history as the "before" state;
+it is not shipped as a board.
+
+**Region: the identity row (new).** Directly under the eyebrow, in place of the h1 standing
+alone: a flex row, `gap:18px` (desktop) / `16px` (phone), `align-items:center` — crest, then
+h1, the identical slot `ClassHeader.astro`'s own `.class-header-identity` row already uses for
+crest+titles (tenet 10: reuse the pattern, not a new one).
+- **Crest size:** 64px desktop (≥1024px), 44px phone (<1024px) — `ClassHeader`'s own two sizes
+  for the same identity-mark job, reused unchanged.
+- **Crest recipe (new component, `FactionCrest`):** the faction emblem (`web/public/icons/hd/
+  faction/<faction>.webp`), `object-fit:contain`, ~16% padding inside the circle (the emblem's
+  own art is a shield/disc silhouette, not full-bleed square the way a class icon is, so a
+  small inset keeps it off the ring), `border-radius:999px`, ring `box-shadow:0 0 0 2px
+  <faction-bar-colour>` (`#2f6fd6` Alliance / `#c0392b` Horde — the bar variant, not the
+  lightened text variant, matching `ClassCrest`'s own choice of `classes.json`'s full-
+  saturation swatch for its ring), `background:var(--color-raised)` fallback. Not a link, so
+  no hover/focus-visible ring state (unlike `ClassCrest`, whose dim-to-full ring only exists
+  because every caller wraps it in an `<a>` — this mark sits inside a non-interactive `<h1>`
+  row).
+- **Neutral/unknown faction:** no crest renders at all — not a grey placeholder, not a question
+  mark — the row is the h1 alone, pixel-identical to today's shipped band ("a neutral band
+  with no emblem, never a wrong one," the owner's own words). `design/mocks/renders/guild-
+  overview-officer.png` (already on file) is this state's own reference capture; it is not
+  re-rendered for this round.
+
+**Region: the hero fade (new, background only, never affects layout).** A single absolutely-
+positioned, `pointer-events:none`, `aria-hidden="true"` layer, a child of the 1344px content
+column (not the full-bleed outer band), so `right:` is relative to that column's own edge:
+- **Desktop (≥1024px):** box 460×300px, `top:-10px; right:-40px`. Two CSS background layers
+  on one element — `linear-gradient(<bar>,<bar>)` over `url(<emblem>)`, `background-blend-
+  mode:color`, `background-size:cover` both layers — so colourising happens inside one flat
+  box before anything else touches it (two separate elements combined with `mix-blend-mode`
+  across siblings was this round's own first attempt; it rendered as a near-solid rectangle
+  with almost no falloff on the first Playwright capture — a real stacking-context/isolation
+  fragility, not a design choice — fixed by moving both layers into one element's own
+  `background-image` stack). `filter:blur(44px) brightness(.68) saturate(1.3)` on that same
+  element blurs the already-composited result as a unit. `mask-image:radial-gradient(ellipse
+  at 68% 42%, #000 0%, #000 22%, transparent 72%)` (`-webkit-` prefixed too) fades it to
+  nothing on every edge — "fading to --bg" read literally, not a hard-edged box. Opacity 0.68.
+  Sits above the existing `.band`-level night gradient (principle 5, unchanged), below the
+  eyebrow/identity/facts text (`z-index:1` on the text column, matching the existing `.band>*`
+  convention).
+- **Phone (<1024px):** scoped to the identity row's own box only — a `position:relative;
+  overflow:hidden` wrapper around just the crest+h1 row (never the whole band), so the fade
+  physically cannot reach the facts/standing/officer-strip/tab-strip regions below it
+  ("fade behind the title only," the owner's own words, enforced by the DOM, not by
+  convention). Box 170×150px, `top:-14px; right:-30px`, blur 24px, opacity 0.6. Its own right
+  edge lands at the row's content-gutter edge (18px from the viewport edge) and terminates
+  there as a straight vertical line — the same edge every panel and card on this page already
+  terminates against, not a new kind of hard edge (verified on `guild-header-phone`).
+- **Neutral faction:** `hero_fade()` returns nothing; the band is the plain night gradient
+  alone, unchanged from today.
+
+**First paint — no layout shift, no flash.** The band is a `client:load` Svelte island
+(`web/src/pages/guild/[...path].astro`); today, while `status === 'loading'`, the whole band
+is absent and `GuildStatus`'s `Skeleton` renders in its place (`Guild.svelte` lines 465-474) —
+there is no partial header to flash a missing crest or a popping-in glow onto, because nothing
+header-shaped paints until the real data is ready. The one real risk this round adds: the
+identity row is now 64px tall (crest-height) instead of ~27px (text-only), so `GUILD_LOADING.
+home`'s reserved `min-h-[480px]` (`web/src/lib/guild/layout.ts`) must be re-measured against
+the real built header's new height and increased if the real measured height exceeds 480px —
+named here as an exact, checkable instruction, not "update it." The crest and fade both need
+`guild.faction` to be known at the **same moment** the eyebrow/h1 first paint (ruling 12.2.B,
+below) — if faction instead arrived on a *later* fetch than the one that already gates
+`status === 'ready'` today, the row would paint crest-less first and gain a crest after,
+which is a real flash this spec is written specifically to prevent. The emblem webp assets
+(2 files, 3-3.6KB each, already shipped and already used by the nav chip/`FactionMark`) load
+`loading="eager"` (not `fetchpriority="high"` — `ClassCrest.astro`'s own measured ruling
+against this exact over-prioritisation applies here too) so a visitor who has never seen a
+faction emblem before this page still never sees a blank circle resolve into one.
+
+**12.2.A — ruling: a new `FactionCrest` component, not a `FactionMark.astro` edit.**
+`FactionMark.astro`'s own contract ("no ring, no background") is depended on by nine existing
+callers; retrofitting a ring prop onto it is a breaking change to all nine for one new caller's
+benefit. A new, tiny, single-purpose component (`ClassCrest.astro`'s ring recipe, `FactionMark`'s
+emblem source) is tenet 10's own prescribed move ("a new shared component is its own design
+review") — proposed for the owner's sign-off alongside this spec.
+
+**12.2.B — ruling: `guild.faction` is a stored column, not computed live per request.**
+Today's `HomeRoster` query (`api/internal/guilds/home.go` lines 267-318) already reads a
+per-character `faction` from `fight_metrics.faction`, consent-gated — but only inside the
+*roster* fetch, which resolves after the *identity* fetch that already gates the band's first
+paint (`data.guild`, `GuildIdentity`, same file lines 57-60). Computing a guild-level faction
+live, per request, by decoding every member's FS1 export at query time would either (a) slow
+the fast identity fetch down to the roster fetch's own speed, or (b) arrive on a second,
+later round trip and cause the exact crest-pops-in-after flash the previous section rules out.
+Proposed instead: `guild.faction`, a stored column on `guilds`, computed once — majority race
+among the roster's own `addon_exports`-decoded FS1 race (`api/internal/fs1/fs1.go`'s
+`RaceSlug`), mapped to a faction via the race table the client itself ships
+(`web/src/data/generated/races.json`'s own `faction` field per race, the same table a site-
+side join would otherwise duplicate) — refreshed whenever roster membership changes or a
+member's export updates, never per page load. **Tie or no roster faction resolves at all:**
+`faction = null` — the neutral fallback, never a guessed one.
+
+**Verbatim copy:** none — this round adds no new text, only two decorative regions. The
+crest's `alt=""` (decorative, the faction is already named in the facts line's own copy
+elsewhere on the page) matches `FactionMark.astro`'s own existing convention.
+
+**States, every element this round adds:**
+
+| Element | Alliance | Horde | Neutral/unknown |
+|---|---|---|---|
+| Crest | Lion shield, blue ring | Horde disc, red ring | Absent, row is h1 alone |
+| Hero fade | Blue-tinted glow, top-right of the content column | Red-tinted glow, top-right | Absent, plain night gradient (today's shipped look) |
+
+No loading/error/empty state of its own: this region rides the band's existing `status`
+state machine (above) and has no fetch, no interaction and no failure mode of its own.
+
+**Phone vs. desktop, stated once:** crest 64px→44px, fade scoped to the full band→scoped to
+the identity row only, everything else (eyebrow, h1, Updated, facts, role line, officer strip,
+tab strip) collapses exactly as it already does today — unchanged by this round.
+
+**Performance:** no new network request (the emblem assets are already shipped and already
+loaded by the nav chip on every signed-in page); no Lighthouse budget change
+(`web/lighthouserc.json`'s existing `/guild.html` row, v1 §10.3, unchanged) — the fade and
+crest are a `background-image`/`box-shadow` and one `<img>` already in the page's existing
+asset budget, not a new LCP candidate (the LCP candidate stays the h1, unchanged).
+
+**Acceptance screenshots** (`design/mocks/renders/guild-header-{alliance,horde,2000,phone}.png`,
+generated by `design/mocks/gen_guild_header.py`, reusing `gen_guild.py`'s own roster/facts/tab
+data so the body content below the band matches the round-2 boards exactly):
+
+1. `guild-header-alliance` (1440, officer) — Alliance crest and fade, faction overridden for
+   this art study only (caption states the roster's own names/classes are unchanged).
+2. `guild-header-horde` (1440, officer) — the mock roster's native faction, crest and fade.
+3. `guild-header-2000` (2000, member) — confirms the fade stays glued to the 1344px content
+   column's own right edge at a wide viewport, not the physical browser edge; the "before
+   Thursday" sentence and `Loot · read-only` tab both visible in the same capture.
+4. `guild-header-phone` (390, member) — 44px crest, fade clipped to the identity row only,
+   verified not to bleed into the facts/standing lines below it, no horizontal overflow (a
+   real bug — the phone nav and the desktop nav were initially swapped in this round's own
+   first capture, producing a 986px-wide screenshot off a 390px viewport; fixed by using
+   `nav_phone()`, the same function `gen_guild.py`'s own phone boards already use).
+5. Neutral/unknown fallback — not re-rendered; `guild-overview-officer.png` (on file) is the
+   reference, pixel-identical to this state.
+
+**Viewports:** 1440 (officer), 2000 (member, centring), 390 (member). 1024/1280/1920 are not
+re-captured for this header-only round — the identity row and fade use the same two
+breakpoint values (`≥1024px` desktop, `<1024px` phone) every other header region on this page
+already uses, carrying no new breakpoint risk.
