@@ -13,6 +13,7 @@
 <script lang="ts">
   import { fetchMeOnce } from '../lib/account/api';
   import { lookupAddonExport } from '../lib/addon-export';
+  import { FACTION_BAR_COLOR, factionLogoSrc } from '../lib/faction-mark';
   import {
     characterSlug,
     guildClaimHref,
@@ -51,6 +52,7 @@
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import GuildOfficerStrip from './guild/GuildOfficerStrip.svelte';
+  import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import GuildOverview from './guild/GuildOverview.svelte';
   import GuildTabs, { tabFromHash, tabsForRole, type GuildTabId } from './guild/GuildTabs.svelte';
@@ -104,6 +106,13 @@
         error = thrown instanceof Error ? thrown.message : 'That guild did not load.';
       });
   });
+
+  /** Header art round (spec §12.2, ruling 12.2.B): `guild.faction` is a stored column, read
+   *  from the public `data` fetch only -- the same fetch that already gates the eyebrow/h1
+   *  first paint (`status === 'ready'`), so the crest/vignette/watermark render in the same
+   *  paint as the name, never as a later pop-in once the member-only `home` fetch resolves
+   *  after it. Missing or `null` both read as "no faction" (§12.2's own states table). */
+  const faction = $derived(data?.guild.faction ?? null);
 
   let home = $state<GuildHome | null>(null);
   let homeStatus = $state<'idle' | 'loading' | 'ready'>('idle');
@@ -499,16 +508,69 @@
          points. The band's own inner uses the identical max-width/gutter column
          `[...path].astro`'s `<main>` already gives the tab content below, so both share one
          left edge at every width -- verified at 1440 and 2000. -->
-    <div class="bg-raised w-screen" style="margin-left:calc(50% - 50vw)">
+    <!-- Owner note (header art round): the wash and watermark must never show below this
+         band -- `overflow-hidden` here is what clips both the vignette (`inset:0` of the
+         inner 1344px column below, which exactly fills this band) and the watermark's own
+         top/right overrun, at the band's own bottom/right edges, never the page body below
+         it. `data-testid` so the e2e suite can assert the watermark's own bounding box never
+         extends past this band's bottom. -->
+    <div
+      class="bg-raised relative w-screen overflow-hidden"
+      style="margin-left:calc(50% - 50vw)"
+      data-testid="guild-header-band"
+    >
       <div
-        class="mx-auto flex w-full max-w-[1344px] flex-col gap-3 px-[18px] pt-4 pb-[22px] md:px-12 md:pt-7 md:pb-8"
+        class="relative mx-auto flex w-full max-w-[1344px] flex-col gap-3 px-[18px] pt-4 pb-[22px] md:px-12 md:pt-7 md:pb-8"
       >
-        <header class="flex flex-col gap-3">
+        <!-- Header art round (spec §12.2, option B, the owner's pick): a sharp diagonal
+             faction-colour wash plus the real flat faction logo, crisp, no filter, cropped
+             by this band's own `overflow:hidden` right edge (the div above) -- never a
+             drawn shape, never Blizzard artwork beyond the logo's own pixels. Both layers
+             are `position:absolute` (out of flow, so they add no height) and sit at `z-0`
+             so the header/tabs content below (`z-10`) always paints above them; a neutral/
+             unknown faction renders neither layer at all, leaving this band pixel-identical
+             to today's shipped header. -->
+        {#if faction === 'alliance' || faction === 'horde'}
+          <div
+            class="pointer-events-none absolute inset-0 z-0"
+            style={`background:linear-gradient(135deg, transparent 52%, color-mix(in srgb, ${FACTION_BAR_COLOR[faction]} 38%, transparent) 100%)`}
+            aria-hidden="true"
+            data-testid="guild-header-vignette"
+          ></div>
+          <!-- Owner note: the watermark's own box must never extend past the band's bottom
+               edge, not just rely on the band's `overflow-hidden` to hide the overrun --
+               `bottom-0` pins this wrapper flush with the band's own bottom (the inner
+               column's padding-bottom edge, which is the band's own bottom), so its height
+               is whatever room is actually available between the top offset and the band's
+               floor, never a fixed 180/320px that could out-run a short band. The image
+               inside fills that box (`h-full w-full object-contain object-top`), so it still
+               renders at its full intended size and top-anchored position for any band tall
+               enough to hold it, and only shrinks -- never overflows -- for a shorter one. -->
+          <div
+            class="pointer-events-none absolute top-[-22px] right-[-80px] bottom-0 z-0 w-[180px] overflow-hidden lg:top-[-38px] lg:right-[-90px] lg:w-[320px]"
+            data-testid="guild-header-watermark"
+          >
+            <img
+              src={factionLogoSrc(faction)}
+              alt=""
+              aria-hidden="true"
+              width={320}
+              height={320}
+              loading="eager"
+              decoding="async"
+              class="h-full w-full object-contain object-top opacity-[.14] lg:opacity-[.12]"
+            />
+          </div>
+        {/if}
+        <header class="relative z-10 flex flex-col gap-3">
           <span class="label text-gold flex items-center gap-2.5">
             <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>
             Guild
           </span>
-          <h1 class="font-display text-strong text-[22px] font-bold">{data.guild.name}</h1>
+          <div class="flex items-center gap-4 lg:gap-[18px]">
+            <FactionCrest {faction} testid="guild-faction-crest" />
+            <h1 class="font-display text-strong text-[22px] font-bold">{data.guild.name}</h1>
+          </div>
           {#if home?.summary?.updated_at !== undefined}
             <span class="text-muted text-[12px]">Updated {home.summary.updated_at.slice(0, 10)}</span>
           {/if}
@@ -624,7 +686,9 @@
           {/if}
         </header>
 
-        <GuildTabs active={activeTab} {role} onSelect={selectTab} />
+        <div class="relative z-10">
+          <GuildTabs active={activeTab} {role} onSelect={selectTab} />
+        </div>
       </div>
     </div>
 

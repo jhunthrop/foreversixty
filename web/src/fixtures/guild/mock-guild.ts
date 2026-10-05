@@ -24,7 +24,19 @@ import type {
 import type { GuildPage } from '../../lib/rankings/api';
 
 export const GUILD_ID = 2024;
-export const GUILD = { id: GUILD_ID, name: 'Olympus XXVII', region: 'us', ruleset: 'pvp' } as const;
+// `faction: 'horde'` (design/specs/2026-10-04-guild-page.md §12.2, the header art round):
+// this fixture's own roster is written Horde-flavoured (gen_guild.py's own module
+// docstring), so Horde is this guild's default faction everywhere it is read without an
+// override. `buildMockHome`/`buildMockGuildPage` below both accept an optional `faction`
+// param (default `'horde'`, matching this constant) so the e2e suite can also exercise the
+// Alliance-colour and null/neutral-band branches without a second fixture guild.
+export const GUILD = {
+  id: GUILD_ID,
+  name: 'Olympus XXVII',
+  region: 'us',
+  ruleset: 'pvp',
+  faction: 'horde',
+} as const;
 
 type MockRosterSeed = [
   name: string,
@@ -305,7 +317,10 @@ export function buildMockRoster(): GuildRosterRow[] {
   return ROSTER_SEED.map((r) => toRosterRow(r[0]));
 }
 
-export function buildMockHome(viewerName: string | null): GuildHome {
+export function buildMockHome(
+  viewerName: string | null,
+  faction: 'alliance' | 'horde' | null = GUILD.faction,
+): GuildHome {
   const roster = buildMockRoster();
   const pending = roster.filter((r) => !r.verified);
   const belowFloor = roster.filter((r) => (r.rating?.overall ?? 100) < 55).length;
@@ -334,7 +349,7 @@ export function buildMockHome(viewerName: string | null): GuildHome {
         })();
 
   return {
-    guild: GUILD,
+    guild: { ...GUILD, faction },
     viewer: {
       role,
       character_key: viewerRow?.character_key ?? null,
@@ -374,9 +389,9 @@ export function buildMockHome(viewerName: string | null): GuildHome {
  *  before (or regardless of) the member-gated `home` fetch resolves. Carries no kill/wipe
  *  counts on its reports (the real endpoint's own shape), and v1's own "roster bests"
  *  feature, carried forward unchanged into the Progression tab. */
-export function buildMockGuildPage(): GuildPage {
+export function buildMockGuildPage(faction: 'alliance' | 'horde' | null = GUILD.faction): GuildPage {
   return {
-    guild: GUILD,
+    guild: { ...GUILD, faction },
     progression: [
       {
         encounter: 'Onyxia',
