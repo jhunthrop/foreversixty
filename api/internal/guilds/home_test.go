@@ -258,6 +258,34 @@ func TestHomeExposesClaimState(t *testing.T) {
 	}
 }
 
+// TestHomeExposesGuildFaction is guilds.RecomputeFaction's own wiring (faction.go): the
+// home response's guild object carries whatever guilds.faction currently holds, null
+// included.
+func TestHomeExposesGuildFaction(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	member := seedUser(t, h.pool, "home-faction@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/homefaction", "member", true)
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+	if view.Guild.Faction != nil {
+		t.Fatalf("guild.faction = %q, want null before any recompute", *view.Guild.Faction)
+	}
+
+	if _, err := h.pool.Exec(ctx, `update guilds set faction = 'horde', faction_updated_at = now() where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	h.data(res, &view)
+	if view.Guild.Faction == nil || *view.Guild.Faction != FactionHorde {
+		t.Fatalf("guild.faction = %v, want horde", view.Guild.Faction)
+	}
+}
+
 // TestHomeReportsExposeZone is item 7 (fourth security review
 // response): each report in the guild home list carries its zone, the
 // same way every other report list in this codebase already does.

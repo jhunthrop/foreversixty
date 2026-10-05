@@ -524,6 +524,29 @@ func TestGuildProgressionIgnoresPrivateReports(t *testing.T) {
 	}
 }
 
+// TestGuildCarriesFaction is guilds.RecomputeFaction's own public-shape wiring
+// (api/internal/guilds/faction.go, api/internal/rankings/guilds.go): the public guild
+// page's guild object reads straight off guilds.faction, null included.
+func TestGuildCarriesFaction(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+
+	var g Guild
+	h.data(h.get("/v1/guilds/us/hardcore/forever-sixty"), &g)
+	if g.Guild.Faction != nil {
+		t.Fatalf("guild.faction = %q, want null before any recompute", *g.Guild.Faction)
+	}
+
+	if _, err := h.pool.Exec(t.Context(),
+		`update guilds set faction = 'alliance', faction_updated_at = now() where id = $1`, h.guildID); err != nil {
+		t.Fatal(err)
+	}
+	h.data(h.get("/v1/guilds/us/hardcore/forever-sixty"), &g)
+	if g.Guild.Faction == nil || *g.Guild.Faction != "alliance" {
+		t.Fatalf("guild.faction = %v, want alliance", g.Guild.Faction)
+	}
+}
+
 // A leaderboard page must not repeat or drop rows across a page
 // boundary that falls inside a tie on both the ranked metric and
 // fought_at - the exact pattern flagged as binding: ORDER BY needs a

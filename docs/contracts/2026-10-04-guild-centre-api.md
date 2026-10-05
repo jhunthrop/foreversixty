@@ -9,9 +9,16 @@ unknown are `null`, never `0`.
 
 ## GET /v1/guilds/{id}/home  (existing, extended)
 
+`guild.faction` is new (migration 0031, `guilds.RecomputeFaction` - api/internal/guilds/
+faction.go): `"alliance"` or `"horde"`, the majority faction among the guild's exported
+roster, or `null` when it has never resolved to either (no exports yet, a tie, or every
+known character neutral/unknown-race). Recomputed on every membership change
+(export sync, approve, remove, leave, invite accept) and backfilled for any
+pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
+
 ```json
 {
-  "guild": { "id": 2, "name": "OLYMPUS XXVII", "region": "us", "ruleset": "pvp" },
+  "guild": { "id": 2, "name": "OLYMPUS XXVII", "region": "us", "ruleset": "pvp", "faction": "alliance" },
   "viewer": { "role": "officer", "character_key": "us/pvp/obnoxious-yell", "verified": true },
   "claim": { "state": "claimed", "since": "...", "frozen": false, "claimed_by_name": "Obnoxious Yell" },
   "summary": {
@@ -140,3 +147,10 @@ Approve, remove, invite rotate, claim, settings, visibility. Add `POST /v1/guild
 
 ## Not in this build (spec §9, recorded)
 Death causes (needs event data), recommended-enchant curation beyond what BiS files carry.
+
+## Public guild page shape also gains `guild.faction`
+
+Out of this contract's own scope (`GET /v1/guilds/{region}/{ruleset}/{name}` is
+`rankings.Store.Guild`, api/internal/rankings/guilds.go, mounted outside this package) but
+the same migration/column: its `guild` object gains the identical `faction` field
+("alliance" | "horde" | null), read straight from `guilds.faction`.

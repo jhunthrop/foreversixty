@@ -28,6 +28,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -58,6 +59,11 @@ func newCentreHarnessFor(t *testing.T, pool *pgxpool.Pool) *centreHarness {
 	svc := &guilds.Service{Store: store, Accounts: accounts, Log: quiet}
 	mux := http.NewServeMux()
 	guilds.Mount(mux, svc, 0)
+	// rankings.Mount's own GET /v1/guilds/{region}/{ruleset}/{name} is the public guild
+	// page - a different path shape (5 segments) than guilds.Mount's /v1/guilds/{id}/...
+	// routes (4), so the two mount on the same mux with no collision.
+	rankingsSvc := &rankings.Service{Store: &rankings.Store{Pool: pool}, Log: quiet}
+	rankings.Mount(mux, rankingsSvc)
 	h := &centreHarness{t: t, store: store}
 	h.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		mux.ServeHTTP(w, r.WithContext(auth.WithActor(r.Context(), h.actor)))
@@ -258,5 +264,106 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 
 	if err := RemoveSeed(ctx, pool, guildID, "hunthrop#1894"); err != nil {
 		t.Fatalf("RemoveSeed: %v", err)
+	}
+}
+
+// TestGuildCentreFactionIsComputedAndPublic exercises guilds.RecomputeFaction
+// (api/internal/guilds/faction.go) against the real seeded roster: every known race the
+// mock roster names (roster.go: human, dwarf, gnome, night-elf) is an Alliance race in
+// data/builds/1.60.1.70009/races.json, and nothing in it is Horde - the roster's own two
+// "skyborne" rows (an unresolvable generic slug, not one of the two faction-specific
+// Skyborne slugs the real addon always exports) are simply unknown races, not a tie
+// contributor. So this seed is not mixed-faction: the only possible majority is alliance,
+// which is what both the home response and the public guild page response must carry,
+// computed with no explicit recompute call - ApplySeed's own membership writes
+// (upsertMockMembership -> guilds.AfterGuildChange) already trigger it per character.
+func TestGuildCentreFactionIsComputedAndPublic(t *testing.T) {
+	ctx := context.Background()
+	pool := testPool(t)
+	guildID, ownerID, _ := seedOwnerGuild(t, ctx, pool)
+	if err := ApplySeed(ctx, pool, guildID, "hunthrop#1894"); err != nil {
+		t.Fatalf("ApplySeed: %v", err)
+	}
+
+	h := newCentreHarnessFor(t, pool)
+	// /home is member-gated (store.go's IsMember) - the owner, now the guild's claimed
+	// leader after ApplySeed, is a real member; the public guild page below has no such
+	// gate.
+	h.actor = auth.Actor{UserID: ownerID, Role: "user", Method: "session"}
+
+	res := h.get(fmt.Sprintf("/v1/guilds/%d/home", guildID))
+	var home guilds.HomeView
+	h.data(res, &home)
+	if home.Guild.Faction == nil || *home.Guild.Faction != guilds.FactionAlliance {
+		t.Errorf("home guild.faction = %v, want alliance", home.Guild.Faction)
+	}
+
+	var region, ruleset, name string
+	if err := pool.QueryRow(ctx, `select region, ruleset, name from guilds where id = $1`, guildID).
+		Scan(&region, &ruleset, &name); err != nil {
+		t.Fatal(err)
+	}
+	res = h.get(fmt.Sprintf("/v1/guilds/%s/%s/%s", region, ruleset, name))
+	var page rankings.Guild
+	h.data(res, &page)
+	if page.Guild.Faction == nil || *page.Guild.Faction != guilds.FactionAlliance {
+		t.Errorf("public guild page guild.faction = %v, want alliance", page.Guild.Faction)
+	}
+
+	if err := RemoveSeed(ctx, pool, guildID, "hunthrop#1894"); err != nil {
+		t.Fatalf("RemoveSeed: %v", err)
+	}
+}
+
+// TestGuildCentreFactionNullsWithNoExports covers a guild with one real, unverified
+// member but no addon_exports row for them at all - RecomputeFaction (triggered by that
+// character's own guild_characters insert, the same AfterGuildChange path PutExports
+// uses) finds zero exports to decode, so it clears/leaves faction null rather than
+// guessing. The member gate still needs a real guild_characters row (store.go's
+// IsMember), which is exactly what this seeds.
+func TestGuildCentreFactionNullsWithNoExports(t *testing.T) {
+	ctx := context.Background()
+	pool := testPool(t)
+	var guildID, userID int64
+	if err := pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'pvp', 'Empty Guild') returning id`,
+	).Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+	if err := pool.QueryRow(ctx,
+		`insert into users (battletag) values ('noexport#1111') returning id`).Scan(&userID); err != nil {
+		t.Fatal(err)
+	}
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := guilds.UpsertCharacterMembership(ctx, tx, guilds.MembershipRow{
+		GuildID: guildID, CharacterKey: "us/pvp/no-export", UserID: userID,
+		RankIndex: 0, Rank: "leader", Source: "export",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := guilds.AfterGuildChange(ctx, tx, guildID, userID); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	h := newCentreHarnessFor(t, pool)
+	h.actor = auth.Actor{UserID: userID, Role: "user", Method: "session"}
+	res := h.get(fmt.Sprintf("/v1/guilds/%d/home", guildID))
+	var home guilds.HomeView
+	h.data(res, &home)
+	if home.Guild.Faction != nil {
+		t.Errorf("home guild.faction = %q, want null for a guild with no exports", *home.Guild.Faction)
+	}
+
+	res = h.get("/v1/guilds/us/pvp/Empty%20Guild")
+	var page rankings.Guild
+	h.data(res, &page)
+	if page.Guild.Faction != nil {
+		t.Errorf("public guild page guild.faction = %q, want null for a guild with no exports", *page.Guild.Faction)
 	}
 }

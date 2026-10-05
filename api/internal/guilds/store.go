@@ -46,6 +46,10 @@ type Guild struct {
 	ClaimReopenedAt      *time.Time
 	OfficerMaxRankIndex  int
 	InviteTokenRotatedAt *time.Time
+	// Faction is the majority faction RecomputeFaction last computed - "alliance",
+	// "horde", or nil when it has never resolved to either (no exports yet, a tie, or
+	// every known character neutral/unknown-race).
+	Faction *string
 }
 
 // pendingActive reports whether g carries a claim pending within the
@@ -96,11 +100,11 @@ func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	err := s.Pool.QueryRow(ctx,
 		`select id, region, ruleset, name, default_visibility, claimed_by, claimed_at, claim_pending_by,
 		        claim_requested_at, claim_contested_at, claim_contested_by, claim_reopened_at,
-		        officer_max_rank_index, invite_token_rotated_at
+		        officer_max_rank_index, invite_token_rotated_at, faction
 		 from guilds where id = $1`, id).
 		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy, &g.ClaimedAt,
 			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy, &g.ClaimReopenedAt,
-			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt)
+			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt, &g.Faction)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Guild{}, ErrNotFound
 	}
