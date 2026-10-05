@@ -10,6 +10,7 @@
   import type { GuildRosterRow } from '../../lib/guild/api';
   import {
     DEFAULT_ROSTER_FILTERS,
+    altOfMainName,
     applyRosterFilters,
     pinOwnRowFirst,
     ratingFloor,
@@ -76,6 +77,7 @@
   const classOptions = $derived(
     [...new Set(roster.map((r) => r.class).filter((c): c is string => c !== undefined))].sort(),
   );
+  const altOf = $derived(altOfMainName(roster));
 
   function toggle(key: 'verifiedOnly' | 'belowFloorOnly'): void {
     filters = { ...filters, [key]: !filters[key] };
@@ -214,7 +216,11 @@
             >
               {row.name}{pinned ? ' (you)' : ''}
             </span>
-            <span class="text-muted text-[12px]">{row.spec ?? ''}</span>
+            <span class="text-muted text-[12px]">
+              {row.spec ?? ''}{#if altOf.has(row.character_key)}
+                <span class="text-muted text-[11px]">alt of {altOf.get(row.character_key)}</span>
+              {/if}
+            </span>
           </div>
           {#if row.rank === 'officer' || row.rank === 'leader'}
             <span class="pill pill-site">{row.rank === 'leader' ? 'Leader' : 'Officer'}</span>

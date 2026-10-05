@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { GuildRosterRow } from './api';
 import {
   DEFAULT_ROSTER_FILTERS,
+  altOfMainName,
   applyRosterFilters,
   isBelowRatingFloor,
   orderRosterForTab,
@@ -197,5 +198,30 @@ describe('orderRosterForTab', () => {
       'verified-high',
       'verified-low',
     ]);
+  });
+});
+
+describe('altOfMainName', () => {
+  it('tags the lower-item-level row of a shared account as "alt of" the higher one', () => {
+    const rows = [
+      row({ character_key: 'main', name: 'Kraggor', account_key: 'u:1', item_level: 68 }),
+      row({ character_key: 'alt', name: 'Grimtotem', account_key: 'u:1', item_level: 58 }),
+    ];
+    const map = altOfMainName(rows);
+    expect(map.get('alt')).toBe('Kraggor');
+    expect(map.has('main')).toBe(false);
+  });
+
+  it('tags nobody for a solo account', () => {
+    const rows = [row({ character_key: 'solo', account_key: 'u:2' })];
+    expect(altOfMainName(rows).size).toBe(0);
+  });
+
+  it('ignores rows with no account_key', () => {
+    const rows = [
+      row({ character_key: 'a', account_key: undefined }),
+      row({ character_key: 'b', account_key: undefined }),
+    ];
+    expect(altOfMainName(rows).size).toBe(0);
   });
 });
