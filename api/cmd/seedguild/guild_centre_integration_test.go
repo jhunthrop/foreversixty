@@ -28,6 +28,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 // centreHarness mounts guilds.Mount on a real HTTP server, with DataDir pointed at this
@@ -47,8 +48,12 @@ func newCentreHarnessFor(t *testing.T, pool *pgxpool.Pool) *centreHarness {
 	if err != nil {
 		t.Fatal(err)
 	}
+	treeData, err := trees.Load(filepath.Join(root, "data", "builds"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	accounts := &auth.Store{Pool: pool}
-	store := &guilds.Store{Pool: pool, Accounts: accounts, DataDir: filepath.Join(root, "data", "builds")}
+	store := &guilds.Store{Pool: pool, Accounts: accounts, DataDir: filepath.Join(root, "data", "builds"), Trees: treeData}
 	quiet := slog.New(slog.NewTextHandler(io.Discard, nil))
 	svc := &guilds.Service{Store: store, Accounts: accounts, Log: quiet}
 	mux := http.NewServeMux()
@@ -196,6 +201,21 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 	h.data(res, &loot)
 	if len(loot.Items) != 22 {
 		t.Errorf("loot.items = %d, want 22", len(loot.Items))
+	}
+	// Follow-up fix: loot candidates must not read empty on real data. Every real
+	// armor/weapon drop (a non-empty slot) must carry at least one candidate from this
+	// 24-mock-character roster, via the fallback tier if no BiS band happens to name it
+	// (api/internal/guilds/CONTROL_CENTRE.md: no BiS file in this repo names any
+	// raid-tier item today, so every real candidate on this roster comes from the
+	// fallback tier until raid-tier BiS/sim data exists).
+	for _, item := range loot.Items {
+		if item.Slot == "" {
+			continue // a quest/reputation/crafting drop - no class can "wear" it
+		}
+		if len(item.Candidates) == 0 {
+			t.Errorf("item %d (%s, slot %s) has no candidates at all on a 24-character mock roster",
+				item.ItemID, item.Name, item.Slot)
+		}
 	}
 
 	// --- verified officer ---

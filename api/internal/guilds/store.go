@@ -16,6 +16,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 // ErrNotFound is returned when a guild id names no row.
@@ -81,6 +83,12 @@ type Store struct {
 	// harness that does not need gear-gap data; LoadBand treats an empty dataDir as "no
 	// band available" rather than an error.
 	DataDir string
+	// Trees is the client's own per-class item tables (data/builds/<build>/items/
+	// <class>.json, loaded once at startup the same way every other build-scoped reader
+	// in this service already does) - the loot tab's fallback candidate tier reads class
+	// usability and item level from here. nil in a harness that does not need it; every
+	// reader below treats a nil Trees as "no fallback data available," never an error.
+	Trees *trees.Data
 }
 
 func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {

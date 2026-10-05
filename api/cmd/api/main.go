@@ -471,8 +471,10 @@ func serve(log *slog.Logger) error {
 		return fmt.Errorf("partitions: %w", err)
 	}
 	// DataDir backs the guild control centre's own BiS band reads (api/internal/bis) -
-	// the same TreeDataDir every other build-scoped read in this file uses.
-	guildStore := &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir}
+	// the same TreeDataDir every other build-scoped read in this file uses. Trees backs
+	// the loot tab's fallback candidate tier (class usability + item level from the
+	// client's own per-class item tables, already loaded above).
+	guildStore := &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir, Trees: treeData}
 	membership := &guilds.MembershipJob{Store: guildStore, Log: log}
 	if err := membership.Run(ctx); err != nil {
 		return fmt.Errorf("guilds membership sweep: %w", err)
