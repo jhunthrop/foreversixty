@@ -542,6 +542,18 @@
       style="margin-left:calc(50% - 50vw)"
       data-testid="guild-header-band"
     >
+      <!-- The faction wash belongs to the full-bleed band, not the 1344px inner: on a wide
+           screen the inner's right edge is not the viewport's, and a wash clipped there read
+           as a cut-off rectangle (owner, 2026-10-05). The watermark below stays anchored to
+           the inner. -->
+      {#if faction === 'alliance' || faction === 'horde'}
+        <div
+          class="pointer-events-none absolute inset-0 z-0"
+          style={`background:linear-gradient(135deg, transparent 52%, color-mix(in srgb, ${FACTION_BAR_COLOR[faction]} 38%, transparent) 100%)`}
+          aria-hidden="true"
+          data-testid="guild-header-vignette"
+        ></div>
+      {/if}
       <div
         class="relative mx-auto flex w-full max-w-[1344px] flex-col gap-3 px-[18px] pt-4 pb-[22px] md:px-12 md:pt-7 md:pb-8"
       >
@@ -554,12 +566,6 @@
              unknown faction renders neither layer at all, leaving this band pixel-identical
              to today's shipped header. -->
         {#if faction === 'alliance' || faction === 'horde'}
-          <div
-            class="pointer-events-none absolute inset-0 z-0"
-            style={`background:linear-gradient(135deg, transparent 52%, color-mix(in srgb, ${FACTION_BAR_COLOR[faction]} 38%, transparent) 100%)`}
-            aria-hidden="true"
-            data-testid="guild-header-vignette"
-          ></div>
           <!-- Owner note: the watermark's own box must never extend past the band's bottom
                edge, not just rely on the band's `overflow-hidden` to hide the overrun --
                `bottom-0` pins this wrapper flush with the band's own bottom (the inner
