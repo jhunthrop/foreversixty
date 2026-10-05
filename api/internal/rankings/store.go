@@ -92,6 +92,10 @@ type Store struct {
 	// Specs names a build's spec from its talents. It may be nil, in
 	// which case rows are stored with the engine's own spec string.
 	Specs *spec.Inferrer
+	// APIBaseURL is this service's own public base URL (config.APIBaseURL) - the
+	// origin Guild's crest_url is built against. Empty in a harness that never
+	// reads it (every write path that constructs a Store does not need it).
+	APIBaseURL string
 }
 
 // Store is the ingest's ranker.

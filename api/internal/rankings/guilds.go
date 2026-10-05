@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 )
 
 // sortBest orders a character's bests by encounter then difficulty, so
@@ -171,6 +173,9 @@ type GuildIdentity struct {
 	// or null when it has never resolved to either, so the header simply paints no
 	// emblem (design/specs/2026-10-04-guild-page.md §12.2).
 	Faction *string `json:"faction"`
+	// CrestURL is this guild's uploaded crest (docs/contracts/2026-10-05-guild-crest-api.md),
+	// or null when none is set - the header then falls back to the faction logo.
+	CrestURL *string `json:"crest_url"`
 }
 
 // GuildReportLimit is how many recent reports the guild page lists.
@@ -180,17 +185,19 @@ const GuildReportLimit = 25
 // registered.
 func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild, bool, error) {
 	out := Guild{Progression: []Progression{}, RosterBest: []RosterBest{}, Reports: []GuildReport{}}
+	var crestKey *string
 	err := s.Pool.QueryRow(ctx,
-		`select id, name, region, ruleset, faction from guilds
+		`select id, name, region, ruleset, faction, crest_key from guilds
 		 where region = $1 and ruleset = $2 and lower(name) = lower($3)`,
 		strings.ToLower(region), strings.ToLower(ruleset), name).
-		Scan(&out.Guild.ID, &out.Guild.Name, &out.Guild.Region, &out.Guild.Ruleset, &out.Guild.Faction)
+		Scan(&out.Guild.ID, &out.Guild.Name, &out.Guild.Region, &out.Guild.Ruleset, &out.Guild.Faction, &crestKey)
 	if err == pgx.ErrNoRows {
 		return Guild{}, false, nil
 	}
 	if err != nil {
 		return Guild{}, false, fmt.Errorf("rankings: read guild: %w", err)
 	}
+	out.Guild.CrestURL = guilds.CrestURL(s.APIBaseURL, out.Guild.ID, crestKey)
 
 	prog, err := s.Pool.Query(ctx,
 		`select f.encounter_id, coalesce(f.difficulty, 0),

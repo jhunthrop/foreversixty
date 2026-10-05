@@ -8,8 +8,14 @@ guild manage it; a moderator may remove it.
 ## Storage
 
 - Column `guilds.crest_key text null`, `guilds.crest_updated_at timestamptz null` (migration 0032).
-- Object in R2 under `guilds/<guild_id>/crest/<sha256-prefix>.webp`, 256x256, WebP quality 85,
+- Object in R2 under `guilds/<guild_id>/crest/<sha256-prefix>.webp`, 256x256, WebP,
   alpha kept, produced server-side from the upload. The original is never stored.
+  **Deviation:** encoded lossless (VP8L), not "quality 85" lossy - the API image builds with
+  `CGO_ENABLED=0`, and no cgo-free Go library on hand encodes lossy WebP; the lossy encoders
+  that exist (chai2010/webp) wrap libwebp via cgo and cannot build in that image. The chosen
+  encoder (github.com/HugoSmits86/nativewebp) is pure Go and only emits VP8L. Still WebP, still
+  alpha-correct, same extension/content-type/cache contract; a 256x256 crest's lossless size is
+  small regardless.
 - Served at `GET /v1/guilds/{id}/crest.webp` with `Cache-Control: public, max-age=31536000,
   immutable` and an `ETag`; the URL the API hands out carries the key's hash as `?v=` so a new
   upload is a new URL. 404 when no crest is set.
