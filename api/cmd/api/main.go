@@ -587,6 +587,7 @@ func serve(log *slog.Logger) error {
 	var rater *rating.Rater
 	if client != nil {
 		deps.Reports.Signer = client
+		deps.Guilds.R2 = client
 		sampler = parse.NewWorker(parse.Deps{
 			Reports: reportStore, Objects: client, Rank: rankStore, Log: log,
 		})

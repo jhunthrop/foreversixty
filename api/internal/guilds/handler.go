@@ -42,7 +42,12 @@ type Accounts interface {
 type Service struct {
 	Store    *Store
 	Accounts Accounts
-	Log      *slog.Logger
+	// R2 is the object store the crest routes write to, read from, and delete from
+	// (crest.go). nil in a deployment or test harness with no object storage
+	// configured - every crest route then answers 503 rather than panicking on a nil
+	// client, the same shape reports.Service.Signer being nil already takes.
+	R2  Objects
+	Log *slog.Logger
 }
 
 // Mount registers every /v1/guilds/{id}/... mutation route and the
@@ -70,6 +75,11 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("DELETE /v1/guilds/{id}/characters/{region}/{ruleset}/{name}", auth.RequireSession(s.removeCharacter))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))
+	mux.HandleFunc("PUT /v1/guilds/{id}/crest", auth.RequireSession(s.putCrest))
+	mux.HandleFunc("DELETE /v1/guilds/{id}/crest", auth.RequireSession(s.deleteCrest))
+	// No RequireSession wrap: a guild's crest is a public mark, served wherever the
+	// faction logo it falls back to would be, to a signed-out browser included.
+	mux.HandleFunc("GET /v1/guilds/{id}/crest.webp", s.getCrest)
 	mux.HandleFunc("GET /v1/guilds/{id}/home", auth.RequireSession(s.home))
 	// Raids is reachable signed-out (design spec §4.0: public reports only) - no
 	// RequireSession wrap; the handler reads whatever actor the auth middleware already

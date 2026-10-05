@@ -93,6 +93,11 @@ type Store struct {
 	// usability and item level from here. nil in a harness that does not need it; every
 	// reader below treats a nil Trees as "no fallback data available," never an error.
 	Trees *trees.Data
+	// APIBaseURL is this service's own public base URL (config.APIBaseURL) - the origin
+	// CrestURL builds a guild's crest_url against, the same origin GET
+	// /v1/guilds/{id}/crest.webp is served from. Empty in a harness that never reads
+	// crest_url (CrestURL then simply returns a relative path).
+	APIBaseURL string
 }
 
 func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
