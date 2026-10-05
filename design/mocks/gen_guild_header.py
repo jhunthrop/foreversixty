@@ -10,11 +10,11 @@ are reused unchanged from gen_guild.py so each board still reads as a real page.
                                              + diagonal vignette)
     -> guild-header-alliance.html          (1440, officer, option A -- the proposed pick)
     -> guild-header-alliance-watermark.html (1440, officer, option B, Alliance)
-    -> guild-header-2000.html              (2000 wide, member, option A -- confirms the banner
-                                             stays anchored to the 1344px inner, not the
-                                             viewport edge)
-    -> guild-header-phone.html             (390, member, option A -- banner shrinks beside the
-                                             title, 44px ringed crest unchanged)
+    -> guild-header-2000.html              (2000 wide, member, option B -- confirms the
+                                             watermark stays anchored to the 1344px inner's own
+                                             right edge, not the viewport edge)
+    -> guild-header-phone.html             (390, member, option B -- watermark shrinks to
+                                             180px/14% opacity, 44px ringed crest unchanged)
 
 Asset-lane follow-up (2026-10-04, FactionMark.astro's header comment has the full provenance):
 the watermark (option B only -- art_watermark()/emblem_512() below) now reads
@@ -253,5 +253,7 @@ print(build_header_board('guild-header-horde-banner', 'horde', 'officer', style=
 print(build_header_board('guild-header-horde-watermark', 'horde', 'officer', style='watermark'))
 print(build_header_board('guild-header-alliance', 'alliance', 'officer', style='banner'))
 print(build_header_board('guild-header-alliance-watermark', 'alliance', 'officer', style='watermark'))
-print(build_header_board('guild-header-2000', 'horde', 'member', style='banner', width_tag='2000'))
-print(build_header_board('guild-header-phone', 'horde', 'member', style='banner', phone=True))
+# Owner's pick is option B (§12.2.C) -- these two boards move off option A to match
+# guild-header-horde-watermark/guild-header-alliance-watermark, both already option B.
+print(build_header_board('guild-header-2000', 'horde', 'member', style='watermark', width_tag='2000'))
+print(build_header_board('guild-header-phone', 'horde', 'member', style='watermark', phone=True))
