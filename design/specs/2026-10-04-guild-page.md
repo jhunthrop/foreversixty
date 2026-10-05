@@ -554,10 +554,18 @@ desktop, and one capture at 2000px confirming every tab's content stays centred 
   muted, gold only on hover/focus-visible (`.quiet-link`), so the name, pills and figures lead
   and the hand-off reads as the footnote action it is everywhere else on the site.
 
-### 12.2 Header art round (2026-10-04, same day — owner direction: "use faction emblems and a
-hero fade type of header from the faction as an art"; round 2 same day — owner review of round
-1's boards: "why are the tabs offset" and "the background hero so terrible... it should be like
-a shadowed horde banner or something cool")
+### 12.2 Header art round (2026-10-04, same day — three rounds, same owner conversation)
+
+Round 1 — owner direction: "use faction emblems and a hero fade type of header from the
+faction as an art." Round 2 — owner review of round 1's boards: "why are the tabs offset" and
+"the background hero so terrible... it should be like a shadowed horde banner or something
+cool," answered with two options (A, a drawn hanging banner; B, a crisp emblem watermark over a
+diagonal vignette) plus a tab-strip nesting fix. Round 3 — **owner's pick: option B**, the
+watermark, with one instruction: "find a better resolution image as the source" (the existing
+72px emblem file, upscaled to a 320px watermark, is visibly soft). This section states option B
+as the shipped design; option A is kept as Appendix 12.2.1, a rejected option, not deleted
+(tenet "verified 100% accurate" applies to the historical record here too — a reviewer reading
+this spec later should see what was tried and why it lost, not just the winner).
 
 Scope: the header band only (§4.0's eyebrow/h1/Updated/facts/standing/officer-strip/tab strip
 region, as it ships today — confirmed by reading the live band, `web/src/components/
@@ -565,180 +573,171 @@ Guild.svelte` lines 488-615). Nothing else on the page changes; every element na
 owner's own framing ("the eyebrow, h1, Updated, facts, standing/sign-in line, officer strip
 and tab strip exactly as they are today") keeps its current copy, order and mechanism.
 
-**Round 2, defect 1 — the tab strip must never leave the 1344px inner.** Round 1's own
-`header()` returned the tab strip as a sibling *outside* the max-width:1344px column
-(`<div style="margin-top:18px">{tabs_html}</div>`, no `maxw` applied), relying on `tab_strip()`'s
-own hardcoded `padding:0 48px` to *coincidentally* line up with the column's own left inset —
-which only happens to be true at exactly 1440px board width, since `(1440-1344)/2 = 48`. At
-2000px the column's own inset is 328px, so the tab strip (still only 48px in) sat visibly flush
-left of the eyebrow/h1/officer strip above it — the owner's own "why are the tabs offset." Rule,
-stated once for every width this band ever renders at: **the tab strip is a child of the same
-1344px-max-width column as the eyebrow, h1, Updated, facts, standing line and officer strip —
-never a sibling of that column, at any width.** Verified fixed on `guild-header-2000` (all
-regions now share one left edge, x = 328+48 = 376px at 2000px board width) and re-verified at
-1440/390, where the bug did not previously show but the structural fix still applies. **Note
-for the build lane:** `GuildTabs` already lives inside the real page's own `mx-auto max-w-
-[1344px]` wrapper (`Guild.svelte` line 489 wraps both `<header>` and `<GuildTabs>`) — this was
-a mock-only inaccuracy, not a live-site defect; flagged here so nobody "fixes" the real
-component against a bug that was only ever in the Python mock.
+**The tab strip must never leave the 1344px inner (round 2 fix, carried forward unchanged).**
+Round 1's own `header()` returned the tab strip as a sibling *outside* the max-width:1344px
+column, relying on `tab_strip()`'s own hardcoded `padding:0 48px` to *coincidentally* line up
+with the column's own left inset — true only at exactly 1440px board width
+(`(1440-1344)/2 = 48`). Rule, stated once for every width this band ever renders at: **the tab
+strip is a child of the same 1344px-max-width column as the eyebrow, h1, Updated, facts,
+standing line and officer strip — never a sibling of that column, at any width.** Verified
+fixed on `guild-header-2000`. **Note for the build lane:** `GuildTabs` already lives inside the
+real page's own `mx-auto max-w-[1344px]` wrapper (`Guild.svelte` line 489) — this was a
+mock-only inaccuracy, not a live-site defect; flagged so nobody "fixes" the real component
+against a bug that was only ever in the Python mock.
 
-**Round 2, defect 2 — the blurred-emblem smear is replaced with a composed faction banner.**
-Round 1's hero fade (a blurred, colourised copy of the emblem as an ambient glow) is withdrawn
-in full — the owner's own verdict stands ("terrible"). Two options were built, both using
-*nothing but the two real emblem files* (`web/public/icons/hd/faction/{alliance,horde}.webp`)
-plus CSS/SVG gradients in the faction's own documented colour; neither invents new raster
-artwork or uses any Blizzard art beyond the emblem's own pixels (tenet "the game's own icons,
-high definition," read literally: the icon itself stays untouched and unblurred in both
-options — round 1's mistake was blurring the one piece of real art into illegibility).
-
-**Option A — the hanging banner (recommended; used on every board but the side-by-side).**
-A composed heraldic banner/tabard, drawn by us, hanging from the top of the band at its right
-side, inside the 1344px column:
-- **The cloth:** one inline SVG `<path>`, a pointed-bottom silhouette (`M0,0 L150,0 L150,188
-  L75,230 L0,188 Z` desktop; proportionally smaller on phone), filled with a 3-stop
-  `linearGradient` in the faction's own deep colour fading to near-black — the owner's own
-  stops: Horde `#7a1012 → #300506 → #0d0302`, Alliance `#1d4d8f → #0e2342 → #080e18` (`design/
-  DESIGN-SYSTEM.md` "Faction" names the bar hue each starts from; the near-black end is new,
-  chosen to read as shadowed cloth, not a flat swatch). A 2px `--gold` (`#e5b955`) `stroke`
-  outlines the *whole* path, including its diagonal shoulders and point — an SVG stroke, not a
-  CSS `border` (a `border` on a `clip-path`'d div only ever draws on the box's original
-  rectangular edges, never the diagonal cut; this was checked against the box technique before
-  choosing SVG).
-- **The shadow:** `filter:drop-shadow(0 10px 18px rgba(0,0,0,.55))` on the SVG element — a
-  real CSS filter that follows the path's own silhouette (not a rectangle), so the cloth reads
-  as hanging in front of the band's existing night gradient, not pasted flat onto it.
-- **The emblem:** the real HD faction emblem, crisp, unblurred, centred on the cloth's upper
-  third — 160px desktop, 70px phone, `object-fit:contain`, its own small
-  `drop-shadow(0 2px 6px rgba(0,0,0,.6))` to seat it visually into the cloth rather than
-  floating above it. This is the one piece of real game art in the layer, and the owner's own
-  explicit ask ("the HD emblem crisp and large").
-- **The fade into the band's base:** a `mask-image:linear-gradient(180deg,#000 0%,#000 70%,
-  transparent 100%)` on the SVG's own bottom 30%, plus the gradient's own near-black bottom
-  stop already blending tonally with the band's background before the mask even applies — so
-  the point dissolves rather than hard-stopping, and geometrically the point's own lowest pixel
-  (y≈230 desktop) sits well above the officer strip (y≈330+), confirmed clear on every 1440/2000
-  board rendered.
-- **The ambient glow:** a plain `radial-gradient(circle, <bar-colour at ~24% alpha> 0%,
-  transparent 68%)`, `filter:blur(30px)`, positioned behind the cloth, larger than it — a faint
-  colour wash, not the smear itself; round 1's whole fade is now reduced to this one supporting
-  layer, no longer the headline element.
-- **Desktop container:** `top:0; right:70px` inside the 1344px column (not the raw band), so it
-  tracks the column's own right edge at 1920/2000px — verified on `guild-header-2000`.
-- **Phone:** container scoped to the identity row's own box only (`position:relative;
-  overflow:hidden` around just the crest+h1 row, exactly round 1's own containment rule,
-  carried forward unchanged) — banner shrinks to ~64×100px beside the title, never reaching the
-  facts/standing lines below it, verified on `guild-header-phone`.
-
-**Option B — the emblem watermark (side-by-side comparison only, `guild-header-horde-
-watermark`).** The identity-mark crest beside the h1 is unchanged (still `FactionCrest`,
-64px/44px, ringed). Two layers over the band's right portion:
+**Chosen design — option B, the emblem watermark.** The identity-mark crest beside the h1 is
+unchanged from round 1 of this study (`FactionCrest`, 64px/44px, ringed — see below). Two
+layers over the band's right portion, both built from nothing but the real emblem and the
+faction's own documented colour — no drawn shape, no Blizzard artwork beyond the emblem's own
+pixels, no blur:
 - **The vignette:** one `linear-gradient(135deg, transparent 52%, color-mix(in srgb,
-  <bar-colour> 38%, transparent) 100%)` — a sharp diagonal wash, not a soft radial cloud.
-- **The watermark:** the real emblem at 320px, `opacity:.12`, **no filter at all** — crisp
-  edges, positioned `right:-90px` inside the band's own `overflow:hidden`, so its own right
-  portion is cropped by the band's edge (the owner's own "cropped by the band's right edge").
+  <bar-colour> 38%, transparent) 100%)` across the band's right portion — a sharp diagonal
+  wash, not a soft radial cloud. `#2f6fd6` Alliance / `#c0392b` Horde (`design/DESIGN-
+  SYSTEM.md` "Faction," the bar variant).
+- **The watermark:** the real emblem, crisp, **no filter at all** — **320px desktop (≥1024px),
+  180px phone (<1024px)**, `opacity:.12` desktop / `.14` phone (unchanged ratios from round 2's
+  board), `object-fit:contain`, positioned so its own right portion is cropped by the band's
+  own `overflow:hidden` edge (the owner's own "cropped by the band's right edge"). **Drawn from
+  the new 512px source only (asset requirement below) — never the existing 72px file scaled up
+  in CSS,** which is exactly what made round 2's own `guild-header-horde-watermark` board look
+  soft on close inspection and triggered this instruction.
 
-**12.2.C — ruling: option A is the recommendation.** Option A reads as a deliberate piece of
-in-world heraldry (a banner a guild would actually hang) and directly answers "something cool";
-option B is calmer and cheaper to render (no SVG, no shadow) but reads closer to round 1's own
-withdrawn smear — a faint coloured wash with a large pale watermark — and does not, on its own,
-earn "cool." Option A is carried through the 2000px and phone boards and the Alliance board;
-option B is kept only as the side-by-side comparison board the owner asked for, not proposed
-for ship.
+**Asset requirement — a true 512px+ faction emblem, same provenance rule as the class crests.**
+`design/DESIGN-SYSTEM.md` principle 7: "Class crests, spec icons and item icons are the
+client's own art, upscaled 4x, bezel cropped, framed by us... Never redrawn, never restyled."
+The existing faction files (`web/public/icons/hd/faction/{alliance,horde}.webp`, 72×72) are
+documented, in `FactionMark.astro`'s own header comment, as "resampled from the original
+`scratchpad/faction/final` 256px PNGs down to 72px" for a 36px maximum display size at the time
+— correct provenance, wrong size for this new 320px use. **The 256px scratchpad source itself
+is also too small for a faithful 320px watermark without a second upscale pass**, so this is
+not a simple re-export at a larger size:
+- **First choice, named for the asset lane:** go back to the client's own texture for this
+  emblem (`UI-PVP-Alliance`/`UI-PVP-Horde`, the same textures `FactionMark`'s own 256px
+  scratchpad source was originally pulled from) and check for a higher native resolution than
+  256px before upscaling anything — modern client texture packs frequently ship UI art well
+  above 256px natively, and if one exists, that is the real "client's own art, upscaled 4x"
+  chain principle 7 describes, not a derivative of a derivative.
+- **Fallback, only if no higher native resolution exists:** a careful upscale from the 256px
+  scratchpad original (not from the already-lossy 72px WebP) to 512px, using the same
+  upscale method the crest lane's own report already documents for the class crests — and
+  this fallback must be stated plainly in that lane's own report as an upscale, never presented
+  as if a native 512px source existed, per tenet 8 ("nothing we cannot verify is shown as
+  fact").
+- **Published path:** `web/public/icons/hd/faction/<faction>-512.webp` (e.g. `alliance-512.webp`,
+  `horde-512.webp`), **alongside** the existing 72px files — the small files are not replaced,
+  since `FactionMark.astro`'s nine existing callers (nav chip, row descriptors, `ClassHeader`'s
+  faction toggle) only ever display at 36px or smaller and do not need the larger asset; this
+  avoids shipping a heavier file to every caller that never uses the extra resolution (the same
+  "one size per real caller" discipline `ClassCrest.astro`'s own size-prop comment already
+  states for crests). Encoding: WebP, lossy quality 90, alpha kept — the same encode `FactionMark`'s
+  own 72px files already use, just at the new pixel size.
+- **`FactionCrest` (the 64px/44px identity mark) keeps using the existing 72px source** — 72px
+  is already ≥1× for a 64px display size, so no change is needed there; only the 320px/180px
+  watermark needs the new file.
 
 **Identity-row crest — unchanged from round 1 of this study.** Directly under the eyebrow, in
 place of the h1 standing alone: a flex row, `gap:18px` (desktop) / `16px` (phone),
 `align-items:center` — crest, then h1, the identical slot `ClassHeader.astro`'s own
 `.class-header-identity` row already uses for crest+titles (tenet 10: reuse the pattern).
-- **Crest size:** 64px desktop (≥1024px), 44px phone (<1024px) — `ClassHeader`'s own two sizes
-  for the same identity-mark job, reused unchanged.
-- **Crest recipe (new component, `FactionCrest`):** the faction emblem, `object-fit:contain`,
-  ~16% padding inside the circle, `border-radius:999px`, ring `box-shadow:0 0 0 2px
-  <faction-bar-colour>` (`#2f6fd6` Alliance / `#c0392b` Horde), `background:var(--color-raised)`
-  fallback. Not a link, so no hover/focus-visible ring state.
-- **Neutral/unknown faction:** no crest renders at all, no banner/watermark either — the row is
-  the h1 alone, pixel-identical to today's shipped band ("a neutral band with no emblem, never
-  a wrong one," the owner's own words). `design/mocks/renders/guild-overview-officer.png`
+- **Crest size:** 64px desktop (≥1024px), 44px phone (<1024px).
+- **Crest recipe (new component, `FactionCrest`):** the faction emblem (the existing 72px
+  file), `object-fit:contain`, ~16% padding inside the circle, `border-radius:999px`, ring
+  `box-shadow:0 0 0 2px <faction-bar-colour>`, `background:var(--color-raised)` fallback. Not a
+  link, so no hover/focus-visible ring state.
+- **Neutral/unknown faction:** no crest renders at all, no watermark/vignette either — the row
+  is the h1 alone, pixel-identical to today's shipped band ("a neutral band with no emblem,
+  never a wrong one," the owner's own words). `design/mocks/renders/guild-overview-officer.png`
   (already on file) is this state's own reference capture; it is not re-rendered for this round.
 
 **First paint — no layout shift, no flash.** Unchanged reasoning from round 1 of this study:
 the band is a `client:load` Svelte island; while `status === 'loading'` the whole band is
 absent and `GuildStatus`'s `Skeleton` renders in its place (`Guild.svelte` lines 465-474), so
-there is no partial header to flash a missing crest or a popping-in banner onto. `GUILD_LOADING.
-home`'s reserved `min-h-[480px]` (`web/src/lib/guild/layout.ts`) must still be re-measured
-against the real built header's new (64px-crest-tall) identity row and increased if the real
-measured height exceeds 480px. `guild.faction` must still be known at the same moment the
-eyebrow/h1 first paint (ruling 12.2.B, unchanged, below) — a banner that pops in after the text
-has already painted is the exact flash this spec rules out, same as round 1's crest.
+there is no partial header to flash a missing crest or a popping-in watermark onto. `GUILD_
+LOADING.home`'s reserved `min-h-[480px]` (`web/src/lib/guild/layout.ts`) must still be
+re-measured against the real built header's new (64px-crest-tall) identity row. `guild.faction`
+must still be known at the same moment the eyebrow/h1 first paint (ruling 12.2.B, unchanged,
+below). The new 512px watermark file (one extra asset, Alliance or Horde, never both on one
+page) should load `loading="eager"`, same reasoning as the crest's own file — this is a
+background decoration at or near the LCP region, not a lazy-loaded below-the-fold image.
 
-**12.2.A — ruling: a new `FactionCrest` component, not a `FactionMark.astro` edit.** Unchanged
-from round 1 of this study: `FactionMark.astro`'s own contract ("no ring, no background") is
-depended on by nine existing callers; a new, tiny, single-purpose component is tenet 10's own
-prescribed move, not a retrofit.
+**12.2.A — ruling: a new `FactionCrest` component, not a `FactionMark.astro` edit.** Unchanged:
+`FactionMark.astro`'s own contract ("no ring, no background") is depended on by nine existing
+callers; a new, tiny, single-purpose component is tenet 10's own prescribed move, not a
+retrofit.
 
 **12.2.B — ruling: `guild.faction` is a stored column, not computed live per request.**
-Unchanged from round 1 of this study: `guild.faction`, a stored column on `guilds`, majority
-race among the roster's own FS1-decoded race (`api/internal/fs1/fs1.go`'s `RaceSlug`), mapped
-through `web/src/data/generated/races.json`'s own `faction` field per race, refreshed on
-roster/export change, never computed live per request. Tie or nothing resolves → `faction =
-null`, the neutral fallback.
+Unchanged: `guild.faction`, a stored column on `guilds`, majority race among the roster's own
+FS1-decoded race (`api/internal/fs1/fs1.go`'s `RaceSlug`), mapped through `web/src/data/
+generated/races.json`'s own `faction` field per race, refreshed on roster/export change, never
+computed live per request. Tie or nothing resolves → `faction = null`, the neutral fallback.
 
-**Verbatim copy:** none — this round adds no new text, only decorative regions. Every `<img>`
-in the banner/watermark/crest is `alt=""` and `aria-hidden="true"` where it is a pure background
-layer (the faction is already named in the facts line's own copy elsewhere on the page),
-matching `FactionMark.astro`'s own existing convention.
+**12.2.C — decision record: option B, the owner's pick.** Round 2 recommended option A (the
+drawn banner) on the grounds that it read as more deliberate heraldry. The owner picked option
+B instead, with one fix (asset resolution) rather than a request to revisit the choice — this
+section records the decision and its one open dependency; it does not re-argue round 2's own
+recommendation.
 
-**States, every element this round adds:**
+**Verbatim copy:** none — this region adds no new text, only decorative layers. Every `<img>`
+in the watermark/crest is `alt=""` and `aria-hidden="true"` where it is a pure background layer
+(the faction is already named in the facts line's own copy elsewhere on the page), matching
+`FactionMark.astro`'s own existing convention.
+
+**States:**
 
 | Element | Alliance | Horde | Neutral/unknown |
 |---|---|---|---|
 | Crest | Lion shield, blue ring | Horde disc, red ring | Absent, row is h1 alone |
-| Banner (option A) | Blue-to-black cloth, gold trim, crisp 160px lion shield | Crimson-to-black cloth, gold trim, crisp 160px Horde disc | Absent, plain night gradient (today's shipped look) |
-| Watermark (option B, comparison only) | n/a — not rendered for Alliance this round | Faint diagonal red wash + 320px pale cropped disc | Absent |
+| Watermark + vignette | Faint diagonal blue wash + 320px/180px crisp, cropped lion shield at 12-14% opacity | Faint diagonal red wash + 320px/180px crisp, cropped Horde disc at 12-14% opacity | Absent |
 
-No loading/error/empty state of its own: this region rides the band's existing `status`
-state machine (above) and has no fetch, no interaction and no failure mode of its own.
+No loading/error/empty state of its own: this region rides the band's existing `status` state
+machine (above) and has no fetch, no interaction and no failure mode of its own.
 
-**Phone vs. desktop, stated once:** crest 64px→44px, banner full-band-height→scoped to the
-identity row only (≈64×100px), everything else (eyebrow, h1, Updated, facts, role line, officer
+**Phone vs. desktop, stated once:** crest 64px→44px, watermark 320px→180px (opacity 12%→14%,
+the slightly higher phone opacity compensating for the smaller on-screen area, unchanged ratio
+from round 2's own board), everything else (eyebrow, h1, Updated, facts, role line, officer
 strip, tab strip) collapses exactly as it already does today — unchanged by this round.
 
-**Performance:** no new network request (the emblem assets are already shipped and already
-loaded by the nav chip on every signed-in page); no Lighthouse budget change
-(`web/lighthouserc.json`'s existing `/guild.html` row, v1 §10.3, unchanged) — the banner adds
-one inline SVG (no new HTTP request) and the same one `<img>` round 1 already budgeted; not a
-new LCP candidate (the LCP candidate stays the h1, unchanged). **Caveat for production, named
-here rather than discovered late:** the emblem source files are 72×72; the banner displays them
-at 160px, which is a real upscale and shows mild softness on close inspection (visible when a
-rendered board is cropped and zoomed, not at normal reading distance) — worth a higher-
-resolution emblem source if option A ships, flagged as a follow-up, not a blocker.
+**Performance:** no new Lighthouse budget change (`web/lighthouserc.json`'s existing
+`/guild.html` row, v1 §10.3, unchanged) — the watermark is one new `<img>` request (the 512px
+file, Alliance or Horde, never both) replacing round 2's reuse of the already-shipped 72px
+file; not a new LCP candidate (the LCP candidate stays the h1). The 512px WebP file's own
+weight (asset lane's own budget, not yet measured) should be checked against the index-page
+crest lesson (`ClassCrest.astro`'s own review-round comments: the original 256px PNG crests at
+50-95KB apiece were 76% of the index page's network weight) before it ships — a single 512px
+faction watermark is a much smaller problem (one file per pageview, not nine), but the same
+encode discipline (WebP, quality 90, alpha kept) applies.
 
-**Acceptance screenshots** (`design/mocks/renders/guild-header-{horde-banner,horde-watermark,
-alliance,2000,phone}.png`, generated by `design/mocks/gen_guild_header.py`, reusing
-`gen_guild.py`'s own roster/facts/tab data so the body content below the band matches the
-round-2 boards exactly):
+**Status — boards not yet re-rendered.** Per the owner's own instruction, the four boards this
+decision touches (`guild-header-horde-watermark`, a new Alliance watermark board, `guild-
+header-2000`, `guild-header-phone`) are left exactly as round 2 rendered them — still showing
+the watermark drawn from the 72px source — until the asset lane delivers `web/public/icons/hd/
+faction/{alliance,horde}-512.webp`. Round 2's four boards remain the acceptance reference for
+layout/position only, not for final image fidelity, until that re-render.
 
-1. `guild-header-horde-banner` (1440, officer) — option A, the recommendation.
-2. `guild-header-horde-watermark` (1440, officer) — option B, the side-by-side comparison.
-3. `guild-header-alliance` (1440, officer) — option A, faction overridden for this art study
-   only (caption states the roster's own names/classes are unchanged).
-4. `guild-header-2000` (2000, member) — option A; confirms both the banner and the tab strip
-   stay glued to the 1344px content column's own left/right edges at a wide viewport, not the
-   physical browser edge; the "before Thursday" sentence and `Loot · read-only` tab both
-   visible in the same capture.
-5. `guild-header-phone` (390, member) — option A; 44px crest, banner shrunk beside the title,
-   verified not to bleed into the facts/standing lines below it, no horizontal overflow.
-6. Neutral/unknown fallback — not re-rendered; `guild-overview-officer.png` (on file) is the
-   reference, pixel-identical to this state.
+---
 
-Superseded, left on disk unreferenced per this spec's own round-2 convention (§12.1's
-`guild-officer` precedent): `guild-header-alliance`'s and `guild-header-2000`'s round-1
-content (the withdrawn blurred-smear fade) was overwritten in place by this round's
-regeneration, not kept as a separate file, since both names are reused directly by the new
-option-A treatment; `guild-header-horde` (round 1's unsuffixed Horde board) has no round-2
-equivalent by that name — it is superseded by `guild-header-horde-banner`.
+#### Appendix 12.2.1 — option A, the hanging banner (rejected, kept for the record)
 
-**Viewports:** 1440 (officer), 2000 (member, centring), 390 (member). 1024/1280/1920 are not
-re-captured for this header-only round — the identity row and banner use the same two
-breakpoint values (`≥1024px` desktop, `<1024px` phone) every other header region on this page
-already uses, carrying no new breakpoint risk.
+A composed heraldic banner/tabard, drawn by us, hanging from the top of the band at its right
+side, inside the 1344px column — not chosen (12.2.C), described here so a future reviewer can
+see what was tried:
+- **The cloth:** one inline SVG `<path>`, a pointed-bottom silhouette, filled with a 3-stop
+  `linearGradient` in the faction's own deep colour fading to near-black (Horde `#7a1012 →
+  #300506 → #0d0302`, Alliance `#1d4d8f → #0e2342 → #080e18`), outlined with a 2px `--gold`
+  SVG `stroke` (not a CSS `border`, which cannot follow a `clip-path`'d diagonal edge).
+- **The shadow:** `filter:drop-shadow(0 10px 18px rgba(0,0,0,.55))` on the SVG, following the
+  path's own silhouette.
+- **The emblem:** crisp, unblurred, 160px desktop / 70px phone, centred on the cloth's upper
+  third, its own small `drop-shadow` to seat it into the cloth.
+- **The fade into the band's base:** a `mask-image:linear-gradient(180deg,#000 0%,#000 70%,
+  transparent 100%)` on the cloth's own bottom 30%, plus the gradient's near-black bottom stop
+  already blending tonally with the band.
+- **The ambient glow:** a plain `radial-gradient(circle, <bar-colour at ~24% alpha> 0%,
+  transparent 68%)`, `filter:blur(30px)`, behind the cloth.
+- **Why it lost:** read as more deliberate in-world heraldry than option B in round 2's own
+  recommendation, but the owner picked B; not re-argued here.
+
+Boards from this option (`design/mocks/renders/guild-header-horde-banner.png`, and round 2's
+own Alliance/2000/phone boards, which used option A before this round) remain on disk,
+unreferenced as the acceptance set, per this spec's own round-2 convention of leaving
+superseded boards in place rather than deleting them.

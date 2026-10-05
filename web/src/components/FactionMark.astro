@@ -9,6 +9,22 @@
 // scratchpad/faction/final 256px PNGs down to 72px (2x for this component's largest real
 // size, 36px) and re-encoded WebP, lossy quality 90 with alpha kept (review round 2: index
 // LCP budget, web/lighthouserc.json), 3-3.6KB apiece.
+//
+// Provenance, <faction>-512.webp (2026-10-04): the 256px sources above were lost with a
+// wiped scratchpad, and the client ships no larger native version of this same emblem --
+// confirmed by pulling interface/targetingframe/ui-pvp-alliance.blp (FileDataID 136998) and
+// ui-pvp-horde.blp (FileDataID 137000) from wago.tools' CASC mirror (wow_beta 6.0.1.18379):
+// both are BLP2/DXT3, native 64x64, identical to the texture this component has always used.
+// Candidate larger Blizzard textures (interface/timer/alliance-logo.blp and horde-logo.blp,
+// 256px battleground countdown logos) are a different emblem design, not this shield/disc, so
+// using them would redraw the mark rather than upscale it -- ruled out. Upscaled instead: the
+// 64x64 BLP2 decoded natively (DXT3 block decode via an ImageMagick DDS round-trip) then one
+// Real-ESRGAN x4plus pass (alpha channel upsampled in lockstep) to 256x256, Lanczos-resampled
+// to the final 512x512 (a plain resize, no further generative step) and re-encoded WebP,
+// lossy quality 90, alpha kept, ~23-29KB apiece. Side-by-side check at
+// design/mocks/renders/faction-emblem-check.png confirms shape/colour/proportion match the
+// shipped 72px mark exactly. Not yet wired into factionMarkSrc()/this component -- consumed
+// so far only by design/mocks/gen_guild_header.py's header watermark.
 import { factionMarkSrc, type Faction } from '../lib/faction-mark';
 
 export type FactionMarkSize = 16 | 20 | 36;

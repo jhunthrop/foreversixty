@@ -5,15 +5,25 @@ the band's own art, over the existing night gradient. The roster/tabs/content be
 are reused unchanged from gen_guild.py so each board still reads as a real page.
 
   python3 design/mocks/gen_guild_header.py
-    -> guild-header-horde-banner.html     (1440, officer, option A: hanging cloth banner)
-    -> guild-header-horde-watermark.html  (1440, officer, option B: large emblem watermark
-                                            + diagonal vignette)
-    -> guild-header-alliance.html         (1440, officer, option A -- the proposed pick)
-    -> guild-header-2000.html             (2000 wide, member, option A -- confirms the banner
-                                            stays anchored to the 1344px inner, not the
-                                            viewport edge)
-    -> guild-header-phone.html            (390, member, option A -- banner shrinks beside the
-                                            title, 44px ringed crest unchanged)
+    -> guild-header-horde-banner.html      (1440, officer, option A: hanging cloth banner)
+    -> guild-header-horde-watermark.html   (1440, officer, option B: large emblem watermark
+                                             + diagonal vignette)
+    -> guild-header-alliance.html          (1440, officer, option A -- the proposed pick)
+    -> guild-header-alliance-watermark.html (1440, officer, option B, Alliance)
+    -> guild-header-2000.html              (2000 wide, member, option A -- confirms the banner
+                                             stays anchored to the 1344px inner, not the
+                                             viewport edge)
+    -> guild-header-phone.html             (390, member, option A -- banner shrinks beside the
+                                             title, 44px ringed crest unchanged)
+
+Asset-lane follow-up (2026-10-04, FactionMark.astro's header comment has the full provenance):
+the watermark (option B only -- art_watermark()/emblem_512() below) now reads
+web/public/icons/hd/faction/<faction>-512.webp when present, a Real-ESRGAN upscale of the same
+client texture the shipped 72px mark uses, not a different asset -- the watermark blows the
+emblem up to 320px where the 72px file's own resample blur became visible. Falls back to the
+72px file if the -512 asset is ever missing. The banner (option A) and the identity-row crest
+ring are unchanged, still the shipped 72px file -- neither renders the emblem large enough for
+the difference to matter.
 
 Round-2 fix (owner review of round 1's boards): the tab strip sat flush against the viewport
 edge at 2000px while the header text above it stayed centred at 1344px -- `tab_strip()`'s own
@@ -33,7 +43,7 @@ asset. See each builder's own docstring for exactly how.
 The neutral/unknown-faction fallback is not re-rendered here either: design/mocks/renders/
 guild-overview-officer.png (on file) remains its reference.
 """
-from mocklib import GOLD, MUTED, TEXT, BODY, emblem, nav, nav_phone, footer, page, write
+from mocklib import GOLD, MUTED, TEXT, BODY, WEB, data_uri, emblem, nav, nav_phone, footer, page, write
 from gen_guild import (
     GUILD, RED, BLUE, UPDATED_LABEL, VIEWER_MEMBER, VIEWER_OFFICER,
     ROSTER_BY_NAME, header_facts, standing_line, officer_tools, tab_strip,
@@ -46,6 +56,16 @@ from gen_guild import (
 # full-saturation `color` field for its ring, never the lightened text variant.
 FACTION_BAR = {'alliance': '#2f6fd6', 'horde': '#c0392b'}
 FACTION_TEXT = {'alliance': BLUE, 'horde': RED}
+
+
+def emblem_512(faction: str) -> str:
+    """The higher-resolution emblem (FactionMark.astro's header comment, 2026-10-04 provenance
+    note: the same 64px UI-PVP-Alliance/Horde client texture, Real-ESRGAN upscaled to 512px,
+    never redrawn). Used only by the watermark art layer below, which blows the mark up large
+    enough that the shipped 72px file shows visible resample blur -- falls back to the 72px
+    file if the -512 asset is ever missing so this generator never hard-fails."""
+    path = WEB / 'public/icons/hd/faction' / f'{faction}-512.webp'
+    return data_uri(path) if path.exists() else emblem(faction)
 # Deep cloth gradient stops, option A (owner's own spec: "Horde: dark crimson to near-black;
 # Alliance: deep royal blue to near-black").
 BANNER_STOPS = {
@@ -137,7 +157,7 @@ def art_watermark(faction: str, phone: bool = False) -> str:
     vignette = (f'<div style="position:absolute;inset:0;pointer-events:none;'
                 f'background:linear-gradient(135deg,transparent 52%,color-mix(in srgb,{bar} 38%,transparent) 100%)">'
                 f'</div>')
-    wm = (f'<img src="{emblem(faction)}" alt="" style="position:absolute;top:{-round(size*0.12)}px;'
+    wm = (f'<img src="{emblem_512(faction)}" alt="" style="position:absolute;top:{-round(size*0.12)}px;'
           f'right:{-round(size*0.28)}px;width:{size}px;height:{size}px;object-fit:contain;'
           f'opacity:{opacity};pointer-events:none" aria-hidden="true">')
     return vignette + wm
@@ -194,6 +214,10 @@ FACTION_CAPTION = {
                  '(round 2&rsquo;s roster is written Horde-flavoured).'),
     'horde-banner': 'Header art study, option A: the hanging banner.',
     'horde-watermark': 'Header art study, option B: the emblem watermark.',
+    'alliance-watermark': ('Header art study, option B: the emblem watermark, faction '
+                            'overridden to Alliance for this round only, now sourced from the '
+                            '512px upscale (FactionMark.astro’s header comment) instead of '
+                            'the shipped 72px mark.'),
 }
 
 
@@ -228,5 +252,6 @@ def build_header_board(name: str, faction: str, role: str, style: str, width_tag
 print(build_header_board('guild-header-horde-banner', 'horde', 'officer', style='banner'))
 print(build_header_board('guild-header-horde-watermark', 'horde', 'officer', style='watermark'))
 print(build_header_board('guild-header-alliance', 'alliance', 'officer', style='banner'))
+print(build_header_board('guild-header-alliance-watermark', 'alliance', 'officer', style='watermark'))
 print(build_header_board('guild-header-2000', 'horde', 'member', style='banner', width_tag='2000'))
 print(build_header_board('guild-header-phone', 'horde', 'member', style='banner', phone=True))
