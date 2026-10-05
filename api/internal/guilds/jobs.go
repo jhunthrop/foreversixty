@@ -209,5 +209,48 @@ func (j *MembershipJob) sweepOnce(ctx context.Context, at time.Time) error {
 	if err := j.Store.VerifyByLogs(ctx); err != nil {
 		return fmt.Errorf("guilds: verify by logs: %w", err)
 	}
+	if err := j.Store.BackfillFactions(ctx); err != nil {
+		return fmt.Errorf("guilds: backfill factions: %w", err)
+	}
 	return nil
+}
+
+// BackfillFactions runs RecomputeFaction for every guild that has never had it computed
+// (faction_updated_at is null) — every guild that predates migration 0031, backfilled
+// automatically on the sweep's own tick (SweepEvery, so within one deploy's worth of
+// ticks) rather than a manual migration step. A guild's own membership changes already
+// call RecomputeFaction the moment they happen (AfterGuildChange, ApproveCharacter,
+// RemoveCharacter, Leave, AcceptInvite), so this only ever has guilds untouched since
+// migration 0031 left to do.
+func (s *Store) BackfillFactions(ctx context.Context) error {
+	rows, err := s.Pool.Query(ctx, `select id from guilds where faction_updated_at is null`)
+	if err != nil {
+		return fmt.Errorf("guilds: backfill factions: list: %w", err)
+	}
+	ids, err := scanInt64s(rows)
+	if err != nil {
+		return fmt.Errorf("guilds: backfill factions: %w", err)
+	}
+	for _, id := range ids {
+		if err := RecomputeFaction(ctx, s.Pool, id); err != nil {
+			return fmt.Errorf("guilds: backfill factions: guild %d: %w", id, err)
+		}
+	}
+	return nil
+}
+
+// scanInt64s drains rows of a single bigint column into a slice, closing rows itself
+// either way — the same drain-before-use shape scanGuildUserPairs already uses, so a
+// second query (RecomputeFaction, per id) never runs while this one is still open.
+func scanInt64s(rows pgx.Rows) ([]int64, error) {
+	defer rows.Close()
+	var out []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, fmt.Errorf("scan: %w", err)
+		}
+		out = append(out, id)
+	}
+	return out, rows.Err()
 }

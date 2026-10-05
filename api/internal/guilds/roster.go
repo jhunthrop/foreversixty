@@ -45,6 +45,9 @@ func (s *Store) ApproveCharacter(ctx context.Context, guildID int64, characterKe
 	if err := RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
 		return err
 	}
+	if err := RecomputeFaction(ctx, tx, guildID); err != nil {
+		return err
+	}
 	return tx.Commit(ctx)
 }
 
@@ -126,6 +129,9 @@ func (s *Store) RemoveCharacter(ctx context.Context, guildID int64, characterKey
 	if err := RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
 		return err
 	}
+	if err := RecomputeFaction(ctx, tx, guildID); err != nil {
+		return err
+	}
 	if err := ReleaseClaimIfLost(ctx, tx, guildID, userID); err != nil {
 		return err
 	}
@@ -167,6 +173,9 @@ func (s *Store) Leave(ctx context.Context, guildID, userID int64) error {
 		return fmt.Errorf("guilds: leave: %w", err)
 	}
 	if err := RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
+		return err
+	}
+	if err := RecomputeFaction(ctx, tx, guildID); err != nil {
 		return err
 	}
 	if err := ReleaseClaimIfLost(ctx, tx, guildID, userID); err != nil {

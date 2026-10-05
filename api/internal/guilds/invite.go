@@ -95,6 +95,9 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		if err := RecomputeMembership(ctx, tx, *prevGuildID, &userID); err != nil {
 			return InviteAccept{}, err
 		}
+		if err := RecomputeFaction(ctx, tx, *prevGuildID); err != nil {
+			return InviteAccept{}, err
+		}
 		if err := ReleaseClaimIfLost(ctx, tx, *prevGuildID, userID); err != nil {
 			return InviteAccept{}, err
 		}
@@ -110,6 +113,9 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		return InviteAccept{}, fmt.Errorf("guilds: accept invite: %w", err)
 	}
 	if err := RecomputeMembership(ctx, tx, g.ID, &userID); err != nil {
+		return InviteAccept{}, err
+	}
+	if err := RecomputeFaction(ctx, tx, g.ID); err != nil {
 		return InviteAccept{}, err
 	}
 	if err := tx.Commit(ctx); err != nil {
