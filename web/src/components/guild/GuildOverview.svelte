@@ -18,7 +18,7 @@
      it, too, stays visible on every tab rather than Overview-only. -->
 <script lang="ts">
   import type { GuildHomeSummary } from '../../lib/guild/api';
-  import { fetchGuildLoot, fetchGuildReadiness } from '../../lib/guild/api';
+  import { fetchGuildLoot, fetchGuildProgression, fetchGuildReadiness } from '../../lib/guild/api';
   import { sortReadinessWorstFirst } from '../../lib/guild/readiness-view';
   import { bossPickerLabel, nextUnkilledEncounter } from '../../lib/guild/loot-view';
   import type { GuildTabId } from './GuildTabs.svelte';
@@ -52,6 +52,27 @@
 
   let readinessSummary = $state<{ name: string; failing: number }[] | null>(null);
   let lootSummary = $state<string | null>(null);
+  /** Live defect 2026-10-05: a public visitor has no `home` (401), so `summary` is undefined
+   *  and this card read "0 named encounters down" under a band saying 1 boss down. The
+   *  progression endpoint is public and already carries the tier figures, so the card reads
+   *  it for every role and falls back to `summary` only while it loads. */
+  let progressionSummary = $state<{ down: number; unnamedPulls: number } | null>(null);
+  const namedDown = $derived(progressionSummary?.down ?? summary?.named_encounters_down ?? 0);
+  const unnamedPulls = $derived(progressionSummary?.unnamedPulls ?? summary?.pulls_this_tier ?? 0);
+
+  $effect(() => {
+    if (guildId === null) return;
+    void fetchGuildProgression(guildId)
+      .then((page) => {
+        progressionSummary = {
+          down: page.tier.down,
+          unnamedPulls: page.unnamed.reduce((sum, zone) => sum + zone.pulls, 0),
+        };
+      })
+      .catch(() => {
+        progressionSummary = null;
+      });
+  });
 
   $effect(() => {
     if (guildId === null || role === 'public') return;
@@ -151,12 +172,9 @@
       >
     </div>
     <p class="text-[14px]">
-      <span class="tabular font-mono">{summary?.named_encounters_down ?? 0}</span> named encounter{(summary?.named_encounters_down ??
-        0) === 1
-        ? ''
-        : 's'}
-      down this tier. Barrow Deeps and Hyjal Summit have no published encounter list yet —
-      <span class="tabular font-mono">{summary?.pulls_this_tier ?? 0}</span> pulls logged there regardless.
+      <span class="tabular font-mono">{namedDown}</span> named encounter{namedDown === 1 ? '' : 's'} down this tier.
+      Barrow Deeps and Hyjal Summit have no published encounter list yet —
+      <span class="tabular font-mono">{unnamedPulls}</span> pulls logged there regardless.
     </p>
   </div>
 

@@ -50,6 +50,7 @@
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import GuildOfficerStrip from './guild/GuildOfficerStrip.svelte';
+  import SignInPrompt from './SignInPrompt.svelte';
   import GuildOverview from './guild/GuildOverview.svelte';
   import GuildTabs, { tabFromHash, tabsForRole, type GuildTabId } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
@@ -105,6 +106,9 @@
 
   let home = $state<GuildHome | null>(null);
   let homeStatus = $state<'idle' | 'loading' | 'ready'>('idle');
+  /** True once /v1/me has answered (signed in or not), so the public sign-in prompt never
+   *  flashes for a member during the first render. */
+  let meResolved = $state(false);
   let rosterBusy = $state<string | null>(null);
   let rosterActionError = $state('');
   let contestBusy = $state(false);
@@ -139,6 +143,7 @@
         myCharacterKeys = new Set((result?.characters ?? []).map((c) => c.key));
         isModerator = result?.user.role === 'moderator' || result?.user.role === 'admin';
         myBattletag = result?.user.battletag ?? null;
+        meResolved = true;
         if (membership === undefined) {
           homeStatus = 'idle';
           return null;
@@ -152,6 +157,7 @@
       })
       .catch(() => {
         if (resolved !== requested) return;
+        meResolved = true;
         homeStatus = 'idle';
       });
   });
@@ -498,6 +504,17 @@
             <span class="tabular font-mono">{killed}</span> bosses down ·
             <span class="tabular font-mono">{pulls}</span> pulls
           </p>
+
+          <!-- Spec §4.A.1 fourth branch (public visitor): one sign-in prompt in the hero,
+               the Battle.net button style, returning to this page. Live defect 2026-10-05:
+               the public view shipped without it. -->
+          {#if meResolved && role === 'public' && myBattletag === null}
+            <SignInPrompt
+              line="See where you stand in this guild."
+              next={typeof location === 'undefined' ? '/account?signed_in=1' : location.pathname}
+              testid="guild-sign-in-prompt"
+            />
+          {/if}
 
           <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
                settings, still above the tab strip. "Contest this claim" moved out of here
