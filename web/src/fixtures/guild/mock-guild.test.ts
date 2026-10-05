@@ -115,6 +115,33 @@ describe('buildMockLoot', () => {
       expect(item.candidates.some((c) => c.character_key === item.awarded_to?.character_key)).toBe(true);
     }
   });
+
+  // Live-fix round, defect 5: this fixture now matches the live contract's own 22-item
+  // table exactly (api/internal/guilds/loot.go's onyxiaLoot), with candidates read
+  // through the tier-1 (fallback) shape every real candidate on a live roster uses today.
+  it("names all 22 of the contract's own Onyxia drops", () => {
+    expect(buildMockLoot().items).toHaveLength(22);
+  });
+
+  it('gives every slotted item at least one candidate, tier-1 throughout', () => {
+    const loot = buildMockLoot();
+    for (const item of loot.items) {
+      if (item.slot === '') {
+        expect(item.candidates).toHaveLength(0);
+        continue;
+      }
+      expect(item.candidates.length).toBeGreaterThan(0);
+      for (const candidate of item.candidates) {
+        expect(candidate.gain_dps).toBeNull();
+        expect(candidate.not_sim_checked).toBe(true);
+        expect(candidate.ilvl_delta).not.toBeNull();
+      }
+    }
+  });
+
+  it('selects Onyxia as a number, never null', () => {
+    expect(buildMockLoot().selected).toBe(1084);
+  });
 });
 
 describe('buildMockGuildPage', () => {

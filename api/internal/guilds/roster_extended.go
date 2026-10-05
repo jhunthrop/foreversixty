@@ -354,7 +354,8 @@ func standingFor(s *Store, roster []RosterRow, viewerUserID int64) *StandingView
 
 	band, hasBand := s.loadBandFor(self.className, self.specStr, self.faction)
 	cr := computeReadiness(self.Consent, band, hasBand, self.gear, self.enchants,
-		self.bags, self.hasBagsSection, self.talentPointsSpent, self.hasTalents, self.ItemLevel, nil)
+		self.bags, self.hasBagsSection, self.talentPointsSpent, self.hasTalents,
+		self.level, self.hasLevel, self.ItemLevel, nil)
 
 	return &StandingView{
 		Spec: self.specStr, Class: self.className,

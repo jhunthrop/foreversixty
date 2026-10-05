@@ -284,6 +284,62 @@ test.describe('loot: read-only for a member, awarded state for everyone', () => 
   });
 });
 
+// Live-fix round, defect 5: the Loot tab rendered nothing for the leader on real data --
+// GuildLoot.svelte called `candidate.gain_dps.toFixed(0)` unconditionally, which threw for
+// every tier-1 (fallback) candidate (`gain_dps: null`), the shape every real candidate on
+// a live roster carries today since no BiS file names a raid-tier item yet. The fixture
+// now matches the live contract's own 22-item table and tier-1 candidate shape exactly
+// (mock-guild.ts), and these two tests reproduce the officer's own repro steps: mount
+// Overview (which prefetches .../loot for its own summary card) then switch to Loot.
+test.describe('loot tab renders real data after Overview’s own prefetch', () => {
+  test('officer: Overview mounts first, then Loot renders all 22 items with candidates', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(GUILD_URL);
+    await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
+    // The Overview's own Loot summary card prefetches GET .../loot before the tab exists.
+    await expect(page.getByTestId('guild-overview-card-loot')).toBeVisible();
+
+    await page.getByTestId('guild-tab-loot').click();
+    await expect(page.getByTestId('guild-loot-tab')).toBeVisible();
+
+    const loot = buildMockLoot();
+    expect(loot.items).toHaveLength(22);
+    for (const item of loot.items) {
+      await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
+      if (item.slot === '') continue; // a quest/reputation/crafting drop, no candidates
+      const panel = page.getByTestId(`guild-loot-item-${item.item_id}`);
+      await expect(panel).not.toContainText('NaN');
+      for (const candidate of item.candidates) {
+        await expect(panel).toContainText(candidate.name);
+      }
+    }
+  });
+
+  test('a 500 from .../loot shows an error line, never the 404 "not live yet" copy', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
+    await page.route(`**/v1/guilds/${GUILD_ID}/progression`, (route) =>
+      route.fulfill(envelope(buildMockProgression())),
+    );
+    await page.route(`**/v1/guilds/${GUILD_ID}/readiness`, (route) =>
+      route.fulfill(envelope(buildMockReadiness())),
+    );
+    await page.route(`**/v1/guilds/${GUILD_ID}/loot*`, (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: '{"ok":false,"data":null,"error":{"message":"the loot ranker fell over"},"request_id":"r"}',
+      }),
+    );
+    await page.goto(`${GUILD_URL}#loot`);
+    await expect(page.getByTestId('guild-loot-error')).toBeVisible();
+    await expect(page.getByTestId('guild-loot-error')).toContainText('the loot ranker fell over');
+    await expect(page.getByTestId('guild-loot-missing')).toHaveCount(0);
+    await expect(page.getByText(/isn.t live yet/)).toHaveCount(0);
+  });
+});
+
 test.describe('a 404 from an undeployed endpoint never crashes the page', () => {
   test('the Raids tab shows its own empty state with a next-step line, not a crash', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');

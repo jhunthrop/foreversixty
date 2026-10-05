@@ -122,15 +122,63 @@ const ONYXIA_PULLS: [date: string, pull: number, durationSec: number, result: 'k
   ['2026-12-20', 2, 251, 'kill'],
 ];
 
-const ONYXIA_DROPS: [item: string, slot: string, classes: string[]][] = [
-  ['Helm of Wrath', 'head', ['warrior']],
-  ["Dragonstalker's Helm", 'head', ['hunter']],
-  ['Netherwind Crown', 'head', ['mage']],
-  ['Halo of Transcendence', 'head', ['priest']],
-  ['Nemesis Skullcap', 'head', ['warlock']],
-  ['Stormrage Cover', 'head', ['druid']],
-  ["Eskhandar's Collar", 'neck', ['warrior', 'hunter', 'rogue']],
-  ["Vis'kag the Bloodletter", 'one_hand', ['rogue', 'warrior']],
+// ALL_CLASSES is this fixture's own 8 classes (ROSTER_SEED carries no paladin) -- the
+// "every class can use it" eligibility a trinket/cloak/finger/neck slot gets below.
+const ALL_CLASSES = ['warrior', 'hunter', 'rogue', 'warlock', 'mage', 'priest', 'druid', 'shaman'];
+
+// ONYXIA_DROPS is api/internal/guilds/loot.go's own onyxiaLoot literal, byte-for-byte (ids,
+// names, icons, qualities, slots) -- the live contract's exact 22-item table
+// (docs/contracts/2026-10-04-guild-centre-api.md), not gen_guild.py's own ONYXIA_DROPS[:6]
+// slice (that Python module is a static design-review mock predating the contract's loot
+// section and the tier-1 fallback below; this one TypeScript file is the real test
+// fixture, and matching it to the live API is this live-fix round's own defect 5).
+// `classes` is this fixture's own eligibility list (the real API reads a per-class item
+// table this fixture has no equivalent of) -- each slotted item's lore class, broadened to
+// ALL_CLASSES for a slot no class is restricted from, and Judgement Crown's own paladin
+// pick is unreachable by this 8-class roster, so it also takes warrior (both are plate)
+// so every slotted item still has at least one candidate.
+const ONYXIA_DROPS: [
+  itemId: number,
+  name: string,
+  icon: string,
+  quality: number,
+  slot: string,
+  classes: string[],
+][] = [
+  [15410, 'Scale of Onyxia', '', 3, '', []],
+  [16900, 'Stormrage Cover', 'inv_helmet_09', 4, 'head', ['druid']],
+  [16908, 'Bloodfang Hood', 'inv_helmet_41', 4, 'head', ['rogue']],
+  [16914, 'Netherwind Crown', 'inv_helmet_70', 4, 'head', ['mage']],
+  [16921, 'Halo of Transcendence', 'inv_helmet_24', 4, 'head', ['priest']],
+  [16929, 'Nemesis Skullcap', 'inv_helmet_08', 4, 'head', ['warlock']],
+  [16939, "Dragonstalker's Helm", 'inv_helmet_05', 4, 'head', ['hunter']],
+  // This roster's only three shaman (Rootgall/Stormtusk/Fulmintide) are all unverified
+  // (ROSTER_SEED above), so a shaman-only eligibility list would leave this item with no
+  // candidate at all, the same "every slotted item needs at least one" rule
+  // api/cmd/seedguild's own integration test enforces against the real 24-raider roster --
+  // hunter (the other mail-wearing class) backstops it here.
+  [16947, 'Helmet of Ten Storms', 'inv_helmet_69', 4, 'head', ['shaman', 'hunter']],
+  [16955, 'Judgement Crown', 'inv_helmet_74', 4, 'head', ['warrior']],
+  [16963, 'Helm of Wrath', 'inv_helmet_71', 4, 'head', ['warrior']],
+  [17064, 'Shard of the Scale', 'inv_misc_monsterscales_15', 4, 'trinket', ALL_CLASSES],
+  [
+    17067,
+    'Ancient Cornerstone Grimoire',
+    'inv_misc_book_07',
+    4,
+    'off_hand',
+    ['mage', 'warlock', 'priest', 'druid', 'shaman'],
+  ],
+  [17068, 'Deathbringer', 'inv_axe_09', 4, 'main_hand', ['warrior', 'shaman', 'hunter']],
+  [17075, "Vis'kag the Bloodletter", 'inv_sword_18', 4, 'main_hand', ['rogue', 'warrior']],
+  [17078, 'Sapphiron Drape', 'inv_misc_cape_16', 4, 'back', ALL_CLASSES],
+  [17966, 'Onyxia Hide Backpack', '', 2, '', []],
+  [18205, "Eskhandar's Collar", 'inv_belt_12', 4, 'neck', ALL_CLASSES],
+  [18422, 'Head of Onyxia', '', 4, '', []],
+  [18423, 'Head of Onyxia', '', 4, '', []],
+  [18705, 'Mature Black Dragon Sinew', '', 4, '', []],
+  [18813, 'Ring of Binding', 'inv_jewelry_ring_13', 4, 'finger', ALL_CLASSES],
+  [21108, 'Draconic for Dummies', '', 4, '', []],
 ];
 
 const ONYXIA_ENCOUNTER_ID = 1084;
@@ -531,31 +579,46 @@ export function buildMockReadiness(): GuildReadinessPage {
   return { median_item_level: MEDIAN_ILVL, generated_at: '2026-12-22T21:40:00Z', rows };
 }
 
+// ilvlDeltaFor is this fixture's own stand-in for the contract's tier-1 `ilvl_delta`
+// (item item level minus worn item level in that slot, or the item's own item level when
+// the slot is empty) -- this fixture has no per-slot worn-gear model, so every candidate
+// reads as the "slot empty" branch: a positive, seeded 2-14 spread keeps the ranking
+// (ilvl_delta desc, defect 5's own contract) non-trivial without inventing a fake gear set.
+function ilvlDeltaFor(name: string, itemName: string): number {
+  return 2 + Math.round(seed(name, `ilvl-delta:${itemName}`) * 12);
+}
+
+// buildMockLoot matches the live contract's own two-tier shape exactly (defect 5's own
+// live-fix round): every real candidate on a live roster comes from the tier-1 fallback
+// today (CONTROL_CENTRE.md: "no BiS file in this build names any raid-tier item yet"), so
+// this fixture's candidates are tier-1 throughout -- `gain_dps: null`, `not_sim_checked:
+// true`, `ilvl_delta` set -- never the tier-0 `gain_dps` shape the fixture used to invent,
+// which let GuildLoot.svelte's `candidate.gain_dps.toFixed(0)` ship unnoticed against a
+// shape the real API stopped sending.
 export function buildMockLoot(): GuildLootPage {
   const roster = buildMockRoster();
-  const items = ONYXIA_DROPS.slice(0, 6).map(([name, slot, classes], i) => {
-    const eligible = roster.filter(
-      (r) => r.verified && classes.includes(r.class ?? '') && gearGapFor(r.name).gain !== null,
-    );
+  const items = ONYXIA_DROPS.map(([itemId, name, icon, quality, slot, classes]) => {
+    const eligible = slot === '' ? [] : roster.filter((r) => r.verified && classes.includes(r.class ?? ''));
     const candidates = [...eligible]
-      .sort((a, b) => (gearGapFor(b.name).gain ?? 0) - (gearGapFor(a.name).gain ?? 0))
+      .sort((a, b) => ilvlDeltaFor(b.name, name) - ilvlDeltaFor(a.name, name))
       .slice(0, 4)
       .map((r) => ({
         character_key: r.character_key,
         name: r.name,
         class: r.class ?? '',
         spec: r.spec ?? '',
-        gain_dps: gearGapFor(r.name).gain ?? 0,
-        not_sim_checked: false,
+        gain_dps: null,
+        not_sim_checked: true,
+        ilvl_delta: ilvlDeltaFor(r.name, name),
         attendance: attendanceFor(r.name),
-        already_equivalent: gearGapFor(r.name).upgrades === 0,
+        already_equivalent: false,
       }));
-    const isAwarded = i === 0 && candidates.length > 0;
+    const isAwarded = itemId === 16963 && candidates.length > 0; // Helm of Wrath -- this fixture's own long-standing awarded item
     return {
-      item_id: 16955 + i,
+      item_id: itemId,
       name,
-      icon: 'inv_helmet_71',
-      quality: 4,
+      icon,
+      quality,
       slot,
       awarded_to: isAwarded
         ? {

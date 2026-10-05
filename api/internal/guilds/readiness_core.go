@@ -23,11 +23,27 @@ var enchantableSlotLabels = map[string]string{
 	"main_hand": "Weapon", "chest": "Chest", "back": "Cloak", "feet": "Boots",
 }
 
-// talentPointsAtLevel60 is the most a level-60 character can have spent
-// (api/internal/spec.MaxPoints, duplicated as a small constant rather than an import: every
-// raider this page concerns is assumed level 60, design spec §4.E's own assumption, and this
-// package has no other reason to depend on api/internal/spec).
+// talentPointsAtLevel60 is the most a level-60 character can have spent - the "export
+// carries no level section at all" fallback maxTalentPoints uses below, design spec §4.E's
+// own level-60 baseline for that one gap, not (as a previous version of this file wrongly
+// assumed) a figure every character's own unspent-points check should be measured against.
 const talentPointsAtLevel60 = 51
+
+// maxTalentPoints is the most points a character at level could have spent by now: one
+// point every level from 10 through level, never negative - level-9, floored at 0, a level
+// below 10 having no points at all. When the export carries no level section at all, every
+// raider this page concerns is assumed level 60 (talentPointsAtLevel60) - assumedLevel60
+// tells the caller so, since the contract's own nudge_text must say so rather than silently
+// presenting a guess as fact.
+func maxTalentPoints(level int, hasLevel bool) (points int, assumedLevel60 bool) {
+	if !hasLevel {
+		return talentPointsAtLevel60, true
+	}
+	if points = level - 9; points < 0 {
+		return 0, false
+	}
+	return points, false
+}
 
 // CharacterReadiness is one character's full readiness computation, built from
 // already-loaded inputs (computeReadiness, below) - no DB or file access of its own, so it
@@ -40,8 +56,12 @@ type CharacterReadiness struct {
 	// ConsumablesState is "stocked" | "short" | "unknown".
 	ConsumablesState    string
 	TalentPointsUnspent int
-	ItemLevel           *int
-	ItemLevelDelta      *int
+	// TalentLevelAssumed is true exactly when TalentPointsUnspent was computed against
+	// talentPointsAtLevel60 because the export carried no level section at all - the
+	// officer-only nudge_text's own cue to say so rather than present a guess as fact.
+	TalentLevelAssumed bool
+	ItemLevel          *int
+	ItemLevelDelta     *int
 }
 
 // hasGearConsent reports whether consent unlocks the gear/gear_bags-gated checks
@@ -71,6 +91,7 @@ func computeReadiness(
 	gear map[string]int, enchants map[string]int,
 	bags []int, hasBagsSection bool,
 	talentPointsSpent int, hasTalents bool,
+	level int, hasLevel bool,
 	itemLevel, medianItemLevel *int,
 ) CharacterReadiness {
 	var cr CharacterReadiness
@@ -102,9 +123,11 @@ func computeReadiness(
 	}
 
 	if hasTalents {
-		if unspent := talentPointsAtLevel60 - talentPointsSpent; unspent > 0 {
+		maxPoints, assumedLevel60 := maxTalentPoints(level, hasLevel)
+		if unspent := maxPoints - talentPointsSpent; unspent > 0 {
 			cr.TalentPointsUnspent = unspent
 		}
+		cr.TalentLevelAssumed = assumedLevel60
 	}
 
 	cr.ItemLevel = itemLevel

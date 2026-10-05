@@ -658,8 +658,18 @@ export interface GuildLootCandidate {
   name: string;
   class: string;
   spec: string;
-  gain_dps: number;
+  /** `null` for a tier-1 (fallback) candidate — contract's own loot section, 2026-10-04
+   *  addition: no BiS file in this build names any raid-tier item yet, so every real
+   *  candidate on a live roster is tier-1 today, and this is null for every one of them.
+   *  A caller must branch on this before formatting a DPS figure, never call a number
+   *  method on it directly (defect 5's own live-fix round: `candidate.gain_dps.toFixed(0)`
+   *  threw for every real candidate and broke the whole Loot tab). */
+  gain_dps: number | null;
   not_sim_checked: boolean;
+  /** Tier-1 only (contract's loot section): the item's own item level minus what the
+   *  candidate wears in that slot (or the item's own item level when the slot is empty).
+   *  `null` for a tier-0 (BiS-matched) candidate. */
+  ilvl_delta: number | null;
   attendance: GuildRosterAttendance;
   already_equivalent: boolean;
 }

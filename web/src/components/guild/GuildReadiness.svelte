@@ -13,6 +13,7 @@
     consumablesLabel,
     enchantKind,
     enchantLabel,
+    enchantPillText,
     gearGapLabel,
     itemLevelKind,
     itemLevelLabel,
@@ -72,6 +73,13 @@
   const PILL_OK = 'text-[#7bff5c] bg-[rgba(30,255,0,.10)] border-[rgba(30,255,0,.25)]';
   const PILL_WARN = 'text-[#ff6b5c] bg-[rgba(255,107,92,.12)] border-[rgba(255,107,92,.32)]';
   const PILL_GOLD = 'text-gold bg-[rgba(229,185,85,.14)] border-[rgba(229,185,85,.35)]';
+  // Overrides .pill's fixed single-line 22px height for the Enchants pill alone (inline,
+  // never a scoped <style> rule touching the shared .pill class every other pill on the
+  // page still uses): a long missing-slot list ("Main hand, Chest +2 more") wraps onto a
+  // second line instead of overflowing the 120px column, and clamps there -- the cell's
+  // own title attribute carries the untruncated list for a reader who needs it.
+  const ENCHANT_PILL_STYLE =
+    'height:auto;min-height:22px;white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:left;';
 
   function pillClass(kind: ReadinessCellKind, warnIsGold = false): string {
     if (kind === 'consent') return '';
@@ -139,7 +147,9 @@
         {#if enchantKind(row) === 'consent'}
           <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
         {:else}
-          <span class={pillClass(enchantKind(row))}>{enchantLabel(row)}</span>
+          <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} title={enchantLabel(row)}
+            >{enchantPillText(row)}</span
+          >
         {/if}
         {#if consumablesKind(row) === 'consent'}
           <span class="text-muted text-[12px]">{consumablesLabel(row)}</span>
@@ -191,7 +201,9 @@
             {#if enchantKind(row) === 'consent'}
               {enchantLabel(row)}
             {:else}
-              <span class={pillClass(enchantKind(row))}>{enchantLabel(row)}</span>
+              <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} title={enchantLabel(row)}
+                >{enchantPillText(row)}</span
+              >
             {/if}
           </span>
           <span class={CHIP}>

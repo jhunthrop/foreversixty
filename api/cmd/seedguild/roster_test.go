@@ -60,8 +60,13 @@ func TestMockRosterOfficersAndUnverified(t *testing.T) {
 	}
 }
 
+// Live-fix round, defect 2: this fixture's two Skyborne characters now carry the
+// canonical slug races.json actually names ("high-order-skyborne" - the Alliance half of
+// the neutral race, since every other race on this roster is Alliance), not the bare
+// "skyborne" that factionForRace (api/internal/guilds/bis_lookup.go) could never resolve
+// to a faction - which left every Skyborne character's own gear_gap stuck null.
 func TestMockRosterSkyborneCount(t *testing.T) {
-	skyborne := countBy(mockRoster(), func(c mockCharacter) bool { return c.RaceSlug == "skyborne" })
+	skyborne := countBy(mockRoster(), func(c mockCharacter) bool { return c.RaceSlug == "high-order-skyborne" })
 	if skyborne != 2 {
 		t.Errorf("skyborne = %d, want 2 (one or two is the spec, this fixture picks two)", skyborne)
 	}

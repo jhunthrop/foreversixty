@@ -122,6 +122,46 @@ func TestHomeRosterHonoursConsent(t *testing.T) {
 	}
 }
 
+// TestHomeRosterClassFromExportWhenNoFightMetrics is defect 3's own regression (live-fix
+// round): a verified character with gear consent and a real FS1 export, but no
+// fight_metrics row at all (the common case for a character that has never once appeared
+// in a logged raid, like the owner's own real level-23 warrior), must still show its
+// class - read from the export's own class field - rather than the empty string
+// fight_metrics-only sourcing used to leave it at, which drew a broken crest web-side.
+func TestHomeRosterClassFromExportWhenNoFightMetrics(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+
+	uid := seedUser(t, h.pool, "class-from-export@example.com")
+	seedCharacter(t, h.pool, gid, uid, "us/hardcore/classfromexport", "member", true)
+	if _, err := h.pool.Exec(ctx, `
+		insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at, updated_at)
+		values ($1, $2, 'us', 'hardcore', 'classfromexport', 'FS1:1.60.1.70009:warrior:human:0/0/0:|level=23', now(), now())`,
+		"us/hardcore/classfromexport", uid); err != nil {
+		t.Fatal(err)
+	}
+	recomputeMembership(t, h.pool, gid, uid)
+
+	h.actor = auth.Actor{UserID: uid, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+
+	var row *RosterRow
+	for i := range view.Roster {
+		if view.Roster[i].CharacterKey == "us/hardcore/classfromexport" {
+			row = &view.Roster[i]
+		}
+	}
+	if row == nil {
+		t.Fatal("character missing from the roster")
+	}
+	if row.Class == nil || *row.Class != "warrior" {
+		t.Fatalf("class = %v, want warrior from the export (no fight_metrics row exists for this character)", row.Class)
+	}
+}
+
 func TestHomeReportsListsOnlyTheTrailingWeek(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()

@@ -35,3 +35,28 @@ func (s *Store) loadBandFor(classSlug, specName, faction string) (bis.Band, bool
 	}
 	return band, true
 }
+
+// factionForRace resolves an FS1 export's race slug ("human", "undead", ...) to its
+// faction via the same build data loot.go's per-class item table already reads
+// (Store.Trees, data/builds/<build>/races.json) - never a second hardcoded race table that
+// could drift from that file. fight_metrics carries no faction column at all (never
+// written by a real ingest or by api/cmd/seedguild - see that package's own
+// insertFightsAndMetrics comment), so this is the only source of faction HomeRoster has;
+// ok is false for an empty slug, a nil Trees (a harness that never loaded build data), or a
+// slug the build's races.json does not name - every case this package already treats as
+// "no band available," never an error.
+func (s *Store) factionForRace(raceSlug string) (string, bool) {
+	if raceSlug == "" || s.Trees == nil {
+		return "", false
+	}
+	build, ok := s.Trees.Build(bisDataBuild)
+	if !ok {
+		return "", false
+	}
+	for _, r := range build.Races() {
+		if r.Slug == raceSlug {
+			return r.Faction, true
+		}
+	}
+	return "", false
+}
