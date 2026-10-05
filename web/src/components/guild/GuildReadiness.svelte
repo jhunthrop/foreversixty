@@ -51,6 +51,14 @@
       // visible confirmation rather than a thrown error surfacing to the viewer.
     }
   }
+
+  // Tailwind utilities only (no scoped <style>): see GuildTabs.svelte's own header
+  // comment -- this tab's rows only ever mount after the guild's async readiness fetch
+  // resolves, so a scoped <style> block's CSS is silently dropped from this build's
+  // SSR-critical-CSS inlining pass.
+  const NUDGE_BTN =
+    'inline-flex h-8 items-center justify-center rounded-control border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] text-strong uppercase';
+  const CHIP = 'flex flex-col gap-0.5 text-[12px] text-text';
 </script>
 
 <section class="flex flex-col gap-3" data-testid="guild-readiness-tab">
@@ -90,8 +98,7 @@
       {@const pinned = row.character_key === myCharacterKey}
       <!-- Desktop grid -->
       <div
-        class="guild-readiness-row hidden md:grid"
-        class:is-pinned={pinned}
+        class={`border-line-soft hidden items-center gap-2 border-b px-1 py-2 md:grid ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}
         style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
         data-testid={`guild-readiness-row-${row.character_key}`}
       >
@@ -109,7 +116,7 @@
         <span class="text-muted text-[11px]">{row.logged_at.slice(0, 10)}</span>
         {#if officer}
           <button
-            class="guild-nudge-btn"
+            class={NUDGE_BTN}
             onclick={() => void onNudge(row)}
             aria-label={`Nudge ${row.name}`}
             data-testid={`guild-readiness-nudge-${row.character_key}`}
@@ -119,17 +126,12 @@
         {/if}
       </div>
 
-      <!-- Phone stacked card. `flex flex-col` is a Tailwind utility, not the scoped
-           <style> block below, on purpose: a scoped `display:flex` here previously beat
-           Tailwind's own `md:hidden` at desktop widths (both are single-class selectors,
-           and this component's own <style> block loads after Tailwind's utilities in the
-           built stylesheet), so the phone card and the desktop grid were BOTH visible
-           above the md breakpoint -- found when e2e's Nudge-button count came back double
-           the roster's own verified count. Tailwind's responsive utilities keep their own
-           cascade order consistent, so display now lives there exclusively. -->
+      <!-- Phone stacked card: its own Tailwind `md:hidden` (not a scoped <style> block --
+           see this component's own header comment) is the only thing controlling display
+           at this breakpoint, so there is no cascade-order risk of it fighting the desktop
+           grid's `hidden md:grid` above. -->
       <div
-        class="guild-readiness-card flex flex-col md:hidden"
-        class:is-pinned={pinned}
+        class={`border-line-soft flex flex-col gap-2.5 border-b px-1 py-2.5 md:hidden ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}
         data-testid={`guild-readiness-row-${row.character_key}`}
       >
         <div class="flex items-center justify-between gap-2">
@@ -142,25 +144,15 @@
           <span class="text-muted text-[11px]">Synced {row.logged_at.slice(0, 10)}</span>
         </div>
         <div class="flex flex-wrap gap-4">
-          <span class="guild-readiness-chip"
-            ><span class="label text-muted">Gear gap</span>{gearGapLabel(row)}</span
-          >
-          <span class="guild-readiness-chip"
-            ><span class="label text-muted">Enchants</span>{enchantLabel(row)}</span
-          >
-          <span class="guild-readiness-chip"
-            ><span class="label text-muted">Consumables</span>{consumablesLabel(row)}</span
-          >
-          <span class="guild-readiness-chip"
-            ><span class="label text-muted">Talent pts</span>{talentPointsLabel(row)}</span
-          >
-          <span class="guild-readiness-chip"
-            ><span class="label text-muted">Item level</span>{itemLevelLabel(row)}</span
-          >
+          <span class={CHIP}><span class="label text-muted">Gear gap</span>{gearGapLabel(row)}</span>
+          <span class={CHIP}><span class="label text-muted">Enchants</span>{enchantLabel(row)}</span>
+          <span class={CHIP}><span class="label text-muted">Consumables</span>{consumablesLabel(row)}</span>
+          <span class={CHIP}><span class="label text-muted">Talent pts</span>{talentPointsLabel(row)}</span>
+          <span class={CHIP}><span class="label text-muted">Item level</span>{itemLevelLabel(row)}</span>
         </div>
         {#if officer}
           <button
-            class="guild-nudge-btn w-fit"
+            class={`${NUDGE_BTN} w-fit`}
             onclick={() => void onNudge(row)}
             aria-label={`Nudge ${row.name}`}
             data-testid={`guild-readiness-nudge-${row.character_key}`}
@@ -177,43 +169,3 @@
     this is copy only, never a push.
   </p>
 </section>
-
-<style>
-  .guild-readiness-row,
-  .guild-readiness-card {
-    align-items: center;
-    gap: 8px;
-    padding: 8px 4px;
-    border-bottom: 1px solid var(--color-border-soft);
-  }
-  .guild-readiness-card {
-    gap: 10px;
-    padding: 10px 4px;
-  }
-  .guild-readiness-row.is-pinned,
-  .guild-readiness-card.is-pinned {
-    background: rgba(229, 185, 85, 0.06);
-  }
-  .guild-readiness-chip {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 12px;
-    color: var(--color-text);
-  }
-  .guild-nudge-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
-    padding: 0 12px;
-    border: 1px solid #3a3326;
-    border-radius: var(--radius-control);
-    background: none;
-    color: var(--color-strong);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-</style>

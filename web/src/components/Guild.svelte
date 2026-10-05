@@ -46,6 +46,7 @@
   import { needsBeforeThursdaySentence, standingSentence } from '../lib/guild/standing';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
+  import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import GuildOverview from './guild/GuildOverview.svelte';
   import GuildTabs, { tabFromHash, tabsForRole, type GuildTabId } from './guild/GuildTabs.svelte';
@@ -172,6 +173,14 @@
         ? (home.roster.find((r) => myCharacterKeys.has(r.character_key))?.character_key ?? null)
         : null),
   );
+  /** The standing line's own name prefix (spec board precedent: "{name} · {rank clause}").
+   *  `GuildHomeStanding` (the contract) carries no name of its own -- this is the viewer's
+   *  own roster row, looked up by `myCharacterKey`, never invented. */
+  const myRosterRow = $derived(
+    home !== null && myCharacterKey !== null
+      ? (home.roster.find((r) => r.character_key === myCharacterKey) ?? null)
+      : null,
+  );
 
   async function onApprove(row: GuildRosterRow): Promise<void> {
     if (home === null) return;
@@ -257,8 +266,17 @@
     return myCharacterKeys.has(row.character_key) || isModerator;
   }
 
-  const killed = $derived((data?.progression ?? []).filter((row) => row.kills > 0).length);
-  const pulls = $derived((data?.progression ?? []).reduce((total, row) => total + row.pull_count, 0));
+  // `home.summary` (control-centre contract) is the authoritative, guild-wide count --
+  // preferred whenever it has loaded; the public `data.progression` fallback (today's own
+  // public roster_best/progression read, unaffected by this round) covers a visitor who
+  // never reaches a membership match, or a pre-contract home response.
+  const killed = $derived(
+    home?.summary?.named_encounters_down ?? (data?.progression ?? []).filter((row) => row.kills > 0).length,
+  );
+  const pulls = $derived(
+    home?.summary?.pulls_this_tier ??
+      (data?.progression ?? []).reduce((total, row) => total + row.pull_count, 0),
+  );
 
   // ---------------------------------------------------------------------------------------
   // Tab routing (spec §4.0): one URL, hash-anchored, never a separate route. A public
@@ -409,8 +427,15 @@
   />
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="guild" id="guild">
-    <header class="flex flex-col gap-2">
-      <h1 class="section-title text-[18px]">{data.guild.name}</h1>
+    <header class="flex flex-col gap-3">
+      <span class="label text-gold flex items-center gap-2.5">
+        <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>
+        Guild
+      </span>
+      <h1 class="font-display text-strong text-[22px] font-bold">{data.guild.name}</h1>
+      {#if home?.summary?.updated_at !== undefined}
+        <span class="text-muted text-[12px]">Updated {home.summary.updated_at.slice(0, 10)}</span>
+      {/if}
       <p class="text-muted text-[13px]">
         {rulesetLabel(resolved.ruleset)}
         {resolved.region.toUpperCase()} ·
@@ -423,6 +448,30 @@
            on every tab, not only Overview. -->
       {#if homeStatus === 'ready' && home !== null}
         <div class="flex flex-col gap-2" data-testid="guild-role-line">
+          <!-- Spec §4.A.1: the standing line's four branches (ranked / alone-in-spec /
+               unverified / signed-out) never branch on officer vs member -- every verified
+               viewer sees it, officer included; only the member-only "before Thursday"
+               sentence (§4.A.2) is role-gated. Kept unconditional here, separate from the
+               claim/settings row below it (unchanged v1 mechanism), rather than the two
+               fighting over the same slot. -->
+          {#if home.standing !== null && home.standing !== undefined}
+            <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
+              <p class="text-[14px] font-semibold" style={`color:${classColorVar(home.standing.class)}`}>
+                {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{standingSentence(home.standing)}
+              </p>
+              {#if role === 'member'}
+                <p
+                  class="text-[13px]"
+                  style={home.standing.needs_before_next_raid.length === 0
+                    ? 'color:#7bff5c'
+                    : 'color:#ff6b5c'}
+                  data-testid="guild-overview-needs-thursday"
+                >
+                  {needsBeforeThursdaySentence(home.standing.needs_before_next_raid)}
+                </p>
+              {/if}
+            </div>
+          {/if}
           <div class="flex flex-wrap items-center justify-between gap-3">
             {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
               <a
@@ -452,19 +501,6 @@
               <p class="text-muted text-[13px]" data-testid="guild-home-not-verified-note">
                 {guildHomeCopy.notVerifiedNote}
               </p>
-            {:else if role === 'member' && home.standing !== null && home.standing !== undefined}
-              <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
-                <p class="text-[14px]"><strong>{standingSentence(home.standing)}</strong></p>
-                <p
-                  class="text-[13px]"
-                  style={home.standing.needs_before_next_raid.length === 0
-                    ? 'color:#7bff5c'
-                    : 'color:#ff6b5c'}
-                  data-testid="guild-overview-needs-thursday"
-                >
-                  {needsBeforeThursdaySentence(home.standing.needs_before_next_raid)}
-                </p>
-              </div>
             {/if}
 
             {#if canContest && home.claim.state !== 'unclaimed' && home.claim.state !== 'contested'}

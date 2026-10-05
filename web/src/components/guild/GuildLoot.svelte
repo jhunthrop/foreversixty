@@ -101,7 +101,7 @@
                     <span class="text-muted text-[12px]">{action.label}</span>
                   {:else if officer}
                     <button
-                      class="guild-award-btn"
+                      class="rounded-control text-strong inline-flex h-7 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase"
                       onclick={() => onAward(item, candidate.character_key)}
                       disabled={busyItemId === item.item_id}
                       aria-label={`Award ${item.name} to ${candidate.name}`}
@@ -123,21 +123,3 @@
     </p>
   {/if}
 </section>
-
-<style>
-  .guild-award-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 28px;
-    padding: 0 12px;
-    border: 1px solid #3a3326;
-    border-radius: var(--radius-control);
-    background: none;
-    color: var(--color-strong);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-</style>

@@ -99,10 +99,16 @@
   {/if}
 
   {#if role !== 'public'}
-    <div class="guild-overview-card" data-testid="guild-overview-card-roster">
+    <div
+      class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
+      data-testid="guild-overview-card-roster"
+    >
       <div class="flex items-center justify-between">
         <h3 class="section-title text-[16px]">Roster</h3>
-        <button class="guild-see-all" onclick={() => onSelectTab('roster')}>See all</button>
+        <button
+          class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
+          onclick={() => onSelectTab('roster')}>See all</button
+        >
       </div>
       <p class="text-[14px]">
         <span class="tabular font-mono">{summary?.raiders ?? 0}</span> raiders ·
@@ -113,10 +119,16 @@
     </div>
   {/if}
 
-  <div class="guild-overview-card" data-testid="guild-overview-card-raids">
+  <div
+    class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
+    data-testid="guild-overview-card-raids"
+  >
     <div class="flex items-center justify-between">
       <h3 class="section-title text-[16px]">This week's raid nights</h3>
-      <button class="guild-see-all" onclick={() => onSelectTab('raids')}>See all</button>
+      <button
+        class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
+        onclick={() => onSelectTab('raids')}>See all</button
+      >
     </div>
     {#if reports.length === 0}
       <p class="text-muted text-[14px]">No reports this week yet.</p>
@@ -141,10 +153,16 @@
     {/if}
   </div>
 
-  <div class="guild-overview-card" data-testid="guild-overview-card-progression">
+  <div
+    class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
+    data-testid="guild-overview-card-progression"
+  >
     <div class="flex items-center justify-between">
       <h3 class="section-title text-[16px]">Progression</h3>
-      <button class="guild-see-all" onclick={() => onSelectTab('progression')}>See all</button>
+      <button
+        class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
+        onclick={() => onSelectTab('progression')}>See all</button
+      >
     </div>
     <p class="text-[14px]">
       <span class="tabular font-mono">{summary?.named_encounters_down ?? 0}</span> named encounter{(summary?.named_encounters_down ??
@@ -157,10 +175,16 @@
   </div>
 
   {#if role !== 'public'}
-    <div class="guild-overview-card" data-testid="guild-overview-card-readiness">
+    <div
+      class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
+      data-testid="guild-overview-card-readiness"
+    >
       <div class="flex items-center justify-between">
         <h3 class="section-title text-[16px]">Readiness</h3>
-        <button class="guild-see-all" onclick={() => onSelectTab('readiness')}>See all</button>
+        <button
+          class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
+          onclick={() => onSelectTab('readiness')}>See all</button
+        >
       </div>
       {#if readinessSummary === null}
         <p class="text-muted text-[13px]">No readiness data yet.</p>
@@ -173,33 +197,18 @@
       {/if}
     </div>
 
-    <div class="guild-overview-card" data-testid="guild-overview-card-loot">
+    <div
+      class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"
+      data-testid="guild-overview-card-loot"
+    >
       <div class="flex items-center justify-between">
         <h3 class="section-title text-[16px]">Loot</h3>
-        <button class="guild-see-all" onclick={() => onSelectTab('loot')}>See all</button>
+        <button
+          class="text-gold border-none bg-none text-[12px] font-bold tracking-[0.06em] uppercase"
+          onclick={() => onSelectTab('loot')}>See all</button
+        >
       </div>
       <p class="text-[14px]">{lootSummary ?? 'No bosses killed yet this tier.'}</p>
     </div>
   {/if}
 </section>
-
-<style>
-  .guild-overview-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: var(--color-raised);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 16px 18px;
-  }
-  .guild-see-all {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-gold);
-    background: none;
-    border: none;
-  }
-</style>

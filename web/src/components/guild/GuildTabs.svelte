@@ -74,9 +74,19 @@
   });
 </script>
 
+<!-- Tailwind utilities only, never a scoped <style> block: this component (and every
+     other tab panel reached through it) only ever mounts client-side after the guild's
+     own async fetch resolves, so it is absent from the page's server-rendered markup --
+     this build's own Astro/Vite pipeline only inlines a Svelte component's scoped CSS for
+     classes present in that initial SSR output, silently dropping styles for anything
+     that renders later (found when this round's own capture showed unstyled, borderless
+     tab pills). Tailwind's utility stylesheet has no such gap: it is generated from every
+     class literal anywhere in the source tree, independent of what actually renders for a
+     given request, so it is the only reliable way to style a lazily-mounted region on this
+     page. Every guild/* component in this round follows the same rule. -->
 <div
   bind:this={stripEl}
-  class="guild-tab-strip flex gap-2 overflow-x-auto"
+  class="flex [scrollbar-width:none] gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden"
   role="tablist"
   aria-label="Guild sections"
   data-testid="guild-tabs"
@@ -90,52 +100,14 @@
       aria-selected={isActive}
       data-guild-tab={tab.id}
       data-testid={`guild-tab-${tab.id}`}
-      class="guild-tab-pill"
-      class:is-active={isActive}
+      class={`rounded-control box-border inline-flex h-11 shrink-0 items-center border px-3.5 text-[12px] font-bold tracking-[0.06em] whitespace-nowrap uppercase ${isActive ? 'border-gold text-gold' : 'border-line text-text'}`}
+      style={isActive ? 'background: rgba(229,185,85,.08)' : ''}
       onclick={(event) => select(tab.id, event)}
     >
       {tab.label}
-      {#if readOnlySuffix}<span class="guild-tab-readonly"> · read-only</span>{/if}
+      {#if readOnlySuffix}<span class="text-muted ml-1 text-[10px] tracking-normal normal-case">
+          · read-only</span
+        >{/if}
     </a>
   {/each}
 </div>
-
-<style>
-  .guild-tab-strip {
-    scrollbar-width: none;
-  }
-  .guild-tab-strip::-webkit-scrollbar {
-    display: none;
-  }
-  .guild-tab-pill {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    height: 44px;
-    box-sizing: border-box;
-    padding: 0 14px;
-    border-radius: var(--radius-control);
-    border: 1px solid var(--color-line);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-text);
-    white-space: nowrap;
-  }
-  .guild-tab-pill.is-active {
-    border-color: var(--color-gold);
-    background: rgba(229, 185, 85, 0.08);
-    color: var(--color-gold);
-  }
-  .guild-tab-pill:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-  .guild-tab-readonly {
-    color: var(--color-muted);
-    font-size: 10px;
-    text-transform: none;
-    letter-spacing: normal;
-  }
-</style>

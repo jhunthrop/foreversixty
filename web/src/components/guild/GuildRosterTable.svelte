@@ -104,28 +104,37 @@
     if (r === undefined || r === null) return '';
     return `Output ${r.output} · Survival ${r.survival} · Mechanics ${r.mechanics} · Utility ${r.utility} · Preparation ${r.preparation} · Activity ${r.activity}`;
   }
+
+  // Tailwind utilities only (no scoped <style>): see GuildTabs.svelte's own header comment
+  // -- this tab's rows only ever mount after the guild's async roster fetch resolves, so
+  // a scoped <style> block's CSS is silently dropped from this build's SSR-critical-CSS
+  // inlining pass.
+  const FILTER_BTN = 'border-line h-8 rounded-control border px-3 text-[12px] font-semibold text-text';
+  const FILTER_BTN_ON = 'border-gold text-gold bg-[rgba(229,185,85,.08)]';
+  const SORT_HEADER =
+    'h-9 bg-none border-none p-0 text-[11px] font-bold tracking-[0.1em] uppercase text-muted';
+  const SORT_HEADER_ACTIVE = 'text-gold';
+  const ROW = 'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5';
 </script>
 
 <section class="flex flex-col gap-4" data-testid="guild-roster-tab">
   <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
     <span class="label text-muted">Filter</span>
-    <button class="guild-filter-btn" onclick={cycleRole} data-testid="guild-roster-filter-role">
+    <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">
       Role: {filters.role === 'all' ? 'All' : filters.role}
     </button>
-    <button class="guild-filter-btn" onclick={cycleClass} data-testid="guild-roster-filter-class">
+    <button class={FILTER_BTN} onclick={cycleClass} data-testid="guild-roster-filter-class">
       Class: {filters.classFilter === 'all' ? 'All' : filters.classFilter}
     </button>
     <button
-      class="guild-filter-btn"
-      class:is-on={filters.verifiedOnly}
+      class={`${FILTER_BTN} ${filters.verifiedOnly ? FILTER_BTN_ON : ''}`}
       onclick={() => toggle('verifiedOnly')}
       data-testid="guild-roster-filter-verified"
     >
       Verified only
     </button>
     <button
-      class="guild-filter-btn"
-      class:is-on={filters.belowFloorOnly}
+      class={`${FILTER_BTN} ${filters.belowFloorOnly ? FILTER_BTN_ON : ''}`}
       onclick={() => toggle('belowFloorOnly')}
       data-testid="guild-roster-filter-floor"
     >
@@ -150,7 +159,7 @@
   {#if pending.length > 0}
     <div class="flex flex-col" id="guild-roster-unverified" data-testid="guild-roster-unverified-list">
       {#each pending as row (row.character_key)}
-        <div class="guild-roster-row">
+        <div class={ROW}>
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
           <div class="flex min-w-[150px] flex-col">
             <span
@@ -181,8 +190,7 @@
   <div class="flex flex-wrap gap-6 px-1" data-testid="guild-roster-sort-header">
     {#each SORT_COLUMNS as col (col.key)}
       <button
-        class="guild-sort-header"
-        class:is-active={sortKey === col.key}
+        class={`${SORT_HEADER} ${sortKey === col.key ? SORT_HEADER_ACTIVE : ''}`}
         onclick={() => (sortKey = col.key)}
         data-testid={`guild-roster-sort-${col.key}`}
       >
@@ -197,7 +205,7 @@
     <div class="flex flex-col" data-testid="guild-roster-rows">
       {#each ordered as row (row.character_key)}
         {@const pinned = row.character_key === myCharacterKey}
-        <div class="guild-roster-row" class:is-pinned={pinned}>
+        <div class={`${ROW} ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}>
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
           <div class="flex min-w-[150px] flex-col">
             <span
@@ -264,46 +272,3 @@
     <p class="text-[13px]" role="alert" data-testid="guild-roster-action-error">{rosterActionError}</p>
   {/if}
 </section>
-
-<style>
-  .guild-roster-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    padding: 9px 4px;
-    border-bottom: 1px solid var(--color-border-soft);
-  }
-  .guild-roster-row.is-pinned {
-    background: rgba(229, 185, 85, 0.06);
-  }
-  .guild-filter-btn {
-    height: 32px;
-    padding: 0 12px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-control);
-    background: none;
-    color: var(--color-text);
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .guild-filter-btn.is-on {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
-    background: rgba(229, 185, 85, 0.08);
-  }
-  .guild-sort-header {
-    background: none;
-    border: none;
-    height: 36px;
-    padding: 0;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-  }
-  .guild-sort-header.is-active {
-    color: var(--color-gold);
-  }
-</style>
