@@ -1,46 +1,65 @@
-"""Mock boards for the guild header art round only (design/specs/2026-10-04-guild-page.md
-§12.2). Scope: the header band alone -- faction emblem as a crest-ring identity mark, a
-faction-coloured hero fade built from the same emblem, over the existing night gradient. The
-roster/tabs/content below the band are reused unchanged from gen_guild.py so each board still
-reads as a real page, not an isolated swatch.
+"""Mock boards for the guild header art round (design/specs/2026-10-04-guild-page.md §12.2,
+round 2). Scope: the header band only -- faction emblem as a crest-ring identity mark
+(unchanged from round 1 of this header study) plus a composed faction banner or watermark as
+the band's own art, over the existing night gradient. The roster/tabs/content below the band
+are reused unchanged from gen_guild.py so each board still reads as a real page.
 
   python3 design/mocks/gen_guild_header.py
-    -> guild-header-alliance.html  (1440, officer, faction overridden to Alliance for this
-                                     art study only -- the mock roster's own names/classes
-                                     are unchanged, see each board's own caption)
-    -> guild-header-horde.html     (1440, officer, the roster's native faction)
-    -> guild-header-2000.html      (2000 wide, member, confirms the fade stays glued to the
-                                     1344px content column, not the physical viewport edge)
-    -> guild-header-phone.html     (390, member, 44px crest, fade scoped to the title row)
+    -> guild-header-horde-banner.html     (1440, officer, option A: hanging cloth banner)
+    -> guild-header-horde-watermark.html  (1440, officer, option B: large emblem watermark
+                                            + diagonal vignette)
+    -> guild-header-alliance.html         (1440, officer, option A -- the proposed pick)
+    -> guild-header-2000.html             (2000 wide, member, option A -- confirms the banner
+                                            stays anchored to the 1344px inner, not the
+                                            viewport edge)
+    -> guild-header-phone.html            (390, member, option A -- banner shrinks beside the
+                                            title, 44px ringed crest unchanged)
 
-The neutral/unknown-faction fallback is not a fifth board here: it is pixel-identical to
-today's shipped band (no crest, no fade, the plain night gradient alone) -- already on file
-as design/mocks/renders/guild-overview-officer.png, cited rather than re-rendered.
+Round-2 fix (owner review of round 1's boards): the tab strip sat flush against the viewport
+edge at 2000px while the header text above it stayed centred at 1344px -- `tab_strip()`'s own
+container carries a hardcoded `padding:0 48px`, which only happens to equal the 1344px
+column's own left inset at exactly 1440px board width ((1440-1344)/2 = 48). Fixed here by
+nesting the tab strip inside the SAME 1344px-max-width column as the eyebrow/h1/officer strip,
+on every board this file builds -- the rule is now stated once in §12.2 ("the tab strip never
+leaves the inner") so the build lane does not reproduce the live page's own correct nesting
+incorrectly in a future mock.
+
+Round-2 fix (owner review of round 1's art): the blurred-emblem "smear" is gone. Two options
+instead, both built from nothing but the two real emblem files
+(web/public/icons/hd/faction/{alliance,horde}.webp) plus CSS/SVG gradients in the faction's own
+documented colour -- no Blizzard artwork beyond the emblem pixels themselves, no new raster
+asset. See each builder's own docstring for exactly how.
+
+The neutral/unknown-faction fallback is not re-rendered here either: design/mocks/renders/
+guild-overview-officer.png (on file) remains its reference.
 """
 from mocklib import GOLD, MUTED, TEXT, BODY, emblem, nav, nav_phone, footer, page, write
 from gen_guild import (
-    GUILD, NIGHTS, RED, BLUE, UPDATED_LABEL, VIEWER_MEMBER, VIEWER_OFFICER,
+    GUILD, RED, BLUE, UPDATED_LABEL, VIEWER_MEMBER, VIEWER_OFFICER,
     ROSTER_BY_NAME, header_facts, standing_line, officer_tools, tab_strip,
     overview_raids_summary, overview_progression_summary, mock_caption,
     QUIET_LINK_STYLE,
 )
 
-# Faction colour tokens (design/DESIGN-SYSTEM.md "Faction"): text vs bar variants are both
-# documented there; the ring/fade use the bar variant (full-saturation swatch), matching
-# ClassCrest.astro's own choice of classes.json's full-saturation `color` field for its ring,
-# never the lightened text variant meant for small type on dark panels.
+# Faction colour tokens (design/DESIGN-SYSTEM.md "Faction"): the ring/banner/glow use the bar
+# variant (full-saturation swatch), matching ClassCrest.astro's own choice of classes.json's
+# full-saturation `color` field for its ring, never the lightened text variant.
 FACTION_BAR = {'alliance': '#2f6fd6', 'horde': '#c0392b'}
 FACTION_TEXT = {'alliance': BLUE, 'horde': RED}
+# Deep cloth gradient stops, option A (owner's own spec: "Horde: dark crimson to near-black;
+# Alliance: deep royal blue to near-black").
+BANNER_STOPS = {
+    'alliance': ('#1d4d8f', '#0e2342', '#080e18'),
+    'horde': ('#7a1012', '#300506', '#0d0302'),
+}
 
 
 def faction_crest(faction: str, size: int) -> str:
-    """§12.2 identity mark: ClassCrest.astro's own shipped ring recipe (circular crop, 2px
-    box-shadow ring, --raised background fallback) applied to FactionMark's emblem asset
-    instead of a class icon. A new mark, not a FactionMark.astro edit -- that component's own
-    header comment states 'no ring, no background, unlike ClassCrest' for its nine existing
-    callers (nav chip, row descriptors, the class header's faction toggle), and bolting a ring
-    onto it here would change all nine. Padding keeps the shield/disc silhouette off the ring
-    edge (the emblem's own art is not full-bleed square the way a class icon is)."""
+    """The identity mark (unchanged from round 1 of this study): ClassCrest.astro's own
+    shipped ring recipe (circular crop, 2px box-shadow ring, --raised background fallback)
+    applied to FactionMark's emblem asset instead of a class icon. A new mark, not a
+    FactionMark.astro edit -- that component's own header comment states 'no ring, no
+    background, unlike ClassCrest' for its nine existing callers."""
     ring = FACTION_BAR[faction]
     pad = round(size * 0.16)
     return (f'<img src="{emblem(faction)}" alt="" style="width:{size}px;height:{size}px;'
@@ -48,69 +67,88 @@ def faction_crest(faction: str, size: int) -> str:
             f'box-shadow:0 0 0 2px {ring};background:var(--raised);flex-shrink:0">')
 
 
-def hero_fade(faction: str, phone: bool = False) -> str:
-    """§12.2 hero fade: the same emblem asset, large, blurred and darkened as a backdrop at
-    low opacity -- the exact 'disc made from the icon itself' mechanic tenet 7 uses for
-    crests, at atmosphere scale instead of identity-mark scale (no crisp foreground layer;
-    this one is never meant to be legible, only atmosphere, same job the night gradient
-    already does). A radial mask fades it to transparent on every edge so it blends into the
-    flat band colour rather than ending in a hard circle -- 'fading to --bg' read literally.
-
-    Measured round-2 fix: the raw emblem art is not faction-pure -- the Alliance lion shield
-    samples mostly gold/tan (the lion and its rim), the Horde disc mostly near-black (sampled
-    directly from the shipped web/public/icons/hd/faction/*.webp pixels) -- so a plain blur
-    of either reads gold or a dark smudge, never recognisably blue or red. Fixed the same way
-    the design system already lightens rare/epic item text for legibility (design/DESIGN-
-    SYSTEM.md's rarity section: adjust the real colour for its use, never invent a new one):
-    the blurred layer is desaturated first, then colourised with the faction's own documented
-    bar colour (design/DESIGN-SYSTEM.md "Faction") via `mix-blend-mode:color`, so the glow's
-    *shape* is still the real emblem's own blurred silhouette (never invented art) and its
-    *hue* is the one faction colour the design system already names for this.
-
-    Desktop: anchored to the band's own 1344px content column (not the raw viewport), so it
-    stays glued to the column's right edge at 1920/2000px instead of drifting to the browser
-    edge (guild-header-2000's own job). Phone: scoped to the identity row's own box only
-    (§12.2's 'fade behind the title only'), far smaller, never reaching the facts/standing/
-    tab regions below it."""
-    if faction not in FACTION_BAR:
-        return ''
-    src = emblem(faction)
-    bar = FACTION_BAR[faction]
-    # Round-2 fix (this round's own mock review): an earlier draft sized this box 480px
-    # square while the band's own real content height is ~290px, so the local clip box
-    # (below) cut the glow off in a hard horizontal line top and bottom instead of letting
-    # its own radial mask fade out first -- a glow reading as a flat-edged rectangle, not
-    # atmosphere. Fixed: an explicitly wide-short box (ellipse, not circle) sized to fit
-    # inside the band's own real content height with its soft edge intact.
-    width = 170 if phone else 460
-    height = 150 if phone else 300
-    top = -14 if phone else -10
-    right = -30 if phone else -40
-    blur = 24 if phone else 44
-    opacity = 0.6 if phone else 0.68
-    # Round-2 fix, second pass: two overlapping elements with filter + mix-blend-mode +
-    # mask-image each is fragile across engines (isolation/stacking-context edge cases) and
-    # rendered as a near-solid rectangle with almost no visible falloff on this board's own
-    # first Playwright capture. One element instead: two CSS background-image layers (the
-    # flat faction colour on top, the emblem photo underneath) combined with
-    # `background-blend-mode:color` inside a SINGLE box, so `filter:blur()` blurs the
-    # already-colourised, already-composited result as one unit, and one `mask-image` on
-    # that same box does the fade -- no cross-element blending, far more reliable.
-    mask = 'radial-gradient(ellipse at 68% 42%,#000 0%,#000 22%,transparent 72%)'
-    return (
-        f'<div style="position:absolute;top:{top}px;right:{right}px;width:{width}px;height:{height}px;'
-        f'pointer-events:none;overflow:hidden;mask-image:{mask};-webkit-mask-image:{mask}" aria-hidden="true">'
-        f'<div style="position:absolute;inset:-20%;background-image:linear-gradient({bar},{bar}),url({src});'
-        f'background-blend-mode:color;background-size:cover,cover;background-position:center;'
-        f'filter:blur({blur}px) brightness(.68) saturate(1.3);opacity:{opacity}"></div>'
-        f'</div>'
+def art_banner(faction: str, phone: bool = False) -> str:
+    """Option A: a composed hanging banner, drawn by us, never Blizzard art beyond the real
+    emblem's own pixels. Built from three layers:
+      1. A soft, blurred faction-colour ambient glow behind the cloth (a plain CSS radial-
+         gradient in the faction's bar colour -- no image involved at all).
+      2. The cloth itself: one inline SVG <path>, a pointed-bottom banner silhouette, filled
+         with a 3-stop linear gradient (deep faction colour -> near-black, the owner's own
+         stops) and outlined with a 2px gold stroke (`--gold`, `#e5b955`) -- SVG stroke
+         follows the path's own diagonal edges correctly, which a CSS border on a
+         clip-path'd div cannot do. `filter:drop-shadow(...)` on the SVG casts a shadow that
+         follows the cloth's own silhouette, not a rectangle, so it reads as hanging in
+         front of the band's existing night gradient.
+      3. The real HD emblem, crisp, centred on the cloth -- the one piece of real game art in
+         this layer, large (160px desktop / 70px phone) and unblurred, exactly the owner's
+         own ask ("the HD emblem crisp and large").
+    The cloth's own bottom 25% fades to transparent (a mask-image on the SVG) so its point
+    dissolves into the band's base rather than hard-colliding with the officer strip/tab
+    strip beneath it -- verified clear on every board this file renders.
+    """
+    top_stop, mid_stop, bottom_stop = BANNER_STOPS[faction]
+    gid = f'bannerFill-{faction}-{"p" if phone else "d"}'
+    w, h = (64, 100) if phone else (150, 230)
+    point = h  # pointed-bottom apex sits at the shape's own full height
+    shoulder = round(h * 0.82)
+    path = f'M0,0 L{w},0 L{w},{shoulder} L{round(w/2)},{point} L0,{shoulder} Z'
+    emblem_size = 70 if phone else 160
+    emblem_top = round(h * 0.16)
+    glow_size = round(w * 3.6)
+    mask = 'linear-gradient(180deg,#000 0%,#000 70%,transparent 100%)'
+    svg = (
+        f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" '
+        f'style="position:absolute;top:0;left:0;filter:drop-shadow(0 10px 18px rgba(0,0,0,.55));'
+        f'-webkit-mask-image:{mask};mask-image:{mask}">'
+        f'<defs><linearGradient id="{gid}" x1="0" y1="0" x2="0" y2="1">'
+        f'<stop offset="0%" stop-color="{top_stop}"/>'
+        f'<stop offset="55%" stop-color="{mid_stop}"/>'
+        f'<stop offset="100%" stop-color="{bottom_stop}"/></linearGradient></defs>'
+        f'<path d="{path}" fill="url(#{gid})" stroke="{GOLD}" stroke-width="2" stroke-linejoin="round"/>'
+        f'</svg>'
     )
+    glow = (f'<div style="position:absolute;top:{-round(glow_size*0.22)}px;left:{round(w/2-glow_size/2)}px;'
+            f'width:{glow_size}px;height:{glow_size}px;border-radius:50%;'
+            f'background:radial-gradient(circle,{FACTION_BAR[faction]}3d 0%,transparent 68%);'
+            f'filter:blur({14 if phone else 30}px);pointer-events:none"></div>')
+    emblem_img = (f'<img src="{emblem(faction)}" alt="" style="position:absolute;top:{emblem_top}px;'
+                  f'left:{round(w/2 - emblem_size/2)}px;width:{emblem_size}px;height:{emblem_size}px;'
+                  f'object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))">')
+    return (f'<div style="position:absolute;top:0;right:{18 if phone else 70}px;width:{w}px;height:{h}px;'
+            f'pointer-events:none" aria-hidden="true">{glow}{svg}{emblem_img}</div>')
 
 
-def header_hero(role_slot: str, tabs_html: str, faction: str, phone: bool = False) -> str:
+def art_watermark(faction: str, phone: bool = False) -> str:
+    """Option B: a crisp large emblem watermark, no blur, over a sharp diagonal faction-
+    colour vignette -- the identity mark beside the h1 is unchanged (still the 64px/44px
+    ringed FactionCrest, rendered separately by the caller). Two layers, both built from
+    nothing but the real emblem and the faction's own documented colour:
+      1. The vignette: a single `linear-gradient(135deg, transparent 55%, <bar-colour-at-low-
+         alpha> 100%)` wash across the band's own right portion -- a sharp diagonal line of
+         colour, never a soft blurred cloud.
+      2. The emblem itself at ~320px (desktop), 10-14% opacity, `object-fit:contain`, no
+         filter at all -- crisp edges, positioned so its own right edge is cropped by the
+         band's own right boundary (`right:-90px`, inside the overflow:hidden band), the
+         owner's own "cropped by the band's right edge."
+    """
+    bar = FACTION_BAR[faction]
+    size = 170 if phone else 320
+    opacity = 0.14 if phone else 0.12
+    vignette = (f'<div style="position:absolute;inset:0;pointer-events:none;'
+                f'background:linear-gradient(135deg,transparent 52%,color-mix(in srgb,{bar} 38%,transparent) 100%)">'
+                f'</div>')
+    wm = (f'<img src="{emblem(faction)}" alt="" style="position:absolute;top:{-round(size*0.12)}px;'
+          f'right:{-round(size*0.28)}px;width:{size}px;height:{size}px;object-fit:contain;'
+          f'opacity:{opacity};pointer-events:none" aria-hidden="true">')
+    return vignette + wm
+
+
+def header_hero(role_slot: str, tabs_html: str, faction: str, phone: bool = False, style: str = 'banner') -> str:
     """The shipped band (eyebrow/h1/Updated/facts/role line/tab strip, Guild.svelte's own
-    order, unchanged) plus the identity row's crest and the band's own hero fade -- the two
-    new elements this round adds, nothing else moved (§12.2's own instruction)."""
+    order, unchanged) plus the identity row's crest and the band's own art layer. Round-2 fix:
+    the tab strip is now a child of the SAME max-width:1344px column as the header text --
+    previously a sibling of that column, which only happened to align at exactly 1440px board
+    width (see this file's own module docstring)."""
     pad = '22px 18px 0 18px' if phone else '28px 48px 0 48px'
     maxw = '' if phone else 'width:100%;max-width:1344px;margin:0 auto;'
     crest_size = 44 if phone else 64
@@ -120,22 +158,23 @@ def header_hero(role_slot: str, tabs_html: str, faction: str, phone: bool = Fals
     row = (f'<div style="display:flex;align-items:center;gap:{gap}px;position:relative;z-index:1">'
            f'{crest_html}{h1}</div>')
 
+    art_fn = art_banner if style == 'banner' else art_watermark
+
     if phone:
-        # Fade clipped to the identity row's own box only -- never the facts/standing/tabs
-        # below it, which this `header_hero` call also renders but outside this wrapper.
+        # Art layer clipped to the identity row's own box only -- never the facts/standing/
+        # tabs below it (owner's own "fade behind the title only" instruction, round 1).
         identity = (f'<div style="position:relative;overflow:hidden;padding:4px 0 2px 0">'
-                    f'{hero_fade(faction, phone=True)}{row}</div>')
-        outer_fade = ''
+                    f'{art_fn(faction, phone=True) if faction in FACTION_BAR else ""}{row}</div>')
+        band_art = ''
     else:
         identity = row
-        outer_fade = hero_fade(faction, phone=False)
+        band_art = art_fn(faction, phone=False) if faction in FACTION_BAR else ''
 
-    # The fade's own positioning context is the 1344px content column, not the full-bleed
-    # outer wrapper -- so `right:` tracks the column's own right edge at any viewport width
-    # (guild-header-2000's own job) instead of drifting toward the physical browser edge.
+    tabs_row = f'<div style="margin-top:18px;position:relative;z-index:1">{tabs_html}</div>'
+
     content = f'''<div style="position:relative;overflow:hidden">
 <div style="position:relative;{maxw}">
-{outer_fade}
+{band_art}
 <div style="position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;padding:{pad}">
 <span class="label" style="color:{GOLD};display:flex;align-items:center;gap:10px"><i style="width:28px;height:1px;background:{GOLD};display:inline-block"></i>Guild</span>
 {identity}
@@ -143,44 +182,37 @@ def header_hero(role_slot: str, tabs_html: str, faction: str, phone: bool = Fals
 <p style="margin:0;font-size:14px;color:{BODY}">{header_facts()}</p>
 {role_slot}
 </div>
+{tabs_row}
 </div>
 </div>'''
-    return content + f'<div style="margin-top:18px">{tabs_html}</div>'
+    return content
 
 
 FACTION_CAPTION = {
-    'alliance': ('Header art study &mdash; faction overridden to Alliance for this round only. '
-                 'The mock roster&rsquo;s own names and classes are unchanged (round 2&rsquo;s '
-                 'roster is written Horde-flavoured); a real Alliance guild&rsquo;s page reads '
-                 'identically, with its own roster.'),
-    'horde': ('Header art study &mdash; the mock roster&rsquo;s native faction (Horde). '
-              'Body content below the band is reused unchanged from the round-2 boards.'),
+    'alliance': ('Header art study, option A &mdash; faction overridden to Alliance for this '
+                 'round only. The mock roster&rsquo;s own names and classes are unchanged '
+                 '(round 2&rsquo;s roster is written Horde-flavoured).'),
+    'horde-banner': 'Header art study, option A: the hanging banner.',
+    'horde-watermark': 'Header art study, option B: the emblem watermark.',
 }
 
 
-def build_header_board(name: str, faction: str, role: str, width_tag: str = '', phone: bool = False) -> str:
+def build_header_board(name: str, faction: str, role: str, style: str, width_tag: str = '', phone: bool = False) -> str:
     officer = role == 'officer'
     viewer_name = VIEWER_OFFICER if officer else VIEWER_MEMBER
-    viewer_row = ROSTER_BY_NAME[viewer_name]
     role_slot = standing_line(viewer_name, with_fails=(role == 'member'))
     if officer:
         role_slot += officer_tools()
     tabs_html = tab_strip('Overview', role, phone=phone)
-    band = header_hero(role_slot, tabs_html, faction, phone=phone)
+    band = header_hero(role_slot, tabs_html, faction, phone=phone, style=style)
 
-    persona = {'class': 'warrior' if officer else 'hunter', 'faction': faction if faction in FACTION_BAR else 'horde',
-               'battletag': viewer_name}
-    # Bug found on this round's own first phone capture: the desktop `nav()` (seven
-    # unwrapped links + chip + Discord button in one flex row) was used here regardless of
-    # `phone`, forcing a ~1270px-wide nav row inside a 390px viewport and pushing the whole
-    # page's scrollWidth out to 986px -- the screenshot came back 986x1279 instead of
-    # 390-wide. `nav_phone()` is gen_guild.py's own existing phone nav (logo + crest + menu
-    # glyph only); using it here is the fix, matching gen_guild.py's own `nav_fn` switch.
+    persona = {'class': 'warrior' if officer else 'hunter',
+               'faction': faction if faction in FACTION_BAR else 'horde', 'battletag': viewer_name}
     nav_html = nav_phone(True, persona) if phone else nav('', True, persona)
 
     body_pad = '18px' if phone else '48px'
     body = overview_raids_summary() + overview_progression_summary()
-    caption = FACTION_CAPTION.get(faction, '')
+    caption = FACTION_CAPTION.get(name.replace('guild-header-', ''), FACTION_CAPTION.get(faction, ''))
     content = (f'<div style="display:flex;flex-direction:column;gap:22px;padding:24px {body_pad} 32px {body_pad};'
                + ('' if phone else 'width:100%;max-width:1344px;margin:0 auto;') + '">'
                + body + mock_caption()
@@ -193,7 +225,8 @@ def build_header_board(name: str, faction: str, role: str, width_tag: str = '', 
     return write(f'{name}.html', page(out_html, width)).as_posix()
 
 
-print(build_header_board('guild-header-alliance', 'alliance', 'officer'))
-print(build_header_board('guild-header-horde', 'horde', 'officer'))
-print(build_header_board('guild-header-2000', 'horde', 'member', width_tag='2000'))
-print(build_header_board('guild-header-phone', 'horde', 'member', phone=True))
+print(build_header_board('guild-header-horde-banner', 'horde', 'officer', style='banner'))
+print(build_header_board('guild-header-horde-watermark', 'horde', 'officer', style='watermark'))
+print(build_header_board('guild-header-alliance', 'alliance', 'officer', style='banner'))
+print(build_header_board('guild-header-2000', 'horde', 'member', style='banner', width_tag='2000'))
+print(build_header_board('guild-header-phone', 'horde', 'member', style='banner', phone=True))
