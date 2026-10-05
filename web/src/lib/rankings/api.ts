@@ -150,7 +150,11 @@ export interface GuildPage {
   // addressed by numeric id, and this public read is the only way a browser learns which
   // guild a region/ruleset/name resolves to. Not in the spec's own GuildPage row — flagged
   // for the coordinator to route to api/internal/rankings/guilds.go.
-  guild: { id: number; name: string; region: string; ruleset: string };
+  // `faction` (control-centre contract addition, design/specs/2026-10-04-guild-page.md
+  // §12.2.B): optional and `null` are both "no faction" -- see `GuildSummary.faction`'s own
+  // comment (lib/guild/api.ts) for the full ruling, restated here since this public shape
+  // carries its own inline `guild` object rather than importing that type.
+  guild: { id: number; name: string; region: string; ruleset: string; faction?: 'alliance' | 'horde' | null };
   progression: GuildProgressionRow[];
   roster_best: GuildRosterBest[];
   reports: { id: string; title: string; zone: string; created_at: string }[];

@@ -29,6 +29,13 @@ export interface GuildSummary {
   region: string;
   ruleset: string;
   name: string;
+  /** `guilds.faction` (ruling 12.2.B, design/specs/2026-10-04-guild-page.md §12.2): a
+   *  stored column, the majority race among the roster's own FS1-decoded race, refreshed
+   *  on roster/export change -- never computed live per request. Optional and `null` are
+   *  both "no faction": a pre-contract response that carries no field at all, and a tie or
+   *  empty roster that resolves to none, read identically -- neutral band, no emblem, no
+   *  watermark. */
+  faction?: 'alliance' | 'horde' | null;
 }
 
 export type ClaimState = 'unclaimed' | 'pending' | 'claimed' | 'contested';

@@ -105,6 +105,123 @@ async function stubDepthEndpoints(page: Page): Promise<void> {
   await page.route(`**/v1/guilds/${GUILD_ID}/loot*`, (route) => route.fulfill(envelope(buildMockLoot())));
 }
 
+/** Same as `stubCore`, except the public/home endpoints carry the given `faction` --
+ *  `stubCore`'s own fixture is always Horde (`GUILD.faction`'s default); these three header-
+ *  art tests (spec §12.2) need to override it to Alliance and to null/neutral as well. */
+async function stubCoreWithFaction(
+  page: Page,
+  viewerName: string | null,
+  faction: 'alliance' | 'horde' | null,
+): Promise<void> {
+  await page.route(`**/v1/guilds/${REGION}/${RULESET}/${SLUG}`, (route) =>
+    route.fulfill(envelope(buildMockGuildPage(faction))),
+  );
+  await page.route('**/v1/me', (route) =>
+    viewerName === null
+      ? route.fulfill({
+          status: 401,
+          contentType: 'application/json',
+          body: '{"ok":false,"data":null,"error":null,"request_id":"r"}',
+        })
+      : route.fulfill(envelope(meFixture(viewerName))),
+  );
+  await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+    route.fulfill(envelope(buildMockHome(viewerName, faction))),
+  );
+}
+
+// Header art round (design/specs/2026-10-04-guild-page.md §12.2, option B, the owner's
+// pick): the flat faction logo is the one emblem in the header, ringed beside the h1
+// (FactionCrest) and repeated as the band's own cropped watermark over a diagonal faction-
+// colour wash. A null/unknown faction renders neither layer -- a neutral band, pixel-
+// identical to the page before this round.
+test.describe('header art: faction crest, watermark and neutral band (spec §12.2)', () => {
+  test('a Horde guild shows the ringed flat Horde logo and its own watermark', async ({ page }) => {
+    await stubCoreWithFaction(page, VIEWER_MEMBER, 'horde');
+    await page.goto(GUILD_URL);
+    const crest = page.getByTestId('guild-faction-crest');
+    await expect(crest).toBeVisible();
+    await expect(crest).toHaveAttribute('src', /horde-logo-512\.webp$/);
+    // The browser re-serialises the style attribute, normalising the authored hex colour to
+    // rgb() -- #c0392b is rgb(192, 57, 43).
+    await expect(crest).toHaveAttribute('style', /box-shadow: rgb\(192, 57, 43\) 0px 0px 0px 2px/);
+    // The testid is on the clipping wrapper (bounding-box containment, below); the <img>
+    // with the real src is its only child.
+    await expect(page.getByTestId('guild-header-watermark').locator('img')).toHaveAttribute(
+      'src',
+      /horde-logo-512\.webp$/,
+    );
+    await expect(page.getByTestId('guild-header-vignette')).toBeVisible();
+  });
+
+  test('an Alliance guild shows the Alliance logo and Alliance bar colour, never Horde’s', async ({
+    page,
+  }) => {
+    await stubCoreWithFaction(page, VIEWER_MEMBER, 'alliance');
+    await page.goto(GUILD_URL);
+    const crest = page.getByTestId('guild-faction-crest');
+    await expect(crest).toHaveAttribute('src', /alliance-logo-512\.webp$/);
+    await expect(crest).toHaveAttribute('style', /box-shadow: rgb\(47, 111, 214\) 0px 0px 0px 2px/);
+    await expect(page.getByTestId('guild-header-watermark').locator('img')).toHaveAttribute(
+      'src',
+      /alliance-logo-512\.webp$/,
+    );
+    // The browser re-serialises the style attribute, normalising the authored hex colour to
+    // rgb() -- #2f6fd6 is rgb(47, 111, 214) -- so this matches that, not the source string.
+    await expect(page.getByTestId('guild-header-vignette')).toHaveAttribute(
+      'style',
+      /color-mix\(in srgb, rgb\(47, 111, 214\)/,
+    );
+  });
+
+  test('a null-faction guild renders no crest, no vignette, no watermark -- a neutral band', async ({
+    page,
+  }) => {
+    await stubCoreWithFaction(page, VIEWER_MEMBER, null);
+    await page.goto(GUILD_URL);
+    await expect(page.getByTestId('guild')).toBeVisible();
+    await expect(page.getByTestId('guild-faction-crest')).toHaveCount(0);
+    await expect(page.getByTestId('guild-header-vignette')).toHaveCount(0);
+    await expect(page.getByTestId('guild-header-watermark')).toHaveCount(0);
+  });
+
+  test('at 390px the watermark never overlaps the guild name', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await stubCoreWithFaction(page, VIEWER_MEMBER, 'horde');
+    await page.goto(GUILD_URL);
+    const h1 = page.locator('h1', { hasText: 'Olympus XXVII' });
+    const h1Box = await h1.boundingBox();
+    const watermarkBox = await page.getByTestId('guild-header-watermark').boundingBox();
+    expect(h1Box).not.toBeNull();
+    expect(watermarkBox).not.toBeNull();
+    if (h1Box !== null && watermarkBox !== null) {
+      const overlapsHorizontally =
+        h1Box.x < watermarkBox.x + watermarkBox.width && h1Box.x + h1Box.width > watermarkBox.x;
+      const overlapsVertically =
+        h1Box.y < watermarkBox.y + watermarkBox.height && h1Box.y + h1Box.height > watermarkBox.y;
+      expect(overlapsHorizontally && overlapsVertically).toBe(false);
+    }
+  });
+
+  // Owner note on the boards: the wash/watermark must clip at the band's own bottom edge,
+  // never spill into the body below it (the band is a positioned, `overflow:hidden`
+  // container; see Guild.svelte's own comment on `guild-header-band`).
+  for (const width of [1440, 390]) {
+    test(`the watermark never extends past the band's own bottom edge at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await stubCoreWithFaction(page, VIEWER_MEMBER, 'alliance');
+      await page.goto(GUILD_URL);
+      const bandBox = await page.getByTestId('guild-header-band').boundingBox();
+      const watermarkBox = await page.getByTestId('guild-header-watermark').boundingBox();
+      expect(bandBox).not.toBeNull();
+      expect(watermarkBox).not.toBeNull();
+      if (bandBox !== null && watermarkBox !== null) {
+        expect(watermarkBox.y + watermarkBox.height).toBeLessThanOrEqual(bandBox.y + bandBox.height + 1);
+      }
+    });
+  }
+});
+
 test.describe('tab strip renders and hash-routes', () => {
   test('officer sees all seven tabs; selecting one updates the hash and shows that panel', async ({
     page,

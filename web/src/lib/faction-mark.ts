@@ -14,3 +14,23 @@ export type Faction = 'alliance' | 'horde';
 export function factionMarkSrc(faction: Faction): string {
   return `/icons/hd/faction/${faction}.webp`;
 }
+
+// Guild header art round (design/specs/2026-10-04-guild-page.md §12.2, owner's final build
+// decision): the flat iconic faction logo (Alliance lion-in-shield, Horde tusked "H") --
+// FactionMark.astro's own second provenance note -- is the ONE emblem the guild header
+// shows, both in the identity-row ring (FactionCrest.svelte) and the band's watermark.
+// `factionMarkSrc`'s 72px unit-frame shield/disc above is untouched everywhere else on the
+// site (nav chip, row descriptors, ClassHeader's faction toggle) -- this is a second,
+// visually distinct asset, not a larger export of the first.
+export function factionLogoSrc(faction: Faction): string {
+  return `/icons/hd/faction/${faction}-logo-512.webp`;
+}
+
+// design/DESIGN-SYSTEM.md "Faction," the bar variant (full-saturation swatch, the same
+// choice ClassCrest.astro's own ring makes from classes.json's full-saturation `color`
+// field) -- the one place this swatch is defined for a TypeScript caller; gen_guild_header.py's
+// FACTION_BAR dict is this same pair, kept in sync by hand since the mock is Python.
+export const FACTION_BAR_COLOR: Record<Faction, string> = {
+  alliance: '#2f6fd6',
+  horde: '#c0392b',
+};
