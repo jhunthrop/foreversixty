@@ -15,6 +15,11 @@ are reused unchanged from gen_guild.py so each board still reads as a real page.
                                              right edge, not the viewport edge)
     -> guild-header-phone.html             (390, member, option B -- watermark shrinks to
                                              180px/14% opacity, 44px ringed crest unchanged)
+    -> guild-header-horde-logo-ring.html   (1440, officer, option B -- same as
+                                             guild-header-horde-watermark, except the identity
+                                             row's ring also carries the flat logo, for an
+                                             owner comparison against the unchanged unit-frame
+                                             ring everywhere else)
 
 Asset-lane follow-up (2026-10-04, FactionMark.astro's header comment has the full provenance):
 the watermark (option B only -- art_watermark()/emblem_512() below) now reads
@@ -24,6 +29,16 @@ emblem up to 320px where the 72px file's own resample blur became visible. Falls
 72px file if the -512 asset is ever missing. The banner (option A) and the identity-row crest
 ring are unchanged, still the shipped 72px file -- neither renders the emblem large enough for
 the difference to matter.
+
+Second asset-lane follow-up (2026-10-04, same day, FactionMark.astro's second provenance note):
+the owner reviewed third-party reference PNGs and wants the flat iconic faction logo (Alliance
+lion-in-shield, Horde tusked "H"), not the unit-frame shield/disc above -- a different Blizzard
+texture (interface/timer/alliance-logo.blp / horde-logo.blp), not a different crop of the same
+one. The watermark now reads emblem_logo_512() -- web/public/icons/hd/faction/<faction>-logo-
+512.webp -- superseding emblem_512() as the watermark's own source everywhere. The identity-row
+ring keeps the unit-frame emblem (emblem(), the shipped FactionMark.astro asset) on every board
+except guild-header-horde-logo-ring, added here so the owner can see the flat logo in the ring
+too before deciding where it belongs.
 
 Round-2 fix (owner review of round 1's boards): the tab strip sat flush against the viewport
 edge at 2000px while the header text above it stayed centred at 1344px -- `tab_strip()`'s own
@@ -61,10 +76,24 @@ FACTION_TEXT = {'alliance': BLUE, 'horde': RED}
 def emblem_512(faction: str) -> str:
     """The higher-resolution emblem (FactionMark.astro's header comment, 2026-10-04 provenance
     note: the same 64px UI-PVP-Alliance/Horde client texture, Real-ESRGAN upscaled to 512px,
-    never redrawn). Used only by the watermark art layer below, which blows the mark up large
-    enough that the shipped 72px file shows visible resample blur -- falls back to the 72px
-    file if the -512 asset is ever missing so this generator never hard-fails."""
+    never redrawn). Superseded as the watermark's own source by emblem_logo_512() below (owner
+    review: wanted the flat iconic logo, not this unit-frame shield/disc) -- kept here as the
+    still-current source for the identity-row ring. Falls back to the 72px file if the -512
+    asset is ever missing so this generator never hard-fails."""
     path = WEB / 'public/icons/hd/faction' / f'{faction}-512.webp'
+    return data_uri(path) if path.exists() else emblem(faction)
+
+
+def emblem_logo_512(faction: str) -> str:
+    """The flat iconic faction logo (FactionMark.astro's header comment, second 2026-10-04
+    provenance note): interface/timer/alliance-logo.blp / horde-logo.blp, the battleground
+    countdown logos, native 256x256, Real-ESRGAN upscaled to 512px -- a different Blizzard
+    texture than emblem()/emblem_512() above, not a different treatment of the same one. This
+    is the look the owner picked after reviewing third-party reference PNGs (design/mocks/
+    data/faction-logos/, reference only). Used by the watermark art layer, and by the ring on
+    guild-header-horde-logo-ring only. Falls back to the unit-frame emblem if the -logo-512
+    asset is ever missing so this generator never hard-fails."""
+    path = WEB / 'public/icons/hd/faction' / f'{faction}-logo-512.webp'
     return data_uri(path) if path.exists() else emblem(faction)
 # Deep cloth gradient stops, option A (owner's own spec: "Horde: dark crimson to near-black;
 # Alliance: deep royal blue to near-black").
@@ -74,15 +103,18 @@ BANNER_STOPS = {
 }
 
 
-def faction_crest(faction: str, size: int) -> str:
+def faction_crest(faction: str, size: int, use_logo: bool = False) -> str:
     """The identity mark (unchanged from round 1 of this study): ClassCrest.astro's own
     shipped ring recipe (circular crop, 2px box-shadow ring, --raised background fallback)
     applied to FactionMark's emblem asset instead of a class icon. A new mark, not a
     FactionMark.astro edit -- that component's own header comment states 'no ring, no
-    background, unlike ClassCrest' for its nine existing callers."""
+    background, unlike ClassCrest' for its nine existing callers. `use_logo` (one board only,
+    guild-header-horde-logo-ring) swaps in emblem_logo_512() -- the flat iconic logo -- so the
+    owner can compare it inside the ring too, not just in the watermark."""
     ring = FACTION_BAR[faction]
     pad = round(size * 0.16)
-    return (f'<img src="{emblem(faction)}" alt="" style="width:{size}px;height:{size}px;'
+    src = emblem_logo_512(faction) if use_logo else emblem(faction)
+    return (f'<img src="{src}" alt="" style="width:{size}px;height:{size}px;'
             f'border-radius:999px;object-fit:contain;padding:{pad}px;box-sizing:border-box;'
             f'box-shadow:0 0 0 2px {ring};background:var(--raised);flex-shrink:0">')
 
@@ -141,15 +173,17 @@ def art_banner(faction: str, phone: bool = False) -> str:
 def art_watermark(faction: str, phone: bool = False) -> str:
     """Option B: a crisp large emblem watermark, no blur, over a sharp diagonal faction-
     colour vignette -- the identity mark beside the h1 is unchanged (still the 64px/44px
-    ringed FactionCrest, rendered separately by the caller). Two layers, both built from
-    nothing but the real emblem and the faction's own documented colour:
+    ringed FactionCrest, rendered separately by the caller, still the unit-frame emblem unless
+    `use_logo` is set). Two layers, both built from nothing but the real emblem and the
+    faction's own documented colour:
       1. The vignette: a single `linear-gradient(135deg, transparent 55%, <bar-colour-at-low-
          alpha> 100%)` wash across the band's own right portion -- a sharp diagonal line of
          colour, never a soft blurred cloud.
       2. The emblem itself at ~320px (desktop), 10-14% opacity, `object-fit:contain`, no
          filter at all -- crisp edges, positioned so its own right edge is cropped by the
          band's own right boundary (`right:-90px`, inside the overflow:hidden band), the
-         owner's own "cropped by the band's right edge."
+         owner's own "cropped by the band's right edge." Reads emblem_logo_512() -- the flat
+         iconic logo, the owner's picked look -- not emblem_512()'s unit-frame upscale.
     """
     bar = FACTION_BAR[faction]
     size = 170 if phone else 320
@@ -157,22 +191,25 @@ def art_watermark(faction: str, phone: bool = False) -> str:
     vignette = (f'<div style="position:absolute;inset:0;pointer-events:none;'
                 f'background:linear-gradient(135deg,transparent 52%,color-mix(in srgb,{bar} 38%,transparent) 100%)">'
                 f'</div>')
-    wm = (f'<img src="{emblem_512(faction)}" alt="" style="position:absolute;top:{-round(size*0.12)}px;'
+    wm = (f'<img src="{emblem_logo_512(faction)}" alt="" style="position:absolute;top:{-round(size*0.12)}px;'
           f'right:{-round(size*0.28)}px;width:{size}px;height:{size}px;object-fit:contain;'
           f'opacity:{opacity};pointer-events:none" aria-hidden="true">')
     return vignette + wm
 
 
-def header_hero(role_slot: str, tabs_html: str, faction: str, phone: bool = False, style: str = 'banner') -> str:
+def header_hero(role_slot: str, tabs_html: str, faction: str, phone: bool = False, style: str = 'banner',
+                 ring_logo: bool = False) -> str:
     """The shipped band (eyebrow/h1/Updated/facts/role line/tab strip, Guild.svelte's own
     order, unchanged) plus the identity row's crest and the band's own art layer. Round-2 fix:
     the tab strip is now a child of the SAME max-width:1344px column as the header text --
     previously a sibling of that column, which only happened to align at exactly 1440px board
-    width (see this file's own module docstring)."""
+    width (see this file's own module docstring). `ring_logo` is guild-header-horde-logo-ring's
+    own flag -- the ring, too, reads the flat logo instead of the unit-frame emblem, so the
+    owner can compare it against the watermark in the same shot."""
     pad = '22px 18px 0 18px' if phone else '28px 48px 0 48px'
     maxw = '' if phone else 'width:100%;max-width:1344px;margin:0 auto;'
     crest_size = 44 if phone else 64
-    crest_html = faction_crest(faction, crest_size) if faction in FACTION_BAR else ''
+    crest_html = faction_crest(faction, crest_size, use_logo=ring_logo) if faction in FACTION_BAR else ''
     gap = 16 if phone else 18
     h1 = f'<h1 class="display" style="margin:0;font-size:22px;color:{TEXT}">{GUILD["name"]}</h1>'
     row = (f'<div style="display:flex;align-items:center;gap:{gap}px;position:relative;z-index:1">'
@@ -216,19 +253,25 @@ FACTION_CAPTION = {
     'horde-watermark': 'Header art study, option B: the emblem watermark.',
     'alliance-watermark': ('Header art study, option B: the emblem watermark, faction '
                             'overridden to Alliance for this round only, now sourced from the '
-                            '512px upscale (FactionMark.astro’s header comment) instead of '
-                            'the shipped 72px mark.'),
+                            'flat iconic logo upscale (FactionMark.astro’s header comment) '
+                            'instead of the shipped unit-frame mark.'),
+    'horde-logo-ring': ('Header art study, option B, with the flat iconic faction logo '
+                         '(interface/timer/horde-logo.blp upscaled, FactionMark.astro’s header '
+                         'comment) in the identity-row ring too, not just the watermark &mdash; '
+                         'for comparison only against guild-header-horde-watermark’s '
+                         'unchanged unit-frame ring.'),
 }
 
 
-def build_header_board(name: str, faction: str, role: str, style: str, width_tag: str = '', phone: bool = False) -> str:
+def build_header_board(name: str, faction: str, role: str, style: str, width_tag: str = '', phone: bool = False,
+                        ring_logo: bool = False) -> str:
     officer = role == 'officer'
     viewer_name = VIEWER_OFFICER if officer else VIEWER_MEMBER
     role_slot = standing_line(viewer_name, with_fails=(role == 'member'))
     if officer:
         role_slot += officer_tools()
     tabs_html = tab_strip('Overview', role, phone=phone)
-    band = header_hero(role_slot, tabs_html, faction, phone=phone, style=style)
+    band = header_hero(role_slot, tabs_html, faction, phone=phone, style=style, ring_logo=ring_logo)
 
     persona = {'class': 'warrior' if officer else 'hunter',
                'faction': faction if faction in FACTION_BAR else 'horde', 'battletag': viewer_name}
@@ -257,3 +300,6 @@ print(build_header_board('guild-header-alliance-watermark', 'alliance', 'officer
 # guild-header-horde-watermark/guild-header-alliance-watermark, both already option B.
 print(build_header_board('guild-header-2000', 'horde', 'member', style='watermark', width_tag='2000'))
 print(build_header_board('guild-header-phone', 'horde', 'member', style='watermark', phone=True))
+# Logo-vs-unit-frame comparison board (owner follow-up, 2026-10-04): identical to
+# guild-header-horde-watermark except the identity-row ring also carries the flat logo.
+print(build_header_board('guild-header-horde-logo-ring', 'horde', 'officer', style='watermark', ring_logo=True))

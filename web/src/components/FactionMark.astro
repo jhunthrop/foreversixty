@@ -25,6 +25,21 @@
 // design/mocks/renders/faction-emblem-check.png confirms shape/colour/proportion match the
 // shipped 72px mark exactly. Not yet wired into factionMarkSrc()/this component -- consumed
 // so far only by design/mocks/gen_guild_header.py's header watermark.
+//
+// Provenance, <faction>-logo-512.webp (2026-10-04): a second, deliberately different emblem --
+// the owner asked for the flat iconic faction logo (Alliance lion-in-shield, Horde tusked "H"),
+// not this component's unit-frame shield/disc, after reviewing third-party reference PNGs
+// (design/mocks/data/faction-logos/, reference only, never shipped). The "ruled out" candidate
+// two paragraphs up turns out to be exactly this look: interface/timer/alliance-logo.blp
+// (FileDataID 516949) and horde-logo.blp (FileDataID 516953), wago.tools' CASC mirror (same
+// wow_beta 6.0.1.18379), BLP2/DXT5, native 256x256 -- these are the battleground countdown
+// logos, the game's own flat faction emblem, confirmed by eye against the owner's reference
+// images. Same pipeline as above one step up the chain: 256x256 decoded natively, one
+// Real-ESRGAN x4plus pass to 1024x1024 (alpha in lockstep), Lanczos-resampled down to the
+// published 512x512 (plain resize, no further generative step), WebP lossy quality 90, alpha
+// kept, ~34-40KB apiece. Also not wired into this component -- a third, visually distinct mark
+// from both the 72px shield/disc and the <faction>-512.webp upscale of it; all three may end up
+// serving different surfaces, never interchanged silently.
 import { factionMarkSrc, type Faction } from '../lib/faction-mark';
 
 export type FactionMarkSize = 16 | 20 | 36;
