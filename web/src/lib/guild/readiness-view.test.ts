@@ -2,15 +2,20 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildReadinessRow } from './api';
 import {
+  consumablesKind,
   consumablesLabel,
+  enchantKind,
   enchantLabel,
+  gearGapKind,
   gearGapLabel,
+  itemLevelKind,
   itemLevelLabel,
   nudgeText,
   pinReadinessOwnRow,
   readinessFails,
   readinessScore,
   sortReadinessWorstFirst,
+  talentPointsKind,
   talentPointsLabel,
 } from './readiness-view';
 
@@ -164,5 +169,35 @@ describe('readinessFails / nudgeText', () => {
       nudge_text: undefined,
     });
     expect(nudgeText(clean)).toBe('Thornhide: every readiness check passes.');
+  });
+});
+
+describe('cell kinds (styling)', () => {
+  it('gearGapKind reads consent without gear_gap, neutral otherwise', () => {
+    expect(gearGapKind(row({ gear_gap: null }))).toBe('consent');
+    expect(gearGapKind(row())).toBe('neutral');
+  });
+
+  it('enchantKind reads consent/ok/warn', () => {
+    expect(enchantKind(row({ enchants: { missing_slots: [], checked: false } }))).toBe('consent');
+    expect(enchantKind(row({ enchants: { missing_slots: [], checked: true } }))).toBe('ok');
+    expect(enchantKind(row({ enchants: { missing_slots: ['chest'], checked: true } }))).toBe('warn');
+  });
+
+  it('consumablesKind reads consent/ok/warn', () => {
+    expect(consumablesKind(row({ consumables: { state: 'unknown' } }))).toBe('consent');
+    expect(consumablesKind(row({ consumables: { state: 'stocked' } }))).toBe('ok');
+    expect(consumablesKind(row({ consumables: { state: 'short' } }))).toBe('warn');
+  });
+
+  it('talentPointsKind warns on any unspent point, neutral at 0', () => {
+    expect(talentPointsKind(row({ talent_points_unspent: 1 }))).toBe('warn');
+    expect(talentPointsKind(row({ talent_points_unspent: 0 }))).toBe('neutral');
+  });
+
+  it('itemLevelKind reads consent/ok/warn', () => {
+    expect(itemLevelKind(row({ item_level: null, item_level_delta: null }))).toBe('consent');
+    expect(itemLevelKind(row({ item_level: 70, item_level_delta: 5 }))).toBe('ok');
+    expect(itemLevelKind(row({ item_level: 55, item_level_delta: -5 }))).toBe('warn');
   });
 });

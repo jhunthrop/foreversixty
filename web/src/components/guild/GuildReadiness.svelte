@@ -9,14 +9,19 @@
   import { classColorVar } from '../../lib/report/format';
   import type { GuildReadinessRow } from '../../lib/guild/api';
   import {
+    consumablesKind,
     consumablesLabel,
+    enchantKind,
     enchantLabel,
     gearGapLabel,
+    itemLevelKind,
     itemLevelLabel,
     nudgeText,
     pinReadinessOwnRow,
     sortReadinessWorstFirst,
+    talentPointsKind,
     talentPointsLabel,
+    type ReadinessCellKind,
   } from '../../lib/guild/readiness-view';
 
   let {
@@ -59,6 +64,28 @@
   const NUDGE_BTN =
     'inline-flex h-8 items-center justify-center rounded-control border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] text-strong uppercase';
   const CHIP = 'flex flex-col gap-0.5 text-[12px] text-text';
+
+  /** The pill treatment per cell kind (Enchants/Consumables/Talent points): `consent`
+   *  reads as plain muted text (never a coloured pill -- there is nothing to flag), `ok`
+   *  green, `warn` red/gold depending on the cell. */
+  const PILL_BASE = 'pill';
+  const PILL_OK = 'text-[#7bff5c] bg-[rgba(30,255,0,.10)] border-[rgba(30,255,0,.25)]';
+  const PILL_WARN = 'text-[#ff6b5c] bg-[rgba(255,107,92,.12)] border-[rgba(255,107,92,.32)]';
+  const PILL_GOLD = 'text-gold bg-[rgba(229,185,85,.14)] border-[rgba(229,185,85,.35)]';
+
+  function pillClass(kind: ReadinessCellKind, warnIsGold = false): string {
+    if (kind === 'consent') return '';
+    if (kind === 'ok') return `${PILL_BASE} ${PILL_OK}`;
+    return `${PILL_BASE} ${warnIsGold ? PILL_GOLD : PILL_WARN}`;
+  }
+
+  /** Item level reads as plain coloured text, never a pill (spec: "signed and coloured
+   *  -- green at or above, red below"). */
+  function itemLevelTextClass(kind: ReadinessCellKind): string {
+    if (kind === 'ok') return 'text-[#7bff5c]';
+    if (kind === 'warn') return 'text-[#ff6b5c]';
+    return 'text-muted';
+  }
 </script>
 
 <section class="flex flex-col gap-3" data-testid="guild-readiness-tab">
@@ -108,11 +135,25 @@
             {row.name}{pinned ? ' (you)' : ''}
           </span>
         </span>
-        <span class="tabular font-mono text-[12px]">{gearGapLabel(row)}</span>
-        <span class="text-[12px]">{enchantLabel(row)}</span>
-        <span class="text-[12px]">{consumablesLabel(row)}</span>
-        <span class="text-[12px]">{talentPointsLabel(row)}</span>
-        <span class="tabular font-mono text-[12px]">{itemLevelLabel(row)}</span>
+        <span class="tabular text-text font-mono text-[12px]">{gearGapLabel(row)}</span>
+        {#if enchantKind(row) === 'consent'}
+          <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
+        {:else}
+          <span class={pillClass(enchantKind(row))}>{enchantLabel(row)}</span>
+        {/if}
+        {#if consumablesKind(row) === 'consent'}
+          <span class="text-muted text-[12px]">{consumablesLabel(row)}</span>
+        {:else}
+          <span class={pillClass(consumablesKind(row))}>{consumablesLabel(row)}</span>
+        {/if}
+        {#if talentPointsKind(row) === 'warn'}
+          <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
+        {:else}
+          <span class="text-muted text-[12px]">{talentPointsLabel(row)}</span>
+        {/if}
+        <span class={`tabular font-mono text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
+          >{itemLevelLabel(row)}</span
+        >
         <span class="text-muted text-[11px]">{row.logged_at.slice(0, 10)}</span>
         {#if officer}
           <button
@@ -145,10 +186,34 @@
         </div>
         <div class="flex flex-wrap gap-4">
           <span class={CHIP}><span class="label text-muted">Gear gap</span>{gearGapLabel(row)}</span>
-          <span class={CHIP}><span class="label text-muted">Enchants</span>{enchantLabel(row)}</span>
-          <span class={CHIP}><span class="label text-muted">Consumables</span>{consumablesLabel(row)}</span>
-          <span class={CHIP}><span class="label text-muted">Talent pts</span>{talentPointsLabel(row)}</span>
-          <span class={CHIP}><span class="label text-muted">Item level</span>{itemLevelLabel(row)}</span>
+          <span class={CHIP}>
+            <span class="label text-muted">Enchants</span>
+            {#if enchantKind(row) === 'consent'}
+              {enchantLabel(row)}
+            {:else}
+              <span class={pillClass(enchantKind(row))}>{enchantLabel(row)}</span>
+            {/if}
+          </span>
+          <span class={CHIP}>
+            <span class="label text-muted">Consumables</span>
+            {#if consumablesKind(row) === 'consent'}
+              {consumablesLabel(row)}
+            {:else}
+              <span class={pillClass(consumablesKind(row))}>{consumablesLabel(row)}</span>
+            {/if}
+          </span>
+          <span class={CHIP}>
+            <span class="label text-muted">Talent pts</span>
+            {#if talentPointsKind(row) === 'warn'}
+              <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
+            {:else}
+              {talentPointsLabel(row)}
+            {/if}
+          </span>
+          <span class={CHIP}>
+            <span class="label text-muted">Item level</span>
+            <span class={itemLevelTextClass(itemLevelKind(row))}>{itemLevelLabel(row)}</span>
+          </span>
         </div>
         {#if officer}
           <button

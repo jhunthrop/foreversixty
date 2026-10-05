@@ -73,6 +73,37 @@ export function itemLevelLabel(row: GuildReadinessRow): string {
   return `${row.item_level} (${sign}${delta})`;
 }
 
+/** Which visual treatment each cell takes (GuildReadiness.svelte's own pill/colour
+ *  choices) -- kept separate from the `*Label` text functions above so a row-level
+ *  "consent needed" grey, "Short"/"missing" red, "Stocked"/"All enchanted" green and
+ *  "N unspent" gold read consistently without the label text itself encoding colour. */
+export type ReadinessCellKind = 'consent' | 'warn' | 'ok' | 'neutral';
+
+export function gearGapKind(row: GuildReadinessRow): ReadinessCellKind {
+  return row.gear_gap === null || row.gear_gap.upgrades === null ? 'consent' : 'neutral';
+}
+
+export function enchantKind(row: GuildReadinessRow): ReadinessCellKind {
+  if (!row.enchants.checked) return 'consent';
+  return row.enchants.missing_slots.length === 0 ? 'ok' : 'warn';
+}
+
+export function consumablesKind(row: GuildReadinessRow): ReadinessCellKind {
+  if (row.consumables.state === 'unknown') return 'consent';
+  return row.consumables.state === 'stocked' ? 'ok' : 'warn';
+}
+
+export function talentPointsKind(row: GuildReadinessRow): ReadinessCellKind {
+  return row.talent_points_unspent > 0 ? 'warn' : 'neutral';
+}
+
+/** `'ok'` at or above the roster median (spec: "green at or above"), `'warn'` below,
+ *  `'consent'` when the character carries no item level at all. */
+export function itemLevelKind(row: GuildReadinessRow): ReadinessCellKind {
+  if (row.item_level === null) return 'consent';
+  return (row.item_level_delta ?? 0) >= 0 ? 'ok' : 'warn';
+}
+
 /**
  * The checks this one character fails right now, worst-first phrasing matching spec
  * §4.A.2/§6's own template clauses -- the Readiness tab's own long-form fail list, used to
