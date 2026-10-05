@@ -19,6 +19,8 @@ require (
 
 require github.com/stripe/stripe-go/v82 v82.5.1
 
+require github.com/HugoSmits86/nativewebp v1.3.0
+
 require (
 	cloud.google.com/go/auth v0.20.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
