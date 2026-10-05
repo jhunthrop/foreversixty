@@ -263,3 +263,104 @@ and officer views stay fixture-tested only, as expected):
   throughout this build is `"Olympus XXVII"` (title case, `gen_guild.py`'s own styling) --
   a content difference, not a shape one; the h1 carries no `text-transform`, so the live
   page will render the name exactly as the API sends it, uppercase and all.
+
+## Live fix round (branch `guild-centre-fixes`)
+
+Six defects the owner found testing the live page as OLYMPUS XXVII's own leader (guild 2,
+`api/cmd/seedguild`'s real fixture). All six fixed, API and web, in one branch.
+
+1. **Talent points assumed level 60 for everyone.** `readiness_core.go`'s
+   `talentPointsAtLevel60` was used as every character's own max, not just the
+   no-level-on-file fallback — a real level-23 character's max is `level - 9` (14), not
+   51. New `maxTalentPoints(level, hasLevel)` returns the real figure when the export
+   carries one, `talentPointsAtLevel60` (with `assumedLevel60 = true`) only when it does
+   not; the officer `nudge_text` now says so explicitly ("no level on file - talent points
+   assume level 60") rather than presenting a guess as fact. Separately, every seeded
+   level-60 mock raider's own talent string (`api/cmd/seedguild/gear.go`'s
+   `talentString`/`talentStringUnspent`) summed to 20, not 51 — fixed with a small
+   `talentDigits(total)` helper that always produces a string whose digit sum is exactly
+   the number named, so "fully spent" means 51 for real, not by accident.
+
+2. **Readiness read "no gear consent" for every gear-consent row, owner included.** The
+   `consent` field itself never differed from home's (same column, same query); the real
+   cause was `gear_gap` reading null for every character because `faction` has no source
+   at all — `fight_metrics` carries no faction column (confirmed: neither a real ingest
+   nor `api/cmd/seedguild` ever writes one), so `loadBandFor`'s band lookup failed for
+   every single roster row regardless of consent, and the web mislabelled "no band" as "no
+   gear consent". `home.go`'s `HomeRoster` now derives faction from the FS1 export's own
+   race slug via a new `Store.factionForRace` (reads `data/builds/<build>/races.json`
+   through the already-wired `Store.Trees`, never a second hardcoded race table). Also
+   fixed two seeded mock characters' own race slug (`"skyborne"`, which names no build
+   race at all) to the real `"high-order-skyborne"`, and widened one shaman-only drop's
+   eligibility to hunter since this fixture's own three shaman rows are all unverified —
+   both needed so every gear-consent DPS row in the seed actually gets a real gear_gap.
+   Integration test (`api/cmd/seedguild/guild_centre_integration_test.go`) now asserts
+   readiness consent equals home consent per character_key, and that at least one
+   gear-consent row carries a non-null gear_gap and checked enchants.
+
+3. **Readiness class/spec came only from `fight_metrics`.** A verified character with no
+   fight data (the owner's own real character, or any raider who has never appeared in a
+   logged fight) read `class: ""`, drawing a broken crest web-side. `HomeRoster` now falls
+   back to the FS1 export's own `ClassSlug` when `fight_metrics` has none — same consent
+   gate, since the export is only decoded at gear/gear_bags consent already. (The export
+   carries no spec field at all, so there is no equivalent fallback for spec.) New test:
+   `TestHomeRosterClassFromExportWhenNoFightMetrics`.
+
+4. **Enchants pill overflow + broken crest on an empty class.** `ClassCrestRing.svelte`
+   now renders `CharacterPortrait`'s own neutral ringed disc for an empty `characterClass`
+   instead of requesting `/icons/hd/crests/.webp` — one guard, shared by every caller
+   (`GuildReadiness.svelte`, `GuildRosterTable.svelte`), rather than two copies of the same
+   check. `readiness-view.ts` gained `enchantSlotLabel` (reuses the existing
+   `SLOT_LABELS` table from `planner/types.ts` rather than inventing a second one) and
+   `enchantPillText`, which shows at most 2 slots then `"+N more"`; `enchantLabel` keeps
+   the full list for the cell's `title` tooltip. The pill itself wraps to 2 lines
+   (`-webkit-line-clamp`) instead of overflowing its 120px column.
+
+5. **Loot tab rendered nothing for the leader.** Root cause: `GuildLoot.svelte` called
+   `candidate.gain_dps.toFixed(0)` unconditionally, but the contract's tier-1 (fallback)
+   candidates — which is every real candidate on a live roster today, since no BiS file
+   names a raid-tier item yet — carry `gain_dps: null` and an `ilvl_delta` instead; this
+   threw on first real candidate and broke the whole tab's render, while the test fixture
+   (predating the tier-1 fallback) never once exercised a null `gain_dps`. Fixed: the
+   `GuildLootCandidate` type now matches the contract (`gain_dps: number | null`,
+   `ilvl_delta: number | null`); a new `candidateGainLabel` branches on which one is
+   present; `mock-guild.ts`'s loot fixture was rewritten to the real 22-item Onyxia table
+   (`api/internal/guilds/loot.go`'s own `onyxiaLoot`, byte for byte) with tier-1 candidates
+   throughout, matching the live contract exactly. Also split the Loot tab's fetch failure
+   into a real 404 (`lootStatus = 'missing'`, the "not live yet" copy) versus any other
+   failure (`lootStatus = 'failed'`, surfacing the real error message via `lootError` —
+   never the 404 copy), read off `GuildApiError.status`. Two new e2e tests: officer visits
+   Overview (which prefetches `.../loot` for its own summary card) then clicks the Loot
+   tab and sees all 22 items with candidates; a 500 shows the error line, never the 404
+   copy. (GuildOverview's own prefetch already shares `fetchGuildLoot`'s cache key with
+   the tab's own fetch, so switching tabs after Overview's prefetch resolves needs no
+   second network call — already correct, nothing to fix there.)
+
+6. **Nudge text's own "no gear consent" phrasing.** Resolved by fix 2: `nudge_text` is
+   built from the same `computeReadiness` the row's own cells now read correctly, so an
+   officer nudging the owner no longer sees that phrase once the row's own gear_gap/
+   enchants are real.
+
+### Tests, verbatim (live fix round)
+
+```
+go vet ./...
+  → clean
+
+TEST_DATABASE_URL=postgres://forever:forever@localhost:5434/forever_test?sslmode=disable \
+  go test -p 1 ./internal/guilds/ ./internal/fs1/ ./internal/bis/ ./cmd/seedguild/
+  → ok   api/internal/guilds
+  → ok   api/internal/fs1
+  → ok   api/internal/bis
+  → ok   api/cmd/seedguild
+
+npx astro check         → 0 errors, 0 warnings, 10 pre-existing hints (after `npm run sync`)
+npx eslint .             → clean
+npx prettier --check .   → clean
+npx vitest run src/lib/guild src/components/guild src/components/Guild.test.ts
+  → Test Files 15 passed (15); Tests 103 passed (103)
+FOREVER_DATA=fixture npm run build
+  → succeeds
+E2E_SKIP_BUILD=1 npx playwright test tests/e2e/guild-centre.spec.ts --project=desktop --project=mobile
+  → 50 passed (50)
+```

@@ -3,6 +3,7 @@
 // the worst-first sort are pure functions over `GuildReadinessRow` (api.ts, the contract's
 // own shape) so GuildReadiness.svelte never re-derives a number the API already sent.
 import type { GuildReadinessRow } from './api';
+import { SLOT_LABELS, type Slot } from '../planner/types';
 
 /** Spec §4.E: `readinessScore = failCount * 100 + gearGainDps`, so a raider failing more
  *  checks always sorts above one failing fewer, ties broken by the bigger gear gain. The
@@ -42,13 +43,45 @@ export function gearGapLabel(row: GuildReadinessRow): string {
   return `${gap.upgrades} upgrade${gap.upgrades === 1 ? '' : 's'} · +${gain} DPS`;
 }
 
-/** Spec §4.E's Enchants cell -- `checked: false` means no gear consent, read the same as
- *  Gear gap's own consent gate (the stricter `gear_bags` floor applies to Consumables
- *  only, enchants share Gear gap's `gear` floor). */
+/** Humanises an enchant slot key ("main_hand" -> "Main hand") via the shared slot-label
+ *  table every other item surface already uses (web/src/lib/planner/types.ts's
+ *  `SLOT_LABELS`) -- never a second, drifting slot-name table for this one cell. Falls
+ *  back to a bare capitalised slug for a key `SLOT_LABELS` does not carry, the same
+ *  fail-open leniency `capitalize` alone already gave an unrecognised value. */
+function enchantSlotLabel(slot: string): string {
+  return Object.prototype.hasOwnProperty.call(SLOT_LABELS, slot)
+    ? SLOT_LABELS[slot as Slot]
+    : capitalize(slot);
+}
+
+/** Spec §4.E's Enchants cell, full text -- `checked: false` means no gear consent, read
+ *  the same as Gear gap's own consent gate (the stricter `gear_bags` floor applies to
+ *  Consumables only, enchants share Gear gap's `gear` floor). Every missing slot, never
+ *  truncated -- the Enchants cell's own tooltip (`title`) reads this; the pill itself
+ *  reads `enchantPillText` below, which truncates a long list the pill cannot hold.
+ */
 export function enchantLabel(row: GuildReadinessRow): string {
   if (!row.enchants.checked) return CONSENT_NEEDED;
   if (row.enchants.missing_slots.length === 0) return ALL_ENCHANTED;
-  return row.enchants.missing_slots.map(capitalize).join(', ');
+  return row.enchants.missing_slots.map(enchantSlotLabel).join(', ');
+}
+
+/** The Enchants pill can hold at most this many slot names before it reads as a wall of
+ *  text ("MAIN_HAND, CHEST, BACK, FEET" overflowing the column, the defect this guards
+ *  against) -- past this, the pill reads "<first two> +N more" and the cell's own
+ *  `title` attribute (`enchantLabel`, above) carries the full list. */
+const ENCHANT_PILL_MAX_SLOTS = 2;
+
+/** The Enchants pill's own visible text: `enchantLabel`'s full list, truncated to
+ *  `ENCHANT_PILL_MAX_SLOTS` slots with a "+N more" suffix once a row fails that many
+ *  enchant checks at once. */
+export function enchantPillText(row: GuildReadinessRow): string {
+  if (!row.enchants.checked) return CONSENT_NEEDED;
+  if (row.enchants.missing_slots.length === 0) return ALL_ENCHANTED;
+  const labels = row.enchants.missing_slots.map(enchantSlotLabel);
+  if (labels.length <= ENCHANT_PILL_MAX_SLOTS) return labels.join(', ');
+  const shown = labels.slice(0, ENCHANT_PILL_MAX_SLOTS).join(', ');
+  return `${shown} +${labels.length - ENCHANT_PILL_MAX_SLOTS} more`;
 }
 
 /** Spec §4.E's Consumables cell -- `gear_bags` consent only, stricter than Gear gap/
@@ -117,7 +150,7 @@ export function readinessFails(row: GuildReadinessRow): string[] {
     fails.push(`${gap.upgrades} gear upgrades waiting (${Math.round(gap.gain_dps ?? 0)} DPS)`);
   }
   if (row.enchants.checked && row.enchants.missing_slots.length > 0) {
-    fails.push(`no enchant: ${row.enchants.missing_slots.map(capitalize).join(', ')}`);
+    fails.push(`no enchant: ${row.enchants.missing_slots.map(enchantSlotLabel).join(', ')}`);
   }
   if (row.consumables.state === 'short') fails.push('bags short on consumables');
   if (row.talent_points_unspent > 0) {

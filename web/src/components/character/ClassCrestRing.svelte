@@ -12,7 +12,16 @@
      already inline an equivalent copy, added before this component existed -- left as they
      are here (different interactive-state scope in each, and out of this lane's reported
      defects), so this is a second Svelte copy of the recipe, not a third: new callers reach
-     for this one first. -->
+     for this one first.
+
+     Guild control-centre live-fix round (defect 4): a character with no known class (the
+     guild readiness/roster boards' own "class empty" case, e.g. a verified roster
+     character with no fight data and -- before a separate API fix -- no export reading
+     either) must never resolve to a broken `/icons/hd/crests/.webp` request. An empty
+     characterClass renders CharacterPortrait.svelte's own neutral ringed disc instead, at
+     this component's own arbitrary pixel size rather than that component's three fixed
+     ones -- the one guard every caller gets for free, rather than GuildReadiness.svelte and
+     GuildRosterTable.svelte each repeating it. -->
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
   import { classColorVar } from '../../lib/report/format';
@@ -24,17 +33,26 @@
   const color = $derived(classColorVar(characterClass));
 </script>
 
-<img
-  src={classCrestSrc(slug)}
-  alt=""
-  width={size}
-  height={size}
-  loading="lazy"
-  decoding="async"
-  class="crest-ring bg-raised shrink-0 rounded-full object-cover"
-  style={`--c: ${color}; width: ${size}px; height: ${size}px;`}
-  data-testid={testid}
-/>
+{#if characterClass === ''}
+  <span
+    class="bg-raised border-line inline-block shrink-0 rounded-full border"
+    style={`width: ${size}px; height: ${size}px;`}
+    aria-hidden="true"
+    data-testid={testid ? `${testid}-fallback` : undefined}
+  ></span>
+{:else}
+  <img
+    src={classCrestSrc(slug)}
+    alt=""
+    width={size}
+    height={size}
+    loading="lazy"
+    decoding="async"
+    class="crest-ring bg-raised shrink-0 rounded-full object-cover"
+    style={`--c: ${color}; width: ${size}px; height: ${size}px;`}
+    data-testid={testid}
+  />
+{/if}
 
 <style>
   /* ClassCrest.astro's own exact recipe (home spec §6): a reduced-opacity ring at rest that

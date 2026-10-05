@@ -123,34 +123,59 @@ func loadBisGear(dir, file string) (map[string]int, error) {
 	return gear, nil
 }
 
+// talentDigits is a string of decimal digits (valid base-36, fs1.Decode's own per-tree
+// alphabet) whose digit sum is exactly total: as many 9s as fit, then the remainder - the
+// simplest string that decodes to that sum. Used below to build a talent field whose
+// three-tree total is provably a level-60 character's own 51 points (talentPointsAtLevel60,
+// readiness_core.go), rather than a hand-picked digit string that looks plausible but sums
+// to something else - the bug this fixture itself once had (defect 1, 2026-10-04 live-fix
+// round: Hexmarrow's "0/0/5235500" summed to 20, not 51, so every seeded raider read as 31
+// talent points short instead of fully spent).
+func talentDigits(total int) string {
+	if total <= 0 {
+		return "0"
+	}
+	nines, remainder := total/9, total%9
+	digits := make([]byte, 0, nines+1)
+	for i := 0; i < nines; i++ {
+		digits = append(digits, '9')
+	}
+	if remainder > 0 {
+		digits = append(digits, byte('0'+remainder))
+	}
+	return string(digits)
+}
+
 // talentString is a plausible, fully-spent FS1 talent field ("<t1>/<t2>/<t3>") for role: a
 // tank or healer puts most of a level-60 character's 51 talent points in its own tree
 // with a handful in a secondary utility tree, a DPS spends nearly all of them in one
 // tree. The exact digits are flavour — fs1.Decode only reads the base-36 digit sum per
-// tree — so nothing here needs to match a real Classic talent build, only to decode
-// validly the way a genuine export does.
+// tree, which is why this goes through talentDigits rather than a hand-picked string — so
+// nothing here needs to match a real Classic talent build, only to decode validly, and to
+// actually total talentPointsAtLevel60's 51, the way a genuine fully-spent level-60
+// export does.
 func talentString(role string) string {
 	switch role {
 	case roleTank:
-		return "0023500000000000000/05000/0"
+		return talentDigits(46) + "/" + talentDigits(5) + "/0"
 	case roleHealer:
-		return "0000000000000000000/235500/05"
+		return "0/" + talentDigits(46) + "/" + talentDigits(5)
 	default:
-		return "0000000000000000000/0/5235500"
+		return "0/0/" + talentDigits(51)
 	}
 }
 
-// talentStringUnspent is talentString with several points pulled back out - the two
+// talentStringUnspent is talentString with 5 points pulled back out - the two
 // UnspentTalents roster entries (roster.go), a readiness gap: a level-60 character who
-// has not finished spending a respec.
+// has not finished spending a respec (46 of 51 spent, 5 unspent).
 func talentStringUnspent(role string) string {
 	switch role {
 	case roleTank:
-		return "0023500000000000000/00000/0"
+		return talentDigits(41) + "/" + talentDigits(5) + "/0"
 	case roleHealer:
-		return "0000000000000000000/205500/00"
+		return "0/" + talentDigits(41) + "/" + talentDigits(5)
 	default:
-		return "0000000000000000000/0/5205000"
+		return "0/0/" + talentDigits(46)
 	}
 }
 

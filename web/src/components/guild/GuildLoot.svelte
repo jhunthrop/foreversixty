@@ -10,7 +10,7 @@
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
-  import { bossPickerLabel, candidateAction } from '../../lib/guild/loot-view';
+  import { bossPickerLabel, candidateAction, candidateGainLabel } from '../../lib/guild/loot-view';
   import EmptyState from '../ui/EmptyState.svelte';
 
   let {
@@ -70,7 +70,12 @@
           <div class="flex flex-col">
             {#each item.candidates as candidate (candidate.character_key)}
               {@const action = candidateAction(item, candidate.character_key)}
-              <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
+              <!-- flex-wrap (live-fix round, defect 5): every real candidate carries
+                   `not_sim_checked` today (the tier-1 fallback, CONTROL_CENTRE.md), and
+                   that extra badge no longer fits this row's fixed-width items on one
+                   line at 390px -- wraps onto a second line there instead of overflowing
+                   the viewport sideways. -->
+              <div class="border-line-soft flex flex-wrap items-center gap-x-3 gap-y-1 border-b py-1.5">
                 <ClassCrestRing characterClass={candidate.class} size={26} />
                 <span
                   class="min-w-[120px] text-[13px] font-semibold"
@@ -78,7 +83,10 @@
                 >
                   {candidate.name}
                 </span>
-                <span class="tabular font-mono text-[12px]">+{candidate.gain_dps.toFixed(0)} DPS</span>
+                <span class="tabular font-mono text-[12px]">{candidateGainLabel(candidate)}</span>
+                {#if candidate.not_sim_checked}
+                  <span class="text-muted text-[11px]">not sim-checked</span>
+                {/if}
                 <span class="text-muted tabular font-mono text-[12px]">
                   {candidate.attendance.present}/{candidate.attendance.nights} nights
                 </span>

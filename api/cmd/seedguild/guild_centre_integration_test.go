@@ -196,6 +196,56 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 		}
 	}
 
+	// Live-fix round, defect 2: readiness's own consent per row must equal home's roster
+	// consent for the same character_key - the two endpoints read the exact same
+	// guild_members.consent column (home.go's HomeRoster), and must never drift.
+	homeConsent := make(map[string]string, len(home.Roster))
+	homeClass := make(map[string]string, len(home.Roster))
+	for _, row := range home.Roster {
+		homeConsent[row.CharacterKey] = row.Consent
+		if row.Class != nil {
+			homeClass[row.CharacterKey] = *row.Class
+		}
+	}
+	gearConsentChecked := false
+	for _, row := range readiness.Rows {
+		if want := homeConsent[row.CharacterKey]; row.Consent != want {
+			t.Errorf("readiness consent for %s = %q, want %q (home's own roster consent)",
+				row.CharacterKey, row.Consent, want)
+		}
+		// Live-fix round, defect 2: a gear-consent DPS character (one with a BiS band at
+		// all - every tank/healer spec has none, CONTROL_CENTRE.md's own documented gap)
+		// must get a real gear_gap and checked enchants, never the "no gear consent" read
+		// a missing class/spec/faction used to produce for every row on this guild.
+		if row.Consent == "gear" || row.Consent == "gear_bags" {
+			if !row.Enchants.Checked {
+				t.Errorf("row %s has gear consent but enchants.checked = false", row.CharacterKey)
+			}
+			if row.GearGap != nil {
+				gearConsentChecked = true
+			}
+		}
+		// Live-fix round, defect 3: class comes from the FS1 export when fight_metrics has
+		// none - the owner's own real character (level 23, no fight rows) is exactly this
+		// case, and must read "warrior", never empty.
+		if row.CharacterKey == ownerKey {
+			if row.Class == "" {
+				t.Errorf("owner row's class is empty, want %q from its own export", homeClass[ownerKey])
+			}
+			// Live-fix round, defect 1: the owner's own real export carries level=23, no
+			// talents spent - the max a level-23 character can have spent is 23-9=14,
+			// never talentPointsAtLevel60's level-60 figure (51), which used to read as
+			// "40 unspent" instead of the true, much smaller 14.
+			if row.TalentPointsUnspent != 14 {
+				t.Errorf("owner row talent_points_unspent = %d, want 14 (level 23, never a level-60 assumption)",
+					row.TalentPointsUnspent)
+			}
+		}
+	}
+	if !gearConsentChecked {
+		t.Error("no gear-consent row in this 25-character roster got a non-null gear_gap, want at least one DPS raider")
+	}
+
 	res = h.get(fmt.Sprintf("/v1/guilds/%d/loot", guildID))
 	var loot guilds.LootView
 	h.data(res, &loot)

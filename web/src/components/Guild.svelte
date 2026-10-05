@@ -34,6 +34,7 @@
     fetchGuildReadiness,
     fetchGuildRaids,
     removeCharacter,
+    GuildApiError,
     type GuildHome,
     type GuildLootItem,
     type GuildLootPage,
@@ -421,7 +422,15 @@
   });
 
   let loot = $state<GuildLootPage | null>(null);
-  let lootStatus = $state<TabFetchStatus>('idle');
+  // Live-fix round, defect 5: unlike raids/progression/readiness above, Loot distinguishes
+  // a real 404 (the api lane has not deployed this endpoint yet -- 'missing', the honest
+  // "not live yet" copy) from every other failure ('failed' -- a network blip, a 5xx, a
+  // parse error): those must surface their own message (lootError below), never the 404
+  // copy, so an officer debugging a real outage is not told to wait for a deploy that
+  // already happened. If the query cache already holds the page GuildOverview's own
+  // summary-card prefetch resolved (fetchGuildLoot's shared cache key, data/query.ts), this
+  // read returns it instantly rather than refetching.
+  let lootStatus = $state<'idle' | 'loading' | 'ready' | 'missing' | 'failed'>('idle');
   let lootBusyItemId = $state<number | null>(null);
   let lootError = $state('');
   $effect(() => {
@@ -432,8 +441,13 @@
         loot = page;
         lootStatus = 'ready';
       })
-      .catch(() => {
-        lootStatus = 'missing';
+      .catch((thrown: unknown) => {
+        if (thrown instanceof GuildApiError && thrown.status === 404) {
+          lootStatus = 'missing';
+          return;
+        }
+        lootStatus = 'failed';
+        lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
       });
   });
 
@@ -698,6 +712,12 @@
           message="Loot ranking isn't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
           testid="guild-loot-missing"
         />
+      {:else if lootStatus === 'failed'}
+        <!-- Live-fix round, defect 5: a network/parse/5xx failure is never the 404 "not
+             live yet" copy above -- its own message, rendered without waiting on the lazy
+             GuildLoot.svelte chunk (which a slow connection may not have finished loading
+             yet when the fetch itself has already failed). -->
+        <p class="text-[13px]" role="alert" data-testid="guild-loot-error">{lootError}</p>
       {:else if lootLazy.current}
         <lootLazy.current
           loot={lootStatus === 'ready' ? loot : null}

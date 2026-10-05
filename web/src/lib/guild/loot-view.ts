@@ -2,7 +2,7 @@
 // Guild control-centre spec §4.F: the loot council helper. The API (contract's
 // GET .../loot) already ranks candidates and names the awardee; this module only formats
 // what it sent -- never re-ranks or re-decides an award client-side.
-import type { GuildLootEncounter, GuildLootItem } from './api';
+import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem } from './api';
 
 /** Spec §6's boss-picker copy: a killed boss with nothing left unkilled reads "next
  *  unkilled: none, farm" (today's real case, Onyxia); an unkilled boss just names itself. */
@@ -20,6 +20,25 @@ export function nextUnkilledEncounter(
   encounters: readonly GuildLootEncounter[],
 ): GuildLootEncounter | undefined {
   return encounters.find((encounter) => !encounter.killed);
+}
+
+/**
+ * A candidate row's own gain figure (defect 5's own live-fix round): a tier-0 (BiS-
+ * matched) candidate carries `gain_dps`, a tier-1 (fallback) one carries `ilvl_delta`
+ * instead and `gain_dps: null` -- the contract's own two-tier shape
+ * (docs/contracts/2026-10-04-guild-centre-api.md's loot section). Every real candidate on
+ * a live roster is tier-1 today (no BiS file in this build names a raid-tier item yet),
+ * so this is the common case, not an edge case: GuildLoot.svelte must never call a number
+ * method on `gain_dps` directly, the bug that broke the whole tab on real data while the
+ * fixture (predating the tier-1 fallback) never once exercised a null `gain_dps`.
+ */
+export function candidateGainLabel(candidate: GuildLootCandidate): string {
+  if (candidate.gain_dps !== null) return `+${Math.round(candidate.gain_dps)} DPS`;
+  if (candidate.ilvl_delta !== null) {
+    const sign = candidate.ilvl_delta >= 0 ? '+' : '';
+    return `${sign}${candidate.ilvl_delta} ilvl`;
+  }
+  return '—';
 }
 
 export type LootCandidateAction =

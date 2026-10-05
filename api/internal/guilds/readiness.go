@@ -106,7 +106,8 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool) 
 		}
 		band, hasBand := s.loadBandFor(row.className, row.specStr, row.faction)
 		cr := computeReadiness(row.Consent, band, hasBand, row.gear, row.enchants,
-			row.bags, row.hasBagsSection, row.talentPointsSpent, row.hasTalents, row.ItemLevel, median)
+			row.bags, row.hasBagsSection, row.talentPointsSpent, row.hasTalents,
+			row.level, row.hasLevel, row.ItemLevel, median)
 
 		rr := ReadinessRow{
 			CharacterKey: row.CharacterKey, Name: row.Name, Consent: row.Consent,
@@ -144,20 +145,29 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool) 
 
 // nudgeText is the officer-only clipboard message (design spec §4.E): the character's own
 // name plus its own failText(), joined - the same wording the standing line's
-// needs_before_next_raid already uses, never a second phrasing.
+// needs_before_next_raid already uses, never a second phrasing. When the talent-points
+// check assumed level 60 for want of a level section on the export (maxTalentPoints), the
+// nudge says so explicitly rather than presenting that guess as a fact the officer might
+// repeat to the raider.
 func nudgeText(name string, cr CharacterReadiness) string {
 	fails := cr.failText()
+	var out string
 	if len(fails) == 0 {
-		return name + ": every readiness check passes."
-	}
-	out := name + ": "
-	for i, f := range fails {
-		if i > 0 {
-			out += "; "
+		out = name + ": every readiness check passes."
+	} else {
+		out = name + ": "
+		for i, f := range fails {
+			if i > 0 {
+				out += "; "
+			}
+			out += f
 		}
-		out += f
+		out += " - check before Thursday."
 	}
-	return out + " - check before Thursday."
+	if cr.TalentLevelAssumed {
+		out += " (no level on file - talent points assume level 60)"
+	}
+	return out
 }
 
 func (s *Service) readiness(w http.ResponseWriter, r *http.Request) {
