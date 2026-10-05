@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-04T12:39:37Z",
+  "generated_at": "2026-10-05T15:01:52Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.44560616,
-      "verify_run_seconds": 1.319842053,
+      "weights_run_seconds": 1.172954229,
+      "verify_run_seconds": 1.089100715,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1211,8 +1211,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.44560616,
-      "verify_run_seconds": 1.276366081,
+      "weights_run_seconds": 1.172954229,
+      "verify_run_seconds": 1.068169571,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.5294510350000001,
-      "verify_run_seconds": 1.402639524,
+      "weights_run_seconds": 1.268081716,
+      "verify_run_seconds": 1.173263102,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2583,8 +2583,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.5294510350000001,
-      "verify_run_seconds": 1.371120013,
+      "weights_run_seconds": 1.268081716,
+      "verify_run_seconds": 1.129247281,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3275,8 +3275,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.474672089,
-      "verify_run_seconds": 1.377639776,
+      "weights_run_seconds": 1.291757435,
+      "verify_run_seconds": 1.158766223,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.474672089,
-      "verify_run_seconds": 1.373103597,
+      "weights_run_seconds": 1.291757435,
+      "verify_run_seconds": 1.167802965,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4687,8 +4687,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.618987561,
-      "verify_run_seconds": 1.563332692,
+      "weights_run_seconds": 1.355813226,
+      "verify_run_seconds": 1.304801574,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5412,8 +5412,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.618987561,
-      "verify_run_seconds": 1.5177478720000002,
+      "weights_run_seconds": 1.355813226,
+      "verify_run_seconds": 1.257637953,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5716,7 +5716,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.24012213979209235
+              "dps_delta": -0.24012213979209307
             },
             {
               "item_id": 23089,
@@ -5847,7 +5847,7 @@
               "item_name": "Knight-Captain's Chain Legplates",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.11616481513570852
+              "dps_delta": -0.11616481513570816
             },
             {
               "item_id": 15052,
@@ -6160,8 +6160,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.5775766249999998,
-      "verify_run_seconds": 1.570969502,
+      "weights_run_seconds": 1.2866005,
+      "verify_run_seconds": 1.32473921,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6406,7 +6406,7 @@
               "item_name": "Champion's Chain Pauldrons",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.27411170972436
+              "dps_delta": -0.27411170972436033
             }
           ]
         },
@@ -6464,7 +6464,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.24012213979209235
+              "dps_delta": -0.24012213979209307
             },
             {
               "item_id": 23089,
@@ -6909,8 +6909,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.5775766249999998,
-      "verify_run_seconds": 1.5578235390000001,
+      "weights_run_seconds": 1.2866005,
+      "verify_run_seconds": 1.275347867,
       "coverage": {
         "back": {
           "eligible": 450,

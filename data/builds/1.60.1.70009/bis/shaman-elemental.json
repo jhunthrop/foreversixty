@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-04T12:43:06Z",
+  "generated_at": "2026-10-05T15:04:52Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -539,8 +539,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.23697744,
-      "verify_run_seconds": 0.879200416,
+      "weights_run_seconds": 1.038279917,
+      "verify_run_seconds": 0.753448151,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1168,8 +1168,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.23697744,
-      "verify_run_seconds": 0.828061923,
+      "weights_run_seconds": 1.038279917,
+      "verify_run_seconds": 0.719495173,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1818,8 +1818,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.303771157,
-      "verify_run_seconds": 0.868440075,
+      "weights_run_seconds": 1.140595802,
+      "verify_run_seconds": 0.707569199,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2497,8 +2497,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 1.303771157,
-      "verify_run_seconds": 0.846650191,
+      "weights_run_seconds": 1.140595802,
+      "verify_run_seconds": 0.738453918,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3139,8 +3139,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.441643532,
-      "verify_run_seconds": 0.90840636,
+      "weights_run_seconds": 1.209282558,
+      "verify_run_seconds": 0.740402478,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3783,8 +3783,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.441643532,
-      "verify_run_seconds": 0.903175525,
+      "weights_run_seconds": 1.209282558,
+      "verify_run_seconds": 0.81870601,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4466,8 +4466,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.47319735,
-      "verify_run_seconds": 1.036671722,
+      "weights_run_seconds": 1.268969937,
+      "verify_run_seconds": 0.94465719,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5139,8 +5139,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.47319735,
-      "verify_run_seconds": 1.016429868,
+      "weights_run_seconds": 1.268969937,
+      "verify_run_seconds": 0.874012982,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5529,7 +5529,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 58.383983026262534,
+          "score": 58.38398302626254,
           "verified": true,
           "alternatives": [
             {
@@ -5537,14 +5537,14 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.1516342383468656
+              "dps_delta": -1.1516342383468663
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.3294981594509445
+              "dps_delta": -1.329498159450945
             },
             {
               "item_id": 272399,
@@ -5829,8 +5829,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 1.482826551,
-      "verify_run_seconds": 1.03729272,
+      "weights_run_seconds": 1.243436305,
+      "verify_run_seconds": 0.925521501,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6005,7 +6005,7 @@
               "item_name": "Blue Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3093966123309019
+              "dps_delta": -0.30939661233090127
             },
             {
               "item_id": 231663,
@@ -6225,7 +6225,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 58.383983026262534,
+          "score": 58.38398302626254,
           "verified": true,
           "alternatives": [
             {
@@ -6233,14 +6233,14 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.1516342383468656
+              "dps_delta": -1.1516342383468663
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.3294981594509445
+              "dps_delta": -1.329498159450945
             },
             {
               "item_id": 272399,
@@ -6526,8 +6526,8 @@
         "trinket2: Second Wind",
         "main_hand: Hammer of Divine Might"
       ],
-      "weights_run_seconds": 1.482826551,
-      "verify_run_seconds": 0.998961669,
+      "weights_run_seconds": 1.243436305,
+      "verify_run_seconds": 0.880190801,
       "coverage": {
         "back": {
           "eligible": 451,

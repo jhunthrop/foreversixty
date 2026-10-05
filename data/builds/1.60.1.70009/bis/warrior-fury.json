@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-04T12:45:51Z",
+  "generated_at": "2026-10-05T15:07:11Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -604,8 +604,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.18203833,
-      "verify_run_seconds": 1.0961696810000001,
+      "weights_run_seconds": 0.955121579,
+      "verify_run_seconds": 0.922414591,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1277,8 +1277,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.18203833,
-      "verify_run_seconds": 1.138780214,
+      "weights_run_seconds": 0.955121579,
+      "verify_run_seconds": 0.922746878,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1976,8 +1976,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.246992819,
-      "verify_run_seconds": 1.154435865,
+      "weights_run_seconds": 1.028569108,
+      "verify_run_seconds": 0.949929222,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2679,8 +2679,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.246992819,
-      "verify_run_seconds": 1.156822137,
+      "weights_run_seconds": 1.028569108,
+      "verify_run_seconds": 0.985404533,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3372,8 +3372,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.46753681,
-      "verify_run_seconds": 1.290002278,
+      "weights_run_seconds": 1.178843042,
+      "verify_run_seconds": 1.055091519,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4067,8 +4067,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.46753681,
-      "verify_run_seconds": 1.322423518,
+      "weights_run_seconds": 1.178843042,
+      "verify_run_seconds": 1.0902099060000001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4781,8 +4781,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.574689377,
-      "verify_run_seconds": 1.740950624,
+      "weights_run_seconds": 1.220672331,
+      "verify_run_seconds": 1.443196416,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4947,7 +4947,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -1.4898607004997253
+              "dps_delta": -1.4898607004997257
             },
             {
               "item_id": 17767,
@@ -5511,8 +5511,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.574689377,
-      "verify_run_seconds": 1.70371728,
+      "weights_run_seconds": 1.220672331,
+      "verify_run_seconds": 1.385394078,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5669,7 +5669,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 72.85657889736896,
+          "score": 72.85657889736898,
           "verified": true,
           "alternatives": [
             {
@@ -5684,7 +5684,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.4792443678056858
+              "dps_delta": -0.47924436780568663
             },
             {
               "item_id": 226860,
@@ -5820,7 +5820,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.933024072861587
+              "dps_delta": -0.9330240728615861
             },
             {
               "item_id": 23087,
@@ -6272,8 +6272,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.591044195,
-      "verify_run_seconds": 1.740090555,
+      "weights_run_seconds": 1.312070133,
+      "verify_run_seconds": 1.417061424,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6430,7 +6430,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 72.85657889736896,
+          "score": 72.85657889736898,
           "verified": true,
           "alternatives": [
             {
@@ -6445,7 +6445,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.4792443678056858
+              "dps_delta": -0.47924436780568663
             },
             {
               "item_id": 226860,
@@ -7025,8 +7025,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.591044195,
-      "verify_run_seconds": 1.666824689,
+      "weights_run_seconds": 1.312070133,
+      "verify_run_seconds": 1.4327166,
       "coverage": {
         "back": {
           "eligible": 450,

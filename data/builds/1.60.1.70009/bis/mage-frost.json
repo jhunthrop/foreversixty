@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-04T12:40:26Z",
+  "generated_at": "2026-10-05T15:02:36Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.542411591,
-      "verify_run_seconds": 0.5124088,
+      "weights_run_seconds": 0.4921664,
+      "verify_run_seconds": 0.43055649,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.542411591,
-      "verify_run_seconds": 0.563289449,
+      "weights_run_seconds": 0.4921664,
+      "verify_run_seconds": 0.463382452,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.603310793,
-      "verify_run_seconds": 0.535982638,
+      "weights_run_seconds": 0.508632803,
+      "verify_run_seconds": 0.439873484,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2584,8 +2584,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.603310793,
-      "verify_run_seconds": 0.55769014,
+      "weights_run_seconds": 0.508632803,
+      "verify_run_seconds": 0.465001013,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3253,8 +3253,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.593852685,
-      "verify_run_seconds": 0.502690243,
+      "weights_run_seconds": 0.574454225,
+      "verify_run_seconds": 0.437548254,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3917,8 +3917,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.593852685,
-      "verify_run_seconds": 0.506829572,
+      "weights_run_seconds": 0.574454225,
+      "verify_run_seconds": 0.459529605,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4100,7 +4100,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9363347449468022
+              "dps_delta": -0.9363347449468018
             },
             {
               "item_id": 15999,
@@ -4612,8 +4612,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.564567555,
-      "verify_run_seconds": 0.569329362,
+      "weights_run_seconds": 0.47321165,
+      "verify_run_seconds": 0.502783982,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5298,8 +5298,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.564567555,
-      "verify_run_seconds": 0.570153729,
+      "weights_run_seconds": 0.47321165,
+      "verify_run_seconds": 0.50890582,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5546,7 +5546,7 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.4764926612543785
+              "dps_delta": -1.4764926612543776
             },
             {
               "item_id": 272103,
@@ -5735,7 +5735,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 58.90693051700619,
+          "score": 58.906930517006195,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (ilvl 65) (id 22752): kept the pick, +2.6 DPS (217.0 vs 214.4 set DPS)",
           "dps_delta": 2.5796493177740274,
@@ -5745,21 +5745,21 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.020961811570388695
+              "dps_delta": -0.020961811570389566
             },
             {
               "item_id": 227109,
               "item_name": "Knight-Captain's Silk Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -1.4997650332122248
+              "dps_delta": -1.4997650332122257
             },
             {
               "item_id": 226933,
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.5688579445397124
+              "dps_delta": -1.5688579445397133
             }
           ]
         },
@@ -6043,8 +6043,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.58785316,
-      "verify_run_seconds": 0.558333244,
+      "weights_run_seconds": 0.546626356,
+      "verify_run_seconds": 0.4843233,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6298,7 +6298,7 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.4764926612543776
+              "dps_delta": -1.4764926612543785
             }
           ]
         },
@@ -6694,7 +6694,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.2330072604046318
+              "dps_delta": -0.23300726040463265
             },
             {
               "item_id": 1728,
@@ -6782,8 +6782,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.58785316,
-      "verify_run_seconds": 0.543404512,
+      "weights_run_seconds": 0.546626356,
+      "verify_run_seconds": 0.527040673,
       "coverage": {
         "back": {
           "eligible": 450,

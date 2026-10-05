@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-04T12:40:51Z",
+  "generated_at": "2026-10-05T15:02:56Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.039441398,
-      "verify_run_seconds": 0.829038543,
+      "weights_run_seconds": 0.814080823,
+      "verify_run_seconds": 0.693187533,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1157,8 +1157,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.039441398,
-      "verify_run_seconds": 0.810072173,
+      "weights_run_seconds": 0.814080823,
+      "verify_run_seconds": 0.693318098,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1801,8 +1801,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.042872781,
-      "verify_run_seconds": 1.06520318,
+      "weights_run_seconds": 0.880945912,
+      "verify_run_seconds": 0.900406082,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2450,8 +2450,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.042872781,
-      "verify_run_seconds": 1.066837537,
+      "weights_run_seconds": 0.880945912,
+      "verify_run_seconds": 0.883934975,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3091,8 +3091,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.043163804,
-      "verify_run_seconds": 1.007797208,
+      "weights_run_seconds": 0.905342095,
+      "verify_run_seconds": 0.833008937,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3733,8 +3733,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.043163804,
-      "verify_run_seconds": 1.001831859,
+      "weights_run_seconds": 0.905342095,
+      "verify_run_seconds": 0.850765319,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4391,8 +4391,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.108753479,
-      "verify_run_seconds": 1.075717194,
+      "weights_run_seconds": 0.922637078,
+      "verify_run_seconds": 0.868788694,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5051,8 +5051,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.108753479,
-      "verify_run_seconds": 1.08280485,
+      "weights_run_seconds": 0.922637078,
+      "verify_run_seconds": 0.908507154,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5350,7 +5350,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.17072202175450538
+              "dps_delta": -0.17072202175450477
             },
             {
               "item_id": 14637,
@@ -5730,8 +5730,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.115572949,
-      "verify_run_seconds": 1.062211754,
+      "weights_run_seconds": 0.984952984,
+      "verify_run_seconds": 0.830771661,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6028,7 +6028,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.17072202175450538
+              "dps_delta": -0.17072202175450477
             },
             {
               "item_id": 14637,
@@ -6425,8 +6425,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.115572949,
-      "verify_run_seconds": 0.995312744,
+      "weights_run_seconds": 0.984952984,
+      "verify_run_seconds": 0.823497182,
       "coverage": {
         "back": {
           "eligible": 449,
