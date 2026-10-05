@@ -63,6 +63,9 @@ type GuildIdentity struct {
 	// or null when it has never resolved to either, so the header simply paints no
 	// emblem (design/specs/2026-10-04-guild-page.md §12.2).
 	Faction *string `json:"faction"`
+	// CrestURL is this guild's uploaded crest (docs/contracts/2026-10-05-guild-crest-api.md),
+	// or null when none is set - the header then falls back to the faction logo.
+	CrestURL *string `json:"crest_url"`
 }
 
 type HomeReport struct {
@@ -437,7 +440,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	}
 
 	view := HomeView{
-		Guild:    GuildIdentity{ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Faction: g.Faction},
+		Guild: GuildIdentity{
+			ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Faction: g.Faction,
+			CrestURL: CrestURL(s.APIBaseURL, g.ID, g.CrestKey),
+		},
 		Viewer:   ViewerView{Role: role, CharacterKey: viewerKey, Verified: verified},
 		Claim:    claim,
 		Summary:  summary,

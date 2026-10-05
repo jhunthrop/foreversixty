@@ -50,6 +50,9 @@ type Guild struct {
 	// "horde", or nil when it has never resolved to either (no exports yet, a tie, or
 	// every known character neutral/unknown-race).
 	Faction *string
+	// CrestKey is the R2 object key of this guild's uploaded crest (crest.go), nil
+	// when none is set - the header then falls back to the faction emblem.
+	CrestKey *string
 }
 
 // pendingActive reports whether g carries a claim pending within the
@@ -105,11 +108,11 @@ func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	err := s.Pool.QueryRow(ctx,
 		`select id, region, ruleset, name, default_visibility, claimed_by, claimed_at, claim_pending_by,
 		        claim_requested_at, claim_contested_at, claim_contested_by, claim_reopened_at,
-		        officer_max_rank_index, invite_token_rotated_at, faction
+		        officer_max_rank_index, invite_token_rotated_at, faction, crest_key
 		 from guilds where id = $1`, id).
 		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy, &g.ClaimedAt,
 			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy, &g.ClaimReopenedAt,
-			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt, &g.Faction)
+			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt, &g.Faction, &g.CrestKey)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Guild{}, ErrNotFound
 	}
