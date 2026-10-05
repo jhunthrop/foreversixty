@@ -317,6 +317,7 @@ describe("Tooltip's BiS hover section", function()
 			start({
 				level = 20,
 				equipped = { [1] = "item:111:link" }, -- slot id 1 is head
+				itemStats = { ["item:111:link"] = { __itemId = 111, __slot = "INVTYPE_HEAD" } },
 				globals = { GetItemInfo = function() return nil, "item:111:link" end },
 			})
 			Tooltip.data = DATA
@@ -329,10 +330,33 @@ describe("Tooltip's BiS hover section", function()
 			assert.are.equal(L.tooltipBisEquipped, calls[2].right)
 		end)
 
-		it("adds nothing for a bag item that matches no equipped slot", function()
+		-- Round-2 ruling 1, adopted: the old precondition required a
+		-- byte-exact match to what is currently worn, so a bag item being
+		-- compared got the verdict but never the recommended pick. The
+		-- fix draws the BiS row for ANY item whose equip location maps
+		-- to a tracked slot -- a bag item included -- regardless of
+		-- whether it is the exact thing already equipped there.
+		it("draws the BiS section for a bag item too, once its equip location maps to a tracked slot", function()
+			start({
+				level = 20,
+				itemStats = { ["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" } },
+				globals = { GetItemInfo = function() return nil end },
+			})
+			Tooltip.data = DATA
+			local tooltip, calls = recordingTooltip()
+			Tooltip.onTooltip(tooltip, "item:bag:link")
+			assert.are.equal("line", calls[1].kind)
+			assert.are.equal("doubleline", calls[2].kind)
+			assert.are.equal(unknownIcon() .. " item:111", calls[2].left)
+			assert.are.equal(string.format(L.tooltipBisDefaultTag, 20), calls[2].right)
+		end)
+
+		it("still adds nothing for an item whose equip location this band does not track at all", function()
 			start({ level = 20, globals = { GetItemInfo = function() return nil end } })
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
+			-- No itemStats entry at all: Compat.itemInfoInstant answers no
+			-- equip location, same as a shirt or a tabard hover.
 			Tooltip.onTooltip(tooltip, "item:bag:link")
 			assert.are.same({}, calls)
 		end)
@@ -545,6 +569,7 @@ describe("Tooltip's BiS hover section", function()
 			start({
 				level = 20,
 				equipped = { [1] = "item:111:link" },
+				itemStats = { ["item:111:link"] = { __itemId = 111, __slot = "INVTYPE_HEAD" } },
 				globals = { GetItemInfo = function() return nil, "item:111:link" end },
 			})
 			Tooltip.data = DATA

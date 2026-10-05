@@ -95,11 +95,15 @@ describe("Follow", function()
 
 	it("names an unknown cell from the locale when Data.lua has no talent for it", function()
 		-- tab 1, tier 9, column 1: a cell no talent in DATA's Holy tab has.
+		-- Shown to the player 1-indexed (round-2 ruling 4): the raw
+		-- Data.lua tier is 9, so both the fallback name and the tier in
+		-- followNext read 10, matching the real talent window's own
+		-- Tier 1-8 labelling.
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:191:", DATA))
 		local Locale = require("Locale")
 		local line = Follow.line(DATA, build, { [1] = {} })
-		local unknownName = string.format(Locale.followUnknownCell, 9, 1)
-		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 9), line)
+		local unknownName = string.format(Locale.followUnknownCell, 10, 1)
+		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 10), line)
 	end)
 end)
 

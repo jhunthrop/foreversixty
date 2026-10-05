@@ -415,14 +415,45 @@ function Tooltip.bisLines(data, slot)
 	return ops, { itemId = itemId, link = link }
 end
 
+--- The site slot an item's hover should draw its BiS row for --
+--- Gear.SLOTS_BY_EQUIP_LOCATION's own candidate list for the item's
+--- equip location (round-2 section 10 ruling 1, adopted): ANY item that maps
+--- to a tracked slot gets the row, not only the exact item currently
+--- worn there. A location with more than one candidate slot (rings,
+--- trinkets, one- and two-handers) prefers the slot the item is
+--- actually equipped in, when it is equipped in one of them, so a ring
+--- worn in finger2 draws finger2's own pick rather than finger1's; the
+--- first candidate otherwise, which is the only slot there is for every
+--- other equip location. nil for an item whose equip location this
+--- band does not track at all (a shirt, a tabard, a bag, ammo), or with
+--- no link to look up.
+function Tooltip.bisSlotFor(itemLink)
+	if itemLink == nil then
+		return nil
+	end
+	local _, _, _, equipLocation = Compat.itemInfoInstant(itemLink)
+	local slots = Gear.SLOTS_BY_EQUIP_LOCATION[equipLocation]
+	if slots == nil then
+		return nil
+	end
+	local equippedSlot = Tooltip.equippedSlotFor(itemLink)
+	for _, slot in ipairs(slots) do
+		if slot == equippedSlot then
+			return slot
+		end
+	end
+	return slots[1]
+end
+
 --- Every op this addon ever draws for one item, 0 or more: the upgrade
 --- verdict first (Tooltip.verdict, colour by meaning), then the BiS
---- section for the item's own slot -- only for an item that IS what this
---- character wears right now in one of its own slots (a bag item or
---- someone else's gear names no site slot and gets nothing here) -- then
---- any capped-stat call-outs. Pure; Tooltip.draw is what turns this into
---- real tooltip calls. weightsMessage is optional (nil is "no weights
---- message for this character yet").
+--- section for the slot Tooltip.bisSlotFor resolves -- any item whose
+--- equip location maps to a tracked slot, not only the exact-equipped
+--- link (round-2 section 10 ruling 1: a bag item being compared, an empty
+--- character-pane slot and the worn piece itself all draw the same way
+--- now) -- then any capped-stat call-outs. Pure; Tooltip.draw is what
+--- turns this into real tooltip calls. weightsMessage is optional (nil
+--- is "no weights message for this character yet").
 ---
 --- The second return is the BiS section's own recommended item, exactly
 --- as Tooltip.bisLines answers it (nil with no BiS section at all), so a
@@ -435,7 +466,7 @@ function Tooltip.sections(data, itemLink, weightsMessage)
 	end
 	local target
 	if data ~= nil then
-		local slot = Tooltip.equippedSlotFor(itemLink)
+		local slot = Tooltip.bisSlotFor(itemLink)
 		if slot ~= nil then
 			local bisOps, bisTarget = Tooltip.bisLines(data, slot)
 			for _, op in ipairs(bisOps) do

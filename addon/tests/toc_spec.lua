@@ -64,4 +64,26 @@ describe("the TOC", function()
 		assert.is_not_nil(file, "media/minimap.tga is missing; run addon/tools/make_minimap_icon.py")
 		file:close()
 	end)
+
+	-- The character header's circular ringed class crest (design section
+	-- 2 / section 4.5.1, round-2 owner ruling): one TGA per class, plus
+	-- the one ring texture Window.lua tints per class at runtime.
+	it("ships every class crest and the ring texture inside the packaged folder", function()
+		local CLASSES = {
+			"warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid",
+		}
+		for _, slug in ipairs(CLASSES) do
+			local path = "ForeverSixty/media/crests/" .. slug .. ".tga"
+			local file = io.open(path, "rb")
+			assert.is_not_nil(file, path .. " is missing; run addon/tools/make_class_crests.py")
+			if file ~= nil then
+				file:close()
+			end
+		end
+		local ring = io.open("ForeverSixty/media/crests/ring.tga", "rb")
+		assert.is_not_nil(ring, "media/crests/ring.tga is missing; run addon/tools/make_class_crests.py")
+		if ring ~= nil then
+			ring:close()
+		end
+	end)
 end)

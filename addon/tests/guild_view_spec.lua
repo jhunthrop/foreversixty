@@ -106,13 +106,35 @@ describe("GuildView", function()
 	end)
 
 	it("omits the approval count when there are none pending", function()
-		start(DATA, { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 })
+		start(DATA, { name = "Iron Vanguard", rankName = "Officer", rankIndex = 1 })
 		_G.ForeverSixtyInbox = { messages = {
 			{ type = "guild", character = "us/ashbringer/tester", guild_name = "Iron Vanguard",
-				claim_state = "unclaimed", pending_approvals = 0, rank = "member" },
+				claim_state = "unclaimed", pending_approvals = 0, rank = "officer" },
 		} }
 		local model = GuildView.summary()
 		assert.are.equal(L.guildClaimUnclaimed, model.stateLine)
+	end)
+
+	-- Round-3 owner ruling 8: a member sees none of the private state
+	-- block, not even the claim-state half, regardless of what the
+	-- message itself carries.
+	it("shows nothing at all to a member, even with claim info and a nonzero approval count", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "guild", character = "us/ashbringer/tester", guild_name = "Iron Vanguard",
+				claim_state = "claimed", pending_approvals = 3, rank = "member" },
+		} }
+		assert.is_nil(GuildView.summary().stateLine)
+	end)
+
+	it("shows the private state block to a leader, the same as an officer", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Leader", rankIndex = 0 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "guild", character = "us/ashbringer/tester", guild_name = "Iron Vanguard",
+				claim_state = "claimed", pending_approvals = 2, rank = "leader" },
+		} }
+		local model = GuildView.summary()
+		assert.are.equal(L.guildClaimClaimed .. " · " .. string.format(L.guildPendingApprovals, 2), model.stateLine)
 	end)
 
 	it("ignores a guild message addressed to a different character", function()
@@ -162,5 +184,142 @@ describe("GuildView", function()
 		_G.ForeverSixtyInbox = nil
 		view.refresh()
 		assert.is_false(view.state:IsShown())
+	end)
+end)
+
+-- The member standing line (wave-1 scope item 4), shown first on every
+-- panel: the player's biggest gear gap (real, this addon's own
+-- Gear.upgrades) and their item-level rank among guildmates (not real --
+-- ForeverSixtyData's own schema carries neither item_level nor spec per
+-- member yet, so this says exactly that rather than inventing a rank).
+describe("GuildView.standingLine", function()
+	local GuildView, Follow
+
+	local BUILD_DATA = {
+		build = "1.60.1.69893",
+		classes = { paladin = { tabs = {
+			{ name = "Holy", talents = {} },
+			{ name = "Protection", talents = {} },
+			{ name = "Retribution", talents = {} },
+		} } },
+		weights = { ["paladin-holy"] = { strength = 1.0 } },
+	}
+
+	local function start(overrides)
+		local state = {
+			class = { name = "Paladin", token = "PALADIN" },
+			talents = {
+				{ name = "Holy", talents = {} },
+				{ name = "Protection", talents = {} },
+				{ name = "Retribution", talents = {} },
+			},
+		}
+		for key, value in pairs(overrides or {}) do
+			state[key] = value
+		end
+		mock.install(state)
+		helper.load("Theme").reset()
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		helper.load("Gear")
+		helper.load("Talents")
+		Follow = helper.load("Follow")
+		GuildView = helper.load("GuildView")
+	end
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("says the gear gap needs a build, and that the rank is not in the data addon, with nothing loaded", function()
+		start()
+		local line = GuildView.standingLine(BUILD_DATA, nil)
+		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNoBuild, line)
+	end)
+
+	it("says nothing beats the plan once a build is loaded with no upgrades waiting", function()
+		start()
+		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:111:head=10:strength=10", BUILD_DATA))
+		local line = GuildView.standingLine(BUILD_DATA, build)
+		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNone, line)
+	end)
+
+	it("names the real top gear gap once the bags (or what is worn) beat the plan", function()
+		start({
+			equipped = { [1] = "|Hitem:11|h" }, -- slot id 1 is head
+			itemStats = { ["|Hitem:11|h"] = { __itemId = 11, __slot = "INVTYPE_HEAD", ITEM_MOD_STRENGTH_SHORT = 30 } },
+		})
+		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:111:head=10:strength=10", BUILD_DATA))
+		local line = GuildView.standingLine(BUILD_DATA, build)
+		assert.are.equal(L.guildStandingNoRank .. " · " .. string.format(L.guildStandingGap, "head", 20), line)
+	end)
+
+	it("wires into GuildView.summary as memberStanding, every panel's own line", function()
+		mock.install({
+			class = { name = "Paladin", token = "PALADIN" },
+			race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1,
+			guild = { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 },
+			talents = {
+				{ name = "Holy", talents = {} }, { name = "Protection", talents = {} },
+				{ name = "Retribution", talents = {} },
+			},
+		})
+		helper.load("Theme").reset()
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		helper.load("Gear")
+		helper.load("Talents")
+		helper.load("Ratings")
+		Follow = helper.load("Follow")
+		GuildView = helper.load("GuildView")
+		local model = GuildView.summary(BUILD_DATA, nil)
+		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNoBuild, model.memberStanding)
+	end)
+
+	it("leaves memberStanding nil for a caller that passes no build data at all (back-compat)", function()
+		mock.install({
+			class = { name = "Paladin", token = "PALADIN" },
+			guild = { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 },
+		})
+		helper.load("Theme").reset()
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		helper.load("Gear")
+		helper.load("Talents")
+		helper.load("Ratings")
+		Follow = helper.load("Follow")
+		GuildView = helper.load("GuildView")
+		assert.is_nil(GuildView.summary().memberStanding)
+	end)
+
+	it("shows the line first on the mounted page, ahead of the roster", function()
+		mock.install({
+			class = { name = "Paladin", token = "PALADIN" },
+			race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1,
+			guild = { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 },
+			talents = {
+				{ name = "Holy", talents = {} }, { name = "Protection", talents = {} },
+				{ name = "Retribution", talents = {} },
+			},
+		})
+		helper.load("Theme").reset()
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		helper.load("Gear")
+		helper.load("Talents")
+		helper.load("Ratings")
+		Follow = helper.load("Follow")
+		GuildView = helper.load("GuildView")
+		local view = GuildView.mount(_G.CreateFrame("Frame"), {
+			data = BUILD_DATA, contentWidth = 538, select = function() end,
+		})
+		assert.is_true(view.memberStanding:IsShown())
+		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNoBuild, view.memberStanding:GetText())
 	end)
 end)

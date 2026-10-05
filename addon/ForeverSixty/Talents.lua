@@ -196,5 +196,30 @@ function Talents.tabName(data, classSlug, tab)
 	return entry and entry.name or nil
 end
 
+--- Hyphen-separated words, each capitalised: "warrior-fury" -> "Warrior
+--- Fury", "paladin" -> "Paladin". Window.specLabel strips a spec slug's
+--- class half before calling this; Follow's build-name fallback (round-2
+--- section 10 ruling 3) passes a bare class slug straight through. Kept here,
+--- the one place both call it, rather than copied a third time -- this
+--- file loads first in the TOC (before Window, before every view), so
+--- nothing that needs it has a load-order problem reaching it.
+function Talents.titleCase(text)
+	local words = {}
+	for word in (text or ""):gmatch("[^-]+") do
+		words[#words + 1] = word:sub(1, 1):upper() .. word:sub(2)
+	end
+	return table.concat(words, " ")
+end
+
+--- The tier number the way the real talent window labels its rows --
+--- Tier 1 through 8, never Data.lua's own zero-based `tier` field.
+--- Round-2 section 10 ruling 4: every lookup against Data.lua (cellKey, tab
+--- indices, the codec) stays zero-based; only a string a player reads
+--- (the tracker, the toast, the Talents page's own unknown-cell name)
+--- goes through this first.
+function Talents.displayTier(tier)
+	return (tier or 0) + 1
+end
+
 ns.Talents = Talents
 return Talents

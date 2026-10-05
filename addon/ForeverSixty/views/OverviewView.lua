@@ -28,12 +28,24 @@ local GearView = ns.GearView or require("GearView")
 
 local OverviewView = {}
 
+--- The figure area's own placeholder when there is no number to show yet
+--- -- a plain ASCII hyphen, never a fabricated "0" (tenet 8), and never a
+--- new non-ASCII glyph (Locale.lua carries none outside "·").
+OverviewView.FIGURE_PLACEHOLDER = "-"
+
+--- Round-2 pass (owner ruling, tenets 1/4/11): every card on the grid
+--- now leads with one large figure -- "nothing reads from across the
+--- room" -- the detail line under it, never plain-weight text competing
+--- equally with everything else on the page. `figure` is the big number
+--- itself (or FIGURE_PLACEHOLDER with nothing to show); `caption` is the
+--- one line naming what it counts, directly under it.
 local function buildModel(data, build, ranks)
 	local rows = FollowView.rows(data, build, ranks)
 	if rows.empty then
 		return {
 			loaded = false, spent = 0, total = 0, fraction = 0,
-			title = L.overviewBuildNone, detail = L.overviewBuildNoneHint,
+			figure = OverviewView.FIGURE_PLACEHOLDER, caption = L.overviewBuildNone,
+			detail = L.overviewBuildNoneHint,
 			action = L.overviewBuildLoad,
 		}
 	end
@@ -43,30 +55,11 @@ local function buildModel(data, build, ranks)
 		spent = rows.spent,
 		total = rows.total,
 		fraction = rows.total > 0 and rows.spent / rows.total or 0,
-		title = rows.name,
-		progress = string.format(L.overviewBuildProgress, rows.spent, rows.total),
+		figure = tostring(rows.spent),
+		caption = string.format(L.overviewBuildProgress, rows.spent, rows.total),
 		detail = tracker.title,
 		action = L.overviewBuildOpen,
 	}
-end
-
---- Gear.upgrades scores against the PLANNED item, so a worn piece that
---- beats the plan is in its list too. "Waiting in your bags" means the
---- ones the player is not already wearing.
-function OverviewView.waiting(upgrades, slotRows)
-	local worn = {}
-	for _, row in ipairs(slotRows) do
-		if row.equippedItemId ~= nil then
-			worn[row.equippedItemId] = true
-		end
-	end
-	local waiting = {}
-	for _, upgrade in ipairs(upgrades) do
-		if not worn[upgrade.itemId] then
-			waiting[#waiting + 1] = upgrade
-		end
-	end
-	return waiting
 end
 
 local function gearDetail(gear)
@@ -76,12 +69,18 @@ local function gearDetail(gear)
 	return L.overviewGearNoUpgrades
 end
 
+--- Round-2 pass: the raw "14 of 17 slots filled" figure is dropped from
+--- this card entirely -- the planned-pieces metric (model.planned, set
+--- once a build is loaded below) is the one that answers "is my plan
+--- actually on me". With no build at all there is no plan to count
+--- pieces against, so the figure area shows the placeholder, same as
+--- the Build card's own empty state, rather than an invented "0 of 0".
 local function gearModel(data, build, ranks)
 	local filled, slots = #Export.equippedSlots(), #Export.INVENTORY_SLOTS
 	local model = {
 		filled = filled, slots = slots, planned = 0, matched = 0, upgrades = 0,
 		fraction = slots > 0 and filled / slots or 0,
-		title = string.format(L.overviewGearSlots, filled, slots),
+		figure = OverviewView.FIGURE_PLACEHOLDER, caption = "",
 		detail = L.overviewGearNeedsBuild,
 		action = L.overviewGearOpen,
 	}
@@ -98,10 +97,16 @@ local function gearModel(data, build, ranks)
 			end
 		end
 	end
-	model.upgrades = #OverviewView.waiting(upgrades, rows.slots)
+	-- Round-3 blocker fix (finding 1): this card's own count is never a
+	-- second, independently-counted figure -- it reads rows.upgrades,
+	-- the exact model the Gear page's own "UPGRADES IN YOUR BAGS"
+	-- section renders (GearView.rows/Gear.upgrades), so the two surfaces
+	-- cannot disagree about the same character at the same moment.
+	model.upgrades = #rows.upgrades
 	model.detail = gearDetail(model)
 	if model.planned > 0 then
-		model.progress = string.format(L.overviewGearMatched, model.matched, model.planned)
+		model.figure = tostring(model.matched)
+		model.caption = string.format(L.overviewGearMatched, model.matched, model.planned)
 		model.fraction = model.matched / model.planned
 	end
 	return model
@@ -137,27 +142,22 @@ local function ratingLine()
 	return string.format(L.overviewRating, card.rating, card.fights)
 end
 
---- How much of the code the sync card shows: enough to read the head
---- ("FS1:<build>:<class>") and see it is a real code, not the whole thing.
-OverviewView.PREVIEW_CHARS = 28
-
---- The card's line under its title when there is a code: its first
---- characters and its length. The card's code box is off-card and
---- invisible (it exists for Ctrl+C), so without this the player saw a
---- Copy button and nothing to copy; the readable code stays on the Export
---- page.
-function OverviewView.preview(code)
-	return string.format(L.overviewSyncPreview, code:sub(1, OverviewView.PREVIEW_CHARS), #code)
-end
-
+--- Round-2 owner fix: there is always something to send -- the character
+--- itself, the instant it is logged in -- so this card no longer gates
+--- its own readiness on whether a code was already generated. The crest,
+--- the name and the level come straight from the client, nothing to
+--- paste for them; `canCopy` is false only on Export.string's genuine
+--- refusal (a class this client's data has no tree for at all), rare
+--- enough that it is a named exception, not this card's default reading.
 local function syncModel(data)
 	local summary = ExportView.summary(data)
 	return {
 		canCopy = summary.code ~= nil,
 		code = summary.code,
-		title = L.overviewSyncTitle,
-		detail = summary.code ~= nil and OverviewView.preview(summary.code)
-			or (summary.reason or L.overviewSyncNothing),
+		refusal = summary.code == nil and (summary.reason or L.overviewSyncNothing) or nil,
+		name = Compat.playerName() or "",
+		classToken = select(2, UnitClass("player")),
+		levelLine = string.format(L.overviewSyncLevel, Compat.playerLevel() or 0),
 		progress = ratingLine(),
 	}
 end
@@ -167,6 +167,24 @@ end
 --- player has neither loaded nor dismissed yet (Follow.pendingArrival).
 --- The diff line compares it against whatever is active right now, so a
 --- retune of the loaded build reads differently from a brand new one.
+--- Wave-1 scope item 5: the companion inbox's own "upgrade" message (Top
+--- Gear's best find for one slot), when there is one -- newest first
+--- (Follow.messages' own rule), so a second sim run supersedes the
+--- first rather than the two racing for the player's attention. nil,
+--- nothing rendered, with no message at all (tenet 8: never invented).
+--- The date is the whole inbox's own `generated_at` stamp
+--- (companion/internal/addon/addon.go's Inbox field) -- the message
+--- itself (addon.go's Message struct) carries no per-item timestamp.
+function OverviewView.upgradeLine(inbox, key)
+	local message = Follow.messages(inbox, key, "upgrade")[1]
+	if message == nil then
+		return nil
+	end
+	local link = Compat.displayLink(message.item_id)
+	local date = type(inbox) == "table" and tostring(inbox.generated_at or ""):sub(1, 10) or ""
+	return string.format(L.inboxUpgradeLine, link, message.slot or "", message.delta or 0, date)
+end
+
 local function arrivalModel(data)
 	local pending = Follow.pendingArrival(_G.ForeverSixtyInbox)
 	if pending == nil then
@@ -200,7 +218,12 @@ local function ratingModel(advanced)
 	local name = type(UnitName) == "function" and UnitName("player") or nil
 	local card = Ratings.forCharacter(name)
 	if card == nil then
-		return { visible = true, empty = true, detail = L.ratingsNotRated }
+		-- Round-2 owner fix: the empty state says what produces a
+		-- rating, with a link, not a bare "no rating yet" dead end.
+		return {
+			visible = true, empty = true,
+			detail = L.overviewRatingNone, action = L.overviewRatingSetup,
+		}
 	end
 	local detail = status.generatedLine
 	if advanced then
@@ -323,15 +346,19 @@ function OverviewView.summary(data, rotationExpanded)
 		arrival = arrivalModel(data),
 		rating = ratingModel(advanced),
 		rotation = rotationModel(data, build, ranks, advanced, rotationExpanded),
+		upgradeLine = OverviewView.upgradeLine(_G.ForeverSixtyInbox, Export.characterKey()),
 	}
 end
 
 local function applyCard(card, model)
-	card.title:SetText(model.title or "")
-	card.detail:SetText(model.detail or "")
-	if card.progress ~= nil then
-		card.progress:SetText(model.progress or "")
+	-- card.title IS the big figure now (withBar's own fix); a card this
+	-- old generic path still serves with no figure of its own would
+	-- simply show nothing, but every caller today is one withBar built.
+	card.title:SetText(model.figure or "")
+	if card.caption ~= nil then
+		card.caption:SetText(model.caption or "")
 	end
+	card.detail:SetText(model.detail or "")
 	if card.bar ~= nil then
 		card.bar:SetValue(model.fraction)
 	end
@@ -341,14 +368,36 @@ local function applyCard(card, model)
 	return card
 end
 
+--- The sync card's own shape (round-2 owner fix): the crest, the name
+--- and the level replace the generic title/detail every other card
+--- uses applyCard for.
+local function applySync(card, model)
+	Theme.paintCrest(card.crest, card.crestRing, model.classToken)
+	card.title:SetText(model.name)
+	card.title:SetTextColor(Theme.classColor(model.classToken))
+	card.detail:SetText(model.levelLine)
+	card.refusal:SetText(model.refusal or "")
+	card.progress:SetText(model.progress or "")
+	return card
+end
+
 --- The bar and its caption sit at the card's foot, so cards with different
 --- amounts of text still line their bars up across the row.
+--- Round-2 pass (owner ruling, tenets 1/4/11): card.title becomes the
+--- big figure -- gold, the large font object, Theme.applyFont's own
+--- capability guard for a client without it -- with its own caption
+--- beside it; card.detail keeps its existing spot one line under,
+--- which is now the tracker/upgrades line rather than a build's own
+--- name competing with everything else on the page on equal footing.
+--- The bar still sits at the card's foot.
 local function withBar(card)
 	local S = Theme.SIZES
+	Theme.applyFont(card.title, "large")
+	card.title:SetTextColor(Theme.rgb(Theme.HEX.gold))
+	card.caption = Widgets.label(card, "", "muted", "small")
+	card.caption:SetPoint("LEFT", card.title, "RIGHT", S.gap * 2, 0)
 	card.bar = Cards.progressBar(card, card.innerWidth)
 	card.bar:SetPoint("BOTTOMLEFT", card, "BOTTOMLEFT", S.padding, S.padding)
-	card.progress = Widgets.label(card, "", "muted", "small")
-	card.progress:SetPoint("BOTTOMLEFT", card.bar, "TOPLEFT", 0, S.gap)
 	return card
 end
 
@@ -367,13 +416,17 @@ local function treeRows(card, count)
 	return card
 end
 
-local function applyTrees(card, trees)
+--- The one card on this page about the character's own spent choices,
+--- not a generic progress colour (design section 4.5.2): each bar is
+--- the player's own class colour (Theme.classColor), not plain gold.
+local function applyTrees(card, trees, classToken)
 	local any = false
 	for index, row in ipairs(card.rows) do
 		local tree = trees[index]
 		row.name:SetText(tree and tree.name or "")
 		row.points:SetText(tree and tostring(tree.points) or "")
 		row.bar:SetValue(tree and tree.fraction or 0)
+		Theme.paintRGB(row.bar.foreverSixtyFill, Theme.classColor(classToken))
 		any = any or (tree ~= nil and tree.points > 0)
 	end
 	card.detail:SetText("")
@@ -474,15 +527,50 @@ local function rotationRows(card)
 	return card
 end
 
+--- §10 ruling 2's own fix: the card grid's top reserves the arrival
+--- banner's height only while there is something pending to show it --
+--- a dead ~84px gap above the grid on the common case (no build queued
+--- from the companion) otherwise. Pure, so the collapse itself is
+--- covered without a frame.
+function OverviewView.gridTop(arrivalVisible)
+	local S = Theme.SIZES
+	if arrivalVisible then
+		return S.padding + OverviewView.BANNER_HEIGHT + S.cardGap
+	end
+	return S.padding
+end
+
+--- Re-anchors the card grid, the rating card and the rotation card off
+--- `gridTop` (OverviewView.gridTop's own answer for the current arrival
+--- state) and answers the page's own total content height. Cheap enough
+--- to call on every apply(): a handful of SetPoint calls, not a rebuild.
+local function reposition(view, gridTop)
+	local S = Theme.SIZES
+	local function place(card, column, row)
+		card:SetPoint("TOPLEFT", view.frame, "TOPLEFT",
+			S.padding + column * (view.columnWidth + S.cardGap),
+			-(gridTop + row * (S.cardHeight + S.cardGap)))
+	end
+	place(view.build, 0, 0)
+	place(view.gear, 1, 0)
+	place(view.trees, 0, 1)
+	place(view.sync, 1, 1)
+	local ratingTop = gridTop + 2 * (S.cardHeight + S.cardGap)
+	view.rating:SetPoint("TOPLEFT", view.frame, "TOPLEFT", S.padding, -ratingTop)
+	view.rotation:SetPoint("TOPLEFT", view.frame, "TOPLEFT",
+		S.padding, -(ratingTop + OverviewView.RATING_HEIGHT + S.cardGap))
+	view.contentHeight = ratingTop + OverviewView.RATING_HEIGHT + S.cardGap
+		+ OverviewView.ROTATION_HEIGHT + S.padding
+	return view.contentHeight
+end
+
 local function layout(parent, ctx)
 	local S = Theme.SIZES
 	local width = math.floor((ctx.contentWidth - S.cardGap) / 2)
-	local view = { frame = parent, ctx = ctx, cards = {}, rotationExpanded = false }
-	local gridTop = S.padding + OverviewView.BANNER_HEIGHT + S.cardGap
-	local function place(card, column, row)
-		card:SetPoint("TOPLEFT", parent, "TOPLEFT",
-			S.padding + column * (width + S.cardGap),
-			-(gridTop + row * (S.cardHeight + S.cardGap)))
+	local view = { frame = parent, ctx = ctx, cards = {}, rotationExpanded = false, columnWidth = width }
+	local function place(card)
+		-- Positioned for real by reposition() on the first apply(); this
+		-- only tracks which cards the grid owns, same as before.
 		view.cards[#view.cards + 1] = card
 		return card
 	end
@@ -506,14 +594,31 @@ local function layout(parent, ctx)
 	view.arrival:SetPoint("TOPLEFT", parent, "TOPLEFT", S.padding, -S.padding)
 	view.build = place(withBar(Cards.card(parent, width, S.cardHeight, L.overviewBuildEyebrow, function()
 		ctx.select("follow")
-	end)), 0, 0)
+	end)))
 	view.gear = place(withBar(Cards.card(parent, width, S.cardHeight, L.overviewGearEyebrow, function()
 		ctx.select("gear")
-	end)), 1, 0)
-	view.trees = place(treeRows(Cards.card(parent, width, S.cardHeight, L.overviewTreesEyebrow), MAX_TREES), 0, 1)
+	end)))
+	view.trees = place(treeRows(Cards.card(parent, width, S.cardHeight, L.overviewTreesEyebrow), MAX_TREES))
 	view.trees.empty = Widgets.label(view.trees, "", "muted", "small")
 	view.trees.empty:SetPoint("BOTTOMLEFT", view.trees, "BOTTOMLEFT", S.padding, S.padding)
-	view.sync = place(Cards.card(parent, width, S.cardHeight, L.overviewSyncEyebrow), 1, 1)
+	view.sync = place(Cards.card(parent, width, S.cardHeight, L.overviewSyncEyebrow))
+	-- Round-2 owner fix: the crest, the character's name (class colour)
+	-- and their level, in place of the card's own generic title/detail --
+	-- the one card on this page that needs nothing from the player to be
+	-- useful, so it leads with the character the instant one is logged
+	-- in rather than with a sentence about what the card is for.
+	view.sync.crest, view.sync.crestRing = Theme.buildCrest(view.sync, S.overviewSyncCrest)
+	view.sync.crest:SetPoint("TOPLEFT", view.sync.eyebrow, "BOTTOMLEFT", 0, -S.gap * 2)
+	view.sync.title:ClearAllPoints()
+	view.sync.title:SetPoint("LEFT", view.sync.crest, "RIGHT", S.gap * 2, 0)
+	view.sync.detail:ClearAllPoints()
+	view.sync.detail:SetPoint("TOPLEFT", view.sync.crest, "BOTTOMLEFT", 0, -S.gap)
+	-- Export.string's genuine refusal (a class this client's data has no
+	-- tree for at all) is rare enough to be a named exception, not this
+	-- card's default reading -- its own line, under the crest block.
+	view.sync.refusal = Widgets.label(view.sync, "", "warning", "small")
+	view.sync.refusal:SetPoint("TOPLEFT", view.sync.detail, "BOTTOMLEFT", 0, -S.gap)
+	view.sync.refusal:SetWidth(view.sync.innerWidth)
 	-- The rating line sits above the button, where withBar puts a caption.
 	view.sync.progress = Widgets.label(view.sync, "", "gold", "small")
 	view.sync.progress:SetPoint("BOTTOMLEFT", view.sync, "BOTTOMLEFT", S.padding, S.padding + S.buttonHeight + S.gap * 3)
@@ -527,21 +632,41 @@ local function layout(parent, ctx)
 	Widgets.field(view.codeBox):SetPoint("BOTTOMLEFT", view.copy, "TOPLEFT", 0, S.gap)
 	Widgets.field(view.codeBox):SetAlpha(0)
 	view.rating = Cards.card(parent, ctx.contentWidth, OverviewView.RATING_HEIGHT, L.overviewRatingEyebrow)
-	local ratingTop = gridTop + 2 * (S.cardHeight + S.cardGap)
-	view.rating:SetPoint("TOPLEFT", parent, "TOPLEFT", S.padding, -ratingTop)
 	view.rating.date = Widgets.label(view.rating, "", "muted", "small")
 	view.rating.date:SetPoint("TOPRIGHT", view.rating, "TOPRIGHT", -S.padding, -S.padding)
 	view.rotation = rotationRows(
 		Cards.card(parent, ctx.contentWidth, OverviewView.ROTATION_HEIGHT, L.overviewRotationEyebrow))
-	view.rotation:SetPoint("TOPLEFT", parent, "TOPLEFT",
-		S.padding, -(ratingTop + OverviewView.RATING_HEIGHT + S.cardGap))
 	view.rotation.onToggleMore = function()
 		view.rotationExpanded = not view.rotationExpanded
 		view.refresh()
 	end
-	view.contentHeight = ratingTop + OverviewView.RATING_HEIGHT + S.cardGap
-		+ OverviewView.ROTATION_HEIGHT + S.padding
+	-- The companion inbox's own upgrade line (wave-1 scope item 5): the
+	-- last region on the page, so collapsing it when there is no
+	-- message never has to move anything else -- only the scroll's own
+	-- content height shrinks back to meet it.
+	view.upgradeLine = Widgets.label(parent, "", "gold", "small")
+	view.upgradeLine:SetPoint("TOPLEFT", view.rotation, "BOTTOMLEFT", 0, -S.cardGap)
+	view.upgradeLine:Hide()
+	-- Positions everything reposition() owns at their default (arrival
+	-- hidden) spot, so the frames have a point before the first apply();
+	-- apply() immediately re-anchors them off the real model anyway.
+	reposition(view, OverviewView.gridTop(false))
 	return view
+end
+
+--- `text` nil collapses this region entirely (it is always the page's
+--- last one, so nothing else needs to move); answers the extra height
+--- to add to view.contentHeight.
+OverviewView.UPGRADE_LINE_HEIGHT = Theme.SIZES.rowHeight + Theme.SIZES.cardGap
+
+local function applyUpgradeLine(view, text)
+	if text == nil then
+		view.upgradeLine:Hide()
+		return 0
+	end
+	view.upgradeLine:SetText(text)
+	view.upgradeLine:Show()
+	return OverviewView.UPGRADE_LINE_HEIGHT
 end
 
 local function applyArrival(view, model)
@@ -604,15 +729,20 @@ end
 function OverviewView.apply(view, model)
 	view.model = model
 	applyArrival(view, model.arrival)
+	-- §10 ruling 2's own fix: the grid (and everything under it) moves up
+	-- to fill the banner's own space the instant it has nothing to show,
+	-- rather than leaving a dead gap reserved for the common case.
+	reposition(view, OverviewView.gridTop(model.arrival.visible))
 	applyCard(view.build, model.build)
 	applyCard(view.gear, model.gear)
-	applyTrees(view.trees, model.trees)
-	applyCard(view.sync, model.sync)
+	applyTrees(view.trees, model.trees, select(2, UnitClass("player")))
+	applySync(view.sync, model.sync)
 	applyRating(view.rating, model.rating)
 	applyRotation(view.rotation, model.rotation)
 	Widgets.setEnabled(view.copy, model.sync.canCopy)
+	local upgradeLineHeight = applyUpgradeLine(view, model.upgradeLine)
 	if view.scroll ~= nil then
-		view.scroll:SetContentHeight(view.contentHeight)
+		view.scroll:SetContentHeight(view.contentHeight + upgradeLineHeight)
 	end
 	return view
 end

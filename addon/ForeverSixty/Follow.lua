@@ -300,9 +300,14 @@ function Follow.line(data, build, ranks)
 	local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
 	local tab = Talents.tabName(data, build.classSlug, point.tab) or ""
 	-- A cell Data.lua has no talent for is a code from a build whose trees
-	-- moved. Naming the cell is more use than naming nothing.
-	local name = talent and talent.name or string.format(L.followUnknownCell, point.tier, point.column)
-	return string.format(L.followNext, name, tab, point.tier)
+	-- moved. Naming the cell is more use than naming nothing. Both the
+	-- fallback name and the tier below are shown to the player 1-indexed
+	-- (Talents.displayTier, round-2 section 10 ruling 4) -- point.tier itself
+	-- stays the raw, zero-based Data.lua value everywhere else in this
+	-- file (cellKey, nextPoint's own lookups).
+	local name = talent and talent.name
+		or string.format(L.followUnknownCell, Talents.displayTier(point.tier), point.column)
+	return string.format(L.followNext, name, tab, Talents.displayTier(point.tier))
 end
 
 --- How many distinct talent cells `a` and `b`'s orders disagree on (either

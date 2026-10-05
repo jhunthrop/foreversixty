@@ -76,6 +76,14 @@ function GearView.noteFor(row)
 	if row.plannedItemId ~= nil and row.plannedItemId == row.equippedItemId then
 		return L.gearMatches
 	end
+	-- Round-3 fix (§4.5.4): a slot the build never planned, with
+	-- something worn there anyway (no sourced pick at this band) --
+	-- GearView.noteFor's own honest default used to say nothing at all
+	-- here, which read as a silent correctly-geared slot rather than
+	-- the "nothing to judge this against" it actually is.
+	if row.plannedItemId == nil and row.equippedItemId ~= nil then
+		return L.gearNoPlanForSlot
+	end
 	return ""
 end
 
@@ -86,6 +94,9 @@ function GearView.noteColor(row)
 		return "gold"
 	end
 	if row.differs then
+		return "muted"
+	end
+	if row.plannedItemId == nil and row.equippedItemId ~= nil then
 		return "muted"
 	end
 	return "success"
@@ -148,26 +159,89 @@ local function fillItemColumn(column, itemId, link)
 	paintQuality(column.text, info.quality)
 end
 
---- Two icon/name/tooltip pairs per row: the planned item on the left,
---- what is equipped in that slot on the right. Passed to Widgets.list as
---- the row builder, the same way upgradeRow is. Named apart from the pure
---- GearView.slotRow model function above, which it renders.
+local function showAs(region, shown)
+	if shown then
+		region:Show()
+	else
+		region:Hide()
+	end
+end
+
+--- A slot-label column (the client's own slot vocabulary, L.gearSlotLabels),
+--- then the planned item and what is equipped in that slot, each at the
+--- same fixed width (round-3 fix, §4.5.4): equal Planned/Equipped columns
+--- sized to clear the longest band-20 item name without truncating, which
+--- a width proportional to `width` could not promise. Passed to
+--- Widgets.list as the row builder, the same way upgradeRow is. Named
+--- apart from the pure GearView.slotRow model function above, which it
+--- renders.
 function GearView.slotColumns(parent, width)
-	local half = math.floor((width - Theme.SIZES.gap) / 2)
+	local S = Theme.SIZES
 	local frame = CreateFrame("Frame", nil, parent)
-	frame:SetSize(width, Theme.SIZES.rowHeight)
-	local planned = Widgets.itemRow(frame, half)
-	planned.frame:SetPoint("LEFT", frame, "LEFT", 0, 0)
-	local equipped = Widgets.itemRow(frame, half)
-	equipped.frame:SetPoint("LEFT", planned.frame, "RIGHT", Theme.SIZES.gap, 0)
-	return { frame = frame, planned = planned, equipped = equipped }
+	frame:SetSize(width, S.rowHeight)
+	local label = Widgets.label(frame, "", "muted", "small")
+	label:SetPoint("LEFT", frame, "LEFT", 0, 0)
+	label:SetWidth(S.gearSlotLabelWidth)
+	local planned = Widgets.itemRow(frame, S.gearNameWidth)
+	planned.frame:SetPoint("LEFT", label, "RIGHT", S.gearRowGap, 0)
+	local equipped = Widgets.itemRow(frame, S.gearNameWidth)
+	equipped.frame:SetPoint("LEFT", planned.frame, "RIGHT", S.gearRowGap, 0)
+	-- The tick glyph's own reserved strip, inside the equipped column's
+	-- own width -- never a fourth top-level column (round-3's own rule).
+	-- The name shrinks by the strip and one gap, never by a fourth share
+	-- of the row. renderSlot switches the name to the wider
+	-- `nameWidthProse` instead, on the one row whose note is prose, not
+	-- a glyph or a short tag (the unplanned-but-equipped case).
+	local tickStrip = S.gearPlannedTick + S.gap
+	equipped.nameWidthTick = S.gearNameWidth - tickStrip - S.gap
+	equipped.nameWidthProse = S.gearNameWidth - S.gearNoPlanWidth - S.gap
+	equipped.text:SetWidth(equipped.nameWidthTick)
+	local tick = CreateFrame("Frame", nil, equipped.frame)
+	tick:SetSize(S.gearPlannedTick, S.gearPlannedTick)
+	tick:SetPoint("RIGHT", equipped.frame, "RIGHT", 0, 0)
+	tick:EnableMouse(true)
+	tick.icon = tick:CreateTexture(nil, "OVERLAY")
+	tick.icon:SetAllPoints(tick)
+	tick.icon:SetTexture(Theme.MEDIA.gearTick)
+	tick:Hide()
+	-- The words it used to spell out in full as row text, moved to a
+	-- hover tooltip instead (round-3 fix) -- the same Theme.showLines
+	-- mechanism the minimap button already uses for its own plain
+	-- multi-line tooltip.
+	tick:SetScript("OnEnter", function(self)
+		Theme.showLines(self, { L.gearPlannedTickTooltip })
+	end)
+	tick:SetScript("OnLeave", function()
+		Theme.hideTooltip()
+	end)
+	equipped.tick = tick
+	-- "Yours is better (+N)" still reads as text in the tick's own
+	-- narrow strip (it only competes with the one slot where the worn
+	-- piece beats the plan, not with "As planned"); "No plan for this
+	-- slot" is prose, not a short tag, and gets its own wider strip
+	-- (gearNoPlanWidth) instead -- renderSlot switches both the width
+	-- and the anchor per row, once the note is known.
+	equipped.right:ClearAllPoints()
+	equipped.right:SetJustifyH("RIGHT")
+	return { frame = frame, label = label, planned = planned, equipped = equipped, tickStrip = tickStrip }
 end
 
 local function renderSlot(row, item)
 	fillItemColumn(row.planned, item.plannedItemId, item.plannedLink)
 	fillItemColumn(row.equipped, item.equippedItemId, item.equippedLink)
-	row.equipped.right:SetText(GearView.noteFor(item))
-	row.equipped.right:SetTextColor(Theme.rgb(Theme.HEX[GearView.noteColor(item)]))
+	row.label:SetText(L.gearSlotLabels[item.slot] or item.slot)
+	local S = Theme.SIZES
+	local note = GearView.noteFor(item)
+	local matches = note == L.gearMatches
+	local noPlan = note == L.gearNoPlanForSlot
+	local equipped = row.equipped
+	local strip = noPlan and S.gap or row.tickStrip
+	equipped.text:SetWidth(noPlan and equipped.nameWidthProse or equipped.nameWidthTick)
+	equipped.right:SetPoint("RIGHT", equipped.frame, "RIGHT", -strip, 0)
+	equipped.right:SetWidth(noPlan and S.gearNoPlanWidth or row.tickStrip)
+	equipped.right:SetText(matches and "" or note)
+	equipped.right:SetTextColor(Theme.rgb(Theme.HEX[GearView.noteColor(item)]))
+	showAs(equipped.tick, matches)
 end
 
 function GearView.upgradeRow(parent, width)
@@ -203,17 +277,22 @@ local function renderUpgrade(row, item)
 end
 
 local function layout(parent, ctx)
-	local gap, padding = Theme.SIZES.gap, Theme.SIZES.padding
+	local S = Theme.SIZES
+	local gap, padding = S.gap, S.padding
 	local view = { frame = parent, ctx = ctx }
 	view.reason = Widgets.label(parent, "", "warning", "small")
 	view.reason:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
+	-- The two name columns' headers sit over their own column, not at a
+	-- proportional midpoint -- round-3's own fixed-width rule applies to
+	-- the headers too, or they drift off the columns they label.
+	local plannedLeft = S.gearSlotLabelWidth + S.gearRowGap
+	local equippedLeft = plannedLeft + S.gearNameWidth + S.gearRowGap
 	view.plannedHeader = Widgets.label(parent, L.gearPlanned, "muted", "small")
-	view.plannedHeader:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", 0, -gap)
+	view.plannedHeader:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", plannedLeft, -gap)
 	view.equippedHeader = Widgets.label(parent, L.gearEquipped, "muted", "small")
-	view.equippedHeader:SetPoint("LEFT", view.plannedHeader, "RIGHT",
-		math.floor(ctx.contentWidth / 2), 0)
+	view.equippedHeader:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", equippedLeft, -gap)
 	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.gearSlotRows, GearView.slotColumns)
-	view.slots.frame:SetPoint("TOPLEFT", view.plannedHeader, "BOTTOMLEFT", 0, -gap)
+	view.slots.frame:SetPoint("TOPLEFT", view.plannedHeader, "BOTTOMLEFT", -plannedLeft, -gap)
 	view.slots:SetRenderer(renderSlot)
 	view.bagsTitle = Widgets.label(parent, L.gearBagUpgrades, "muted", "small")
 	view.bagsTitle:SetPoint("TOPLEFT", view.slots.frame, "BOTTOMLEFT", 0, -padding)
@@ -223,6 +302,11 @@ local function layout(parent, ctx)
 		GearView.upgradeRow)
 	view.upgrades.frame:SetPoint("TOPLEFT", view.bagsTitle, "BOTTOMLEFT", 0, -gap)
 	view.upgrades:SetRenderer(renderUpgrade)
+	-- §10 ruling 5's own fix: the section used to draw its header and
+	-- nothing under it when the list was genuinely empty, which read as
+	-- broken rather than confirmed-good.
+	view.upgradesEmpty = Widgets.label(parent, L.gearNone, "muted", "small")
+	view.upgradesEmpty:SetPoint("TOPLEFT", view.bagsTitle, "BOTTOMLEFT", 0, -gap)
 	return view
 end
 
@@ -232,6 +316,7 @@ function GearView.apply(view, model)
 	view.combat:SetText(Theme.inCombat() and L.gearInCombat or "")
 	view.slots:SetItems(model.slots)
 	view.upgrades:SetItems(model.upgrades)
+	showAs(view.upgradesEmpty, #model.upgrades == 0)
 	if model.empty then
 		view.goFollow:Show()
 	else
