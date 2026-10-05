@@ -264,7 +264,7 @@ and officer views stay fixture-tested only, as expected):
   a content difference, not a shape one; the h1 carries no `text-transform`, so the live
   page will render the name exactly as the API sends it, uppercase and all.
 
-## Live fix round (branch `guild-centre-fixes`)
+## Live fix round (branch `guild-centre-fixes`, sha `1d7722a6`)
 
 Six defects the owner found testing the live page as OLYMPUS XXVII's own leader (guild 2,
 `api/cmd/seedguild`'s real fixture). All six fixed, API and web, in one branch.
