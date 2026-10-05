@@ -42,9 +42,13 @@ function envelope(data: unknown, status = 200) {
 const [REGION, RULESET, SLUG] = FIXTURE_GUILD_CENTRE_PATH.split('/');
 const GUILD_URL = `/guild/${FIXTURE_GUILD_CENTRE_PATH}`;
 
-function meFixture(viewerName: string | null, rank: 'leader' | 'officer' | 'member' = 'member') {
+function meFixture(
+  viewerName: string | null,
+  rank: 'leader' | 'officer' | 'member' = 'member',
+  battletag = 'Fixture#1234',
+) {
   return {
-    user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false, premium: false },
+    user: { id: 7, battletag, email: null, role: 'user', anonymize: false, premium: false },
     characters:
       viewerName === null
         ? []
@@ -71,6 +75,7 @@ async function stubCore(
   page: Page,
   viewerName: string | null,
   rank?: 'leader' | 'officer' | 'member',
+  battletag?: string,
 ): Promise<void> {
   await page.route(`**/v1/guilds/${REGION}/${RULESET}/${SLUG}`, (route) =>
     route.fulfill(envelope(buildMockGuildPage())),
@@ -82,7 +87,7 @@ async function stubCore(
           contentType: 'application/json',
           body: '{"ok":false,"data":null,"error":null,"request_id":"r"}',
         })
-      : route.fulfill(envelope(meFixture(viewerName, rank))),
+      : route.fulfill(envelope(meFixture(viewerName, rank, battletag))),
   );
   await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
     route.fulfill(envelope(buildMockHome(viewerName))),
@@ -119,6 +124,18 @@ test.describe('tab strip renders and hash-routes', () => {
     await page.getByTestId('guild-tab-readiness').click();
     await expect(page).toHaveURL(/#readiness$/);
     await expect(page.getByTestId('guild-readiness-tab')).toBeVisible();
+  });
+
+  // Fix round 1, item 1: the officer strip moved into the persistent band alongside the
+  // standing line and tab strip, so a claimed guild's officer sees it on every tab, not
+  // just Overview.
+  test('the officer strip stays visible across tabs, inside the full-bleed band', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(GUILD_URL);
+    await expect(page.getByTestId('guild-officer-strip')).toBeVisible();
+    await page.getByTestId('guild-tab-readiness').click();
+    await expect(page.getByTestId('guild-officer-strip')).toBeVisible();
   });
 
   test('a public visitor sees only the three public tabs, never Roster/Readiness/Loot/Settings', async ({
@@ -373,14 +390,21 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
     await expect(page.getByTestId('guild-confirm-claim-link')).toHaveText('Confirm the claim');
   });
 
-  test('contesting a claim calls the contest endpoint and shows the frozen notice', async ({ page }) => {
+  // Fix round 1, item 2: "Contest this claim" moved out of the header band entirely and
+  // into the Settings tab, under the claim block -- and it never reaches the account that
+  // already holds the claim. This officer's own battletag ('Fixture#1234', meFixture's
+  // default) does not match `claim.claimed_by_name` ('Kraggor', buildMockHome's own
+  // fixture value), so they read as "a verified officer of a different account."
+  test('"Contest this claim" never renders in the header, only in Settings for a non-claimant officer', async ({
+    page,
+  }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     let homeCalls = 0;
     await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) => {
       homeCalls += 1;
       const claim =
         homeCalls === 1
-          ? { state: 'claimed' as const, frozen: false }
+          ? { state: 'claimed' as const, frozen: false, claimed_by_name: 'Kraggor' }
           : { state: 'contested' as const, since: '2026-12-01T00:00:00Z', frozen: true };
       return route.fulfill(envelope({ ...buildMockHome(VIEWER_OFFICER), claim }));
     });
@@ -390,10 +414,24 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       return route.fulfill(envelope({ status: 'contested' }));
     });
     await page.goto(GUILD_URL);
+    await expect(page.getByTestId('guild-home-contest-button')).toHaveCount(0);
+
+    await page.getByTestId('guild-tab-settings').click();
     await page.getByTestId('guild-home-contest-button').click();
     await page.getByTestId('guild-home-contest-confirm-button').click();
     await expect(page.getByTestId('guild-home-frozen')).toBeVisible();
     expect(contestCalled).toBe(true);
+  });
+
+  test('the claimant’s own account sees no Contest control anywhere, not even in Settings', async ({
+    page,
+  }) => {
+    // This officer's own battletag matches buildMockHome's own `claimed_by_name`
+    // ('Kraggor') -- they are the account that holds the claim.
+    await stubCore(page, VIEWER_OFFICER, 'leader', 'Kraggor');
+    await page.goto(`${GUILD_URL}#settings`);
+    await expect(page.getByTestId('guild-settings-claim-contest')).toHaveCount(0);
+    await expect(page.getByTestId('guild-home-contest-button')).toHaveCount(0);
   });
 
   test('a contested claim disables Approve and Remove on the roster tab', async ({ page }) => {

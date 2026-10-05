@@ -12,13 +12,15 @@
      "before Thursday" sentence are NOT rendered here -- Guild.svelte renders them once,
      directly under the header facts line and above the tab strip itself (spec §4.0/§4.A.1:
      "the tab strip ... sits directly under the role-based line"), so they stay visible
-     regardless of which tab is open rather than being Overview-only content. -->
+     regardless of which tab is open rather than being Overview-only content. Fix round 1
+     (2026-10-04): the officer strip (claim badge, approvals, invite) moved out of this
+     card for the same reason -- it is now part of Guild.svelte's own full-bleed band, so
+     it, too, stays visible on every tab rather than Overview-only. -->
 <script lang="ts">
   import type { GuildHomeSummary } from '../../lib/guild/api';
   import { fetchGuildLoot, fetchGuildReadiness } from '../../lib/guild/api';
   import { sortReadinessWorstFirst } from '../../lib/guild/readiness-view';
   import { bossPickerLabel, nextUnkilledEncounter } from '../../lib/guild/loot-view';
-  import GuildOfficerStrip from './GuildOfficerStrip.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
 
   /** A report row this card can summarize: the full `GuildHomeReport` shape (member/
@@ -39,19 +41,12 @@
     role,
     reports,
     summary,
-    claimed,
-    claimedByName,
     onSelectTab,
   }: {
     guildId: number | null;
     role: 'public' | 'member' | 'officer' | 'moderator';
     reports: readonly OverviewReport[];
     summary: GuildHomeSummary | undefined;
-    /** Only a settled, `claimed` guild shows the officer glance strip here -- an
-     *  unclaimed/pending/contested guild's claim controls are the global role-line's own
-     *  job (Guild.svelte, unchanged v1 mechanism), not this card's. */
-    claimed: boolean;
-    claimedByName: string | null;
     onSelectTab: (tab: GuildTabId) => void;
   } = $props();
 
@@ -89,15 +84,6 @@
 </script>
 
 <section class="flex flex-col gap-5" data-testid="guild-overview-tab">
-  {#if role === 'officer' && guildId !== null && claimed}
-    <GuildOfficerStrip
-      {guildId}
-      {claimedByName}
-      waitingCount={summary?.waiting_for_approval ?? 0}
-      onSelectRoster={() => onSelectTab('roster')}
-    />
-  {/if}
-
   {#if role !== 'public'}
     <div
       class="bg-raised border-line rounded-panel flex flex-col gap-2.5 border p-4"

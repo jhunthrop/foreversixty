@@ -260,7 +260,6 @@ export function buildMockRoster(): GuildRosterRow[] {
 export function buildMockHome(viewerName: string | null): GuildHome {
   const roster = buildMockRoster();
   const pending = roster.filter((r) => !r.verified);
-  const verifiedCount = roster.filter((r) => r.verified).length;
   const belowFloor = roster.filter((r) => (r.rating?.overall ?? 100) < 55).length;
   const viewerRow = viewerName === null ? null : (roster.find((r) => r.name === viewerName) ?? null);
   const role: 'public' | 'member' | 'officer' =
@@ -295,7 +294,11 @@ export function buildMockHome(viewerName: string | null): GuildHome {
     },
     claim: { state: 'claimed', since: '2026-10-01T00:00:00Z', frozen: false, claimed_by_name: 'Kraggor' },
     summary: {
-      raiders: verifiedCount,
+      // The Overview Roster card's own "N raiders" count (fix round 1, 2026-10-04): every
+      // registered roster row, not the verified subset -- `waiting_for_approval` already
+      // says how many of these are not yet verified; `raiders` undercounting them (using
+      // only `verifiedCount`) read as the roster being 3 people short.
+      raiders: roster.length,
       waiting_for_approval: pending.length,
       below_rating_floor: belowFloor,
       named_encounters_down: 1,
