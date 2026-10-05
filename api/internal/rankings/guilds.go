@@ -167,6 +167,10 @@ type GuildIdentity struct {
 	Name    string `json:"name"`
 	Region  string `json:"region"`
 	Ruleset string `json:"ruleset"`
+	// Faction is guilds.RecomputeFaction's last computed result - "alliance", "horde",
+	// or null when it has never resolved to either, so the header simply paints no
+	// emblem (design/specs/2026-10-04-guild-page.md §12.2).
+	Faction *string `json:"faction"`
 }
 
 // GuildReportLimit is how many recent reports the guild page lists.
@@ -177,10 +181,10 @@ const GuildReportLimit = 25
 func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild, bool, error) {
 	out := Guild{Progression: []Progression{}, RosterBest: []RosterBest{}, Reports: []GuildReport{}}
 	err := s.Pool.QueryRow(ctx,
-		`select id, name, region, ruleset from guilds
+		`select id, name, region, ruleset, faction from guilds
 		 where region = $1 and ruleset = $2 and lower(name) = lower($3)`,
 		strings.ToLower(region), strings.ToLower(ruleset), name).
-		Scan(&out.Guild.ID, &out.Guild.Name, &out.Guild.Region, &out.Guild.Ruleset)
+		Scan(&out.Guild.ID, &out.Guild.Name, &out.Guild.Region, &out.Guild.Ruleset, &out.Guild.Faction)
 	if err == pgx.ErrNoRows {
 		return Guild{}, false, nil
 	}

@@ -352,3 +352,52 @@ func TestVerifyByLogsCountsANullOwnerReport(t *testing.T) {
 		t.Fatal("a null-owner report is not owned by the character's own account, and should still count toward verification")
 	}
 }
+
+func TestBackfillFactionsComputesExistingGuildsFactionWithNoMembershipChange(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	seedExportedCharacter(t, pool, gid, "us/hardcore/backfillhuman1", "human")
+	seedExportedCharacter(t, pool, gid, "us/hardcore/backfillhuman2", "human")
+	seedExportedCharacter(t, pool, gid, "us/hardcore/backfillorc1", "orc")
+
+	// faction_updated_at is still null here: seedCharacter/seedExportedCharacter insert
+	// guild_characters rows directly, bypassing every trigger point that would otherwise
+	// have already recomputed it - exactly the "predates migration 0031" shape this sweep
+	// step backfills.
+	var updatedAt *time.Time
+	pool.QueryRow(ctx, `select faction_updated_at from guilds where id = $1`, gid).Scan(&updatedAt)
+	if updatedAt != nil {
+		t.Fatal("faction_updated_at should start null before any backfill or trigger has run")
+	}
+
+	if err := s.BackfillFactions(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var faction *string
+	pool.QueryRow(ctx, `select faction from guilds where id = $1`, gid).Scan(&faction)
+	if faction == nil || *faction != FactionAlliance {
+		t.Fatalf("faction = %v, want alliance", faction)
+	}
+}
+
+func TestBackfillFactionsLeavesAnAlreadyComputedGuildAlone(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	if _, err := pool.Exec(ctx,
+		`update guilds set faction = 'horde', faction_updated_at = now() - interval '1 hour' where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := s.BackfillFactions(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var faction *string
+	pool.QueryRow(ctx, `select faction from guilds where id = $1`, gid).Scan(&faction)
+	if faction == nil || *faction != "horde" {
+		t.Fatalf("faction = %v, want horde unchanged (already computed once)", faction)
+	}
+}

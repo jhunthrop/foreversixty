@@ -137,12 +137,17 @@ func StampBnetRoster(ctx context.Context, tx pgx.Tx, guildID, bnetGuildID int64,
 	return nil
 }
 
-// AfterGuildChange runs RecomputeMembership and the lost-claim check for
-// one account in one guild — the pair of calls every caller needs after
-// it changes a guild_characters row. Moved here from addon.afterGuildChange
-// (spec §4.2 step 5) so the Battle.net import path can share it.
+// AfterGuildChange runs RecomputeMembership, RecomputeFaction and the lost-claim check
+// for one account in one guild — the trio of calls every caller needs after it changes a
+// guild_characters row. Moved here from addon.afterGuildChange (spec §4.2 step 5) so the
+// Battle.net import path can share it; this is also PutExports' own export-save path's
+// one route to both recomputes (addon.Store.syncGuild calls this, never RecomputeMembership
+// or RecomputeFaction directly).
 func AfterGuildChange(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
 	if err := RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
+		return err
+	}
+	if err := RecomputeFaction(ctx, tx, guildID); err != nil {
 		return err
 	}
 	return ReleaseClaimIfLost(ctx, tx, guildID, userID)
