@@ -154,7 +154,18 @@ export interface GuildPage {
   // §12.2.B): optional and `null` are both "no faction" -- see `GuildSummary.faction`'s own
   // comment (lib/guild/api.ts) for the full ruling, restated here since this public shape
   // carries its own inline `guild` object rather than importing that type.
-  guild: { id: number; name: string; region: string; ruleset: string; faction?: 'alliance' | 'horde' | null };
+  // `crest_url` (docs/contracts/2026-10-05-guild-crest-api.md): the public half of the
+  // same field `GuildSummary.crest_url` carries on the member-gated home response -- see
+  // that comment (lib/guild/api.ts) for the full ruling; read through the same
+  // `guildMarkSrc` helper, never compared directly.
+  guild: {
+    id: number;
+    name: string;
+    region: string;
+    ruleset: string;
+    faction?: 'alliance' | 'horde' | null;
+    crest_url?: string | null;
+  };
   progression: GuildProgressionRow[];
   roster_best: GuildRosterBest[];
   reports: { id: string; title: string; zone: string; created_at: string }[];

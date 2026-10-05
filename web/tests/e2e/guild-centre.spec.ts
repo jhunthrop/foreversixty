@@ -660,3 +660,127 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
     );
   });
 });
+
+// Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): the Settings tab's
+// "Guild crest" block, officer only -- the web lane's own choice (the contract itself
+// mentions a moderator may remove via the API, but this build offers the block to
+// `role === 'officer'` alone, matching the build brief).
+test.describe('guild crest (Settings tab, officer only)', () => {
+  test('an officer sees the block with the faction default', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#settings`);
+    await expect(page.getByTestId('guild-crest-settings')).toBeVisible();
+    await expect(page.getByTestId('guild-crest-current')).toHaveAttribute('src', /horde-logo-512\.webp$/);
+    await expect(page.getByTestId('guild-crest-default-caption')).toHaveText("Default: your faction's logo");
+  });
+
+  test('a member never sees the block', async ({ page }) => {
+    await stubCore(page, VIEWER_MEMBER);
+    await page.goto(`${GUILD_URL}#settings`);
+    // The Settings tab itself is officer/moderator only -- a member's stale/bookmarked
+    // #settings hash falls back to the first tab they are allowed (Overview).
+    await expect(page.getByTestId('guild-crest-settings')).toHaveCount(0);
+  });
+
+  test('choosing a small PNG shows the preview and enables Save; Save routes PUT and the header ring switches to the returned crest', async ({
+    page,
+  }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    let homeCalls = 0;
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) => {
+      homeCalls += 1;
+      const crestUrl = homeCalls > 1 ? 'https://cdn.test/guilds/2024/crest.webp?v=abc' : null;
+      return route.fulfill(envelope(buildMockHome(VIEWER_OFFICER, 'horde', crestUrl)));
+    });
+    let putCalled = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/crest`, (route) => {
+      if (route.request().method() !== 'PUT') return route.fallback();
+      putCalled = true;
+      return route.fulfill(envelope({ crest_url: 'https://cdn.test/guilds/2024/crest.webp?v=abc' }));
+    });
+
+    await page.goto(`${GUILD_URL}#settings`);
+    const saveButton = page.getByTestId('guild-crest-save');
+    await expect(saveButton).toBeDisabled();
+
+    await page.getByTestId('guild-crest-file-input').setInputFiles({
+      name: 'crest.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from(new Uint8Array(1024)),
+    });
+    await expect(page.getByTestId('guild-crest-preview')).toBeVisible();
+    await expect(saveButton).toBeEnabled();
+
+    await saveButton.click();
+    expect(putCalled).toBe(true);
+    await expect(page.getByTestId('guild-faction-crest')).toHaveAttribute('src', /crest\.webp\?v=abc$/);
+  });
+
+  test('Remove routes DELETE and the ring falls back to the faction logo', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    let homeCalls = 0;
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) => {
+      homeCalls += 1;
+      const crestUrl = homeCalls > 1 ? null : 'https://cdn.test/guilds/2024/crest.webp?v=keep';
+      return route.fulfill(envelope(buildMockHome(VIEWER_OFFICER, 'horde', crestUrl)));
+    });
+    let deleteCalled = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/crest`, (route) => {
+      if (route.request().method() !== 'DELETE') return route.fallback();
+      deleteCalled = true;
+      return route.fulfill({ status: 204 });
+    });
+
+    await page.goto(`${GUILD_URL}#settings`);
+    await expect(page.getByTestId('guild-faction-crest')).toHaveAttribute('src', /crest\.webp\?v=keep$/);
+
+    await page.getByTestId('guild-crest-remove').click();
+    await page.getByTestId('guild-crest-remove-confirm-button').click();
+    expect(deleteCalled).toBe(true);
+    await expect(page.getByTestId('guild-faction-crest')).toHaveAttribute('src', /horde-logo-512\.webp$/);
+  });
+
+  test('an oversize file shows the size message without a request', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    let putCalled = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/crest`, (route) => {
+      putCalled = true;
+      return route.fulfill(envelope({ crest_url: 'x' }));
+    });
+
+    await page.goto(`${GUILD_URL}#settings`);
+    await page.getByTestId('guild-crest-file-input').setInputFiles({
+      name: 'big.png',
+      mimeType: 'image/png',
+      buffer: Buffer.alloc(3 * 1024 * 1024),
+    });
+    await expect(page.getByTestId('guild-crest-file-error')).toHaveText(
+      'That file is 3.0 MB; the limit is 2 MB.',
+    );
+    await expect(page.getByTestId('guild-crest-save')).toBeDisabled();
+    expect(putCalled).toBe(false);
+  });
+
+  test('the picker has a visible label, Save/Remove have distinct names, and the file error is role=alert', async ({
+    page,
+  }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(
+        envelope(buildMockHome(VIEWER_OFFICER, 'horde', 'https://cdn.test/guilds/2024/crest.webp?v=1')),
+      ),
+    );
+    await page.goto(`${GUILD_URL}#settings`);
+
+    await expect(page.getByLabel('Choose a crest image')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Remove', exact: true })).toBeVisible();
+
+    await page.getByTestId('guild-crest-file-input').setInputFiles({
+      name: 'bad.gif',
+      mimeType: 'image/gif',
+      buffer: Buffer.from('x'),
+    });
+    await expect(page.getByTestId('guild-crest-file-error')).toHaveAttribute('role', 'alert');
+  });
+});

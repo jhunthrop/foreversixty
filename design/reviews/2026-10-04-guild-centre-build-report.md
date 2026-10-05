@@ -451,3 +451,79 @@ E2E_SKIP_BUILD=1 npx playwright test tests/e2e/guild-centre.spec.ts --project=de
 
 **Captures:** `design/mocks/renders/build/guild-header-{horde-1440,alliance-1440,2000,390}.png`
 (gitignored, local-only, same as every other `design/mocks/renders/*` file).
+
+## Crest round (2026-10-05, docs/contracts/2026-10-05-guild-crest-api.md)
+
+Built against fixtures only — the API lane's own worktree builds the real
+`PUT`/`DELETE /v1/guilds/{id}/crest` and `crest_url` fields in parallel; this round routes
+both in Playwright and stubs `crest_url` on the fixture guild.
+
+1. **`guildMarkSrc` (`web/src/lib/guild/mark.ts`), one helper for "what image represents
+   this guild."** `crest_url ?? factionLogoSrc(faction) ?? null`, nothing else reads
+   `crest_url` or `faction` to pick an image directly — not the header, not the new
+   Settings block. `GuildSummary.crest_url` and `GuildPage.guild.crest_url` (both
+   `?: string | null`) are the two guild shapes it accepts structurally.
+2. **`FactionCrest.svelte` gains an optional `src` override.** `src === undefined` (every
+   caller before this round) is byte-identical to the old behaviour, including the "a
+   null/unknown-faction guild renders nothing at all" rule the header-round e2e suite
+   already asserts — this round deliberately does **not** add a "neutral disc" fallback for
+   that case (the contract's own wording mentions one, but the existing acceptance test
+   (`tests/e2e/guild-centre.spec.ts`, "a null-faction guild renders no crest ... a neutral
+   band") requires `guild-faction-crest` to have **zero** elements for a null-faction,
+   crest-less guild; a literal disc there would break a passing, intentional test with no
+   instruction to change it, so the override only ever swaps which image fills the ring,
+   never changes whether the ring renders at all). Guild.svelte now always passes
+   `src={guildMarkSrc(home?.guild ?? data?.guild ?? null)}` — `home` (member fetch) wins
+   once it resolves, `data` (public fetch) is the first-paint fallback, same precedence
+   `guildId` already uses.
+3. **Settings tab, officer only — `GuildCrestSettings.svelte`.** Mounted from
+   `GuildSettingsTab.svelte` behind `role === 'officer'` (a new `role` prop threaded down
+   from `Guild.svelte`, which already computes it); a moderator — who the API contract says
+   may remove a crest — gets no block in this build, per the brief's own "officer only"
+   wording. Current mark in a fixed 64px ring (never FactionCrest's 64/44px responsive
+   pair — this is a Settings control, not the header), the "Default: your faction's logo"
+   caption when there is no crest, a native file picker (`accept="image/png,image/jpeg,
+   image/webp"`), a client pre-check (`web/src/lib/guild/crest.ts`'s `precheckCrestFile`)
+   for type and the 2 MiB ceiling with the contract's own plain wording ("That file is
+   X.X MB; the limit is 2 MB.", byte-identical phrasing to the server's own example so a
+   client-caught and server-caught oversize file never read differently), a 64px preview of
+   the chosen file via an object URL (revoked on replace, on save, and on unmount), Save
+   (disabled until a valid file is chosen, busy/`aria-busy` while saving) and Remove (confirm
+   inline, mirroring `GuildSettingsTab`'s own contest-confirm pattern; hidden entirely when
+   there is no crest). After either action, `onCrestChanged` → `Guild.svelte` re-fetches
+   `fetchGuildHome` (the mutation itself already invalidated that cached query, same pattern
+   every other guild mutation in `lib/guild/api.ts` follows) — the header ring updates with
+   no page reload, no second "did it work" mechanism.
+4. **`putGuildCrest`/`deleteGuildCrest` (`web/src/lib/guild/api.ts`).** `account/api.ts`'s
+   shared `requestEnvelope` now passes a `FormData` body straight to `fetch` — no
+   `JSON.stringify`, no hand-set `content-type` (the browser writes the
+   `multipart/form-data; boundary=...` header itself; a manual header here was the actual
+   defect class the unit test guards). `deleteGuildCrest` is the one route in this module
+   that tolerates a bare `204` with no envelope `data` (`call`'s new `allowEmpty` flag) —
+   every other mutation still throws on a successful-but-empty response, since that would
+   otherwise mean the API changed shape silently.
+5. **Found mid-build: `request.formData()` cannot round-trip a `File` part under this
+   project's `@vitest-environment jsdom`** (a `webidl` assertion fails inside jsdom's own
+   fetch polyfill reading the part back out — confirmed in isolation, not specific to this
+   module). The multipart unit test asserts the request's own
+   `content-type: multipart/form-data; boundary=...` header instead of parsing the body back
+   out — the header is what the browser derives from a `FormData` body, and is what this
+   round's real bug class (a hand-set `content-type` silently breaking the upload) would
+   actually flip.
+
+**Tests, verbatim (crest round):**
+
+```
+npx astro check                                     → 0 errors, 0 warnings, 10 pre-existing hints
+npx eslint .                                         → clean
+npx prettier --check .                               → clean
+npx vitest run src/lib/guild src/components/guild src/components/character src/components/Guild.test.ts
+  → Test Files 28 passed (28); Tests 171 passed (171)
+FOREVER_DATA=fixture npm run build                   → succeeds
+E2E_SKIP_BUILD=1 npx playwright test tests/e2e/guild-centre.spec.ts --project=desktop --project=mobile
+  → 74 passed (74)
+```
+
+**Captures:** `design/mocks/renders/build/guild-crest-{1440,390}.png` (gitignored,
+local-only, same as every other `design/mocks/renders/*` file) — the Settings block,
+officer view, no crest set yet (faction-logo default state).

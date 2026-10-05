@@ -38,21 +38,42 @@
      prop. Padding is 16% of each size (ClassCrest.astro's own ring-recipe ratio): 7px at
      44px, 10px at 64px.
 
-     Neutral/unknown faction (null, undefined, or anything other than 'alliance'/'horde'):
-     renders nothing at all -- spec §12.2's own states table: "Absent, row is h1 alone" --
-     never a neutral disc the way ClassCrestRing's own empty-class fallback renders one (that
-     case still needs a disc so a roster row's fixed-width layout holds; this row has no such
-     constraint, and the spec's own words are "pixel-identical to today," which a disc would
-     not be). -->
+     Neutral/unknown faction (null, undefined, or anything other than 'alliance'/'horde')
+     with no `src` override: renders nothing at all -- spec §12.2's own states table:
+     "Absent, row is h1 alone" -- never a neutral disc the way ClassCrestRing's own
+     empty-class fallback renders one (that case still needs a disc so a roster row's
+     fixed-width layout holds; this row has no such constraint, and the spec's own words
+     are "pixel-identical to today," which a disc would not be); preserved exactly by
+     `tests/e2e/guild-centre.spec.ts`'s "a null-faction guild renders no crest" case.
+
+     Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): an explicit `src`
+     prop draws inside this same ring instead of the flat faction logo -- `guildMarkSrc`
+     (web/src/lib/guild/mark.ts) is the one place that decides crest-vs-logo-vs-null, so
+     this component only ever renders whatever it is handed. `src === undefined` (every
+     caller before this round, and any future caller that only ever shows the flat logo)
+     keeps the exact original behaviour above; `src` passed as a real URL swaps the image
+     for the guild's uploaded crest without touching the ring's own faction-coloured
+     box-shadow. A `null` override (guildMarkSrc's own "no crest, no faction logo" case)
+     still renders nothing, matching the no-override null-faction case above -- a guild
+     that is itself neutral and uncrested has no mark to ring, not a blank disc. -->
 <script lang="ts">
   import { FACTION_BAR_COLOR, factionLogoSrc, type Faction } from '../../lib/faction-mark';
 
-  let { faction, testid }: { faction: Faction | null | undefined; testid?: string } = $props();
+  let {
+    faction,
+    testid,
+    src,
+  }: { faction: Faction | null | undefined; testid?: string; src?: string | null } = $props();
+
+  const knownFaction = $derived(faction === 'alliance' || faction === 'horde');
+  const resolvedSrc = $derived(
+    src !== undefined ? src : knownFaction ? factionLogoSrc(faction as Faction) : null,
+  );
 </script>
 
-{#if faction === 'alliance' || faction === 'horde'}
+{#if resolvedSrc !== null}
   <img
-    src={factionLogoSrc(faction)}
+    src={resolvedSrc}
     alt=""
     aria-hidden="true"
     width={64}
@@ -60,8 +81,8 @@
     loading="eager"
     decoding="async"
     class="bg-raised box-border h-11 w-11 shrink-0 rounded-full object-contain p-[7px] lg:h-16 lg:w-16 lg:p-[10px]"
-    style={`box-shadow: 0 0 0 2px ${FACTION_BAR_COLOR[faction]};`}
+    style={knownFaction ? `box-shadow: 0 0 0 2px ${FACTION_BAR_COLOR[faction as Faction]};` : ''}
     data-testid={testid}
-    data-faction-name={faction}
+    data-faction-name={faction ?? undefined}
   />
 {/if}

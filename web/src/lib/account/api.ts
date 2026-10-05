@@ -281,13 +281,16 @@ export function forgetRemembered(): void {
  */
 function buildRequestHeaders(
   method: string,
-  hasBody: boolean,
+  body: unknown,
   rememberedKey: string,
 ): { headers: Headers; known: { etag: string; data: unknown } | undefined } {
   const headers = new Headers({ accept: 'application/json' });
   if (method !== 'GET') {
     headers.set('x-csrf-token', csrfToken());
-    if (hasBody) headers.set('content-type', 'application/json');
+    // A FormData body (the guild crest upload's multipart field) must keep the browser's
+    // own `multipart/form-data; boundary=...` header -- setting `content-type` ourselves
+    // would drop the boundary and the server could never split the parts.
+    if (body !== undefined && !(body instanceof FormData)) headers.set('content-type', 'application/json');
     return { headers, known: undefined };
   }
   const known = remembered.get(rememberedKey);
@@ -323,7 +326,7 @@ export async function requestEnvelope<T>(
 ): Promise<EnvelopeResult<T>> {
   const method = init.method ?? 'GET';
   const rememberedKey = `${apiBase}${path}`;
-  const { headers, known } = buildRequestHeaders(method, init.body !== undefined, rememberedKey);
+  const { headers, known } = buildRequestHeaders(method, init.body, rememberedKey);
 
   let response: Response;
   try {
@@ -332,7 +335,12 @@ export async function requestEnvelope<T>(
         method,
         headers,
         credentials: init.credentials ?? 'include',
-        body: init.body === undefined ? undefined : JSON.stringify(init.body),
+        body:
+          init.body === undefined
+            ? undefined
+            : init.body instanceof FormData
+              ? init.body
+              : JSON.stringify(init.body),
       }),
     );
   } catch {

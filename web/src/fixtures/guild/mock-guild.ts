@@ -320,6 +320,10 @@ export function buildMockRoster(): GuildRosterRow[] {
 export function buildMockHome(
   viewerName: string | null,
   faction: 'alliance' | 'horde' | null = GUILD.faction,
+  // Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): `null` by default
+  // (no crest), matching a guild that has never uploaded one -- the e2e suite overrides it
+  // to exercise the uploaded-crest and crest-removed states without a second fixture.
+  crestUrl: string | null = null,
 ): GuildHome {
   const roster = buildMockRoster();
   const pending = roster.filter((r) => !r.verified);
@@ -349,7 +353,7 @@ export function buildMockHome(
         })();
 
   return {
-    guild: { ...GUILD, faction },
+    guild: { ...GUILD, faction, crest_url: crestUrl },
     viewer: {
       role,
       character_key: viewerRow?.character_key ?? null,
@@ -389,9 +393,12 @@ export function buildMockHome(
  *  before (or regardless of) the member-gated `home` fetch resolves. Carries no kill/wipe
  *  counts on its reports (the real endpoint's own shape), and v1's own "roster bests"
  *  feature, carried forward unchanged into the Progression tab. */
-export function buildMockGuildPage(faction: 'alliance' | 'horde' | null = GUILD.faction): GuildPage {
+export function buildMockGuildPage(
+  faction: 'alliance' | 'horde' | null = GUILD.faction,
+  crestUrl: string | null = null,
+): GuildPage {
   return {
-    guild: { ...GUILD, faction },
+    guild: { ...GUILD, faction, crest_url: crestUrl },
     progression: [
       {
         encounter: 'Onyxia',

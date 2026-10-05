@@ -10,9 +10,11 @@ import {
   claimGuild,
   confirmClaim,
   contestClaim,
+  deleteGuildCrest,
   fetchGuildHome,
   fetchGuildSettings,
   leaveGuild,
+  putGuildCrest,
   releaseClaim,
   removeCharacter,
   rotateInvite,
@@ -210,6 +212,61 @@ describe('membership and invite', () => {
     );
     await expect(fetchGuildHome(42, undefined, API)).rejects.toThrow(GUILD_API_FAILED);
     await expect(fetchGuildHome(42, undefined, API)).rejects.toBeInstanceOf(GuildApiError);
+  });
+});
+
+// Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md).
+describe('crest', () => {
+  it('PUTs the file as multipart/form-data, field "image", with no hand-set content-type', async () => {
+    const upstream = vi.fn<GlobalFetch>(async (...args: Parameters<typeof fetch>) => {
+      const request = args[0] as Request;
+      expect(request.method).toBe('PUT');
+      // The browser (not this module) writes `multipart/form-data; boundary=...` from the
+      // FormData body itself -- asserting that boundary is present, and that it was never
+      // overwritten with a hand-set `application/json`, is the real bug class this test
+      // guards: a manual content-type header here silently breaks every upload. (Reading
+      // the parts back out with `request.formData()` is skipped -- jsdom's own Request/
+      // FormData interop cannot round-trip a File part in this test environment -- the
+      // header the browser derives from the body is what actually matters here.)
+      expect(request.headers.get('content-type')).toMatch(/^multipart\/form-data; boundary=/);
+      return envelope({ crest_url: 'https://cdn.test/guilds/42/crest.webp?v=abc' });
+    });
+    vi.stubGlobal('fetch', upstream);
+    const file = new File([new Uint8Array(8)], 'crest.png', { type: 'image/png' });
+    const result = await putGuildCrest(42, file, API);
+    expect(result.crest_url).toBe('https://cdn.test/guilds/42/crest.webp?v=abc');
+  });
+
+  it("surfaces the server's plain error message on a rejected upload", async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              ok: false,
+              data: null,
+              error: { message: 'That file is 3.1 MB; the limit is 2 MB.' },
+              request_id: 'r',
+            }),
+            { status: 422, headers: { 'content-type': 'application/json' } },
+          ),
+      ),
+    );
+    const file = new File([new Uint8Array(8)], 'crest.png', { type: 'image/png' });
+    await expect(putGuildCrest(42, file, API)).rejects.toThrow('That file is 3.1 MB; the limit is 2 MB.');
+  });
+
+  it('DELETEs and resolves even on a bare 204 (no envelope data)', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async (...args: Parameters<typeof fetch>) => {
+        expect((args[0] as Request).method).toBe('DELETE');
+        return new Response(null, { status: 204 });
+      }),
+    );
+    const result = await deleteGuildCrest(42, API);
+    expect(result.status).toBe('removed');
   });
 });
 

@@ -126,6 +126,21 @@ export const guildSettingsCopy = {
   frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
 } as const;
 
+// Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md), Settings tab block.
+export const guildCrestCopy = {
+  heading: 'Guild crest',
+  defaultCaption: "Default: your faction's logo",
+  pickerLabel: 'Choose a crest image',
+  save: 'Save',
+  saving: 'Saving…',
+  saved: 'Saved.',
+  remove: 'Remove',
+  removing: 'Removing…',
+  removeConfirmLine: 'Remove the guild crest? It falls back to your faction logo.',
+  removeConfirmButton: 'Yes, remove the crest',
+  actionFailed: 'That did not work; try again',
+} as const;
+
 export const guildJoinCopy = {
   failed: 'That invite link did not work.',
   joinButton: 'Join as a member',

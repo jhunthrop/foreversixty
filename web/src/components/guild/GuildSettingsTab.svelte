@@ -12,14 +12,16 @@
      in the header. -->
 <script lang="ts">
   import type { CharacterPath } from '../../lib/characters';
-  import type { GuildHome } from '../../lib/guild/api';
+  import type { GuildHome, GuildViewerRole } from '../../lib/guild/api';
   import { guildHomeCopy } from '../../lib/guild/copy';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import GuildCrestSettings from './GuildCrestSettings.svelte';
   import GuildSettings from '../GuildSettings.svelte';
 
   let {
     path,
     home,
+    role,
     isClaimantAccount,
     contestBusy,
     contestError,
@@ -27,9 +29,11 @@
     onContestStart,
     onContestCancel,
     onContestConfirm,
+    onCrestChanged,
   }: {
     path: CharacterPath;
     home: GuildHome;
+    role: GuildViewerRole;
     isClaimantAccount: boolean;
     contestBusy: boolean;
     contestError: string;
@@ -37,6 +41,7 @@
     onContestStart: () => void;
     onContestCancel: () => void;
     onContestConfirm: () => void;
+    onCrestChanged: () => void;
   } = $props();
 
   /** Spec item 2: a verified officer of a different account than the one holding the
@@ -50,6 +55,16 @@
 </script>
 
 <section class="flex flex-col gap-6" data-testid="guild-settings-tab">
+  <!-- Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): "officer only" --
+       this tab already only ever mounts for `role === 'officer' | 'moderator'`
+       (Guild.svelte's own tab-content gate), so the narrower check here is what actually
+       excludes a moderator, who gets no crest block in the web lane even though the API
+       itself lets one remove a crest (the contract's own prose; this build keeps the web
+       surface to officer/leader only, per the build brief). -->
+  {#if role === 'officer'}
+    <GuildCrestSettings guildId={home.guild.id} guild={home.guild} {onCrestChanged} />
+  {/if}
+
   <GuildSettings {path} />
 
   {#if canContestHere}

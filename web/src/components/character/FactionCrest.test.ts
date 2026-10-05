@@ -36,4 +36,28 @@ describe('FactionCrest', () => {
     expect(body).toContain('aria-hidden="true"');
     expect(body).not.toContain('<a ');
   });
+
+  // Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): the `src` override
+  // guildMarkSrc hands this component when a guild has an uploaded crest.
+  it('draws the src override inside the faction-coloured ring, not the flat logo', () => {
+    const { body } = render(FactionCrest, {
+      props: { faction: 'horde', src: '/crest/2024.webp', testid: 't' },
+    });
+    expect(body).toContain('src="/crest/2024.webp"');
+    expect(body).not.toContain('horde-logo-512.webp');
+    expect(body).toContain('box-shadow: 0 0 0 2px #c0392b');
+  });
+
+  it('a null src override with a known faction still renders nothing', () => {
+    // guildMarkSrc only ever returns null when the faction is also unknown -- this guards
+    // the component's own contract, that a null override is never force-interpreted as
+    // "fall back to the logo" for a faction that IS known.
+    const { body } = render(FactionCrest, { props: { faction: 'horde', src: null } });
+    expect(body).not.toContain('<img');
+  });
+
+  it('a null src override with an unknown faction renders nothing, matching the no-override case', () => {
+    const { body } = render(FactionCrest, { props: { faction: null, src: null } });
+    expect(body).not.toContain('<img');
+  });
 });
