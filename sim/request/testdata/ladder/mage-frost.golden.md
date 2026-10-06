@@ -94,9 +94,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 21.4 | 2 | spell:5019=63.3, spell:7322=34.8 | - |
 | 30 | 000000000000000000-00000000000000000-2535111300000000000 | main_hand:249392 ranged:5213 | 31.8 | 2 | spell:5019=76.5, spell:8406=32.5, item:5514=1.0, other:mana_gain=1.0 | - |
 | 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:1664 ranged:13064 | 53.4 | 3 | spell:5019=68.7, spell:8408=28.3, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
-| 40 | 000000000000000000-00000000000000000-2535111300000301051 | main_hand:1664 ranged:5216 | 51.9 | 3 | spell:5019=73.5, spell:8408=28.1, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
-| 50 | 000000000000000000-23500000000000000-2535111300000301051 | main_hand:812 ranged:249232 | 71.2 | 3 | spell:5019=56.1, spell:10180=27.3, other:mana_gain=2.0, item:5514=1.0, item:8007=1.0 | - |
-| 60 | 000000000000000000-23552300000000000-2535111300000301051 | main_hand:22589 ranged:22821 | 146.5 | 3 | spell:5019=77.5, spell:25304=25.8, other:mana_gain=2.0, item:5514=1.0, item:8008=1.0 | - |
+| 40 | 100000000000000000-00000000000000000-2535111300000301050 | main_hand:1664 ranged:5216 | 53.4 | 3 | spell:5019=73.5, spell:8408=28.1, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
+| 50 | 203005000100000000-00000000000000000-2535111300000301050 | main_hand:812 ranged:249232 | 100.7 | 3 | spell:10180=41.7, spell:5019=38.2, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
+| 60 | 203005000100000000-11302300000000000-2535111300000301050 | main_hand:22589 ranged:22821 | 199.5 | 3 | spell:5019=53.9, spell:25304=40.0, other:mana_gain=2.0, spell:12472=1.0, item:5514=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -213,4 +213,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- mage-frost level=40 kind=dps_regression dps=51.9 prev_dps=53.4
+None.
