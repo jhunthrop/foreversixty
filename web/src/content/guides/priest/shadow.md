@@ -40,7 +40,7 @@ The core loop this site's simulator plays: keep Shadow Word: Pain up on the targ
 
 ## Stat priority
 
-This band's own level-60 simulation ranks Shadow's stats by scale factor, highest per-point value first: Intellect 1.00, Hit 0.90, Spell power and Shadow power both 0.82, and Critical strike 0.17 per point. Spell haste and Spell penetration didn't clear significance at this band — the sim's error on both is too wide to call them apart from zero, not a verdict that either stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this band's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this band's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 
