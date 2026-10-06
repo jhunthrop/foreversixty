@@ -21,14 +21,23 @@ const activeBuild = JSON.parse(
 // gear grid 404s into "Empty" slots.
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
+// sim-one-paste lane: ColdPasteHero.svelte is /sim's own one paste surface whenever no
+// character is loaded -- SourceSwitcher's addon card (and the `sim-sources` section it
+// sits in) still renders underneath, for "From a build"/"From a logged fight", but
+// `showAddonCard` drops its own addon card so there is only ever one paste box on screen.
+// "Change source" reopens the switcher with a character already loaded, which is no longer
+// the hero's own cold-start moment (`showColdPasteHero` requires `store.character ===
+// null`), so the full four-source switcher -- addon card included -- is what that reopen
+// still shows; this test only needs it visible again, not the card itself.
 test('pasting a valid addon export renders the strip, and Change source returns to the switcher', async ({
   page,
 }) => {
   await page.goto('/sim');
+  await expect(page.getByTestId('sim-cold-paste')).toBeVisible();
   await expect(page.getByTestId('sim-sources')).toBeVisible();
 
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
 
   const strip = page.getByTestId('sim-character');
   await expect(strip).toBeVisible();
@@ -42,16 +51,30 @@ test('pasting a valid addon export renders the strip, and Change source returns 
   await expect(strip).toBeHidden();
 });
 
-test('a nonsense paste shows the decoder’s own sentence and keeps the switcher open', async ({ page }) => {
+// The hero validates locally and synchronously (cold-paste.ts's `validateColdPaste`, the
+// same decode AddonPasteBox.svelte and the old addon card both already proved), so a
+// nonsense paste never reaches `store.loadAddon` or `store.message` at all now -- it shows
+// the decoder's own refusal as the hero's own error, with Run disabled, rather than the
+// switcher's `sim-source-message`. Unlike the old addon card (which handed `store.loadAddon`
+// the raw textarea value directly), the hero first classifies the paste as an addon export
+// or a build link (`parseBuildInput`, since the one box takes both) -- a bare wrong-prefix
+// string is caught at that classification step, with cold-paste.ts's own generic message
+// (already proved by cold-paste.test.ts's own "rejects unrecognisable text" case and
+// sim-cold-paste.spec.ts's own e2e coverage); `decodeFS1`'s own FS2-specific sentence is
+// only reachable through the hero wrapped in a `?code=` link, the same path
+// cold-paste.test.ts's own "wrapped in a planner link's ?code=" case proves for a valid
+// code -- this is that same path for an invalid one, the same refusal sources.test.ts pins
+// for fromAddonExport.
+test('a nonsense paste shows the decoder’s own sentence and Run stays disabled', async ({ page }) => {
   await page.goto('/sim');
 
-  // A real class slug (so the talent fetch behind the decode succeeds) with the wrong
-  // prefix, the same refusal sources.test.ts pins for fromAddonExport.
-  await page.getByTestId('sim-addon-input').fill('FS2:1:warrior:orc:0/0/0:');
-  await page.getByTestId('sim-addon-load').click();
+  const run = page.getByTestId('sim-cold-paste-run');
+  await page
+    .getByTestId('sim-cold-paste-input')
+    .fill('https://foreversixty.gg/planner?code=FS2:1:warrior:orc:0/0/0:');
 
-  await expect(page.getByTestId('sim-source-message')).toHaveText('That code is FS2; this site reads FS1.');
-  await expect(page.getByTestId('sim-sources')).toBeVisible();
+  await expect(run).toBeDisabled();
+  await expect(page.getByTestId('sim-cold-paste-error')).toHaveText('That code is FS2; this site reads FS1.');
   await expect(page.getByTestId('sim-character')).toBeHidden();
 });
 

@@ -454,14 +454,15 @@ const SIGNED_IN_ME = {
 };
 
 test.describe('saving a browser run from /sim', () => {
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, so the
+  // separate `sim-run-button` click this helper used to make after Load is gone.
   async function runFury(page: import('@playwright/test').Page): Promise<void> {
     await page.route('**/v1/me', (route) => route.fulfill(envelope(SIGNED_IN_ME)));
     await page.goto('/sim');
-    await page.getByTestId('sim-addon-input').fill(FURY);
-    await page.getByTestId('sim-addon-load').click();
+    await page.getByTestId('sim-cold-paste-input').fill(FURY);
+    await page.getByTestId('sim-cold-paste-run').click();
     await expect(page.getByTestId('sim-character')).toBeVisible();
-    await page.getByTestId('sim-run-button').click();
-    await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
+    await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   }
 
   test('opens pre-filled, saves, and shows the link without navigating', async ({ page }) => {

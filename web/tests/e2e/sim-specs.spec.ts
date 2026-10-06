@@ -190,11 +190,16 @@ test.describe('the in-page fidelity note', () => {
     );
 
     await page.goto('/sim');
-    await page.getByTestId('sim-addon-input').fill(ROGUE_FS1);
-    await page.getByTestId('sim-addon-load').click();
+    // sim-one-paste lane: ColdPasteHero.svelte is /sim's own one paste surface and pastes
+    // and runs in one click -- unlike SourceSwitcher's old addon card, there is no longer
+    // a "loaded but never run" moment to assert on here (rogue is a DPS spec, so
+    // `isSimulatedSpec` lets the run through); the fidelity note below is keyed off the
+    // loaded character's own spec, not run state, so it still proves the point this test
+    // is actually for.
+    await page.getByTestId('sim-cold-paste-input').fill(ROGUE_FS1);
+    await page.getByTestId('sim-cold-paste-run').click();
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
-    await expect(page.getByTestId('sim-run-button')).toHaveText('Run sim');
     const note = page.getByTestId('spec-fidelity-note');
     await expect(note).toContainText(simCopy.specNotYet);
     await expect(note).toContainText(simCopy.specNotYetNote);
@@ -206,11 +211,12 @@ test.describe('the in-page fidelity note', () => {
     await stubSpecs(page);
 
     await page.goto('/sim');
-    await page.getByTestId('sim-addon-input').fill(FURY_FS1);
-    await page.getByTestId('sim-addon-load').click();
+    // sim-one-paste lane: same note as the unmeasured-spec test above -- the hero pastes
+    // and runs in one click, with no pre-run moment left to assert on.
+    await page.getByTestId('sim-cold-paste-input').fill(FURY_FS1);
+    await page.getByTestId('sim-cold-paste-run').click();
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
-    await expect(page.getByTestId('sim-run-button')).toHaveText('Run sim');
     await expect(page.getByTestId('spec-fidelity-note')).toHaveCount(0);
   });
 });

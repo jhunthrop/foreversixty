@@ -112,8 +112,10 @@ test.describe('the simulator tab strip', () => {
   // Top Gear gets that link and loads the character from it.
   test('an addon-pasted character gets a working ?code= href on every tab', async ({ page }) => {
     await page.goto('/sim');
-    await page.getByTestId('sim-addon-input').fill(FURY);
-    await page.getByTestId('sim-addon-load').click();
+    // sim-one-paste lane: ColdPasteHero.svelte is /sim's own one paste surface now
+    // (SourceSwitcher's addon card is gone whenever it renders).
+    await page.getByTestId('sim-cold-paste-input').fill(FURY);
+    await page.getByTestId('sim-cold-paste-run').click();
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
     // The fallback code needs the store's own talent index, which resolves slightly after

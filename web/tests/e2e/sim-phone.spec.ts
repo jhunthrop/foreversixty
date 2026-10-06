@@ -147,17 +147,20 @@ async function gearGridIsTwoColumns(page: Page): Promise<void> {
   expect(shoulder!.y, 'shoulder is not a new row').toBeGreaterThan(head!.y);
 }
 
+// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
+// runs in one click (SimView.svelte's `runPastedInput`), so `loadFury` now waits out that
+// run rather than stopping at "loaded" -- callers that press `sim-run-button` themselves
+// (the viewport test below) start it a second time, same as sim-run.spec.ts's own helper.
 async function loadFury(page: Page): Promise<void> {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 }
 
 async function runFury(page: Page): Promise<void> {
   await loadFury(page);
-  await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   await expect(page.getByTestId('sim-results')).toBeVisible();
 }
 

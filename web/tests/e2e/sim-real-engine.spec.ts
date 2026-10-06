@@ -46,11 +46,17 @@ const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active
 // checks against.
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=21521`;
 
+// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
+// runs in one click (SimView.svelte's `runPastedInput`), against the real wasm engine here
+// same as the fake one everywhere else -- this waits that first run out (a real, slow
+// instantiation, not the fake engine's short timers) so the test below starts its own
+// deliberate run from a settled "Run again" rather than racing it.
 async function loadFury(page: Page): Promise<void> {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 30_000 });
 }
 
 test('a real wasm run against the fixture character returns a positive DPS', async ({ page }) => {
@@ -76,9 +82,11 @@ test('a real wasm run against the fixture character returns a positive DPS', asy
   // artifact and not a build that silently fell back to the fake engine.
   await expect(page.getByTestId('sim-engine-version')).toHaveText(engineLabel(ENGINE_VERSION));
 
+  // "Run again", not "Run sim": loadFury's own hero run already finished once against the
+  // real engine above -- this is the second, deliberate run the rest of this test proves
+  // against.
   const button = page.getByTestId('sim-run-button');
-  await expect(button).toHaveText('Run sim');
-  await expect(page.getByTestId('sim-dps')).toHaveText('—');
+  await expect(button).toHaveText('Run again');
 
   await button.click();
   // /sim's run control has no UI for an arbitrary iteration count below the "normal" 3,000

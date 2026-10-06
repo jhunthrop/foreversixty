@@ -302,13 +302,18 @@ test('a real Droptimizer upgrade names the next action on a later plain sim', as
   // character here on its own, the same restore-over-paste-box behaviour `loadDrops`
   // itself accounts for.
   await page.goto('/sim');
-  const addonInput = page.getByTestId('sim-addon-input');
+  // sim-one-paste lane: the fallback paste surface is ColdPasteHero.svelte now --
+  // SourceSwitcher's own addon card is gone whenever it renders -- and its Run pastes and
+  // runs in one click, so this waits that run out before the explicit run click below (the
+  // one this test is actually proving, against the restored character's own settings).
+  const addonInput = page.getByTestId('sim-cold-paste-input');
   const characterStrip = page.getByTestId('sim-character');
   await expect(addonInput.or(characterStrip)).toBeVisible();
   if (await addonInput.isVisible()) {
     await addonInput.fill(FURY);
-    await page.getByTestId('sim-addon-load').click();
+    await page.getByTestId('sim-cold-paste-run').click();
     await expect(characterStrip).toBeVisible();
+    await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   }
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-results')).toBeVisible({ timeout: 10_000 });

@@ -13,11 +13,21 @@
      full-width hero above the three paste cards, for a signed-out visitor on /sim only
      (Finding 2 -- the audience already uses Battle.net, so "sign in and go" should not sit
      equal-weight beside three cards that need something to paste). The bulk tool pages
-     (ToolsView.svelte) never pass it, so their switcher keeps today's four-card grid. -->
+     (ToolsView.svelte) never pass it, so their switcher keeps today's four-card grid.
+
+     Persona review 2026-10-06 bis (one-primary audit): the design system allows one
+     primary action per view. ColdPasteHero.svelte now owns the one paste surface on /sim
+     whenever it renders (signed out, or signed in with no tracked character) -- the exact
+     states `showColdPasteHero` in SimView.svelte gates -- so this switcher's own addon
+     card would otherwise be a second paste box, and its hero-branch sign-in button a
+     second gold primary beside the hero's own Run. `showAddonCard` drops the former; the
+     sign-in button is demoted to the same secondary look the non-hero branch already uses
+     for it below (`action`), rather than `PRIMARY_BUTTON_FIXED`. The bulk tool pages pass
+     neither prop, since they carry no hero and the one-paste-surface rule does not apply
+     there. -->
 <script lang="ts">
   import { currentCharacterCopy } from '../../lib/current-character-copy';
   import { landingCopy } from '../../lib/sim/landing-copy';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
@@ -35,6 +45,7 @@
     onback = () => {},
     hasCharacters = true,
     heroSignIn = false,
+    showAddonCard = true,
   }: {
     busy: boolean;
     message: string | null;
@@ -52,6 +63,11 @@
      *  above the three paste cards instead of a fourth, equal-weight one. Has no effect
      *  while `signedIn` is true -- that state is always the "back to your characters" grid. */
     heroSignIn?: boolean;
+    /** False whenever ColdPasteHero.svelte already owns the one paste surface on this view
+     *  (SimView.svelte passes `!showColdPasteHero`): "From a build" and "From a logged
+     *  fight" become a two-card row and `onaddon` goes unused. True everywhere else (the
+     *  bulk tool pages' default, which never show a hero). */
+    showAddonCard?: boolean;
   } = $props();
 
   let addonCode = $state('');
@@ -177,33 +193,36 @@
     <p class="text-muted text-[14px]" data-testid="sim-intro-line">{landingCopy.introLine}</p>
     <ExampleResultCard />
 
-    <!-- Finding 2: the hero. Full width, first, with the one PRIMARY_BUTTON on this view
-         and the email-link alternative as text -- the three paste cards below are
-         secondary. Finding 3: the DPS-only restriction lives here too, as the caption
-         under this heading, its only copy on the page for a signed-out visitor. -->
+    <!-- Finding 2: the hero. Full width, first, with the email-link alternative as text --
+         the three paste cards below are secondary. Finding 3: the DPS-only restriction
+         lives here too, as the caption under this heading, its only copy on the page for a
+         signed-out visitor. Persona review 2026-10-06 bis: this sign-in button is no
+         longer PRIMARY_BUTTON -- ColdPasteHero.svelte's Run is the one gold primary on this
+         view whenever the hero renders (`showColdPasteHero`), so this takes the same
+         secondary `action` look the non-hero branch below already uses for the identical
+         button. -->
     <div class={card} data-testid="sim-account-card">
       <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
       <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
       <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
-      <button
-        type="button"
-        class="{PRIMARY_BUTTON_FIXED} self-start px-5"
-        onclick={onsignin}
-        data-testid="sim-signin"
-      >
+      <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
         {landingCopy.signInWithBattlenet}
       </button>
       <a class="text-nav text-[13px] underline" href="/login">{landingCopy.emailLinkInstead}</a>
     </div>
 
-    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-      {@render addonCard()}
+    <div class={`grid grid-cols-1 gap-3 ${showAddonCard ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
+      {#if showAddonCard}
+        {@render addonCard()}
+      {/if}
       {@render buildCard()}
       {@render fightCard()}
     </div>
   {:else}
     <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-      {@render addonCard()}
+      {#if showAddonCard}
+        {@render addonCard()}
+      {/if}
       {@render buildCard()}
       {@render fightCard()}
 

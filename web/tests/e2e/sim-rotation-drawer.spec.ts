@@ -68,8 +68,8 @@ async function loadFrostMage(page: Page): Promise<void> {
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MAGE_TALENTS) }),
   );
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FROST_FS1);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FROST_FS1);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
 
@@ -86,15 +86,18 @@ const ARMS_FS1 = `FS1:${activeBuild.build}:warrior:orc:3/0/0:head=12640,main_han
 
 async function loadArmsWarrior(page: Page): Promise<void> {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(ARMS_FS1);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(ARMS_FS1);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
 
-// The newcomer's own repro, verbatim: /sim -> load a Frost Mage -> click "what it does" --
-// no run, ever. Scoped to the settings bar's own section (`sim-settings`), the only place
-// this trigger exists before a run finishes.
-test('"what it does" opens the rotation in a drawer, without a run or losing the character (newcomer repro, pre-run)', async ({
+// The newcomer's own repro, verbatim at the time: /sim -> load a Frost Mage -> click "what
+// it does", before a run ever finishes. sim-one-paste lane: ColdPasteHero.svelte's Run now
+// pastes and runs in the same click, so `loadFrostMage` no longer lands on that literal
+// pre-run moment -- but `sim-rotation-link` (SettingsBar.svelte) is gated on `simulatedSpec`
+// alone, never on `store.result`, so the trigger it proves (works whether or not a run has
+// finished, never navigates, never loses the character) is unchanged either way.
+test('"what it does" opens the rotation in a drawer, without losing the character (newcomer repro)', async ({
   page,
 }) => {
   await loadFrostMage(page);
@@ -109,8 +112,7 @@ test('"what it does" opens the rotation in a drawer, without a run or losing the
     'Frostbolt is the whole rotation.',
   );
 
-  // The point of the fix: no navigation happened at all, so nothing was there to lose --
-  // the newcomer's repro never ran a sim before clicking, and neither does this.
+  // The point of the fix: no navigation happened at all, so nothing was there to lose.
   expect(page.url()).toBe(url);
   await expect(page.getByTestId('sim-character')).toBeVisible();
 
@@ -121,11 +123,12 @@ test('"what it does" opens the rotation in a drawer, without a run or losing the
   await expect(fidelityLink).toHaveAttribute('target', '_blank');
 });
 
-// The tank's own repro (tank review, MAJOR), verbatim: /sim -> load an Arms Warrior -> Load
-// -> click "what it does" -> used to land on /sim/specs#warrior-arms with the character
-// gone, and Back did not restore it. No run here either -- the point is that Back is never
-// needed because nothing ever navigated.
-test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, no run and no navigation needed', async ({
+// The tank's own repro (tank review, MAJOR), verbatim at the time: /sim -> load an Arms
+// Warrior -> Load -> click "what it does" -> used to land on /sim/specs#warrior-arms with
+// the character gone, and Back did not restore it. Same note as the newcomer repro above:
+// the hero's own run no longer leaves this pre-run -- the point proved, no navigation
+// needed, stands regardless.
+test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, with no navigation needed', async ({
   page,
 }) => {
   await loadArmsWarrior(page);
@@ -155,7 +158,11 @@ test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, no 
 test('Escape closes the rotation drawer and returns focus to the trigger', async ({ page }) => {
   await loadFrostMage(page);
   // RotationCard only renders once a run has finished (SimView.svelte: `store.result !==
-  // null`), so the drawer trigger does not exist until this.
+  // null`). sim-one-paste lane: `loadFrostMage` already starts one, through the hero's own
+  // Run -- this waits that run out (the button would otherwise still read "Stop", and
+  // clicking it would cancel the hero's own first run instead of starting the one this
+  // test wants) before starting the fresh run RotationCard needs.
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
 

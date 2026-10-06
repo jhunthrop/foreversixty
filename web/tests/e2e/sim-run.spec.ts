@@ -11,23 +11,28 @@ const activeBuild = JSON.parse(
 
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
+// sim-one-paste lane: `loadFury` now goes through ColdPasteHero.svelte, the view's one
+// paste surface -- SourceSwitcher's own addon card is gone whenever the hero renders
+// (`showAddonCard`). The hero pastes and runs in one click (SimView.svelte's
+// `runPastedInput`), so this helper's own postcondition changed from "character loaded,
+// never run" to "character loaded, one run already finished" -- waited out here so every
+// caller below starts from a settled `sim-run-button` rather than racing the hero's own
+// background run.
 async function loadFury(page: Page): Promise<void> {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 }
 
-test('the run control moves idle -> running -> done, and a cancel keeps the last figure', async ({
-  page,
-}) => {
+test('a run moves running -> done, and a cancel keeps the last figure', async ({ page }) => {
+  // The hero's own run (inside loadFury) already proved idle -> running -> done once --
+  // sim-cold-paste.spec.ts covers that first run start to finish. This test picks up from
+  // its "Run again" state and proves the mechanism survives a second run and a cancel.
   await loadFury(page);
 
   const button = page.getByTestId('sim-run-button');
-  await expect(button).toHaveText('Run sim');
-  await expect(page.getByTestId('sim-dps')).toHaveText('—');
-  await expect(page.getByTestId('sim-progress-bar')).toHaveCount(0);
-
   await button.click();
   await expect(button).toHaveText('Stop');
   await expect(page.getByTestId('sim-dps')).not.toHaveText('—');
@@ -65,7 +70,11 @@ test('every settings control is disabled while the run control reads Stop, and r
   await expect(page.getByTestId('sim-preset')).toBeDisabled();
 
   await button.click();
-  await expect(button).toHaveText('Run sim');
+  // "Run again", not "Run sim": loadFury's own hero run already finished once, so
+  // `runAndSettle` (store-request.ts) restores this cancelled run's phase to 'done'
+  // rather than 'idle' -- the same "the last completed result wins" rule the sibling
+  // test above proves for the figure itself.
+  await expect(button).toHaveText('Run again');
 
   await expect(page.getByTestId('sim-duration')).toBeEnabled();
   await expect(page.getByTestId('sim-targets')).toBeEnabled();
@@ -89,10 +98,7 @@ test('the server lane is not offered to a signed-out visitor', async ({ page }) 
 });
 
 test('the precision select offers four choices and the details card states the run', async ({ page }) => {
-  await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await loadFury(page);
 
   const precision = page.getByTestId('sim-precision');
   await expect(precision).toHaveValue('normal');
@@ -142,8 +148,13 @@ test('a finished run can be named, and the saved link opens in a new tab', async
     }),
   );
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  // Waits out the hero's own run (normal precision) before picking fast and re-running,
+  // the same reason `loadFury` above waits: the precision select is disabled while a run
+  // is in flight.
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   await page.getByTestId('sim-precision').selectOption('fast');
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });

@@ -27,9 +27,13 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
   });
 
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and
+  // `sim-preset` below is disabled while a run is in flight (SettingsBar.svelte's
+  // `disabled` prop), so this waits the hero's own run out before touching it.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   // The panel does not exist until Custom is chosen: a preset is a preset.
   await expect(page.getByTestId('sim-buff-panel')).toBeHidden();

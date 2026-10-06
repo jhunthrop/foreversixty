@@ -57,11 +57,16 @@ describe('SourceSwitcher', () => {
       expect(body).not.toContain('data-testid="sim-sources-scope-note"');
     });
 
-    it('renders the one PRIMARY_BUTTON sign-in action and the email-link alternative as text', () => {
+    it('renders the sign-in action as a secondary button, not a second primary, and the email-link alternative as text', () => {
       const { body } = render(SourceSwitcher, { props });
       expect(body).toContain('data-testid="sim-signin"');
       expect(body).toContain(landingCopy.signInWithBattlenet);
-      expect(body).toContain('bg-gold');
+      // One primary per view (design system): ColdPasteHero.svelte's Run is the gold
+      // PRIMARY_BUTTON whenever this hero renders, so this button takes the same
+      // secondary look the non-hero branch's identical button already uses.
+      const match = /<button[^>]*data-testid="sim-signin"[^>]*>/.exec(body);
+      if (match === null) throw new Error('no sim-signin button rendered');
+      expect(match[0]).not.toContain('bg-gold');
       expect(body).toContain(landingCopy.emailLinkInstead);
       expect(body).toContain('href="/login"');
     });
@@ -84,5 +89,29 @@ describe('SourceSwitcher', () => {
     expect(body).toContain('data-testid="sim-sources-scope-note"');
     expect(body).toContain(simCopy.scopeNote);
     expect(body).toContain('data-testid="sim-back-to-characters"');
+  });
+
+  // Persona review 2026-10-06 bis: SimView.svelte passes `showAddonCard={false}` whenever
+  // ColdPasteHero.svelte already owns the one paste surface on /sim -- one primary paste
+  // box per view, not two. The bulk tool pages never pass the prop, so it defaults true
+  // and their four-card (or hero-plus-three) grid is unchanged (every test above).
+  describe('showAddonCard: false', () => {
+    it('drops the addon card from the hero row, keeping From a build and From a logged fight', () => {
+      const { body } = render(SourceSwitcher, {
+        props: { ...requiredProps, heroSignIn: true, showAddonCard: false },
+      });
+      expect(body).not.toContain('data-testid="sim-addon-input"');
+      expect(body).toContain('data-testid="sim-build-input"');
+      expect(body).toContain('data-testid="sim-fight-input"');
+    });
+
+    it('drops the addon card from the plain grid too', () => {
+      const { body } = render(SourceSwitcher, {
+        props: { ...requiredProps, showAddonCard: false },
+      });
+      expect(body).not.toContain('data-testid="sim-addon-input"');
+      expect(body).toContain('data-testid="sim-build-input"');
+      expect(body).toContain('data-testid="sim-fight-input"');
+    });
   });
 });

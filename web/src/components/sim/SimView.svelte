@@ -36,6 +36,7 @@
   import { createSavedSimState } from '../../lib/sim/saved-sim-state.svelte';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
+  import { isSimulatedSpec } from '../../lib/sim/spec-label';
   import {
     mergeSpecRows,
     needsFidelityNote,
@@ -420,9 +421,15 @@
   // ColdPasteHero.svelte already decoded `code` before calling this (persona review
   // 2026-10-06 §5/§8 item 1), so the only step left beyond a landing pick (pickCharacter
   // above) is running it with no second click, the instant the character lands.
+  //
+  // sim-one-paste lane fix round 1: `store.run()` carries no `isSimulatedSpec` guard of its
+  // own -- that check lives at the UI layer, in RunControl's own `disabled` (task-3,
+  // healer review) -- so an unguarded call here would run a healer or tank character the
+  // instant it lands, the exact bug Task 3 disabled the button for, just reached through a
+  // click that never touched the button. Same guard, same spec-label.ts predicate.
   async function runPastedInput(code: string): Promise<void> {
     await store.loadAddon(code);
-    if (store.character !== null) void store.run();
+    if (store.character !== null && isSimulatedSpec(store.character.spec)) void store.run();
   }
 
   // The landing state's own busy key (Task 18): the row a pick is in flight for, so its
@@ -619,6 +626,7 @@
           message={store.message}
           signedIn
           hasCharacters={false}
+          showAddonCard={!showColdPasteHero}
           onaddon={(code) => void store.loadAddon(code)}
           onbuild={(id) => void store.loadBuild(id)}
           onfight={(ref) => void store.loadFight(ref)}
@@ -635,6 +643,7 @@
           message={store.message}
           signedIn={me !== null}
           heroSignIn
+          showAddonCard={!showColdPasteHero}
           onaddon={(code) => void store.loadAddon(code)}
           onbuild={(id) => void store.loadBuild(id)}
           onfight={(ref) => void store.loadFight(ref)}

@@ -71,11 +71,20 @@ async function stubDruidTalents(page: Page): Promise<void> {
   );
 }
 
+// sim-one-paste lane: `/sim` pastes through ColdPasteHero.svelte now -- SourceSwitcher's
+// own addon card is gone whenever it renders -- while `/sim/weights` (ToolsView.svelte,
+// no hero) keeps the plain SourceSwitcher card unchanged. SimView.svelte's
+// `runPastedInput` carries its own `isSimulatedSpec` guard (fix round 1, same reason
+// RunControl's own button is disabled below), so the hero still only loads this
+// Restoration Druid and never attempts the run its spec is not simulated for -- the one
+// property this whole suite exists to prove.
 async function loadRestoDruid(page: Page, route: string): Promise<void> {
   await stubDruidTalents(page);
   await page.goto(route);
-  await page.getByTestId('sim-addon-input').fill(RESTO_DRUID_FS1);
-  await page.getByTestId('sim-addon-load').click();
+  const [inputId, runId] =
+    route === '/sim' ? ['sim-cold-paste-input', 'sim-cold-paste-run'] : ['sim-addon-input', 'sim-addon-load'];
+  await page.getByTestId(inputId).fill(RESTO_DRUID_FS1);
+  await page.getByTestId(runId).click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
 

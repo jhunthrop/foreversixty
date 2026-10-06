@@ -12,12 +12,15 @@ const activeBuild = JSON.parse(
 
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
+// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface now --
+// SourceSwitcher's own addon card is gone whenever the hero renders -- and its Run both
+// loads and runs the character in one click (SimView.svelte's `runPastedInput`), so the
+// explicit `sim-run-button` click this helper used to make is gone too.
 async function loadFuryAndRun(page: Page): Promise<void> {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  await page.getByTestId('sim-run-button').click();
   // The fake engine (engine-fake.ts) always resolves with the fixture's own summary, so
   // this is the moment `store.result` lands and SimResults' own lazy chunk starts loading.
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });

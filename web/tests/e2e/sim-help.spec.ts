@@ -18,11 +18,16 @@ const activeBuild = JSON.parse(
 ) as { build: string };
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
+// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
+// runs in one click, so this waits the hero's own run out before returning -- HelpNote's
+// own trigger below is disabled the same way SettingsBar's other controls are while a run
+// is in flight.
 async function loadFury(page: Page): Promise<void> {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 }
 
 async function openMoreSettings(page: Page): Promise<void> {
@@ -138,7 +143,16 @@ test.describe('phone (390x844)', () => {
   test('no title= attribute remains on the page, and every help trigger clears the 44px floor', async ({
     page,
   }) => {
-    await loadFury(page);
+    // Deliberately not `loadFury`: this test's own scope is the settings bar before a run
+    // ever produces a report (the "eleven before a run" count below), and the hero's run
+    // -- once it settles -- mounts SimResults, whose report tables carry their own,
+    // separately audited hover titles ("Hover a segment for the ability") that Task 7
+    // never scoped this test to. Checked right after the character lands, ahead of that
+    // mount, the same moment the old addon card's Load alone used to leave the page in.
+    await page.goto('/sim');
+    await page.getByTestId('sim-cold-paste-input').fill(FURY);
+    await page.getByTestId('sim-cold-paste-run').click();
+    await expect(page.getByTestId('sim-character')).toBeVisible();
     await openMoreSettings(page);
 
     // The newcomer repro this task fixes, verbatim: querying [title] rather than the wider

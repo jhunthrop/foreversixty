@@ -10,9 +10,13 @@ const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_h
 
 test('the settings bar reads the defaults and every control changes the settings', async ({ page }) => {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // settings controls below are disabled while that run is in flight (SettingsBar.svelte's
+  // `disabled` prop), so this waits it out before touching any of them.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   const settings = page.getByTestId('sim-settings');
   await expect(settings).toBeVisible();
@@ -119,9 +123,13 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
   page,
 }) => {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // settings controls below are disabled while that run is in flight (SettingsBar.svelte's
+  // `disabled` prop), so this waits it out before touching any of them.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   await expect(page.getByTestId('sim-preset')).toHaveValue('raid-buffed');
 
   // "What's in it" is one click away (Disclosure.svelte, Ruling 3) and names the preset's
@@ -175,9 +183,13 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
 // target_armor entirely -- and a typed 0 must mean an explicit, unarmoured target.
 test('target armor: blank omits the override, a typed 0 sends an explicit zero', async ({ page }) => {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // settings controls below are disabled while that run is in flight (SettingsBar.svelte's
+  // `disabled` prop), so this waits it out before touching any of them.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   await page.getByTestId('sim-settings-more').locator('summary').click();
   const armor = page.getByTestId('sim-target-armor');

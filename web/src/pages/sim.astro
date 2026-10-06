@@ -63,15 +63,18 @@ const COLD_PASTE_SECTION =
          wrapped together in `flex flex-col ${VIEW_GAP}` (fix round 1, Important #2) so the
          vertical gap between them matches the hydrated root's own gap too.
 
-         2026-10-06 re-measure (cold-paste lane): with ColdPasteHero added ahead of the
-         intro line, example card and hero card for a signed-out visitor, a real Chromium
-         build+preview (`[data-sim-mount]`'s `getBoundingClientRect().height` after zeroing
-         its own `min-height`, waited until `[data-testid="sim-cold-paste-run"]` was visible)
-         measured 1688px at 390x844 (phone) and 1038.5px at desktop widths (>=768px) for the
-         signed-out default view -- both up from the 2026-09-26 pass's 1384/795 figures.
-         Reserved 24px over each (lane-common's own CI-Linux-fonts-wrap-wider buffer):
-         1712/1063. -->
-    <div id="sim" data-sim-mount class="min-h-[1712px] md:min-h-[1063px]">
+         2026-10-06 re-measure (sim-one-paste lane): the source row's own addon card is
+         gone from this view now (SourceSwitcher.svelte's `showAddonCard`, false whenever
+         ColdPasteHero already owns the one paste surface) and its sign-in button lost its
+         gold fill -- neither changes this shell's own reproduced text, but both shrink the
+         real hydrated height below it. Same method as the cold-paste lane's own pass
+         (`[data-sim-mount]`'s `getBoundingClientRect().height` after zeroing its own
+         `min-height`, waited until `[data-testid="sim-cold-paste-run"]` was visible)
+         measured 1384.5px at 390x844 (phone) and 947px at 1440 wide (desktop) for the
+         signed-out default view -- both down from the cold-paste pass's 1688/1038.5
+         figures. Reserved 24px over each (lane-common's own CI-Linux-fonts-wrap-wider
+         buffer): 1409/971. -->
+    <div id="sim" data-sim-mount class="min-h-[1409px] md:min-h-[971px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
         <div class={COLD_PASTE_SECTION}>

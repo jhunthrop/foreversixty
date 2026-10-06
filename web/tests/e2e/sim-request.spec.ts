@@ -11,9 +11,13 @@ const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_h
 
 test('the drawer shows the exact request, validates an edit and runs it', async ({ page }) => {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // request drawer below is disabled while that run is in flight (RequestDrawer.svelte's
+  // `disabled` prop), so this waits it out before opening it.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   const drawer = page.getByTestId('sim-request-drawer');
   await drawer.locator('summary').click();
@@ -41,9 +45,13 @@ test('the drawer shows the exact request, validates an edit and runs it', async 
 
 test('a pasted request loads the page state', async ({ page }) => {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // request drawer below is disabled while that run is in flight (RequestDrawer.svelte's
+  // `disabled` prop), so this waits it out before opening it.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   await page.getByTestId('sim-request-drawer').locator('summary').click();
   const editor = page.getByTestId('sim-request-json');
@@ -70,9 +78,13 @@ test('sharing a request past the URL budget shows the error, not a blank field',
   // apply/run/share's own verify() -- so this exercises the size gate on its own, not the
   // engine's).
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // request drawer below is disabled while that run is in flight (RequestDrawer.svelte's
+  // `disabled` prop), so this waits it out before opening it.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   await page.getByTestId('sim-request-drawer').locator('summary').click();
   const editor = page.getByTestId('sim-request-json');
@@ -90,9 +102,13 @@ test('sharing a request past the URL budget shows the error, not a blank field',
 
 test('a shared request link reproduces the whole page state', async ({ page }) => {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // request drawer below is disabled while that run is in flight (RequestDrawer.svelte's
+  // `disabled` prop), so this waits it out before opening it.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   await page.getByTestId('sim-style').selectOption('cleave-5');
   await page.getByTestId('sim-duration').selectOption('600');
@@ -119,9 +135,13 @@ test('the drawer tracks page settings until the player edits, then keeps the edi
   // drawer is first opened) went stale in the textarea, and Share or Apply from it carried
   // the old encounter with nothing on screen saying so.
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // request drawer below is disabled while that run is in flight (RequestDrawer.svelte's
+  // `disabled` prop), so this waits it out before opening it.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   // Change a setting before the drawer is ever opened -- the arrival-request case the
   // fix targets -- then open it and see the change already there.
@@ -144,9 +164,13 @@ test('the drawer tracks page settings until the player edits, then keeps the edi
 
 test('Apply keeps a per-slot enchant and suffix', async ({ page }) => {
   await page.goto('/sim');
-  await page.getByTestId('sim-addon-input').fill(FURY);
-  await page.getByTestId('sim-addon-load').click();
+  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
+  // request drawer below is disabled while that run is in flight (RequestDrawer.svelte's
+  // `disabled` prop), so this waits it out before opening it.
+  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 
   await page.getByTestId('sim-request-drawer').locator('summary').click();
   const editor = page.getByTestId('sim-request-json');
