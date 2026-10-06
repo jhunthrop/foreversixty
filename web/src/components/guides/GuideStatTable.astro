@@ -1,0 +1,69 @@
+---
+// web/src/components/guides/GuideStatTable.astro
+// Live-numbers lane (2026-10-06): the "## Stat priority" prose used to quote this band's
+// scale factors by hand ("Strength 1.00, Attack power 0.50, Crit 0.26 ..."), which the
+// nightly BiS republish then moved -- the written numbers went stale the next morning.
+// This table renders the same per-point scale factors straight from this band's own sim
+// weights, through the identical load path (`band60Weights`, class-dps.ts) and the
+// identical ordering/significance rules (`railStatRows`, rail-stats.ts) the rail's own Stat
+// priority card already uses, so the two surfaces can never disagree. The guide's own
+// prose, planted below this table by [spec].astro, never quotes a number again.
+//
+// A real `<table>` rather than a styled div grid: `[spec].astro` renders this inside
+// Content.astro's `.prose-forever` wrapper, which already carries table/th/td rules
+// (global.css) for exactly this shape -- reusing that means this component needs no
+// `<style>` block of its own. Cell text reuses the rail card's own value styling
+// (`font-mono`/`tabular` for a number, `text-muted` for "not separable from zero") rather
+// than inventing a second convention for the same fact.
+import { band60Weights } from '../../lib/guides/class-dps';
+import { formatDate } from '../../lib/dates';
+import { railStatRows } from '../../lib/guides/rail-stats';
+
+interface Props {
+  build: string;
+  /** The spec's full id (e.g. `"paladin-retribution"`) -- the BiS file's own name on disk. */
+  spec: string;
+  classSlug: string;
+  recommendedRaces: string[];
+  /** The guide's own frontmatter `statPriority` -- the SET of stats to show; this
+   *  component, not that array's own order, decides the order they render in
+   *  (content.config.ts's own note on why the array's order no longer matters). */
+  statPriority: string[];
+}
+
+const { build, spec, classSlug, recommendedRaces, statPriority } = Astro.props;
+
+const band60 = band60Weights(build, spec, classSlug, recommendedRaces);
+const rows =
+  band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
+const updated = band60 === undefined ? undefined : formatDate(new Date(band60.generatedAt));
+---
+
+{rows.length > 0 && (
+  <div data-testid="guide-stat-table">
+    <table>
+      <tbody>
+        {rows.map((row, index) => (
+          <tr data-testid={`guide-stat-table-row-${index}`}>
+            <td class="text-strong">{row.label}</td>
+            <td data-testid={`guide-stat-table-value-${index}`}>
+              {row.value === undefined ? (
+                <span class="text-muted">not separable from zero</span>
+              ) : (
+                <span class="tabular text-strong font-mono">
+                  {row.value.toFixed(2)}
+                  {row.perPercent ? ' per 1%' : ''}
+                </span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {updated !== undefined && (
+      <p class="text-muted text-[12px]" data-testid="guide-stat-table-updated">
+        Updated {updated}
+      </p>
+    )}
+  </div>
+)}

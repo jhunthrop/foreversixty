@@ -18,6 +18,7 @@ import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.
 import BuildActionButtons from '../../../components/guides/BuildActionButtons.astro';
 import GuideActionRail from '../../../components/guides/GuideActionRail.astro';
 import GuideBuildTree from '../../../components/guides/GuideBuildTree.svelte';
+import GuideStatTable from '../../../components/guides/GuideStatTable.astro';
 import LevelingBandStrip, { type LevelingBandRow } from '../../../components/guides/LevelingBandStrip.astro';
 import RacePillRow from '../../../components/guides/RacePillRow.astro';
 import StatPriorityPills from '../../../components/guides/StatPriorityPills.astro';
@@ -35,7 +36,7 @@ import {
 } from '../../../lib/bis/rotation-view';
 import { specTabIcon } from '../../../lib/bis/spec-icon';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
-import { factionForFirstRace, rankedBisFile } from '../../../lib/guides/class-dps';
+import { band60Weights, factionForFirstRace, rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { railStatRows } from '../../../lib/guides/rail-stats';
@@ -119,14 +120,14 @@ const rotationBandLabel = String(bandTopLevel(60));
 // pipeline file, never the `/bis` dev fixture (see that module's own doc comment).
 const ranked = rankedBisFile(build, fullSpecId);
 const faction = factionForFirstRace(classSlug, entry.data.recommendedRaces);
-const band60 =
-  ranked !== undefined && faction !== undefined
-    ? ranked.bands.find((b) => b.band === 60 && b.faction === faction)
-    : undefined;
+// Same load path `GuideStatTable.astro` uses for the planted Stat priority table below --
+// `band60Weights` is the one place this band's weights get read, so the rail card and the
+// table can never disagree.
+const band60 = band60Weights(build, fullSpecId, classSlug, entry.data.recommendedRaces);
 const statRows =
   band60 === undefined
     ? []
-    : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.haste_scale_factor ?? null);
+    : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.hasteScaleFactor);
 
 const levelingRows: LevelingBandRow[] =
   ranked === undefined || faction === undefined
@@ -193,6 +194,13 @@ const levelingRows: LevelingBandRow[] =
   )}
   <Fragment set:html={rotationHtml} />
   <Fragment set:html={statPriorityHeadingHtml} />
+  <GuideStatTable
+    build={build}
+    spec={fullSpecId}
+    classSlug={classSlug}
+    recommendedRaces={entry.data.recommendedRaces}
+    statPriority={entry.data.statPriority}
+  />
   <StatPriorityPills stats={entry.data.statPriority} />
   <Fragment set:html={statPriorityProseHtml} />
   <Fragment set:html={gearHtml} />

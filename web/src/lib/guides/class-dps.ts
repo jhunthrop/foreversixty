@@ -9,7 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bandEntry, loadBisFile } from '../bis/load';
 import { classRows, racesForClass } from '../planner/reference';
-import type { BisFile, Faction } from '../bis/types';
+import type { BisFile, BisStatWeight, Faction } from '../bis/types';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -79,4 +79,38 @@ export function classLandingSetDps(
   const faction = factionForFirstRace(classSlug, recommendedRaces);
   if (faction === undefined) return undefined;
   return bandEntry(file, 60, faction)?.set_dps;
+}
+
+/** This spec's band-60 stat weights, plus the file-level timestamp they were published
+ *  with -- everything `railStatRows` (rail-stats.ts) and its own "Updated" caption need. */
+export interface Band60Weights {
+  weights: readonly BisStatWeight[];
+  hasteScaleFactor: number | null;
+  generatedAt: string;
+}
+
+/**
+ * This spec's band-60 per-point stat weights, at the faction `factionForFirstRace` resolves
+ * -- the one load path the Stat priority rail card and `GuideStatTable.astro` (live-numbers
+ * lane, 2026-10-06) share, so a guide's own numbers never diverge by reading the band
+ * through two different call sequences. `undefined` for a spec with no ranked BiS file or
+ * no band-60 row at that faction, same as `classLandingSetDps`'s own "real data only" rule.
+ */
+export function band60Weights(
+  build: string,
+  spec: string,
+  classSlug: string,
+  recommendedRaces: readonly string[],
+): Band60Weights | undefined {
+  const file = rankedBisFile(build, spec);
+  if (file === undefined) return undefined;
+  const faction = factionForFirstRace(classSlug, recommendedRaces);
+  if (faction === undefined) return undefined;
+  const band = bandEntry(file, 60, faction);
+  if (band === undefined) return undefined;
+  return {
+    weights: band.weights,
+    hasteScaleFactor: band.haste_scale_factor ?? null,
+    generatedAt: file.generated_at,
+  };
 }

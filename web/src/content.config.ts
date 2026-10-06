@@ -53,9 +53,12 @@ export const guideSchema = factSchema.extend({
    *  full legal race list; an empty array (the default, and every class landing page's
    *  value) marks none. */
   recommendedRaces: z.array(z.string()).default([]),
-  /** Stat names in priority order, exactly as this guide's own Stat priority prose already
-   *  names them (its bold terms) -- StatPriorityPills.astro renders these as an ordered pill
-   *  row; the guide's own prose stays underneath as the reasoning, unchanged. */
+  /** The set of stats this guide's own Stat priority section covers. StatPriorityPills.astro
+   *  still renders these as a numbered pill row in this array's own order, but that order is
+   *  no longer authoritative (live-numbers lane, 2026-10-06): `GuideStatTable.astro` renders
+   *  the real per-point order from this band's own sim weights (`railStatRows`), which can
+   *  and does disagree with this array -- the sim re-ranks nightly, this array does not. Only
+   *  the SET of stats named here still matters; do not read this array's order as a ranking. */
   statPriority: z.array(z.string()).default([]),
 });
 

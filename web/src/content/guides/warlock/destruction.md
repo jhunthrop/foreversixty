@@ -51,7 +51,7 @@ Pop a mana potion at the start of the fight if your mana is already below its us
 
 ## Stat priority
 
-This band's own level-60 simulation could not separate any of Destruction's stats from zero at this error: Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, and Fire power are all "not significant" here — not a verdict that none of them matter, just that this band's sample can't tell them apart yet. The order above keeps this guide's own previous priority, since the sim gives no order to replace it with. This comes from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this band's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this band's sample size, to tell its true value apart from zero. This comes from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

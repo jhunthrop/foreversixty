@@ -52,7 +52,7 @@ The point split differs by role. This build (a cat-DPS spread) spends 31 points 
 
 ## Stat priority
 
-This band's own level-60 simulation covers only the Cat DPS role, and ranks its stats by scale factor, highest per-point value first: Strength 1.34, Agility 1.00, Critical strike 0.59, Attack power and Feral attack power both 0.58, and Hit 0.18 per point, with Melee haste worth 4.8 per 1% outside that per-point scale. Every one of these stats cleared significance at this band — none of them were too close to call. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30; bear-tank priority still isn't covered by this site's data at all, and has to be inferred separately from general Classic-era tanking knowledge: armor and stamina for survivability, defense skill toward the uncrittable threshold, and dodge as the main avoidance stat, roughly in that order.
+The table above is this band's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this band's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30; bear-tank priority still isn't covered by this site's data at all, and has to be inferred separately from general Classic-era tanking knowledge: armor and stamina for survivability, defense skill toward the uncrittable threshold, and dodge as the main avoidance stat, roughly in that order.
 
 ## Gear
 

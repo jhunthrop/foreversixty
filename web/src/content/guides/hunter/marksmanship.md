@@ -62,7 +62,7 @@ This site's own simulator plays Marksmanship as the most direct read of the shar
 
 ## Stat priority
 
-This band's own level-60 simulation ranks Marksmanship's stats by scale factor, highest per-point value first: Agility 1.00, Critical strike 0.61, Ranged attack power 0.44, and Hit 0.15 per point, with Melee haste worth 4.6 per 1% outside that per-point scale — the sim doesn't carry a separate general Attack power row for this spec at all. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this band's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this band's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 
