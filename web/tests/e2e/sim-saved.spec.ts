@@ -442,8 +442,20 @@ test('a stale engine version shows the pill and the sentence, and is never re-ru
   expect(calls).toBe(1);
 });
 
+// Persona review 2026-10-06 (retail-raider), §5/§8 item 1: SimSavePanel now requires
+// sign-in before Save enables (ColdPasteHero.svelte's cold-paste run never needed one, but
+// saving the result still does), so this describe block's own save flow needs a signed-in
+// `/v1/me` -- a cold-paste run reaching a result stays covered, signed out, by
+// sim-cold-paste.spec.ts.
+const SIGNED_IN_ME = {
+  user: { id: 1, battletag: 'Fixture#0001', email: null, role: 'user', anonymize: false, premium: false },
+  characters: [],
+  guilds: [],
+};
+
 test.describe('saving a browser run from /sim', () => {
   async function runFury(page: import('@playwright/test').Page): Promise<void> {
+    await page.route('**/v1/me', (route) => route.fulfill(envelope(SIGNED_IN_ME)));
     await page.goto('/sim');
     await page.getByTestId('sim-addon-input').fill(FURY);
     await page.getByTestId('sim-addon-load').click();

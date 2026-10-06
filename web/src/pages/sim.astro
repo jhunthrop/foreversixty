@@ -9,6 +9,9 @@ import { landingCopy } from '../lib/sim/landing-copy';
 import SimTabs from '../components/sim/SimTabs.astro';
 import ExampleResultCard from '../components/sim/ExampleResultCard.svelte';
 import IslandScript from '../components/IslandScript.astro';
+
+const COLD_PASTE_SECTION =
+  'border-line bg-card-top rounded-panel mx-[18px] flex flex-col gap-3 border p-4 md:mx-0';
 ---
 
 <Base
@@ -40,6 +43,15 @@ import IslandScript from '../components/IslandScript.astro';
          do not change which text box is largest/earliest; the min-h reservation below still
          covers their full height as part of the real measurement.
 
+         Persona review 2026-10-06 (retail-raider), §5/§8 item 1: `ColdPasteHero.svelte` now
+         renders ahead of all of the above, so its own title and two caption lines (the same
+         reasoning as the hero card's duplicate, just above) are reproduced here too, in the
+         same order and with the same classes `ColdPasteHero.svelte` itself uses --
+         `COLD_PASTE_SECTION`'s one constant, shared rather than hand-copied twice, so the
+         two cannot quietly drift the way two separately typed class strings could. The
+         textarea, the Run button and the in-game hint's link are not reproduced, same
+         reasoning as the hero card's own button/email-link omission above.
+
          sim-island.ts's replaceChildren() swaps this whole div's content for the real,
          interactive switcher, so the min-h reservation below (measured against the real
          hydrated height, mobile/desktop) keeps that swap from moving the footer -- the same
@@ -51,16 +63,22 @@ import IslandScript from '../components/IslandScript.astro';
          wrapped together in `flex flex-col ${VIEW_GAP}` (fix round 1, Important #2) so the
          vertical gap between them matches the hydrated root's own gap too.
 
-         2026-09-26 re-measure: with the intro line, example card and hero card all added
-         ahead of the three paste cards for a signed-out visitor, a real Chromium
+         2026-10-06 re-measure (cold-paste lane): with ColdPasteHero added ahead of the
+         intro line, example card and hero card for a signed-out visitor, a real Chromium
          build+preview (`[data-sim-mount]`'s `getBoundingClientRect().height` after zeroing
-         its own `min-height`) measured 1384px at 390x844 (phone) and 795px at desktop
-         widths (>=768px) for the signed-out default view -- both up from the pre-pass
-         1154/620 figures, since the page now says more before the fold. Reserved 24px over
-         each (lane-common's own CI-Linux-fonts-wrap-wider buffer): 1408/819. -->
-    <div id="sim" data-sim-mount class="min-h-[1408px] md:min-h-[819px]">
+         its own `min-height`, waited until `[data-testid="sim-cold-paste-run"]` was visible)
+         measured 1688px at 390x844 (phone) and 1038.5px at desktop widths (>=768px) for the
+         signed-out default view -- both up from the 2026-09-26 pass's 1384/795 figures.
+         Reserved 24px over each (lane-common's own CI-Linux-fonts-wrap-wider buffer):
+         1712/1063. -->
+    <div id="sim" data-sim-mount class="min-h-[1712px] md:min-h-[1063px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
+        <div class={COLD_PASTE_SECTION}>
+          <h2 class="section-title text-[15px]">{landingCopy.pasteHeroTitle}</h2>
+          <p class="text-muted text-[12px]">{landingCopy.pasteHeroHintLead}</p>
+          <p class="text-muted text-[12px]">{landingCopy.pasteHeroRunsLocally}</p>
+        </div>
         <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
           <p class="text-muted text-[14px]">{landingCopy.introLine}</p>
           <ExampleResultCard />

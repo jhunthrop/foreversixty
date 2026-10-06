@@ -58,6 +58,7 @@
   import type { SimListRow, SimRequest, SimResult, SpecFidelity } from '../../lib/sim/types';
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
+  import ColdPasteHero from './ColdPasteHero.svelte';
   import CurrentCharacterBar from '../CurrentCharacterBar.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
@@ -379,6 +380,12 @@
     if (store.character !== null) switcherOpen = false;
   });
 
+  // Persona review 2026-10-06, §5/§8 item 1: no character loaded, session settled -- signed
+  // out, or signed in with nothing tracked ("Change source" is excluded by `character === null` alone).
+  const showColdPasteHero = $derived(
+    store.character === null && !sessionPending && (me === null || me.characters.length === 0),
+  );
+
   // `restored` is only ever set by `restoreFromPointer`; the spine bar shows the note.
   let restored = $state(false);
 
@@ -408,6 +415,14 @@
 
   function onSignIn(): void {
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
+  }
+
+  // ColdPasteHero.svelte already decoded `code` before calling this (persona review
+  // 2026-10-06 §5/§8 item 1), so the only step left beyond a landing pick (pickCharacter
+  // above) is running it with no second click, the instant the character lands.
+  async function runPastedInput(code: string): Promise<void> {
+    await store.loadAddon(code);
+    if (store.character !== null) void store.run();
   }
 
   // The landing state's own busy key (Task 18): the row a pick is in flight for, so its
@@ -538,6 +553,15 @@
            second, redundant copy of the exact same paragraph. Nothing here replaces it. -->
       <SpecGrid rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
     {:else}
+      {#if showColdPasteHero}
+        <!-- Persona review 2026-10-06, §5/§8 item 1: ahead of the Battle.net hero, the
+             intro line and the static example below -- the one action that gets a DPS
+             number on screen with no sign-in and no wait. -->
+        <ColdPasteHero
+          busy={store.phase === 'loading-character'}
+          onrun={(code) => void runPastedInput(code)}
+        />
+      {/if}
       {#if store.character !== null && !switcherOpen}
         <CharacterStrip
           character={store.character}
@@ -717,6 +741,7 @@
               result={store.result}
               reportTitle={store.reportTitle}
               onsave={(title) => store.save(title)}
+              signedIn={me !== null}
             />
           {/if}
           <SettingsBar

@@ -115,6 +115,32 @@ test('the precision select offers four choices and the details card states the r
 });
 
 test('a finished run can be named, and the saved link opens in a new tab', async ({ page }) => {
+  // Persona review 2026-10-06 (retail-raider), §5/§8 item 1: SimSavePanel's Save button
+  // now requires sign-in -- a cold-paste run reaching a result stays covered, signed out,
+  // by sim-cold-paste.spec.ts; this test opens the save form, so it needs a signed-in
+  // `/v1/me`.
+  await page.route('**/v1/me', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        data: {
+          user: {
+            id: 1,
+            battletag: 'Fixture#0001',
+            email: null,
+            role: 'user',
+            anonymize: false,
+            premium: false,
+          },
+          characters: [],
+          guilds: [],
+        },
+        error: null,
+      }),
+    }),
+  );
   await page.goto('/sim');
   await page.getByTestId('sim-addon-input').fill(FURY);
   await page.getByTestId('sim-addon-load').click();
