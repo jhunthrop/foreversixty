@@ -18,9 +18,9 @@ const unique = [...new Map(sources.map((s) => [s.url, s])).values()];
   <h2 class="section-title text-[14px]">Sources</h2>
   <ul class="flex flex-col gap-2 list-none p-0 m-0">
     {unique.map((s) => (
-      <li class="flex items-center gap-3 text-[14px]">
+      <li class="flex items-start gap-3 text-[14px]">
         <SourcePill kind={s.kind} />
-        <a href={s.url} rel="noopener">
+        <a href={s.url} rel="noopener" class="min-w-0 break-words">
           {s.label}
         </a>
       </li>
