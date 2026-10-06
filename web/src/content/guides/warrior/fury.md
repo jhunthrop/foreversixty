@@ -5,7 +5,7 @@ spec: fury
 role: dps
 build: 'FS1:1.60.1.70009:warrior:human:35311103002/353211005050010051/0:'
 recommendedRaces: [human, troll]
-statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
 description: 'Talents, rotation, stat priority, and race picks for Fury Warrior in Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -61,14 +61,7 @@ This site's own Fury priority list opens the same way Arms does: top up Rage wit
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Attack power** — the reference stat; every weapon swing and special attack scales off it directly.
-2. **Strength** — the primary source of attack power, split between two weapons instead of one.
-3. **Agility** — a smaller attack power contribution plus some crit and dodge.
-4. **Critical strike** — feeds Flurry's attack-speed proc and Enrage's damage proc, both of which trigger off hits landing, so it does double duty for Fury specifically.
-5. **Hit** — keeps Bloodthirst and Whirlwind landing reliably; matters more before you're near the hit cap.
-6. **Melee haste** — more swings mean more chances at Flurry and Enrage procs, though this site's own weighting still ranks it last of the six.
+This band's own level-60 simulation ranks Fury's stats by scale factor, highest per-point value first: Strength 1.00, Critical strike 0.46, Attack power 0.33, and Hit 0.11 per point, with Melee haste worth 3.5 per 1% outside that per-point scale. Agility didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

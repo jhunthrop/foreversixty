@@ -5,7 +5,7 @@ spec: combat
 role: dps
 build: 'FS1:1.60.1.70009:rogue:night-elf:32531/32531300000515201/51:'
 recommendedRaces: [night-elf, troll]
-statPriority: [Attack power, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Combat Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -40,7 +40,7 @@ The core loop is simple and fully supported in this site's simulator: keep Slice
 
 ## Stat priority
 
-In simulator-derived priority order: **attack power** first, since every attack in the loop scales off it directly. **Agility** next for its indirect attack power and crit. **Crit** feeds both raw damage and Seal Fate-style combo generation if talented into Assassination for a few points. **Hit** keeps Sinister Strike and Eviscerate landing consistently. **Melee haste** last, adding swings and faster energy-limited combo generation.
+This band's own level-60 simulation ranks Combat's stats by scale factor, highest per-point value first: Agility 1.00, Attack power and Strength both 0.72, Critical strike 0.43, and Hit 0.06 per point. Melee haste didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

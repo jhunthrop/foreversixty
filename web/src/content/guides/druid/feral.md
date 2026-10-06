@@ -5,8 +5,7 @@ spec: feral
 role: dps
 build: 'FS1:1.60.1.70009:druid:night-elf:0/5423222121032010001/55532:'
 recommendedRaces: [night-elf, tauren]
-statPriority:
-  [Attack power, 'Feral-specific attack power', Strength, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Strength, Agility, Critical strike, Attack power, Feral attack power, Hit, Melee haste]
 description: 'Talents, rotation, stats, and gear for Feral Druid in Forever, covering both Cat Form DPS and Bear Form tanking from the one tree.'
 updated: 2026-09-24
 confidence: inferred
@@ -53,17 +52,7 @@ The point split differs by role. This build (a cat-DPS spread) spends 31 points 
 
 ## Stat priority
 
-This site's own simulator weighting only covers the Cat DPS role; in priority order:
-
-1. **Attack power** — the reference stat; every melee ability in Cat Form scales off it.
-2. **Feral-specific attack power** — a stat that applies only in shapeshifted forms, stacking on top of normal attack power.
-3. **Strength** — converts into attack power and scales with Predatory Strikes and Heart of the Wild.
-4. **Agility** — adds crit chance and dodge, both useful in Cat Form.
-5. **Critical strike** — feeds combo-point generation through Primal Fury and raw damage through Savage Fury's affected abilities.
-6. **Hit** — needed to stop missing melee swings against raid-level bosses.
-7. **Melee haste** — more swings and faster combo-point generation.
-
-Bear-tank stat priority isn't in this site's data at all and has to be inferred separately from general Classic-era tanking knowledge: armor and stamina for survivability, defense skill to push toward the uncrittable threshold, and dodge as the main avoidance stat, roughly in that order.
+This band's own level-60 simulation covers only the Cat DPS role, and ranks its stats by scale factor, highest per-point value first: Strength 1.34, Agility 1.00, Critical strike 0.59, Attack power and Feral attack power both 0.58, and Hit 0.18 per point, with Melee haste worth 4.8 per 1% outside that per-point scale. Every one of these stats cleared significance at this band — none of them were too close to call. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30; bear-tank priority still isn't covered by this site's data at all, and has to be inferred separately from general Classic-era tanking knowledge: armor and stamina for survivability, defense skill toward the uncrittable threshold, and dodge as the main avoidance stat, roughly in that order.
 
 ## Gear
 

@@ -5,7 +5,7 @@ spec: affliction
 role: dps
 build: 'FS1:1.60.1.70009:warlock:gnome:25552000130201051/235522/0:'
 recommendedRaces: [gnome, troll]
-statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Shadow damage']
+statPriority: [Spell power, Shadow power, Intellect, Hit, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Affliction Warlock in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -51,15 +51,7 @@ Pop a mana potion or gem at the start of the fight if your mana is already below
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Spell power** — the reference stat; every DoT tick and Shadow Bolt scales off it directly.
-2. **Intellect** — a larger mana pool for a rotation that casts through the whole fight.
-3. **Critical strike** — Pandemic turns every DoT and drain crit into far more damage.
-4. **Hit** — needed to stop missing casts and letting DoTs fail to apply against raid-level bosses; partly covered by Suppression.
-5. **Spell haste** — shortens Shadow Bolt's cast time, the main filler between DoT refreshes.
-6. **Spell penetration** — only matters against targets with meaningful shadow resistance.
-7. **Shadow damage (school power)** — the narrowest stat, appearing on very few items, but it stacks directly with Shadow Mastery's percentage bonus.
+This band's own level-60 simulation ranks Affliction's stats by scale factor, highest per-point value first: Spell power and Shadow power both 4.31, Intellect 1.00, Hit 0.86, and Critical strike 0.20 per point, with Spell haste measuring −36.1 per 1% — a genuine negative outside that per-point scale, not a typo: at this band the sim found a small net DPS loss from extra haste rather than a gain. Spell penetration didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

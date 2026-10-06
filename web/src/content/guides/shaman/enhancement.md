@@ -5,7 +5,7 @@ spec: enhancement
 role: dps
 build: 'FS1:1.60.1.70009:shaman:dwarf:553322/253130030005102051/0:'
 recommendedRaces: [dwarf, orc]
-statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Strength, Attack power, Hit, Critical strike, Agility, Melee haste]
 description: 'Enhancement Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -42,7 +42,7 @@ The loop this site's simulator plays: keep Strength of Earth Totem down througho
 
 ## Stat priority
 
-In simulator-derived priority order: **attack power** first, the primary driver of melee damage and Stormstrike's hit value. **Strength** next for its direct attack power contribution. **Agility** adds both attack power and crit, and also dodge for survivability. **Crit** feeds Flurry's attack-speed proc as well as raw damage. **Hit** matters more than it used to now that melee and spell hit share one stat, since Enhancement's shocks and imbue procs both benefit from the same rating. **Melee haste** last, adding auto-attack swings and weapon-imbue procs.
+This band's own level-60 simulation ranks Enhancement's stats by scale factor, highest per-point value first: Strength 1.00, Attack power 0.50, Hit 0.48, Critical strike 0.37, and Agility 0.27 per point, with Melee haste worth 1.9 per 1% outside that per-point scale. Every one of these stats cleared significance at this band — none of them were too close to call. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

@@ -6,15 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70009:warlock:gnome:255323/2352113101200001351/0:'
 recommendedRaces: [gnome, troll]
 statPriority:
-  [
-    Spell power,
-    Intellect,
-    Critical strike,
-    Hit,
-    Spell haste,
-    Spell penetration,
-    'Shadow damage and Fire damage',
-  ]
+  [Spell power, Hit, Intellect, Critical strike, Fire power, Spell haste, Spell penetration, Shadow power]
 description: 'Talents, rotation, stats, and gear for Demonology Warlock in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -59,15 +51,7 @@ Pop a mana potion at the start of the fight if your mana is already below its us
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Spell power** — the reference stat; every Corruption tick and Shadow Bolt scales off it directly.
-2. **Intellect** — a larger mana pool, and Fel Vitality adds further to both the Warlock's and the pet's pools.
-3. **Critical strike** — feeds Soul Fire and Shadow Bolt crits, and eventually the Decimation proc once implemented.
-4. **Hit** — needed to stop missing casts against raid-level bosses.
-5. **Spell haste** — shortens Shadow Bolt's cast time, the spec's main filler.
-6. **Spell penetration** — only matters against targets with meaningful shadow or fire resistance.
-7. **Shadow damage and Fire damage (school power)** — the narrowest stats, appearing on very few items, relevant depending on which pet talents you've taken.
+This band's own level-60 simulation ranks Demonology's stats by scale factor, highest per-point value first: Spell power 8.23, Hit 3.11, Intellect 1.00, Critical strike 0.99, and Fire power 0.67 per point. Spell haste, Spell penetration, and Shadow power didn't clear significance at this band — the sim's error on each is too wide to call it apart from zero, not a verdict that any of them are worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

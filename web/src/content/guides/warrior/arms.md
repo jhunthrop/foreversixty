@@ -5,7 +5,7 @@ spec: arms
 role: dps
 build: 'FS1:1.60.1.70009:warrior:human:35325213032010001/0505/5005:'
 recommendedRaces: [human, orc]
-statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Strength, Attack power, Critical strike, Hit, Melee haste, Agility]
 description: 'Talents, rotation, stat priority, and race picks for Arms Warrior in Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -59,14 +59,7 @@ This site's own Arms priority list opens by topping up Rage with Bloodrage whene
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Attack power** — the reference stat; every weapon swing and special attack scales off it directly.
-2. **Strength** — the primary source of attack power for a two-handed melee spec.
-3. **Agility** — a smaller attack power contribution plus some crit and dodge.
-4. **Critical strike** — feeds Impale's bonus crit damage and gives Deep Wounds more chances to proc.
-5. **Hit** — keeps Mortal Strike and Overpower landing reliably; matters more before you're near the hit cap.
-6. **Melee haste** — more swings and faster Rage generation, but weighted lowest of the six.
+This band's own level-60 simulation ranks Arms's stats by scale factor, highest per-point value first: Strength 1.00, Attack power 0.45, Critical strike 0.29, and Hit 0.07 per point, with Melee haste worth 2.2 per 1% outside that per-point scale. Agility didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

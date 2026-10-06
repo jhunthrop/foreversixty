@@ -5,7 +5,7 @@ spec: shadow
 role: dps
 build: 'FS1:1.60.1.70009:priest:gnome:5241110013/0/443110501201300251:'
 recommendedRaces: [gnome, undead]
-statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Shadow power']
+statPriority: [Intellect, Hit, Spell power, Shadow power, Critical strike, Spell haste, Spell penetration]
 description: 'Shadow Priest overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -40,7 +40,7 @@ The core loop this site's simulator plays: keep Shadow Word: Pain up on the targ
 
 ## Stat priority
 
-In simulator-derived priority order: **spell power** first, the direct multiplier on every Shadow spell. **Intellect** next for mana pool and a small crit contribution. **Crit** feeds both raw damage and Shadow Weaving's stacking buff. **Hit** keeps every cast in the rotation landing, which matters more for Shadow than for a healer since a missed Mind Blast is a missed cooldown. **Spell haste** speeds up the whole rotation. **Spell penetration** helps against magic-resistant targets. **Shadow power**, gear that specifically boosts Shadow damage rather than all spell schools, sits last as the most specialized and rarest stat to find.
+This band's own level-60 simulation ranks Shadow's stats by scale factor, highest per-point value first: Intellect 1.00, Hit 0.90, Spell power and Shadow power both 0.82, and Critical strike 0.17 per point. Spell haste and Spell penetration didn't clear significance at this band — the sim's error on both is too wide to call them apart from zero, not a verdict that either stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

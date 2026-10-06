@@ -5,7 +5,7 @@ spec: arcane
 role: dps
 build: 'FS1:1.60.1.70009:mage:gnome:253225111100011501/235523/0:'
 recommendedRaces: [gnome, orc]
-statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Arcane damage']
+statPriority: [Spell power, Arcane power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Arcane Mage in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -51,15 +51,7 @@ Use Arcane Power the instant it's off cooldown — it has no cast time, so there
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Spell power** — the reference stat; every Arcane cast scales off it directly.
-2. **Intellect** — expands your mana pool and, through Arcane Mind, adds directly to Arcane critical strike damage.
-3. **Critical strike** — Arcane Instability and Arcane Mind both scale off crit chance and crit damage, so it pulls ahead of hit once you're near the hit cap.
-4. **Hit** — needed to stop missing casts against raid-level bosses; only partly covered by the Arcane Focus talent.
-5. **Spell haste** — shortens cast times and speeds up the Arcane Missiles channel.
-6. **Spell penetration** — only matters against targets with meaningful arcane resistance.
-7. **Arcane damage (school power)** — the narrowest stat, appearing on very few items.
+This band's own level-60 simulation ranks Arcane's stats by scale factor, highest per-point value first: Spell power and Arcane power both 7.65, Hit 5.37, Critical strike 3.89, and Intellect 1.00 per point, with Spell haste worth 34.6 per 1% outside that per-point scale. Spell penetration didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

@@ -5,7 +5,7 @@ spec: subtlety
 role: dps
 build: 'FS1:1.60.1.70009:rogue:night-elf:005/325131/5322210310013011051:'
 recommendedRaces: [night-elf, troll]
-statPriority: [Attack power, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Subtlety Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -40,7 +40,7 @@ This site's simulator plays the fully supported version of the loop: keep Slice 
 
 ## Stat priority
 
-In simulator-derived priority order: **attack power** first, driving every physical attack in the loop. **Agility** next for its indirect attack power and crit. **Crit** feeds Seal Fate-style bonus combo points if talented and raises Hemorrhage and Eviscerate damage directly. **Hit** keeps the combo-point loop consistent by avoiding misses. **Melee haste** last, for more swings and faster combo generation.
+This band's own level-60 simulation ranks Subtlety's stats by scale factor, highest per-point value first: Agility 1.00, Attack power and Strength both 0.84, and Critical strike 0.47 per point. Hit and Melee haste didn't clear significance at this band — the sim's error on both is too wide to call them apart from zero, not a verdict that either stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

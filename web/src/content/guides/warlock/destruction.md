@@ -6,15 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70009:warlock:gnome:255323/0/2353225100101051:'
 recommendedRaces: [gnome, troll]
 statPriority:
-  [
-    Spell power,
-    Intellect,
-    Critical strike,
-    Hit,
-    Spell haste,
-    Spell penetration,
-    'Shadow damage and Fire damage',
-  ]
+  [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, Fire power]
 description: 'Talents, rotation, stats, and gear for Destruction Warlock in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -59,15 +51,7 @@ Pop a mana potion at the start of the fight if your mana is already below its us
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Spell power** — the reference stat; Immolate, Shadow Bolt, and every Destruction nuke scale off it directly.
-2. **Intellect** — a larger mana pool for a rotation with several expensive direct-damage casts.
-3. **Critical strike** — Ruin turns every crit into far more damage, and Shadowburn's execute value climbs with it.
-4. **Hit** — needed to stop missing casts against raid-level bosses.
-5. **Spell haste** — shortens Shadow Bolt and Immolate cast time, more casts per minute.
-6. **Spell penetration** — only matters against targets with meaningful shadow or fire resistance.
-7. **Shadow damage and Fire damage (school power)** — the narrowest stats, appearing on very few items, both relevant to Destruction's mixed-school kit.
+This band's own level-60 simulation could not separate any of Destruction's stats from zero at this error: Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, and Fire power are all "not significant" here — not a verdict that none of them matter, just that this band's sample can't tell them apart yet. The order above keeps this guide's own previous priority, since the sim gives no order to replace it with. This comes from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

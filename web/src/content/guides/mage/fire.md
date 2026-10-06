@@ -5,7 +5,7 @@ spec: fire
 role: dps
 build: 'FS1:1.60.1.70009:mage:gnome:2551151/23552110030003051/0:'
 recommendedRaces: [gnome, orc]
-statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Fire damage']
+statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -50,15 +50,7 @@ Open by stacking Improved Scorch's vulnerability debuff with a few Scorch casts 
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Spell power** — the reference stat; every Fire cast scales off it directly.
-2. **Intellect** — a larger mana pool for a rotation that never really stops casting.
-3. **Critical strike** — Ignite and Combustion both turn directly into more damage the higher your crit chance runs.
-4. **Hit** — needed to stop missing casts against raid-level bosses; not covered by any Fire talent.
-5. **Spell haste** — shortens Fireball and Scorch cast times, more casts per minute.
-6. **Spell penetration** — only matters against targets with meaningful fire resistance.
-7. **Fire damage (school power)** — the narrowest stat, appearing on very few items, but it stacks directly with Fire Power's percentage bonus.
+This band's own level-60 simulation ranks Fire's stats by scale factor, highest per-point value first: Hit 1.20, Intellect 1.00, Spell power and Fire power both 0.88, and Critical strike 0.46 per point. Spell haste and Spell penetration didn't clear significance at this band — the sim's error on both is too wide to call them apart from zero, not a verdict that either stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

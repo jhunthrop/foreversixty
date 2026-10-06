@@ -6,15 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70009:druid:night-elf:5222211015401051/0/55333:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
-  [
-    Spell power,
-    Intellect,
-    Critical strike,
-    Hit,
-    Spell haste,
-    Spell penetration,
-    'Nature damage and Arcane damage',
-  ]
+  [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Balance Druid in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -60,15 +52,7 @@ Keep Moonfire ticking on the target throughout the fight — it's the cheapest D
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Spell power** — the reference stat; Moonfire and Starfire both scale off it directly.
-2. **Intellect** — a larger mana pool for a rotation that casts continuously.
-3. **Critical strike** — Vengeance and Moonfury both turn crits into more damage, and Nature's Grace rewards a crit with a faster next cast.
-4. **Hit** — needed to stop missing casts against raid-level bosses.
-5. **Spell haste** — shortens Starfire's long cast time, the rotation's main filler.
-6. **Spell penetration** — only matters against targets with meaningful nature or arcane resistance.
-7. **Nature damage and Arcane damage (school power)** — the narrowest stats, appearing on very few items, both relevant since Balance's damage spans both schools.
+This band's own level-60 simulation ranks Balance's stats by scale factor, highest per-point value first: Intellect 1.00, Spell power 0.87, Nature power 0.49, Hit 0.47, Arcane power 0.38, and Critical strike 0.14 per point, with Spell haste worth 0.6 per 1% outside that per-point scale. Spell penetration didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 
