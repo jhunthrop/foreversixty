@@ -159,27 +159,15 @@ func (t talentTrees) fs1(clientBuild, class, race string, b build) string {
 }
 
 // decodeActive reads an active-layout positional string ("a-b-c", as
-// leveling.LadderTalentString writes it) back into a build by id.
+// leveling.LadderTalentString writes it) back into a build by id -
+// leveling.TalentRanksFromString's own decode, wrapped in this
+// package's build type.
 func (t talentTrees) decodeActive(s string) (build, error) {
-	parts := strings.Split(s, "-")
-	if len(parts) != len(t.trees) {
-		return nil, fmt.Errorf("talent string %q has %d trees, want %d", s, len(parts), len(t.trees))
+	ranks, err := leveling.TalentRanksFromString(t.trees, s)
+	if err != nil {
+		return nil, err
 	}
-	b := build{}
-	for ti, part := range parts {
-		if len(part) > len(t.trees[ti].Talents) {
-			return nil, fmt.Errorf("talent string %q tree %d has %d digits for %d talents", s, ti, len(part), len(t.trees[ti].Talents))
-		}
-		for j, c := range part {
-			if c < '0' || c > '9' {
-				return nil, fmt.Errorf("talent string %q has a non-digit %q", s, c)
-			}
-			if r := int(c - '0'); r > 0 {
-				b[t.trees[ti].Talents[j].ID] = r
-			}
-		}
-	}
-	return b, nil
+	return build(ranks), nil
 }
 
 // distance is the number of points two builds place differently

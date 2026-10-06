@@ -35,6 +35,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
@@ -124,7 +125,7 @@ func run(execPath string, args []string) error {
 	if *all {
 		return runAllSpecsIsolated(execPath, specTimeout, *repoRoot, activeBuild, outDir, *bandsFlag, *weightsIterations, *memProfile)
 	}
-	return runSpec(realEngine{}, *repoRoot, buildDir, activeBuild, outDir, *spec, bands, *weightsIterations)
+	return runSpec(realEngine{}, *repoRoot, buildDir, activeBuild, outDir, *spec, bands, *weightsIterations, resolveTalentLayout)
 }
 
 // specTimeout bounds one spec's subprocess: generous next to every
@@ -230,9 +231,40 @@ type factionWork struct {
 	trinketSeconds float64
 }
 
+// talentLayout is enginetalents.Layout's own Reposition method,
+// abstracted the same way engineRunner abstracts the real engine: a
+// test supplies a layout matching its own synthetic talent ids
+// (identityTalentLayout, testhelpers_test.go) instead of resolving,
+// and validating every talent against, the real compiled engine.
+type talentLayout interface {
+	Reposition(trees []leveling.TalentTree, s string) (string, error)
+}
+
+// talentLayoutResolver resolves a class's talentLayout given the site
+// repository root - runSpec's own explicit dependency for where that
+// layout comes from, the same role engineRunner plays for where a sim
+// result comes from.
+type talentLayoutResolver func(repoRoot, class string) (talentLayout, error)
+
+// resolveTalentLayout is run()'s production talentLayoutResolver: the
+// compiled engine's own talent-string layout for class, read from its
+// proto source under repoRoot/sim (sim/internal/enginetalents' own
+// doc).
+func resolveTalentLayout(repoRoot, class string) (talentLayout, error) {
+	engineDir, err := enginetalents.SourceDir(filepath.Join(repoRoot, "sim"))
+	if err != nil {
+		return nil, err
+	}
+	layout, err := enginetalents.ForClass(engineDir, class)
+	if err != nil {
+		return nil, err
+	}
+	return layout, nil
+}
+
 // runSpec ranks one spec across every band and both factions and writes
 // its two output files (json, md) under outDir.
-func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, weightsIterations int) error {
+func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, weightsIterations int, resolveLayout talentLayoutResolver) error {
 	specInfo, err := loadSpec(repoRoot, spec)
 	if err != nil {
 		return err
@@ -255,6 +287,20 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err != nil {
 		return err
 	}
+	// GuideTalentTargets (below) maps treeDigits onto talent ids by
+	// walking guideBuild's own trees POSITIONALLY; that read is only
+	// right if guideBuild's own tree shape is the one treeDigits was
+	// actually authored against. Every guide's stamp briefly said
+	// otherwise (lane guide-codes-70009's own finding - the digits
+	// were always in 1.60.1.70009's order, every stamp just said
+	// 1.60.1.69893), which would have silently misaligned a digit for
+	// any class whose tree shape moved between the two builds. This
+	// guard is the same invariant RequireGuideBuildMatchesActive's own
+	// doc already explains, checked before a mismatch can reach
+	// GuideTalentTargets at all.
+	if err := leveling.RequireGuideBuildMatchesActive(guideBuild, activeBuild); err != nil {
+		return err
+	}
 	guideTrees, err := leveling.LoadTalentTrees(repoRoot, guideBuild, specInfo.ClassSlug)
 	if err != nil {
 		return err
@@ -264,6 +310,22 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return err
 	}
 	talentTargets := leveling.GuideTalentTargets(guideTrees, treeDigits)
+
+	// engineLayout: the COMPILED engine's own talent string layout for
+	// this class, by stable talent id (sim/internal/enginetalents' own
+	// doc). The engine's proto was last regenerated from a client build
+	// that is not always the site's active one - paladin and shaman
+	// both drift - so every talent string this spec hands the engine
+	// below is written in engineLayout's own field order, never
+	// activeTrees' positional order directly. resolveLayout is an
+	// explicit dependency (like runner, above) rather than a direct
+	// enginetalents.SourceDir/ForClass call, so a test can supply a
+	// layout for its own synthetic talent ids instead of the real
+	// compiled engine's (testhelpers_test.go's identityTalentLayout).
+	engineLayout, err := resolveLayout(repoRoot, specInfo.ClassSlug)
+	if err != nil {
+		return err
+	}
 
 	items, missing, err := loadCandidates(buildDir, specInfo.ClassSlug)
 	if err != nil {
@@ -399,11 +461,25 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	var lastGoodReferenceDPSPerPoint float64
 	var lastGoodBand int
 	for _, band := range bands {
-		talents := leveling.LadderTalentString(activeTrees, talentTargets, specInfo.TreeIndex, band)
+		// talents is the published band string, kept in the site's own
+		// (active-build) layout - talentPoints and buildReport's own
+		// "talents" field both read it unconverted, since that is the
+		// layout the web planner decodes. engineTalents is the SAME
+		// build, repositioned onto the compiled engine's own field
+		// order (engineLayout, above) - every character this band
+		// builds for the engine (ladderCh and every rank/verify/set
+		// character below) is spent from engineTalents, never talents,
+		// or paladin and shaman misread every talent at and after the
+		// first talent whose tree position moved between the engine's
+		// proto build and the active one (this lane's own brief).
+		talents, engineTalents, err := bandTalentStrings(activeTrees, talentTargets, specInfo.TreeIndex, band, engineLayout)
+		if err != nil {
+			return fmt.Errorf("band %d: %w", band, err)
+		}
 		talentPoints := talentPointsSpent(talents)
 
 		weapon := ladderWeapon(items, band)
-		ladderCh := ladderCharacter(guide.AllianceRace, specInfo.ClassSlug, band, talents, weapon)
+		ladderCh := ladderCharacter(guide.AllianceRace, specInfo.ClassSlug, band, engineTalents, weapon)
 
 		weightsStart := time.Now()
 		wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)
@@ -581,7 +657,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			trinketStart := time.Now()
 			for _, slot := range []string{"trinket1", "trinket2"} {
 				var notes []string
-				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot, slot, weights)
+				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot, weights)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
@@ -603,7 +679,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		allianceWork, hordeWork := work["alliance"], work["horde"]
 		var reconcileNotes []string
 		allianceWork.picks, hordeWork.picks, reconcileNotes = reconcileFactionTrinkets(
-			runner, specInfo, specInfo.ClassSlug, band, talents, lootIdx,
+			runner, specInfo, specInfo.ClassSlug, band, engineTalents, lootIdx,
 			factionTrinketInputs{Faction: "alliance", Race: allianceWork.race, BySlot: allianceWork.bySlot}, allianceWork.picks,
 			factionTrinketInputs{Faction: "horde", Race: hordeWork.race, BySlot: hordeWork.bySlot}, hordeWork.picks,
 		)
@@ -627,7 +703,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			effectStart := time.Now()
 			for _, slot := range slotsNeedingEffectVerification(pickBySlot) {
 				var notes []string
-				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot, slot)
+				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
@@ -638,7 +714,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// verifies ahead of the independently-scored picks (sets.go;
 			// this lane's brief, item 3's second half).
 			var setNotes []string
-			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot)
+			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot)
 			for _, n := range setNotes {
 				log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 			}
@@ -652,7 +728,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			picks = enforceTwoHandOffHandInvariant(picks)
 
 			verifyStart := time.Now()
-			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks)
+			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks)
 			if err != nil {
 				return fmt.Errorf("band %d %s verify run (baseline): %w", band, f.name, err)
 			}
@@ -663,7 +739,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// pick: swap it into the slot and re-measure the whole set once,
 			// so the published row, the set DPS and the next band's diff all
 			// name the item a player should actually wear.
-			picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, swaps, setDPS)
+			picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, swaps, setDPS)
 			if err != nil {
 				return fmt.Errorf("band %d %s verify run (after swaps): %w", band, f.name, err)
 			}
@@ -785,6 +861,29 @@ func formatWeights(order []string, weights map[string]api.StatWeight) string {
 // left unspent") - reading the count back off the string it actually
 // produced reports what was truly spent, with no second formula that
 // could drift from the first.
+// bandTalentStrings is one band's talent build in both layouts this
+// pipeline needs: site - the published band `talents` field, in the
+// active build's own (tier, column) order, truncated to this band's
+// points - and engine - the SAME points, repositioned onto the
+// compiled engine's own field order (sim/internal/enginetalents' own
+// doc) so a character this pipeline hands the engine reads correctly
+// even for a class (paladin, shaman - this lane's own brief) whose
+// tree shape moved between the engine's proto build and the active
+// one. Every rank/verify/set/weights character this pipeline builds
+// must be spent from engine, never site; pulling the pairing out of
+// the band loop into its own function gives a test one place to pin
+// that invariant for a real class the two layouts are known to
+// differ on, rather than trusting every call site to keep passing the
+// right one of the two strings by hand.
+func bandTalentStrings(activeTrees []leveling.TalentTree, targets map[int]int, treeIndex, band int, layout talentLayout) (site, engine string, err error) {
+	site = leveling.LadderTalentString(activeTrees, targets, treeIndex, band)
+	engine, err = layout.Reposition(activeTrees, site)
+	if err != nil {
+		return "", "", fmt.Errorf("converting talents to the engine's own layout: %w", err)
+	}
+	return site, engine, nil
+}
+
 func talentPointsSpent(talents string) int {
 	total := 0
 	for _, r := range talents {

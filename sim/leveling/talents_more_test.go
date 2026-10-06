@@ -1,6 +1,10 @@
 package leveling
 
-import "testing"
+import (
+	"errors"
+	"reflect"
+	"testing"
+)
 
 // repoRootFixture is testdata/reporoot: a minimal stand-in for the
 // site repository, carrying just one build's talents/hunter.json and
@@ -118,5 +122,71 @@ func TestLadderTalentStringMultipleTreesJoinedWithDash(t *testing.T) {
 	// gets 5, remaining 41; tree 2 gets 5.
 	if got != "5-5-5" {
 		t.Fatalf("LadderTalentString = %q, want 5-5-5", got)
+	}
+}
+
+func TestTalentRanksFromStringReadsByPosition(t *testing.T) {
+	trees := []TalentTree{
+		{Talents: []TalentNode{{ID: 1}, {ID: 2}}},
+		{Talents: []TalentNode{{ID: 3}}},
+	}
+	got, err := TalentRanksFromString(trees, "32-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[int]int{1: 3, 2: 2, 3: 1}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("TalentRanksFromString = %v, want %v", got, want)
+	}
+}
+
+func TestTalentRanksFromStringDropsZeros(t *testing.T) {
+	trees := []TalentTree{{Talents: []TalentNode{{ID: 1}, {ID: 2}}}}
+	got, err := TalentRanksFromString(trees, "05")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := got[1]; ok {
+		t.Fatalf("TalentRanksFromString = %v, want id 1 absent (it is 0)", got)
+	}
+	if got[2] != 5 {
+		t.Fatalf("TalentRanksFromString = %v, want id 2 = 5", got)
+	}
+}
+
+func TestTalentRanksFromStringRejectsWrongTreeCount(t *testing.T) {
+	trees := []TalentTree{{Talents: []TalentNode{{ID: 1}}}}
+	if _, err := TalentRanksFromString(trees, "1-2"); err == nil {
+		t.Fatal("TalentRanksFromString with 2 trees for a 1-tree class: want an error, got nil")
+	}
+}
+
+func TestTalentRanksFromStringRejectsTooManyDigits(t *testing.T) {
+	trees := []TalentTree{{Talents: []TalentNode{{ID: 1}}}}
+	if _, err := TalentRanksFromString(trees, "55"); err == nil {
+		t.Fatal("TalentRanksFromString with more digits than talents: want an error, got nil")
+	}
+}
+
+func TestTalentRanksFromStringRejectsANonDigit(t *testing.T) {
+	trees := []TalentTree{{Talents: []TalentNode{{ID: 1}}}}
+	if _, err := TalentRanksFromString(trees, "x"); err == nil {
+		t.Fatal("TalentRanksFromString with a non-digit: want an error, got nil")
+	}
+}
+
+func TestRequireGuideBuildMatchesActiveAcceptsAMatch(t *testing.T) {
+	if err := RequireGuideBuildMatchesActive("1.60.1.70009", "1.60.1.70009"); err != nil {
+		t.Fatalf("matching builds: %v", err)
+	}
+}
+
+func TestRequireGuideBuildMatchesActiveRejectsADrift(t *testing.T) {
+	err := RequireGuideBuildMatchesActive("1.60.1.69893", "1.60.1.70009")
+	if err == nil {
+		t.Fatal("drifted guide build: want an error, got nil")
+	}
+	if !errors.Is(err, ErrGuideBuildMismatch) {
+		t.Fatalf("err = %v, want it to wrap ErrGuideBuildMismatch", err)
 	}
 }

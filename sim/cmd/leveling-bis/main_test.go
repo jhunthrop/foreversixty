@@ -125,7 +125,7 @@ func TestRunSpecWritesReportsForEveryBandAndFaction(t *testing.T) {
 		},
 	}
 	buildDir := buildDirFixture()
-	err := runSpec(fake, repoRootFixture, buildDir, "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, 5)
+	err := runSpec(fake, repoRootFixture, buildDir, "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, 5, identityTalentLayout)
 	if err != nil {
 		t.Fatalf("runSpec: %v", err)
 	}
@@ -149,7 +149,7 @@ func TestRunSpecWritesReportsForEveryBandAndFaction(t *testing.T) {
 
 func TestRunSpecUnknownSpecErrors(t *testing.T) {
 	fake := &fakeEngine{}
-	err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "no-such-spec", []int{20}, 5)
+	err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "no-such-spec", []int{20}, 5, identityTalentLayout)
 	if err == nil {
 		t.Fatal("runSpec(no-such-spec): want an error, got nil")
 	}
@@ -157,7 +157,7 @@ func TestRunSpecUnknownSpecErrors(t *testing.T) {
 
 func TestRunSpecWeightsFailurePropagates(t *testing.T) {
 	fake := &fakeEngine{FailWeights: true}
-	err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "hunter-marksmanship", []int{20}, 5)
+	err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "hunter-marksmanship", []int{20}, 5, identityTalentLayout)
 	if err == nil {
 		t.Fatal("runSpec with a failing weights run: want an error, got nil")
 	}
@@ -217,11 +217,11 @@ func TestRunSpecPublishesDifferentSetDPSForDifferentTalentStrings(t *testing.T) 
 	}
 
 	mmDir := t.TempDir()
-	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", mmDir, "hunter-marksmanship", []int{20}, 5); err != nil {
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", mmDir, "hunter-marksmanship", []int{20}, 5, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec(hunter-marksmanship): %v", err)
 	}
 	bmDir := t.TempDir()
-	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", bmDir, "hunter-beast-mastery", []int{20}, 5); err != nil {
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", bmDir, "hunter-beast-mastery", []int{20}, 5, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec(hunter-beast-mastery): %v", err)
 	}
 
@@ -253,7 +253,7 @@ func TestRunSpecEveryPlainDPSRequestCarriesTheBandsTalents(t *testing.T) {
 			"agility":             {Stat: "agility", Weight: 1.8},
 		},
 	}
-	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "hunter-marksmanship", []int{20}, 5); err != nil {
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "hunter-marksmanship", []int{20}, 5, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec: %v", err)
 	}
 	if len(fake.TalentsSeen) == 0 {
@@ -301,7 +301,7 @@ func TestRunSpecRetriesWeightsSweepAndUsesTheResolvedResult(t *testing.T) {
 		},
 	}
 	outDir := t.TempDir()
-	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, weightsIterations); err != nil {
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, weightsIterations, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec: %v", err)
 	}
 	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))
@@ -363,7 +363,7 @@ func TestRunSpecFallsBackToNearestLowerBandWeightsWhenRetryStillFails(t *testing
 		},
 	}
 	outDir := t.TempDir()
-	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, weightsIterations); err != nil {
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20, 30}, weightsIterations, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec: %v", err)
 	}
 	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))
@@ -432,7 +432,7 @@ func TestRunSpecRetriesPrimaryStatWeightAndPublishesTheResolvedAnchor(t *testing
 		},
 	}
 	outDir := t.TempDir()
-	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, weightsIterations); err != nil {
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, weightsIterations, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec: %v", err)
 	}
 	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))
@@ -497,7 +497,7 @@ func TestRunSpecPublishesWeightsLowConfidenceWhenPrimaryStatRetryStillFails(t *t
 		},
 	}
 	outDir := t.TempDir()
-	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, weightsIterations); err != nil {
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, weightsIterations, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec: %v", err)
 	}
 	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))

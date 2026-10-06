@@ -111,7 +111,7 @@ func TestRunSpecNeverCitesASupersededItemInSwapNote(t *testing.T) {
 	}
 
 	outDir := t.TempDir()
-	if err := runSpec(fake, repoRoot, buildDir, "testbuild", outDir, "hunter-marksmanship", []int{20}, 5); err != nil {
+	if err := runSpec(fake, repoRoot, buildDir, "testbuild", outDir, "hunter-marksmanship", []int{20}, 5, identityTalentLayout); err != nil {
 		t.Fatalf("runSpec: %v", err)
 	}
 

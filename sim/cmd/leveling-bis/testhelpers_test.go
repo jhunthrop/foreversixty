@@ -7,7 +7,27 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
+
+// identityLayout is a talentLayout whose Reposition is the identity
+// function. testdata/reporoot's own talent ids (1, 2, 3...) carry no
+// real engine mapping, so every runSpec test below resolves its
+// talentLayout to this instead of the real compiled engine's - the
+// exact behavior runSpec had before enginetalents existed, which is
+// what every existing fixture assertion about which talent string
+// reaches a request was written against.
+type identityLayout struct{}
+
+func (identityLayout) Reposition(_ []leveling.TalentTree, s string) (string, error) {
+	return s, nil
+}
+
+// identityTalentLayout is runSpec's test-only talentLayoutResolver,
+// returning identityLayout for any class.
+func identityTalentLayout(_, _ string) (talentLayout, error) {
+	return identityLayout{}, nil
+}
 
 // fakeEngine is the engineRunner test double every test that would
 // otherwise reach for the real engine (weights/verify runs - the
