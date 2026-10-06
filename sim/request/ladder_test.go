@@ -11,6 +11,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/spellranks"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
@@ -125,6 +126,24 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	}
 	targets := leveling.GuideTalentTargets(guideTrees, treeDigits)
 
+	// engineLayout: the COMPILED engine's own talent string layout for
+	// class (sim/internal/enginetalents' own doc) - the engine's proto
+	// was last regenerated from a client build that is not always the
+	// active one, so every character this ladder hands the engine
+	// below is spent from engineTalents (per level, further down),
+	// never from the active-build-positional `talents` string
+	// directly, or paladin and shaman misread every talent at and
+	// after the first one whose tree position moved between the two
+	// builds.
+	engineDir, err := enginetalents.SourceDir(filepath.Join(repoRoot, "sim"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	engineLayout, err := enginetalents.ForClass(engineDir, class)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	items, err := loadClassItems(repoRoot, build, class)
 	if err != nil {
 		t.Fatal(err)
@@ -177,7 +196,17 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	prevDPS, havePrev := 0.0, false
 
 	for _, level := range ladderLevels {
+		// talents is the published, active-build-positional string
+		// (ladderRow.Talents, below, reports it unconverted - that is
+		// the layout the web planner decodes). engineTalents is the
+		// SAME build, repositioned onto engineLayout's own field
+		// order; the character below is spent from engineTalents, not
+		// talents (engineLayout's own doc).
 		talents := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, level)
+		engineTalents, err := engineLayout.Reposition(activeTrees, talents)
+		if err != nil {
+			t.Fatalf("%s level %d: converting talents to the engine's own layout: %v", spec.Spec, level, err)
+		}
 		talentPoints := ladderTalentPoints(activeTrees, targets, spec.TreeIndex, level)
 		gear := ladderGear(items, knownItems, requiredLevelFloors, spec.Spec, level)
 
@@ -190,7 +219,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 				Race:     race,
 				Class:    class,
 				Level:    level,
-				Talents:  talents,
+				Talents:  engineTalents,
 				Gear:     gear,
 				Consumes: ladderKitConsumes(spec.Spec, level),
 			},

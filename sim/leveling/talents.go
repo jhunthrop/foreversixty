@@ -18,6 +18,7 @@ package leveling
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -198,4 +199,65 @@ func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIn
 		parts[i] = sb.String()
 	}
 	return strings.Join(parts, "-")
+}
+
+// TalentRanksFromString is the inverse of the positional encoding
+// LadderTalentString writes ("a-b-c", one digit per talent in trees'
+// own (tier, column) order - the format the published band `talents`
+// field carries): ranks by stable talent id, for whichever digit each
+// one actually holds. It is the one read every site that needs to
+// re-express an already-positional talent string against a DIFFERENT
+// layout (sim/internal/enginetalents.Layout.Reposition, and
+// sim/cmd/talent-search's own decodeActive) starts from - decode by
+// position once, by id from there on, rather than each caller
+// re-deriving this loop.
+func TalentRanksFromString(trees []TalentTree, s string) (map[int]int, error) {
+	parts := strings.Split(s, "-")
+	if len(parts) != len(trees) {
+		return nil, fmt.Errorf("leveling: talent string %q has %d trees, want %d", s, len(parts), len(trees))
+	}
+	ranks := make(map[int]int)
+	for ti, part := range parts {
+		if len(part) > len(trees[ti].Talents) {
+			return nil, fmt.Errorf("leveling: talent string %q tree %d has %d digits for %d talents", s, ti, len(part), len(trees[ti].Talents))
+		}
+		for j, c := range part {
+			if c < '0' || c > '9' {
+				return nil, fmt.Errorf("leveling: talent string %q has a non-digit %q", s, c)
+			}
+			if r := int(c - '0'); r > 0 {
+				ranks[trees[ti].Talents[j].ID] = r
+			}
+		}
+	}
+	return ranks, nil
+}
+
+// ErrGuideBuildMismatch is RequireGuideBuildMatchesActive's error.
+var ErrGuideBuildMismatch = errors.New("leveling: guide build does not match the active build")
+
+// RequireGuideBuildMatchesActive fails loudly when a guide's own FS1
+// stamp (GuideBuildTalents' first return value) is not the site's
+// active build.
+//
+// GuideTalentTargets maps a guide's digits onto talent ids by walking
+// the STAMPED build's own trees POSITIONALLY; LadderTalentString then
+// re-resolves those ids against the active build's trees, which only
+// recovers the right talent if the stamped build's own tree ordering
+// put each digit on the id GuideTalentTargets assumed. A guide whose
+// stamp drifts from the active build (every guide's did, briefly,
+// before lane guide-codes-70009 restamped them from 1.60.1.69893 to
+// 1.60.1.70009 - the digits were always authored in 70009's order, the
+// stamp just said otherwise) silently misaligns every digit after a
+// tree whose shape changed between the two builds, exactly the way an
+// engine whose compiled proto predates the active build misaligns a
+// positional string handed to it unconverted
+// (sim/internal/enginetalents' own doc). This is that same invariant,
+// checked at the other end of the pipeline: a guide's stamp must name
+// the build its own digits are already positioned for.
+func RequireGuideBuildMatchesActive(guideBuild, activeBuild string) error {
+	if guideBuild != activeBuild {
+		return fmt.Errorf("%w: guide stamp %q, active build %q", ErrGuideBuildMismatch, guideBuild, activeBuild)
+	}
+	return nil
 }

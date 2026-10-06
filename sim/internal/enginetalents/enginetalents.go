@@ -226,3 +226,22 @@ func (l Layout) Encode(trees []leveling.TalentTree, ranks map[int]int) (string, 
 	}
 	return string(digits[0]) + "-" + string(digits[1]) + "-" + string(digits[2]), nil
 }
+
+// Reposition rewrites a positional talent string s - written in
+// trees' own (tier, column) order, the format
+// leveling.LadderTalentString writes and the published band `talents`
+// field carries over the API - as the string the compiled engine
+// reads for the same points, by id. It is the one call every site
+// that already holds such a string (the ranker's per-band truncated
+// build) needs before the string reaches the engine: decode by
+// position once (leveling.TalentRanksFromString), then Encode by id,
+// which is the only read FieldFor/byID can be trusted to get right
+// when the active build's own tree shape has moved since the engine's
+// proto was last regenerated (this package's own doc).
+func (l Layout) Reposition(trees []leveling.TalentTree, s string) (string, error) {
+	ranks, err := leveling.TalentRanksFromString(trees, s)
+	if err != nil {
+		return "", fmt.Errorf("enginetalents: %w", err)
+	}
+	return l.Encode(trees, ranks)
+}
