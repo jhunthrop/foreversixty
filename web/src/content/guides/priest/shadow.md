@@ -3,7 +3,7 @@ title: Shadow Priest in Forever
 classSlug: priest
 spec: shadow
 role: dps
-build: 'FS1:1.60.1.70009:priest:gnome:5241110013/0/443110501201300251:'
+build: 'FS1:1.60.1.70009:priest:gnome:5241110013/0/543110401201300251:'
 recommendedRaces: [gnome, undead]
 statPriority: [Intellect, Hit, Spell power, Shadow power, Critical strike, Spell haste, Spell penetration]
 description: 'Shadow Priest overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -30,9 +30,11 @@ Shadow is Priest's damage-over-time and mind-magic DPS spec, built around mainta
 
 ## Talents and builds
 
-In rough priority order: **Mind Flay** (1 point) is a required pick, not an optional one — Forever moved it out of the baseline trainer-taught kit and into this talent, so without it there is no filler spell to fill the GCDs between cooldowns at all. **Improved Mind Flay**, ranked further down the tree, is its scaling once the 1-point prerequisite is in. **Shadow Weaving** stacks a Shadow damage buff from spell crits, a compounding multiplier for a spec casting Shadow spells constantly. **Improved Mind Blast** cuts Mind Blast's cooldown, letting the hardest-hitting single spell in the rotation come up more often. **Darkness** adds a flat percentage to all Shadow damage, a broad multiplier late in the tree. **Early Demise**, new to the tree, raises Shadow Word: Death's critical strike chance against targets below 20% health, turning it into a dedicated execute. **Shadowform**, the tree's capstone, increases Shadow damage by 10% and reduces the mana cost of Shadow spells, at the cost of being unable to cast non-Shadow spells while it's active.
+In rough priority order: **Mind Flay** (1 point) is a required pick, not an optional one — Forever moved it out of the baseline trainer-taught kit and into this talent, so without it there is no filler spell to fill the GCDs between cooldowns at all. **Improved Mind Flay**, ranked further down the tree, is its scaling once the 1-point prerequisite is in. **Shadow Weaving** stacks a Shadow damage buff from spell crits, a compounding multiplier for a spec casting Shadow spells constantly. **Shadow Focus**, now taken at its full 5/5, improves your chance to hit with Shadow spells by 5% — a talent search found this a stronger pick than the fifth point in Improved Mind Blast below. **Darkness** adds a flat percentage to all Shadow damage, a broad multiplier late in the tree. **Early Demise**, new to the tree, raises Shadow Word: Death's critical strike chance against targets below 20% health, turning it into a dedicated execute. **Shadowform**, the tree's capstone, increases Shadow damage by 10% and reduces the mana cost of Shadow spells, at the cost of being unable to cast non-Shadow spells while it's active.
 
-Point allocation runs deep into Shadow to reach Shadowform at the bottom of the tree, 33 points, with the remaining 18 in Discipline: **Inner Focus** (1 point) is a required pick alongside the Meditation talent's mana regeneration while casting — it's the free, empowered Devouring Plague cast this build's Rotation section calls out below, so it has to be taken for that line to be legal, not just Meditation. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
+**Improved Mind Blast** still cuts Mind Blast's cooldown and still holds 4 of its 5 points, down from 5/5 — that fifth point is a real, engine-measured damage talent (it shaves another slice off Mind Blast's cooldown), the search just found it's worth less than the fifth point in Shadow Focus's hit chance instead, so this is a deliberate trade between two real damage picks, not a wasted point being cut. This build measures about +1.9% over the previous spend in our level-60 search run.
+
+Point allocation runs deep into Shadow to reach Shadowform at the bottom of the tree, 33 points, with the remaining 18 in Discipline: **Inner Focus** (1 point) is a required pick alongside the Meditation talent's mana regeneration while casting — it's the free, empowered Devouring Plague cast this build's Rotation section calls out below, so it has to be taken for that line to be legal, not just Meditation. This spend is still a projection — the beta cap of 30 has not let anyone test it live, only this site's own simulator. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
 
 ## Rotation and priority
 

@@ -3,7 +3,7 @@ title: Marksmanship Hunter in Forever
 classSlug: hunter
 spec: marksmanship
 role: dps
-build: 'FS1:1.60.1.70009:hunter:dwarf:5522/35305500115003/51:'
+build: 'FS1:1.60.1.70009:hunter:dwarf:55200004/0050550011500305/5:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Agility, Critical strike, Ranged attack power, Hit, Melee haste]
 description: 'Marksmanship Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -54,7 +54,11 @@ Marksmanship is a ranged DPS spec built around Aimed Shot: a slow, hard-hitting 
 
 ## Talents and builds
 
-Reading the Marksmanship tree in priority order for a single-target Aimed Shot build: **Careful Aim** (adds Attack Power equal to a percentage of Intellect) and **Mortal Shots** (bonus critical strike damage on ranged abilities) come first, since both are flat multipliers on every shot that follows. **Trueshot Aura** is next: in Forever it grants ranged attack power only to the party, a narrower version than 1.12's melee-and-ranged buff per the demo notes. **Barrage** adds a damage bonus specifically to Multi-Shot, Aimed Shot, and Volley — all abilities this spec's rotation already leans on. **Efficiency** helps sustain the mana cost of a shot-heavy rotation. **Lone Wolf**, new for Forever, is notable but situational: it grants 20% more damage with no active pet, making a pet-less Marksmanship build viable, at the cost of any pet utility or damage. Point allocation is heavily weighted into Marksmanship to reach Trueshot Aura and Barrage — roughly 30 or more points — with the remainder split between a supporting pet talent or two in Beast Mastery and utility points in Survival. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
+Reading the Marksmanship tree in priority order for a single-target Aimed Shot build: **Careful Aim** (adds Attack Power equal to a percentage of Intellect) and **Mortal Shots** (bonus critical strike damage on ranged abilities) come first, since both are flat multipliers on every shot that follows. **Trueshot Aura** is next: in Forever it grants ranged attack power only to the party, a narrower version than 1.12's melee-and-ranged buff per the demo notes. **Barrage** adds a damage bonus specifically to Multi-Shot, Aimed Shot, and Volley — all abilities this spec's rotation already leans on. **Efficiency** helps sustain the mana cost of a shot-heavy rotation. **Lone Wolf**, new for Forever, is notable but situational: it grants 20% more damage with no active pet, making a pet-less Marksmanship build viable, at the cost of any pet utility or damage.
+
+On top of that spread, this build reaches further into Beast Mastery and down to the bottom of its own tree for three more measured damage gains. **Unleashed Fury** (4/5) adds 12% more pet and hawk damage — picked up at 4 points rather than the full 5 to make room elsewhere. **Lethal Attacks** (5/5) adds a flat 5% critical strike chance with all attacks, and **Ranged Weapon Specialization** (5/5) adds a flat 5% more damage with ranged weapons — both are the kind of unconditional multiplier that's hard to pass up once the points are available.
+
+To pay for them, the build drops **Improved Aspect of the Monkey** (bonus dodge while the aspect is active, shared with the pet), **Hawk Eye** (ranged weapon range), **Improved Concussive Shot** (a stun chance on Concussive Shot), and **Deflection** (parry chance) entirely. All four measured no damage benefit in the sim — they're real defensive or positional effects, just not ones a stationary single-target DPS parse can show value from. This build measures about +8.4% over the previous spend in our level-60 search run. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
 
 ## Rotation and priority
 

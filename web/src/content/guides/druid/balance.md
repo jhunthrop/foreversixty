@@ -3,7 +3,7 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.70009:druid:night-elf:5222211015401051/0/55333:'
+build: 'FS1:1.60.1.70009:druid:night-elf:522221111540105/0/55333:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
@@ -42,9 +42,11 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Insect Swarm** (1 point) — a second cheap DoT the rotation keeps running alongside Moonfire; skipping it was an earlier error in this build, fixed by moving a point off Improved Starfire's last rank.
 - **Nature's Grace** — a non-periodic spell crit speeds up your casting and cuts your next global cooldown by 10% for 3 seconds.
 - **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
-- **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
+- **Nature's Splendor** (1 point) — adds 3 seconds to Moonfire's duration, 2 seconds to Insect Swarm's, plus extra duration on Regrowth and Rejuvenation; since this build already keeps both DoTs ticking throughout the fight, the longer durations mean fewer refresh casts spent reapplying them over a long fight.
 
-This build spends 32 points in Balance to reach Moonkin Form at the bottom, with the remaining 19 in Restoration: Nature's Focus at rank 5, then Furor, Subtlety, and Natural Shapeshifter — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. (The reconciliation this build's `build:` string went through moved more points into Restoration than a bare "5" would spend, since Balance's own tree only needs 32 of the 51 to reach the capstone; the extra points went to the next-most-useful Restoration sustain talents rather than sitting unspent.) Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+That last point used to go into **Moonkin Form**, the tree's capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards. This build drops it. That's a real raid-utility loss — the party-wide crit aura and the armor are both genuine, just not something a single-target DPS simulation can credit, since the sim has no way to value a group-wide buff or survivability against a damage parse. Moving the point to Nature's Splendor instead is the straightforward trade: a measured DoT-uptime gain instead of unmeasured raid utility.
+
+This build still spends 32 points in Balance, with the remaining 19 in Restoration: Nature's Focus at rank 5, then Furor, Subtlety, and Natural Shapeshifter — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. This build measures about +6.3% over the previous spend in our level-60 search run. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
 
 ## Rotation and priority
 

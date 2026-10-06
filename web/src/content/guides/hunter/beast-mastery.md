@@ -3,7 +3,7 @@ title: Beast Mastery Hunter in Forever
 classSlug: hunter
 spec: beast-mastery
 role: dps
-build: 'FS1:1.60.1.70009:hunter:dwarf:5420001505001251/3551/51:'
+build: 'FS1:1.60.1.70009:hunter:dwarf:5420001505001251/0053502001/4:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Agility, Critical strike, Ranged attack power, Hit, Melee haste]
 description: 'Beast Mastery Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -54,7 +54,11 @@ Beast Mastery is a pet-focused ranged DPS spec: a large share of total damage in
 
 ## Talents and builds
 
-Reading the Beast Mastery tree in priority order for a pet-damage build: **Unleashed Fury** (a flat damage increase for pets and hawks) and **Ferocity** (pet critical strike chance) come first, since both scale every hit the pet lands afterward. **Focused Fire** follows — its damage bonus applies to the Hunter as well as the pet, unlike the two talents above it. **Frenzy** gives the pet a chance at bonus attack speed off its own critical strikes, compounding with Ferocity. **Bestial Discipline** helps mana sustain by letting some regeneration continue through casting. The tree's capstone, **Bestial Wrath**, is the spec's defining cooldown: an 18-second window of 50% additional pet damage. Getting to that capstone takes a heavy investment — roughly 30 or more points are needed to unlock the sixth row of the tree — leaving the remainder split as a handful of points into Marksmanship for Aimed Shot support and a few utility points into Survival. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
+Reading the Beast Mastery tree in priority order for a pet-damage build: **Unleashed Fury** (a flat damage increase for pets and hawks) and **Ferocity** (pet critical strike chance) come first, since both scale every hit the pet lands afterward. **Focused Fire** follows — its damage bonus applies to the Hunter as well as the pet, unlike the two talents above it. **Frenzy** gives the pet a chance at bonus attack speed off its own critical strikes, compounding with Ferocity. **Bestial Discipline** helps mana sustain by letting some regeneration continue through casting. The tree's capstone, **Bestial Wrath**, is the spec's defining cooldown: an 18-second window of 50% additional pet damage.
+
+The remaining points move out of a thin Marksmanship/Survival utility spread and into talents the search confirmed actually move the parse. **Efficiency** (5/5) cuts 15% off the mana cost of shots, stings, and melee abilities, paying for a shot-heavy rotation. **Trueshot Aura** (1 point) adds 30 Ranged Attack Power to the whole party for 30 minutes — a raid-wide buff on top of its personal value. **Improved Stings** (3/3) adds 20% more Serpent Sting damage, a shorter Viper Sting cooldown, and a longer Scorpid Sting duration, and **Rapid Killing** (2/2) shortens Rapid Fire's cooldown and grants a temporary damage buff to the next shot on a kill — both of these measure close to zero in the sim today because the engine doesn't yet have code paths for Serpent Sting's damage scaling or Rapid Killing's proc, so treat them as an honest unknown rather than a confirmed gain, taken because nothing else was better with those points.
+
+To pay for that, the build drops **Hawk Eye** (ranged weapon range) and **Improved Concussive Shot** (a stun chance on Concussive Shot) entirely, and **Deflection** (parry chance) entirely — all three measured no damage benefit at all in the sim, so the points are better spent elsewhere for a pure DPS build even though they're real defensive or utility effects in a fight where parrying or kiting matters. It also gives back the fifth point in **Improved Tracking** (the per-point damage bonus against your tracked creature type), keeping it at 4/5 instead of 5/5 — that fifth point is a real, measured damage pick, just a smaller one than what replaced it, so it's a deliberate trade rather than a wasted point. This build measures about +8.5% over the previous spend in our level-60 search run. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
 
 ## Rotation and priority
 

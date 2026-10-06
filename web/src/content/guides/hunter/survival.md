@@ -3,7 +3,7 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.70009:hunter:dwarf:0/32005500005/500230131051120151:'
+build: 'FS1:1.60.1.70009:hunter:dwarf:0/32005500005/500230131050220151:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Survival Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -60,7 +60,13 @@ Survival is a melee spec in Forever (owner direction, 2026-09-28): it commits fu
 
 ## Talents and builds
 
-Reading the Survival tree in priority order for a melee build: **Savage Strikes** and **Predator's Edge** are direct melee damage — crit chance and crit damage on every melee special, plus a bonus to off-hand damage if this spec carries a second weapon. **Deterrence** unlocks **Counterattack**, a free, unavoidable strike after a parry (cannot be blocked, dodged, or parried) — a genuine "free damage" proc this build takes specifically to use. **Expose Prey** unlocks the capstone, **Lacerating Strikes**, which adds a bleed to Mongoose Bite worth 40% of that hit's damage over 21 seconds — Mongoose Bite itself is not talent-gated (it's a class ability, like Raptor Strike), so this capstone is a straightforward damage-per-point pick once the tree is deep enough to reach it. **Strider Kick** is a third melee special on its own short cooldown. **Improved Wing Clip** and **Entrapment** are left at 0 here: they raise the reliability of control tools this rotation doesn't use against a stationary target, and the points are worth more spent reaching Counterattack and Lacerating Strikes sooner. The remaining points go into Marksmanship, spent reaching **Mortal Shots** (its own prerequisite, **Careful Aim**, needs all 5 points) — in this engine, Mortal Shots adds its crit-damage bonus to every Hunter special, melee included, rather than into Beast Mastery or further Survival utility. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
+Reading the Survival tree in priority order for a melee build: **Savage Strikes** and **Predator's Edge** are direct melee damage — crit chance and crit damage on every melee special, plus a bonus to off-hand damage if this spec carries a second weapon. **Expose Prey** unlocks the capstone, **Lacerating Strikes**, which adds a bleed to Mongoose Bite worth 40% of that hit's damage over 21 seconds — Mongoose Bite itself is not talent-gated (it's a class ability, like Raptor Strike), so this capstone is a straightforward damage-per-point pick once the tree is deep enough to reach it. **Strider Kick** is a third melee special on its own short cooldown.
+
+A re-run against the sim's own level-60 search moved the last point out of **Deterrence**'s **Counterattack** and into **Resourcefulness** instead. At 2/2, Resourcefulness cuts the mana cost of every Trap and melee ability by 60% and gives critical strikes a 100% chance to keep half your mana regeneration running while casting for 30 seconds — the sim measures that as a real damage gain through more uptime on abilities that would otherwise be mana-gated. Counterattack's free, unavoidable strike after a parry doesn't move the sim's DPS number at all; that's not a verdict that it does nothing in a real fight, just that this engine's model doesn't yet credit it, so the point is better spent where the sim can see it working.
+
+**Improved Wing Clip** and **Entrapment** are still left at 0 here: they raise the reliability of control tools this rotation doesn't use against a stationary target, and the points are worth more spent on Resourcefulness, Lacerating Strikes, and Strider Kick instead. The remaining points go into Marksmanship, spent reaching **Mortal Shots** (its own prerequisite, **Careful Aim**, needs all 5 points) — in this engine, Mortal Shots adds its crit-damage bonus to every Hunter special, melee included, rather than into Beast Mastery or further Survival utility.
+
+This build measures about +5.8% over the previous spend in our level-60 search run. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
 
 ## Rotation and priority
 

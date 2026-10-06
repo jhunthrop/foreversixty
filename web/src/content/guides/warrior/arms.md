@@ -3,7 +3,7 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
-build: 'FS1:1.60.1.70009:warrior:human:35325213032010001/0505/5005:'
+build: 'FS1:1.60.1.70009:warrior:human:05325213032310001/0505/5005:'
 recommendedRaces: [human, orc]
 statPriority: [Strength, Attack power, Critical strike, Hit, Melee haste, Agility]
 description: 'Talents, rotation, stat priority, and race picks for Arms Warrior in Forever, with beta-versus-projection called out.'
@@ -50,8 +50,9 @@ Verified against this build's talent data, in roughly the order you'd take them:
 - **Impale** — up to 20% more critical strike damage on your abilities, multiplying whatever crit chance you already have.
 - **Improved Overpower** — up to 50% more critical strike chance on Overpower, the free attack that becomes available after the target dodges you.
 - **Sweeping Strikes**, then **Mortal Strike** — Sweeping Strikes is a one-point prerequisite for Mortal Strike at the bottom of the tree in this build's data, and it also cleaves your next 5 swings onto a second target, so it isn't a wasted point even outside its role as a stepping stone. Mortal Strike itself deals weapon damage plus 85 and reduces healing the target receives by 50% for 10 seconds.
+- **Bloodthrill**, taken at 3/5 — while Rend is ticking on the target, each Main Hand hit has a 12% chance (at this rank) to let you use Overpower for the next 6 seconds, outside its usual dodge-only window. Overpower already comes free on every dodge in this rotation; Bloodthrill is what makes it come up on plain hits too, and it was the single largest gain this build's level-60 search found for any point in the Arms tree.
 
-A build reaching Mortal Strike spends roughly 31 points in Arms, with what's left commonly split as a few points in Fury for Cruelty (crit) and Unbridled Wrath (extra Rage), and a couple more in Protection for Toughness (armor). Exact splits vary by preference and aren't fixed by anything confirmed for Forever. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+A build reaching Mortal Strike spends roughly 31 points in Arms, with what's left commonly split as a few points in Fury for Cruelty (crit) and Unbridled Wrath (extra Rage), and a couple more in Protection for Toughness (armor). Exact splits vary by preference and aren't fixed by anything confirmed for Forever. Bloodthrill's 3 points come out of Improved Heroic Strike, which used to sit at 3/3 trimming 3 Rage off Heroic Strike's cost; the sim didn't find that reduction worthless — it measured a small real damage cost to cutting it, about -1.5 DPS — just far smaller than what Bloodthrill returns, so dropping it is a deliberate trade rather than a wasted pick. This build measures about +12.5% over the previous spend in our level-60 search run. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
 ## Rotation and priority
 

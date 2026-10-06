@@ -3,7 +3,7 @@ title: Arcane Mage in Forever
 classSlug: mage
 spec: arcane
 role: dps
-build: 'FS1:1.60.1.70009:mage:gnome:253225111100011501/235523/0:'
+build: 'FS1:1.60.1.70009:mage:gnome:253225113100011531/032023/005:'
 recommendedRaces: [gnome, orc]
 statPriority: [Spell power, Arcane power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Arcane Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -43,7 +43,9 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Arcane Mind** — up to 10% Intellect and a 100% bonus to Arcane critical strike damage at rank 5.
 - **Arcane Power** — the capstone: 30% more spell damage for 15 seconds at the cost of 30% more mana per cast.
 
-This build spends 31 points in Arcane to reach Arcane Power at the bottom, with the remaining 20 going into Fire — Ignite and Improved Fireball both maxed, plus Incineration, Impact, Wake of Fire, and Flame Throwing for the rest of the budget — rather than Frost, a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+This build spends 36 points in Arcane to reach Arcane Power at the bottom, two more than a bare 31-point path needs, because the sim's own level-60 search found two extra Arcane picks worth maxing on the way down: **Arcane Impact** (3/3, 6% more Arcane critical strike chance) and **Arcane Instability** (3/3, 3% more spell damage and 3% more critical strike chance), both measured as real damage gains rather than assumed.
+
+That leaves 15 points to split between Fire and Frost, down from 20 in Fire alone. Fire drops to 10 points: **Wake of Fire** goes to 0/2, **Improved Fireball** falls from 5/5 to 2/5, and **Ignite** goes to 0/5 — none of those three measured any damage in the sim's model for this rotation, so giving them up cost nothing the sim could see. The other 5 points go into Frost for **Elemental Precision** (5/5, 5% more hit chance with Frost and Fire spells); this rotation never actually casts a Frost or Fire spell, so the sim can't register a damage gain from it either, but it's a real stat for a build that does mix in an off-school cast, and it was still the strongest use of those 5 points among the options the sim could measure. This build measures about +9.2% over the previous spend in our level-60 search run. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 

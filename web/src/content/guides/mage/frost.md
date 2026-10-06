@@ -3,7 +3,7 @@ title: Frost Mage in Forever
 classSlug: mage
 spec: frost
 role: dps
-build: 'FS1:1.60.1.70009:mage:gnome:0/235523/2535111300000301051:'
+build: 'FS1:1.60.1.70009:mage:gnome:2030050001/113023/253511130000030105:'
 recommendedRaces: [gnome, troll]
 statPriority: [Hit, Spell power, Frost power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Frost Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -40,9 +40,10 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Piercing Ice** — a flat 6% more Frost damage at rank 3.
 - **Shatter** — up to 50% more critical strike chance against a frozen target at rank 3, the talent the whole "freeze then burst" playstyle is built around.
 - **Winter's Chill** — a chance for Frost hits to stack a debuff that raises Ice Lance's and Frostbolt's crit chance against that target, up to 5 stacks at rank 5.
-- **Ice Barrier** — the capstone: an instant shield that also stops your casts from being interrupted or delayed while it holds.
 
-This build spends 31 points in Frost to reach Ice Barrier at the bottom, with the remaining 20 going into Fire — Ignite and Improved Fireball both maxed, plus Incineration, Impact, Wake of Fire, and Flame Throwing for the rest of the budget — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+A fresh talent search found a much stronger spend than this page's earlier build, moving most of the old Fire investment into Arcane instead. It takes **Wand Specialization** at 2/2 (25% more wand damage), **Improved Channeling** at 3/5 (a 42–60% chance to keep channeling Arcane Missiles or casting Arcane Blast through incoming damage — the engine has no code path yet to credit that resistance, so it's an honest unknown rather than a confirmed zero), **Arcane Concentration** at 5/5 (a 10% chance per damage spell cast to enter Clearcasting, making your very next cast free — by far the largest single swing measured in this build), and **Arcane Blast** at 1/1 (a direct Arcane bolt that also stacks a 10% damage buff to your other spells each time you cast it; this site's current Frost rotation doesn't yet weave it in as a nuke, so here it's being picked up as a prerequisite rather than played as a damage line in its own right).
+
+To pay for that, it pulls back out of Fire rather than maxing it: Wake of Fire drops to 1/2, Incineration to 1/3, and Improved Fireball to 3/5 — down from 2/2, 3/3, and 5/5 — because the sim measures no damage benefit from the points it's not using once Frost isn't casting Fire spells, and it drops Ignite (5/5 → 0/5) outright for the same reason. It also gives up **Ice Barrier** (1/1 → 0/1) — a real defensive cooldown, not a point the engine credits either way, since a pure-DPS search doesn't weigh survivability at all. Losing Ice Barrier is a genuine tradeoff worth knowing about, not a free win. This build measures about +49.1% over the previous spend in our level-60 search run. This spend is still a projection — the beta cap of 30 has not let anyone test it live, only this site's own simulator. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 

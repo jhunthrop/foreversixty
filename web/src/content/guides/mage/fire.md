@@ -3,7 +3,7 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70009:mage:gnome:2551151/23552110030003051/0:'
+build: 'FS1:1.60.1.70009:mage:gnome:2050151/23552100030023051/005:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -42,7 +42,9 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Fire Power** — a flat 10% more Fire damage at rank 5, the tree's biggest raw damage talent.
 - **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land four non-periodic Fire crits.
 
-This build spends 31 points in Fire to reach Combustion at the bottom, with the remaining 20 going into Arcane — Arcane Concentration maxed for Clearcasting, plus Arcane Focus and Improved Channeling for the rest of the budget — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+This build spends 32 points in Fire to reach Combustion at the bottom, one more than before: the sim's own level-60 search found **Master of Elements** (2/3, refunding 20% of the base mana cost on your Fire and Frost critical strikes) worth taking at the cost of a point out of **Burning Soul** (1/3 → 0/3), whose anti-pushback chance and threat reduction the sim's model can't turn into measurable damage.
+
+Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 5 points in Frost instead, all into **Elemental Precision** (5/5, 5% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly. This build measures about +8.7% over the previous spend in our level-60 search run. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 

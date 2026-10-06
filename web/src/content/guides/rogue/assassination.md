@@ -3,7 +3,7 @@ title: Assassination Rogue in Forever
 classSlug: rogue
 spec: assassination
 role: dps
-build: 'FS1:1.60.1.70009:rogue:night-elf:32500000551501051/3252/51:'
+build: 'FS1:1.60.1.70009:rogue:night-elf:3250001055050105/325201/51:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Assassination Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -30,9 +30,13 @@ Assassination is a poison-focused melee DPS spec that trades Combat's flat weapo
 
 ## Talents and builds
 
-Reading the tree in priority order for a single-target build: **Malice** (flat crit chance with attacks and poisons) and **Lethality** (bonus critical strike damage on Sinister Strike, Gouge, Backstab, Mutilate, Ghostly Strike, and Hemorrhage) come first as damage multipliers that scale everything after them. **Seal Fate** follows, since it converts combo-point-generating crits into bonus combo points and rewards the crit investment already made. **Cold Blood** is the spec's signature burst cooldown, guaranteeing a critical strike on the next attack. **Vile Poisons** and **Improved Poisons** raise both poison damage and application chance, which matters more here than in the other two trees. The two talent-granted abilities new to this tree in Forever, **Mutilate** (a dual-wield combo builder that hits harder against a target already carrying your poisons) and **Venom** (a finisher that raises how hard and how often your poisons land), round out the kit and are both live in this site's simulated rotation once talented — see Rotation below.
+Reading the tree in priority order for a single-target build: **Malice** (flat crit chance with attacks and poisons) and **Lethality** (bonus critical strike damage on Sinister Strike, Gouge, Backstab, Mutilate, Ghostly Strike, and Hemorrhage) come first as damage multipliers that scale everything after them. **Seal Fate** follows, since it converts combo-point-generating crits into bonus combo points and rewards the crit investment already made. **Vile Poisons** and **Improved Poisons** raise both poison damage and application chance, which matters more here than in the other two trees. **Mutilate**, the talent-granted dual-wield combo builder that hits harder against a target already carrying your poisons, rounds out the Assassination kit and is live in this site's simulated rotation once talented — see Rotation below.
 
-Point allocation is heavily weighted into Assassination: roughly 33 points are needed to reach Venom at the bottom of the tree, leaving the rest split as a handful of points in Combat for weapon-skill and survivability talents and a few in Subtlety for utility. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+This spend adds a single point each in **Relentless Strikes** and **Precision**. Relentless Strikes gives every finishing move a 20% chance per combo point spent to refund 25 Energy, which the sim measures as a real +8.9 DPS from that one point — more Energy back means more global cooldowns spent on Mutilate and finishers instead of waiting to recover. Precision, taken at 1/3, adds a flat 1% chance to hit, worth +10.3 DPS in the sim's model by cutting down on wasted swings.
+
+To pay for them, this build drops **Cold Blood** and **Venom** entirely. Cold Blood is still a real ability — a guaranteed critical strike on the next attack — but it's an on-demand burst cooldown, and the current sustained single-target sim doesn't model cooldown-timing gains like that, so it measures as no DPS gained for the point spent, an honest gap in what the sim can credit rather than a verdict that the ability itself is bad. Venom is a genuine damage talent — the engine's own probe confirms it's doing real work on its own — but in this build's overall re-spend, directing that point into Relentless Strikes and Precision instead nets more total damage, so it's a calculated trade within the full search result, not a talent the sim dismisses as worthless. This build measures about +9.3% over the previous spend in our level-60 search run.
+
+Point allocation is heavily weighted into Assassination, with the rest split as a handful of points in Combat for weapon-skill and survivability talents and a few in Subtlety for utility. The beta caps out at level 30, so none of this has actually been played past the early game — it's read off the demo trees, this site's own simulator, and 1.12 knowledge, not tested content. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
 
 ## Rotation and priority
 
