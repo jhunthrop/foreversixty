@@ -148,10 +148,10 @@ func TestRunInvalidBandsErrors(t *testing.T) {
 
 func TestRunMissingActiveBuildFileErrors(t *testing.T) {
 	// -build is left empty and repoRootFixture's own
-	// web/src/data/active-build.json DOES exist (readActiveBuild
+	// web/src/data/active-build.json DOES exist (leveling.ReadActiveBuild
 	// succeeds) - this test instead points -repo-root at a fixture
 	// with specs.json but no active-build.json, to reach
-	// readActiveBuild's own error path through run().
+	// leveling.ReadActiveBuild's own error path through run().
 	dir := t.TempDir()
 	if err := writeFile(t, filepath.Join(dir, "data", "curated", "specs.json"), `[]`); err != nil {
 		t.Fatal(err)

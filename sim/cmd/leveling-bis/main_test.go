@@ -88,42 +88,6 @@ func TestParseBandsDefaultFlag(t *testing.T) {
 	}
 }
 
-func TestReadActiveBuild(t *testing.T) {
-	build, err := readActiveBuild(repoRootFixture)
-	if err != nil {
-		t.Fatalf("readActiveBuild: %v", err)
-	}
-	if build != "testbuild" {
-		t.Errorf("build = %q, want testbuild", build)
-	}
-}
-
-func TestReadActiveBuildMissingFile(t *testing.T) {
-	if _, err := readActiveBuild(t.TempDir()); err == nil {
-		t.Fatal("readActiveBuild on an empty dir: want an error, got nil")
-	}
-}
-
-func TestReadActiveBuildEmptyBuildField(t *testing.T) {
-	dir := t.TempDir()
-	if err := writeFile(t, filepath.Join(dir, "web", "src", "data", "active-build.json"), `{"build":""}`); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := readActiveBuild(dir); err == nil {
-		t.Fatal("readActiveBuild with an empty build field: want an error, got nil")
-	}
-}
-
-func TestReadActiveBuildMalformedJSON(t *testing.T) {
-	dir := t.TempDir()
-	if err := writeFile(t, filepath.Join(dir, "web", "src", "data", "active-build.json"), `{not json`); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := readActiveBuild(dir); err == nil {
-		t.Fatal("readActiveBuild with malformed JSON: want an error, got nil")
-	}
-}
-
 func TestWriteHeapProfileWritesAFile(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "heap.prof")

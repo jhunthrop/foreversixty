@@ -2,13 +2,11 @@ package main
 
 // The engine glue: turning an api.SimRequest into a DPS number or a
 // set of stat weights, in-process, the same way sim/cmd/forever-sim's
-// execute() and executeWeights() do (that package is `package main`
-// and cannot be imported, so the pipeline - request.BuildWith/
-// BuildWeights, simdb.Attach/AttachWeights, the engine's own run
-// entry point, simdrain.ToResult, adapter.DPS/adapter.Weights - is
-// repeated here rather than reused; see this lane's report for why
-// shelling out to a built forever-sim binary was rejected in favour
-// of this in-process path).
+// execute() and executeWeights() do. The plain-DPS half lives in
+// sim/internal/inproc (shared with sim/cmd/talent-search); the weights
+// half - request.BuildWeights, simdb.AttachWeights, core.StatWeights,
+// adapter.Weights - is repeated here because forever-sim is `package
+// main` and cannot be imported.
 //
 // The command never uses the sample-iteration entry point
 // (core.RunRaidSimAsync): nothing here reads a cast log, only the
@@ -19,19 +17,14 @@ package main
 // comment on it).
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"sync"
-	"sync/atomic"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
-	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/request"
-	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -79,19 +72,9 @@ func (realEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, flo
 	return runWeights(req)
 }
 
-var registerEngineOnce sync.Once
-
 // registerEngine registers every spec's agent factory exactly once
-// per process. The engine's own guard is an unsynchronised package
-// bool (sim/cmd/forever-sim's own registerOnce comment), so this must
-// run before the first request is built, not per-request.
-func registerEngine() { registerEngineOnce.Do(engine.RegisterAll) }
-
-var runCounter atomic.Int64
-
-func nextRunID() string {
-	return fmt.Sprintf("leveling-bis-%d-%d", os.Getpid(), runCounter.Add(1))
-}
+// per process (inproc.Register's own doc).
+func registerEngine() { inproc.Register() }
 
 // runPlainDPS runs req as an ordinary (non-bulk, non-weights) sim and
 // returns its mean DPS. req.Iterations is used as given - this
@@ -128,24 +111,7 @@ func runPlainDPSWithError(req api.SimRequest) (mean, stdErr float64, err error) 
 // engine call - one sim, read back as api.Estimate (Mean and Error
 // both, so a caller needing either never duplicates the run).
 func runPlainDPSEstimate(req api.SimRequest) (api.Estimate, error) {
-	registerEngine()
-	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: true})
-	if err != nil {
-		return api.Estimate{}, fmt.Errorf("building the request: %w", err)
-	}
-	if err := simdb.Attach(engineReq); err != nil {
-		return api.Estimate{}, fmt.Errorf("attaching the item database: %w", err)
-	}
-	reporter := make(chan *proto.ProgressMetrics, 32)
-	core.RunRaidSimConcurrentAsync(engineReq, reporter, nextRunID())
-	res := simdrain.ToResult(reporter, nil)
-	if res == nil {
-		return api.Estimate{}, errors.New("the engine produced no result")
-	}
-	if err := adapter.ResultError(res); err != nil {
-		return api.Estimate{}, fmt.Errorf("the sim failed: %w", err)
-	}
-	return adapter.DPS(res), nil
+	return inproc.PlainDPS(req)
 }
 
 // runWeights runs req (which must carry a Weights block) and returns

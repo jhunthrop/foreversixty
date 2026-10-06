@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/leveling"
+)
 
 func rangedCandidate(id, requiredLevel, itemLevel int) candidate {
 	return candidate{ID: id, RequiredLevel: requiredLevel, ItemLevel: itemLevel, Slots: []string{"ranged"}}
@@ -60,8 +64,8 @@ func TestLadderCharacterWithoutWeapon(t *testing.T) {
 // caster could never generate.
 func TestBandCharacterSetsDistanceForANoMeleeAutoAttackSpec(t *testing.T) {
 	ch := bandCharacter("verify", "orc", "shaman", "shaman-elemental", 60, "", nil)
-	if ch.DistanceFromTarget != casterTournamentDistanceFromTarget {
-		t.Fatalf("shaman-elemental DistanceFromTarget = %v, want %v (out of melee range)", ch.DistanceFromTarget, casterTournamentDistanceFromTarget)
+	if ch.DistanceFromTarget != leveling.CasterDistanceFromTarget {
+		t.Fatalf("shaman-elemental DistanceFromTarget = %v, want %v (out of melee range)", ch.DistanceFromTarget, leveling.CasterDistanceFromTarget)
 	}
 }
 
@@ -81,8 +85,8 @@ func TestNoMeleeAutoAttackSpecsCoversTheRuledSpecs(t *testing.T) {
 		"priest-shadow", "shaman-elemental", "druid-balance",
 	}
 	for _, spec := range want {
-		if !noMeleeAutoAttackSpecs[spec] {
-			t.Errorf("noMeleeAutoAttackSpecs[%q] = false, want true", spec)
+		if !leveling.NoMeleeAutoAttackSpecs[spec] {
+			t.Errorf("leveling.NoMeleeAutoAttackSpecs[%q] = false, want true", spec)
 		}
 	}
 }
