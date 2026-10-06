@@ -23,30 +23,26 @@ describe('railStatRows', () => {
     if (band.haste_scale_factor != null) expect(haste.value).toBeCloseTo(band.haste_scale_factor, 5);
   });
 
-  it('orders rows by the sim, not by the guide written statPriority order -- real Fury case: Strength and Agility are written ahead of Critical strike and Hit, but both are insignificant at band 60, so the sim pushes them to the back', () => {
+  it('orders rows by the sim, not by the guide written statPriority order (real Fury band 60)', () => {
     const file = loadBisFile('warrior-fury', BUILD);
     if (file === null) throw new Error('warrior-fury BiS file missing');
     const band = bandEntry(file, 60, 'alliance');
     if (band === undefined) throw new Error('band 60 alliance missing');
 
     const rows = railStatRows(STAT_PRIORITY, band.weights, 'warrior-fury', band.haste_scale_factor ?? null);
-    expect(rows.map((row) => row.label)).toEqual([
-      'Attack power',
-      'Critical strike',
-      'Hit',
-      'Melee haste',
-      'Strength',
-      'Agility',
-    ]);
-    // Per-point tier sorted by scale factor descending.
-    expect(rows[0]!.value).toBeCloseTo(1.0, 5);
-    expect(rows[1]!.value).toBeLessThan(rows[0]!.value!);
-    expect(rows[2]!.value).toBeLessThan(rows[1]!.value!);
-    // Haste always after the per-point tier, reported per 1%.
-    expect(rows[3]!.perPercent).toBe(true);
-    // Insignificant stats always last, regardless of their raw scale factor.
-    expect(rows[4]!.value).toBeUndefined();
-    expect(rows[5]!.value).toBeUndefined();
+    // Every written stat is kept; the order is a property of the data, never pinned.
+    expect(rows.map((row) => row.label).sort()).toEqual([...STAT_PRIORITY].sort());
+    const perPoint = rows.filter((row) => !row.perPercent && row.value !== undefined);
+    const hasteIndex = rows.findIndex((row) => row.perPercent);
+    const firstInsignificant = rows.findIndex((row) => !row.perPercent && row.value === undefined);
+    // Per-point tier first, sorted descending, its top at exactly 1.00.
+    expect(perPoint[0]!.value).toBeCloseTo(1.0, 5);
+    for (let i = 1; i < perPoint.length; i += 1) {
+      expect(perPoint[i]!.value!).toBeLessThanOrEqual(perPoint[i - 1]!.value!);
+    }
+    // Haste after every per-point row, and insignificant rows after haste.
+    expect(hasteIndex).toBeGreaterThanOrEqual(perPoint.length);
+    if (firstInsignificant !== -1) expect(firstInsignificant).toBeGreaterThan(hasteIndex);
   });
 
   it('keeps the guide written order as a stable tiebreak within a tier', () => {

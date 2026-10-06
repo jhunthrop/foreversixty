@@ -1,5 +1,6 @@
 // web/src/lib/guides/class-dps.test.ts
 import { describe, expect, it } from 'vitest';
+import { bandEntry, loadBisFile } from '../bis/load';
 import { classLandingSetDps, factionForFirstRace } from './class-dps';
 
 const BUILD = '1.60.1.70009';
@@ -21,8 +22,15 @@ describe('factionForFirstRace', () => {
 
 describe('classLandingSetDps', () => {
   it('reads Fury’s band-60 set DPS at the faction its first recommended race resolves to', () => {
+    // Read straight from the committed file rather than pinned: the nightly republishes it
+    // (data contracts are floors, never exact values).
+    const file = loadBisFile('warrior-fury', BUILD);
+    if (file === null) throw new Error('warrior-fury BiS file missing');
+    const expected = bandEntry(file, 60, 'alliance')?.set_dps;
     const dps = classLandingSetDps(BUILD, 'warrior-fury', 'warrior', ['human', 'troll']);
-    expect(dps).toBeCloseTo(261.99, 1);
+    expect(dps).toBeDefined();
+    expect(dps).toBeCloseTo(expected!, 5);
+    expect(dps).toBeGreaterThan(0);
   });
 
   it('reads the Horde row when the first recommended race is a Horde one', () => {
