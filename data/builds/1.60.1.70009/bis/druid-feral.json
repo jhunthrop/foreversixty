@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T20:52:12Z",
+  "generated_at": "2026-10-06T21:31:57Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.130953606,
-      "verify_run_seconds": 1.012270467,
+      "weights_run_seconds": 3.388691408,
+      "verify_run_seconds": 1.582318846,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1138,8 +1138,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.130953606,
-      "verify_run_seconds": 1.053049572,
+      "weights_run_seconds": 3.388691408,
+      "verify_run_seconds": 1.5501526129999998,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1780,8 +1780,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.564781758,
-      "verify_run_seconds": 1.253641987,
+      "weights_run_seconds": 3.911641875,
+      "verify_run_seconds": 1.894364755,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2423,8 +2423,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.564781758,
-      "verify_run_seconds": 1.204870558,
+      "weights_run_seconds": 3.911641875,
+      "verify_run_seconds": 1.9078419119999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3062,8 +3062,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.620617902,
-      "verify_run_seconds": 1.3244210779999999,
+      "weights_run_seconds": 4.082039543,
+      "verify_run_seconds": 1.991000749,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3701,8 +3701,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.620617902,
-      "verify_run_seconds": 1.37639421,
+      "weights_run_seconds": 4.082039543,
+      "verify_run_seconds": 1.9938170899999998,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3884,7 +3884,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.0514782869500081
+              "dps_delta": -1.051478286950008
             },
             {
               "item_id": 14658,
@@ -4351,8 +4351,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 2.726779331,
-      "verify_run_seconds": 1.4140029840000001,
+      "weights_run_seconds": 4.096046427,
+      "verify_run_seconds": 2.130637096,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4541,7 +4541,7 @@
               "item_name": "Blood Guard's Leather Headband",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.051478286950008
+              "dps_delta": -1.0514782869500081
             }
           ]
         },
@@ -5006,8 +5006,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 2.726779331,
-      "verify_run_seconds": 1.403790859,
+      "weights_run_seconds": 4.096046427,
+      "verify_run_seconds": 2.082030158,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5312,14 +5312,14 @@
               "item_name": "Field Marshal's Dragonhide Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.3836431464231511
+              "dps_delta": -1.383643146423152
             },
             {
               "item_id": 14637,
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.6061220426090266
+              "dps_delta": -1.6061220426090272
             },
             {
               "item_id": 23089,
@@ -5385,7 +5385,7 @@
               "item_name": "Marshal's Dragonhide Grips",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.3579259722638395
+              "dps_delta": -0.3579259722638387
             },
             {
               "item_id": 227809,
@@ -5443,7 +5443,7 @@
               "item_name": "Marshal's Dragonhide Leggings",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.3509819612189397
+              "dps_delta": -0.3509819612189405
             },
             {
               "item_id": 237818,
@@ -5790,8 +5790,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.554413142,
-      "verify_run_seconds": 1.416364371,
+      "weights_run_seconds": 4.097632336,
+      "verify_run_seconds": 2.103556038,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6169,7 +6169,7 @@
               "item_name": "General's Dragonhide Grips",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.3579259722638395
+              "dps_delta": -0.3579259722638387
             },
             {
               "item_id": 227809,
@@ -6577,8 +6577,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.554413142,
-      "verify_run_seconds": 1.337043915,
+      "weights_run_seconds": 4.097632336,
+      "verify_run_seconds": 2.089923101,
       "coverage": {
         "back": {
           "eligible": 451,

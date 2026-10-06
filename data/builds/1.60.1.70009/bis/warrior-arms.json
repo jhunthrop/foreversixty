@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T20:59:26Z",
+  "generated_at": "2026-10-06T21:42:58Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -548,8 +548,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.598183996,
-      "verify_run_seconds": 0.823205399,
+      "weights_run_seconds": 2.63584819,
+      "verify_run_seconds": 1.264010898,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.598183996,
-      "verify_run_seconds": 0.79385618,
+      "weights_run_seconds": 2.63584819,
+      "verify_run_seconds": 1.229703473,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1867,8 +1867,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.7559013540000001,
-      "verify_run_seconds": 0.947801811,
+      "weights_run_seconds": 2.902280368,
+      "verify_run_seconds": 1.4606912429999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2541,8 +2541,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.7559013540000001,
-      "verify_run_seconds": 0.921839217,
+      "weights_run_seconds": 2.902280368,
+      "verify_run_seconds": 1.445371745,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3219,8 +3219,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.175556897,
-      "verify_run_seconds": 0.982305326,
+      "weights_run_seconds": 3.602709611,
+      "verify_run_seconds": 1.51022324,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3892,8 +3892,8 @@
         "main_hand: Fiery War Axe",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.175556897,
-      "verify_run_seconds": 0.942328087,
+      "weights_run_seconds": 3.602709611,
+      "verify_run_seconds": 1.517001786,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4571,8 +4571,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.285502551,
-      "verify_run_seconds": 1.165176295,
+      "weights_run_seconds": 3.842314705,
+      "verify_run_seconds": 1.8037939760000001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5265,8 +5265,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.285502551,
-      "verify_run_seconds": 1.098333796,
+      "weights_run_seconds": 3.842314705,
+      "verify_run_seconds": 1.830609147,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5996,8 +5996,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.289798539,
-      "verify_run_seconds": 1.087153824,
+      "weights_run_seconds": 3.81758985,
+      "verify_run_seconds": 1.789921512,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6431,7 +6431,7 @@
               "item_name": "Outrider's Plate Legguards",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.46334678688437564
+              "dps_delta": -0.46334678688437664
             },
             {
               "item_id": 14554,
@@ -6495,7 +6495,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.3265840139127593
+              "dps_delta": -0.32658401391275904
             },
             {
               "item_id": 2246,
@@ -6528,7 +6528,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.3249620665490705
+              "dps_delta": -0.3249620665490703
             },
             {
               "item_id": 2246,
@@ -6723,8 +6723,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.289798539,
-      "verify_run_seconds": 1.024707281,
+      "weights_run_seconds": 3.81758985,
+      "verify_run_seconds": 1.711168855,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T20:52:47Z",
+  "generated_at": "2026-10-06T21:32:50Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -533,8 +533,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.603532887,
-      "verify_run_seconds": 1.083277599,
+      "weights_run_seconds": 2.595012143,
+      "verify_run_seconds": 1.6468874690000002,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1165,8 +1165,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.603532887,
-      "verify_run_seconds": 1.1154067109999999,
+      "weights_run_seconds": 2.595012143,
+      "verify_run_seconds": 1.6469710960000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1891,8 +1891,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.806825437,
-      "verify_run_seconds": 1.2526588269999999,
+      "weights_run_seconds": 2.849581456,
+      "verify_run_seconds": 1.871927893,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2605,8 +2605,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.806825437,
-      "verify_run_seconds": 1.278263154,
+      "weights_run_seconds": 2.849581456,
+      "verify_run_seconds": 1.8210258449999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3279,8 +3279,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.97202549,
-      "verify_run_seconds": 1.316391459,
+      "weights_run_seconds": 3.108515897,
+      "verify_run_seconds": 2.01707041,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3954,8 +3954,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.97202549,
-      "verify_run_seconds": 1.297779606,
+      "weights_run_seconds": 3.108515897,
+      "verify_run_seconds": 1.973033267,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4631,8 +4631,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.992321601,
-      "verify_run_seconds": 1.380322746,
+      "weights_run_seconds": 3.132530662,
+      "verify_run_seconds": 2.158189657,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5307,8 +5307,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.992321601,
-      "verify_run_seconds": 1.393087706,
+      "weights_run_seconds": 3.132530662,
+      "verify_run_seconds": 2.15124601,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6019,8 +6019,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.927614213,
-      "verify_run_seconds": 1.503197139,
+      "weights_run_seconds": 3.099817166,
+      "verify_run_seconds": 2.229215449,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6729,8 +6729,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.927614213,
-      "verify_run_seconds": 1.441247876,
+      "weights_run_seconds": 3.099817166,
+      "verify_run_seconds": 2.152373877,
       "coverage": {
         "back": {
           "eligible": 450,

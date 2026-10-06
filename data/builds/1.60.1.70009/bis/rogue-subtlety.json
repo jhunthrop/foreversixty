@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T20:56:54Z",
+  "generated_at": "2026-10-06T21:38:54Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -562,8 +562,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.4774268720000001,
-      "verify_run_seconds": 1.039315767,
+      "weights_run_seconds": 2.256069959,
+      "verify_run_seconds": 1.4121645520000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1208,8 +1208,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.4774268720000001,
-      "verify_run_seconds": 0.975715507,
+      "weights_run_seconds": 2.256069959,
+      "verify_run_seconds": 1.415057838,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1890,8 +1890,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.614735065,
-      "verify_run_seconds": 1.085586659,
+      "weights_run_seconds": 2.468372345,
+      "verify_run_seconds": 1.58078753,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.614735065,
-      "verify_run_seconds": 1.036971129,
+      "weights_run_seconds": 2.468372345,
+      "verify_run_seconds": 1.5960754609999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3269,8 +3269,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.771063119,
-      "verify_run_seconds": 1.0915685960000001,
+      "weights_run_seconds": 2.645355329,
+      "verify_run_seconds": 1.6011716360000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3967,8 +3967,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.771063119,
-      "verify_run_seconds": 1.126110114,
+      "weights_run_seconds": 2.645355329,
+      "verify_run_seconds": 1.643904235,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4678,8 +4678,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.805034421,
-      "verify_run_seconds": 1.30533039,
+      "weights_run_seconds": 2.677179288,
+      "verify_run_seconds": 1.967153538,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5387,8 +5387,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.805034421,
-      "verify_run_seconds": 1.3531897339999999,
+      "weights_run_seconds": 2.677179288,
+      "verify_run_seconds": 2.117565027,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5685,7 +5685,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8120473776079694
+              "dps_delta": -0.812047377607969
             },
             {
               "item_id": 12603,
@@ -6131,8 +6131,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.7389498300000001,
-      "verify_run_seconds": 1.326136743,
+      "weights_run_seconds": 2.679892957,
+      "verify_run_seconds": 1.97595419,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6429,7 +6429,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8120473776079694
+              "dps_delta": -0.812047377607969
             },
             {
               "item_id": 12603,
@@ -6623,7 +6623,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.05783370709193592
+              "dps_delta": -0.057833707091935735
             },
             {
               "item_id": 21201,
@@ -6655,7 +6655,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.0012405587652202415
+              "dps_delta": -0.0012405587652200528
             },
             {
               "item_id": 21201,
@@ -6877,8 +6877,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.7389498300000001,
-      "verify_run_seconds": 1.393212635,
+      "weights_run_seconds": 2.679892957,
+      "verify_run_seconds": 2.027328202,
       "coverage": {
         "back": {
           "eligible": 451,

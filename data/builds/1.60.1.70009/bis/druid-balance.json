@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T20:51:37Z",
+  "generated_at": "2026-10-06T21:31:03Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -541,8 +541,8 @@
         "finger2: Minor Channeling Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.5697222960000001,
-      "verify_run_seconds": 0.584711004,
+      "weights_run_seconds": 2.580712226,
+      "verify_run_seconds": 0.819181778,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1169,8 +1169,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.5697222960000001,
-      "verify_run_seconds": 0.609637561,
+      "weights_run_seconds": 2.580712226,
+      "verify_run_seconds": 0.917486527,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1829,8 +1829,8 @@
         "finger1: Lorekeeper's Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.9850263799999999,
-      "verify_run_seconds": 0.643940035,
+      "weights_run_seconds": 3.205835249,
+      "verify_run_seconds": 1.013436971,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2489,8 +2489,8 @@
         "finger2: Snake Hoop",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.9850263799999999,
-      "verify_run_seconds": 0.652020066,
+      "weights_run_seconds": 3.205835249,
+      "verify_run_seconds": 1.050590695,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3141,8 +3141,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.97864076,
-      "verify_run_seconds": 0.69158269,
+      "weights_run_seconds": 3.225337934,
+      "verify_run_seconds": 1.090472822,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3793,8 +3793,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.97864076,
-      "verify_run_seconds": 0.701471603,
+      "weights_run_seconds": 3.225337934,
+      "verify_run_seconds": 1.110442489,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4465,8 +4465,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.140945991,
-      "verify_run_seconds": 0.903541811,
+      "weights_run_seconds": 3.411851306,
+      "verify_run_seconds": 1.2672803049999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5136,8 +5136,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.140945991,
-      "verify_run_seconds": 0.839217997,
+      "weights_run_seconds": 3.411851306,
+      "verify_run_seconds": 1.224127566,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5412,7 +5412,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.624533029815865,
+          "score": 30.62453302981587,
           "verified": true,
           "alternatives": [
             {
@@ -5420,21 +5420,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5651366937364866
+              "dps_delta": -0.565136693736487
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6663650767392246
+              "dps_delta": -0.6663650767392251
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.075733162586138
+              "dps_delta": -1.0757331625861382
             }
           ]
         },
@@ -5917,8 +5917,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.221652013,
-      "verify_run_seconds": 0.832208713,
+      "weights_run_seconds": 3.428313867,
+      "verify_run_seconds": 1.22046313,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6183,7 +6183,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.5707599973935724
+              "dps_delta": -0.5707599973935715
             }
           ]
         },
@@ -6705,8 +6705,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.221652013,
-      "verify_run_seconds": 0.826978949,
+      "weights_run_seconds": 3.428313867,
+      "verify_run_seconds": 1.218082875,
       "coverage": {
         "back": {
           "eligible": 451,

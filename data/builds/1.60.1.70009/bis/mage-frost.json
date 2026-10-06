@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T20:54:41Z",
+  "generated_at": "2026-10-06T21:35:39Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.642389443,
-      "verify_run_seconds": 0.468841224,
+      "weights_run_seconds": 0.971417621,
+      "verify_run_seconds": 0.643272185,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.642389443,
-      "verify_run_seconds": 0.527732648,
+      "weights_run_seconds": 0.971417621,
+      "verify_run_seconds": 0.712767319,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.662320466,
-      "verify_run_seconds": 0.501162407,
+      "weights_run_seconds": 0.959760208,
+      "verify_run_seconds": 0.716179933,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2584,8 +2584,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.662320466,
-      "verify_run_seconds": 0.515669276,
+      "weights_run_seconds": 0.959760208,
+      "verify_run_seconds": 0.718428671,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3253,8 +3253,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.708033878,
-      "verify_run_seconds": 0.484796405,
+      "weights_run_seconds": 1.061861065,
+      "verify_run_seconds": 0.675418113,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3917,8 +3917,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.708033878,
-      "verify_run_seconds": 0.467840904,
+      "weights_run_seconds": 1.061861065,
+      "verify_run_seconds": 0.671530647,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4612,8 +4612,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.71406015,
-      "verify_run_seconds": 0.513850229,
+      "weights_run_seconds": 0.959930029,
+      "verify_run_seconds": 0.750488816,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5298,8 +5298,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.71406015,
-      "verify_run_seconds": 0.539993583,
+      "weights_run_seconds": 0.959930029,
+      "verify_run_seconds": 0.798439443,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6044,8 +6044,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.705073826,
-      "verify_run_seconds": 0.53255526,
+      "weights_run_seconds": 0.980081073,
+      "verify_run_seconds": 0.777246495,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6696,7 +6696,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.24001759986184196
+              "dps_delta": -0.24001759986184285
             },
             {
               "item_id": 1728,
@@ -6784,8 +6784,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.705073826,
-      "verify_run_seconds": 0.528887839,
+      "weights_run_seconds": 0.980081073,
+      "verify_run_seconds": 0.793953455,
       "coverage": {
         "back": {
           "eligible": 450,

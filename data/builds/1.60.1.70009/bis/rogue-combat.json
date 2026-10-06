@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T20:56:21Z",
+  "generated_at": "2026-10-06T21:38:05Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -566,8 +566,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.406596663,
-      "verify_run_seconds": 0.941536476,
+      "weights_run_seconds": 2.201892778,
+      "verify_run_seconds": 1.4125454880000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1214,8 +1214,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.406596663,
-      "verify_run_seconds": 0.894722241,
+      "weights_run_seconds": 2.201892778,
+      "verify_run_seconds": 1.334955349,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.416757555,
-      "verify_run_seconds": 0.89172956,
+      "weights_run_seconds": 2.186240233,
+      "verify_run_seconds": 1.303750607,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2586,8 +2586,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.416757555,
-      "verify_run_seconds": 0.903055102,
+      "weights_run_seconds": 2.186240233,
+      "verify_run_seconds": 1.345533409,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3276,8 +3276,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.521595424,
-      "verify_run_seconds": 0.972873689,
+      "weights_run_seconds": 2.314829859,
+      "verify_run_seconds": 1.3828274010000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.521595424,
-      "verify_run_seconds": 0.980302354,
+      "weights_run_seconds": 2.314829859,
+      "verify_run_seconds": 1.376485542,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4155,7 +4155,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.8997383544782277
+              "dps_delta": -0.8997383544782276
             }
           ]
         },
@@ -4682,8 +4682,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.587474466,
-      "verify_run_seconds": 1.199441477,
+      "weights_run_seconds": 2.347902533,
+      "verify_run_seconds": 1.694572873,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5394,8 +5394,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.587474466,
-      "verify_run_seconds": 1.172957595,
+      "weights_run_seconds": 2.347902533,
+      "verify_run_seconds": 1.742395915,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6142,8 +6142,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.611562256,
-      "verify_run_seconds": 1.1270426,
+      "weights_run_seconds": 2.372638931,
+      "verify_run_seconds": 1.6310811379999999,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6885,8 +6885,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.611562256,
-      "verify_run_seconds": 1.235234963,
+      "weights_run_seconds": 2.372638931,
+      "verify_run_seconds": 1.774629779,
       "coverage": {
         "back": {
           "eligible": 451,
