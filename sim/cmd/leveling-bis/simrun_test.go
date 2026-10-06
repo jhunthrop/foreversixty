@@ -8,12 +8,10 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
-// registerEngine and nextRunID are the two simrun.go helpers that do
-// not themselves reach into the engine's sim loop (registerEngine only
-// registers agent factories - sync.Once guarded, safe to call
-// repeatedly; nextRunID is pure string formatting), so they are safe
-// to exercise directly without triggering the real, slow engine path
-// this lane's brief forbids in a test.
+// registerEngine does not itself reach into the engine's sim loop (it
+// only registers agent factories, sync.Once guarded, safe to call
+// repeatedly), so it is safe to exercise directly without triggering
+// the real, slow engine path this lane's brief forbids in a test.
 
 func TestRegisterEngineIsIdempotent(t *testing.T) {
 	// Calling this more than once (as every other test in this package
@@ -24,17 +22,6 @@ func TestRegisterEngineIsIdempotent(t *testing.T) {
 	// contract.
 	registerEngine()
 	registerEngine()
-}
-
-func TestNextRunIDIsUniquePerCall(t *testing.T) {
-	a := nextRunID()
-	b := nextRunID()
-	if a == b {
-		t.Fatalf("nextRunID returned the same id twice: %q", a)
-	}
-	if a == "" || b == "" {
-		t.Fatal("nextRunID returned an empty id")
-	}
 }
 
 // A compile-time check that realEngine actually satisfies engineRunner

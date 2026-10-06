@@ -27,17 +27,23 @@ import (
 	"strings"
 )
 
-// TalentNode is the fields LadderTalentString needs from one talent of
-// data/builds/<build>/talents/<class>.json.
+// TalentNode is the fields LadderTalentString and sim/cmd/talent-search
+// need from one talent of data/builds/<build>/talents/<class>.json.
+// PrereqTalentID is 0 when the talent has no prerequisite (the file's
+// null).
 type TalentNode struct {
-	ID      int `json:"id"`
-	Tier    int `json:"tier"`
-	Column  int `json:"column"`
-	MaxRank int `json:"max_rank"`
+	ID             int    `json:"id"`
+	Name           string `json:"name"`
+	Tier           int    `json:"tier"`
+	Column         int    `json:"column"`
+	MaxRank        int    `json:"max_rank"`
+	PrereqTalentID int    `json:"prereq_talent_id"`
+	PrereqRank     int    `json:"prereq_rank"`
 }
 
 // TalentTree is one of a class's three trees.
 type TalentTree struct {
+	Name     string       `json:"name"`
 	Position int          `json:"position"`
 	Talents  []TalentNode `json:"talents"`
 }

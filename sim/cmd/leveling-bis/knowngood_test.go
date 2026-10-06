@@ -37,6 +37,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // knownGoodItem is one testdata/known-good.json entry.
@@ -73,9 +75,9 @@ func TestKnownGoodItemsAreSeenAndRanked(t *testing.T) {
 		t.Fatalf("%s decoded with zero specs - the fixture is empty or mis-shaped", knownGoodPath)
 	}
 
-	activeBuild, err := readActiveBuild(publishedRepoRoot)
+	activeBuild, err := leveling.ReadActiveBuild(publishedRepoRoot)
 	if err != nil {
-		t.Fatalf("readActiveBuild: %v", err)
+		t.Fatalf("leveling.ReadActiveBuild: %v", err)
 	}
 	buildDir := filepath.Join(publishedRepoRoot, "data", "builds", activeBuild)
 
