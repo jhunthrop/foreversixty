@@ -153,13 +153,25 @@ jobs:
             done
           fi
       # -all: every data/curated/specs.json spec with a written rotation,
-      # bands 20-60 step 10, both factions. weights-iterations stays at
-      # the command's own default (100 per direction) - this lane's
-      # report measures the whole run at that setting against the 30
-      # minute budget; lower it here (BIS_ARGS="-all -weights-iterations
-      # N") if a future spec count regresses the budget.
+      # bands 20-60 step 10, both factions. weights-iterations is 200
+      # per direction (double the command's own 100 default) - the
+      # ranker-weights-anchor lane (2026-10-05) measured hunter-
+      # marksmanship band 60 locally: the weights sweep itself took
+      # 0.9-1.0s at 100 iterations/direction and 1.0-1.1s at 200 (every
+      # other stage of a spec+band run - trinket-rank, effect-rank,
+      # set-completion, verify - does not scale with this flag at all),
+      # against a ~13s total single-spec-band run; doubling it adds at
+      # most a few seconds across the whole -all run, well inside the
+      # 30 minute budget this lane's own earlier report measured the
+      # 100-iteration run against. Raising the floor here means fewer
+      # bands ever need main.go's own per-band retry guards
+      # (weightsRetryIterationsFactor for the reference stat,
+      # primaryStatRetryIterationsFactor for the primary-stat anchor) -
+      # lower it back (BIS_ARGS="-all -weights-iterations N") if a
+      # future spec count regresses the budget.
       - name: rank leveling BiS for every written spec
         run: make bis
+        env: { BIS_ARGS: '-all -weights-iterations 200' }
       # night-bis-sanity lane, 2026-09-29: the published files are checked
       # for the defects the class audits found by eye (an item above the
       # band, the other side's rep, a two-hander with an off hand, one ring

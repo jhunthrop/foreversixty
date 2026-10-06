@@ -367,6 +367,24 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// spec, not once per band+faction it happened to win in.
 	notInSimWarned := make(map[int]bool)
 
+	// anchorStat/anchorOK: this lane's brief (ranker-weights-anchor),
+	// item 1/2 - the weight_stats row id normalizeScaleFactors
+	// (weights.go) anchors this spec's published scale-factor table
+	// to, resolved once per spec (primaryAnchorStat's own doc,
+	// primary_stat.go) rather than once per band, since it never
+	// varies by band. anchorOK is false only for a spec this command's
+	// own primaryStatBySpec table has no entry for - unreachable in
+	// production (TestPrimaryStatCoversEverySpec, primary_stat_test.go)
+	// but handled the same way an absent primary row always is: an
+	// empty anchorStat, which both normalizeScaleFactors and
+	// primaryStatSignificanceCheck treat as "nothing to anchor on,
+	// fall back to the pre-existing rule".
+	anchorStat, anchorOK := primaryAnchorStat(specInfo)
+	if !anchorOK {
+		log.Printf("leveling-bis: %s: no primary_stat entry for this spec - scale factors fall back to the largest-significant-weight rule", spec)
+		anchorStat = ""
+	}
+
 	var reports []bandReport
 	// lastGoodWeights/lastGoodReferenceDPSPerPoint/lastGoodBand track
 	// the most recent LOWER band whose own sweep measured its reference
@@ -415,9 +433,29 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			log.Printf("leveling-bis: %s band %d: sweep at %d iterations/direction was not significant (%s); re-ran at %dx", spec, band, weightsIterations, weightsReason, weightsRetryIterationsFactor)
 			wresult, referenceDPSPerPoint, weightsReason = retryResult, retryReferenceDPSPerPoint, retryReason
 		}
-		// weightsSeconds covers the whole band, including the retry
-		// above when one ran - a single per-band number, the same
-		// field buildReport has always taken one of.
+		// This lane's brief (ranker-weights-anchor), item 3's own
+		// guard: separate from the reference-stat retry just above,
+		// re-measure the PRIMARY-anchor row once at
+		// primaryStatRetryIterationsFactor iterations if it came back
+		// insignificant - but only on a band the reference-stat guard
+		// already trusts (weightsReason == ""); an already-untrustworthy
+		// band publishes no anchor at all regardless (normalizeScaleFactors'
+		// own doc), so spending the extra sim time here would be wasted.
+		weightsLowConfidence := false
+		if weightsReason == "" && anchorStat != "" {
+			retried, lowConf, pErr := primaryStatSignificanceCheck(runner, specInfo, ladderCh, anchorStat, weightsIterations, 3, wresult)
+			if pErr != nil {
+				return fmt.Errorf("band %d primary-stat (%s) weights retry: %w", band, anchorStat, pErr)
+			}
+			if lowConf {
+				log.Printf("leveling-bis: %s band %d: primary stat %s still not significant after a %dx retry; publishing the anchor anyway (weights_low_confidence)", spec, band, anchorStat, primaryStatRetryIterationsFactor)
+			}
+			wresult = retried
+			weightsLowConfidence = lowConf
+		}
+		// weightsSeconds covers the whole band, including either
+		// retry above when one ran - a single per-band number, the
+		// same field buildReport has always taken one of.
 		weightsSeconds := time.Since(weightsStart).Seconds()
 		// buildBandPool/score() only ever need the plain number (a
 		// candidate's stats dotted against it), and only for a weight
@@ -633,6 +671,21 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			verifySeconds := time.Since(verifyStart).Seconds()
 
 			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, bandReferenceDPSPerPoint, weightsReason)
+			// This lane's brief (ranker-weights-anchor), item 3:
+			// weights_low_confidence is this band's own flag (set
+			// above, once per band, before the faction loop) - not
+			// per-faction data, but published on every faction's own
+			// report the same way every other band-level field here is.
+			report.WeightsLowConfidence = weightsLowConfidence
+			// "No primary stat ever published as 'not significant'"
+			// (this lane's brief, item 3) - clears Insignificant on
+			// exactly the anchor row, on an otherwise-trustworthy band
+			// (see forceAnchorRowSignificant's own doc for why an
+			// already-untrustworthy band is excluded). Must run before
+			// normalizeScaleFactors below, which trusts this flag when
+			// deciding whether the anchor row is even usable as a
+			// divisor.
+			report.Weights = forceAnchorRowSignificant(report.Weights, anchorStat, weightsReason)
 			// This lane's brief, item 3: what the site publishes is per
 			// RATING point (what the item's own tooltip shows), not per
 			// sim unit (percent) - publishWeightRatingUnits (report.go)
@@ -641,15 +694,16 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// once per band+faction, rather than inside buildReport
 			// itself - see that function's own doc for why.
 			report.Weights = publishWeightRatingUnits(report.Weights, ratingFactorsForBuild)
-			// This lane's brief (bis-weights-simc): republish the same
-			// rows again, this time in the SimulationCraft/Pawn-
-			// familiar scale-factor convention (per point, normalized
-			// to the top PER-POINT stat = 1.00) - see
+			// This lane's brief (bis-weights-simc, extended by
+			// ranker-weights-anchor): republish the same rows again,
+			// this time in the SimulationCraft/Pawn-familiar
+			// scale-factor convention (per point, normalized to the
+			// spec's own PRIMARY stat = 1.00, anchorStat) - see
 			// normalizeScaleFactors' own doc (weights.go) for why this
 			// runs after, not instead of, publishWeightRatingUnits
 			// above (it needs the already-converted per-rating-point
 			// Weight, not the raw per-percent one).
-			report.Weights, report.ScaleReferenceStat = normalizeScaleFactors(report.Weights, report.ReferenceDPSPerPoint)
+			report.Weights, report.ScaleReferenceStat = normalizeScaleFactors(report.Weights, report.ReferenceDPSPerPoint, anchorStat)
 			// Owner correction, 2026-09-30, after player review: haste
 			// is not a table row on the site's own weight rail any
 			// more, only a one-line caption built from this one number

@@ -271,16 +271,157 @@ func effectiveWeights(weights map[string]api.StatWeight) map[string]float64 {
 	return out
 }
 
+// primaryStatRetryIterationsFactor is the ranker-weights-anchor lane's
+// own second retry guard (this lane's brief, item 3) - deliberately
+// separate from weightsRetryIterationsFactor's own 4x above, which
+// exists only to rescue the REFERENCE stat (the row score()/ranking
+// actually depends on). This guard instead protects the PRIMARY-stat
+// row normalizeScaleFactors anchors the published scale-factor table
+// to (primaryAnchorStat, primary_stat.go) - a different row in most
+// specs (a hunter's reference_stat is ranged_attack_power; its own
+// primary_stat is agility). This guard's own fallback (publish the
+// anchor anyway, flag weights_low_confidence) is far cheaper to fall
+// back to than the reference stat's own (an empty slot, or weights
+// borrowed from a whole other band), so a lighter retry budget - 2x,
+// not 4x - is enough before accepting it.
+const primaryStatRetryIterationsFactor = 2
+
+// primaryStatSignificanceCheck re-measures exactly one row
+// (anchorStat - primaryAnchorStat's own return, the row
+// normalizeScaleFactors will anchor the published scale-factor table
+// to) when wresult's own entry for it is not significant
+// (isWeightSignificant) - this lane's brief, item 3: "when the primary
+// stat comes back insignificant, re-run that band's weights sweep for
+// the primary stat with double the iterations once... if still
+// insignificant, publish it with the anchor anyway and set
+// weights_low_confidence".
+//
+// It retries ONCE, at primaryStatRetryIterationsFactor times
+// weightsIterations, and splices only that one stat's retried
+// api.StatWeight into a COPY of wresult (this package's immutability
+// rule - the caller's own map is never mutated), leaving every other
+// row - including the reference stat and whatever main.go's own
+// reference-stat retry/fallback already decided about this band -
+// exactly as already measured: this guard exists only to get a better
+// reading for the ANCHOR row, never to re-judge whether the whole
+// band's sweep is trustworthy (main.go's own reference-stat
+// retry+fallback, which runs first, already owns that).
+//
+// lowConfidence is true when, even after the retry, anchorStat is
+// still not significant - the band field weights_low_confidence
+// (bandReport's own doc) main.go sets from it. The brief's own rule
+// ("no primary stat ever published as 'not significant'") is enforced
+// by the caller, not here: main.go publishes the returned weight
+// regardless of lowConfidence (forceAnchorRowSignificant, below,
+// overrides that one row's own Insignificant flag to false once
+// weights_low_confidence has been recorded at the band level instead -
+// see that function's own doc).
+//
+// present is false (wresult returned unchanged, no engine call made)
+// when anchorStat names no row in wresult at all - primaryAnchorStat
+// can return an id that matches nothing (its own doc: the "primary row
+// absent" case normalizeScaleFactors' own fallback rule exists for),
+// and retrying a measurement for a stat this band's sweep was never
+// asked to weigh would only waste the spec's own time budget.
+func primaryStatSignificanceCheck(runner engineRunner, spec specInfo, ch api.CharacterSpec, anchorStat string, weightsIterations int, seed int64, wresult map[string]api.StatWeight) (result map[string]api.StatWeight, lowConfidence bool, err error) {
+	w, present := wresult[anchorStat]
+	if !present || isWeightSignificant(w) {
+		return wresult, false, nil
+	}
+	retryReq := weightsRequest(spec, ch, weightsIterations*primaryStatRetryIterationsFactor, seed)
+	retryResult, _, err := runner.RunWeights(retryReq)
+	if err != nil {
+		return nil, false, fmt.Errorf("primary-stat (%s) weights retry: %w", anchorStat, err)
+	}
+	retried, ok := retryResult[anchorStat]
+	if !ok {
+		// The retried sweep's own result carries no entry for
+		// anchorStat at all (should not happen: the same Stats list
+		// drove both requests) - nothing to splice in, and the
+		// original measurement is still the best one available.
+		return wresult, true, nil
+	}
+	out := make(map[string]api.StatWeight, len(wresult))
+	for k, v := range wresult {
+		out[k] = v
+	}
+	out[anchorStat] = retried
+	return out, !isWeightSignificant(retried), nil
+}
+
+// forceAnchorRowSignificant is this lane's brief, item 3's own rule:
+// "no primary stat ever published as 'not significant'". buildReport's
+// own weightRow.Insignificant (report.go) already carves out one
+// exemption for the same reason - the reference stat's own row
+// (referenceMeasurementReason already ran the real, tighter check for
+// that exact stat, so isWeightSignificant's generic 25%-of-value bar
+// is redundant there). The primary-anchor row (anchorStat -
+// primaryAnchorStat's own return) gets the same exemption here, but
+// ONLY on an otherwise-trustworthy band (weightsReason == "") - an
+// untrustworthy band's own weightsReason already forces EVERY row
+// Insignificant (buildReport's own doc), and the anchor row is not a
+// special case of that global verdict: a primary stat measured inside
+// a band the controller has already said cannot be trusted for ANY
+// row must still read as untrustworthy, not silently exempted back to
+// "significant" the moment it happens to be the one row this lane's
+// brief cares most about.
+//
+// Returns a NEW []weightRow (this package's immutability rule); rows
+// is returned unchanged (same slice, no allocation) when there is
+// nothing to do.
+func forceAnchorRowSignificant(rows []weightRow, anchorStat, weightsReason string) []weightRow {
+	if weightsReason != "" || anchorStat == "" {
+		return rows
+	}
+	out := make([]weightRow, len(rows))
+	for i, row := range rows {
+		if row.Stat == anchorStat {
+			row.Insignificant = false
+		}
+		out[i] = row
+	}
+	return out
+}
+
 // normalizeScaleFactors is this lane's brief (bis-weights-simc, owner:
 // "we need to make the stat weights align with simcraft stat weights
-// output - that's what people are familiar with"): it turns rows'
-// already-published Weight/Error (report.go's weightRow, already per
-// point - publishWeightRatingUnits has already converted every
-// rating-family row to per rating point by the time main.go calls
-// this, right after it) into the SimulationCraft-familiar convention:
-// per point of stat, normalized so the single highest-weighted
-// PER-POINT stat reads 1.00, not this engine's own reference stat
-// (RangedAttackPower/SpellPower, whatever the spec).
+// output - that's what people are familiar with"), extended by the
+// ranker-weights-anchor lane (2026-10-05, owner: scale factors must be
+// normalized to the spec's PRIMARY stat, not whichever row happens to
+// measure largest): it turns rows' already-published Weight/Error
+// (report.go's weightRow, already per point - publishWeightRatingUnits
+// has already converted every rating-family row to per rating point
+// by the time main.go calls this, right after it) into the
+// SimulationCraft-familiar convention: per point of stat, normalized
+// so the spec's own PRIMARY stat reads 1.00.
+//
+// primaryStat is primaryAnchorStat's own return (primary_stat.go) -
+// the weight_stats row id this spec's primary stat resolves to, or ""
+// when primaryAnchorStat itself found nothing (an unconfigured spec,
+// unreachable in production given TestPrimaryStatCoversEverySpec).
+// The anchor is that row, found REGARDLESS of its own Insignificant
+// flag or sign in the first pass below - the caller
+// (forceAnchorRowSignificant, main.go) has already cleared
+// Insignificant on this exact row before this function ever sees it,
+// on every band whose weights_reason allows it (this lane's brief,
+// item 2: "no primary stat ever published as 'not significant'") -
+// but a non-positive Weight (noise, or a band whose whole sweep was
+// untrustworthy and never got that clearing) is never usable as a
+// divisor, whatever Insignificant says, so this function still checks
+// Weight > 0 itself rather than trusting the caller for that one
+// piece.
+//
+// Falling back to the pre-existing largest-significant-weight rule
+// happens ONLY when the primary row is absent this way - primaryStat
+// is "" (primaryAnchorStat found nothing for this spec, or the caller
+// passed "" because normalizeScaleFactors is being asked a
+// primaryStat-agnostic question, as some of this file's own tests do),
+// no row's Stat matches primaryStat at all, or the matching row's own
+// Weight is at or below zero. A primaryStat that happens to name a
+// haste id (isHasteStat) is also refused as an anchor in this first
+// pass, the same defense in depth the second pass already has -
+// primaryStatBySpec (primary_stat.go) never assigns one, but this
+// function does not trust that invariant blindly.
 //
 // Returns a NEW []weightRow (this package's immutability rule), same
 // order as the input (weightOrder's own order - this JSON's row order
@@ -288,36 +429,47 @@ func effectiveWeights(weights map[string]api.StatWeight) map[string]float64 {
 // excluded from the table entirely, is the SITE's own presentation
 // choice - see web/src/lib/bis/panel-view.ts), and the stat id
 // ScaleFactor was normalized against ("" when no row qualifies - see
-// below).
+// above).
 //
 // isHasteStat rows (melee_haste/spell_haste) are excluded from the
-// SEARCH for that anchor stat - vanilla haste is a flat 1%-per-point
-// stat with no rating conversion in this ruleset, not comparable
-// point-for-point against a primary/rating stat, so letting a haste
-// row's own (often much larger) Weight become the anchor would
-// silently misrepresent every OTHER row's scale factor. A haste row
-// still receives its own ScaleFactor/ScaleError on the same divisor as
-// every other row (hasteScaleFactorFromRows, below, reads it back out
-// for bandReport.HasteScaleFactor) - it is simply never eligible to
-// SET that divisor.
+// FALLBACK search for an anchor stat - vanilla haste is a flat
+// 1%-per-point stat with no rating conversion in this ruleset, not
+// comparable point-for-point against a primary/rating stat, so
+// letting a haste row's own (often much larger) Weight become the
+// anchor would silently misrepresent every OTHER row's scale factor.
+// A haste row still receives its own ScaleFactor/ScaleError on the
+// same divisor as every other row (hasteScaleFactorFromRows, below,
+// reads it back out for bandReport.HasteScaleFactor) - it is simply
+// never eligible to SET that divisor.
 //
-// The anchor is the significant row (Insignificant == false) with the
-// largest positive Weight; a band with no such row (every row
-// insignificant, or weightsReason forced every row insignificant -
-// weightRow's own Insignificant doc) returns every row's ScaleFactor/
-// ScaleError as 0 rather than divide by zero or invent an anchor from
-// noise - DPSPerPoint alone still publishes on every row regardless,
-// since it needs no anchor (see weightRow.DPSPerPoint's own doc).
-func normalizeScaleFactors(rows []weightRow, referenceDPSPerPoint *float64) ([]weightRow, string) {
+// A band with no usable anchor at all (primary row absent AND no
+// significant, non-haste fallback row either - every row insignificant,
+// or weightsReason forced every row insignificant - weightRow's own
+// Insignificant doc) returns every row's ScaleFactor/ScaleError as 0
+// rather than divide by zero or invent an anchor from noise -
+// DPSPerPoint alone still publishes on every row regardless, since it
+// needs no anchor (see weightRow.DPSPerPoint's own doc).
+func normalizeScaleFactors(rows []weightRow, referenceDPSPerPoint *float64, primaryStat string) ([]weightRow, string) {
 	anchor := ""
 	anchorWeight := 0.0
-	for _, row := range rows {
-		if row.Insignificant || isHasteStat(row.Stat) {
-			continue
+	if primaryStat != "" && !isHasteStat(primaryStat) {
+		for _, row := range rows {
+			if row.Stat == primaryStat && row.Weight > 0 {
+				anchor = row.Stat
+				anchorWeight = row.Weight
+				break
+			}
 		}
-		if row.Weight > anchorWeight {
-			anchorWeight = row.Weight
-			anchor = row.Stat
+	}
+	if anchor == "" {
+		for _, row := range rows {
+			if row.Insignificant || isHasteStat(row.Stat) {
+				continue
+			}
+			if row.Weight > anchorWeight {
+				anchorWeight = row.Weight
+				anchor = row.Stat
+			}
 		}
 	}
 
