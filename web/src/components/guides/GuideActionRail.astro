@@ -208,6 +208,14 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
     display: grid;
     grid-template-columns: repeat(var(--tree-cols, 4), minmax(0, 28px));
     gap: 4px;
+    /* 2026-10-05 audit finding: the rank badge (below) sits 4px outside its own cell on
+       purpose, so a maxed-out talent in the grid's last column or last row pushed the
+       whole rail 4px past its container -- real horizontal overflow on every guide with a
+       rank in that corner, confirmed by the DOM check's scrollWidth-vs-clientWidth probe on
+       every spec at both 1440 and 390. `border-box` plus this exact 4px reservation gives
+       the badge room inside the grid's own box instead of bleeding into the card/page. */
+    box-sizing: border-box;
+    padding: 0 4px 4px 0;
   }
   .guide-rail-tree-cell {
     position: relative;

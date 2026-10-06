@@ -1,12 +1,19 @@
 // web/src/lib/guides/rail-stats.ts
 // The spec guide's Stat priority rail card (rebuild spec §4.C.3, round-1 mock review
-// finding 4): one line per stat in the guide's own `statPriority` order, each carrying its
+// finding 4): one line per stat the guide's own `statPriority` names, each carrying its
 // real per-point scale number -- `StatWeightsPanel`'s own convention (scale factor
 // normalized so the top SIGNIFICANT stat at this band reads exactly 1.00), computed fresh
 // over just these stats rather than reused from `panel-view.ts`'s own table (that table
 // excludes haste as a row entirely; this rail's own mock-board numbers confirm haste is
 // meant to compete for the anchor here like any other stat -- see this module's own test
 // for the worked Fury example, melee haste normalizing to 1.00).
+//
+// Ordering (2026-10-05 audit finding): the card's row order comes from the sim, not from
+// the guide's own `statPriority` array -- the per-point significant stats sorted by scale
+// factor descending, then haste last ("N per 1%"), then insignificant stats last ("Not
+// significant"). A guide's written order can disagree with the sim (real example: the Fury
+// warrior guide lists Strength and Agility ahead of Critical strike and Hit, but both are
+// `insignificant` at band 60) -- the card always follows the sim in that case.
 import { statLabelForSpec } from '../sim/weights-display';
 import type { BisStatWeight } from '../bis/types';
 
@@ -41,6 +48,18 @@ function isHasteStat(stat: string): boolean {
  */
 const GUIDE_LABEL_ALIASES: Readonly<Record<string, string>> = { 'Critical strike': 'Crit' };
 
+/** Sort tier for a matched row: 0 = per-point significant stat (sorted by scale factor
+ *  descending within this tier), 1 = haste (reported per 1%, always after the per-point
+ *  stats), 2 = insignificant or unmatched (reported "Not significant", always last). */
+function sortTier(weight: BisStatWeight | undefined): 0 | 1 | 2 {
+  if (weight === undefined || (weight.insignificant ?? false)) return 2;
+  return isHasteStat(weight.stat) ? 1 : 0;
+}
+
+function scaleOf(weight: BisStatWeight): number {
+  return weight.scale_factor ?? weight.weight;
+}
+
 export function railStatRows(
   statPriority: readonly string[],
   weights: readonly BisStatWeight[],
@@ -48,18 +67,26 @@ export function railStatRows(
   hasteScaleFactor: number | null = null,
 ): RailStatRow[] {
   const byLabel = new Map(weights.map((w) => [statLabelForSpec(w.stat, spec), w]));
-  const matched = statPriority.map((label) => ({
+  const unordered = statPriority.map((label) => ({
     label,
     weight: byLabel.get(GUIDE_LABEL_ALIASES[label] ?? label),
   }));
-  const significant = matched
-    .filter((row): row is { label: string; weight: BisStatWeight } => {
-      return (
-        row.weight !== undefined && !(row.weight.insignificant ?? false) && !isHasteStat(row.weight.stat)
-      );
-    })
-    .map((row) => row.weight.scale_factor ?? row.weight.weight);
+  const significant = unordered
+    .filter((row): row is { label: string; weight: BisStatWeight } => sortTier(row.weight) === 0)
+    .map((row) => scaleOf(row.weight));
   const top = significant.length > 0 ? Math.max(...significant) : undefined;
+
+  // The card's own order (2026-10-05 audit finding): the sim's scale factors order the
+  // per-point stats, never the guide's own written `statPriority` order. `Array#sort` is
+  // stable, so ties within a tier (and the whole insignificant/unmatched tier, which has no
+  // secondary key) keep the guide's original relative order.
+  const matched = [...unordered].sort((a, b) => {
+    const tierA = sortTier(a.weight);
+    const tierB = sortTier(b.weight);
+    if (tierA !== tierB) return tierA - tierB;
+    if (tierA !== 0) return 0;
+    return scaleOf(b.weight!) - scaleOf(a.weight!);
+  });
 
   return matched.map(({ label, weight }) => {
     if (weight !== undefined && isHasteStat(weight.stat)) {
