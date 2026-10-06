@@ -41,4 +41,17 @@ describe('SimSavePanel', () => {
     if (match === null) throw new Error('save button not found');
     expect(match[0]).not.toContain('disabled=""');
   });
+
+  // Persona review 2026-10-06 (retail-raider), §5/§8 item 1: a cold-paste result never
+  // required sign-in to exist, but saving it still does -- the button says so itself.
+  it('disables the save button and says "Sign in to save" on the button itself, signed out', () => {
+    const { body } = render(SimSavePanel, {
+      props: { result: {} as never, reportTitle: 'x', onsave: async () => null, signedIn: false },
+    });
+    const match = /<button[^>]*data-testid="sim-save-open"[^>]*>/.exec(body);
+    if (match === null) throw new Error('save button not found');
+    expect(match[0]).toContain('disabled=""');
+    expect(body).toContain(simCopy.signInToSave);
+    expect(body).not.toContain('data-testid="sim-save-disabled-note"');
+  });
 });

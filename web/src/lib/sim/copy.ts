@@ -488,6 +488,11 @@ export const simCopy = {
   runThisYourself: 'Run this yourself',
   /** The save button's disabled title when the last run was stopped rather than finished. */
   saveAbortedDisabled: 'A stopped run has nothing finished to save.',
+  /** Persona review 2026-10-06 (retail-raider), §5/§8 item 1: the save button's own label
+   *  while signed out -- stated on the button itself rather than waiting for a failed
+   *  request, since a cold-paste run (SimView's `runPastedInput`) never required sign-in to
+   *  reach a result in the first place. */
+  signInToSave: 'Sign in to save',
 
   // --- Task 18: the history list, filterable by kind, each row carrying the API's
   // own headline (design 9.3). ---

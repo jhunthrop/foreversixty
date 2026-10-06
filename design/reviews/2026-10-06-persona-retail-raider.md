@@ -126,3 +126,42 @@ takes my real gear with no extra steps, and guides re-verified by search the way
 3. **Re-run talent search against every spec's guide before launch and republish the winner**, the
    way Ret Paladin already did — a guide 17% off a provably better build is the first thing a
    theorycrafter in my guild posts to Discord.
+
+## Response: sim cold paste
+
+Fix 1 shipped, scoped to the addon-export/build-code half of "no sign-in detour" (Battle.net
+import already worked; the gate was the paste path never being the hero). `/sim` signed out, and
+signed in with no tracked character, now opens on `ColdPasteHero.svelte`: "Paste your addon export
+or a build code", a textarea, Run, and "Get the export in game with `/fs export`, or get set up".
+A valid paste decodes locally (`cold-paste.ts`'s `validateColdPaste`, the same grammar
+`AddonPasteBox.svelte` already proves on `/addon`) and Run both loads the character and starts the
+run in one click (`SimView.svelte`'s `runPastedInput`) — no second "Run sim" press, no queue, the
+wasm engine running in the browser exactly as Tessara's own diary describes wanting. "Runs on your
+machine; nothing is uploaded until you choose to save" sits under Run; the current-character
+pointer is written the same way the planner's own paste already does (`fromAddonExport`, unchanged).
+The intro line, the static example and the Battle.net hero all moved below the new box rather than
+being replaced — Battle.net import is still one click away for a visitor who'd rather sign in first.
+
+Save keeps its sign-in requirement, said on the button itself ("Sign in to save") rather than
+discovered as a failed request after the fact (`SimSavePanel.svelte`'s new `signedIn` prop).
+
+Not done, left for a follow-up: the existing "From the addon" card lower on the page is now a
+second, smaller copy of the same paste action (unchanged, so the ~20 existing e2e specs that use
+it as a fast test fixture keep passing) — worth folding into the hero once those specs are updated
+too. The Battle.net hero's own sign-in button is still a second gold `PRIMARY_BUTTON` alongside
+Run, which design/DESIGN-SYSTEM.md's own "one filled button per view" rule technically disallows;
+left alone here since demoting it touches `SourceSwitcher.test.ts`'s own assertions and wasn't part
+of this fix's scope.
+
+Branch `sim-cold-paste`, commit range covers: `web/src/lib/sim/cold-paste.ts` (+test),
+`web/src/components/sim/ColdPasteHero.svelte` (+test), `web/src/components/sim/SimView.svelte`,
+`web/src/components/sim/SimSavePanel.svelte` (+test), `web/src/lib/sim/landing-copy.ts`,
+`web/src/lib/sim/copy.ts`, `web/src/pages/sim.astro` (re-measured CLS reservation: 1688/1038.5px
+real height, 1712/1063px reserved), `web/tests/e2e/sim-cold-paste.spec.ts` (new), plus signed-in
+`/v1/me` stubs added to two pre-existing save-flow e2e tests (`sim-run.spec.ts`, `sim-saved.spec.ts`)
+that now need one. Tests: `npx astro check` (0 errors), `npm run lint` (clean), `npm run format:check`
+(clean), `npx vitest run src/lib/sim src/components/sim src/components/AddonPaste*` (91 files,
+1107 passed), `FOREVER_DATA=fixture npm run build` (succeeds), `E2E_SKIP_BUILD=1 npx playwright test
+tests/e2e/sim*.spec.ts --project=desktop --project=mobile` (380 passed, 20 skipped — real-engine/wasm
+specs plus this lane's own desktop-skipped phone-390 block). Captures:
+`design/mocks/renders/build/sim-cold-paste-{1440,390}.png`.

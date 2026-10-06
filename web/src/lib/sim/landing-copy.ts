@@ -71,4 +71,20 @@ export const landingCopy = {
    *  repeated here since this card is its own copy, not a render of that component. */
   signInWithBattlenet: 'Sign in with Battle.net',
   emailLinkInstead: 'Use an email link instead.',
+
+  /** Persona review 2026-10-06 (retail-raider), §5/§8 item 1: the cold-paste box ahead of
+   *  everything else on a signed-out (or signed-in, no tracked character) /sim -- the
+   *  engine runs as wasm in this browser (engine.ts), so a pasted export runs immediately,
+   *  with no Battle.net round trip and no queue. `cold-paste.ts`'s `validateColdPaste`
+   *  shares this box's one decode with AddonPasteBox.svelte's own (planner/fs1.ts's
+   *  decodeFS1), so the validation copy is never a second, drifting version of that
+   *  decoder's own messages. */
+  pasteHeroTitle: 'Paste your addon export or a build code',
+  pasteHeroPlaceholder: 'FS1:…',
+  pasteHeroRun: 'Run',
+  pasteHeroHintLead: 'Get the export in game with /fs export, or',
+  pasteHeroHintLink: 'get set up',
+  /** Said once the paste decodes, ahead of Run -- the one reassurance a cold visitor needs
+   *  before trusting a number this page produced with no account and no upload. */
+  pasteHeroRunsLocally: 'Runs on your machine; nothing is uploaded until you choose to save.',
 } as const;

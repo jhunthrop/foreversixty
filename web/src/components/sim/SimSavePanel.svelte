@@ -16,6 +16,7 @@
     result,
     reportTitle,
     onsave,
+    signedIn = true,
   }: {
     result: SimResult | null;
     /** Read once, when the inline form opens -- not bound live, the same way the file this
@@ -23,6 +24,12 @@
     reportTitle: string;
     /** Returns the new sim's id, or null on failure. */
     onsave: (title: string) => Promise<string | null>;
+    /** Persona review 2026-10-06 (retail-raider), §5/§8 item 1: a cold-paste run never
+     *  required sign-in to produce a result, but saving it still does -- said on the
+     *  button itself rather than waiting for a failed request. Defaults true so every
+     *  caller that already knew it was signed in (there was only one before this) keeps
+     *  today's behaviour unchanged. */
+    signedIn?: boolean;
   } = $props();
 
   let saveOpen = $state(false);
@@ -43,7 +50,7 @@
   // A result the run loop reports as stopped rather than finished (`sim/api`'s additive
   // `aborted`) has nothing complete to save -- the button stays disabled and says why,
   // rather than saving a partial run under a title the player chose for a real result.
-  const canSave = $derived(result !== null && result.aborted !== true);
+  const canSave = $derived(result !== null && result.aborted !== true && signedIn);
 
   function openSaveForm(): void {
     saveTitle = reportTitle;
@@ -151,10 +158,11 @@
       onclick={openSaveForm}
       data-testid="sim-save-open"
     >
-      {simCopy.saveThisSim}
+      {signedIn ? simCopy.saveThisSim : simCopy.signInToSave}
     </button>
-    <!-- Task 7: the disabled reason, said plainly (Task 3's pattern), never a title=. -->
-    {#if result !== null && !canSave}
+    <!-- Task 7: the disabled reason, said plainly (Task 3's pattern), never a title=. The
+         sign-in requirement is said on the button itself (above) instead of repeated here. -->
+    {#if signedIn && result !== null && !canSave}
       <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">
         {simCopy.saveAbortedDisabled}
       </p>
