@@ -21837,11 +21837,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.804,
-          "crit": 0.13,
-          "hit": 0.229,
-          "spell_haste": 2.434,
-          "nature_power": 0.664
+          "intellect": 0.786,
+          "crit": 0.092,
+          "hit": 0.23,
+          "spell_haste": 2.409,
+          "nature_power": 0.659
         }
       },
       {

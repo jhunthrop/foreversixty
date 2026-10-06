@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T13:32:41Z",
+  "generated_at": "2026-10-06T20:51:37Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -541,8 +541,8 @@
         "finger2: Minor Channeling Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 2.736567869,
-      "verify_run_seconds": 0.91195085,
+      "weights_run_seconds": 1.5697222960000001,
+      "verify_run_seconds": 0.584711004,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1169,8 +1169,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 2.736567869,
-      "verify_run_seconds": 0.918045571,
+      "weights_run_seconds": 1.5697222960000001,
+      "verify_run_seconds": 0.609637561,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1829,8 +1829,8 @@
         "finger1: Lorekeeper's Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 3.057218783,
-      "verify_run_seconds": 1.056758687,
+      "weights_run_seconds": 1.9850263799999999,
+      "verify_run_seconds": 0.643940035,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2489,8 +2489,8 @@
         "finger2: Snake Hoop",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 3.057218783,
-      "verify_run_seconds": 1.032221627,
+      "weights_run_seconds": 1.9850263799999999,
+      "verify_run_seconds": 0.652020066,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3141,8 +3141,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.211132401,
-      "verify_run_seconds": 1.150161532,
+      "weights_run_seconds": 1.97864076,
+      "verify_run_seconds": 0.69158269,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3793,8 +3793,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.211132401,
-      "verify_run_seconds": 1.137099585,
+      "weights_run_seconds": 1.97864076,
+      "verify_run_seconds": 0.701471603,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4465,8 +4465,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.402707612,
-      "verify_run_seconds": 1.277822836,
+      "weights_run_seconds": 2.140945991,
+      "verify_run_seconds": 0.903541811,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4888,7 +4888,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5281887897327981
+              "dps_delta": -0.5281887897327977
             }
           ]
         },
@@ -5136,8 +5136,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.402707612,
-      "verify_run_seconds": 1.2871325439999999,
+      "weights_run_seconds": 2.140945991,
+      "verify_run_seconds": 0.839217997,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5402,7 +5402,7 @@
               "item_name": "Field Marshal's Dragonhide Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.5707599973935724
+              "dps_delta": -0.5707599973935715
             }
           ]
         },
@@ -5917,8 +5917,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.461906963,
-      "verify_run_seconds": 1.248926424,
+      "weights_run_seconds": 2.221652013,
+      "verify_run_seconds": 0.832208713,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6183,7 +6183,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.5707599973935715
+              "dps_delta": -0.5707599973935724
             }
           ]
         },
@@ -6705,8 +6705,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.461906963,
-      "verify_run_seconds": 1.210824426,
+      "weights_run_seconds": 2.221652013,
+      "verify_run_seconds": 0.826978949,
       "coverage": {
         "back": {
           "eligible": 451,

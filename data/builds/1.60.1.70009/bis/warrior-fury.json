@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T13:45:34Z",
+  "generated_at": "2026-10-06T20:59:58Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -598,8 +598,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.705652212,
-      "verify_run_seconds": 1.477794547,
+      "weights_run_seconds": 1.574135804,
+      "verify_run_seconds": 0.965733052,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1271,8 +1271,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.705652212,
-      "verify_run_seconds": 1.522601348,
+      "weights_run_seconds": 1.574135804,
+      "verify_run_seconds": 0.951320092,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1970,8 +1970,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.889004675,
-      "verify_run_seconds": 1.525243953,
+      "weights_run_seconds": 1.774531853,
+      "verify_run_seconds": 0.988432883,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2673,8 +2673,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.889004675,
-      "verify_run_seconds": 1.548727749,
+      "weights_run_seconds": 1.774531853,
+      "verify_run_seconds": 0.968174894,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3375,8 +3375,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.374324937,
-      "verify_run_seconds": 1.7613322390000001,
+      "weights_run_seconds": 2.102199836,
+      "verify_run_seconds": 1.045980961,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4072,8 +4072,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.374324937,
-      "verify_run_seconds": 1.792889443,
+      "weights_run_seconds": 2.102199836,
+      "verify_run_seconds": 1.077742989,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4797,8 +4797,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.632673397,
-      "verify_run_seconds": 2.328672984,
+      "weights_run_seconds": 2.191482695,
+      "verify_run_seconds": 1.435075011,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5521,8 +5521,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.632673397,
-      "verify_run_seconds": 2.293795145,
+      "weights_run_seconds": 2.191482695,
+      "verify_run_seconds": 1.442623454,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6027,7 +6027,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.22289963592481749
+              "dps_delta": -0.22289963592481776
             },
             {
               "item_id": 2246,
@@ -6060,7 +6060,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.13851367480790522
+              "dps_delta": -0.13851367480790552
             },
             {
               "item_id": 2246,
@@ -6283,8 +6283,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.76599237,
-      "verify_run_seconds": 2.229189192,
+      "weights_run_seconds": 2.364580155,
+      "verify_run_seconds": 1.3950008870000001,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6441,7 +6441,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 100.35681823239655,
+          "score": 100.35681823239653,
           "verified": true,
           "alternatives": [
             {
@@ -6456,7 +6456,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.5501499410490629
+              "dps_delta": -0.5501499410490623
             },
             {
               "item_id": 226860,
@@ -6781,7 +6781,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.22289963592481776
+              "dps_delta": -0.22289963592481749
             },
             {
               "item_id": 2246,
@@ -6814,7 +6814,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.13851367480790552
+              "dps_delta": -0.13851367480790522
             },
             {
               "item_id": 2246,
@@ -7035,8 +7035,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.76599237,
-      "verify_run_seconds": 2.313231616,
+      "weights_run_seconds": 2.364580155,
+      "verify_run_seconds": 1.454982631,
       "coverage": {
         "back": {
           "eligible": 450,

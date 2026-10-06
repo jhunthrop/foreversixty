@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T13:44:43Z",
+  "generated_at": "2026-10-06T20:59:26Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -548,8 +548,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.716522424,
-      "verify_run_seconds": 1.26705135,
+      "weights_run_seconds": 1.598183996,
+      "verify_run_seconds": 0.823205399,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.716522424,
-      "verify_run_seconds": 1.2321653160000001,
+      "weights_run_seconds": 1.598183996,
+      "verify_run_seconds": 0.79385618,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1867,8 +1867,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.964476512,
-      "verify_run_seconds": 1.498830803,
+      "weights_run_seconds": 1.7559013540000001,
+      "verify_run_seconds": 0.947801811,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2541,8 +2541,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.964476512,
-      "verify_run_seconds": 1.4597057740000001,
+      "weights_run_seconds": 1.7559013540000001,
+      "verify_run_seconds": 0.921839217,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3219,8 +3219,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.733256754,
-      "verify_run_seconds": 1.532096067,
+      "weights_run_seconds": 2.175556897,
+      "verify_run_seconds": 0.982305326,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3892,8 +3892,8 @@
         "main_hand: Fiery War Axe",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.733256754,
-      "verify_run_seconds": 1.535421258,
+      "weights_run_seconds": 2.175556897,
+      "verify_run_seconds": 0.942328087,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4571,8 +4571,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.88327501,
-      "verify_run_seconds": 1.816302527,
+      "weights_run_seconds": 2.285502551,
+      "verify_run_seconds": 1.165176295,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5265,8 +5265,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.88327501,
-      "verify_run_seconds": 1.845512967,
+      "weights_run_seconds": 2.285502551,
+      "verify_run_seconds": 1.098333796,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5567,7 +5567,7 @@
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.29475898393456956
+              "dps_delta": -0.29475898393456856
             },
             {
               "item_id": 14637,
@@ -5769,7 +5769,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.3265840139127593
+              "dps_delta": -0.32658401391275904
             },
             {
               "item_id": 2246,
@@ -5802,7 +5802,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.3249620665490705
+              "dps_delta": -0.3249620665490703
             },
             {
               "item_id": 2246,
@@ -5996,8 +5996,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.879776889,
-      "verify_run_seconds": 1.841648498,
+      "weights_run_seconds": 2.289798539,
+      "verify_run_seconds": 1.087153824,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6293,7 +6293,7 @@
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.29475898393456956
+              "dps_delta": -0.29475898393456856
             },
             {
               "item_id": 14637,
@@ -6424,14 +6424,14 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.05305341030739297
+              "dps_delta": -0.05305341030739396
             },
             {
               "item_id": 22651,
               "item_name": "Outrider's Plate Legguards",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.46334678688437464
+              "dps_delta": -0.46334678688437564
             },
             {
               "item_id": 14554,
@@ -6495,7 +6495,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.32658401391275904
+              "dps_delta": -0.3265840139127593
             },
             {
               "item_id": 2246,
@@ -6528,7 +6528,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.3249620665490703
+              "dps_delta": -0.3249620665490705
             },
             {
               "item_id": 2246,
@@ -6723,8 +6723,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.879776889,
-      "verify_run_seconds": 1.787669867,
+      "weights_run_seconds": 2.289798539,
+      "verify_run_seconds": 1.024707281,
       "coverage": {
         "back": {
           "eligible": 450,

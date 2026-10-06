@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T13:43:16Z",
+  "generated_at": "2026-10-06T20:58:33Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -561,8 +561,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.421606369,
-      "verify_run_seconds": 1.157371305,
+      "weights_run_seconds": 1.443869004,
+      "verify_run_seconds": 0.734362276,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1203,8 +1203,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.421606369,
-      "verify_run_seconds": 1.248369923,
+      "weights_run_seconds": 1.443869004,
+      "verify_run_seconds": 0.76258937,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1920,8 +1920,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.420664017,
-      "verify_run_seconds": 1.192124502,
+      "weights_run_seconds": 1.437182649,
+      "verify_run_seconds": 0.730778281,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2636,8 +2636,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.420664017,
-      "verify_run_seconds": 1.168614752,
+      "weights_run_seconds": 1.437182649,
+      "verify_run_seconds": 0.714849092,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3325,8 +3325,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.822551799,
-      "verify_run_seconds": 1.061480916,
+      "weights_run_seconds": 1.125854777,
+      "verify_run_seconds": 0.654753148,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4003,8 +4003,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.822551799,
-      "verify_run_seconds": 1.049144771,
+      "weights_run_seconds": 1.125854777,
+      "verify_run_seconds": 0.712975933,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4714,8 +4714,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.821878868,
-      "verify_run_seconds": 1.213830577,
+      "weights_run_seconds": 1.097690173,
+      "verify_run_seconds": 0.84925829,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5163,7 +5163,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.5444761230432142
+              "dps_delta": -2.5444761230432147
             },
             {
               "item_id": 14132,
@@ -5428,8 +5428,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.821878868,
-      "verify_run_seconds": 1.183605871,
+      "weights_run_seconds": 1.097690173,
+      "verify_run_seconds": 0.768079573,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5710,7 +5710,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 20.75058232750567,
+          "score": 20.750582327505665,
           "verified": true,
           "alternatives": [
             {
@@ -5718,21 +5718,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.0505327497597897
+              "dps_delta": -0.05053274975978902
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -0.5257158280116244
+              "dps_delta": -0.5257158280116238
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.057918407095673
+              "dps_delta": -1.0579184070956724
             }
           ]
         },
@@ -6172,8 +6172,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.084179703,
-      "verify_run_seconds": 1.110735192,
+      "weights_run_seconds": 3.125731675,
+      "verify_run_seconds": 0.690504296,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6454,7 +6454,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 20.75058232750567,
+          "score": 20.750582327505665,
           "verified": true,
           "alternatives": [
             {
@@ -6462,14 +6462,14 @@
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -0.5257158280116244
+              "dps_delta": -0.5257158280116238
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.057918407095673
+              "dps_delta": -1.0579184070956724
             },
             {
               "item_id": 20697,
@@ -6920,8 +6920,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.084179703,
-      "verify_run_seconds": 1.122296484,
+      "weights_run_seconds": 3.125731675,
+      "verify_run_seconds": 0.748139356,
       "coverage": {
         "back": {
           "eligible": 450,

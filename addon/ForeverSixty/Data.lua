@@ -5802,7 +5802,7 @@ ns.Data = {
 		},
 		["shaman-elemental"] = {
 			[20] = { ["crit"] = 0.061, ["hit"] = 0.151, ["intellect"] = 0.723, ["nature_power"] = 0.699, ["spell_haste"] = 3.478, ["spell_power"] = 1 },
-			[30] = { ["crit"] = 0.13, ["hit"] = 0.229, ["intellect"] = 0.804, ["nature_power"] = 0.664, ["spell_haste"] = 2.434, ["spell_power"] = 1 },
+			[30] = { ["crit"] = 0.092, ["hit"] = 0.23, ["intellect"] = 0.786, ["nature_power"] = 0.659, ["spell_haste"] = 2.409, ["spell_power"] = 1 },
 			[40] = { ["crit"] = 0.223, ["hit"] = 0.374, ["intellect"] = 1.217, ["nature_power"] = 0.526, ["spell_power"] = 1 },
 			[50] = { ["crit"] = 0.292, ["hit"] = 0.496, ["intellect"] = 1.233, ["nature_power"] = 0.488, ["spell_haste"] = 4.738, ["spell_power"] = 1 },
 			[60] = { ["crit"] = 0.401, ["hit"] = 0.65, ["intellect"] = 1.27, ["nature_power"] = 0.54, ["spell_haste"] = 7.511, ["spell_power"] = 1 },

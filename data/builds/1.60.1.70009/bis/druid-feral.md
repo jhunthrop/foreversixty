@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 62.9. Weights run: 3.3s. Verify run: 1.6s. 193 eligible items had no known source.
+Set DPS (verified): 62.9. Weights run: 2.1s. Verify run: 1.0s. 193 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.001, agility=1.458 ± 0.035, crit=0.677 ± 0.011 per rating point (14 rating = 1%, 9.478 per %), hit=0.174 ± 0.005 per rating point (10 rating = 1%, 1.738 per %), melee_haste=5.215 ± 0.295
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 193, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-5423222100000000000-0000000000000000)
 
-Set DPS (verified): 102.6. Weights run: 3.8s. Verify run: 1.9s. 322 eligible items had no known source.
+Set DPS (verified): 102.6. Weights run: 2.6s. Verify run: 1.3s. 322 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.536 ± 0.047, crit=0.782 ± 0.015 per rating point (14 rating = 1%, 10.942 per %), hit=0.206 ± 0.006 per rating point (10 rating = 1%, 2.057 per %), melee_haste=6.725 ± 0.495
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 133.7. Weights run: 4.1s. Verify run: 2.0s. 438 eligible items had no known source.
+Set DPS (verified): 133.7. Weights run: 2.6s. Verify run: 1.3s. 438 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.565 ± 0.049, crit=0.844 ± 0.017 per rating point (14 rating = 1%, 11.820 per %), hit=0.226 ± 0.007 per rating point (10 rating = 1%, 2.264 per %), melee_haste=7.851 ± 0.705
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 438, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 134.5. Weights run: 4.0s. Verify run: 2.1s. 577 eligible items had no known source.
+Set DPS (verified): 134.5. Weights run: 2.7s. Verify run: 1.4s. 577 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.624 ± 0.062, crit=0.932 ± 0.019 per rating point (14 rating = 1%, 13.045 per %), hit=0.255 ± 0.008 per rating point (10 rating = 1%, 2.547 per %), melee_haste=8.098 ± 0.884
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 577, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 188.8. Weights run: 4.0s. Verify run: 2.1s. 1449 eligible items had no known source.
+Set DPS (verified): 188.8. Weights run: 2.6s. Verify run: 1.4s. 1449 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.733 ± 0.068, crit=1.018 ± 0.021 per rating point (14 rating = 1%, 14.259 per %), hit=0.303 ± 0.009 per rating point (10 rating = 1%, 3.035 per %), melee_haste=8.261 ± 1.355
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 61.5. Weights run: 3.3s. Verify run: 1.5s. 183 eligible items had no known source.
+Set DPS (verified): 61.5. Weights run: 2.1s. Verify run: 1.1s. 183 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.001, agility=1.458 ± 0.035, crit=0.677 ± 0.011 per rating point (14 rating = 1%, 9.478 per %), hit=0.174 ± 0.005 per rating point (10 rating = 1%, 1.738 per %), melee_haste=5.215 ± 0.295
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 183, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-5423222100000000000-0000000000000000)
 
-Set DPS (verified): 101.2. Weights run: 3.8s. Verify run: 1.9s. 315 eligible items had no known source.
+Set DPS (verified): 101.2. Weights run: 2.6s. Verify run: 1.2s. 315 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.536 ± 0.047, crit=0.782 ± 0.015 per rating point (14 rating = 1%, 10.942 per %), hit=0.206 ± 0.006 per rating point (10 rating = 1%, 2.057 per %), melee_haste=6.725 ± 0.495
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 315, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 132.2. Weights run: 4.1s. Verify run: 2.0s. 426 eligible items had no known source.
+Set DPS (verified): 132.2. Weights run: 2.6s. Verify run: 1.4s. 426 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.565 ± 0.049, crit=0.844 ± 0.017 per rating point (14 rating = 1%, 11.820 per %), hit=0.226 ± 0.007 per rating point (10 rating = 1%, 2.264 per %), melee_haste=7.851 ± 0.705
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 426, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 136.6. Weights run: 4.0s. Verify run: 2.1s. 561 eligible items had no known source.
+Set DPS (verified): 136.6. Weights run: 2.7s. Verify run: 1.4s. 561 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.624 ± 0.062, crit=0.932 ± 0.019 per rating point (14 rating = 1%, 13.045 per %), hit=0.255 ± 0.008 per rating point (10 rating = 1%, 2.547 per %), melee_haste=8.098 ± 0.884
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 561, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 188.4. Weights run: 4.0s. Verify run: 2.1s. 1446 eligible items had no known source.
+Set DPS (verified): 188.4. Weights run: 2.6s. Verify run: 1.3s. 1446 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.733 ± 0.068, crit=1.018 ± 0.021 per rating point (14 rating = 1%, 14.259 per %), hit=0.303 ± 0.009 per rating point (10 rating = 1%, 3.035 per %), melee_haste=8.261 ± 1.355
 

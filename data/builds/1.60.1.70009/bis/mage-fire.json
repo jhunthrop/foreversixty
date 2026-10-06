@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T13:36:58Z",
+  "generated_at": "2026-10-06T20:54:26Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -549,8 +549,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.1452751270000001,
-      "verify_run_seconds": 0.75426562,
+      "weights_run_seconds": 0.698479132,
+      "verify_run_seconds": 0.523828896,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.1452751270000001,
-      "verify_run_seconds": 0.782196884,
+      "weights_run_seconds": 0.698479132,
+      "verify_run_seconds": 0.54876435,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1857,8 +1857,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.178206269,
-      "verify_run_seconds": 0.797437242,
+      "weights_run_seconds": 0.728234016,
+      "verify_run_seconds": 0.552824325,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2540,8 +2540,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.178206269,
-      "verify_run_seconds": 0.805715741,
+      "weights_run_seconds": 0.728234016,
+      "verify_run_seconds": 0.536436308,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3210,8 +3210,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.245285406,
-      "verify_run_seconds": 0.75414711,
+      "weights_run_seconds": 0.855255678,
+      "verify_run_seconds": 0.550736697,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3873,8 +3873,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.245285406,
-      "verify_run_seconds": 0.78716371,
+      "weights_run_seconds": 0.855255678,
+      "verify_run_seconds": 0.549315311,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4236,7 +4236,7 @@
           "item_name": "Sorcerer's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 35.34623514619119,
+          "score": 35.3462351461912,
           "verified": true,
           "alternatives": [
             {
@@ -4244,21 +4244,21 @@
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.38045582932314015
+              "dps_delta": -0.38045582932314104
             },
             {
               "item_id": 220890,
               "item_name": "Sergeant Major's Dreadweave Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -1.5286965791150617
+              "dps_delta": -1.5286965791150626
             },
             {
               "item_id": 10019,
               "item_name": "Dreamweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.626451216196917
+              "dps_delta": -1.6264512161969178
             }
           ]
         },
@@ -4283,7 +4283,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.31985449142905265
+              "dps_delta": -0.31985449142905215
             },
             {
               "item_id": 10771,
@@ -4569,8 +4569,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.144243816,
-      "verify_run_seconds": 0.886968012,
+      "weights_run_seconds": 0.783735409,
+      "verify_run_seconds": 0.605313731,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4752,7 +4752,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.2334159840377223
+              "dps_delta": -1.2334159840377215
             },
             {
               "item_id": 11839,
@@ -5257,8 +5257,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.144243816,
-      "verify_run_seconds": 0.868642179,
+      "weights_run_seconds": 0.783735409,
+      "verify_run_seconds": 0.603143987,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5425,7 +5425,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 56.866144953361236,
+          "score": 56.86614495336123,
           "verified": true,
           "alternatives": [
             {
@@ -5440,14 +5440,14 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.6502670944590896
+              "dps_delta": -1.650267094459088
             },
             {
               "item_id": 16686,
               "item_name": "Magister's Crown",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -2.413306263535143
+              "dps_delta": -2.413306263535141
             }
           ]
         },
@@ -5511,7 +5511,7 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.5396707470237945
+              "dps_delta": -2.539670747023793
             }
           ]
         },
@@ -5986,8 +5986,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.275804021,
-      "verify_run_seconds": 0.920711902,
+      "weights_run_seconds": 0.904350855,
+      "verify_run_seconds": 0.613403374,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6241,7 +6241,7 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.5396707470237945
+              "dps_delta": -2.539670747023793
             }
           ]
         },
@@ -6350,19 +6350,13 @@
           "source_kind": "quest",
           "score": 41.61491300156856,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 226930,
-              "item_name": "Sorcerer's Gauntlets"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 226930,
               "item_name": "Sorcerer's Gauntlets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": 0
+              "dps_delta": -1.4695202302253748e-15
             },
             {
               "item_id": 16540,
@@ -6723,8 +6717,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.275804021,
-      "verify_run_seconds": 0.897863313,
+      "weights_run_seconds": 0.904350855,
+      "verify_run_seconds": 0.601753738,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T13:37:56Z",
+  "generated_at": "2026-10-06T20:55:06Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 2.412729871,
-      "verify_run_seconds": 1.084583221,
+      "weights_run_seconds": 1.491022469,
+      "verify_run_seconds": 0.791986322,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1157,8 +1157,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.412729871,
-      "verify_run_seconds": 1.069981261,
+      "weights_run_seconds": 1.491022469,
+      "verify_run_seconds": 0.726276443,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1801,8 +1801,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.480653546,
-      "verify_run_seconds": 1.412362506,
+      "weights_run_seconds": 1.5531437449999999,
+      "verify_run_seconds": 0.921063418,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2450,8 +2450,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.480653546,
-      "verify_run_seconds": 1.39705737,
+      "weights_run_seconds": 1.5531437449999999,
+      "verify_run_seconds": 0.958573634,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2533,7 +2533,7 @@
       "band": 40,
       "faction": "alliance",
       "race": "human",
-      "talents": "00000000000000000-0000000000000000-55223331211000210",
+      "talents": "00000000000000000-0000000000000000-55223331211000021",
       "talent_points": 31,
       "weights": [
         {
@@ -3091,8 +3091,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.4422407489999998,
-      "verify_run_seconds": 1.337950857,
+      "weights_run_seconds": 1.6712031349999998,
+      "verify_run_seconds": 0.904313367,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3174,7 +3174,7 @@
       "band": 40,
       "faction": "horde",
       "race": "undead",
-      "talents": "00000000000000000-0000000000000000-55223331211000210",
+      "talents": "00000000000000000-0000000000000000-55223331211000021",
       "talent_points": 31,
       "weights": [
         {
@@ -3733,8 +3733,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.4422407489999998,
-      "verify_run_seconds": 1.332790799,
+      "weights_run_seconds": 1.6712031349999998,
+      "verify_run_seconds": 0.91205845,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3816,7 +3816,7 @@
       "band": 50,
       "faction": "alliance",
       "race": "human",
-      "talents": "00000000000000000-5500000000000000-55223331211000210",
+      "talents": "00000000000000000-5500000000000000-55223331211000021",
       "talent_points": 41,
       "weights": [
         {
@@ -4391,8 +4391,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 2.56950799,
-      "verify_run_seconds": 1.419642292,
+      "weights_run_seconds": 1.673423731,
+      "verify_run_seconds": 0.971552136,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4474,7 +4474,7 @@
       "band": 50,
       "faction": "horde",
       "race": "undead",
-      "talents": "00000000000000000-5500000000000000-55223331211000210",
+      "talents": "00000000000000000-5500000000000000-55223331211000021",
       "talent_points": 41,
       "weights": [
         {
@@ -5051,8 +5051,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.56950799,
-      "verify_run_seconds": 1.453889655,
+      "weights_run_seconds": 1.673423731,
+      "verify_run_seconds": 1.001170155,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5134,7 +5134,7 @@
       "band": 60,
       "faction": "alliance",
       "race": "human",
-      "talents": "00000000000000000-5532500000000000-55223331211000210",
+      "talents": "00000000000000000-5532500000000000-55223331211000021",
       "talent_points": 51,
       "weights": [
         {
@@ -5479,7 +5479,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.1509286615064502
+              "dps_delta": -0.15092866150644957
             },
             {
               "item_id": 14554,
@@ -5568,14 +5568,14 @@
               "item_name": "Protector's Band",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -0.002538730058509558
+              "dps_delta": -0.002538730058509403
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.13765464847399947
+              "dps_delta": -0.1376546484739993
             },
             {
               "item_id": 11669,
@@ -5730,8 +5730,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 2.557076696,
-      "verify_run_seconds": 1.427380867,
+      "weights_run_seconds": 1.707162776,
+      "verify_run_seconds": 0.890140086,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5813,7 +5813,7 @@
       "band": 60,
       "faction": "horde",
       "race": "undead",
-      "talents": "00000000000000000-5532500000000000-55223331211000210",
+      "talents": "00000000000000000-5532500000000000-55223331211000021",
       "talent_points": 51,
       "weights": [
         {
@@ -6258,14 +6258,14 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.002538730058509403
+              "dps_delta": -0.002538730058509558
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.1376546484739993
+              "dps_delta": -0.13765464847399947
             },
             {
               "item_id": 11669,
@@ -6425,8 +6425,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.557076696,
-      "verify_run_seconds": 1.2919490439999999,
+      "weights_run_seconds": 1.707162776,
+      "verify_run_seconds": 0.838345052,
       "coverage": {
         "back": {
           "eligible": 449,
