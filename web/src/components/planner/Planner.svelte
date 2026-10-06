@@ -196,8 +196,19 @@
         ttlMs: 10 * 60 * 1000,
       })
     : null;
+  /** A link that names a build (`?code=` from the URL, `?talents=`, `?class=`/`?spec=`) owns
+   *  the planner: the signed-in main-class default and the hero's own level never apply to it.
+   *  Live defect 2026-10-05: a guide's "Load this build" (`?code=` for a Paladin) opened
+   *  signed in as a Warrior main; this effect switched class while the talent file was still
+   *  loading, so the code no longer matched the class and was silently dropped. */
+  const linkNamesBuild =
+    (plannerLoad.codeParam !== null && !plannerLoad.restored) ||
+    talentsParam !== null ||
+    fromQuery('class') !== undefined ||
+    specParam !== null;
   $effect(() => {
-    if (session === null || plannerLoad.initialClassSlug !== null || record !== null) return;
+    if (session === null || linkNamesBuild || plannerLoad.initialClassSlug !== null || record !== null)
+      return;
     const main =
       session.data === null ? null : mainCharacter(session.data.characters, session.data.main_character_key);
     const mainClassSlug = main?.class?.toLowerCase();
@@ -215,7 +226,7 @@
   // the session resolves) leaves `store.level` on its existing `levelReached(order)`
   // fallback, unchanged for every bare build.
   $effect(() => {
-    if (session === null) return;
+    if (session === null || linkNamesBuild) return;
     const hero =
       session.data === null
         ? null
