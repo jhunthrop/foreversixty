@@ -92,11 +92,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-00000000000000000-100000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 36.8 | 3 | other:attack/2=129.9, other:attack/1=46.5, spell:14260/3=24.0, spell:14260=23.7, spell:14260/1=23.7 | - |
 | 20 | 0000000000000000-00000000000000000-500230100000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 52.7 | 5 | other:attack/2=121.3, other:attack/1=61.6, spell:1495=30.8, spell:14261=6.0, spell:14261/1=6.0 | - |
-| 30 | 0000000000000000-00000000000000000-500230131050100000 | main_hand:6692 off_hand:23168 ranged:274748 | 76.6 | 6 | other:attack/2=129.9, other:attack/1=67.0, spell:14269=32.9, spell:14262=9.0, spell:14262/1=9.0 | {SpellID: 1242634}, {SpellID: 1317257} |
-| 38 | 0000000000000000-00000000000000000-500230131050220140 | main_hand:869 off_hand:6829 ranged:2825 | 108.2 | 7 | other:attack/1=85.2, other:attack/2=82.9, spell:14269=34.8, spell:1317257=22.5, spell:14263=22.0 | {SpellID: 1242634} |
-| 40 | 0000000000000000-00000000000000000-500230131050220151 | main_hand:2164 off_hand:9465 ranged:2825 | 108.9 | 8 | other:attack/2=101.2, other:attack/1=80.6, spell:14269=34.8, spell:1317257=22.5, spell:14264=20.6 | {SpellID: 1242634} |
-| 50 | 0000000000000000-32005000000000000-500230131050220151 | main_hand:2163 off_hand:6660 ranged:2824 | 126.6 | 7 | other:attack/2=140.0, other:attack/1=109.1, spell:14270=34.8, spell:1317257=22.5, spell:14265=21.0 | {SpellID: 20909} |
-| 60 | 0000000000000000-32005500005000000-500230131050220151 | main_hand:22736 off_hand:23054 ranged:22811 | 335.4 | 7 | other:attack/2=67.6, other:attack/1=46.2, spell:14271=34.8, spell:1317257=22.5, spell:14266/3=19.0 | {SpellID: 20910} |
+| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:6692 off_hand:23168 ranged:274748 | 71.5 | 6 | other:attack/2=129.9, other:attack/1=70.0, spell:14269=29.3, spell:14262=6.0, spell:14262/1=6.0 | {SpellID: 1317257} |
+| 38 | 0000000000000000-00000000000000000-500230131051120140 | main_hand:869 off_hand:6829 ranged:2825 | 100.4 | 7 | other:attack/1=95.6, other:attack/2=82.9, spell:14269=33.5, spell:1317257=22.7, spell:14263=11.6 | - |
+| 40 | 0000000000000000-00000000000000000-500230131051120151 | main_hand:2164 off_hand:9465 ranged:2825 | 101.8 | 8 | other:attack/2=101.2, other:attack/1=90.3, spell:14269=33.3, spell:1317257=22.7, spell:14264=11.0 | - |
+| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:2163 off_hand:6660 ranged:2824 | 116.4 | 7 | other:attack/2=140.0, other:attack/1=119.1, spell:14270=33.0, spell:1317257=22.7, spell:14265=11.0 | - |
+| 60 | 0000000000000000-32005500005000000-500230131051120151 | main_hand:22736 off_hand:23054 ranged:22811 | 309.3 | 7 | other:attack/2=67.6, other:attack/1=54.8, spell:14271=32.2, spell:1317257=22.7, spell:14266=10.4 | - |
 
 ## Learned but unused (informational)
 

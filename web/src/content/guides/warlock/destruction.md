@@ -3,7 +3,7 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
-build: 'FS1:1.60.1.70009:warlock:gnome:255323/0/235322510110105:'
+build: 'FS1:1.60.1.70009:warlock:gnome:255323/0/2353225100101051:'
 recommendedRaces: [gnome, troll]
 statPriority:
   [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, Fire power]
@@ -41,9 +41,9 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Conflagrate** — an instant that ignites a target already afflicted by Immolate, dealing Fire damage and consuming the Immolate effect.
 - **Shadowburn** — an instant Shadow nuke that refunds a Soul Shard if the target dies within 8 seconds of being hit.
 - **Shadow and Flame** — up to a 10% damage buff at rank 5 from landing Conflagrate or Shadowburn, plus a chance for Conflagrate not to consume Immolate.
-- **Agonizing Flames** — a flat multiplier taken at 1/3: 3% more critical strike chance on Searing Pain and 3% more damage done by every Destruction spell. The level-60 search found this single point worth more than the capstone below, so it takes the slot instead.
+- **Incinerate** — the capstone: extra Fire damage that gains a further 25% if the target is afflicted by Immolate, Destruction's signature filler.
 
-This build still spends 31 points in Destruction, but redirects the last one: rather than reaching the capstone **Incinerate** (extra Fire damage, a further 25% if the target is afflicted by Immolate, Destruction's old signature filler), it stops short and takes Agonizing Flames at tier 3. Incinerate isn't an uncredited point — the sim measured it as a real damage contribution, just a smaller one than Agonizing Flames' flat 3% multiplier to the whole spell kit, so dropping it is a deliberate trade, not a wasted talent. It does mean losing Incinerate as a cast option; Shadow Bolt fills that filler slot instead, which the rotation below already accounts for. The remaining 20 points still go into Affliction — Improved Corruption and Suppression both maxed, then Malediction, Improved Drains, Improved Life Tap, and Soul Harvesting for the rest of the budget — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. This build measures about +6.2% over the previous spend in our level-60 search run. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
+This build spends 31 points in Destruction to reach Incinerate at the bottom, with the remaining 20 in Affliction — Improved Corruption and Suppression both maxed, then Malediction, Improved Drains, Improved Life Tap, and Soul Harvesting for the rest of the budget — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
 
 ## Rotation and priority
 
