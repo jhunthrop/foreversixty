@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T21:34:52Z",
+  "engine_version": "bebda865a",
+  "generated_at": "2026-10-06T23:29:08Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.121164368,
-      "verify_run_seconds": 0.754760667,
+      "weights_run_seconds": 1.141236164,
+      "verify_run_seconds": 0.811379414,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.121164368,
-      "verify_run_seconds": 0.70707361,
+      "weights_run_seconds": 1.141236164,
+      "verify_run_seconds": 0.772369949,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.179861282,
-      "verify_run_seconds": 0.809695566,
+      "weights_run_seconds": 1.217017402,
+      "verify_run_seconds": 0.865906738,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.179861282,
-      "verify_run_seconds": 0.798210062,
+      "weights_run_seconds": 1.217017402,
+      "verify_run_seconds": 0.821267098,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.422506846,
-      "verify_run_seconds": 0.82594016,
+      "weights_run_seconds": 1.416987359,
+      "verify_run_seconds": 0.86237328,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.422506846,
-      "verify_run_seconds": 0.891407618,
+      "weights_run_seconds": 1.416987359,
+      "verify_run_seconds": 0.840094131,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4626,8 +4626,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.484051478,
-      "verify_run_seconds": 0.939668341,
+      "weights_run_seconds": 1.407189051,
+      "verify_run_seconds": 1.019458896,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5306,8 +5306,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.484051478,
-      "verify_run_seconds": 0.915086049,
+      "weights_run_seconds": 1.407189051,
+      "verify_run_seconds": 0.975290516,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5540,7 +5540,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 36.07808127274561,
+          "score": 36.0780812727456,
           "verified": true,
           "alternatives": [
             {
@@ -5548,14 +5548,14 @@
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.206747947800564
+              "dps_delta": -3.2067479478005616
             },
             {
               "item_id": 19059,
               "item_name": "Argent Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.8967115775846417
+              "dps_delta": -3.8967115775846395
             },
             {
               "item_id": 19050,
@@ -6036,8 +6036,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.478960791,
-      "verify_run_seconds": 0.953125661,
+      "weights_run_seconds": 1.497572509,
+      "verify_run_seconds": 1.007755828,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6227,7 +6227,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.3219830272325711
+              "dps_delta": -0.3219830272325699
             }
           ]
         },
@@ -6270,7 +6270,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 36.07808127274561,
+          "score": 36.0780812727456,
           "verified": true,
           "alternatives": [
             {
@@ -6278,7 +6278,7 @@
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.206747947800564
+              "dps_delta": -3.2067479478005616
             },
             {
               "item_id": 19050,
@@ -6293,7 +6293,7 @@
               "item_name": "Argent Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.8967115775846417
+              "dps_delta": -3.8967115775846395
             }
           ]
         },
@@ -6344,7 +6344,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.2322599054467305
+              "dps_delta": -2.232259905446733
             },
             {
               "item_id": 18385,
@@ -6359,7 +6359,7 @@
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -6.453256103232027
+              "dps_delta": -6.453256103232028
             }
           ]
         },
@@ -6766,8 +6766,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.478960791,
-      "verify_run_seconds": 0.950619725,
+      "weights_run_seconds": 1.497572509,
+      "verify_run_seconds": 0.971508886,
       "coverage": {
         "back": {
           "eligible": 450,
