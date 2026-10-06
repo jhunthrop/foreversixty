@@ -104,7 +104,7 @@ func run(args []string) error {
 	pool := generate(in.setup.trees, in.guide, credits, in.modeled, o.level-9, o.refineTop)
 	cands := capCandidates(pool, o.limit)
 	log.Printf("talent-search: %s: %d candidates generated, %d screened", o.spec, len(pool), len(cands))
-	clean := func(b build) bool { return len(removedUnmodeled(in, b)) == 0 }
+	clean := func(b build) bool { return len(removedUnmodeled(in, credits, b)) == 0 }
 	ev, err := evaluate(in.guide, cands, run, o.screenIters, o.finalIters, o.top, clean)
 	if err != nil {
 		return err

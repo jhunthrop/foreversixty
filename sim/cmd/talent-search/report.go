@@ -41,6 +41,7 @@ func (r report) markdown() string {
 	}
 	b.WriteString("\n")
 	r.writeFinal(&b)
+	r.writeEngineGaps(&b)
 	r.writeCredits(&b)
 	r.writeScreened(&b)
 	return b.String()
@@ -61,12 +62,13 @@ func (r report) writeVerdict(b *strings.Builder, best result) {
 }
 
 // removedUnmodeled is the talents b drops from the guide that the
-// engine never reads: their loss sims as free, so a gain that comes
-// from moving them is the engine's blind spot, not a finding.
-func removedUnmodeled(in inputs, b build) []string {
+// final classification calls unmodeled: their loss sims as free, so a
+// gain that comes from moving them is the engine's blind spot, not a
+// finding.
+func removedUnmodeled(in inputs, credits map[int]credit, b build) []string {
 	var out []string
 	for _, id := range sortedIDs(in.guide) {
-		if d := in.guide[id] - b[id]; d > 0 && !in.modeled[id] {
+		if d := in.guide[id] - b[id]; d > 0 && classify(in.modeled[id], credits[id]) == classUnmodeled {
 			out = append(out, fmt.Sprintf("%s (-%d)", in.setup.trees.byID[id].Name, d))
 		}
 	}
@@ -92,7 +94,7 @@ func (r report) writeCleanVerdict(b *strings.Builder) {
 // (the guide itself qualifies, so there always is one).
 func (r report) bestClean() (result, bool) {
 	for _, res := range r.eval.Final {
-		if len(removedUnmodeled(r.in, res.Build)) == 0 {
+		if len(removedUnmodeled(r.in, r.credits, res.Build)) == 0 {
 			return res, true
 		}
 	}
@@ -109,7 +111,7 @@ func (r report) writeFinal(b *strings.Builder) {
 		fmt.Fprintf(b, "| %d | %s | %s | %.1f | %.1f | %+.1f ± %.1f | %s | %s | %s | %s | %s |\n",
 			i+1, res.Label, t.summary(res.Build), res.DPS.Mean, res.DPS.Err, res.Delta, res.DeltaErr,
 			yesNo(res.Significant), joinOrDash(added), joinOrDash(removed),
-			joinOrDash(removedUnmodeled(r.in, res.Build)), joinOrDash(r.unmodeledIn(res.Build)))
+			joinOrDash(removedUnmodeled(r.in, r.credits, res.Build)), joinOrDash(r.unmodeledIn(res.Build)))
 	}
 	b.WriteString("\n")
 }
@@ -130,14 +132,7 @@ func (r report) writeCredits(b *strings.Builder) {
 }
 
 func (r report) engineStatus(id int, c credit) string {
-	switch {
-	case !r.in.modeled[id]:
-		return "unmodeled"
-	case c.Damage:
-		return "damage"
-	default:
-		return "modeled, no damage"
-	}
+	return classify(r.in.modeled[id], c).String()
 }
 
 func (r report) writeScreened(b *strings.Builder) {
@@ -149,18 +144,56 @@ func (r report) writeScreened(b *strings.Builder) {
 	}
 }
 
-// unmodeledIn is the names of the talents b takes that the engine
-// never reads.
+// unmodeledIn is the names of the talents b takes that the final
+// classification calls unmodeled.
 func (r report) unmodeledIn(b build) []string {
 	t := r.in.setup.trees
 	var out []string
 	for _, id := range sortedIDs(b) {
-		if !r.in.modeled[id] {
+		if classify(r.in.modeled[id], r.credits[id]) == classUnmodeled {
 			out = append(out, fmt.Sprintf("%s (%d)", t.byID[id].Name, b[id]))
 		}
 	}
 	sort.Strings(out)
 	return out
+}
+
+// engineGaps is the final-classification-unmodeled talents worth the
+// engine lane's attention: ones in the spec's own tree, or ones the
+// guide itself takes, so a blind spot that actually matters to this
+// spec does not get lost among every class's tier-1 utility picks.
+func (r report) engineGaps() []string {
+	t := r.in.setup.trees
+	spec := r.in.setup.spec
+	var out []string
+	for ti, tree := range t.trees {
+		for _, n := range tree.Talents {
+			if classify(r.in.modeled[n.ID], r.credits[n.ID]) != classUnmodeled {
+				continue
+			}
+			if ti != spec.TreeIndex && r.in.guide[n.ID] == 0 {
+				continue
+			}
+			out = append(out, fmt.Sprintf("%s (%s, tier %d)", n.Name, tree.Name, n.Tier))
+		}
+	}
+	return out
+}
+
+// writeEngineGaps lists the unmodeled talents the engine lane should
+// actually look at: the spec's own tree, or anything the guide takes.
+func (r report) writeEngineGaps(b *strings.Builder) {
+	b.WriteString("## Engine gaps\n\n")
+	gaps := r.engineGaps()
+	if len(gaps) == 0 {
+		b.WriteString("None: every talent the final classification calls unmodeled sits outside this spec's own tree, and the guide takes none of them.\n\n")
+		return
+	}
+	b.WriteString("Talents the final classification calls unmodeled that sit in this spec's own tree or that the guide takes - what the engine lane is actually missing:\n\n")
+	for _, g := range gaps {
+		fmt.Fprintf(b, "- %s\n", g)
+	}
+	b.WriteString("\n")
 }
 
 func yesNo(v bool) string {
