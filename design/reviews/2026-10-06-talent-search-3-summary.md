@@ -140,3 +140,18 @@ ok  	github.com/jhunthrop/foreversixty/sim/cmd/talent-search	0.443s
 ## Reports
 
 `design/reviews/talent-search/*.md` (all 20 overwritten).
+
+## Held after review (not adopted)
+
+Six of the fifteen ADOPT rows were held at merge time because the keep-winner removes a talent the guide's own rotation casts, or a capstone the rotation should be using. Dropping a spell the rotation is written around is a sim or rotation question, not a build answer, so the guide keeps its current build until that is settled:
+
+| Spec | Winner drops | Why held |
+|---|---|---|
+| Assassination | Cold Blood, Venom | both hard-cast by the rotation |
+| Survival | Counterattack | hard-cast by the melee rotation |
+| Enhancement | Stormstrike | the rotation's core strike; the sim calling it a loss points at the Stormstrike model |
+| Destruction | Incinerate | hard-cast by the rotation |
+| Elemental | Lava Burst | cast at rank 3 (1238300) by the rotation; the sim says Lightning Bolt under Elemental Alacrity and Lightning Overload beats it, which needs a Lava Burst model check before a guide says so |
+| Balance | Moonkin Form | the rotation never shifts into the form, so the sim credits the capstone at zero; the rotation and engine need the form before the build question is real |
+
+Adopted: Beast Mastery, Marksmanship, Arcane, Fire, Frost, Retribution, Shadow, Arms, Fury.
