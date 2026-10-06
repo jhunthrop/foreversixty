@@ -148,6 +148,17 @@ describe('guide build codes decode to a legal, complete build on the active data
     expect(decoded.build.classSlug, `${id}: build: is for the wrong class`).toBe(guide.frontmatter.classSlug);
   });
 
+  // The guide-codes-70009 lane's own check: every guide's build: names the active build
+  // itself (not just decodes legally against it). A guide whose digits already matched the
+  // active build's tree shape, but whose dataBuild segment still named an older build id,
+  // is exactly the stale-stamp bug that lane fixed on 2026-10-06 -- catching a future
+  // recurrence here is cheaper than re-deriving it from legality failures again.
+  it.each(guides.map((g) => [g.id, g] as const))(`%s names the active build ${ACTIVE_BUILD}`, (id, guide) => {
+    const decoded = decodeFS1(guide.frontmatter.build as string);
+    if (!decoded.ok) return; // reported by the first test
+    expect(decoded.build.dataBuild, `${id}: build: is stamped for an older client build`).toBe(ACTIVE_BUILD);
+  });
+
   it.each(guides.map((g) => [g.id, g] as const))(`%s spends exactly ${MAX_POINTS} points`, (id, guide) => {
     const decoded = decodeFS1(guide.frontmatter.build as string);
     if (!decoded.ok) return;

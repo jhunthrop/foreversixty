@@ -3,7 +3,7 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
-build: 'FS1:1.60.1.69893:warlock:gnome:255323/0/2353225100101051:'
+build: 'FS1:1.60.1.70009:warlock:gnome:255323/0/2353225100101051:'
 recommendedRaces: [gnome, troll]
 statPriority:
   [

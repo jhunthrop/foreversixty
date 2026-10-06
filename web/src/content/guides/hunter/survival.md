@@ -3,7 +3,7 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.69893:hunter:dwarf:0/32005500005/500230131051120151:'
+build: 'FS1:1.60.1.70009:hunter:dwarf:0/32005500005/500230131051120151:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Attack power, Agility, Strength, Critical strike, Hit, Melee haste]
 description: 'Survival Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'

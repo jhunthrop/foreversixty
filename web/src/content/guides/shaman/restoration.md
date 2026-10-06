@@ -3,7 +3,7 @@ title: Restoration Shaman in Forever
 classSlug: shaman
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.69893:shaman:dwarf:0/2552222/5322521010513001:'
+build: 'FS1:1.60.1.70009:shaman:dwarf:0/2552222/5322521010513001:'
 recommendedRaces: [dwarf, tauren]
 statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
 description: 'Restoration Shaman overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'

@@ -3,7 +3,7 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.69893:druid:night-elf:5222211015401051/0/55333:'
+build: 'FS1:1.60.1.70009:druid:night-elf:5222211015401051/0/55333:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [

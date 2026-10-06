@@ -3,7 +3,7 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.69893:warlock:gnome:25552000130201051/235522/0:'
+build: 'FS1:1.60.1.70009:warlock:gnome:25552000130201051/235522/0:'
 recommendedRaces: [gnome, troll]
 statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Shadow damage']
 description: 'Talents, rotation, stats, and gear for Affliction Warlock in Forever, and what is confirmed versus projected from the beta.'
