@@ -90,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000-10000000000000000 | main_hand:263407 | 14.4 | 5 | other:attack/1=61.0, spell:25740=42.8, spell:20287=19.5, spell:20271=18.6, spell:20280=18.6 | - |
-| 20 | 00000000000000000-0000000000000000-55100000000000000 | main_hand:6953 | 28.4 | 5 | other:attack/1=57.3, spell:25739=43.9, spell:20288=20.5, spell:20271=20.0, spell:20281=20.0 | - |
-| 30 | 00000000000000000-0000000000000000-55223310000000000 | main_hand:13045 | 38.7 | 5 | other:attack/1=63.1, spell:25738=26.5, spell:680=17.7, spell:20271=17.4, spell:20282=17.4 | - |
-| 38 | 00000000000000000-0000000000000000-55223331211000010 | main_hand:10758 | 56.3 | 5 | other:attack/1=55.5, spell:25737=25.7, spell:2495=17.8, spell:20271=16.4, spell:20283=16.4 | - |
-| 40 | 00000000000000000-0000000000000000-55223331211000021 | main_hand:1982 | 63.9 | 5 | other:attack/1=65.3, spell:25737=31.6, spell:2495=17.9, spell:20271=17.4, spell:20283=17.4 | - |
-| 50 | 00000000000000000-5500000000000000-55223331211000021 | main_hand:2915 | 65.7 | 5 | other:attack/1=79.4, spell:25735=30.9, spell:5569=17.7, spell:20271=15.5, spell:20285=15.5 | - |
-| 60 | 00000000000000000-5532500000000000-55223331211000021 | main_hand:22798 | 124.0 | 5 | other:attack/1=48.3, spell:25713=21.9, spell:10333=17.9, spell:20271=15.6, spell:20286=15.6 | - |
+| 10 | 00000000000000000-0000000000000000-01000000000000000 | main_hand:263407 | 14.4 | 5 | other:attack/1=61.0, spell:25740=42.8, spell:20287=19.5, spell:20271=18.6, spell:20280=18.6 | - |
+| 20 | 00000000000000000-0000000000000000-05024000000000000 | main_hand:6953 | 29.1 | 5 | other:attack/1=57.3, spell:25739=41.3, spell:20288=19.5, spell:1866=18.6, spell:20271=18.6 | - |
+| 30 | 00000000000000000-0000000000000000-05025331200000000 | main_hand:13045 | 43.1 | 5 | other:attack/1=63.1, spell:25738=46.1, spell:20289=19.5, other:mana_gain=18.6, spell:20271=18.6 | - |
+| 38 | 00000000000000000-0000000000000000-05025331211330000 | main_hand:10758 | 68.2 | 5 | other:attack/1=55.5, spell:25737=47.5, spell:20290=19.5, other:mana_gain=18.6, spell:20271=18.6 | - |
+| 40 | 00000000000000000-0000000000000000-05025331211330200 | main_hand:1982 | 79.5 | 5 | other:attack/1=65.3, spell:25737=47.8, spell:20290=19.5, other:mana_gain=18.6, spell:20271=18.6 | - |
+| 50 | 54000000000000000-0000000000000000-05025331211330210 | main_hand:2915 | 104.7 | 6 | other:attack/1=79.3, spell:25735=57.8, spell:20292=19.5, other:mana_gain=18.6, spell:20271=18.6 | - |
+| 60 | 54000000000000000-3232000000000000-05025331211330210 | main_hand:22798 | 177.7 | 6 | other:attack/1=48.2, spell:25713=34.5, spell:20293=19.2, other:mana_gain=18.6, spell:20271=18.6 | - |
 
 ## Learned but unused (informational)
 
@@ -137,7 +137,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Consecration (spell 20923)
 - Exorcism (spell 10312)
-- Hammer of Wrath (spell 24275)
 - Holy Wrath (spell 2812)
 - Judgement of Command (spell 20965)
 - Judgement of Fury (spell 20413)
@@ -146,7 +145,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Consecration (spell 20924)
 - Exorcism (spell 10314)
-- Hammer of Wrath (spell 24239)
 - Holy Wrath (spell 10318)
 - Judgement of Command (spell 20966)
 - Judgement of Fury (spell 20414)
