@@ -3,7 +3,7 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.69893:priest:human:52533310130010103/33554/0:'
+build: 'FS1:1.60.1.70009:priest:human:52533310130010103/33554/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
 description: 'Discipline Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'

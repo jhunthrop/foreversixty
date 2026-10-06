@@ -25,11 +25,11 @@
   import { bandForLevel } from '../../lib/bis/hover';
   import { plannerCopy } from '../../lib/planner/copy';
   import { levelReached, ranksByTalent } from '../../lib/planner/derive';
-  import { encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
+  import { encodeFS1, orderFromRanks, remapTreeRanksByTalentId } from '../../lib/planner/fs1';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
   import { DATA_LOAD_FAILED, DataLoadError, loadReference, loadTalents } from '../../lib/planner/load';
-  import type { TalentIndex } from '../../lib/planner/rules';
+  import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON_FIXED, treeRowColumnsClass } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
@@ -121,7 +121,12 @@
   type CodeNote =
     | { kind: 'message'; text: string }
     | { kind: 'tree-count'; got: string; want: string }
-    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean }
+    // `olderBuild` is set only when the code's own stamped build differs from the active
+    // one AND that older build's talent file could not be loaded to remap by id (see the
+    // `remapTreeRanksByTalentId` call in `load()`, below) -- the ranks were then read
+    // positionally against the active build same as before that remap existed, which can
+    // misplace a point if the two builds' trees do not match tab for tab.
+    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean; olderBuild: boolean }
     // Fix round 2 (ux-designer review finding 2): a band load (`?talents=`, or BandCompare's
     // own Load button) is never a character or an addon import -- the 'reconstructed' note's
     // own "Talents loaded from a character" wording is false for it, so it gets its own kind
@@ -464,13 +469,47 @@
 
       if (codeForThisClass !== null && store.talentIndex !== null) {
         codeApplied = true;
-        const rebuilt = orderFromRanks(store.talentIndex, codeForThisClass.build.treeRanks);
+
+        // The code's own stamped build may not be the one whose trees `store.talentIndex`
+        // just loaded (the active build). decodeFS1 reads a tree's digits purely by tab
+        // position, which only lands on the right talent when the two builds' trees match
+        // tab for tab -- paladin and shaman do not, between every build this site has ever
+        // shipped. Remap by stable talent id first, using the code's OWN build's talent
+        // file (loaded the same way `loadTalents` loads the active one, above). When that
+        // older build's file is not available on this site (pruned, or never synced),
+        // fall back to reading the digits positionally, same as before this remap
+        // existed, and say so in the note below.
+        let treeRanksForOrder = codeForThisClass.build.treeRanks;
+        let remapDropped = 0;
+        let olderBuild = false;
+        if (codeForThisClass.build.dataBuild !== store.treeVersion) {
+          try {
+            const codeBuildTalents = await loadTalents(codeForThisClass.build.dataBuild, slug);
+            if (stale()) return;
+            const remap = remapTreeRanksByTalentId(
+              indexTalents(codeBuildTalents),
+              store.talentIndex,
+              codeForThisClass.build.treeRanks,
+            );
+            treeRanksForOrder = remap.treeRanks;
+            remapDropped = remap.dropped.length;
+          } catch {
+            olderBuild = true;
+          }
+        }
+
+        const rebuilt = orderFromRanks(store.talentIndex, treeRanksForOrder);
         store.applyOrder(rebuilt.order, codeForThisClass.build.gear);
         // A build link from the deaths recap (src/lib/report/planner-link.ts) carries gear
         // alone when the log's talents field could not be read as ranks -- every tree comes
         // through as all zeros. The note says so rather than claiming talents loaded.
         const gearOnly = codeForThisClass.build.treeRanks.every((tree) => tree.every((rank) => rank === 0));
-        codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length, gearOnly };
+        codeNote = {
+          kind: 'reconstructed',
+          dropped: rebuilt.dropped.length + remapDropped,
+          gearOnly,
+          olderBuild,
+        };
       } else if (
         talentsParam !== null &&
         !talentsApplied &&
@@ -606,6 +645,9 @@
           <span class="tabular font-mono">{codeNote.dropped}</span>
           that no legal order reaches. The order is a reconstruction: the game does not record the order points
           were spent in.
+        {/if}
+        {#if codeNote.olderBuild}
+          This code is from an older client build; check the talents.
         {/if}
       {:else if codeNote.kind === 'band'}
         {plannerCopy.bandLoadedNote(codeNote.bandLabel)}

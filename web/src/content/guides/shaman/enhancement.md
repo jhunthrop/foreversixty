@@ -3,7 +3,7 @@ title: Enhancement Shaman in Forever
 classSlug: shaman
 spec: enhancement
 role: dps
-build: 'FS1:1.60.1.69893:shaman:dwarf:553322/253130030005102051/0:'
+build: 'FS1:1.60.1.70009:shaman:dwarf:553322/253130030005102051/0:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Enhancement Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'

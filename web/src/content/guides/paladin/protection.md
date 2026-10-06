@@ -3,7 +3,7 @@ title: Protection Paladin in Forever
 classSlug: paladin
 spec: protection
 role: tank
-build: 'FS1:1.60.1.69893:paladin:dwarf:55222103/5532311301001051/0:'
+build: 'FS1:1.60.1.70009:paladin:dwarf:55222103/5532311301001051/0:'
 recommendedRaces: [dwarf, undead]
 statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, rotation, stats, gear, races, and professions for Protection Paladin tanking in Forever.'

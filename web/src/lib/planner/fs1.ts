@@ -454,6 +454,66 @@ export function orderFromRanks(index: TalentIndex, treeRanks: number[][]): Order
   return { order, dropped };
 }
 
+export interface RemapTreeRanks {
+  /** `treeRanks`, carried from `fromIndex`'s trees onto `toIndex`'s trees by stable talent
+   *  id -- in `toIndex`'s tree order, one array per tree, the shape `orderFromRanks` wants. */
+  treeRanks: number[][];
+  /** Talent ids `fromIndex` held a rank for that `toIndex` no longer has, so the caller can
+   *  say so rather than silently losing them. */
+  dropped: number[];
+}
+
+/**
+ * Carries a decoded build's tree ranks from the talent tree they were actually decoded
+ * against (`fromIndex` -- the code's own stamped build) onto a DIFFERENT build's tree
+ * (`toIndex`, typically the site's active build), by stable talent id rather than by tab
+ * position. `decodeFS1` reads a tree's digit string purely positionally -- digit index i is
+ * that tree's i-th talent -- which is only correct when the tree being read against is the
+ * one the code was encoded against. When a class's talent tree changes shape between builds
+ * (a talent dropped, two talents swapping tier/column -- paladin and shaman between
+ * 1.60.1.69893 and 1.60.1.70009, as of this writing), reading the OLD build's digits
+ * straight into the NEW build's tab order silently lands a point on the wrong talent.
+ * `orderFromRanks` cannot catch this itself: it only ever sees one `TalentIndex` and has no
+ * way to know the ranks it was handed were read against a different tree's shape. This
+ * function is the step that belongs before it, whenever the two builds differ.
+ *
+ * A talent id `fromIndex` ranked that `toIndex` no longer has is dropped and named, the same
+ * contract `orderFromRanks`'s own `dropped` keeps. A rank above `toIndex`'s own `max_rank`
+ * for that id is clamped, the same clamp `orderFromRanks` already applies when asked to
+ * spend more than a talent allows -- a talent's `max_rank` is not guaranteed to stay the
+ * same across a tree reshuffle either.
+ */
+export function remapTreeRanksByTalentId(
+  fromIndex: TalentIndex,
+  toIndex: TalentIndex,
+  treeRanks: number[][],
+): RemapTreeRanks {
+  const toTarget = new Map<number, { treeIndex: number; talentIndex: number; maxRank: number }>();
+  toIndex.trees.forEach((tree, treeIndex) => {
+    tree.talents.forEach((talent, talentIndex) => {
+      toTarget.set(talent.id, { treeIndex, talentIndex, maxRank: talent.max_rank });
+    });
+  });
+
+  const remapped = toIndex.trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
+  const dropped: number[] = [];
+  fromIndex.trees.forEach((tree, treeIndex) => {
+    const ranks = treeRanks[treeIndex] ?? [];
+    tree.talents.forEach((talent, talentIndex) => {
+      const rank = ranks[talentIndex] ?? 0;
+      if (rank <= 0) return;
+      const target = toTarget.get(talent.id);
+      if (!target) {
+        dropped.push(talent.id);
+        return;
+      }
+      remapped[target.treeIndex][target.talentIndex] = Math.min(rank, target.maxRank);
+    });
+  });
+
+  return { treeRanks: remapped, dropped: dropped.sort((a, b) => a - b) };
+}
+
 function encodeItems(items: readonly FS1Item[]): string {
   return items
     .map((item) =>

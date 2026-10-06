@@ -3,7 +3,7 @@ title: Holy Paladin in Forever
 classSlug: paladin
 spec: holy
 role: healer
-build: 'FS1:1.60.1.69893:paladin:human:55222113025101001/55325/0:'
+build: 'FS1:1.60.1.70009:paladin:human:55222113025101001/55325/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
 description: 'Talents, rotation, stats, gear, races, and professions for Holy Paladin healing in Forever.'

@@ -2,10 +2,43 @@
 import { describe, expect, it } from 'vitest';
 import talents from '../../fixtures/planner/talents/warrior.json';
 import { indexTalents } from './rules';
-import type { TalentFile } from './types';
-import { decodeFS1, encodeFS1, encodeFS1V2, MAX_CODE_LENGTH, orderFromRanks } from './fs1';
+import type { Talent, TalentFile } from './types';
+import {
+  decodeFS1,
+  encodeFS1,
+  encodeFS1V2,
+  MAX_CODE_LENGTH,
+  orderFromRanks,
+  remapTreeRanksByTalentId,
+} from './fs1';
 
 const index = indexTalents(talents as TalentFile);
+
+/** A talent with every field `remapTreeRanksByTalentId` and `orderFromRanks` read, nothing
+ *  a real talent file carries that this test has no use for. */
+function talent(id: number, tier: number, column: number, maxRank = 1): Talent {
+  return {
+    id,
+    name: `talent-${id}`,
+    icon: 'icon',
+    max_rank: maxRank,
+    tier,
+    column,
+    prereq_talent_id: null,
+    prereq_rank: null,
+    ranks: Array.from({ length: maxRank }, (_, rank) => ({ spell_id: id * 100 + rank, description: '' })),
+    spell_id: id,
+  };
+}
+
+function talentFile(trees: { id: number; name: string; position: number; talents: Talent[] }[]): TalentFile {
+  return {
+    build: 'test',
+    class_id: 1,
+    class_slug: 'warrior',
+    trees: trees.map((tree) => ({ ...tree, background: 'test' })),
+  };
+}
 
 describe('encodeFS1', () => {
   it('writes the addon spec’s format, base-36 per talent, trailing zeros trimmed', () => {
@@ -123,6 +156,71 @@ describe('orderFromRanks', () => {
     const result = orderFromRanks(index, ranks);
     expect(result.order.length).toBe(tier0.reduce((total, talent) => total + talent.max_rank, 0));
     expect(result.dropped).toEqual([]);
+  });
+});
+
+describe('remapTreeRanksByTalentId', () => {
+  // Two tiny single-tree talent files, same three talent ids (1, 2, 3), in a DIFFERENT
+  // array order -- exactly the paladin/shaman shape: a tree whose talents swapped position
+  // between builds. All three sit at tier 0 so `orderFromRanks`'s own tier gate (5 points
+  // per tier below) never enters into it; only the array order under test here does.
+  // `fromIndex` is the shape the code was decoded against; `toIndex` is a different build's
+  // shape for the same class.
+  const fromIndex = indexTalents(
+    talentFile([
+      { id: 1, name: 'Tree', position: 0, talents: [talent(1, 0, 0), talent(2, 0, 1), talent(3, 0, 2)] },
+    ]),
+  );
+  const toIndex = indexTalents(
+    talentFile([
+      { id: 1, name: 'Tree', position: 0, talents: [talent(2, 0, 0), talent(1, 0, 1), talent(3, 0, 2)] },
+    ]),
+  );
+
+  it('carries a rank from its own talent id, not its old tab position', () => {
+    // In fromIndex, digit index 0 is talent 1. In toIndex, talent 1 sits at digit index 1.
+    const result = remapTreeRanksByTalentId(fromIndex, toIndex, [[1, 0, 0]]);
+    expect(result.treeRanks).toEqual([[0, 1, 0]]);
+    expect(result.dropped).toEqual([]);
+  });
+
+  it('places every ranked talent correctly when positions fully swap', () => {
+    const result = remapTreeRanksByTalentId(fromIndex, toIndex, [[1, 1, 1]]);
+    expect(result.treeRanks).toEqual([[1, 1, 1]]);
+    expect(result.dropped).toEqual([]);
+  });
+
+  it('drops a talent id the destination build no longer has, and reports it', () => {
+    const droppedIndex = indexTalents(
+      talentFile([{ id: 1, name: 'Tree', position: 0, talents: [talent(2, 0, 0), talent(3, 1, 0)] }]), // no id 1
+    );
+    const result = remapTreeRanksByTalentId(fromIndex, droppedIndex, [[1, 1, 1]]);
+    expect(result.treeRanks).toEqual([[1, 1]]);
+    expect(result.dropped).toEqual([1]);
+  });
+
+  it('clamps a carried rank to the destination talent’s own max_rank', () => {
+    // Talent 1 allows 5 ranks in fromHighMax, but only 1 in lowerMax -- a talent's own
+    // max_rank is not guaranteed to survive a tree reshuffle either.
+    const fromHighMax = indexTalents(
+      talentFile([
+        { id: 1, name: 'Tree', position: 0, talents: [talent(1, 0, 0, 5), talent(2, 1, 0), talent(3, 2, 0)] },
+      ]),
+    );
+    const lowerMax = indexTalents(
+      talentFile([
+        { id: 1, name: 'Tree', position: 0, talents: [talent(2, 0, 0), talent(1, 1, 0, 1), talent(3, 2, 0)] },
+      ]),
+    );
+    const result = remapTreeRanksByTalentId(fromHighMax, lowerMax, [[5, 0, 0]]);
+    expect(result.treeRanks).toEqual([[0, 1, 0]]); // talent 1 landed at digit index 1, clamped to max_rank 1
+  });
+
+  it('feeds orderFromRanks a build it can spend legally after the remap', () => {
+    const remap = remapTreeRanksByTalentId(fromIndex, toIndex, [[1, 1, 1]]);
+    const result = orderFromRanks(toIndex, remap.treeRanks);
+    expect(result.dropped).toEqual([]);
+    expect(result.order).toHaveLength(3);
   });
 });
 

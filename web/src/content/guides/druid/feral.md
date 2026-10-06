@@ -3,7 +3,7 @@ title: Feral Druid in Forever
 classSlug: druid
 spec: feral
 role: dps
-build: 'FS1:1.60.1.69893:druid:night-elf:0/5423222121032010001/55532:'
+build: 'FS1:1.60.1.70009:druid:night-elf:0/5423222121032010001/55532:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Attack power, 'Feral-specific attack power', Strength, Agility, Critical strike, Hit, Melee haste]

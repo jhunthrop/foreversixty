@@ -3,7 +3,7 @@ title: Demonology Warlock in Forever
 classSlug: warlock
 spec: demonology
 role: dps
-build: 'FS1:1.60.1.69893:warlock:gnome:255323/2352113101200001351/0:'
+build: 'FS1:1.60.1.70009:warlock:gnome:255323/2352113101200001351/0:'
 recommendedRaces: [gnome, troll]
 statPriority:
   [
