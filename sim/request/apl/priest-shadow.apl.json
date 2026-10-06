@@ -143,7 +143,7 @@
       }
     },
     {
-      "notes": "Shoot with your wand as the true last resort: it costs no mana, so it is always strictly better than standing idle. Before Mind Flay is talented (band 20's own build spends its 11 points on the tier-1 maxes instead - bis-weights-simc's own repro, pos 8 of tree3 reads 0), this is the ONLY action left once Mind Blast is on cooldown and Shadow Word: Pain is up, so gating it behind a mana-percent threshold (the previous form of this action) left every such global idle instead of wanding - the mechanism this lane's shadow-int-band20 investigation traced Shadow Priest band 20's negative published Intellect weight to: more Intellect enlarged the mana pool, which shrank the time spent under the old 20% gate and so REPLACED wand casts with idle time, not with real damage. Unconditional, Mind Flay and Mind Blast still win the priority race whenever either is actually available (this action is last), so a band where Mind Flay IS talented (30-60) is unaffected - the wand now only fires there in the same gaps it already won before.",
+      "notes": "Shoot with your wand whenever nothing else is ready: it costs no mana and always beats standing idle. Mind Flay and Mind Blast still come first whenever they are available, and Wand Specialization adds to it.",
       "action": {
         "castSpell": {
           "spellId": {
