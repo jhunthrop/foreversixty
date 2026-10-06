@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/fs"
+	"math"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -11,9 +12,18 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 )
 
-// talentRefRE is how engine code reads a talent field:
-// paladin.Talents.Vengeance, hunter.Talents.GetSurefooted().
-var talentRefRE = regexp.MustCompile(`\bTalents\.(?:Get)?([A-Z][A-Za-z0-9]*)`)
+// talentRefRE is how engine code reads a talent field: any identifier
+// holding (or aliasing) a Talents proto, followed by a dot and the
+// field's Go name - paladin.Talents.Vengeance,
+// hunter.Talents.GetSurefooted(), or an alias such as mage's own
+// applyDeclarativeTalents, which does `t := mage.Talents` and then
+// reads `t.FirePower`. A scan anchored on the literal receiver name
+// "Talents" misses every field read through such an alias, so this
+// matches any identifier before the dot, not just "Talents" itself;
+// modeledTalents only keeps the names that are actually a talent's
+// Go name, so an unrelated "x.FirePower" on some other struct would
+// have to collide with a real talent's generated name to misfire.
+var talentRefRE = regexp.MustCompile(`\b\w+\.(?:Get)?([A-Z][A-Za-z0-9]*)\b`)
 
 // skipEngineFile is generated or test code, which reads talents
 // without modeling them.
@@ -79,4 +89,52 @@ func modeledTalents(t talentTrees, layout enginetalents.Layout, goNames map[stri
 		}
 	}
 	return out, nil
+}
+
+// talentClass is the final, three-way classification a report shows
+// for one talent: how much the engine's own numbers back its tooltip.
+type talentClass int
+
+const (
+	// classUnmodeled is a talent the static scan found no code reading
+	// AND whose probe moved DPS no further than the combined error:
+	// the engine gives it nothing, as far as either signal can tell.
+	classUnmodeled talentClass = iota
+	// classModeledNoDamage is a talent the static scan found code
+	// reading, but whose probe did not move DPS beyond the combined
+	// error (a utility talent, most often).
+	classModeledNoDamage
+	// classDamage is a talent whose probe moved DPS beyond the
+	// combined error, whatever the static scan found. The probe
+	// outranks the scan: the scan can always miss a field read through
+	// an aliased receiver, but a probe that moves DPS beyond error is
+	// the engine crediting the talent, full stop.
+	classDamage
+)
+
+func (c talentClass) String() string {
+	switch c {
+	case classDamage:
+		return "damage"
+	case classModeledNoDamage:
+		return "modeled, no damage"
+	default:
+		return "unmodeled"
+	}
+}
+
+// classify applies the precedence rule between the static scan and
+// the probe: a probe beyond the combined error is damage whatever the
+// static scan said; short of that, the static scan finding some code
+// reading the field is at worst "modeled, no damage"; "unmodeled" only
+// when the scan finds nothing and the probe is within error.
+func classify(staticModeled bool, c credit) talentClass {
+	switch {
+	case math.Abs(c.Diff) > c.Err:
+		return classDamage
+	case staticModeled:
+		return classModeledNoDamage
+	default:
+		return classUnmodeled
+	}
 }
