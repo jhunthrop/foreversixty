@@ -68,7 +68,7 @@ No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 133.7. Weights run: 4.0s. Verify run: 2.0s. 438 eligible items had no known source.
+Set DPS (verified): 133.7. Weights run: 4.1s. Verify run: 2.0s. 438 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.565 ± 0.049, crit=0.844 ± 0.017 per rating point (14 rating = 1%, 11.820 per %), hit=0.226 ± 0.007 per rating point (10 rating = 1%, 2.264 per %), melee_haste=7.851 ± 0.705
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 577, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 188.8. Weights run: 4.0s. Verify run: 2.0s. 1449 eligible items had no known source.
+Set DPS (verified): 188.8. Weights run: 4.0s. Verify run: 2.1s. 1449 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.733 ± 0.068, crit=1.018 ± 0.021 per rating point (14 rating = 1%, 14.259 per %), hit=0.303 ± 0.009 per rating point (10 rating = 1%, 3.035 per %), melee_haste=8.261 ± 1.355
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 315, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 132.2. Weights run: 4.0s. Verify run: 2.0s. 426 eligible items had no known source.
+Set DPS (verified): 132.2. Weights run: 4.1s. Verify run: 2.0s. 426 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.565 ± 0.049, crit=0.844 ± 0.017 per rating point (14 rating = 1%, 11.820 per %), hit=0.226 ± 0.007 per rating point (10 rating = 1%, 2.264 per %), melee_haste=7.851 ± 0.705
 

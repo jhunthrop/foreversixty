@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 5420000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 75.5. Weights run: 2.6s. Verify run: 1.6s. 220 eligible items had no known source.
+Set DPS (verified): 75.5. Weights run: 2.6s. Verify run: 1.7s. 220 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.139 ± 0.027, crit=0.489 ± 0.014 per rating point (14 rating = 1%, 6.849 per %), hit=0.165 ± 0.005 per rating point (10 rating = 1%, 1.653 per %), melee_haste=3.588 ± 0.565
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 366, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 5420001505001251-00000000000000000-000000000000000000)
 
-Set DPS (verified): 134.1. Weights run: 3.1s. Verify run: 2.0s. 597 eligible items had no known source.
+Set DPS (verified): 134.1. Weights run: 3.1s. Verify run: 2.1s. 597 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.166 ± 0.034, crit=0.652 ± 0.018 per rating point (14 rating = 1%, 9.133 per %), hit=0.201 ± 0.007 per rating point (10 rating = 1%, 2.012 per %), melee_haste=not significant (4.475 ± 1.250)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 597, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 5420001505001251-35200000000000000-000000000000000000)
 
-Set DPS (verified): 159.0. Weights run: 3.1s. Verify run: 2.1s. 754 eligible items had no known source.
+Set DPS (verified): 159.0. Weights run: 3.2s. Verify run: 2.2s. 754 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.259 ± 0.044, crit=0.734 ± 0.020 per rating point (14 rating = 1%, 10.273 per %), hit=0.236 ± 0.007 per rating point (10 rating = 1%, 2.360 per %), melee_haste=not significant (4.207 ± 1.348)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 563, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 5420001505001251-35200000000000000-000000000000000000)
 
-Set DPS (verified): 161.0. Weights run: 3.1s. Verify run: 2.1s. 713 eligible items had no known source.
+Set DPS (verified): 161.0. Weights run: 3.2s. Verify run: 2.1s. 713 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.259 ± 0.044, crit=0.734 ± 0.020 per rating point (14 rating = 1%, 10.273 per %), hit=0.236 ± 0.007 per rating point (10 rating = 1%, 2.360 per %), melee_haste=not significant (4.207 ± 1.348)
 

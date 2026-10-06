@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T01:38:15Z",
+  "generated_at": "2026-10-06T13:37:19Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.940683582,
-      "verify_run_seconds": 0.666349836,
+      "weights_run_seconds": 0.972375526,
+      "verify_run_seconds": 0.655182959,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.940683582,
-      "verify_run_seconds": 0.704573868,
+      "weights_run_seconds": 0.972375526,
+      "verify_run_seconds": 0.750099476,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.945854204,
-      "verify_run_seconds": 0.667452184,
+      "weights_run_seconds": 0.944079927,
+      "verify_run_seconds": 0.691145185,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2584,8 +2584,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.945854204,
-      "verify_run_seconds": 0.70748606,
+      "weights_run_seconds": 0.944079927,
+      "verify_run_seconds": 0.704553599,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3253,8 +3253,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.991712957,
-      "verify_run_seconds": 0.634575119,
+      "weights_run_seconds": 1.003416681,
+      "verify_run_seconds": 0.643321489,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3917,8 +3917,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.991712957,
-      "verify_run_seconds": 0.66932844,
+      "weights_run_seconds": 1.003416681,
+      "verify_run_seconds": 0.650833294,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4612,8 +4612,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.953150544,
-      "verify_run_seconds": 0.739559994,
+      "weights_run_seconds": 0.907850888,
+      "verify_run_seconds": 0.776635036,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4924,7 +4924,7 @@
               "item_name": "Stone Guard's Dreadweave Vest",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.3905504307109313
+              "dps_delta": -1.3905504307109318
             },
             {
               "item_id": 1716,
@@ -5298,8 +5298,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.953150544,
-      "verify_run_seconds": 0.764509746,
+      "weights_run_seconds": 0.907850888,
+      "verify_run_seconds": 0.777403323,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6044,8 +6044,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.032678487,
-      "verify_run_seconds": 0.744154658,
+      "weights_run_seconds": 0.998021879,
+      "verify_run_seconds": 0.750554063,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6784,8 +6784,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.032678487,
-      "verify_run_seconds": 0.750965529,
+      "weights_run_seconds": 0.998021879,
+      "verify_run_seconds": 0.750509069,
       "coverage": {
         "back": {
           "eligible": 450,

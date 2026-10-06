@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T01:43:34Z",
+  "generated_at": "2026-10-06T13:42:42Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.182271448,
-      "verify_run_seconds": 1.0919057030000001,
+      "weights_run_seconds": 2.174289707,
+      "verify_run_seconds": 1.15655453,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.182271448,
-      "verify_run_seconds": 1.142749363,
+      "weights_run_seconds": 2.174289707,
+      "verify_run_seconds": 1.141945517,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.172918772,
-      "verify_run_seconds": 1.197629462,
+      "weights_run_seconds": 2.157232636,
+      "verify_run_seconds": 1.238351467,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2591,8 +2591,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.172918772,
-      "verify_run_seconds": 1.146952979,
+      "weights_run_seconds": 2.157232636,
+      "verify_run_seconds": 1.20511116,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3268,8 +3268,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.716147402,
-      "verify_run_seconds": 1.05198034,
+      "weights_run_seconds": 1.72803656,
+      "verify_run_seconds": 1.081339713,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3938,8 +3938,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.716147402,
-      "verify_run_seconds": 1.036565051,
+      "weights_run_seconds": 1.72803656,
+      "verify_run_seconds": 1.076250042,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4423,7 +4423,7 @@
               "item_name": "Sergeant Major's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -2.3734408464247503
+              "dps_delta": -2.3734408464247507
             },
             {
               "item_id": 10026,
@@ -4640,8 +4640,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.9387198140000002,
-      "verify_run_seconds": 1.313015662,
+      "weights_run_seconds": 1.924447803,
+      "verify_run_seconds": 1.361164784,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5346,8 +5346,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.9387198140000002,
-      "verify_run_seconds": 1.334462852,
+      "weights_run_seconds": 1.924447803,
+      "verify_run_seconds": 1.359612609,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6079,8 +6079,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.957956962,
-      "verify_run_seconds": 1.257918575,
+      "weights_run_seconds": 2.012735684,
+      "verify_run_seconds": 1.236179795,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6318,7 +6318,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 31.139640198900167,
+          "score": 31.139640198900164,
           "verified": true,
           "alternatives": [
             {
@@ -6326,14 +6326,14 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.0316766530497004
+              "dps_delta": -1.0316766530496986
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.4890766970189717
+              "dps_delta": -3.48907669701897
             },
             {
               "item_id": 19059,
@@ -6815,8 +6815,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.957956962,
-      "verify_run_seconds": 1.3397027000000001,
+      "weights_run_seconds": 2.012735684,
+      "verify_run_seconds": 1.327085791,
       "coverage": {
         "back": {
           "eligible": 450,

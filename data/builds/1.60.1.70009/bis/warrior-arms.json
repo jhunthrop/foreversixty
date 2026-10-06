@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T01:45:35Z",
+  "generated_at": "2026-10-06T13:44:43Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -548,8 +548,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.645152639,
-      "verify_run_seconds": 1.267029004,
+      "weights_run_seconds": 2.716522424,
+      "verify_run_seconds": 1.26705135,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.645152639,
-      "verify_run_seconds": 1.239895514,
+      "weights_run_seconds": 2.716522424,
+      "verify_run_seconds": 1.2321653160000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1867,8 +1867,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.895625539,
-      "verify_run_seconds": 1.478660464,
+      "weights_run_seconds": 2.964476512,
+      "verify_run_seconds": 1.498830803,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2541,8 +2541,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.895625539,
-      "verify_run_seconds": 1.477194228,
+      "weights_run_seconds": 2.964476512,
+      "verify_run_seconds": 1.4597057740000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3219,8 +3219,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.695747321,
-      "verify_run_seconds": 1.540399377,
+      "weights_run_seconds": 3.733256754,
+      "verify_run_seconds": 1.532096067,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3892,8 +3892,8 @@
         "main_hand: Fiery War Axe",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.695747321,
-      "verify_run_seconds": 1.524603269,
+      "weights_run_seconds": 3.733256754,
+      "verify_run_seconds": 1.535421258,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4571,8 +4571,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.89453689,
-      "verify_run_seconds": 1.81700952,
+      "weights_run_seconds": 3.88327501,
+      "verify_run_seconds": 1.816302527,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5265,8 +5265,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.89453689,
-      "verify_run_seconds": 1.81227604,
+      "weights_run_seconds": 3.88327501,
+      "verify_run_seconds": 1.845512967,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5423,7 +5423,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 60.42800550759188,
+          "score": 60.428005507591884,
           "verified": true,
           "alternatives": [
             {
@@ -5438,7 +5438,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.25567868830116486
+              "dps_delta": -0.2556786883011653
             },
             {
               "item_id": 226860,
@@ -5567,7 +5567,7 @@
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.29475898393456856
+              "dps_delta": -0.29475898393456956
             },
             {
               "item_id": 14637,
@@ -5698,14 +5698,14 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.05305341030739297
+              "dps_delta": -0.05305341030739396
             },
             {
               "item_id": 15065,
               "item_name": "Warbear Woolies",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6795458339288366
+              "dps_delta": -0.6795458339288376
             },
             {
               "item_id": 14554,
@@ -5769,7 +5769,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.32658401391275904
+              "dps_delta": -0.3265840139127593
             },
             {
               "item_id": 2246,
@@ -5802,7 +5802,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.3249620665490703
+              "dps_delta": -0.3249620665490705
             },
             {
               "item_id": 2246,
@@ -5996,8 +5996,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.866349506,
-      "verify_run_seconds": 1.818775201,
+      "weights_run_seconds": 3.879776889,
+      "verify_run_seconds": 1.841648498,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6293,7 +6293,7 @@
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.29475898393456856
+              "dps_delta": -0.29475898393456956
             },
             {
               "item_id": 14637,
@@ -6431,7 +6431,7 @@
               "item_name": "Outrider's Plate Legguards",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.46334678688437564
+              "dps_delta": -0.46334678688437464
             },
             {
               "item_id": 14554,
@@ -6723,8 +6723,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.866349506,
-      "verify_run_seconds": 1.7271420499999999,
+      "weights_run_seconds": 3.879776889,
+      "verify_run_seconds": 1.787669867,
       "coverage": {
         "back": {
           "eligible": 450,

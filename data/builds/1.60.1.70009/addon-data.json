@@ -15280,9 +15280,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 226930,
-              "source_kind": "vendor",
-              "source": "Mokvar"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -15357,6 +15357,7 @@
             272411,
             14152,
             19595,
+            22066,
             228190,
             237815,
             22064,

@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T01:37:06Z",
+  "generated_at": "2026-10-06T13:36:09Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.205673795,
-      "verify_run_seconds": 1.7657411079999998,
+      "weights_run_seconds": 3.222539664,
+      "verify_run_seconds": 1.784245855,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1211,8 +1211,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.205673795,
-      "verify_run_seconds": 1.720189478,
+      "weights_run_seconds": 3.222539664,
+      "verify_run_seconds": 1.7225945010000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.391726825,
-      "verify_run_seconds": 1.881227579,
+      "weights_run_seconds": 3.416555379,
+      "verify_run_seconds": 1.924324154,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2583,8 +2583,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.391726825,
-      "verify_run_seconds": 1.83438824,
+      "weights_run_seconds": 3.416555379,
+      "verify_run_seconds": 1.88522825,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3275,8 +3275,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.393554768,
-      "verify_run_seconds": 1.854938337,
+      "weights_run_seconds": 3.404714683,
+      "verify_run_seconds": 1.890684187,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.393554768,
-      "verify_run_seconds": 1.8080317639999999,
+      "weights_run_seconds": 3.404714683,
+      "verify_run_seconds": 1.8607877400000001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4687,8 +4687,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.426045379,
-      "verify_run_seconds": 2.044805404,
+      "weights_run_seconds": 3.423497476,
+      "verify_run_seconds": 2.1104602630000002,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5412,8 +5412,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.426045379,
-      "verify_run_seconds": 2.020478579,
+      "weights_run_seconds": 3.423497476,
+      "verify_run_seconds": 2.046604943,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5832,7 +5832,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 56.81525191212875,
+          "score": 56.81525191212876,
           "verified": true,
           "alternatives": [
             {
@@ -5847,7 +5847,7 @@
               "item_name": "Black Dragonscale Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.14200857886412196
+              "dps_delta": -0.14200857886412233
             },
             {
               "item_id": 227085,
@@ -6160,8 +6160,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.446532055,
-      "verify_run_seconds": 2.070094462,
+      "weights_run_seconds": 3.45431901,
+      "verify_run_seconds": 2.099276349,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6580,7 +6580,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 56.81525191212875,
+          "score": 56.81525191212876,
           "verified": true,
           "alternatives": [
             {
@@ -6595,7 +6595,7 @@
               "item_name": "Legionnaire's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.12149158672299003
+              "dps_delta": -0.12149158672299037
             },
             {
               "item_id": 15052,
@@ -6909,8 +6909,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.446532055,
-      "verify_run_seconds": 2.050801109,
+      "weights_run_seconds": 3.45431901,
+      "verify_run_seconds": 2.035364301,
       "coverage": {
         "back": {
           "eligible": 450,

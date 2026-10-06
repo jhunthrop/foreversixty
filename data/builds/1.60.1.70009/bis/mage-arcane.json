@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-10-06T01:37:29Z",
+  "generated_at": "2026-10-06T13:36:32Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.101383176,
-      "verify_run_seconds": 0.779199705,
+      "weights_run_seconds": 1.092655266,
+      "verify_run_seconds": 0.783780127,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.101383176,
-      "verify_run_seconds": 0.713046958,
+      "weights_run_seconds": 1.092655266,
+      "verify_run_seconds": 0.711943955,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.13133913,
-      "verify_run_seconds": 0.860149971,
+      "weights_run_seconds": 1.191828259,
+      "verify_run_seconds": 0.808546263,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.13133913,
-      "verify_run_seconds": 0.786502609,
+      "weights_run_seconds": 1.191828259,
+      "verify_run_seconds": 0.797060645,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.405369944,
-      "verify_run_seconds": 0.835153675,
+      "weights_run_seconds": 1.42549984,
+      "verify_run_seconds": 0.82487996,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.405369944,
-      "verify_run_seconds": 0.832915655,
+      "weights_run_seconds": 1.42549984,
+      "verify_run_seconds": 0.815277229,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4626,8 +4626,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.443090215,
-      "verify_run_seconds": 0.974721331,
+      "weights_run_seconds": 1.476391807,
+      "verify_run_seconds": 0.984068201,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5049,7 +5049,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.0878318769673094
+              "dps_delta": -2.087831876967308
             },
             {
               "item_id": 10009,
@@ -5306,8 +5306,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.443090215,
-      "verify_run_seconds": 0.925663547,
+      "weights_run_seconds": 1.476391807,
+      "verify_run_seconds": 0.945020519,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5614,7 +5614,7 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.232259905446733
+              "dps_delta": -2.2322599054467305
             },
             {
               "item_id": 18385,
@@ -6036,8 +6036,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.450313771,
-      "verify_run_seconds": 0.966756635,
+      "weights_run_seconds": 1.461899443,
+      "verify_run_seconds": 0.961623318,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6457,7 +6457,7 @@
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -4.569745247263287
+              "dps_delta": -4.569745247263289
             }
           ]
         },
@@ -6766,8 +6766,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.450313771,
-      "verify_run_seconds": 0.919577829,
+      "weights_run_seconds": 1.461899443,
+      "verify_run_seconds": 0.950247421,
       "coverage": {
         "back": {
           "eligible": 450,
