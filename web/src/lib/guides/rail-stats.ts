@@ -14,6 +14,14 @@ export interface RailStatRow {
   label: string;
   /** `undefined` means "Not significant" -- the row is never dropped (tenet 4). */
   value: number | undefined;
+  /** Haste has no rating in this client and is per 1%, never point-for-point against a
+   *  primary stat (owner correction 2026-09-30, `panel-view.ts` `isHasteStat`): it sits
+   *  outside the normalization and the rail prints it "per 1%". */
+  perPercent?: boolean;
+}
+
+function isHasteStat(stat: string): boolean {
+  return stat === 'melee_haste' || stat === 'spell_haste';
 }
 
 /**
@@ -37,6 +45,7 @@ export function railStatRows(
   statPriority: readonly string[],
   weights: readonly BisStatWeight[],
   spec: string,
+  hasteScaleFactor: number | null = null,
 ): RailStatRow[] {
   const byLabel = new Map(weights.map((w) => [statLabelForSpec(w.stat, spec), w]));
   const matched = statPriority.map((label) => ({
@@ -45,12 +54,22 @@ export function railStatRows(
   }));
   const significant = matched
     .filter((row): row is { label: string; weight: BisStatWeight } => {
-      return row.weight !== undefined && !(row.weight.insignificant ?? false);
+      return (
+        row.weight !== undefined && !(row.weight.insignificant ?? false) && !isHasteStat(row.weight.stat)
+      );
     })
     .map((row) => row.weight.scale_factor ?? row.weight.weight);
   const top = significant.length > 0 ? Math.max(...significant) : undefined;
 
   return matched.map(({ label, weight }) => {
+    if (weight !== undefined && isHasteStat(weight.stat)) {
+      // Live defect 2026-10-05: haste was competing for the 1.00 anchor, so the guide's own
+      // first stat read 0.25 and its last read 1.00. Haste is reported per 1%, the same
+      // number the BiS page's caption prints (`band.haste_scale_factor`, else its own scale).
+      const raw = weight.scale_factor ?? weight.weight;
+      const perPercent = hasteScaleFactor ?? (top === undefined ? undefined : raw / top);
+      return { label, value: (weight.insignificant ?? false) ? undefined : perPercent, perPercent: true };
+    }
     if (weight === undefined || (weight.insignificant ?? false) || top === undefined) {
       return { label, value: undefined };
     }

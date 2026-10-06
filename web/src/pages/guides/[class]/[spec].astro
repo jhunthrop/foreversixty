@@ -34,7 +34,7 @@ import {
   rotationLinesFor,
 } from '../../../lib/bis/rotation-view';
 import { specTabIcon } from '../../../lib/bis/spec-icon';
-import { decodeBuildTrees, primaryTree as primaryTreeOf } from '../../../lib/guides/build-tree';
+import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { factionForFirstRace, rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
@@ -102,8 +102,7 @@ const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
 const specName = catalogEntries.find((s) => s.spec_slug === specSlug)?.name ?? specSlug;
 
 // Rail: Build card's primary-tree thumbnail (the tree the build spends the most points in).
-const primaryTree =
-  buildCode === undefined ? undefined : primaryTreeOf(decodeBuildTrees(build, buildCode) ?? []);
+const buildTrees = buildCode === undefined ? [] : (decodeBuildTrees(build, buildCode) ?? []);
 
 // Rail: Rotation card's first four level-60 lines (spec §4.C.2) -- the card is omitted
 // entirely when no rotation entry applies yet (spec §5's own state table), never a card
@@ -125,7 +124,9 @@ const band60 =
     ? ranked.bands.find((b) => b.band === 60 && b.faction === faction)
     : undefined;
 const statRows =
-  band60 === undefined ? [] : railStatRows(entry.data.statPriority, band60.weights, fullSpecId);
+  band60 === undefined
+    ? []
+    : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.haste_scale_factor ?? null);
 
 const levelingRows: LevelingBandRow[] =
   ranked === undefined || faction === undefined
@@ -170,7 +171,7 @@ const levelingRows: LevelingBandRow[] =
             <GuideActionRail
               build={build}
               buildCode={buildCode}
-              primaryTree={primaryTree}
+              trees={buildTrees}
               rotationBandLabel={rotationBandLabel}
               rotationLines={rotationLines.slice(0, 4)}
               statRows={statRows}
