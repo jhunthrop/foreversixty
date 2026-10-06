@@ -1294,6 +1294,22 @@ type bandReport struct {
 	// silently start SHOWING a claim ("no item has it") an older file
 	// never made.
 	HasteOnItems bool `json:"haste_on_items"`
+	// WeightsLowConfidence is this lane's brief (ranker-weights-anchor),
+	// item 3: true when this band's own primary-stat anchor row
+	// (ScaleReferenceStat, normally) measured insignificant
+	// (isWeightSignificant, weights.go) even after
+	// primaryStatSignificanceCheck's own one-time retry at
+	// primaryStatRetryIterationsFactor iterations. The anchor row is
+	// still published as if significant either way (the brief's own
+	// rule: "no primary stat ever published as 'not significant'" -
+	// forceAnchorRowSignificant, weights.go) - this field is the
+	// honest signal that the underlying measurement is still noisy,
+	// without putting "not significant" back on the one row a reader
+	// is told to trust as 1.00. omitempty: false (the overwhelming
+	// majority of bands) is the ordinary, confident case; the site
+	// does not render anything from this field yet (this lane's
+	// brief: "web shows nothing new yet").
+	WeightsLowConfidence bool `json:"weights_low_confidence,omitempty"`
 }
 
 // scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value

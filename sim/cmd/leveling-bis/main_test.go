@@ -437,3 +437,129 @@ func TestRunSpecFallsBackToNearestLowerBandWeightsWhenRetryStillFails(t *testing
 		t.Errorf("band 30 published every slot with empty_reason=%q - the fallback weights should have scored real candidates", noDPSValueReason)
 	}
 }
+
+// TestRunSpecRetriesPrimaryStatWeightAndPublishesTheResolvedAnchor is
+// the ranker-weights-anchor lane's own integration-level guard for
+// item 3's retry rule: hunter-marksmanship's own primary stat
+// (primary_stat.go) is agility. At the ordinary iteration count
+// agility measures insignificant while the reference stat
+// (ranged_attack_power) stays confidently significant throughout -
+// this must NOT trip the pre-existing reference-stat retry/fallback
+// (weights_reason stays empty) but must trip the separate primary-
+// stat guard: one extra RunWeights call at
+// weightsIterations*primaryStatRetryIterationsFactor, after which
+// agility measures significant, so weights_low_confidence is false
+// and the published scale-factor table anchors on agility
+// (scale_reference_stat) with its own row never marked insignificant.
+func TestRunSpecRetriesPrimaryStatWeightAndPublishesTheResolvedAnchor(t *testing.T) {
+	const weightsIterations = 5
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsFunc: func(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+			reference := api.StatWeight{Stat: "ranged_attack_power", Weight: 1.0, Error: 0.01}
+			agility := api.StatWeight{Stat: "agility", Weight: 1.8, Error: 1.5}
+			if req.Iterations == weightsIterations*primaryStatRetryIterationsFactor {
+				agility = api.StatWeight{Stat: "agility", Weight: 1.8, Error: 0.05}
+			}
+			return map[string]api.StatWeight{
+				"ranged_attack_power": reference,
+				"agility":             agility,
+			}, 1.0, nil
+		},
+	}
+	outDir := t.TempDir()
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, weightsIterations); err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))
+	if len(report.Bands) == 0 {
+		t.Fatal("no bands published")
+	}
+	band := report.Bands[0]
+	if band.WeightsReason != "" {
+		t.Errorf("band weights_reason = %q, want \"\" (the reference stat was always significant)", band.WeightsReason)
+	}
+	if band.WeightsLowConfidence {
+		t.Error("band weights_low_confidence = true, want false (the primary-stat retry resolved it)")
+	}
+	if band.ScaleReferenceStat != "agility" {
+		t.Errorf("band scale_reference_stat = %q, want %q (hunter-marksmanship's own primary stat)", band.ScaleReferenceStat, "agility")
+	}
+	var agilityRow *weightRow
+	for i := range band.Weights {
+		if band.Weights[i].Stat == "agility" {
+			agilityRow = &band.Weights[i]
+		}
+	}
+	if agilityRow == nil {
+		t.Fatal("no agility row published")
+	}
+	if agilityRow.Insignificant {
+		t.Error("agility.Insignificant = true, want false (no primary stat is ever published as not significant)")
+	}
+	if agilityRow.ScaleFactor != 1.0 {
+		t.Errorf("agility.ScaleFactor = %v, want 1.0 (it is the anchor)", agilityRow.ScaleFactor)
+	}
+	// Exactly two RunWeights calls: the ordinary sweep, then the one
+	// primary-stat retry - never a reference-stat retry (it was never
+	// insignificant) and never a second primary-stat retry.
+	want := []int{weightsIterations, weightsIterations * primaryStatRetryIterationsFactor}
+	if len(fake.WeightsIterationsSeen) != len(want) {
+		t.Fatalf("WeightsIterationsSeen = %v, want %v", fake.WeightsIterationsSeen, want)
+	}
+	for i, w := range want {
+		if fake.WeightsIterationsSeen[i] != w {
+			t.Errorf("WeightsIterationsSeen[%d] = %d, want %d (%v)", i, fake.WeightsIterationsSeen[i], w, fake.WeightsIterationsSeen)
+		}
+	}
+}
+
+// TestRunSpecPublishesWeightsLowConfidenceWhenPrimaryStatRetryStill
+// Fails is item 3's own fallback half: agility measures insignificant
+// at every iteration count this fixture is asked for, so even after
+// the one retry it is still not significant. The band must still
+// publish agility as the anchor (never "not significant" on that row)
+// but must carry weights_low_confidence=true as the honest signal
+// that the underlying measurement never cleared its own noise floor.
+func TestRunSpecPublishesWeightsLowConfidenceWhenPrimaryStatRetryStillFails(t *testing.T) {
+	const weightsIterations = 5
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsFunc: func(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+			return map[string]api.StatWeight{
+				"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0, Error: 0.01},
+				"agility":             {Stat: "agility", Weight: 1.8, Error: 1.5},
+			}, 1.0, nil
+		},
+	}
+	outDir := t.TempDir()
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, weightsIterations); err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	report := readSpecReportForTest(t, filepath.Join(outDir, "hunter-marksmanship.json"))
+	band := report.Bands[0]
+	if !band.WeightsLowConfidence {
+		t.Error("band weights_low_confidence = false, want true (agility never cleared its own error, even after the retry)")
+	}
+	if band.ScaleReferenceStat != "agility" {
+		t.Errorf("band scale_reference_stat = %q, want %q (anchored anyway, per this lane's brief)", band.ScaleReferenceStat, "agility")
+	}
+	var agilityRow *weightRow
+	for i := range band.Weights {
+		if band.Weights[i].Stat == "agility" {
+			agilityRow = &band.Weights[i]
+		}
+	}
+	if agilityRow == nil {
+		t.Fatal("no agility row published")
+	}
+	if agilityRow.Insignificant {
+		t.Error("agility.Insignificant = true, want false (no primary stat is ever published as not significant, even at low confidence)")
+	}
+	// Exactly one retry - never more, however untrustworthy the
+	// result stays.
+	want := []int{weightsIterations, weightsIterations * primaryStatRetryIterationsFactor}
+	if len(fake.WeightsIterationsSeen) != len(want) {
+		t.Fatalf("WeightsIterationsSeen = %v, want %v", fake.WeightsIterationsSeen, want)
+	}
+}

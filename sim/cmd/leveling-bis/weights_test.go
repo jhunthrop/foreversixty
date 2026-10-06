@@ -236,10 +236,15 @@ func TestNormalizeScaleFactorsMatchesTheHunterMarksmanshipBand20HordeRepro(t *te
 		{Stat: "melee_haste", Weight: 3.4622848496697465, Error: 0.7954150946864297},
 	}
 
-	out, anchor := normalizeScaleFactors(rows, &refDPS)
+	// primaryStat "agility": hunter-marksmanship's own primary_stat
+	// (primary_stat.go) - agility wins the anchor here either way
+	// (its own weight 2.19 beats every other row's), but passing the
+	// real primary stat keeps this repro honest about which rule
+	// actually produced it post ranker-weights-anchor.
+	out, anchor := normalizeScaleFactors(rows, &refDPS, "agility")
 
 	if anchor != "agility" {
-		t.Fatalf("anchor = %q, want %q (agility's own weight 2.19 beats ranged_attack_power's 1.0)", anchor, "agility")
+		t.Fatalf("anchor = %q, want %q (hunter-marksmanship's own primary stat)", anchor, "agility")
 	}
 
 	byStat := make(map[string]weightRow, len(out))
@@ -312,7 +317,11 @@ func TestNormalizeScaleFactorsNeverLetsHasteBecomeTheAnchor(t *testing.T) {
 		{Stat: "spell_haste", Weight: 50, Error: 1},
 	}
 
-	out, anchor := normalizeScaleFactors(rows, nil)
+	// primaryStat "" here: this test is about the pre-existing
+	// largest-significant-weight fallback in isolation (no real spec's
+	// primary stat in play), exercised whenever normalizeScaleFactors
+	// finds no primary row to anchor to - see that function's own doc.
+	out, anchor := normalizeScaleFactors(rows, nil, "")
 
 	if anchor != "spell_power" {
 		t.Fatalf("anchor = %q, want %q (the largest PER-POINT stat, never a haste row)", anchor, "spell_power")
@@ -377,7 +386,7 @@ func TestNormalizeScaleFactorsWithNoSignificantStatPublishesZeroScale(t *testing
 		{Stat: "intellect", Weight: -0.2, Error: 0.5, Insignificant: true},
 	}
 
-	out, anchor := normalizeScaleFactors(rows, nil)
+	out, anchor := normalizeScaleFactors(rows, nil, "")
 
 	if anchor != "" {
 		t.Errorf("anchor = %q, want %q (no significant, non-haste row to normalize against)", anchor, "")
@@ -459,5 +468,233 @@ func TestBandHasHasteCandidateIsFalseWithNoHasteAnywhere(t *testing.T) {
 	}
 	if bandHasHasteCandidate(scoredItems, noSource) {
 		t.Error("bandHasHasteCandidate(...) = true, want false (nothing here carries melee_haste or spell_haste)")
+	}
+}
+
+// TestNormalizeScaleFactorsAnchorsOnThePrimaryStatEvenWhenASecondary
+// WeighsMore is the ranker-weights-anchor lane's own brief, item 3's
+// first required case: "primary anchor chosen over a larger
+// secondary". Agility's own raw weight (1.5) beats strength's (0.8)
+// here, but strength is the spec's own primary_stat (primary_stat.go)
+// - the published scale-factor table must still read Strength 1.00,
+// never let the larger secondary win the anchor the way the
+// pre-primary-stat rule would have.
+func TestNormalizeScaleFactorsAnchorsOnThePrimaryStatEvenWhenASecondaryWeighsMore(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "attack_power", Weight: 1, Error: 0.01},
+		{Stat: "strength", Weight: 0.8, Error: 0.02},
+		{Stat: "agility", Weight: 1.5, Error: 0.03},
+	}
+
+	out, anchor := normalizeScaleFactors(rows, nil, "strength")
+
+	if anchor != "strength" {
+		t.Fatalf("anchor = %q, want %q (the spec's own primary stat, even though agility weighs more)", anchor, "strength")
+	}
+	byStat := make(map[string]weightRow, len(out))
+	for _, row := range out {
+		byStat[row.Stat] = row
+	}
+	if got, want := byStat["strength"].ScaleFactor, 1.0; got != want {
+		t.Errorf("strength ScaleFactor = %v, want %v", got, want)
+	}
+	if got, want := byStat["agility"].ScaleFactor, 1.5/0.8; got != want {
+		t.Errorf("agility ScaleFactor = %v, want %v (normalized against strength, not itself)", got, want)
+	}
+}
+
+// TestNormalizeScaleFactorsRefusesAHasteStatAsThePrimaryAnchor is this
+// lane's brief, item 3's fourth required case: "haste never anchors" -
+// defense in depth. primaryStatBySpec (primary_stat.go) never assigns
+// a haste id as a spec's primary stat, but normalizeScaleFactors must
+// still refuse one as an anchor if it is ever handed one, the exact
+// same refusal the pre-existing fallback search already applies.
+func TestNormalizeScaleFactorsRefusesAHasteStatAsThePrimaryAnchor(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "spell_power", Weight: 1, Error: 0.01},
+		{Stat: "spell_haste", Weight: 50, Error: 1},
+	}
+
+	out, anchor := normalizeScaleFactors(rows, nil, "spell_haste")
+
+	if anchor != "spell_power" {
+		t.Fatalf("anchor = %q, want %q (a haste primaryStat must fall back, never anchor)", anchor, "spell_power")
+	}
+	byStat := make(map[string]weightRow, len(out))
+	for _, row := range out {
+		byStat[row.Stat] = row
+	}
+	if got, want := byStat["spell_power"].ScaleFactor, 1.0; got != want {
+		t.Errorf("spell_power ScaleFactor = %v, want %v", got, want)
+	}
+}
+
+// TestNormalizeScaleFactorsFallsBackWhenThePrimaryRowIsAbsent is this
+// function's own doc's central rule: the pre-existing
+// largest-significant-weight rule only takes over when no row's Stat
+// matches primaryStat at all - exercised here with a primaryStat that
+// names a real canonical stat ("intellect") that simply is not one of
+// these rows (a spec whose weight_stats never carries it and has no
+// usable fallback row either - primaryAnchorStat's own doc).
+func TestNormalizeScaleFactorsFallsBackWhenThePrimaryRowIsAbsent(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "spell_power", Weight: 1, Error: 0.01},
+		{Stat: "crit", Weight: 0.3, Error: 0.02},
+	}
+
+	out, anchor := normalizeScaleFactors(rows, nil, "intellect")
+
+	if anchor != "spell_power" {
+		t.Fatalf("anchor = %q, want %q (intellect names no row here - falls back to the largest significant weight)", anchor, "spell_power")
+	}
+	byStat := make(map[string]weightRow, len(out))
+	for _, row := range out {
+		byStat[row.Stat] = row
+	}
+	if got, want := byStat["spell_power"].ScaleFactor, 1.0; got != want {
+		t.Errorf("spell_power ScaleFactor = %v, want %v", got, want)
+	}
+}
+
+// TestPrimaryStatSignificanceCheckSkipsWhenAlreadySignificant is
+// primaryStatSignificanceCheck's own cheap path: a significant
+// anchor row needs no retry at all, and this must not spend a single
+// extra RunWeights call confirming that.
+func TestPrimaryStatSignificanceCheckSkipsWhenAlreadySignificant(t *testing.T) {
+	fake := &fakeEngine{}
+	wresult := map[string]api.StatWeight{
+		"agility": {Stat: "agility", Weight: 2.0, Error: 0.1},
+	}
+	spec := specInfo{Spec: "hunter-marksmanship"}
+
+	out, lowConf, err := primaryStatSignificanceCheck(fake, spec, api.CharacterSpec{}, "agility", 100, 3, wresult)
+	if err != nil {
+		t.Fatalf("primaryStatSignificanceCheck: %v", err)
+	}
+	if lowConf {
+		t.Error("lowConfidence = true, want false (already significant)")
+	}
+	if len(fake.WeightsIterationsSeen) != 0 {
+		t.Errorf("WeightsIterationsSeen = %v, want none (no retry needed)", fake.WeightsIterationsSeen)
+	}
+	if out["agility"] != wresult["agility"] {
+		t.Errorf("out[agility] = %+v, want the original measurement unchanged", out["agility"])
+	}
+}
+
+// TestPrimaryStatSignificanceCheckRetriesOnceAndAdoptsASignificant
+// Result is this lane's brief, item 3's second required case:
+// "insignificant primary triggers one retry". The retried sweep (at
+// primaryStatRetryIterationsFactor times weightsIterations) measures
+// significant, so lowConfidence is false and the returned map's own
+// agility entry is the RETRIED measurement, not the original - every
+// other entry (and the caller's own wresult) is untouched.
+func TestPrimaryStatSignificanceCheckRetriesOnceAndAdoptsASignificantResult(t *testing.T) {
+	fake := &fakeEngine{
+		WeightsFunc: func(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+			return map[string]api.StatWeight{
+				"agility": {Stat: "agility", Weight: 2.0, Error: 0.1},
+			}, 1.0, nil
+		},
+	}
+	wresult := map[string]api.StatWeight{
+		"agility":             {Stat: "agility", Weight: 2.0, Error: 3.0},
+		"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0, Error: 0.01},
+	}
+	spec := specInfo{Spec: "hunter-marksmanship"}
+
+	const weightsIterations = 100
+	out, lowConf, err := primaryStatSignificanceCheck(fake, spec, api.CharacterSpec{}, "agility", weightsIterations, 3, wresult)
+	if err != nil {
+		t.Fatalf("primaryStatSignificanceCheck: %v", err)
+	}
+	if lowConf {
+		t.Error("lowConfidence = true, want false (the retry resolved it)")
+	}
+	want := []int{weightsIterations * primaryStatRetryIterationsFactor}
+	if len(fake.WeightsIterationsSeen) != 1 || fake.WeightsIterationsSeen[0] != want[0] {
+		t.Errorf("WeightsIterationsSeen = %v, want exactly %v (one retry, at %dx)", fake.WeightsIterationsSeen, want, primaryStatRetryIterationsFactor)
+	}
+	if out["agility"].Error != 0.1 {
+		t.Errorf("out[agility] = %+v, want the retried (significant) measurement", out["agility"])
+	}
+	if out["ranged_attack_power"] != wresult["ranged_attack_power"] {
+		t.Errorf("out[ranged_attack_power] = %+v, want untouched - this guard only ever replaces the anchor row", out["ranged_attack_power"])
+	}
+	if wresult["agility"].Error != 3.0 {
+		t.Errorf("original wresult was mutated: %+v, want the original 3.0 error unchanged (this package's immutability rule)", wresult["agility"])
+	}
+}
+
+// TestPrimaryStatSignificanceCheckRetryStillInsignificantSetsTheFlag
+// is this lane's brief, item 3's third required case: "retry still
+// insignificant sets the flag". The retried sweep still measures
+// insignificant, so lowConfidence is true, exactly one retry call was
+// made (never a second), and the returned map still carries the
+// RETRIED (not the original) measurement - more iterations is still
+// the best data available, even though it did not clear the bar.
+func TestPrimaryStatSignificanceCheckRetryStillInsignificantSetsTheFlag(t *testing.T) {
+	retried := api.StatWeight{Stat: "agility", Weight: 2.0, Error: 3.0}
+	fake := &fakeEngine{
+		WeightsFunc: func(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+			return map[string]api.StatWeight{"agility": retried}, 1.0, nil
+		},
+	}
+	wresult := map[string]api.StatWeight{
+		"agility": {Stat: "agility", Weight: 1.9, Error: 2.9},
+	}
+	spec := specInfo{Spec: "hunter-marksmanship"}
+
+	out, lowConf, err := primaryStatSignificanceCheck(fake, spec, api.CharacterSpec{}, "agility", 100, 3, wresult)
+	if err != nil {
+		t.Fatalf("primaryStatSignificanceCheck: %v", err)
+	}
+	if !lowConf {
+		t.Error("lowConfidence = false, want true (still insignificant after the one retry)")
+	}
+	if len(fake.WeightsIterationsSeen) != 1 {
+		t.Errorf("WeightsIterationsSeen = %v, want exactly one call (never a second retry)", fake.WeightsIterationsSeen)
+	}
+	if out["agility"] != retried {
+		t.Errorf("out[agility] = %+v, want the retried measurement %+v (more iterations is still the best data available)", out["agility"], retried)
+	}
+}
+
+// TestForceAnchorRowSignificantClearsOnlyTheAnchorRow is this lane's
+// brief, item 3's own rule ("no primary stat ever published as 'not
+// significant'") in isolation: only the row named by anchorStat is
+// touched, every other row's own Insignificant flag is untouched.
+func TestForceAnchorRowSignificantClearsOnlyTheAnchorRow(t *testing.T) {
+	rows := []weightRow{
+		{Stat: "agility", Weight: 2.0, Insignificant: true},
+		{Stat: "crit", Weight: 0.3, Insignificant: true},
+	}
+
+	out := forceAnchorRowSignificant(rows, "agility", "")
+
+	byStat := make(map[string]weightRow, len(out))
+	for _, row := range out {
+		byStat[row.Stat] = row
+	}
+	if byStat["agility"].Insignificant {
+		t.Error("agility.Insignificant = true, want false (the anchor row)")
+	}
+	if !byStat["crit"].Insignificant {
+		t.Error("crit.Insignificant = false, want true (not the anchor row - must stay untouched)")
+	}
+}
+
+// TestForceAnchorRowSignificantNeverClearsOnAnUntrustworthyBand is
+// forceAnchorRowSignificant's own carve-out: a band whose whole sweep
+// is untrustworthy (weightsReason != "") must not have its anchor row
+// silently exempted back to "significant" - every row stays whatever
+// buildReport's own weightsReason override already set it to.
+func TestForceAnchorRowSignificantNeverClearsOnAnUntrustworthyBand(t *testing.T) {
+	rows := []weightRow{{Stat: "agility", Weight: 2.0, Insignificant: true}}
+
+	out := forceAnchorRowSignificant(rows, "agility", "reference stat measured -0.02 - not positive beyond its own error")
+
+	if !out[0].Insignificant {
+		t.Error("Insignificant = false, want true (weightsReason != \"\" - the whole band is untrustworthy)")
 	}
 }
