@@ -3,9 +3,9 @@ title: Retribution Paladin in Forever
 classSlug: paladin
 spec: retribution
 role: dps
-build: 'FS1:1.60.1.70009:paladin:human:0/55325/55223331211000021:'
+build: 'FS1:1.60.1.70009:paladin:human:54/3232/0502533121133021:'
 recommendedRaces: [human, undead]
-statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Strength, Attack power, Critical strike, Hit, Agility, Melee haste]
 description: 'Talents, rotation, stats, gear, races, and professions for Retribution Paladin melee damage in Forever.'
 updated: 2026-09-24
 confidence: inferred
@@ -39,16 +39,9 @@ Retribution is Forever's Paladin melee damage tree, built around keeping a Seal 
 
 ## Talents and builds
 
-Verified against this build's own Paladin talent data:
+A 155-candidate talent search against this build's own level-60 gear and engine replaced this guide's previous spend: the best build that keeps every talent the engine's code still ignores beat the old guide build by +28 DPS, +17%, in our level-60 simulation (191.0 versus 163.5). It takes **Vengeance** (+3, more Physical damage and a free-hit chance on melee swings), **Two-Handed Weapon Specialization** (+3, a flat damage bonus to two-handed weapon hits), **Divine Strength** (+5, flat Strength with no further Holy investment required), **Divine Intellect** (+4, more Intellect feeding Judgement mana and a little crit), and **Conviction** maxed at 5/5 (up from 3/5, more crit damage on every Seal proc and melee swing) — all five measured as real damage gains by the engine's own per-talent probe, not assumed.
 
-1. **Seal of Command** — the tree's signature damage Seal, adding a chance for extra Holy damage on weapon swings and judging for a burst of Holy damage on demand.
-2. **Sanctified Judgement** — gives Judgement a chance to refund part of the judged Seal's mana cost, up to a guaranteed 60% refund at rank 3, which keeps a melee-focused build from running dry on mana.
-3. **Vindication** — melee hits have a chance to reduce the target's attack power while raising your own, a self-buff on top of a minor debuff.
-4. **Sacred Arbiter** — increases Holy Strike's damage and makes it refresh all active Judgement effects on the target, tying the baseline attack directly into Retribution's damage.
-5. **Instrument of Law** — shortens Hammer of Wrath's cast time, which matters specifically for landing it cleanly inside a shrinking execute window.
-6. **Twist of Light** — the tree's capstone talent; its tooltip describes swapping off a Seal granting an echo that applies the old Seal's effect on the next melee hit, which on paper is what would make seal twisting viable without losing a swing to bad timing. This site's own rotation does not seal twist (see Rotation and priority, below) — this build's own engine has no code path that reads this talent at all, so it currently does nothing in a sim regardless of how it plays live. Until that lands, this last point is better spent in Holy on the Holy Shock talent instead.
-
-This build puts 31 points in Retribution to reach Twist of Light, or would stop one short of it for a player taking Holy Shock instead, with the remaining 20 in Protection for baseline survivability — Toughness, Redoubt, and Anticipation all maxed, then Precision and Guardian's Favor for the rest of the budget — since Retribution has few defensive tools of its own. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+To pay for them, it spends fewer points in **Toughness** (5 → 3) and **Redoubt** (5 → 2), and drops **Anticipation**, **Deflection**, and **Improved Judgement** entirely. Improved Judgement in particular simmed as a small DPS _loss_ under this rotation (−1.78 per point) rather than merely a wasted pick, which is why it's cut outright rather than just deprioritized. **Seal of Command**, **Sanctified Judgement**, **Vindication**, **Sacred Arbiter**, **Instrument of Law**, **Guardian's Favor**, **Pursuit of Justice**, **Eye for an Eye**, **Holy Conduit**, and **Champion of the Light** all stay at their previous ranks — some are real, engine-modeled damage (Vindication, Sacred Arbiter), the rest are talents this build's engine has no code path for at all, so leaving them untouched neither cost nor gained anything in the search. This spend is still a projection — the beta cap of 30 has not let anyone test it live, only this site's own simulator. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
 ## Rotation and priority
 
@@ -60,14 +53,7 @@ Consecration, also new in Forever's baseline kit this week, is deliberately abse
 
 ## Stat priority
 
-Ordered by this site's own simulator-derived weights:
-
-1. **Attack power** — the primary driver of Retribution's melee and Seal proc damage.
-2. **Strength** — converts directly into attack power, Retribution's top stat.
-3. **Agility** — adds crit chance and a small amount of attack power and armor.
-4. **Crit** — increases the value of every Seal proc and melee swing, and feeds Reckoning if any points are spent in Protection.
-5. **Hit** — keeps Judgement and Holy Strike landing reliably, since a missed Judgement is a missed damage window.
-6. **Melee haste** — more swings per minute, ranked below the stats above it once accuracy and raw power are covered.
+This band's own level-60 simulation ranks Retribution's stats by scale factor, highest per-point value first: Strength 1.00, Attack power 0.50, Critical strike 0.26, Hit 0.23, and Agility 0.17 per point, with Melee haste worth 1.8 per 1% outside that per-point scale. Every one of these stats cleared significance at this band — none of them were too close to call. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

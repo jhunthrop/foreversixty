@@ -5,7 +5,7 @@ spec: frost
 role: dps
 build: 'FS1:1.60.1.70009:mage:gnome:0/235523/2535111300000301051:'
 recommendedRaces: [gnome, troll]
-statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Frost damage']
+statPriority: [Hit, Spell power, Frost power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Frost Mage in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -50,15 +50,7 @@ Right now this site's simulator models Frost as Frostbolt on repeat, with nothin
 
 ## Stat priority
 
-In this site's own simulator weighting, in priority order:
-
-1. **Spell power** — the reference stat; every Frost cast scales off it directly.
-2. **Intellect** — a larger mana pool for a spec that casts Frostbolt continuously.
-3. **Critical strike** — Ice Shards turns every crit into far more damage, and Shatter multiplies your effective crit chance against frozen targets.
-4. **Hit** — needed to stop missing casts against raid-level bosses; only partly covered by Elemental Precision.
-5. **Spell haste** — shortens Frostbolt's cast time, more casts per minute.
-6. **Spell penetration** — only matters against targets with meaningful frost resistance.
-7. **Frost damage (school power)** — the narrowest stat, appearing on very few items, but it stacks directly with Piercing Ice's percentage bonus.
+This band's own level-60 simulation ranks Frost's stats by scale factor, highest per-point value first: Hit 1.06, Spell power and Frost power both 1.01, Intellect 1.00, and Critical strike 0.58 per point, with Spell haste worth 4.8 per 1% outside that per-point scale. Spell penetration didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

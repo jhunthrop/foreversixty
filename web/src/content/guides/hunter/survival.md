@@ -5,7 +5,7 @@ spec: survival
 role: dps
 build: 'FS1:1.60.1.70009:hunter:dwarf:0/32005500005/500230131051120151:'
 recommendedRaces: [dwarf, troll]
-statPriority: [Attack power, Agility, Strength, Critical strike, Hit, Melee haste]
+statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Survival Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-28
 confidence: inferred
@@ -68,7 +68,7 @@ This site's simulator starts Survival in melee range and keeps it there for the 
 
 ## Stat priority
 
-In simulator-derived priority order: **attack power** (the core scalar behind every melee special and the auto-attack), **agility** (adds attack power and crit both), **strength** (a smaller but real attack-power contributor a melee Hunter didn't need to weigh before), **crit** (more crits, and bigger ones through Predator's Edge and Mortal Shots), **hit** (a miss costs melee uptime, and this spec has no ranged fallback to cover for it), and **melee haste** last — it speeds up the swing timer Raptor Strike rides, but everything ahead of it matters more per point.
+This band's own level-60 simulation ranks Survival's stats by scale factor, highest per-point value first: Agility 1.00, Attack power and Strength both 0.83, Critical strike 0.39, and Hit 0.10 per point. Melee haste didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

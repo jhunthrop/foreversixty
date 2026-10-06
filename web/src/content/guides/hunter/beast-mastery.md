@@ -5,7 +5,7 @@ spec: beast-mastery
 role: dps
 build: 'FS1:1.60.1.70009:hunter:dwarf:5420001505001251/3551/51:'
 recommendedRaces: [dwarf, troll]
-statPriority: [Attack power, 'Ranged attack power', Agility, Critical strike, Hit, Melee haste]
+statPriority: [Agility, Critical strike, Ranged attack power, Hit, Melee haste]
 description: 'Beast Mastery Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -62,7 +62,7 @@ This site's own simulator plays Beast Mastery on the same Aimed Shot and Multi-S
 
 ## Stat priority
 
-In simulator-derived priority order: **attack power** (the core scalar behind auto shots and every ability in this rotation), **ranged attack power** specifically (the ranged-only component that stacks on top of general attack power), **agility** (adds both attack power and ranged crit indirectly), **crit** (extra shot damage, and, through Ferocity and Frenzy, more value out of the pet), **hit** (misses cost both shot uptime and pet-buffing talent value), and **melee haste** last, since this spec's damage is mostly ranged and pet-driven rather than built around the Hunter's own melee swing.
+This band's own level-60 simulation ranks Beast Mastery's stats by scale factor, highest per-point value first: Agility 1.00, Critical strike 0.49, Ranged attack power 0.46, and Hit 0.16 per point, with Melee haste worth 5.6 per 1% outside that per-point scale — the sim doesn't carry a separate general Attack power row for this spec at all. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

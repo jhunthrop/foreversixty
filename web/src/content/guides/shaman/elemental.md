@@ -5,7 +5,7 @@ spec: elemental
 role: dps
 build: 'FS1:1.60.1.70009:shaman:dwarf:4532310300103051/0/553322:'
 recommendedRaces: [dwarf, orc]
-statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Nature power']
+statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -40,7 +40,7 @@ The loop this site's simulator plays: against a single target, drop Searing Tote
 
 ## Stat priority
 
-In simulator-derived priority order: **spell power** first, the direct multiplier on every offensive spell. **Intellect** next for mana pool and a small crit contribution. **Crit** raises both direct damage and Elemental Fury's bonus crit damage on totems and spells. **Hit** keeps casts landing consistently. **Spell haste** speeds up the whole rotation, compounding with Elemental Alacrity. **Spell penetration** helps against magic-resistant targets. **Nature power**, gear boosting Nature damage specifically, sits last as the most specialized stat.
+This band's own level-60 simulation ranks Elemental's stats by scale factor, highest per-point value first: Intellect 1.00, Spell power 0.79, Hit 0.51, Nature power 0.43, and Critical strike 0.32 per point, with Spell haste worth 5.9 per 1% outside that per-point scale. Spell penetration didn't clear significance at this band — the sim's error on it is too wide to call it apart from zero, not a verdict that the stat is worthless. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

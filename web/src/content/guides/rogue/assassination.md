@@ -5,7 +5,7 @@ spec: assassination
 role: dps
 build: 'FS1:1.60.1.70009:rogue:night-elf:32500000551501051/3252/51:'
 recommendedRaces: [night-elf, troll]
-statPriority: [Attack power, Agility, Critical strike, Hit, Melee haste]
+statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Assassination Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -40,7 +40,7 @@ This site's own simulator now has both Mutilate and Venom implemented, and gates
 
 ## Stat priority
 
-In simulator-derived priority order: **attack power** (the primary damage driver for every physical attack in the rotation), **agility** (adds both attack power and crit indirectly), **crit** (feeds Seal Fate's bonus combo points and Cold Blood's guaranteed hit), **hit** (avoiding misses keeps combo-point generation consistent), and **melee haste** last (more swings and faster energy-limited combo generation).
+This band's own level-60 simulation ranks Assassination's stats by scale factor, highest per-point value first: Agility 1.00, Attack power and Strength both 0.89, Critical strike 0.26, and Hit 0.08 per point, with Melee haste worth 2.9 per 1% outside that per-point scale. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 

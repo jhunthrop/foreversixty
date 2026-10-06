@@ -5,7 +5,7 @@ spec: marksmanship
 role: dps
 build: 'FS1:1.60.1.70009:hunter:dwarf:5522/35305500115003/51:'
 recommendedRaces: [dwarf, troll]
-statPriority: [Attack power, 'Ranged attack power', Agility, Critical strike, Hit, Melee haste]
+statPriority: [Agility, Critical strike, Ranged attack power, Hit, Melee haste]
 description: 'Marksmanship Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -62,7 +62,7 @@ This site's own simulator plays Marksmanship as the most direct read of the shar
 
 ## Stat priority
 
-In simulator-derived priority order: **attack power** (the core scalar behind auto shots and every shot in this rotation), **ranged attack power** specifically (the ranged-only component that stacks on top of general attack power), **agility** (adds both attack power and ranged crit indirectly), **crit** (extra shot damage, and, through Mortal Shots, extra crit damage on top of that), **hit** (misses waste an Aimed Shot cast, which is costly in a spec built around that one slow ability), and **melee haste** last, since this spec's damage comes almost entirely from ranged shots rather than melee swings.
+This band's own level-60 simulation ranks Marksmanship's stats by scale factor, highest per-point value first: Agility 1.00, Critical strike 0.61, Ranged attack power 0.44, and Hit 0.15 per point, with Melee haste worth 4.6 per 1% outside that per-point scale — the sim doesn't carry a separate general Attack power row for this spec at all. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
 
 ## Gear
 
