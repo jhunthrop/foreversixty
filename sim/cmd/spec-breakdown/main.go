@@ -30,6 +30,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/request"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 const buildDir = "data/builds/1.60.1.70009"
@@ -45,6 +46,7 @@ type options struct {
 	consumes   string
 	buffs      string
 	talents    string
+	rotation   string
 	jsonOut    bool
 }
 
@@ -60,6 +62,7 @@ func main() {
 	flag.StringVar(&o.consumes, "consumes", "", "comma list replacing the kit and preset consumables")
 	flag.StringVar(&o.buffs, "buffs", "", "comma list added to the request's buffs")
 	flag.StringVar(&o.talents, "talents", "", "talent string replacing the published one")
+	flag.StringVar(&o.rotation, "rotation", "", "JSON file whose \"rotation\" object (the curated file's shape) replaces the spec's own priority list")
 	flag.BoolVar(&o.jsonOut, "json", false, "print the totals as JSON")
 	flag.Parse()
 	if err := run(o); err != nil {
@@ -76,7 +79,11 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	est, player, err := inproc.PlainRunWithRotation(req, nil)
+	rotation, err := loadRotation(o.rotation)
+	if err != nil {
+		return err
+	}
+	est, player, err := inproc.PlainRunWithRotation(req, rotation)
 	if err != nil {
 		return err
 	}
@@ -90,6 +97,32 @@ func run(o options) error {
 	}
 	fmt.Print(report.markdown())
 	return nil
+}
+
+// loadRotation reads the "rotation" object of a curated rotation file; an
+// empty path keeps the spec's own rotation.
+func loadRotation(path string) (*proto.APLRotation, error) {
+	if path == "" {
+		return nil, nil
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var file struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		return nil, fmt.Errorf("decoding %s: %w", path, err)
+	}
+	if len(file.Rotation) == 0 {
+		return nil, fmt.Errorf("%s has no \"rotation\" object", path)
+	}
+	rotation := &proto.APLRotation{}
+	if err := protojson.Unmarshal(file.Rotation, rotation); err != nil {
+		return nil, fmt.Errorf("decoding the rotation in %s: %w", path, err)
+	}
+	return rotation, nil
 }
 
 type bisEntry struct {
