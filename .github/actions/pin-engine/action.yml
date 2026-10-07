@@ -21,6 +21,11 @@ runs:
       run: |
         sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' enginever/version.go)
         test -n "$sha" || { echo "sim/enginever/version.go has no Version; run make engine-pin"; exit 1; }
+        # The restored module cache can hold a shallow git clone of the
+        # fork from an earlier run; resolving a new sha against it fails
+        # with "shallow file has changed since we read it" (three runs on
+        # 2026-10-07). A fresh vcs cache costs one clone and is deterministic.
+        rm -rf "$(go env GOMODCACHE)/cache/vcs"
         # The pseudo-version go resolves for that sha. The @-form asks
         # the proxy, which is what a consumer of this module would do.
         go mod edit -replace "github.com/wowsims/classic=github.com/jhunthrop/wowsims-forever@$sha"
