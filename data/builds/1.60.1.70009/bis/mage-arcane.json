@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "c0c749361",
-  "generated_at": "2026-10-07T17:36:44Z",
+  "engine_version": "f5fe31003",
+  "generated_at": "2026-10-07T18:07:57Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.986183514,
-      "verify_run_seconds": 0.675365246,
+      "weights_run_seconds": 0.969375094,
+      "verify_run_seconds": 0.679882577,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.986183514,
-      "verify_run_seconds": 0.6669961,
+      "weights_run_seconds": 0.969375094,
+      "verify_run_seconds": 0.657249271,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1880,8 +1880,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.063291435,
-      "verify_run_seconds": 0.713454835,
+      "weights_run_seconds": 1.048173963,
+      "verify_run_seconds": 0.698415985,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2587,8 +2587,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.063291435,
-      "verify_run_seconds": 0.738955844,
+      "weights_run_seconds": 1.048173963,
+      "verify_run_seconds": 0.711943593,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3263,8 +3263,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.329333538,
-      "verify_run_seconds": 0.797352785,
+      "weights_run_seconds": 1.311307856,
+      "verify_run_seconds": 0.809296719,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.329333538,
-      "verify_run_seconds": 0.781476216,
+      "weights_run_seconds": 1.311307856,
+      "verify_run_seconds": 0.801067034,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4631,8 +4631,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.309778141,
-      "verify_run_seconds": 1.006993243,
+      "weights_run_seconds": 1.309829084,
+      "verify_run_seconds": 0.984825149,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5321,8 +5321,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.309778141,
-      "verify_run_seconds": 0.989293926,
+      "weights_run_seconds": 1.309829084,
+      "verify_run_seconds": 0.968008486,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5635,7 +5635,7 @@
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -5.101688670236578
+              "dps_delta": -5.10168867023658
             },
             {
               "item_id": 18385,
@@ -6057,8 +6057,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.392026639,
-      "verify_run_seconds": 0.918198291,
+      "weights_run_seconds": 1.352742243,
+      "verify_run_seconds": 0.898317481,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6378,7 +6378,7 @@
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -5.101688670236578
+              "dps_delta": -5.10168867023658
             }
           ]
         },
@@ -6453,7 +6453,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 47.86241468807639,
+          "score": 47.862414688076385,
           "verified": true,
           "alternatives": [
             {
@@ -6461,21 +6461,21 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.3388796576836017
+              "dps_delta": -3.338879657683597
             },
             {
               "item_id": 272393,
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.8425641043339156
+              "dps_delta": -3.842564104333913
             },
             {
               "item_id": 19090,
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -7.508296122125921
+              "dps_delta": -7.508296122125918
             }
           ]
         },
@@ -6790,8 +6790,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.392026639,
-      "verify_run_seconds": 0.913141349,
+      "weights_run_seconds": 1.352742243,
+      "verify_run_seconds": 0.894773628,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
-  "engine_version": "c0c749361",
-  "generated_at": "2026-10-07T17:41:05Z",
+  "engine_version": "f5fe31003",
+  "generated_at": "2026-10-07T18:12:16Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -565,8 +565,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.5483297499999997,
-      "verify_run_seconds": 1.5474587290000001,
+      "weights_run_seconds": 2.471269656,
+      "verify_run_seconds": 1.5537435469999998,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1211,8 +1211,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.5483297499999997,
-      "verify_run_seconds": 1.589247745,
+      "weights_run_seconds": 2.471269656,
+      "verify_run_seconds": 1.543198225,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1893,8 +1893,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.686377226,
-      "verify_run_seconds": 1.731523286,
+      "weights_run_seconds": 2.725942108,
+      "verify_run_seconds": 1.721937182,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2582,8 +2582,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.686377226,
-      "verify_run_seconds": 1.743050857,
+      "weights_run_seconds": 2.725942108,
+      "verify_run_seconds": 1.735103642,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3273,8 +3273,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.897351585,
-      "verify_run_seconds": 1.745369804,
+      "weights_run_seconds": 2.908017791,
+      "verify_run_seconds": 1.771437393,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3971,8 +3971,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.897351585,
-      "verify_run_seconds": 1.7911427629999999,
+      "weights_run_seconds": 2.908017791,
+      "verify_run_seconds": 1.818804052,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4674,8 +4674,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.939344514,
-      "verify_run_seconds": 2.09191289,
+      "weights_run_seconds": 2.976786732,
+      "verify_run_seconds": 2.119178257,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5380,8 +5380,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.939344514,
-      "verify_run_seconds": 2.146920011,
+      "weights_run_seconds": 2.976786732,
+      "verify_run_seconds": 2.159632248,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6122,8 +6122,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.932288996,
-      "verify_run_seconds": 2.142586679,
+      "weights_run_seconds": 2.961624634,
+      "verify_run_seconds": 2.184479905,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6865,8 +6865,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.932288996,
-      "verify_run_seconds": 2.167560449,
+      "weights_run_seconds": 2.961624634,
+      "verify_run_seconds": 2.192976637,
       "coverage": {
         "back": {
           "eligible": 451,

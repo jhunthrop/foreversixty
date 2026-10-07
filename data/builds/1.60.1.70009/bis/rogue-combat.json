@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
-  "engine_version": "c0c749361",
-  "generated_at": "2026-10-07T17:40:13Z",
+  "engine_version": "f5fe31003",
+  "generated_at": "2026-10-07T18:11:24Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -565,8 +565,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.50433903,
-      "verify_run_seconds": 1.779557832,
+      "weights_run_seconds": 2.497151735,
+      "verify_run_seconds": 1.732826752,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1210,8 +1210,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.50433903,
-      "verify_run_seconds": 1.763617407,
+      "weights_run_seconds": 2.497151735,
+      "verify_run_seconds": 1.76511855,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1891,8 +1891,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.532448702,
-      "verify_run_seconds": 1.795486898,
+      "weights_run_seconds": 2.5667048599999998,
+      "verify_run_seconds": 1.839375019,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.532448702,
-      "verify_run_seconds": 1.83327046,
+      "weights_run_seconds": 2.5667048599999998,
+      "verify_run_seconds": 1.8777070729999998,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3268,8 +3268,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.7022685749999997,
-      "verify_run_seconds": 1.823846437,
+      "weights_run_seconds": 2.673059395,
+      "verify_run_seconds": 1.836667526,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3965,8 +3965,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.7022685749999997,
-      "verify_run_seconds": 1.830063249,
+      "weights_run_seconds": 2.673059395,
+      "verify_run_seconds": 1.827543572,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4674,8 +4674,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.674282452,
-      "verify_run_seconds": 2.219064635,
+      "weights_run_seconds": 2.73126111,
+      "verify_run_seconds": 2.251542782,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5378,8 +5378,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.674282452,
-      "verify_run_seconds": 2.260394815,
+      "weights_run_seconds": 2.73126111,
+      "verify_run_seconds": 2.26981136,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5900,14 +5900,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "quest",
               "source": "The Path of the Conqueror",
-              "dps_delta": -0.05655232566386621
+              "dps_delta": -0.056552325663866025
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.2383482429143672
+              "dps_delta": -0.23834824291436701
             },
             {
               "item_id": 11669,
@@ -6121,8 +6121,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.714195041,
-      "verify_run_seconds": 2.199898701,
+      "weights_run_seconds": 2.722800618,
+      "verify_run_seconds": 2.254822567,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6643,14 +6643,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "quest",
               "source": "The Path of the Conqueror",
-              "dps_delta": -0.05655232566386621
+              "dps_delta": -0.056552325663866025
             },
             {
               "item_id": 11862,
               "item_name": "White Bone Band",
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons",
-              "dps_delta": -0.07463014633112798
+              "dps_delta": -0.07463014633112779
             },
             {
               "item_id": 11669,
@@ -6866,8 +6866,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.714195041,
-      "verify_run_seconds": 2.215735673,
+      "weights_run_seconds": 2.722800618,
+      "verify_run_seconds": 2.251712065,
       "coverage": {
         "back": {
           "eligible": 451,
