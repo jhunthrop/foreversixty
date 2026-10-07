@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "81d950bf9",
-  "generated_at": "2026-10-07T03:26:05Z",
+  "engine_version": "20258554d",
+  "generated_at": "2026-10-07T13:07:23Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -901,8 +901,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.573894094,
-      "verify_run_seconds": 0.842447513,
+      "weights_run_seconds": 2.491841669,
+      "verify_run_seconds": 1.314228317,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1942,8 +1942,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.573894094,
-      "verify_run_seconds": 0.840113364,
+      "weights_run_seconds": 2.491841669,
+      "verify_run_seconds": 1.302216188,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2661,8 +2661,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.5596942459999998,
-      "verify_run_seconds": 0.781711751,
+      "weights_run_seconds": 2.488626505,
+      "verify_run_seconds": 1.191006172,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3378,8 +3378,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.5596942459999998,
-      "verify_run_seconds": 0.812412204,
+      "weights_run_seconds": 2.488626505,
+      "verify_run_seconds": 1.2161471,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4063,8 +4063,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.270867158,
-      "verify_run_seconds": 0.690758778,
+      "weights_run_seconds": 1.95082438,
+      "verify_run_seconds": 1.066317063,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4741,8 +4741,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.270867158,
-      "verify_run_seconds": 0.701345807,
+      "weights_run_seconds": 1.95082438,
+      "verify_run_seconds": 1.067167356,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5453,8 +5453,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.271056689,
-      "verify_run_seconds": 0.837686391,
+      "weights_run_seconds": 1.955495505,
+      "verify_run_seconds": 1.273309097,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6166,8 +6166,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.271056689,
-      "verify_run_seconds": 0.863662871,
+      "weights_run_seconds": 1.955495505,
+      "verify_run_seconds": 1.301774661,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6415,7 +6415,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 34.59057135502139,
+          "score": 34.590571355021396,
           "verified": true,
           "alternatives": [
             {
@@ -6423,21 +6423,21 @@
               "item_name": "Field Marshal's Dreadweave Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.7870919923972112
+              "dps_delta": -0.7870919923972132
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -2.3503492401086716
+              "dps_delta": -2.350349240108674
             },
             {
               "item_id": 19059,
               "item_name": "Argent Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.774289987090235
+              "dps_delta": -2.774289987090237
             }
           ]
         },
@@ -6910,8 +6910,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.278572891,
-      "verify_run_seconds": 0.841455374,
+      "weights_run_seconds": 2.032923352,
+      "verify_run_seconds": 1.279704663,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7569,7 +7569,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.9244220680153552
+              "dps_delta": -0.9244220680153531
             },
             {
               "item_id": 1728,
@@ -7658,8 +7658,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.278572891,
-      "verify_run_seconds": 0.841720669,
+      "weights_run_seconds": 2.032923352,
+      "verify_run_seconds": 1.257798,
       "coverage": {
         "back": {
           "eligible": 450,

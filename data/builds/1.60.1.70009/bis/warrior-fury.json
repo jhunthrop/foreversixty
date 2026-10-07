@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "81d950bf9",
-  "generated_at": "2026-10-07T03:27:33Z",
+  "engine_version": "20258554d",
+  "generated_at": "2026-10-07T13:09:41Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -603,8 +603,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.73229832,
-      "verify_run_seconds": 0.989347229,
+      "weights_run_seconds": 2.70945562,
+      "verify_run_seconds": 1.461206107,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1276,8 +1276,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.73229832,
-      "verify_run_seconds": 0.974693679,
+      "weights_run_seconds": 2.70945562,
+      "verify_run_seconds": 1.503167492,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1973,8 +1973,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.7983315420000001,
-      "verify_run_seconds": 0.962717186,
+      "weights_run_seconds": 2.90316601,
+      "verify_run_seconds": 1.5971107,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,8 +2678,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.7983315420000001,
-      "verify_run_seconds": 1.002255337,
+      "weights_run_seconds": 2.90316601,
+      "verify_run_seconds": 1.551761457,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3355,8 +3355,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.134565664,
-      "verify_run_seconds": 1.147703098,
+      "weights_run_seconds": 3.364030406,
+      "verify_run_seconds": 1.724361666,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4040,8 +4040,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.134565664,
-      "verify_run_seconds": 1.150046363,
+      "weights_run_seconds": 3.364030406,
+      "verify_run_seconds": 1.779461125,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4748,8 +4748,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.256348955,
-      "verify_run_seconds": 1.53960652,
+      "weights_run_seconds": 3.689339351,
+      "verify_run_seconds": 2.465988011,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4916,7 +4916,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.007447186895103068
+              "dps_delta": -0.0074471868951026645
             },
             {
               "item_id": 14849,
@@ -5458,8 +5458,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.256348955,
-      "verify_run_seconds": 1.5885959760000001,
+      "weights_run_seconds": 3.689339351,
+      "verify_run_seconds": 2.435736117,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5892,7 +5892,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.19777476613380354
+              "dps_delta": -0.19777476613380454
             },
             {
               "item_id": 231540,
@@ -6220,8 +6220,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.366218056,
-      "verify_run_seconds": 1.417089268,
+      "weights_run_seconds": 3.7984458500000002,
+      "verify_run_seconds": 2.263593774,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6649,14 +6649,14 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.19777476613380454
+              "dps_delta": -0.19777476613380354
             },
             {
               "item_id": 22651,
               "item_name": "Outrider's Plate Legguards",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.638313384817843
+              "dps_delta": -0.638313384817844
             },
             {
               "item_id": 14554,
@@ -6975,8 +6975,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.366218056,
-      "verify_run_seconds": 1.449943687,
+      "weights_run_seconds": 3.7984458500000002,
+      "verify_run_seconds": 2.322603474,
       "coverage": {
         "back": {
           "eligible": 450,

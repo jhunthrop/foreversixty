@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "81d950bf9",
-  "generated_at": "2026-10-07T03:27:01Z",
+  "engine_version": "20258554d",
+  "generated_at": "2026-10-07T13:08:50Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -545,8 +545,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.5544635690000002,
-      "verify_run_seconds": 0.75740572,
+      "weights_run_seconds": 2.5464399970000002,
+      "verify_run_seconds": 1.160335504,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1190,8 +1190,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.5544635690000002,
-      "verify_run_seconds": 0.709772453,
+      "weights_run_seconds": 2.5464399970000002,
+      "verify_run_seconds": 1.074092878,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1858,8 +1858,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.772196798,
-      "verify_run_seconds": 0.947032319,
+      "weights_run_seconds": 2.832230595,
+      "verify_run_seconds": 1.371768689,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2532,8 +2532,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.772196798,
-      "verify_run_seconds": 0.908894905,
+      "weights_run_seconds": 2.832230595,
+      "verify_run_seconds": 1.373371564,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3217,8 +3217,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.125069496,
-      "verify_run_seconds": 0.987468069,
+      "weights_run_seconds": 3.478611978,
+      "verify_run_seconds": 1.4717150829999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3896,8 +3896,8 @@
         "main_hand: Fiery War Axe",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.125069496,
-      "verify_run_seconds": 0.960164202,
+      "weights_run_seconds": 3.478611978,
+      "verify_run_seconds": 1.471184464,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4575,8 +4575,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.244667916,
-      "verify_run_seconds": 1.120254839,
+      "weights_run_seconds": 3.6549891150000002,
+      "verify_run_seconds": 1.672827906,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5273,8 +5273,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.244667916,
-      "verify_run_seconds": 1.1864154359999999,
+      "weights_run_seconds": 3.6549891150000002,
+      "verify_run_seconds": 1.795656182,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5442,7 +5442,7 @@
               "dps_delta": -0.10609093075483197
             },
             {
-              "item_id": 23314,
+              "item_id": 227044,
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
@@ -5993,8 +5993,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 6.374751159,
-      "verify_run_seconds": 1.033318219,
+      "weights_run_seconds": 10.449577834,
+      "verify_run_seconds": 1.6802594069999999,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6715,8 +6715,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 6.374751159,
-      "verify_run_seconds": 1.031409391,
+      "weights_run_seconds": 10.449577834,
+      "verify_run_seconds": 1.6790632680000002,
       "coverage": {
         "back": {
           "eligible": 450,

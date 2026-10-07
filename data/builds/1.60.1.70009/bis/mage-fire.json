@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70009",
-  "engine_version": "81d950bf9",
-  "generated_at": "2026-10-07T03:22:05Z",
+  "engine_version": "20258554d",
+  "generated_at": "2026-10-07T13:01:16Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -549,8 +549,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.697430965,
-      "verify_run_seconds": 0.507521455,
+      "weights_run_seconds": 1.053940256,
+      "verify_run_seconds": 0.733723657,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.697430965,
-      "verify_run_seconds": 0.54576533,
+      "weights_run_seconds": 1.053940256,
+      "verify_run_seconds": 0.794821471,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.789206278,
-      "verify_run_seconds": 0.548651338,
+      "weights_run_seconds": 1.1514204000000001,
+      "verify_run_seconds": 0.778019196,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2546,8 +2546,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.789206278,
-      "verify_run_seconds": 0.538166454,
+      "weights_run_seconds": 1.1514204000000001,
+      "verify_run_seconds": 0.786181544,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3206,8 +3206,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.793777916,
-      "verify_run_seconds": 0.517206256,
+      "weights_run_seconds": 1.165480005,
+      "verify_run_seconds": 0.734875294,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3864,8 +3864,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.793777916,
-      "verify_run_seconds": 0.557645068,
+      "weights_run_seconds": 1.165480005,
+      "verify_run_seconds": 0.745465886,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4182,7 +4182,7 @@
               "item_name": "Knight's Dreadweave Vest",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.561692358246037
+              "dps_delta": -1.5616923582460374
             }
           ]
         },
@@ -4271,7 +4271,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.07405799551279685
+              "dps_delta": -0.07405799551279738
             },
             {
               "item_id": 10771,
@@ -4554,8 +4554,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.796450593,
-      "verify_run_seconds": 0.595986397,
+      "weights_run_seconds": 1.168667017,
+      "verify_run_seconds": 0.863403265,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4802,7 +4802,7 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.2691074909658375
+              "dps_delta": -1.269107490965838
             },
             {
               "item_id": 10029,
@@ -4866,7 +4866,7 @@
               "item_name": "Stone Guard's Dreadweave Vest",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.561692358246037
+              "dps_delta": -1.5616923582460374
             },
             {
               "item_id": 1716,
@@ -4909,7 +4909,7 @@
           "item_name": "Sorcerer's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 32.19252120702173,
+          "score": 32.192521207021734,
           "verified": true,
           "alternatives": [
             {
@@ -4917,14 +4917,14 @@
               "item_name": "Dreamweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.545529145917618
+              "dps_delta": -1.5455291459176188
             },
             {
               "item_id": 220908,
               "item_name": "First Sergeant's Dreadweave Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
-              "dps_delta": -1.613579662935218
+              "dps_delta": -1.613579662935219
             },
             {
               "item_id": 272098,
@@ -4957,7 +4957,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.07405799551279738
+              "dps_delta": -0.07405799551279685
             },
             {
               "item_id": 10771,
@@ -5236,8 +5236,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.796450593,
-      "verify_run_seconds": 0.579777431,
+      "weights_run_seconds": 1.168667017,
+      "verify_run_seconds": 0.858338757,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5541,7 +5541,7 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.24604103019177276
+              "dps_delta": -0.2460410301917711
             },
             {
               "item_id": 227108,
@@ -5966,8 +5966,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.840652326,
-      "verify_run_seconds": 0.643453519,
+      "weights_run_seconds": 1.280522522,
+      "verify_run_seconds": 0.91517559,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6271,7 +6271,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.24604103019177276
+              "dps_delta": -0.2460410301917711
             },
             {
               "item_id": 227106,
@@ -6413,7 +6413,7 @@
               "item_name": "Legionnaire's Silk Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -2.5180376088775667
+              "dps_delta": -2.518037608877568
             }
           ]
         },
@@ -6695,8 +6695,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.840652326,
-      "verify_run_seconds": 0.56634599,
+      "weights_run_seconds": 1.280522522,
+      "verify_run_seconds": 0.893104106,
       "coverage": {
         "back": {
           "eligible": 450,

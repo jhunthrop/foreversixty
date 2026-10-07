@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
-  "engine_version": "81d950bf9",
-  "generated_at": "2026-10-07T03:23:28Z",
+  "engine_version": "20258554d",
+  "generated_at": "2026-10-07T13:03:24Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -566,8 +566,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.441602368,
-      "verify_run_seconds": 0.961719589,
+      "weights_run_seconds": 2.23748407,
+      "verify_run_seconds": 1.448925888,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1213,8 +1213,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.441602368,
-      "verify_run_seconds": 0.939947831,
+      "weights_run_seconds": 2.23748407,
+      "verify_run_seconds": 1.3549046790000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.610691329,
-      "verify_run_seconds": 0.975755366,
+      "weights_run_seconds": 2.385922469,
+      "verify_run_seconds": 1.43788579,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2580,8 +2580,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.610691329,
-      "verify_run_seconds": 0.991084324,
+      "weights_run_seconds": 2.385922469,
+      "verify_run_seconds": 1.427544403,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.562006138,
-      "verify_run_seconds": 0.975927387,
+      "weights_run_seconds": 2.406533068,
+      "verify_run_seconds": 1.460612637,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3963,8 +3963,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.562006138,
-      "verify_run_seconds": 1.009487254,
+      "weights_run_seconds": 2.406533068,
+      "verify_run_seconds": 1.463512108,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4661,8 +4661,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.721773032,
-      "verify_run_seconds": 1.335552749,
+      "weights_run_seconds": 2.542597473,
+      "verify_run_seconds": 1.931981908,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5362,8 +5362,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.721773032,
-      "verify_run_seconds": 1.2528288920000001,
+      "weights_run_seconds": 2.542597473,
+      "verify_run_seconds": 1.941508469,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5800,11 +5800,11 @@
               "dps_delta": -0.12209590499497322
             },
             {
-              "item_id": 23299,
+              "item_id": 227061,
               "item_name": "Knight-Captain's Leather Legguards",
               "source_kind": "vendor",
-              "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -0.42987473861997444
+              "source": "Captain Dirgehammer",
+              "dps_delta": -0.42987473861997416
             }
           ]
         },
@@ -6110,8 +6110,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.642284997,
-      "verify_run_seconds": 1.251686475,
+      "weights_run_seconds": 2.563688518,
+      "verify_run_seconds": 1.841118875,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6551,7 +6551,7 @@
               "item_name": "Legionnaire's Leather Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.42987473861997416
+              "dps_delta": -0.42987473861997444
             }
           ]
         },
@@ -6857,8 +6857,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.642284997,
-      "verify_run_seconds": 1.233380605,
+      "weights_run_seconds": 2.563688518,
+      "verify_run_seconds": 1.8478752059999999,
       "coverage": {
         "back": {
           "eligible": 451,

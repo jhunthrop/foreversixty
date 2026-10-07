@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
-  "engine_version": "81d950bf9",
-  "generated_at": "2026-10-07T03:26:27Z",
+  "engine_version": "20258554d",
+  "generated_at": "2026-10-07T13:07:58Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -561,8 +561,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.511441528,
-      "verify_run_seconds": 0.721685942,
+      "weights_run_seconds": 2.569938352,
+      "verify_run_seconds": 1.214537583,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1203,8 +1203,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.511441528,
-      "verify_run_seconds": 0.749998168,
+      "weights_run_seconds": 2.569938352,
+      "verify_run_seconds": 1.206438972,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1923,8 +1923,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.543296529,
-      "verify_run_seconds": 0.862857221,
+      "weights_run_seconds": 2.632068173,
+      "verify_run_seconds": 1.277548992,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2643,8 +2643,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.543296529,
-      "verify_run_seconds": 0.801346606,
+      "weights_run_seconds": 2.632068173,
+      "verify_run_seconds": 1.268185378,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3330,8 +3330,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.319874655,
-      "verify_run_seconds": 0.826437451,
+      "weights_run_seconds": 2.224540275,
+      "verify_run_seconds": 1.20736802,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4012,8 +4012,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.319874655,
-      "verify_run_seconds": 0.79668746,
+      "weights_run_seconds": 2.224540275,
+      "verify_run_seconds": 1.22380488,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4278,7 +4278,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.7321726529038806
+              "dps_delta": -2.7321726529038814
             }
           ]
         },
@@ -4722,8 +4722,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.393540859,
-      "verify_run_seconds": 0.913250586,
+      "weights_run_seconds": 2.143749785,
+      "verify_run_seconds": 1.384730327,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5434,8 +5434,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.393540859,
-      "verify_run_seconds": 0.905487512,
+      "weights_run_seconds": 2.143749785,
+      "verify_run_seconds": 1.367789846,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6176,8 +6176,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.424110741,
-      "verify_run_seconds": 0.942125545,
+      "weights_run_seconds": 2.301392073,
+      "verify_run_seconds": 1.3658202369999999,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6918,8 +6918,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.424110741,
-      "verify_run_seconds": 0.949336939,
+      "weights_run_seconds": 2.301392073,
+      "verify_run_seconds": 1.39870322,
       "coverage": {
         "back": {
           "eligible": 450,

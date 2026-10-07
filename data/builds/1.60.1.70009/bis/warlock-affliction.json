@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "81d950bf9",
-  "generated_at": "2026-10-07T03:25:44Z",
+  "engine_version": "20258554d",
+  "generated_at": "2026-10-07T13:06:52Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -891,8 +891,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.408893396,
-      "verify_run_seconds": 0.861398967,
+      "weights_run_seconds": 2.267914117,
+      "verify_run_seconds": 1.3501507099999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1933,8 +1933,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.408893396,
-      "verify_run_seconds": 0.874111358,
+      "weights_run_seconds": 2.267914117,
+      "verify_run_seconds": 1.32241022,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2642,8 +2642,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.368086133,
-      "verify_run_seconds": 0.770924538,
+      "weights_run_seconds": 2.207884249,
+      "verify_run_seconds": 1.216276347,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3350,8 +3350,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.368086133,
-      "verify_run_seconds": 0.799403843,
+      "weights_run_seconds": 2.207884249,
+      "verify_run_seconds": 1.196990084,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4027,8 +4027,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.243290261,
-      "verify_run_seconds": 0.690083084,
+      "weights_run_seconds": 1.828011008,
+      "verify_run_seconds": 1.057257227,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4698,8 +4698,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.243290261,
-      "verify_run_seconds": 0.699837926,
+      "weights_run_seconds": 1.828011008,
+      "verify_run_seconds": 1.063538064,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5397,8 +5397,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.317871741,
-      "verify_run_seconds": 1.071059322,
+      "weights_run_seconds": 2.076100679,
+      "verify_run_seconds": 1.415700303,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5811,7 +5811,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.540567877946248
+              "dps_delta": -0.5405678779462486
             }
           ]
         },
@@ -6103,8 +6103,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.317871741,
-      "verify_run_seconds": 0.936181852,
+      "weights_run_seconds": 2.076100679,
+      "verify_run_seconds": 1.384701732,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6830,8 +6830,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.472211017,
-      "verify_run_seconds": 0.938637373,
+      "weights_run_seconds": 2.188122587,
+      "verify_run_seconds": 1.440718867,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7563,8 +7563,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.472211017,
-      "verify_run_seconds": 0.943065116,
+      "weights_run_seconds": 2.188122587,
+      "verify_run_seconds": 1.447942686,
       "coverage": {
         "back": {
           "eligible": 450,
