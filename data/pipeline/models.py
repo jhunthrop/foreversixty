@@ -1,6 +1,6 @@
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, SerializerFunctionWrapHandler, model_serializer
 
 
 class Zone(BaseModel):
@@ -142,6 +142,18 @@ class TalentEntry(BaseModel):
     #: order is the schema's only compatibility surface, so new fields go on
     #: the end and existing ones never move.
     spell_id: int
+    #: True when a spell this talent names is in none of the build's client tables:
+    #: a hotfix-added spell that only the Wowhead overlay knows (the id and text are
+    #: Wowhead's). Appended last and left out of the emitted JSON while False, so a
+    #: build with no such talent stays byte-identical to the pre-overlay schema.
+    hotfix_only: bool = False
+
+    @model_serializer(mode="wrap")
+    def _omit_false_hotfix_only(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        data = handler(self)
+        if not data.get("hotfix_only"):
+            data.pop("hotfix_only", None)
+        return data
 
 
 class TalentTree(BaseModel):
