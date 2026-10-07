@@ -3,7 +3,7 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70009:warrior:human:35311103002/350511005050010051/0:'
+build: 'FS1:1.60.1.70009:warrior:human:35311103002/35051105050010501/0:'
 recommendedRaces: [human, troll]
 statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
 description: 'Talents, rotation, stat priority, and race picks for Fury Warrior in Forever, with beta-versus-projection called out.'
@@ -45,16 +45,16 @@ Fury is Forever's dual-wield DPS spec, built around Bloodthirst's frequent big h
 Verified against this build's talent data, in roughly the order you'd take them:
 
 - **Cruelty** — up to 5% flat critical strike chance with melee attacks at max rank, a simple multiplier taken early.
-- **Unbridled Wrath**, taken to 5/5 — a 60% chance per melee hit to generate 1 extra Rage (2 with a two-handed weapon). It feeds the same Rage pool Bloodthirst and Whirlwind both draw from, and the level-60 search found it worth more than the defensive point it replaced.
-- **Dual Wield Specialization** — up to 25% more off-hand weapon damage, 100% more off-hand Rage generation, and 10% more off-hand hit chance at max rank; the core talent for a two-weapon build.
+- **Unbridled Wrath**, taken to 5/5 — a 60% chance per melee hit to generate 1 extra Rage, the same with any weapon since the 1 October 2026 patch notes removed the two-handed bonus. It feeds the same Rage pool Bloodthirst and Whirlwind both draw from, and the level-60 search found it worth more than the defensive point it replaced.
+- **Dual Wield Specialization** — up to 25% more off-hand weapon damage and 50% more off-hand Rage generation at max rank (the hit chance clause is gone since the 1 October 2026 patch notes); the core talent for a two-weapon build.
 - **Enrage** — up to a 30% chance to deal 10% bonus Physical damage for 12 seconds after taking any damaging hit, which comes up often on a spec that's usually in melee range.
 - **Flurry** (requires 5 points in Enrage) — up to 25% more melee attack speed for your next 3 swings after a melee crit, compounding with Cruelty's crit chance.
 - **Death Wish** — the spec's burst cooldown: 20% more Physical damage and Fear immunity, at the cost of 5% more damage taken, for 30 seconds.
-- **Bloodthirst** (requires 1 point in Death Wish) — the capstone: an instant attack for damage equal to 35% of Attack Power plus 30, and a 10% movement speed bonus for 10 seconds, the highest damage-per-Rage button in the kit.
+- **Bloodthirst** — the capstone: an instant attack for damage equal to 45% of Attack Power (the 1 October 2026 patch notes raised it from 35%) plus 30, and a 10% movement speed bonus for 10 seconds, the highest damage-per-Rage button in the kit.
 
-Also worth a point if you lean into Whirlwind uptime: **Raging Blows**, a new Forever talent that makes Whirlwind also strike with your off-hand weapon and reduces Cleave's Rage cost. It's a single-point situational pick rather than a core damage multiplier, so it isn't in the priority list above, but it's real in this build's data.
+Also worth a point if you lean into Whirlwind or Cleave uptime: **Raging Blows**, a new Forever talent that reduces the Rage cost of Cleave and Whirlwind by 3 (Whirlwind now strikes with both weapons without it, per the 1 October 2026 patch notes). It's a single-point situational pick rather than a core damage multiplier, so it isn't in the priority list above, but it's real in this build's data.
 
-This build reaching Bloodthirst spends 32 points in Fury, with the remaining 19 in Arms for Deep Wounds and Impale — Fury's high crit rate keeps both the bleed and the crit-damage talent relevant — plus Improved Heroic Strike, Improved Rend, Improved Charge, Improved Tactical Mastery, and Improved Overpower for the rest of the budget, rather than Protection, which has little to offer a dual-wielding damage build. The 3 points in Unbridled Wrath above come out of **Iron Will**, which used to sit at 3/5 cutting stun and fear durations by 9%. Iron Will is a real defensive talent, not a wasted one — the single-target DPS sim simply has no way to credit shorter stun or fear durations, so it measures as a flat zero here without that being a verdict on its value in an actual raid. This build measures about +1.4% over the previous spend in our level-60 search run, the smallest gain of this round's adopted builds, since Fury's spend was already close to its ceiling. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+This build reaching Bloodthirst spends 32 points in Fury, with the remaining 19 in Arms for Deep Wounds and Impale — Fury's high crit rate keeps both the bleed and the crit-damage talent relevant — plus Improved Heroic Strike, Improved Rend, Improved Charge, Improved Tactical Mastery, and Improved Overpower for the rest of the budget, rather than Protection, which has little to offer a dual-wielding damage build. The 3 points in Unbridled Wrath above come out of the old Fury **Iron Will**, which cut stun and fear durations; Iron Will now lives in the Protection tree, and Fury's slot is Lingering Rage, which only slows Rage decay out of combat. The 1 October 2026 Fury rebuild also removed **Improved Cleave** and **Precision** and added **Furious Precision** (more off-hand hit chance); the one point this build had in Improved Cleave is re-spent on Furious Precision, which sits in the same tree position and serves a dual-wield build's hit cap. This build measures about +1.4% over the previous spend in our level-60 search run, the smallest gain of this round's adopted builds, since Fury's spend was already close to its ceiling. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
 ## Rotation and priority
 

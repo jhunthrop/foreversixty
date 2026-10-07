@@ -42,8 +42,9 @@ func paladinLayout(t *testing.T) Layout {
 }
 
 // A renamed talent keeps its node id, and the id is what is matched:
-// druid node 104949 is the engine's mangle field, Primal Bite in
-// 1.60.1.70009.
+// druid node 104949 is Primal Bite. Before the engine's proto was
+// regenerated from the live trees (2026-10-07) the engine called that
+// field "mangle".
 func TestEncodeMatchesByIDNotName(t *testing.T) {
 	l, err := ForClass(engineDir(t), "druid")
 	if err != nil {
@@ -53,8 +54,8 @@ func TestEncodeMatchesByIDNotName(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if f.Name != "mangle" {
-		t.Fatalf("node 104949 -> %q, want mangle", f.Name)
+	if f.Name != "primal_bite" {
+		t.Fatalf("node 104949 -> %q, want primal_bite", f.Name)
 	}
 }
 
