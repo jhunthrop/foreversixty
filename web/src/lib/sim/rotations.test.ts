@@ -8,9 +8,10 @@ import { describe, expect, it } from 'vitest';
 import { rotationDrawerContent, rotationNotesFor } from './rotations';
 
 describe('rotationNotesFor', () => {
-  it("carries mage-frost's two curated step notes", () => {
+  it("carries mage-frost's three curated step notes", () => {
     expect(rotationNotesFor('mage-frost')).toEqual([
-      'Frostbolt is the whole rotation.',
+      "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies. Only fires with the Fingers of Frost talent; without it the buff never appears and the line stays idle.",
+      'Frostbolt is the filler between Fingers of Frost charges.',
       'Shoot with your wand once mana falls under 20%: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.',
     ]);
   });
@@ -25,7 +26,8 @@ describe('rotationDrawerContent', () => {
     const content = rotationDrawerContent('mage-frost');
     expect(content.intro).toContain('Frost');
     expect(content.steps).toEqual([
-      'Frostbolt is the whole rotation.',
+      "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies. Only fires with the Fingers of Frost talent; without it the buff never appears and the line stays idle.",
+      'Frostbolt is the filler between Fingers of Frost charges.',
       'Shoot with your wand once mana falls under 20%: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.',
     ]);
   });
