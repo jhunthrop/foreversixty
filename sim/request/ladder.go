@@ -813,6 +813,8 @@ type spellRankEntry struct {
 	Level int  `json:"level"`
 	Rank  int  `json:"rank"`
 	Book  bool `json:"book"`
+	// Inferior is a rank weaker than the one before it (curated/inferior-ranks.json).
+	Inferior bool `json:"inferior"`
 }
 
 type spellRanksFile struct {
@@ -837,13 +839,13 @@ func loadSpellRanks(repoRoot, build string) (spellRanksFile, error) {
 }
 
 // dropUnavailableRanks removes the Ahn'Qiraj book ranks while the engine's
-// core.IncludeAQ is off, so every later reader of the table (the tiers, the
+// core.IncludeAQ is off, and the inferior ranks a player never casts, so every later reader of the table (the tiers, the
 // learn levels, the learned list) sees only ranks a character can learn.
 func dropUnavailableRanks(f *spellRanksFile) {
 	for _, spells := range f.Classes {
 		for name, rows := range spells {
 			spells[name] = slices.DeleteFunc(rows, func(e spellRankEntry) bool {
-				return !spellranks.RankAvailable(e.Book)
+				return !spellranks.RankAvailable(e.Book) || e.Inferior
 			})
 		}
 	}

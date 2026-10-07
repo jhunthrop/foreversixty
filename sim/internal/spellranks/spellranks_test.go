@@ -207,3 +207,57 @@ func TestRankAvailableFollowsTheEnginesConstant(t *testing.T) {
 		t.Errorf("a book rank is available = %v, want core.IncludeAQ = %v", RankAvailable(true), core.IncludeAQ)
 	}
 }
+
+// inferiorRankExcerpt is Aspect of the Hawk's real top ranks with the AQ book off:
+// rank 6 (14322) gives 55 ranged attack power against rank 5's 90, so it is
+// flagged inferior (data/curated/inferior-ranks.json).
+const inferiorRankExcerpt = `{"build":"x","classes":{"hunter":{"Aspect of the Hawk":[
+  {"id":14320,"rank":4,"level":38},
+  {"id":14321,"rank":5,"level":48},
+  {"id":14322,"rank":6,"level":58,"inferior":true}]}}}`
+
+// An inferior rank is never the highest learned rank: the rewrite keeps the
+// strongest learnable rank, whichever rank id the rotation named.
+func TestInferiorRanksAreNeverTheHighestLearnedRank(t *testing.T) {
+	table, err := parseSpellRanks([]byte(inferiorRankExcerpt))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, named := range []int32{14320, 14321, 14322} {
+		for _, level := range []int{48, 58, 60} {
+			got, ok := highestLearnedIn(table["hunter"], named, level)
+			if !ok || got != 14321 {
+				t.Errorf("named %d at level %d resolves to %d (ok=%v), want 14321", named, level, got, ok)
+			}
+		}
+	}
+}
+
+func TestInferiorRankStillGatesByTheRanksBeforeIt(t *testing.T) {
+	table, err := parseSpellRanks([]byte(inferiorRankExcerpt))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := highestLearnedIn(table["hunter"], 14322, 40); !ok || got != 14320 {
+		t.Errorf("named 14322 at level 40 resolves to %d (ok=%v), want 14320", got, ok)
+	}
+	if _, ok := highestLearnedIn(table["hunter"], 14322, 30); ok {
+		t.Error("named 14322 at level 30 resolves, want unlearned")
+	}
+}
+
+// A tier that holds an inferior id beside a sound one (Hunter's Mark rank 4:
+// 14325 at 71 against the Forever copy 1213268 at 110) resolves to the sound id.
+func TestInferiorIdInAMixedTierResolvesToItsSoundSibling(t *testing.T) {
+	const mixed = `{"build":"x","classes":{"hunter":{"Hunter's Mark":[
+  {"id":14324,"rank":3,"level":40},
+  {"id":14325,"rank":4,"level":58,"inferior":true},
+  {"id":1213268,"rank":4,"level":58}]}}}`
+	table, err := parseSpellRanks([]byte(mixed))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := highestLearnedIn(table["hunter"], 14325, 60); !ok || got != 1213268 {
+		t.Errorf("named 14325 at level 60 resolves to %d (ok=%v), want 1213268", got, ok)
+	}
+}
