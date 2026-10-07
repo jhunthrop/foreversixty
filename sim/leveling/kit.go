@@ -66,11 +66,16 @@ const (
 	arcaneBrillianceBuff = "arcane_brilliance"
 	giftOfTheWildBuff    = "gift_of_the_wild"
 	blessingOfMightBuff  = "blessing_of_might"
+	huntersMarkBuff      = "hunters_mark"
 )
 
 // blessingOfMightLevel is the level Blessing of Might's first rank is
 // learned. Arcane Intellect and Mark of the Wild are rank 1 at level 1.
 const blessingOfMightLevel = 4
+
+// huntersMarkLevel is the level Hunter's Mark's first rank is learned
+// (client spell 1130).
+const huntersMarkLevel = 6
 
 // KitBuffs is the buff counterpart of KitConsumes: the self-cast buffs a
 // class carries on every real run. A leveling character is "bare" - no
@@ -87,15 +92,23 @@ const blessingOfMightLevel = 4
 //   - Any mage spec, from level 1: Arcane Intellect (arcane_brilliance
 //     is the engine's field for it; Improved Arcane Intellect does not
 //     exist in Forever's Arcane tree, so there is no improved form).
+//
 //   - Any druid spec, from level 1: Mark of the Wild (gift_of_the_wild).
 //     The ":improved" form is carried by a spec only when its guide build
 //     takes Improved Mark of the Wild. Forever's Restoration tree has no
 //     such talent (it became a baseline passive, of a rank the client
 //     tables do not state) and neither the Feral nor the Balance build
 //     can take it, so every druid spec carries the plain buff.
+//
 //   - Any paladin spec, from level 4 (Blessing of Might's first rank):
 //     Blessing of Might. Forever's Holy tree has no Improved Blessing of
 //     Might, so no ":improved" form.
+//
+//   - hunter-survival, from level 6 (Hunter's Mark's first rank): Hunter's
+//     Mark, a target debuff the engine takes as a request buff. Expose
+//     Prey (2026-10-07, design/reviews/2026-10-07-mongoose-bite.md) opens
+//     Mongoose Bite's window only against a marked target, and a
+//     Survival hunter marks his target before anything else.
 //
 // Priest Power Word: Fortitude is stamina and Divine Spirit a
 // Discipline talent, so priests carry nothing; Inner Fire (armor only)
@@ -111,6 +124,11 @@ func KitBuffs(spec string, level int) []string {
 			return nil
 		}
 		return []string{blessingOfMightBuff}
+	case spec == "hunter-survival":
+		if level < huntersMarkLevel {
+			return nil
+		}
+		return []string{huntersMarkBuff}
 	default:
 		return nil
 	}

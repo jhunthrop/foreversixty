@@ -129,8 +129,24 @@ func TestKitBuffsPaladinCarriesBlessingOfMightFromFour(t *testing.T) {
 	}
 }
 
+// Survival's Expose Prey rolls only against a Hunter's Mark target, and
+// the engine models the mark as a target debuff rather than a castable
+// spell, so the survival kit carries it from the level the spell is
+// learned (6, client spell 1130).
+func TestKitBuffsSurvivalCarriesHuntersMarkFromSix(t *testing.T) {
+	if got := KitBuffs("hunter-survival", 5); got != nil {
+		t.Fatalf("hunter-survival at 5 = %v, want nothing (rank 1 is learned at 6)", got)
+	}
+	for _, level := range []int{6, 60} {
+		got := KitBuffs("hunter-survival", level)
+		if len(got) != 1 || got[0] != "hunters_mark" {
+			t.Fatalf("hunter-survival at %d = %v, want hunters_mark", level, got)
+		}
+	}
+}
+
 func TestKitBuffsOtherClassesCarryNothing(t *testing.T) {
-	for _, spec := range []string{"warrior-arms", "rogue-combat", "priest-shadow", "warlock-affliction", "shaman-enhancement", "hunter-beast-mastery", "magefoo"} {
+	for _, spec := range []string{"warrior-arms", "rogue-combat", "priest-shadow", "warlock-affliction", "shaman-enhancement", "hunter-beast-mastery", "hunter-marksmanship", "magefoo"} {
 		if got := KitBuffs(spec, 60); got != nil {
 			t.Fatalf("%s = %v, want nothing", spec, got)
 		}
