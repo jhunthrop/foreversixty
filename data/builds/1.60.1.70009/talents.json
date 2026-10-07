@@ -1204,7 +1204,7 @@
     "tab_id": 281,
     "tab_name": "Feral Combat",
     "class_id": 11,
-    "tier": 3,
+    "tier": 2,
     "column": 0,
     "spell_ids": [
       16966,
@@ -1270,7 +1270,7 @@
     "tab_name": "Feral Combat",
     "class_id": 11,
     "tier": 4,
-    "column": 0,
+    "column": 3,
     "spell_ids": [
       1223242,
       1223242
@@ -1282,14 +1282,12 @@
     "tab_id": 281,
     "tab_name": "Feral Combat",
     "class_id": 11,
-    "tier": 4,
-    "column": 3,
+    "tier": 3,
+    "column": 0,
     "spell_ids": [
-      417046,
-      417046,
-      417046
+      1322605
     ],
-    "prereq_talent_id": null
+    "prereq_talent_id": 104945
   },
   {
     "id": 104952,
@@ -1900,22 +1898,6 @@
       19485
     ],
     "prereq_talent_id": 105008
-  },
-  {
-    "id": 105003,
-    "tab_id": 363,
-    "tab_name": "Marksmanship",
-    "class_id": 3,
-    "tier": 3,
-    "column": 3,
-    "spell_ids": [
-      19464,
-      19464,
-      19464,
-      19464,
-      19464
-    ],
-    "prereq_talent_id": null
   },
   {
     "id": 105004,
@@ -5400,7 +5382,7 @@
     "tab_name": "Fury",
     "class_id": 1,
     "tier": 5,
-    "column": 2,
+    "column": 1,
     "spell_ids": [
       12319,
       12319,
@@ -5408,21 +5390,7 @@
       12319,
       12319
     ],
-    "prereq_talent_id": 105931
-  },
-  {
-    "id": 105929,
-    "tab_id": 164,
-    "tab_name": "Fury",
-    "class_id": 1,
-    "tier": 4,
-    "column": 0,
-    "spell_ids": [
-      1225295,
-      1225295,
-      1225295
-    ],
-    "prereq_talent_id": null
+    "prereq_talent_id": 105927
   },
   {
     "id": 105930,
@@ -5434,7 +5402,7 @@
     "spell_ids": [
       23881
     ],
-    "prereq_talent_id": 105927
+    "prereq_talent_id": null
   },
   {
     "id": 105931,
@@ -5504,20 +5472,6 @@
     "column": 1,
     "spell_ids": [
       12323
-    ],
-    "prereq_talent_id": null
-  },
-  {
-    "id": 105936,
-    "tab_id": 164,
-    "tab_name": "Fury",
-    "class_id": 1,
-    "tier": 2,
-    "column": 0,
-    "spell_ids": [
-      12329,
-      12329,
-      12329
     ],
     "prereq_talent_id": null
   },
@@ -5707,11 +5661,11 @@
     "tab_name": "Fury",
     "class_id": 1,
     "tier": 2,
-    "column": 3,
+    "column": 0,
     "spell_ids": [
-      1310236,
-      1310236,
-      1310236
+      1323963,
+      1323963,
+      1323963
     ],
     "prereq_talent_id": null
   },
@@ -5805,7 +5759,7 @@
     "tab_id": 163,
     "tab_name": "Protection",
     "class_id": 1,
-    "tier": 5,
+    "tier": 4,
     "column": 2,
     "spell_ids": [
       29787,
@@ -5819,8 +5773,8 @@
     "tab_id": 163,
     "tab_name": "Protection",
     "class_id": 1,
-    "tier": 4,
-    "column": 3,
+    "tier": 5,
+    "column": 2,
     "spell_ids": [
       16538,
       16538,
@@ -5835,7 +5789,7 @@
     "tab_id": 163,
     "tab_name": "Protection",
     "class_id": 1,
-    "tier": 4,
+    "tier": 3,
     "column": 2,
     "spell_ids": [
       12311,
@@ -5874,7 +5828,7 @@
     "tab_name": "Protection",
     "class_id": 1,
     "tier": 3,
-    "column": 2,
+    "column": 1,
     "spell_ids": [
       1310317
     ],
@@ -5885,8 +5839,8 @@
     "tab_id": 163,
     "tab_name": "Protection",
     "class_id": 1,
-    "tier": 3,
-    "column": 1,
+    "tier": 2,
+    "column": 2,
     "spell_ids": [
       12313,
       12313,
@@ -5913,7 +5867,7 @@
     "tab_id": 163,
     "tab_name": "Protection",
     "class_id": 1,
-    "tier": 2,
+    "tier": 1,
     "column": 2,
     "spell_ids": [
       12797,
@@ -5932,7 +5886,7 @@
     "spell_ids": [
       12975
     ],
-    "prereq_talent_id": 105974
+    "prereq_talent_id": null
   },
   {
     "id": 105971,
@@ -5962,27 +5916,11 @@
     "prereq_talent_id": null
   },
   {
-    "id": 105973,
-    "tab_id": 163,
-    "tab_name": "Protection",
-    "class_id": 1,
-    "tier": 1,
-    "column": 2,
-    "spell_ids": [
-      12299,
-      12299,
-      12299,
-      12299,
-      12299
-    ],
-    "prereq_talent_id": null
-  },
-  {
     "id": 105974,
     "tab_id": 163,
     "tab_name": "Protection",
     "class_id": 1,
-    "tier": 1,
+    "tier": 0,
     "column": 0,
     "spell_ids": [
       12301,
@@ -5995,8 +5933,8 @@
     "tab_id": 163,
     "tab_name": "Protection",
     "class_id": 1,
-    "tier": 0,
-    "column": 2,
+    "tier": 1,
+    "column": 0,
     "spell_ids": [
       12297,
       12297,
@@ -6039,7 +5977,7 @@
     "tab_id": 164,
     "tab_name": "Fury",
     "class_id": 1,
-    "tier": 5,
+    "tier": 4,
     "column": 0,
     "spell_ids": [
       20500,
@@ -6185,11 +6123,11 @@
     "tier": 1,
     "column": 1,
     "spell_ids": [
-      12962,
-      12962,
-      12962,
-      12962,
-      12962
+      1323964,
+      1323964,
+      1323964,
+      1323964,
+      1323964
     ],
     "prereq_talent_id": null
   },
@@ -6456,6 +6394,48 @@
       13712,
       13712,
       13712
+    ],
+    "prereq_talent_id": null
+  },
+  {
+    "id": 113563,
+    "tab_id": 281,
+    "tab_name": "Feral Combat",
+    "class_id": 11,
+    "tier": 4,
+    "column": 0,
+    "spell_ids": [
+      1322670,
+      1322670
+    ],
+    "prereq_talent_id": 104951
+  },
+  {
+    "id": 113569,
+    "tab_id": 164,
+    "tab_name": "Fury",
+    "class_id": 1,
+    "tier": 5,
+    "column": 2,
+    "spell_ids": [
+      1323967,
+      1323967
+    ],
+    "prereq_talent_id": 105931
+  },
+  {
+    "id": 113570,
+    "tab_id": 163,
+    "tab_name": "Protection",
+    "class_id": 1,
+    "tier": 0,
+    "column": 2,
+    "spell_ids": [
+      12962,
+      12962,
+      12962,
+      12962,
+      12962
     ],
     "prereq_talent_id": null
   }

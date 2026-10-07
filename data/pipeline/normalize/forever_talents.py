@@ -28,7 +28,7 @@ class ForeverTalentError(ValueError):
     """The payload does not have the shape our talent model can carry."""
 
 
-def _rank_count(talent: dict) -> int:
+def rank_count(talent: dict) -> int:
     ranks = talent.get("ranks") or []
     descriptions = talent.get("descriptions") or {}
     if len(ranks) != len(descriptions):
@@ -41,7 +41,7 @@ def _rank_count(talent: dict) -> int:
     return len(ranks)
 
 
-def _prereq(talent: dict, tree_ids: set[int]) -> tuple[int | None, int | None]:
+def single_prereq(talent: dict, tree_ids: set[int]) -> tuple[int | None, int | None]:
     requires = talent.get("requires") or []
     if not requires:
         return None, None
@@ -102,8 +102,8 @@ def normalize_forever_talents(
         ids = {int(t["id"]) for t in raw.values()}
         entries: list[TalentEntry] = []
         for talent in raw.values():
-            count = _rank_count(talent)
-            prereq_id, prereq_rank = _prereq(talent, ids)
+            count = rank_count(talent)
+            prereq_id, prereq_rank = single_prereq(talent, ids)
             descriptions = talent["descriptions"]
             entries.append(
                 TalentEntry(
