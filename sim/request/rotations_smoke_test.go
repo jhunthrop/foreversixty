@@ -132,6 +132,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 12042}":   "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
 		"{SpellID: 12043}":   "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
 	},
+	"mage-frost": {
+		"{SpellID: 1239700}": "Arcane Blast is a talent (sim/mage/arcane_blast.go, Forever's tree); this build takes none.",
+	},
 	"mage-fire": {
 		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
 		"{SpellID: 12873}": "Improved Scorch's debuff aura only exists once sim/mage/talents.go's " +
@@ -159,11 +162,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"rogue-subtlety": {
 		"{SpellID: 14183}": "Premeditation is a talent (sim/rogue/premeditation.go); this build takes none.",
-		"{SpellID: 14278}": "Ghostly Strike is a talent (sim/rogue/ghostly_strike.go); this build takes none.",
 		"{SpellID: 16511}": "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
-	},
-	"shaman-elemental": {
-		"{SpellID: 1238300}": "Lava Burst is a talent (sim/shaman/lava_burst.go, Elemental's tier-6 capstone); this build takes none.",
 	},
 	"shaman-enhancement": {
 		"{SpellID: 17364}": "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",

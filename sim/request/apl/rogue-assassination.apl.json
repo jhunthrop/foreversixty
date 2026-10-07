@@ -2,6 +2,29 @@
   "type": "TypeAPL",
   "priorityList": [
     {
+      "notes": "Rupture whenever it is not on the target, at whatever combo points you have: the bleed ticks for the whole fight and was the largest single gain the search found.",
+      "action": {
+        "condition": {
+          "not": {
+            "val": {
+              "dotIsActive": {
+                "spellId": {
+                  "spellId": 11275,
+                  "rank": 6
+                }
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 11275,
+            "rank": 6
+          }
+        }
+      }
+    },
+    {
       "action": {
         "autocastOtherCooldowns": {}
       }

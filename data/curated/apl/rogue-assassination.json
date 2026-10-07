@@ -14,12 +14,20 @@
     {
       "id": 11294,
       "reason": "Sinister Strike is the builder only for a rogue without Mutilate (its line is gated on Mutilate being unknown); from the rung where the talent is taken, Mutilate builds every combo point and Sinister Strike is idle by design."
+    },
+    {
+      "id": 14177,
+      "reason": "Rupture sits first and spends combo points at whatever count as soon as its bleed falls off, so on the bare ladder character combo points rarely reach five and every five-point line below it starves; the rotation search measured this ordering as the best one."
+    },
+    {
+      "id": 1310703,
+      "reason": "Rupture sits first and spends combo points at whatever count as soon as its bleed falls off, so on the bare ladder character combo points rarely reach five and every five-point line below it starves; the rotation search measured this ordering as the best one."
     }
   ],
   "engineering_notes": {
-    "2": "sim/rogue/venom.go: an untalented rogue has no Venom spell registered.",
-    "5": "sim/rogue/mutilate.go: an untalented rogue has no Mutilate spell registered.",
-    "3": "Previously starved entirely: Slice and Dice used to sit ahead of this line instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
+    "3": "sim/rogue/venom.go: an untalented rogue has no Venom spell registered.",
+    "4": "Previously starved entirely: Slice and Dice used to sit ahead of this line instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points.",
+    "6": "sim/rogue/mutilate.go: an untalented rogue has no Mutilate spell registered."
   },
   "sources": [
     {
@@ -41,6 +49,29 @@
   "rotation": {
     "type": "TypeAPL",
     "priorityList": [
+      {
+        "notes": "Rupture whenever it is not on the target, at whatever combo points you have: the bleed ticks for the whole fight and was the largest single gain the search found.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 11275,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11275,
+              "rank": 6
+            }
+          }
+        }
+      },
       {
         "action": {
           "autocastOtherCooldowns": {}

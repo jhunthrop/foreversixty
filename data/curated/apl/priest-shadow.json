@@ -17,6 +17,10 @@
     {
       "id": 1309636,
       "reason": "Verified live, not an engine bug (audit-priest, 2026-09-28): a direct 3000-iteration reproduction of this exact level-60 bare-gear request (forever-sim, engine b5ac36a52, seed 1) casts Shadow Word: Death 408 times (avg 0.136/iteration) and deals damage every time, so isExecutePhase(E20) and the spell itself both work. It is rare on this ladder's bare, no-mana-regen gear because it needs the execute window AND 340 spare mana AND its own 15 s cooldown to line up, behind Shadow Word: Pain's upkeep in priority; landing on zero casts in one specific 300-iteration seed (this golden) is ordinary variance for an event that rare, not the shared isExecutePhase primitive defect an earlier note attributed this to (that note's comparison to paladin-retribution's Hammer of Wrath conflated the two)."
+    },
+    {
+      "id": 10947,
+      "reason": "Mind Flay sits ahead of the on-cooldown Mind Blast with no condition, so Mind Blast only fires from the execute-window line above and rarely on the ladder; the rotation search measured this ordering as the best one."
     }
   ],
   "sources": [
@@ -154,23 +158,23 @@
         }
       },
       {
-        "notes": "Mind Blast on cooldown.",
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 10947,
-              "rank": 9
-            }
-          }
-        }
-      },
-      {
         "notes": "Mind Flay fills every remaining global, including the rest of the execute fallback above.",
         "action": {
           "castSpell": {
             "spellId": {
               "spellId": 18807,
               "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "Mind Blast only when Mind Flay cannot be cast: in our level-60 search run Mind Flay on every free global beat Mind Blast on cooldown, so outside the execute window this line rarely fires.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10947,
+              "rank": 9
             }
           }
         }

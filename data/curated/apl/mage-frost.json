@@ -4,6 +4,12 @@
   "inert": [
     5019
   ],
+  "expected_idle": [
+    {
+      "id": 5019,
+      "reason": "Arcane Blast costs no mana and sits ahead of the wand line, so once Frostbolt is unaffordable the character casts Arcane Blast and never reaches the wand; the rotation search measured this as the best use of those globals."
+    }
+  ],
   "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 77 percent of top casts) on this bare, no-consumes, no-buffs ladder character. Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last).",
   "sources": [
     {
@@ -37,6 +43,17 @@
             "spellId": {
               "spellId": 25304,
               "rank": 11
+            }
+          }
+        }
+      },
+      {
+        "notes": "Arcane Blast costs no mana in this build, so it is what you cast once you cannot afford another Frostbolt; it keeps casting for free until the wand takes over.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239700,
+              "rank": 5
             }
           }
         }

@@ -14,8 +14,8 @@
   ],
   "engineering_notes": {
     "2": "paladin.md audit finding 3: sim/paladin/exorcism.go's ExtraCastCondition already gates it on target.MobType == Demon || Undead, and sim/core/spell.go routes ExtraCastCondition through Spell.CanCast, so spellCanCast naturally no-ops on any other target with no new APL condition type needed. The smoke build's default target is not Undead or Demon, so this cannot be proven to fire against it -- proven structurally instead (the action survives the rank rewrite at 60 and 20, spellCanCast resolves with no validation warning).",
-    "4": "New in Forever this week (sim/paladin/holy_strike.go, no engine file before it). Measured directly: adding it (with the seal twist removed, see notes) raised a level-60 band-60-BiS forever-sim run from 165.6 to 190.0 DPS.",
-    "5": "sim/paladin/judgement.go's castSpecificJudgement is what deactivates the seal that this condition then catches."
+    "4": "sim/paladin/judgement.go's castSpecificJudgement is what deactivates the seal that this condition then catches.",
+    "5": "New in Forever this week (sim/paladin/holy_strike.go, no engine file before it). Measured directly: adding it (with the seal twist removed, see notes) raised a level-60 band-60-BiS forever-sim run from 165.6 to 190.0 DPS."
   },
   "sources": [
     {
@@ -107,25 +107,6 @@
         }
       },
       {
-        "notes": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6. Judgement and seal maintenance alone leave GCDs idle every ten-second window; Holy Strike is the filler that spends them.",
-        "action": {
-          "condition": {
-            "spellCanCast": {
-              "spellId": {
-                "spellId": 10333,
-                "rank": 8
-              }
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 10333,
-              "rank": 8
-            }
-          }
-        }
-      },
-      {
         "notes": "Reapply Seal of Righteousness once it is about to expire -- this is now the only seal-maintenance line (see notes for why the seal twist that used to sit here was removed). It also catches the seal being deactivated by Judgement's own cast, which fires this same condition on the very next decision.",
         "action": {
           "condition": {
@@ -142,6 +123,25 @@
             }
           },
           "castPaladinPrimarySeal": {}
+        }
+      },
+      {
+        "notes": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6. Judgement and seal maintenance alone leave GCDs idle every ten-second window; Holy Strike is the filler that spends them.",
+        "action": {
+          "condition": {
+            "spellCanCast": {
+              "spellId": {
+                "spellId": 10333,
+                "rank": 8
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10333,
+              "rank": 8
+            }
+          }
         }
       }
     ]

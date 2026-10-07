@@ -1,16 +1,24 @@
 {
   "spec": "rogue-subtlety",
   "state": "written",
-  "notes": "Vanilla Subtlety at 60 opens from stealth with Premeditation into Ambush for two free combo points plus a big opener hit, then keeps Hemorrhage's bleed applied (it is the talent-granted combo builder this tree gets in place of Sinister Strike) and weaves in Ghostly Strike on its own cooldown, spending five combo points on Eviscerate the same as the other two rogue specs. No Combat- or Assassination-specific preset exists upstream for this either, so the priority order is adapted from the shared rogue preset's finisher logic plus the community rotation order (Hemorrhage upkeep first, Ghostly Strike on cooldown, Eviscerate at five). Every rank named here is checked against this build's own spellconst. Rotation-accuracy program stealth-opener fix round (2026-09-28): the earlier diagnosis here was that the ladder's default encounter never stealths the character before the pull, so Premeditation and Ambush -- both prepullActions, timed off a stealth opener -- never fired. Re-checked against the engine and the real gap was narrower: sim/core already models Stealth as a real aura (rogue.StealthAura) that both Premeditation's and Ambush's own ExtraCastCondition check via rogue.IsStealthed(), but nothing in the fork ever called StealthAura.Activate outside of Vanish -- there was no castable Stealth spell at all, prepull or otherwise. Fixed upstream in the fork (sim/rogue/stealth.go: registerStealthSpell, per-rank ids 1784/1785/1786/1787 matching the client's own four Stealth ranks, gated to sim.CurrentTime < 0 so it is only ever usable as a prepull opener, never a mid-fight re-stealth outside Vanish's own path) and added as this file's first prepullActions line, 1s ahead of Premeditation. With Stealth actually active when Premeditation and Ambush fire, both cast for real -- see this lane's report for before/after ladder DPS.",
+  "notes": "Vanilla Subtlety at 60 opens from stealth with Premeditation into Ambush for two free combo points plus a big opener hit, then keeps Hemorrhage's bleed applied (it is the talent-granted combo builder this tree gets in place of Sinister Strike) opens with Rupture, spending five combo points on Eviscerate the same as the other two rogue specs. No Combat- or Assassination-specific preset exists upstream for this either, so the priority order is adapted from the shared rogue preset's finisher logic plus the community rotation order (Rupture, Hemorrhage upkeep, Eviscerate at five; Ghostly Strike was dropped by the rotation search). Every rank named here is checked against this build's own spellconst. Rotation-accuracy program stealth-opener fix round (2026-09-28): the earlier diagnosis here was that the ladder's default encounter never stealths the character before the pull, so Premeditation and Ambush -- both prepullActions, timed off a stealth opener -- never fired. Re-checked against the engine and the real gap was narrower: sim/core already models Stealth as a real aura (rogue.StealthAura) that both Premeditation's and Ambush's own ExtraCastCondition check via rogue.IsStealthed(), but nothing in the fork ever called StealthAura.Activate outside of Vanish -- there was no castable Stealth spell at all, prepull or otherwise. Fixed upstream in the fork (sim/rogue/stealth.go: registerStealthSpell, per-rank ids 1784/1785/1786/1787 matching the client's own four Stealth ranks, gated to sim.CurrentTime < 0 so it is only ever usable as a prepull opener, never a mid-fight re-stealth outside Vanish's own path) and added as this file's first prepullActions line, 1s ahead of Premeditation. With Stealth actually active when Premeditation and Ambush fire, both cast for real -- see this lane's report for before/after ladder DPS.",
   "expected_idle": [
     {
       "id": 11294,
       "reason": "Sinister Strike is gated `not spellIsKnown(Hemorrhage/16511)`, the fallback builder for a bare build below Hemorrhage's talent row (Subtlety tier 4). At every level this ladder's own zero_casts check flags it, the truncated talent build has already spent points on Hemorrhage, so the gate correctly keeps Sinister Strike idle and lets Hemorrhage claim the builder slot instead -- the fallback yielding as designed, not a defect."
+    },
+    {
+      "id": 31016,
+      "reason": "Rupture sits first and spends combo points at whatever count as soon as its bleed falls off, so on the bare ladder character combo points rarely reach five and every five-point line below it starves; the rotation search measured this ordering as the best one."
+    },
+    {
+      "id": 6774,
+      "reason": "Rupture sits first and spends combo points at whatever count as soon as its bleed falls off, so on the bare ladder character combo points rarely reach five and every five-point line below it starves; the rotation search measured this ordering as the best one."
     }
   ],
   "engineering_notes": {
-    "5": "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point builder at all -- the same auraIsKnown/spellIsKnown gate shape mage-fire uses for Improved Scorch (12873).",
-    "2": "Previously starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
+    "2": "Previously starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points.",
+    "5": "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point builder at all -- the same auraIsKnown/spellIsKnown gate shape mage-fire uses for Improved Scorch (12873)."
   },
   "sources": [
     {
@@ -79,18 +87,31 @@
     ],
     "priorityList": [
       {
+        "notes": "Rupture whenever it is not on the target, at whatever combo points you have: the bleed ticks for the whole fight and was the largest single gain the search found.",
         "action": {
-          "autocastOtherCooldowns": {}
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 11275,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11275,
+              "rank": 6
+            }
+          }
         }
       },
       {
-        "notes": "Ghostly Strike on cooldown: cheaper energy than Backstab and applies its own attack power debuff. Does not spend combo points, so it is safe to check ahead of the finisher below.",
         "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 14278
-            }
-          }
+          "autocastOtherCooldowns": {}
         }
       },
       {
