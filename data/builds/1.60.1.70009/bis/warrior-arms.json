@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T22:54:59Z",
+  "generated_at": "2026-10-07T23:21:56Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -552,8 +552,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.798556081,
-      "verify_run_seconds": 1.090551849,
+      "weights_run_seconds": 1.778844649,
+      "verify_run_seconds": 1.100384416,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1199,8 +1199,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.798556081,
-      "verify_run_seconds": 1.069946169,
+      "weights_run_seconds": 1.778844649,
+      "verify_run_seconds": 1.0640676,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1872,8 +1872,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.05287155,
-      "verify_run_seconds": 1.413230113,
+      "weights_run_seconds": 2.050355374,
+      "verify_run_seconds": 1.398953023,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2551,8 +2551,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.05287155,
-      "verify_run_seconds": 1.402694011,
+      "weights_run_seconds": 2.050355374,
+      "verify_run_seconds": 1.443185736,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3229,8 +3229,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.352130713,
-      "verify_run_seconds": 1.357116919,
+      "weights_run_seconds": 2.337315415,
+      "verify_run_seconds": 1.36462128,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3907,8 +3907,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.352130713,
-      "verify_run_seconds": 1.4072501210000001,
+      "weights_run_seconds": 2.337315415,
+      "verify_run_seconds": 1.3723423989999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4591,8 +4591,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.38574609,
-      "verify_run_seconds": 1.601454647,
+      "weights_run_seconds": 2.423680144,
+      "verify_run_seconds": 1.6284661059999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4754,7 +4754,7 @@
           "item_name": "Fury Visor",
           "source": "Voodoo Feathers",
           "source_kind": "quest",
-          "score": 82.58495452974117,
+          "score": 82.58495452974118,
           "verified": true,
           "alternatives": [
             {
@@ -4762,14 +4762,14 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.8101898802934024
+              "dps_delta": -0.8101898802934036
             },
             {
               "item_id": 9479,
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -2.802038017040375
+              "dps_delta": -2.8020380170403762
             },
             {
               "item_id": 7719,
@@ -5285,8 +5285,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.38574609,
-      "verify_run_seconds": 1.560046042,
+      "weights_run_seconds": 2.423680144,
+      "verify_run_seconds": 1.597482742,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5999,8 +5999,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.508052074,
-      "verify_run_seconds": 1.6814283799999998,
+      "weights_run_seconds": 2.524739057,
+      "verify_run_seconds": 1.651462368,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6718,8 +6718,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.508052074,
-      "verify_run_seconds": 1.65172424,
+      "weights_run_seconds": 2.524739057,
+      "verify_run_seconds": 1.646107442,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7010,7 +7010,7 @@
               "item_name": "Dawn Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.19594775564324388
+              "dps_delta": -0.1959477556432415
             },
             {
               "item_id": 22191,
@@ -7146,14 +7146,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.1982467728321384
+              "dps_delta": -3.1982467728321433
             },
             {
               "item_id": 237819,
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -4.463087807516348
+              "dps_delta": -4.463087807516352
             }
           ]
         },
@@ -7431,8 +7431,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.649330064,
-      "verify_run_seconds": 1.766696407,
+      "weights_run_seconds": 2.712363673,
+      "verify_run_seconds": 1.754715788,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8151,8 +8151,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.649330064,
-      "verify_run_seconds": 1.700914494,
+      "weights_run_seconds": 2.712363673,
+      "verify_run_seconds": 1.765236472,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -68,7 +68,7 @@ No-known-source sample (15 of 490, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 00000000000000000-05153105022011500-000000000000000000)
 
-Set DPS (verified): 114.0. Weights run: 3.2s. Verify run: 1.7s. 682 eligible items had no known source.
+Set DPS (verified): 114.0. Weights run: 3.3s. Verify run: 1.6s. 682 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.615 ± 0.063, crit=2.307 ± 0.090 per rating point (14 rating = 1%, 32.304 per %), hit=2.575 ± 0.138 per rating point (10 rating = 1%, 25.751 per %), melee_haste=11.387 ± 1.289
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 682, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 185.1. Weights run: 3.3s. Verify run: 2.1s. 867 eligible items had no known source.
+Set DPS (verified): 185.1. Weights run: 3.3s. Verify run: 2.2s. 867 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.303 ± 0.057, crit=1.861 ± 0.081 per rating point (14 rating = 1%, 26.056 per %), hit=1.651 ± 0.141 per rating point (10 rating = 1%, 16.512 per %), melee_haste=11.121 ± 1.183
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 272, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-05153105010000000-000000000000000000)
 
-Set DPS (verified): 62.6. Weights run: 3.1s. Verify run: 1.6s. 454 eligible items had no known source.
+Set DPS (verified): 62.6. Weights run: 3.1s. Verify run: 1.7s. 454 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.002, agility=0.797 ± 0.025, crit=1.138 ± 0.036 per rating point (14 rating = 1%, 15.933 per %), hit=1.509 ± 0.069 per rating point (10 rating = 1%, 15.086 per %), melee_haste=10.645 ± 0.736
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 454, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 00000000000000000-05153105022011500-000000000000000000)
 
-Set DPS (verified): 115.3. Weights run: 3.2s. Verify run: 1.7s. 635 eligible items had no known source.
+Set DPS (verified): 115.3. Weights run: 3.3s. Verify run: 1.7s. 635 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.615 ± 0.063, crit=2.307 ± 0.090 per rating point (14 rating = 1%, 32.304 per %), hit=2.575 ± 0.138 per rating point (10 rating = 1%, 25.751 per %), melee_haste=11.387 ± 1.289
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 635, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 191.6. Weights run: 3.3s. Verify run: 2.2s. 811 eligible items had no known source.
+Set DPS (verified): 191.6. Weights run: 3.3s. Verify run: 2.1s. 811 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.303 ± 0.057, crit=1.861 ± 0.081 per rating point (14 rating = 1%, 26.056 per %), hit=1.651 ± 0.141 per rating point (10 rating = 1%, 16.512 per %), melee_haste=11.121 ± 1.183
 

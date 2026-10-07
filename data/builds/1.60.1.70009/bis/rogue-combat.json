@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T22:48:34Z",
+  "generated_at": "2026-10-07T23:15:31Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -566,8 +566,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.745027384,
-      "verify_run_seconds": 1.739720539,
+      "weights_run_seconds": 2.7410656429999998,
+      "verify_run_seconds": 1.713725305,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1218,8 +1218,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.745027384,
-      "verify_run_seconds": 1.757320756,
+      "weights_run_seconds": 2.7410656429999998,
+      "verify_run_seconds": 1.7512658330000002,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1902,8 +1902,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.7630530760000003,
-      "verify_run_seconds": 1.781446764,
+      "weights_run_seconds": 2.7429131890000003,
+      "verify_run_seconds": 1.7904638149999998,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2594,8 +2594,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.7630530760000003,
-      "verify_run_seconds": 1.795222163,
+      "weights_run_seconds": 2.7429131890000003,
+      "verify_run_seconds": 1.7760464470000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3288,8 +3288,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.964006849,
-      "verify_run_seconds": 1.833655418,
+      "weights_run_seconds": 3.020208844,
+      "verify_run_seconds": 1.8276375219999998,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3982,8 +3982,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.964006849,
-      "verify_run_seconds": 1.8793420570000001,
+      "weights_run_seconds": 3.020208844,
+      "verify_run_seconds": 1.8583002450000001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4203,7 +4203,7 @@
           "item_name": "Knight-Lieutenant's Leather Shoulders",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 33.54870934737538,
+          "score": 33.548709347375386,
           "verified": true,
           "alternatives": [
             {
@@ -4211,14 +4211,14 @@
               "item_name": "Skulker's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7021708817987687
+              "dps_delta": -0.7021708817987693
             },
             {
               "item_id": 9647,
               "item_name": "Failed Flying Experiment",
               "source_kind": "quest",
               "source": "Rescue OOX-22/FE!",
-              "dps_delta": -0.7401001264873678
+              "dps_delta": -0.7401001264873684
             },
             {
               "item_id": 274751,
@@ -4691,8 +4691,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.41873022,
-      "verify_run_seconds": 2.247709822,
+      "weights_run_seconds": 3.3951946729999998,
+      "verify_run_seconds": 2.254793076,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5401,8 +5401,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.41873022,
-      "verify_run_seconds": 2.194370261,
+      "weights_run_seconds": 3.3951946729999998,
+      "verify_run_seconds": 2.182238608,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6142,8 +6142,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.869322649,
-      "verify_run_seconds": 2.272927906,
+      "weights_run_seconds": 2.861705877,
+      "verify_run_seconds": 2.256697527,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6898,8 +6898,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.869322649,
-      "verify_run_seconds": 2.168983936,
+      "weights_run_seconds": 2.861705877,
+      "verify_run_seconds": 2.191370136,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7336,11 +7336,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 227061,
+              "item_id": 23299,
               "item_name": "Knight-Captain's Leather Legguards",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -3.815101116793595
+              "source": "PvP rank 12 · Knight-Captain · Alliance",
+              "dps_delta": -3.8151011167935973
             }
           ]
         },
@@ -7649,8 +7649,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.948062833,
-      "verify_run_seconds": 2.158278983,
+      "weights_run_seconds": 2.901228891,
+      "verify_run_seconds": 2.162163766,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8404,8 +8404,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.948062833,
-      "verify_run_seconds": 2.1668628500000002,
+      "weights_run_seconds": 2.901228891,
+      "verify_run_seconds": 2.198978558,
       "coverage": {
         "back": {
           "eligible": 451,

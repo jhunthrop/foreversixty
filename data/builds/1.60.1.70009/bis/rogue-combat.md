@@ -38,7 +38,7 @@ No-known-source sample (15 of 197, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-32530300001400000-0000000000000000000)
 
-Set DPS (verified): 53.9. Weights run: 2.8s. Verify run: 1.8s. 331 eligible items had no known source.
+Set DPS (verified): 53.9. Weights run: 2.7s. Verify run: 1.8s. 331 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.143 ± 0.007, crit=0.305 ± 0.012 per rating point (14 rating = 1%, 4.276 per %), hit=0.918 ± 0.022 per rating point (10 rating = 1%, 9.177 per %), melee_haste=4.880 ± 0.294
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 459, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32500000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 149.9. Weights run: 3.4s. Verify run: 2.2s. 584 eligible items had no known source.
+Set DPS (verified): 149.9. Weights run: 3.4s. Verify run: 2.3s. 584 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.459 ± 0.012, crit=0.953 ± 0.020 per rating point (14 rating = 1%, 13.348 per %), hit=1.220 ± 0.039 per rating point (10 rating = 1%, 12.201 per %), melee_haste=5.165 ± 0.595
 
@@ -172,7 +172,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | wrist | Forest Stalker's Bracers (19587) | Silverwing Sentinels [rep] | sim-verified (495.7 DPS) | yes | Marshal's Leather Armsplints (16460, -0.15 DPS) [pvp]; Bracers of the Eclipse (18375, -0.90 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -7.66 DPS, sim-verified) [world] |
 | hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 68.3 attack_power points (10.14 DPS) | yes | Marshal's Leather Handgrips (231544, +0.00 DPS) [pvp]; Stormshroud Gloves (21278, -0.93 DPS) [crafted]; Devilsaur Gauntlets (15063, -1.20 DPS) [crafted] |
 | waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 104.1 attack_power points (15.47 DPS) | yes | Belt of Preserved Heads (20216, -4.15 DPS, sim-verified) [quest]; Highlander's Leather Girdle (20045, -5.63 DPS) [rep]; Ferocity of the Timbermaw (227805, -6.25 DPS) [vendor] |
-| legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 121.7 attack_power points (18.07 DPS) | yes | Marshal's Leather Leggings (231548, +0.00 DPS) [pvp]; Knight-Captain's Leather Legguards (227061, -3.82 DPS) [vendor] |
+| legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 121.7 attack_power points (18.07 DPS) | yes | Marshal's Leather Leggings (231548, +0.00 DPS) [pvp]; Knight-Captain's Leather Legguards (23299, -3.82 DPS) [vendor] |
 | feet | Darkmantle Footpads (226831) | Mokvar [vendor] | 71.8 attack_power points (10.66 DPS) | yes | Shadowcraft Boots (16711, -2.42 DPS, sim-verified) [dungeon]; Fine Dawn Treaders (227815, -2.77 DPS) [vendor]; Darkmantle Boots (22003, -3.10 DPS) [quest] |
 | finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (495.7 DPS) | yes | Tarnished Elven Ring (18500, -2.44 DPS) [dungeon]; Cutthroat's Signet (272408, -2.75 DPS) [vendor]; Naglering (11669, -9.77 DPS, sim-verified) [dungeon] |
 | finger2 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-verified (495.7 DPS) | yes | Tarnished Elven Ring (18500, -0.95 DPS) [dungeon]; Cutthroat's Signet (272408, -1.26 DPS) [vendor]; Naglering (11669, -9.43 DPS, sim-verified) [dungeon] |
@@ -220,7 +220,7 @@ No-known-source sample (15 of 190, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-32530300001400000-0000000000000000000)
 
-Set DPS (verified): 53.7. Weights run: 2.8s. Verify run: 1.8s. 322 eligible items had no known source.
+Set DPS (verified): 53.7. Weights run: 2.7s. Verify run: 1.8s. 322 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.143 ± 0.007, crit=0.305 ± 0.012 per rating point (14 rating = 1%, 4.276 per %), hit=0.918 ± 0.022 per rating point (10 rating = 1%, 9.177 per %), melee_haste=4.880 ± 0.294
 
