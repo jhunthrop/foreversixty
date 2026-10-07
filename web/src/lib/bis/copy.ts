@@ -433,6 +433,7 @@ export function joinWithAnd(parts: readonly string[]): string {
 export const tankCopy = {
   /** The neutral unit word for every tank-score figure. */
   scoreWord: 'score',
+  runnersUpHeaderLabel: 'Runners-up · score vs the pick',
   effectiveHealthLabel: 'Effective health',
   dtpsLabel: 'Damage taken per second',
   chanceOfDeathLabel: 'Chance of death',

@@ -13,6 +13,7 @@ import { latest } from '../../lib/dates';
 import { bisCopy } from '../../lib/bis/copy';
 import { bandEntry, groupByClass, loadBisFile, readSpecCatalog } from '../../lib/bis/load';
 import { presetLabelFor } from '../../lib/bis/presets';
+import { headlineDpsOf, tankIndexSummaryOf } from '../../lib/bis/tank-view';
 
 const catalog = readSpecCatalog();
 const grouped = groupByClass(catalog);
@@ -32,7 +33,8 @@ const classesWithSpecs = classes
         spec_slug: spec.spec_slug,
         name: spec.name,
         hasData: file !== null,
-        band60Dps: band60?.set_dps,
+        band60Dps: band60 === undefined ? undefined : headlineDpsOf(band60),
+        band60TankSummary: band60 === undefined ? undefined : tankIndexSummaryOf(band60),
         band60PresetLabel: file === null || band60 === undefined ? undefined : presetLabelFor(file, band60),
       };
     }),

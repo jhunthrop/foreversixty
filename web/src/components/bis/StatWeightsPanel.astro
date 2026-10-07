@@ -16,7 +16,7 @@
 // because `public/_redirects` 301s it to `/setup` at the CDN, the one place that
 // redirect lives; a second Astro page at this path would shadow that rule, which is
 // exactly what tripped the postbuild guard when this lane first tried it.
-import { bisCopy } from '../../lib/bis/copy';
+import { bisCopy, tankCopy } from '../../lib/bis/copy';
 import type { HitCapLine } from '../../lib/bis/hit-cap';
 import type { ScaleRow } from '../../lib/bis/panel-view';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
@@ -36,10 +36,15 @@ interface Props {
 }
 
 const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, hitCap, testId } = Astro.props;
+// A tank band's per-point unit ("score") is wider than "DPS": the column grows with it.
+const perPointStyle =
+  scaleRows[0]?.perPointUnit === tankCopy.scoreWord
+    ? '--per-point-col: 92px; --per-point-col-narrow: 80px'
+    : undefined;
 const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLine} ${hasteCaptionLine}`;
 ---
 
-<div class="panel-box stat-weights-panel" data-testid={testId}>
+<div class="panel-box stat-weights-panel" data-testid={testId} style={perPointStyle}>
   <span class="label">{bisCopy.statWeightsAtBand(bandLabel)}</span>
   <p class="stat-weights-caption text-muted">{caption}</p>
   <div class="stat-weights-table" role="table">
@@ -75,7 +80,9 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
           {row.significant ? row.scaleFactor.toFixed(2) : bisCopy.weightsNotSignificant}
         </span>
         <span class="font-mono tabular stat-weights-num stat-weights-num-muted" role="cell">
-          {row.significant && row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} DPS` : ''}
+          {row.significant && row.dpsPerPoint !== undefined
+            ? `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}`
+            : ''}
         </span>
         <span class="font-mono tabular stat-weights-num stat-weights-num-muted" role="cell">
           {row.significant ? `±${row.scaleError.toFixed(2)}` : ''}
@@ -124,7 +131,7 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   .stat-weights-header,
   .stat-weights-row {
     display: grid;
-    grid-template-columns: 140px 1fr 56px 70px 56px;
+    grid-template-columns: 140px 1fr 56px var(--per-point-col, 70px) 56px;
     gap: 10px;
     align-items: center;
   }
@@ -177,7 +184,7 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   @media (max-width: 1023px) {
     .stat-weights-header,
     .stat-weights-row {
-      grid-template-columns: 90px 1fr 48px 60px 48px;
+      grid-template-columns: 90px 1fr 48px var(--per-point-col-narrow, 60px) 48px;
       gap: 6px;
     }
   }
