@@ -4,6 +4,7 @@
 // differs by preset. The page renders it once per preset a band offers (level 60), so
 // `testSuffix` keeps the non-default copy's test ids distinct.
 import ThisSetPanel from './ThisSetPanel.astro';
+import HealerSetPanel from './HealerSetPanel.astro';
 import StatWeightsPanel from './StatWeightsPanel.astro';
 import PlayItPanel from './PlayItPanel.astro';
 import GearRow from './GearRow.astro';
@@ -25,21 +26,33 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
 ---
 
 <section class="three-panel-row">
-  <ThisSetPanel
-    setDps={view.info.setDps}
-    characterLevel={bandTopLevel(view.band)}
-    race={view.info.race}
-    talentPoints={view.info.talentPoints}
-    generatedAtDate={view.generatedAtDate}
-    simHref={view.simHref}
-    plannerHref={view.plannerHref}
-  />
+  {view.info.healer !== undefined ? (
+    <HealerSetPanel
+      healer={view.info.healer}
+      characterLevel={bandTopLevel(view.band)}
+      race={view.info.race}
+      talentPoints={view.info.talentPoints}
+      generatedAtDate={view.generatedAtDate}
+      plannerHref={view.plannerHref}
+    />
+  ) : (
+    <ThisSetPanel
+      setDps={view.info.setDps}
+      characterLevel={bandTopLevel(view.band)}
+      race={view.info.race}
+      talentPoints={view.info.talentPoints}
+      generatedAtDate={view.generatedAtDate}
+      simHref={view.simHref}
+      plannerHref={view.plannerHref}
+    />
+  )}
   <StatWeightsPanel
     bandLabel={view.bandLabel}
     scaleRows={view.info.scaleRows}
     scaleNoteLine={view.info.scaleNoteLine}
     hasteCaptionLine={view.info.hasteCaptionLine}
     hitCap={view.info.hitCap}
+    unit={view.info.unit}
     testId={`bis-weights-${faction}-${view.band}${testSuffix}`}
   />
   <PlayItPanel
@@ -69,7 +82,7 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
     <div class="the-list-header">
       <span class="label">{bisCopy.slotHeaderLabel}</span>
       <span class="label">{bisCopy.pickHeaderLabel}</span>
-      <span class="label">{bisCopy.runnersUpHeaderLabel}</span>
+      <span class="label">{bisCopy.runnersUpHeaderLabel(view.info.unit)}</span>
     </div>
     <ul class="the-list-rows" data-testid={`bis-list-${faction}-${view.band}${testSuffix}`}>
       {view.info.rows.map((row) => (
@@ -78,6 +91,7 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
           isNew={view.info.newSlots.has(row.slot)}
           build={build}
           faction={faction}
+          unit={view.info.unit}
           slotTestId={`bis-slot-${faction}-${view.band}${testSuffix}-${row.slot}`}
         />
       ))}

@@ -14,7 +14,7 @@ import { dataUrl } from '../../lib/planner/load';
 import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
 import type { Slot } from '../../lib/planner/types';
 import { SLOT_DISPLAY_LABELS } from '../../lib/bis/slot-display-labels';
-import type { Faction } from '../../lib/bis/types';
+import type { Faction, RateUnit } from '../../lib/bis/types';
 import FactionMark from '../FactionMark.astro';
 import SourceKindIcon from './SourceKindIcon.astro';
 import VerifiedGlyph from './VerifiedGlyph.astro';
@@ -38,9 +38,11 @@ interface Props {
   /** `bis-slot-<faction>-<band>-<slot>` -- assembled by the caller, which alone knows the
    *  faction and band this row belongs to. */
   slotTestId: string;
+  /** `HPS` on a healer band; every figure the row words defaults to `DPS`. */
+  unit?: RateUnit;
 }
 
-const { row, isNew, build, you, faction, slotTestId } = Astro.props;
+const { row, isNew, build, you, faction, slotTestId, unit = 'DPS' } = Astro.props;
 
 // `inv_misc_questionmark` is the item pipeline's own placeholder for an id it has no real
 // icon for -- the client's literal red-bordered "?" texture, and the exact icon the owner's
@@ -152,7 +154,11 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                 </span>
               )}
               {row.lowValue && (
-                <span class="gear-row-flag-tag" data-testid="bis-row-low-value" title={bisCopy.lowValueTitle}>
+                <span
+                  class="gear-row-flag-tag"
+                  data-testid="bis-row-low-value"
+                  title={bisCopy.lowValueTitle(unit)}
+                >
                   {bisCopy.lowValueTag}
                 </span>
               )}
@@ -189,7 +195,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                   tabindex="0"
                   role="button"
                   aria-haspopup="true"
-                  title={`${alt.itemName} · ${bisCopy.alternativeGapLabel(alt.dpsDelta)}`}
+                  title={`${alt.itemName} · ${bisCopy.alternativeGapLabel(alt.dpsDelta, unit)}`}
                 >
                   {hasRealIcon(alt.model?.icon) ? (
                     <img
@@ -239,7 +245,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                   </span>
                   <span class="gear-row-alt-gap text-muted">
                     {alt.verified && <VerifiedGlyph size={11} />}
-                    {bisCopy.alternativeGapLabel(alt.dpsDelta)}
+                    {bisCopy.alternativeGapLabel(alt.dpsDelta, unit)}
                   </span>
                   {alt.metaLabel && <span class="gear-row-alt-level text-muted">{alt.metaLabel}</span>}
                 </span>
@@ -257,7 +263,9 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
               {bisCopy.equippedTickLabel}
             </span>
           ) : (
-            <span class="gear-row-you-delta">{bisCopy.youGainOverWorn(you.dpsDelta, you.wornItemName)}</span>
+            <span class="gear-row-you-delta">
+              {bisCopy.youGainOverWorn(you.dpsDelta, you.wornItemName, unit)}
+            </span>
           )}
         </div>
       )}

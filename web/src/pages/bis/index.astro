@@ -13,6 +13,7 @@ import { latest } from '../../lib/dates';
 import { bisCopy } from '../../lib/bis/copy';
 import { bandEntry, groupByClass, loadBisFile, readSpecCatalog } from '../../lib/bis/load';
 import { presetLabelFor } from '../../lib/bis/presets';
+import { rateUnitOf } from '../../lib/bis/heal-view';
 
 const catalog = readSpecCatalog();
 const grouped = groupByClass(catalog);
@@ -33,6 +34,7 @@ const classesWithSpecs = classes
         name: spec.name,
         hasData: file !== null,
         band60Dps: band60?.set_dps,
+        unit: band60 === undefined ? undefined : rateUnitOf(band60),
         band60PresetLabel: file === null || band60 === undefined ? undefined : presetLabelFor(file, band60),
       };
     }),

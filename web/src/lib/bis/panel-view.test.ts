@@ -7,7 +7,15 @@ import type { ItemTooltipModel } from '../items/tooltip';
 import type { LootFile } from '../sim/loot';
 import { bisCopy } from './copy';
 import { bandInfosFor, collectModelsInto, parseSwapNote, type PanelViewDeps } from './panel-view';
-import type { BisAlternative, BisBand, BisFile, BisSlot, ItemDetail, LootQuestsFile } from './types';
+import type {
+  BisAlternative,
+  BisBand,
+  BisFile,
+  BisHealProfile,
+  BisSlot,
+  ItemDetail,
+  LootQuestsFile,
+} from './types';
 import { SLOTS } from '../planner/types';
 
 const REAL_HUNTER_MARKSMANSHIP = path.resolve(
@@ -1022,5 +1030,79 @@ describe('bandInfosFor: presets', () => {
     const bare = bandInfosFor(file, [50, 60], 'alliance', depsWith({ preset: 'bare' }))[1];
     expect(raid.dpsDelta).toBeUndefined();
     expect(bare.dpsDelta).toBe(100);
+  });
+});
+
+describe('bandInfosFor: healer hook and unit threading', () => {
+  const healerFields: Partial<BisBand> = {
+    role: 'healer',
+    profile: 'onyxia-sized',
+    metrics: { hps: 300, raw_hps: 360, overheal_pct: 0.16, mana_lasts_sec: 192, hpm: 3.3 },
+    set_dps: 300,
+    reference_dps_per_point: 0.31,
+    weights: [
+      { stat: 'healing_power', weight: 1, error: 0.01 },
+      { stat: 'intellect', weight: 0.5, error: 0.01 },
+    ],
+  };
+  const swapSlot = slot({
+    swap_note: 'confirmed by the sim against Old Helm (id 5): kept the pick, 300.0 vs 290.0 set DPS',
+    dps_delta: 10,
+    sim_dps: 300,
+    alternatives: [],
+  });
+
+  it('leaves a damage band with no healer view and DPS wording', () => {
+    const file = fileWith([band({ slots: [swapSlot], reference_dps_per_point: 0.5 })]);
+    const [info] = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(info!.healer).toBeUndefined();
+    expect(info!.unit).toBe('DPS');
+    expect(info!.scaleNoteLine).toBe(bisCopy.weightsScaleNote('Agility'));
+    expect(info!.rows[0]!.evidenceLine).toBe('Sim-checked against Old Helm: +10.0 DPS');
+  });
+
+  it('builds the healer view from the band and the file profile, and words every figure in HPS', () => {
+    const profile: BisHealProfile = {
+      id: 'onyxia-sized',
+      label: 'Onyxia-sized tank hits and raid pulses',
+      summary: '',
+      notes: '',
+      duration_sec: 300,
+      damage_spread: 0.25,
+      tank: { health: 9500, hit_damage: 1150, swing_seconds: 2, reason: '' },
+      members: { health: 5000, reason: '' },
+      pulse: { damage: 450, interval_seconds: 4, members: 3, reason: '' },
+      sources: [],
+    };
+    const file = { ...fileWith([band({ ...healerFields, slots: [swapSlot] })]), heal_profile: profile };
+    const [info] = bandInfosFor(file as BisFile, [20], 'alliance', depsWith({ spec: 'priest-holy' }));
+    expect(info!.unit).toBe('HPS');
+    expect(info!.healer?.figure).toBe('300.0');
+    expect(info!.healer?.profileLabel).toBe('Onyxia-sized tank hits and raid pulses');
+    expect(info!.scaleNoteLine).toContain('HPS per point');
+    expect(info!.scaleNoteLine).not.toContain('DPS');
+    expect(info!.rows[0]!.evidenceLine).toBe('Sim-checked against Old Helm: +10.0 HPS');
+    expect(info!.rows[0]!.verifiedGlyphTitle).toBeUndefined();
+  });
+
+  it('words the parsed swap note and a no-value slot in HPS too', () => {
+    const noDelta = slot({ swap_note: swapSlot.swap_note, dps_delta: null });
+    const empty = slot({
+      slot: 'neck',
+      item_id: undefined as unknown as number,
+      empty_reason: 'no_dps_value',
+    });
+    const file = fileWith([band({ ...healerFields, slots: [noDelta, empty] })]);
+    const [info] = bandInfosFor(file, [20], 'alliance', depsWith({ spec: 'priest-holy' }));
+    expect(info!.rows[0]!.evidenceLine).toBe('Sim-checked against Old Helm: 300.0 vs 290.0 HPS');
+    expect(info!.rows.find((r) => r.slot === 'neck')?.emptyCopy).toBe(
+      'Nothing sourced at this level helps your HPS',
+    );
+  });
+
+  it('names a sim-verified pick with no swap note in HPS', () => {
+    const file = fileWith([band({ ...healerFields, slots: [slot({ sim_dps: 281.3 })] })]);
+    const [info] = bandInfosFor(file, [20], 'alliance', depsWith({ spec: 'priest-holy' }));
+    expect(info!.rows[0]!.verifiedGlyphTitle).toBe('Confirmed by a full sim: 281.3 HPS with this item');
   });
 });

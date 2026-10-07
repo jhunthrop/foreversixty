@@ -10,6 +10,7 @@
 import type { LootFile } from '../sim/loot';
 import { statLabelForSpec } from '../sim/weights-display';
 import { bisCopy } from './copy';
+import { healerSetViewFor, rateUnitOf, type HealerSetView } from './heal-view';
 import {
   bandEntry,
   changedSinceBand,
@@ -31,6 +32,7 @@ import type {
   Faction,
   ItemDetail,
   LootQuestsFile,
+  RateUnit,
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { Slot } from '../planner/types';
@@ -103,25 +105,26 @@ function runnerUpNameFromSwapNote(note: string): string | undefined {
 function evidenceLineFor(
   swapNote: string | undefined,
   dpsDelta: number | null | undefined,
+  unit: RateUnit,
 ): string | undefined {
   if (swapNote === undefined) return undefined;
   if (dpsDelta !== undefined && dpsDelta !== null) {
     const runnerUpName = runnerUpNameFromSwapNote(swapNote);
-    if (runnerUpName !== undefined) return bisCopy.evidenceLineDelta(runnerUpName, dpsDelta);
+    if (runnerUpName !== undefined) return bisCopy.evidenceLineDelta(runnerUpName, dpsDelta, unit);
   }
   const parsed = parseSwapNote(swapNote);
   return parsed === undefined
     ? swapNote
-    : bisCopy.evidenceLine(parsed.itemName, parsed.pickDps, parsed.altDps);
+    : bisCopy.evidenceLine(parsed.itemName, parsed.pickDps, parsed.altDps, unit);
 }
 
 /** The main pick's own verified-glyph title -- the default "confirmed by a Top Gear pass"
  *  copy unless the pick carries `sim_dps` and no `swap_note` (a sim-decided row with no
  *  swap narrative to tell -- a trinket/proc/weapon-pair tournament winner), which names its
  *  own real number instead (spec item 1's second rule). */
-function verifiedGlyphTitleFor(row: BisSlot): string | undefined {
+function verifiedGlyphTitleFor(row: BisSlot, unit: RateUnit): string | undefined {
   return row.swap_note === undefined && row.sim_dps !== undefined
-    ? bisCopy.simDpsVerifiedTitle(row.sim_dps)
+    ? bisCopy.simDpsVerifiedTitle(row.sim_dps, unit)
     : undefined;
 }
 
@@ -208,12 +211,13 @@ function emptyReasonLabel(
   slot: string,
   band: number,
   isFirstInGroupThisBand: boolean,
+  unit: RateUnit,
 ): string {
   switch (reason) {
     case 'no_sourced_item':
       return noSourcedItemCopyFor(file, bands, faction, slot, band, isFirstInGroupThisBand);
     case 'no_dps_value':
-      return bisCopy.emptyReasonNoDpsValue;
+      return bisCopy.emptyReasonNoDpsValue(unit);
     case 'effect_not_modelled':
       return bisCopy.emptyReasonEffectNotModelled;
     default:
@@ -346,6 +350,7 @@ function buildRowView(
   bands: readonly number[],
   mainHandItemName: string | undefined,
   isFirstInGroupThisBand: boolean,
+  unit: RateUnit,
 ): RowView {
   if (isMissingSlot(row) || !hasKnownSource(row)) {
     // A missing slot (`isMissingSlot`) never published an `empty_reason` at all -- the
@@ -355,7 +360,7 @@ function buildRowView(
     const emptyCopy =
       row.slot === 'off_hand' && mainHandTwoHanded
         ? bisCopy.twoHanderEquippedNamed(mainHandItemName ?? bisCopy.noKnownSourceForSlot)
-        : emptyReasonLabel(emptyReason, file, bands, faction, row.slot, band, isFirstInGroupThisBand);
+        : emptyReasonLabel(emptyReason, file, bands, faction, row.slot, band, isFirstInGroupThisBand, unit);
     return { slot: row.slot, empty: true, emptyCopy };
   }
   const badgeLabel = sourceBadgeLabel(row, faction);
@@ -377,8 +382,8 @@ function buildRowView(
       buildAlternativeView(alt, faction, lootFile, tooltipFor, band),
     ),
     replacedName: replacedBySlot.get(row.slot),
-    evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta),
-    verifiedGlyphTitle: verifiedGlyphTitleFor(row),
+    evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta, unit),
+    verifiedGlyphTitle: verifiedGlyphTitleFor(row, unit),
     effectUnmodelled: row.effect_unmodelled,
     notSimChecked: row.sim_status === 'not_in_sim',
     lowValue: row.low_value,
@@ -539,6 +544,10 @@ export interface BandInfo {
   changed: ChangedSlot[] | undefined;
   previousBand: number | undefined;
   upgradesCount: number;
+  /** `HPS` for a healer band, `DPS` otherwise: the unit every figure of this band is in. */
+  unit: RateUnit;
+  /** The healer variant of the "This set" panel's data; undefined for every other band. */
+  healer: HealerSetView | undefined;
   setDps: number;
   dpsDelta: number | undefined;
   /** `BisBand.set_dps_partial` -- true when `setDps` excludes at least one pick's own
@@ -596,6 +605,7 @@ export function bandInfosFor(
         .filter((entry) => entry.after !== undefined)
         .map((entry) => [entry.slot, entry.before?.item_name]),
     );
+    const unit = rateUnitOf(bandData);
     const slotRows = filledSlots(bandData);
     const mainHandRow = slotRows.find((r) => r.slot === 'main_hand');
     const mainHandModel =
@@ -633,6 +643,7 @@ export function bandInfosFor(
         bands,
         mainHandItemName,
         groupFirstSlot.get(SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot) === row.slot,
+        unit,
       ),
     );
     // The list's own "N / total wearable slots" denominator (spec §4.B, reused by §4.E's
@@ -670,7 +681,7 @@ export function bandInfosFor(
         ? bisCopy.weightsUnmeasuredLine
         : anchorStat === ''
           ? bisCopy.weightsUnmeasuredLine
-          : bisCopy.weightsScaleNote(statLabelForSpec(anchorStat, deps.spec));
+          : bisCopy.weightsScaleNote(statLabelForSpec(anchorStat, deps.spec), unit);
     const hasteCaptionLine =
       weightsReason !== null
         ? undefined
@@ -689,6 +700,8 @@ export function bandInfosFor(
         changed,
         previousBand,
         upgradesCount: changed?.length ?? 0,
+        unit,
+        healer: healerSetViewFor(bandData, file.heal_profile),
         setDps: bandData.set_dps,
         dpsDelta: previousSetDps === undefined ? undefined : bandData.set_dps - previousSetDps,
         setDpsPartial: bandData.set_dps_partial ?? false,

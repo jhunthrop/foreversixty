@@ -19,6 +19,7 @@
 import { bisCopy } from '../../lib/bis/copy';
 import type { HitCapLine } from '../../lib/bis/hit-cap';
 import type { ScaleRow } from '../../lib/bis/panel-view';
+import type { RateUnit } from '../../lib/bis/types';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
 
 interface Props {
@@ -33,9 +34,11 @@ interface Props {
    *  the page, so the generic `bis-stat-weights` class name alone is not unique -- same
    *  pattern as `GearRow`'s own caller-assembled `slotTestId`). */
   testId: string;
+  /** `HPS` on a healer band: the "Per point" column's unit. */
+  unit?: RateUnit;
 }
 
-const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, hitCap, testId } = Astro.props;
+const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, hitCap, testId, unit = 'DPS' } = Astro.props;
 const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLine} ${hasteCaptionLine}`;
 ---
 
@@ -75,7 +78,7 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
           {row.significant ? row.scaleFactor.toFixed(2) : bisCopy.weightsNotSignificant}
         </span>
         <span class="font-mono tabular stat-weights-num stat-weights-num-muted" role="cell">
-          {row.significant && row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} DPS` : ''}
+          {row.significant && row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} ${unit}` : ''}
         </span>
         <span class="font-mono tabular stat-weights-num stat-weights-num-muted" role="cell">
           {row.significant ? `±${row.scaleError.toFixed(2)}` : ''}
