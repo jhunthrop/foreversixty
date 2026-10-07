@@ -1,9 +1,12 @@
 {
   "spec": "rogue-combat",
   "state": "written",
-  "notes": "Vanilla Combat at 60: Sinister Strike builds combo points, Slice and Dice is kept up between finishers, Eviscerate spends five combo points, and Adrenaline Rush is the burst cooldown. Adapted from the fork's own combat_sinister_strike.apl.json down to the plain priority order -- its energy-pooling condition for Adrenaline Rush (cast only when about to waste an energy tick) is a real optimization but adds a comparison this rotation does not need to get the core loop right, so Adrenaline Rush is a bare cast here and the pooling nuance is left for the validation job. Combat has no Seal Fate, so combo points come in at a flat rate; the rotation does not need to branch on crit the way Assassination's does. Every rank named here is checked against this build's own spellconst.",
+  "notes": "Combat at 60: Rupture is kept on the target, Backstab builds combo points (Sinister Strike only if you have no dagger), Slice and Dice is kept up between finishers, Eviscerate spends five combo points, and Adrenaline Rush is the burst cooldown. Adapted from the fork's own combat_sinister_strike.apl.json down to the plain priority order -- its energy-pooling condition for Adrenaline Rush (cast only when about to waste an energy tick) is a real optimization but adds a comparison this rotation does not need to get the core loop right, so Adrenaline Rush is a bare cast here and the pooling nuance is left for the validation job. Combat has no Seal Fate, so combo points come in at a flat rate; the rotation does not need to branch on crit the way Assassination's does. Every rank named here is checked against this build's own spellconst.",
+  "expected_idle": [
+    { "id": 25300, "reason": "Backstab needs a dagger in the main hand (sim/rogue/backstab.go's ExtraCastCondition, HasDagger); the ladder's level-60 gear wields a sword, so the line cannot cast there and Sinister Strike below it builds instead. The BiS band's own daggers cast it." }
+  ],
   "engineering_notes": {
-    "1": "Previously starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
+    "3": "Previously starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
   },
   "sources": [
     { "label": "wowsims-forever default Combat rogue priority list", "url": "https://github.com/wowsims/classic/blob/master/ui/rogue/apls/combat_sinister_strike.apl.json", "kind": "community" },
@@ -13,7 +16,25 @@
   "rotation": {
     "type": "TypeAPL",
     "priorityList": [
+      {
+        "notes": "Rupture whenever it is not on the target and you have four or more combo points: the bleed ticks for the whole fight and was the largest single gain the search found.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 11275, "rank": 6 } } } } },
+                { "cmp": { "op": "OpGe", "lhs": { "currentComboPoints": {} }, "rhs": { "const": { "val": "4" } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 11275, "rank": 6 } }
+        }
+      },
       { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Backstab as the combo point builder when you have a dagger in your main hand: in our level-60 search run it beat Sinister Strike.",
+        "action": { "castSpell": { "spellId": { "spellId": 25300, "rank": 9 } } }
+      },
       {
         "notes": "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh.",
         "action": {
@@ -43,8 +64,11 @@
         "action": { "castSpell": { "spellId": { "spellId": 13750 } } }
       },
       {
-        "notes": "Sinister Strike as the combo point builder.",
-        "action": { "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } } }
+        "notes": "Sinister Strike as the builder when Backstab cannot be used, because it needs a dagger in your main hand: with a dagger Backstab is always cast first at this energy, so this line never fires.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentEnergy": {} }, "rhs": { "const": { "val": "60" } } } },
+          "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } }
+        }
       }
     ]
   }

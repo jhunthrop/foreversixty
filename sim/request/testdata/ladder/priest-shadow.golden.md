@@ -92,11 +92,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:263937 ranged:263430 | 9.9 | 3 | spell:5019=96.4, spell:8092=17.7, spell:594=10.8 | {SpellID: 15473} |
 | 20 | 000000000000000000-00000000000000000-542000000000000000 | main_hand:890 ranged:5243 | 22.9 | 4 | spell:5019=94.7, spell:8102=13.2, spell:970=8.8, spell:2944=1.9 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
-| 30 | 000000000000000000-00000000000000000-543110401200000000 | main_hand:249392 ranged:5213 | 34.0 | 5 | spell:5019=80.5, spell:17311=26.0, spell:8104=3.0, spell:992=1.1, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 38 | 000000000000000000-00000000000000000-543110401201300220 | main_hand:1664 ranged:13064 | 51.3 | 5 | spell:5019=72.3, spell:17312=22.1, spell:8105=2.7, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 40 | 000000000000000000-00000000000000000-543110401201300240 | main_hand:1664 ranged:5216 | 53.2 | 5 | spell:5019=74.6, spell:17312=23.9, spell:8106=2.0, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 50 | 521000000000000000-00000000000000000-543110401201300251 | main_hand:812 ranged:249232 | 85.7 | 6 | spell:5019=57.0, spell:17313=22.4, spell:10945=2.8, spell:10893=1.3, spell:15473=1.0 | {SpellID: 14751} |
-| 60 | 524111001300000000-00000000000000000-543110401201300251 | main_hand:22799 ranged:22821 | 196.6 | 7 | spell:5019=75.4, spell:18807=22.4, spell:10947=3.7, spell:10894=2.1, spell:14751=1.5 | - |
+| 30 | 000000000000000000-00000000000000000-543110401200000000 | main_hand:249392 ranged:5213 | 34.9 | 4 | spell:5019=77.2, spell:17311=29.1, spell:992=2.1, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 38 | 000000000000000000-00000000000000000-543110401201300220 | main_hand:1664 ranged:13064 | 53.5 | 4 | spell:5019=70.1, spell:17312=24.7, spell:2767=2.0, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 40 | 000000000000000000-00000000000000000-543110401201300240 | main_hand:1664 ranged:5216 | 54.9 | 4 | spell:5019=73.1, spell:17312=25.7, spell:2767=2.0, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 50 | 521000000000000000-00000000000000000-543110401201300251 | main_hand:812 ranged:249232 | 86.3 | 5 | spell:5019=57.7, spell:17313=23.4, spell:10893=2.1, spell:15473=1.0, spell:19278=1.0 | {SpellID: 14751} |
+| 60 | 524111001300000000-00000000000000000-543110401201300251 | main_hand:22799 ranged:22821 | 204.7 | 6 | spell:5019=68.2, spell:18807=28.2, spell:10894=2.2, spell:14751=1.5, spell:19280=1.5 | - |
 
 ## Learned but unused (informational)
 
@@ -122,6 +122,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15263)
 - Holy Nova (spell 15430)
+- Mind Blast (spell 8104)
 - Smite (spell 1004)
 - Starshards (spell 19299)
 
@@ -131,6 +132,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
+- Mind Blast (spell 8105)
 - Shadow Word: Death (spell 1309595)
 - Smite (spell 6060)
 - Starshards (spell 19302)
@@ -141,6 +143,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277326)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
+- Mind Blast (spell 8106)
 - Shadow Word: Death (spell 1309633)
 - Smite (spell 6060)
 - Starshards (spell 19302)
@@ -151,6 +154,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277327)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
+- Mind Blast (spell 10945)
 - Shadow Word: Death (spell 1309635)
 - Smite (spell 10933)
 - Starshards (spell 19304)
@@ -161,6 +165,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277328)
 - Holy Fire (spell 15261)
 - Holy Nova (spell 27801)
+- Mind Blast (spell 10947)
 - Shadow Word: Death (spell 1309636)
 - Smite (spell 10934)
 - Starshards (spell 19305)

@@ -1,7 +1,25 @@
 {
   "type": "TypeAPL",
   "priorityList": [
+    {
+      "notes": "Rupture whenever it is not on the target and you have four or more combo points: the bleed ticks for the whole fight and was the largest single gain the search found.",
+      "action": {
+        "condition": {
+          "and": {
+            "vals": [
+              { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 11275, "rank": 6 } } } } },
+              { "cmp": { "op": "OpGe", "lhs": { "currentComboPoints": {} }, "rhs": { "const": { "val": "4" } } } }
+            ]
+          }
+        },
+        "castSpell": { "spellId": { "spellId": 11275, "rank": 6 } }
+      }
+    },
     { "action": { "autocastOtherCooldowns": {} } },
+    {
+      "notes": "Backstab as the combo point builder when you have a dagger in your main hand: in our level-60 search run it beat Sinister Strike.",
+      "action": { "castSpell": { "spellId": { "spellId": 25300, "rank": 9 } } }
+    },
     {
       "notes": "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh.",
       "action": {
@@ -31,8 +49,11 @@
       "action": { "castSpell": { "spellId": { "spellId": 13750 } } }
     },
     {
-      "notes": "Sinister Strike as the combo point builder.",
-      "action": { "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } } }
+      "notes": "Sinister Strike as the builder when Backstab cannot be used, because it needs a dagger in your main hand: with a dagger Backstab is always cast first at this energy, so this line never fires.",
+      "action": {
+        "condition": { "cmp": { "op": "OpGe", "lhs": { "currentEnergy": {} }, "rhs": { "const": { "val": "60" } } } },
+        "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } }
+      }
     }
   ]
 }

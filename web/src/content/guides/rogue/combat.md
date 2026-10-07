@@ -36,7 +36,7 @@ Point allocation runs deep into Combat to reach Adrenaline Rush at the bottom of
 
 ## Rotation and priority
 
-The core loop is simple and fully supported in this site's simulator: keep Slice and Dice active so combo points aren't wasted on idle swing time, use Adrenaline Rush on cooldown as the spec's burst window, and spend five combo points on Eviscerate. Sinister Strike fills the rest of the energy bar as the combo-point builder. There's no opener-specific sequencing beyond that in the current simulated priority — Combat's rotation is close to its 1.12 shape, with the tree's talent changes (cheaper Sinister Strike, stronger off-hand, Blade Flurry cleave) affecting the numbers behind each swing rather than the order abilities are used in.
+The core loop in this site's simulator: Rupture first, whenever it is not on the target and you have four or more combo points. Together with swapping Sinister Strike for Backstab as the builder, it was worth about +13% in our level-60 search run. Backstab is the combo-point builder, and it needs a dagger in your main hand; with a sword or mace in your main hand, Sinister Strike takes its place. Then Slice and Dice, refreshed only at five combo points when it is down or about to drop, Eviscerate at five combo points, and Adrenaline Rush on cooldown as the burst window. There is no opener-specific sequencing beyond that in the current simulated priority. Combat's rotation otherwise keeps its 1.12 shape, with the tree's talent changes (cheaper Sinister Strike, stronger off-hand, Blade Flurry cleave) affecting the numbers behind each swing rather than the order abilities are used in.
 
 ## Stat priority
 
