@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "1d9f97983",
-  "generated_at": "2026-10-07T22:20:43Z",
+  "engine_version": "642871a9c",
+  "generated_at": "2026-10-07T22:45:48Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.374754127,
-      "verify_run_seconds": 0.830255632,
+      "weights_run_seconds": 1.844002892,
+      "verify_run_seconds": 1.109754326,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1156,8 +1156,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.374754127,
-      "verify_run_seconds": 0.88604061,
+      "weights_run_seconds": 1.844002892,
+      "verify_run_seconds": 1.215836116,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1797,8 +1797,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.301821775,
-      "verify_run_seconds": 1.030648403,
+      "weights_run_seconds": 1.764980865,
+      "verify_run_seconds": 1.369955239,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2441,8 +2441,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.301821775,
-      "verify_run_seconds": 1.056736995,
+      "weights_run_seconds": 1.764980865,
+      "verify_run_seconds": 1.365443178,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3084,8 +3084,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.309956505,
-      "verify_run_seconds": 0.962024923,
+      "weights_run_seconds": 1.735943959,
+      "verify_run_seconds": 1.310881347,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3726,8 +3726,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.309956505,
-      "verify_run_seconds": 0.999874946,
+      "weights_run_seconds": 1.735943959,
+      "verify_run_seconds": 1.302355972,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4378,8 +4378,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.3739843010000001,
-      "verify_run_seconds": 0.902158693,
+      "weights_run_seconds": 1.865156277,
+      "verify_run_seconds": 1.231739267,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5041,8 +5041,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.3739843010000001,
-      "verify_run_seconds": 0.915473951,
+      "weights_run_seconds": 1.865156277,
+      "verify_run_seconds": 1.235706355,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5227,7 +5227,7 @@
               "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -5.007436427454565
+              "dps_delta": -5.007436427454564
             }
           ]
         },
@@ -5353,7 +5353,7 @@
               "item_name": "Savage Gladiator Chain",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -1.6117884616553653
+              "dps_delta": -1.6117884616553644
             },
             {
               "item_id": 23087,
@@ -5475,14 +5475,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.5137183339861239
+              "dps_delta": -0.5137183339861257
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.529909389362294
+              "dps_delta": -0.5299093893622958
             },
             {
               "item_id": 14554,
@@ -5751,8 +5751,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.333574831,
-      "verify_run_seconds": 0.945887974,
+      "weights_run_seconds": 1.8435998260000002,
+      "verify_run_seconds": 1.339195913,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6063,7 +6063,7 @@
               "item_name": "Savage Gladiator Chain",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -1.6117884616553653
+              "dps_delta": -1.6117884616553644
             },
             {
               "item_id": 23087,
@@ -6185,14 +6185,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.5137183339861239
+              "dps_delta": -0.5137183339861257
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.529909389362294
+              "dps_delta": -0.5299093893622958
             },
             {
               "item_id": 14554,
@@ -6459,8 +6459,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.333574831,
-      "verify_run_seconds": 0.968879395,
+      "weights_run_seconds": 1.8435998260000002,
+      "verify_run_seconds": 1.340562491,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -6890,7 +6890,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.699330220144989
+              "dps_delta": -0.6993302201449926
             },
             {
               "item_id": 237825,
@@ -7162,8 +7162,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.543179868,
-      "verify_run_seconds": 1.138251523,
+      "weights_run_seconds": 2.104523795,
+      "verify_run_seconds": 1.488999269,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7593,7 +7593,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.699330220144989
+              "dps_delta": -0.6993302201449926
             },
             {
               "item_id": 237825,
@@ -7618,7 +7618,7 @@
           "item_name": "Bloodmail Boots",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "score": 70.79461582623715,
+          "score": 70.79461582623716,
           "verified": true,
           "alternatives": [
             {
@@ -7626,14 +7626,14 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.564429717017511
+              "dps_delta": -1.5644297170175128
             },
             {
               "item_id": 227815,
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -2.040606045784211
+              "dps_delta": -2.040606045784213
             },
             {
               "item_id": 13967,
@@ -7864,8 +7864,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.543179868,
-      "verify_run_seconds": 1.139722944,
+      "weights_run_seconds": 2.104523795,
+      "verify_run_seconds": 1.558444103,
       "coverage": {
         "back": {
           "eligible": 449,

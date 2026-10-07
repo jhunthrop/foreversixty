@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "1d9f97983",
-  "generated_at": "2026-10-07T22:25:41Z",
+  "engine_version": "642871a9c",
+  "generated_at": "2026-10-07T22:52:20Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -892,8 +892,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.598338405,
-      "verify_run_seconds": 0.953017522,
+      "weights_run_seconds": 2.142609539,
+      "verify_run_seconds": 1.227113551,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1932,8 +1932,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.598338405,
-      "verify_run_seconds": 1.036215468,
+      "weights_run_seconds": 2.142609539,
+      "verify_run_seconds": 1.286735816,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2643,8 +2643,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.6005953179999999,
-      "verify_run_seconds": 0.927896525,
+      "weights_run_seconds": 2.134221771,
+      "verify_run_seconds": 1.153062035,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3351,8 +3351,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.6005953179999999,
-      "verify_run_seconds": 0.905530435,
+      "weights_run_seconds": 2.134221771,
+      "verify_run_seconds": 1.15822101,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4030,8 +4030,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.324850916,
-      "verify_run_seconds": 0.759665748,
+      "weights_run_seconds": 1.700255364,
+      "verify_run_seconds": 0.986694766,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4703,8 +4703,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.324850916,
-      "verify_run_seconds": 0.753389529,
+      "weights_run_seconds": 1.700255364,
+      "verify_run_seconds": 0.964214085,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5405,8 +5405,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.52692731,
-      "verify_run_seconds": 1.050718736,
+      "weights_run_seconds": 1.9534450479999999,
+      "verify_run_seconds": 1.332456658,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6114,8 +6114,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.52692731,
-      "verify_run_seconds": 1.030145036,
+      "weights_run_seconds": 1.9534450479999999,
+      "verify_run_seconds": 1.3235636259999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6852,8 +6852,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.399946737,
-      "verify_run_seconds": 1.05423526,
+      "weights_run_seconds": 5.686297484,
+      "verify_run_seconds": 1.412273276,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7589,8 +7589,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.399946737,
-      "verify_run_seconds": 1.058628005,
+      "weights_run_seconds": 5.686297484,
+      "verify_run_seconds": 1.409632352,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7994,7 +7994,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 30.9180506080349,
+          "score": 30.918050608034896,
           "verified": true,
           "alternatives": [
             {
@@ -8010,14 +8010,14 @@
               "item_name": "Stormpike Cloth Girdle",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -8.906292537455586
+              "dps_delta": -8.906292537455585
             },
             {
               "item_id": 11662,
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -9.948464410259694
+              "dps_delta": -9.94846441025969
             }
           ]
         },
@@ -8319,8 +8319,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.595516634,
-      "verify_run_seconds": 1.111152738,
+      "weights_run_seconds": 6.037942704,
+      "verify_run_seconds": 1.4226570619999999,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8725,7 +8725,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 30.9180506080349,
+          "score": 30.918050608034896,
           "verified": true,
           "alternatives": [
             {
@@ -8733,7 +8733,7 @@
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -8.906292537455586
+              "dps_delta": -8.906292537455585
             },
             {
               "item_id": 18405,
@@ -8748,7 +8748,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -9.948464410259694
+              "dps_delta": -9.94846441025969
             }
           ]
         },
@@ -9054,8 +9054,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.595516634,
-      "verify_run_seconds": 1.107357546,
+      "weights_run_seconds": 6.037942704,
+      "verify_run_seconds": 1.471624809,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "1d9f97983",
-  "generated_at": "2026-10-07T22:28:36Z",
+  "engine_version": "642871a9c",
+  "generated_at": "2026-10-07T22:56:08Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -609,8 +609,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.137808271,
-      "verify_run_seconds": 1.192003116,
+      "weights_run_seconds": 2.840487486,
+      "verify_run_seconds": 1.512494926,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1294,8 +1294,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.137808271,
-      "verify_run_seconds": 1.187808013,
+      "weights_run_seconds": 2.840487486,
+      "verify_run_seconds": 1.522385487,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1986,8 +1986,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.32177479,
-      "verify_run_seconds": 1.258029676,
+      "weights_run_seconds": 3.08933644,
+      "verify_run_seconds": 1.606679981,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,8 +2678,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.32177479,
-      "verify_run_seconds": 1.244875233,
+      "weights_run_seconds": 3.08933644,
+      "verify_run_seconds": 1.62527,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3368,8 +3368,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.42511997,
-      "verify_run_seconds": 1.269648784,
+      "weights_run_seconds": 3.215632263,
+      "verify_run_seconds": 1.6832038580000002,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4061,8 +4061,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.42511997,
-      "verify_run_seconds": 1.32108976,
+      "weights_run_seconds": 3.215632263,
+      "verify_run_seconds": 1.716041787,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4769,8 +4769,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.467117764,
-      "verify_run_seconds": 1.64036012,
+      "weights_run_seconds": 3.279856204,
+      "verify_run_seconds": 2.12447472,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5508,8 +5508,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.467117764,
-      "verify_run_seconds": 1.676147479,
+      "weights_run_seconds": 3.279856204,
+      "verify_run_seconds": 2.186612805,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5676,7 +5676,7 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 227044,
+              "item_id": 23314,
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
@@ -6262,8 +6262,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.441368055,
-      "verify_run_seconds": 1.671756504,
+      "weights_run_seconds": 3.274996286,
+      "verify_run_seconds": 2.195976702,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6442,7 +6442,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -7.735715108457809
+              "dps_delta": -7.735715108457811
             },
             {
               "item_id": 279253,
@@ -6513,7 +6513,7 @@
               "item_name": "Warlord's Plate Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.043040520686701764
+              "dps_delta": -0.043040520686703214
             },
             {
               "item_id": 12927,
@@ -6571,14 +6571,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.3676043366089865
+              "dps_delta": -1.3676043366089894
             },
             {
               "item_id": 11726,
               "item_name": "Savage Gladiator Chain",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -3.4219919723269165
+              "dps_delta": -3.4219919723269197
             },
             {
               "item_id": 23087,
@@ -6703,14 +6703,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.7655658910778187
+              "dps_delta": -2.765565891077822
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.270824632339902
+              "dps_delta": -3.2708246323399046
             },
             {
               "item_id": 14554,
@@ -7024,8 +7024,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.441368055,
-      "verify_run_seconds": 1.720619214,
+      "weights_run_seconds": 3.274996286,
+      "verify_run_seconds": 2.237141084,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7459,7 +7459,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.3062356085188935
+              "dps_delta": -3.306235608518887
             },
             {
               "item_id": 14554,
@@ -7779,8 +7779,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.8139322829999998,
-      "verify_run_seconds": 1.817974189,
+      "weights_run_seconds": 3.686344255,
+      "verify_run_seconds": 2.40170955,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7951,7 +7951,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -16.523329169465587
+              "dps_delta": -16.523329169465583
             },
             {
               "item_id": 20521,
@@ -8542,8 +8542,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.8139322829999998,
-      "verify_run_seconds": 1.890116001,
+      "weights_run_seconds": 3.686344255,
+      "verify_run_seconds": 2.492228374,
       "coverage": {
         "back": {
           "eligible": 450,

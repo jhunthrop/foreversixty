@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "1d9f97983",
-  "generated_at": "2026-10-07T22:20:00Z",
+  "engine_version": "642871a9c",
+  "generated_at": "2026-10-07T22:44:51Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.724321918,
-      "verify_run_seconds": 0.519841044,
+      "weights_run_seconds": 1.015101185,
+      "verify_run_seconds": 0.632480625,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.724321918,
-      "verify_run_seconds": 0.520590957,
+      "weights_run_seconds": 1.015101185,
+      "verify_run_seconds": 0.662820713,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1892,8 +1892,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.817100869,
-      "verify_run_seconds": 0.618790703,
+      "weights_run_seconds": 1.087594689,
+      "verify_run_seconds": 0.809883325,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2602,8 +2602,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.817100869,
-      "verify_run_seconds": 0.609246581,
+      "weights_run_seconds": 1.087594689,
+      "verify_run_seconds": 0.841885519,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3278,8 +3278,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.772544254,
-      "verify_run_seconds": 0.493907596,
+      "weights_run_seconds": 1.018900691,
+      "verify_run_seconds": 0.664421554,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3948,8 +3948,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.772544254,
-      "verify_run_seconds": 0.516110786,
+      "weights_run_seconds": 1.018900691,
+      "verify_run_seconds": 0.664990699,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4645,8 +4645,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.727510215,
-      "verify_run_seconds": 0.58009203,
+      "weights_run_seconds": 0.9519455,
+      "verify_run_seconds": 0.756348614,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5326,8 +5326,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.727510215,
-      "verify_run_seconds": 0.599057749,
+      "weights_run_seconds": 0.9519455,
+      "verify_run_seconds": 0.757536967,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6063,8 +6063,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.743283246,
-      "verify_run_seconds": 0.575742075,
+      "weights_run_seconds": 1.03268254,
+      "verify_run_seconds": 0.744417439,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6801,8 +6801,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.743283246,
-      "verify_run_seconds": 0.571548383,
+      "weights_run_seconds": 1.03268254,
+      "verify_run_seconds": 0.757676523,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7536,8 +7536,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.834670874,
-      "verify_run_seconds": 0.594413311,
+      "weights_run_seconds": 1.038832808,
+      "verify_run_seconds": 0.76771277,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7844,7 +7844,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.0301332878232587
+              "dps_delta": -2.0301332878232614
             },
             {
               "item_id": 18385,
@@ -8271,8 +8271,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.834670874,
-      "verify_run_seconds": 0.581693625,
+      "weights_run_seconds": 1.038832808,
+      "verify_run_seconds": 0.788828275,
       "coverage": {
         "back": {
           "eligible": 450,
