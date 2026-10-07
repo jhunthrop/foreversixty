@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 00000000000000000-00000000000000000-5321000000000000000)
 
-Set DPS (verified): 31.3. Weights run: 2.5s. Verify run: 1.6s. 197 eligible items had no known source.
+Set DPS (verified): 31.3. Weights run: 1.9s. Verify run: 1.2s. 197 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.005 ± 0.001, crit=0.012 ± 0.001 per rating point (14 rating = 1%, 0.164 per %), hit=0.031 ± 0.001 per rating point (10 rating = 1%, 0.306 per %), melee_haste=0.709 ± 0.071
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 197, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-00000000000000000-5322210310011000000)
 
-Set DPS (verified): 45.5. Weights run: 2.8s. Verify run: 1.7s. 331 eligible items had no known source.
+Set DPS (verified): 45.5. Weights run: 2.0s. Verify run: 1.3s. 331 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.008 ± 0.001, crit=0.017 ± 0.001 per rating point (14 rating = 1%, 0.237 per %), hit=0.041 ± 0.001 per rating point (10 rating = 1%, 0.413 per %), melee_haste=0.958 ± 0.143
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 331, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-00000000000000000-5322210310013011051)
 
-Set DPS (verified): 88.2. Weights run: 3.0s. Verify run: 1.8s. 459 eligible items had no known source.
+Set DPS (verified): 88.2. Weights run: 2.2s. Verify run: 1.3s. 459 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.011 ± 0.001, crit=0.024 ± 0.002 per rating point (14 rating = 1%, 0.330 per %), hit=0.035 ± 0.002 per rating point (10 rating = 1%, 0.347 per %), melee_haste=not significant (1.177 ± 0.596)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 459, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 00500000000000000-32000000000000000-5322210310013011051)
 
-Set DPS (verified): 121.5. Weights run: 3.0s. Verify run: 2.1s. 584 eligible items had no known source.
+Set DPS (verified): 121.5. Weights run: 2.3s. Verify run: 1.6s. 584 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.108 ± 0.005, crit=0.218 ± 0.008 per rating point (14 rating = 1%, 3.046 per %), hit=0.051 ± 0.004 per rating point (10 rating = 1%, 0.505 per %), melee_haste=not significant (1.118 ± 0.969)
 
@@ -128,28 +128,28 @@ No-known-source sample (15 of 584, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 00500000000000000-32513100000000000-5322210310013011051)
 
-Set DPS (verified): 188.6. Weights run: 3.0s. Verify run: 2.2s. 1370 eligible items had no known source.
+Set DPS (verified): 187.9. Weights run: 2.2s. Verify run: 1.7s. 1370 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.136 ± 0.007, crit=0.285 ± 0.011 per rating point (14 rating = 1%, 3.996 per %), hit=0.063 ± 0.006 per rating point (10 rating = 1%, 0.627 per %), melee_haste=not significant (1.050 ± 1.577)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.133 ± 0.006, crit=0.279 ± 0.010 per rating point (14 rating = 1%, 3.908 per %), hit=0.062 ± 0.006 per rating point (10 rating = 1%, 0.616 per %), melee_haste=not significant (1.138 ± 1.431)
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Ebon Mask (19984, +0.00 DPS, sim-verified) [quest]; Lieutenant Commander's Leather Helm (227055, +0.00 DPS) [pvp]; Field Marshal's Leather Mask (231545, -0.28 DPS) [pvp] |
+| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Ebon Mask (19984, +0.00 DPS, sim-verified) [quest]; Lieutenant Commander's Leather Helm (227055, +0.00 DPS) [pvp]; Blue Suede Hat (252482, -0.29 DPS) [crafted] |
 | neck | Imperial Jewel (11933) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | 32.0 attack_power points (1.91 DPS) | yes | Amulet of the Darkmoon (19491, +0.00 DPS, sim-verified) [quest]; Will of the Martyr (17044, -0.12 DPS) [quest]; Medallion of the Dawn (22659, -0.24 DPS) [quest] |
-| shoulder | Highlander's Leather Shoulders (20059) | The League of Arathor [rep] | 50.4 attack_power points (3.01 DPS) | yes | Highlander's Lizardhide Shoulders (20060, -0.88 DPS, sim-verified) [rep]; Darkspear Pauldrons (272105, -0.94 DPS) [vendor]; Dark Warder's Pauldrons (22241, -1.20 DPS) [dungeon] |
-| back | Cloak of the Honor Guard (20073) | The League of Arathor [rep] | 39.7 attack_power points (2.37 DPS) | yes | Cape of the Black Baron (13340, -0.16 DPS) [dungeon]; Howler's Furs (272414, -0.66 DPS) [vendor]; Windshear Cape (20691, -0.87 DPS) [world] |
-| chest | Cadaverous Armor (14637) | Scholomance: Lady Illucia Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Timbermaw Tunic (252484, -1.17 DPS) [crafted]; Nightbrace Tunic (12603, -1.28 DPS) [dungeon]; Tunic of Undead Slaying (23089, -7.91 DPS, sim-verified) [world] |
+| shoulder | Highlander's Leather Shoulders (20059) | The League of Arathor [rep] | 50.4 attack_power points (3.01 DPS) | yes | Highlander's Lizardhide Shoulders (20060, -0.88 DPS, sim-verified) [rep]; Darkspear Pauldrons (272105, -0.95 DPS) [vendor]; Dark Warder's Pauldrons (22241, -1.20 DPS) [dungeon] |
+| back | Cloak of the Honor Guard (20073) | The League of Arathor [rep] | 39.7 attack_power points (2.37 DPS) | yes | Cape of the Black Baron (13340, -0.16 DPS) [dungeon]; Howler's Furs (272414, -0.66 DPS) [vendor]; Windshear Cape (20691, -0.88 DPS) [world] |
+| chest | Cadaverous Armor (14637) | Scholomance: Lady Illucia Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Timbermaw Tunic (252484, -1.18 DPS) [crafted]; Nightbrace Tunic (12603, -1.28 DPS) [dungeon]; Tunic of Undead Slaying (23089, -7.91 DPS, sim-verified) [world] |
 | wrist | Bracers of the Eclipse (18375) | Dire Maul: Prince Tortheldrin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forest Stalker's Bracers (19587, -0.17 DPS) [rep]; Marshal's Leather Armsplints (16460, -0.23 DPS) [pvp]; Wristwraps of Undead Slaying (23093, -3.54 DPS, sim-verified) [world] |
 | hands | Cadaverous Gloves (14640) | Scholomance: Lady Illucia Barov [dungeon] | 44.0 attack_power points (2.63 DPS) | yes | Knight-Lieutenant's Leather Gauntlets (16396, -0.04 DPS) [pvp]; Raider Gloves (272099, -0.14 DPS) [vendor]; Skul's Fingerbone Claws (13395, -0.24 DPS) [dungeon] |
-| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 45.3 attack_power points (2.70 DPS) | yes | Marshal's Leather Cinch (16458, -0.14 DPS) [pvp]; Girdle of Beastial Fury (11686, -0.44 DPS) [dungeon]; Cadaverous Belt (14636, -1.22 DPS, sim-verified) [dungeon] |
-| legs | Cadaverous Leggings (14638) | Scholomance: Lady Illucia Barov [dungeon] | 52.0 attack_power points (3.10 DPS) | yes | Devilsaur Leggings (15062, -0.12 DPS) [crafted]; Warbear Woolies (15065, -0.21 DPS) [crafted]; Sentinel's Leather Pants (237818, -0.80 DPS) [vendor] |
-| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Drudge Boots (21532, -0.46 DPS) [quest]; Dunestalker's Boots (20715, -0.56 DPS) [quest]; Highlander's Leather Boots (20052, -0.62 DPS) [rep] |
+| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 45.3 attack_power points (2.70 DPS) | yes | Marshal's Leather Cinch (16458, -0.14 DPS) [pvp]; Girdle of Beastial Fury (11686, -0.43 DPS) [dungeon]; Cadaverous Belt (14636, -1.22 DPS, sim-verified) [dungeon] |
+| legs | Cadaverous Leggings (14638) | Scholomance: Lady Illucia Barov [dungeon] | 52.0 attack_power points (3.10 DPS) | yes | Devilsaur Leggings (15062, -0.12 DPS) [crafted]; Warbear Woolies (15065, -0.22 DPS) [crafted]; Knight-Captain's Leather Legguards (23299, -0.80 DPS) [vendor] |
+| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Drudge Boots (21532, -0.46 DPS) [quest]; Dunestalker's Boots (20715, -0.57 DPS) [quest]; Highlander's Leather Boots (20052, -0.62 DPS) [rep] |
 | finger1 | Protector's Band (19514) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -0.23 DPS) [dungeon]; Don Julio's Band (19325, -0.23 DPS) [rep]; Naglering (11669, -2.65 DPS, sim-verified) [dungeon] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -0.03 DPS) [dungeon]; Don Julio's Band (19325, -0.03 DPS) [rep]; Naglering (11669, -4.26 DPS, sim-verified) [dungeon] |
+| finger2 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -0.02 DPS) [dungeon]; Don Julio's Band (19325, -0.03 DPS) [rep]; Naglering (11669, -4.25 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (+7.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, +0.00 DPS) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon] |
 | trinket2 | Royal Seal of Eldre'Thalas (18465) | Garona: A Study on Stealth and Treachery [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, +0.00 DPS) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon] |
 | main_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (+5.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Grand Marshal's Mageblade (234574, +0.00 DPS) [pvp]; Grand Marshal's Dirk (234582, +0.00 DPS) [pvp]; Grand Marshal's Shiv (235479, +0.00 DPS) [vendor] |
-| off_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-verified (188.6 DPS) | yes | Distracting Dagger (18392, -4.03 DPS) [dungeon]; The Lobotomizer (19324, -4.52 DPS, sim-verified) [rep]; Tome of Knowledge (13385, -37.08 DPS) [dungeon] |
+| off_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-verified (187.9 DPS) | yes | Distracting Dagger (18392, -4.03 DPS) [dungeon]; The Lobotomizer (19324, -4.50 DPS, sim-verified) [rep]; Tome of Knowledge (13385, -37.09 DPS) [dungeon] |
 | ranged | Riphook (12653) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Malgen's Long Bow (22318, -0.12 DPS) [dungeon]; Skull Splitting Crossbow (13039, -0.30 DPS) [world_drop]; Dark Iron Rifle (16004, -1.91 DPS, sim-verified) [crafted] |
 
 **New at 60:** neck: Imperial Jewel; shoulder: Highlander's Leather Shoulders; back: Cloak of the Honor Guard; chest: Cadaverous Armor; wrist: Bracers of the Eclipse; hands: Cadaverous Gloves; waist: Ferocity of the Timbermaw; legs: Cadaverous Leggings; feet: Pads of the Dread Wolf; finger1: Protector's Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Darkmoon Card: Maelstrom; trinket2: Royal Seal of Eldre'Thalas; main_hand: Shadowsong's Sorrow; off_hand: Felstriker; ranged: Riphook
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1370, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-00000000000000000-5321000000000000000)
 
-Set DPS (verified): 30.9. Weights run: 2.5s. Verify run: 1.6s. 190 eligible items had no known source.
+Set DPS (verified): 30.9. Weights run: 1.9s. Verify run: 1.2s. 190 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.005 ± 0.001, crit=0.012 ± 0.001 per rating point (14 rating = 1%, 0.164 per %), hit=0.031 ± 0.001 per rating point (10 rating = 1%, 0.306 per %), melee_haste=0.709 ± 0.071
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 190, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-00000000000000000-5322210310011000000)
 
-Set DPS (verified): 44.9. Weights run: 2.8s. Verify run: 1.7s. 322 eligible items had no known source.
+Set DPS (verified): 44.9. Weights run: 2.0s. Verify run: 1.3s. 322 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.008 ± 0.001, crit=0.017 ± 0.001 per rating point (14 rating = 1%, 0.237 per %), hit=0.041 ± 0.001 per rating point (10 rating = 1%, 0.413 per %), melee_haste=0.958 ± 0.143
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-00000000000000000-5322210310013011051)
 
-Set DPS (verified): 86.7. Weights run: 3.0s. Verify run: 1.8s. 444 eligible items had no known source.
+Set DPS (verified): 86.7. Weights run: 2.2s. Verify run: 1.4s. 444 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.011 ± 0.001, crit=0.024 ± 0.002 per rating point (14 rating = 1%, 0.330 per %), hit=0.035 ± 0.002 per rating point (10 rating = 1%, 0.347 per %), melee_haste=not significant (1.177 ± 0.596)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 444, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 00500000000000000-32000000000000000-5322210310013011051)
 
-Set DPS (verified): 123.8. Weights run: 3.0s. Verify run: 2.2s. 564 eligible items had no known source.
+Set DPS (verified): 123.8. Weights run: 2.3s. Verify run: 1.6s. 564 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.108 ± 0.005, crit=0.218 ± 0.008 per rating point (14 rating = 1%, 3.046 per %), hit=0.051 ± 0.004 per rating point (10 rating = 1%, 0.505 per %), melee_haste=not significant (1.118 ± 0.969)
 
@@ -280,28 +280,28 @@ No-known-source sample (15 of 564, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 00500000000000000-32513100000000000-5322210310013011051)
 
-Set DPS (verified): 184.5. Weights run: 3.0s. Verify run: 2.3s. 1367 eligible items had no known source.
+Set DPS (verified): 183.9. Weights run: 2.2s. Verify run: 1.7s. 1367 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.136 ± 0.007, crit=0.285 ± 0.011 per rating point (14 rating = 1%, 3.996 per %), hit=0.063 ± 0.006 per rating point (10 rating = 1%, 0.627 per %), melee_haste=not significant (1.050 ± 1.577)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.133 ± 0.006, crit=0.279 ± 0.010 per rating point (14 rating = 1%, 3.908 per %), hit=0.062 ± 0.006 per rating point (10 rating = 1%, 0.616 per %), melee_haste=not significant (1.138 ± 1.431)
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Ebon Mask (19984, +0.00 DPS, sim-verified) [quest]; Champion's Leather Helm (227057, +0.00 DPS) [pvp]; Warlord's Leather Helm (231553, -0.28 DPS) [pvp] |
+| head | Embrace of the Lycan (9479) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Ebon Mask (19984, +0.00 DPS, sim-verified) [quest]; Champion's Leather Helm (227057, +0.00 DPS) [pvp]; Blue Suede Hat (252482, -0.29 DPS) [crafted] |
 | neck | Imperial Jewel (11933) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | 32.0 attack_power points (1.91 DPS) | yes | Amulet of the Darkmoon (19491, +0.00 DPS, sim-verified) [quest]; Will of the Martyr (17044, -0.12 DPS) [quest]; Medallion of the Dawn (22659, -0.24 DPS) [quest] |
-| shoulder | Defiler's Leather Shoulders (20194) | The Defilers [rep] | 50.4 attack_power points (3.01 DPS) | yes | Defiler's Lizardhide Shoulders (20175, -0.86 DPS, sim-verified) [rep]; Darkspear Pauldrons (272105, -0.94 DPS) [vendor]; Dark Warder's Pauldrons (22241, -1.20 DPS) [dungeon] |
-| back | Deathguard's Cloak (20068) | The Defilers [rep] | 39.7 attack_power points (2.37 DPS) | yes | Cape of the Black Baron (13340, -0.16 DPS) [dungeon]; Howler's Furs (272414, -0.66 DPS) [vendor]; Windshear Cape (20691, -0.87 DPS) [world] |
-| chest | Cadaverous Armor (14637) | Scholomance: Lady Illucia Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Timbermaw Tunic (252484, -1.17 DPS) [crafted]; Nightbrace Tunic (12603, -1.28 DPS) [dungeon]; Tunic of Undead Slaying (23089, -7.59 DPS, sim-verified) [world] |
+| shoulder | Defiler's Leather Shoulders (20194) | The Defilers [rep] | 50.4 attack_power points (3.01 DPS) | yes | Defiler's Lizardhide Shoulders (20175, -0.85 DPS, sim-verified) [rep]; Darkspear Pauldrons (272105, -0.95 DPS) [vendor]; Dark Warder's Pauldrons (22241, -1.20 DPS) [dungeon] |
+| back | Deathguard's Cloak (20068) | The Defilers [rep] | 39.7 attack_power points (2.37 DPS) | yes | Cape of the Black Baron (13340, -0.16 DPS) [dungeon]; Howler's Furs (272414, -0.66 DPS) [vendor]; Windshear Cape (20691, -0.88 DPS) [world] |
+| chest | Cadaverous Armor (14637) | Scholomance: Lady Illucia Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Timbermaw Tunic (252484, -1.18 DPS) [crafted]; Nightbrace Tunic (12603, -1.28 DPS) [dungeon]; Tunic of Undead Slaying (23089, -7.58 DPS, sim-verified) [world] |
 | wrist | Bracers of the Eclipse (18375) | Dire Maul: Prince Tortheldrin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forest Stalker's Bracers (19587, -0.17 DPS) [rep]; General's Leather Armsplints (16559, -0.23 DPS) [pvp]; Wristwraps of Undead Slaying (23093, -3.42 DPS, sim-verified) [world] |
 | hands | Cadaverous Gloves (14640) | Scholomance: Lady Illucia Barov [dungeon] | 44.0 attack_power points (2.63 DPS) | yes | Blood Guard's Leather Vices (16499, -0.04 DPS) [pvp]; Raider Gloves (272099, -0.14 DPS) [vendor]; Skul's Fingerbone Claws (13395, -0.24 DPS) [dungeon] |
-| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 45.3 attack_power points (2.70 DPS) | yes | General's Leather Girdle (16557, -0.14 DPS) [pvp]; Girdle of Beastial Fury (11686, -0.44 DPS) [dungeon]; Cadaverous Belt (14636, -1.27 DPS, sim-verified) [dungeon] |
-| legs | Cadaverous Leggings (14638) | Scholomance: Lady Illucia Barov [dungeon] | 52.0 attack_power points (3.10 DPS) | yes | Devilsaur Leggings (15062, -0.12 DPS) [crafted]; Warbear Woolies (15065, -0.21 DPS) [crafted]; Sentinel's Leather Pants (237818, -0.80 DPS) [vendor] |
-| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Drudge Boots (21532, -0.46 DPS) [quest]; Dunestalker's Boots (20715, -0.56 DPS) [quest]; Defiler's Leather Boots (20186, -0.62 DPS) [rep] |
-| finger1 | Legionnaire's Band (19510) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21201, -0.20 DPS) [quest]; Blackstone Ring (17713, -0.23 DPS) [dungeon]; Naglering (11669, -2.58 DPS, sim-verified) [dungeon] |
-| finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21201, -0.17 DPS) [quest]; Blackstone Ring (17713, -0.20 DPS) [dungeon]; Naglering (11669, -1.99 DPS, sim-verified) [dungeon] |
+| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 45.3 attack_power points (2.70 DPS) | yes | General's Leather Girdle (16557, -0.14 DPS) [pvp]; Girdle of Beastial Fury (11686, -0.43 DPS) [dungeon]; Cadaverous Belt (14636, -1.27 DPS, sim-verified) [dungeon] |
+| legs | Cadaverous Leggings (14638) | Scholomance: Lady Illucia Barov [dungeon] | 52.0 attack_power points (3.10 DPS) | yes | Devilsaur Leggings (15062, -0.12 DPS) [crafted]; Warbear Woolies (15065, -0.22 DPS) [crafted]; Legionnaire's Leather Legguards (227059, -0.80 DPS) [pvp] |
+| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (2.39 DPS) | yes | Drudge Boots (21532, -0.46 DPS) [quest]; Dunestalker's Boots (20715, -0.57 DPS) [quest]; Defiler's Leather Boots (20186, -0.62 DPS) [rep] |
+| finger1 | Legionnaire's Band (19510) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21201, -0.21 DPS) [quest]; Blackstone Ring (17713, -0.23 DPS) [dungeon]; Naglering (11669, -2.57 DPS, sim-verified) [dungeon] |
+| finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21201, -0.18 DPS) [quest]; Blackstone Ring (17713, -0.20 DPS) [dungeon]; Naglering (11669, -1.99 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (+7.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, +0.00 DPS) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Royal Seal of Eldre'Thalas (18465, -0.86 DPS, sim-verified) [quest]; Counterattack Lodestone (18537, -1.22 DPS) [dungeon]; Hand of Justice (11815, -1.34 DPS) [dungeon] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Royal Seal of Eldre'Thalas (18465, -0.85 DPS, sim-verified) [quest]; Counterattack Lodestone (18537, -1.22 DPS) [dungeon]; Hand of Justice (11815, -1.34 DPS) [dungeon] |
 | main_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (+5.2 DPS vs the runner-up, not corroborated against the finished set) | yes | High Warlord's Spellblade (234550, +0.00 DPS) [pvp]; High Warlord's Razor (234556, +0.00 DPS) [pvp]; High Warlord's Shiv (235478, +0.00 DPS) [vendor] |
-| off_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-verified (184.5 DPS) | yes | Distracting Dagger (18392, -4.03 DPS) [dungeon]; The Lobotomizer (19324, -4.38 DPS, sim-verified) [rep]; Tome of Knowledge (13385, -37.08 DPS) [dungeon] |
+| off_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-verified (183.9 DPS) | yes | Distracting Dagger (18392, -4.03 DPS) [dungeon]; The Lobotomizer (19324, -4.35 DPS, sim-verified) [rep]; Tome of Knowledge (13385, -37.09 DPS) [dungeon] |
 | ranged | Riphook (12653) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Malgen's Long Bow (22318, -0.12 DPS) [dungeon]; Skull Splitting Crossbow (13039, -0.30 DPS) [world_drop]; Dark Iron Rifle (16004, -1.83 DPS, sim-verified) [crafted] |
 
 **New at 60:** neck: Imperial Jewel; shoulder: Defiler's Leather Shoulders; back: Deathguard's Cloak; chest: Cadaverous Armor; wrist: Bracers of the Eclipse; hands: Cadaverous Gloves; waist: Ferocity of the Timbermaw; legs: Cadaverous Leggings; feet: Pads of the Dread Wolf; finger1: Legionnaire's Band; finger2: White Bone Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: Shadowsong's Sorrow; off_hand: Felstriker; ranged: Riphook

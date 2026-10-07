@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
-  "engine_version": "48af0eeaa",
-  "generated_at": "2026-10-07T15:59:08Z",
+  "engine_version": "d629bfd0e",
+  "generated_at": "2026-10-07T17:17:04Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -566,8 +566,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.290478736,
-      "verify_run_seconds": 1.450584786,
+      "weights_run_seconds": 1.740534231,
+      "verify_run_seconds": 1.099420499,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1214,8 +1214,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.290478736,
-      "verify_run_seconds": 1.361718706,
+      "weights_run_seconds": 1.740534231,
+      "verify_run_seconds": 0.989425648,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1893,8 +1893,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.458265495,
-      "verify_run_seconds": 1.486469775,
+      "weights_run_seconds": 1.8497473,
+      "verify_run_seconds": 1.1396012899999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.458265495,
-      "verify_run_seconds": 1.465435182,
+      "weights_run_seconds": 1.8497473,
+      "verify_run_seconds": 1.137140356,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3260,8 +3260,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.409530955,
-      "verify_run_seconds": 1.5127959720000002,
+      "weights_run_seconds": 1.8206984990000001,
+      "verify_run_seconds": 1.15536664,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3949,8 +3949,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.409530955,
-      "verify_run_seconds": 1.48940184,
+      "weights_run_seconds": 1.8206984990000001,
+      "verify_run_seconds": 1.152508417,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4654,8 +4654,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.572759962,
-      "verify_run_seconds": 2.18160616,
+      "weights_run_seconds": 1.9712160920000001,
+      "verify_run_seconds": 1.616736522,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5353,8 +5353,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.572759962,
-      "verify_run_seconds": 2.034398643,
+      "weights_run_seconds": 1.9712160920000001,
+      "verify_run_seconds": 1.5297026,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5641,7 +5641,7 @@
           "item_name": "Cadaverous Armor",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
           "alternatives": [
             {
@@ -5663,7 +5663,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -6.782708380432041,
+              "dps_delta": -6.779052845584431,
               "verified": true
             }
           ]
@@ -5674,7 +5674,7 @@
           "item_name": "Bracers of the Eclipse",
           "source": "Dire Maul: Prince Tortheldrin",
           "source_kind": "dungeon",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
           "alternatives": [
             {
@@ -5696,7 +5696,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.1172679567526416,
+              "dps_delta": -3.1124627161497926,
               "verified": true
             }
           ]
@@ -5761,7 +5761,7 @@
               "item_name": "Cadaverous Belt",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.3041185447798398,
+              "dps_delta": -1.2983210457569783,
               "verified": true
             }
           ]
@@ -5836,7 +5836,7 @@
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
           "alternatives": [
             {
@@ -5858,7 +5858,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -2.3652964511497316,
+              "dps_delta": -2.360491210546911,
               "verified": true
             }
           ]
@@ -5869,7 +5869,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Path of the Conqueror",
           "source_kind": "quest",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
           "alternatives": [
             {
@@ -5891,21 +5891,21 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.359286642134094,
+              "dps_delta": -5.182061187633252,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 18465,
-          "item_name": "Royal Seal of Eldre'Thalas",
-          "source": "Garona: A Study on Stealth and Treachery",
+          "item_id": 19289,
+          "item_name": "Darkmoon Card: Maelstrom",
+          "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
-          "swap_note": "confirmed by the sim against Darkmoon Card: Maelstrom (id 19289): kept the pick, +7.4 DPS (228.1 vs 220.7 set DPS)",
-          "dps_delta": 7.389790368807752,
+          "swap_note": "confirmed by the sim against Royal Seal of Eldre'Thalas (id 18465): kept the pick, +6.7 DPS (215.1 vs 208.5 set DPS)",
+          "dps_delta": 6.658953458583312,
           "alternatives": [
             {
               "item_id": 11815,
@@ -5928,25 +5928,17 @@
               "source": "Enchanting",
               "dps_delta": 0
             }
-          ],
-          "faction_note": "Darkmoon Card: Maelstrom (from horde) and alliance's own pick Royal Seal of Eldre'Thalas measure statistically indistinguishable on night-elf (6.33 ± 1.60 vs 6.53 ± 1.50 DPS gain) -- each faction's own tournament winner kept"
+          ]
         },
         {
           "slot": "trinket2",
-          "item_id": 19289,
-          "item_name": "Darkmoon Card: Maelstrom",
-          "source": "Darkmoon Elementals Deck",
+          "item_id": 18465,
+          "item_name": "Royal Seal of Eldre'Thalas",
+          "source": "Garona: A Study on Stealth and Treachery",
           "source_kind": "quest",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 11815,
-              "item_name": "Hand of Justice",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": 0
-            },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
@@ -5955,11 +5947,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 22321,
-              "item_name": "Heart of Wyrmthalak",
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Overlord Wyrmthalak",
-              "dps_delta": -4.351687434890522,
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": -2.2151849149008456,
               "verified": true
             }
           ]
@@ -5970,7 +5969,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
           "alternatives": [
             {
@@ -5992,7 +5991,7 @@
               "item_name": "Felstriker",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -1.3115651093281144,
+              "dps_delta": -1.3258272486311853,
               "verified": true
             }
           ]
@@ -6018,7 +6017,8 @@
               "item_name": "Greenhammer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": 0
+              "dps_delta": -0.9241939854774159,
+              "verified": true
             },
             {
               "item_id": 12939,
@@ -6035,7 +6035,7 @@
           "item_name": "Riphook",
           "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
           "source_kind": "dungeon",
-          "sim_dps": 228.10064605317152,
+          "sim_dps": 215.1232976890468,
           "verified": true,
           "alternatives": [
             {
@@ -6057,13 +6057,13 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.608418659364304,
+              "dps_delta": -1.6084186593643608,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 228.10064605317152,
+      "set_dps": 215.1232976890468,
       "no_source_count": 1370,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6094,14 +6094,14 @@
         "feet: Pads of the Dread Wolf",
         "finger1: Protector's Band",
         "finger2: Signet Ring of the Bronze Dragonflight",
-        "trinket1: Royal Seal of Eldre'Thalas",
-        "trinket2: Darkmoon Card: Maelstrom",
+        "trinket1: Darkmoon Card: Maelstrom",
+        "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.5620884520000002,
-      "verify_run_seconds": 1.986591164,
+      "weights_run_seconds": 1.9215985249999998,
+      "verify_run_seconds": 1.459061411,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6388,7 +6388,7 @@
           "item_name": "Cadaverous Armor",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
@@ -6410,7 +6410,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -6.5727190969574565,
+              "dps_delta": -6.57175576543807,
               "verified": true
             }
           ]
@@ -6421,7 +6421,7 @@
           "item_name": "Bracers of the Eclipse",
           "source": "Dire Maul: Prince Tortheldrin",
           "source_kind": "dungeon",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
@@ -6443,7 +6443,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.057014708724438,
+              "dps_delta": -3.056051377205023,
               "verified": true
             }
           ]
@@ -6508,7 +6508,7 @@
               "item_name": "Cadaverous Belt",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.388467548448034,
+              "dps_delta": -1.3830210143955526,
               "verified": true
             }
           ]
@@ -6583,7 +6583,7 @@
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
@@ -6605,7 +6605,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -2.358234276659033,
+              "dps_delta": -2.356170347425831,
               "verified": true
             }
           ]
@@ -6616,7 +6616,7 @@
           "item_name": "White Bone Band",
           "source": "Bone-Bladed Weapons",
           "source_kind": "quest",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
@@ -6649,7 +6649,7 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
@@ -6671,7 +6671,7 @@
               "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
               "source": "For The Horde!",
-              "dps_delta": -3.924159626223201,
+              "dps_delta": -3.974705903553229,
               "verified": true
             }
           ]
@@ -6682,14 +6682,14 @@
           "item_name": "Hand of Justice",
           "source": "Blackrock Depths: Emperor Dagran Thaurissan",
           "source_kind": "dungeon",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18465,
-              "item_name": "Royal Seal of Eldre'Thalas",
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
-              "source": "Garona: A Study on Stealth and Treachery",
+              "source": "For The Horde!",
               "dps_delta": 0
             },
             {
@@ -6706,7 +6706,8 @@
               "source": "Job Opening: Guard Captain of Revantusk Village",
               "dps_delta": 0
             }
-          ]
+          ],
+          "faction_note": "Royal Seal of Eldre'Thalas (from alliance) and horde's own pick Hand of Justice measure statistically indistinguishable on troll (3.59 ± 0.79 vs 2.81 ± 0.55 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -6714,7 +6715,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
@@ -6761,7 +6762,7 @@
               "item_name": "Greenhammer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -4.736752163579183,
+              "dps_delta": -4.68676098939477,
               "verified": true
             },
             {
@@ -6779,7 +6780,7 @@
           "item_name": "Riphook",
           "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
           "source_kind": "dungeon",
-          "sim_dps": 220.77922388139135,
+          "sim_dps": 208.2575899286465,
           "verified": true,
           "alternatives": [
             {
@@ -6801,13 +6802,13 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.5457988039439954,
+              "dps_delta": -1.545798803943967,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 220.77922388139135,
+      "set_dps": 208.2575899286465,
       "no_source_count": 1367,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6844,8 +6845,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.5620884520000002,
-      "verify_run_seconds": 2.000135409,
+      "weights_run_seconds": 1.9215985249999998,
+      "verify_run_seconds": 1.521576623,
       "coverage": {
         "back": {
           "eligible": 451,

@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
-  "engine_version": "48af0eeaa",
-  "generated_at": "2026-10-07T15:58:16Z",
+  "engine_version": "d629bfd0e",
+  "generated_at": "2026-10-07T17:16:26Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -548,8 +548,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.987807845,
-      "verify_run_seconds": 0.714248727,
+      "weights_run_seconds": 0.708216709,
+      "verify_run_seconds": 0.54622353,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.987807845,
-      "verify_run_seconds": 0.792841032,
+      "weights_run_seconds": 0.708216709,
+      "verify_run_seconds": 0.605822596,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.949356105,
-      "verify_run_seconds": 0.749539658,
+      "weights_run_seconds": 0.72947678,
+      "verify_run_seconds": 0.54346635,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.949356105,
-      "verify_run_seconds": 0.753925758,
+      "weights_run_seconds": 0.72947678,
+      "verify_run_seconds": 0.573642385,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3257,8 +3257,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.029080808,
-      "verify_run_seconds": 0.717437539,
+      "weights_run_seconds": 0.746224687,
+      "verify_run_seconds": 0.554729806,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3922,8 +3922,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.029080808,
-      "verify_run_seconds": 0.72673471,
+      "weights_run_seconds": 0.746224687,
+      "verify_run_seconds": 0.544928002,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4610,8 +4610,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.970700351,
-      "verify_run_seconds": 0.797562201,
+      "weights_run_seconds": 0.747737303,
+      "verify_run_seconds": 0.631845427,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5298,8 +5298,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.970700351,
-      "verify_run_seconds": 0.782552405,
+      "weights_run_seconds": 0.747737303,
+      "verify_run_seconds": 0.606451289,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6033,8 +6033,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.132579318,
-      "verify_run_seconds": 0.804314498,
+      "weights_run_seconds": 0.832386642,
+      "verify_run_seconds": 0.637787219,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6761,8 +6761,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.132579318,
-      "verify_run_seconds": 0.745799753,
+      "weights_run_seconds": 0.832386642,
+      "verify_run_seconds": 0.58898273,
       "coverage": {
         "back": {
           "eligible": 450,

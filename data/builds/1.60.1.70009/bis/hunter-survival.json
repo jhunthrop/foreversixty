@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
-  "engine_version": "48af0eeaa",
-  "generated_at": "2026-10-07T15:55:59Z",
+  "engine_version": "d629bfd0e",
+  "generated_at": "2026-10-07T17:14:43Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.366178424,
-      "verify_run_seconds": 1.845702376,
+      "weights_run_seconds": 2.493143091,
+      "verify_run_seconds": 1.3851376979999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1213,8 +1213,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.366178424,
-      "verify_run_seconds": 1.800680343,
+      "weights_run_seconds": 2.493143091,
+      "verify_run_seconds": 1.324169294,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1899,8 +1899,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.599673536,
-      "verify_run_seconds": 1.9609970209999998,
+      "weights_run_seconds": 2.640216351,
+      "verify_run_seconds": 1.475779952,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2585,8 +2585,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.599673536,
-      "verify_run_seconds": 1.924269079,
+      "weights_run_seconds": 2.640216351,
+      "verify_run_seconds": 1.459071689,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3276,8 +3276,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.840780746,
-      "verify_run_seconds": 2.057354451,
+      "weights_run_seconds": 2.886248422,
+      "verify_run_seconds": 1.5230369609999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.840780746,
-      "verify_run_seconds": 2.054580043,
+      "weights_run_seconds": 2.886248422,
+      "verify_run_seconds": 1.527106872,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4684,8 +4684,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.8673939170000002,
-      "verify_run_seconds": 2.295379292,
+      "weights_run_seconds": 2.968863785,
+      "verify_run_seconds": 1.700632328,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5402,8 +5402,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.8673939170000002,
-      "verify_run_seconds": 2.3672168940000002,
+      "weights_run_seconds": 2.968863785,
+      "verify_run_seconds": 1.776216199,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5706,7 +5706,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.307756630509323
+              "dps_delta": -0.3077566305093237
             },
             {
               "item_id": 23089,
@@ -5928,14 +5928,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "quest",
               "source": "The Path of the Conqueror",
-              "dps_delta": -0.0692885394729039
+              "dps_delta": -0.06928853947290409
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.21024922089482034
+              "dps_delta": -0.21024922089482054
             },
             {
               "item_id": 11669,
@@ -6150,8 +6150,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.958891066,
-      "verify_run_seconds": 2.318900941,
+      "weights_run_seconds": 2.934660422,
+      "verify_run_seconds": 1.7450636099999999,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6455,7 +6455,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.3077566305093237
+              "dps_delta": -0.307756630509323
             },
             {
               "item_id": 23089,
@@ -6569,7 +6569,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 61.86210324979321,
+          "score": 61.862103249793215,
           "verified": true,
           "alternatives": [
             {
@@ -6584,7 +6584,7 @@
               "item_name": "Legionnaire's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.20907612196132974
+              "dps_delta": -0.20907612196133013
             },
             {
               "item_id": 15062,
@@ -6893,8 +6893,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.958891066,
-      "verify_run_seconds": 2.338725749,
+      "weights_run_seconds": 2.934660422,
+      "verify_run_seconds": 1.781492855,
       "coverage": {
         "back": {
           "eligible": 450,
