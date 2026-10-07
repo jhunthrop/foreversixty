@@ -28,7 +28,7 @@ export const homeHeroCopy = {
 export const homeClassPickerCopy = {
   bestInSlotByClassHeading: 'Best in slot by class',
   anotherClassHeading: 'Another class',
-  allSpecsLink: 'All 27 specs',
+  allSpecsLink: 'All 28 specs',
   allSpecsHref: '/bis',
 } as const;
 
@@ -79,7 +79,7 @@ export const homeProductPanels: readonly HomeProductPanelCopy[] = [
   },
   {
     label: 'Guides',
-    sentence: '27 spec guides, talent builds and rotations for every class.',
+    sentence: '28 spec guides, talent builds and rotations for every class.',
     linkLabel: 'Open guides',
     href: '/guides',
   },

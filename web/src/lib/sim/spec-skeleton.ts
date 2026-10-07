@@ -26,8 +26,8 @@ export function specSkeletonSlots(): number[] {
 
 /**
  * One slot index per non-dps (healer/tank) spec, for the "not simulated yet" section's own
- * skeleton (task-2-brief.md: `/sim/specs` splits its 27 cards into a simulated group of 20
- * and this second group of 7, grouped under its own heading rather than interleaved). The
+ * skeleton (task-2-brief.md: `/sim/specs` splits its 28 cards into a simulated group of 20
+ * and this second group of 8, grouped under its own heading rather than interleaved). The
  * same one-source-of-truth reasoning specSkeletonSlots() documents above applies here: this
  * shell and SpecGrid.svelte both read it, so the two card counts can never drift apart.
  */

@@ -399,7 +399,7 @@ export const simCopy = {
    * code; it has simply never had a real parse to measure yet. This says both things.
    */
   specsIntro:
-    'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 7 specs, healers and tanks, are not simulated yet.',
+    'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 8 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
   distMean: 'Mean DPS',
@@ -699,8 +699,8 @@ export const simCopy = {
   scopeNote: 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.',
   /** `/sim/specs`: heading over the 20 dps cards the grid has always shown. */
   specsSimulatedHeading: 'Damage specs',
-  /** `/sim/specs`: heading over the 7 healer/tank cards, grouped below rather than
-   *  interleaved, so the page reads as "these 20 work, these 7 do not". */
+  /** `/sim/specs`: heading over the 8 healer/tank cards, grouped below rather than
+   *  interleaved, so the page reads as "these 20 work, these 8 do not". */
   specsUnsimulatedHeading: 'Healers and tanks',
   /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
    *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
