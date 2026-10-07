@@ -7,6 +7,7 @@
     {
       "spec": "hunter-marksmanship",
       "band": 20,
+      "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
       "talents": "0000000000000000-35300000000000000-000000000000000000",
@@ -614,6 +615,7 @@
     {
       "spec": "hunter-marksmanship",
       "band": 20,
+      "preset": "bare",
       "faction": "horde",
       "race": "troll",
       "talents": "0000000000000000-35300000000000000-000000000000000000",
@@ -1244,6 +1246,7 @@
     {
       "spec": "hunter-marksmanship",
       "band": 40,
+      "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
       "talents": "0000000000000000-35305500115003000-000000000000000000",
@@ -1921,6 +1924,7 @@
     {
       "spec": "hunter-marksmanship",
       "band": 40,
+      "preset": "bare",
       "faction": "horde",
       "race": "troll",
       "talents": "0000000000000000-35305500115003000-000000000000000000",
@@ -2606,6 +2610,7 @@
     {
       "spec": "hunter-marksmanship",
       "band": 60,
+      "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
       "talents": "5522000000000000-35305500115003000-510000000000000000",
@@ -3329,6 +3334,7 @@
     {
       "spec": "hunter-marksmanship",
       "band": 60,
+      "preset": "bare",
       "faction": "horde",
       "race": "troll",
       "talents": "5522000000000000-35305500115003000-510000000000000000",
@@ -4048,5 +4054,29 @@
       "haste_scale_factor": 2.2950898221182783,
       "haste_on_items": false
     }
-  ]
+  ],
+  "presets": {
+    "raid": {
+      "label": "Raid-ready, Phase 1",
+      "buffs": [
+        {
+          "id": "battle_shout",
+          "label": "Battle Shout"
+        }
+      ],
+      "debuffs": [
+        {
+          "id": "sunder_armor",
+          "label": "Sunder Armor"
+        }
+      ],
+      "consumes": [
+        {
+          "id": "elixir_of_the_mongoose",
+          "label": "Elixir of the Mongoose"
+        }
+      ],
+      "notes": "Fixture preset."
+    }
+  }
 }

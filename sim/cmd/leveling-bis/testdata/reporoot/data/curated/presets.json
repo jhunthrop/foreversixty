@@ -1,0 +1,18 @@
+{
+  "presets": {
+    "raid": {
+      "label": "Raid-ready, Phase 1",
+      "notes": "Fixture preset.",
+      "buffs": [{ "id": "battle_shout", "label": "Battle Shout", "reason": "fixture" }],
+      "debuffs": [{ "id": "sunder_armor", "label": "Sunder Armor", "reason": "fixture" }],
+      "consumes": {
+        "groups": {
+          "ranged": {
+            "classes": ["hunter"],
+            "ids": [{ "id": "elixir_of_the_mongoose", "label": "Elixir of the Mongoose", "reason": "fixture" }]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1772,7 +1772,7 @@ func TestWriteSpecReportWritesReadableJSON(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "nested", "hunter-marksmanship.json")
 	reports := []bandReport{{Spec: "hunter-marksmanship", Band: 20, Faction: "horde"}}
-	if err := writeSpecReport(path, "hunter-marksmanship", "testbuild", reports); err != nil {
+	if err := writeSpecReport(path, "hunter-marksmanship", "testbuild", reports, nil); err != nil {
 		t.Fatalf("writeSpecReport: %v", err)
 	}
 	b, err := os.ReadFile(path)

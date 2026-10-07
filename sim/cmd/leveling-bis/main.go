@@ -24,6 +24,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"maps"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -37,6 +38,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
 func main() {
@@ -231,6 +233,14 @@ type factionWork struct {
 	trinketSeconds float64
 }
 
+// goodWeights is a band's trusted weights, kept for the next band's
+// fallback (see runSpec's lastGood).
+type goodWeights struct {
+	weights              map[string]float64
+	referenceDPSPerPoint float64
+	band                 int
+}
+
 // talentLayout is enginetalents.Layout's own Reposition method,
 // abstracted the same way engineRunner abstracts the real engine: a
 // test supplies a layout matching its own synthetic talent ids
@@ -268,6 +278,10 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	specInfo, err := loadSpec(repoRoot, spec)
 	if err != nil {
 		return err
+	}
+	raidPreset, err := resolveRaidPreset(repoRoot, specInfo)
+	if err != nil {
+		return fmt.Errorf("resolving the %s preset for %s: %w", presetRaid, spec, err)
 	}
 	guide, err := loadGuideRaces(repoRoot, buildDir, specInfo.ClassSlug, specInfo.SpecSlug)
 	if err != nil {
@@ -447,8 +461,8 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	}
 
 	var reports []bandReport
-	// lastGoodWeights/lastGoodReferenceDPSPerPoint/lastGoodBand track
-	// the most recent LOWER band whose own sweep measured its reference
+	// lastGood tracks, per pass (a raid pass never falls back to bare
+	// weights), the most recent LOWER band whose own sweep measured its reference
 	// stat positive beyond its own error - this lane's brief, item 1's
 	// fallback: a band whose own sweep (even re-run at
 	// weightsRetryIterationsFactor iterations) still cannot be trusted
@@ -456,376 +470,385 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// of an empty map, rather than publishing nine empty slots over a
 	// noisy sweep (warlock-destruction band 60's own repro). Bands run
 	// in ascending order (defaultBandsFlag's own doc), so "the nearest
-	// lower band" is simply whichever of these three was last set.
-	var lastGoodWeights map[string]float64
-	var lastGoodReferenceDPSPerPoint float64
-	var lastGoodBand int
+	// lower band" is simply the last one stored.
+	lastGood := map[string]goodWeights{}
 	for _, band := range bands {
-		// talents is the published band string, kept in the site's own
-		// (active-build) layout - talentPoints and buildReport's own
-		// "talents" field both read it unconverted, since that is the
-		// layout the web planner decodes. engineTalents is the SAME
-		// build, repositioned onto the compiled engine's own field
-		// order (engineLayout, above) - every character this band
-		// builds for the engine (ladderCh and every rank/verify/set
-		// character below) is spent from engineTalents, never talents,
-		// or paladin and shaman misread every talent at and after the
-		// first talent whose tree position moved between the engine's
-		// proto build and the active one (this lane's own brief).
-		talents, engineTalents, err := bandTalentStrings(activeTrees, talentTargets, specInfo.TreeIndex, band, engineLayout)
-		if err != nil {
-			return fmt.Errorf("band %d: %w", band, err)
-		}
-		talentPoints := talentPointsSpent(talents)
+		// priorPicks is every faction's picks at the previous band, which
+		// both passes of this band diff against; only the bare pass
+		// advances it, so the raid pass at level 60 reads the same
+		// previous band the bare one does.
+		priorPicks := maps.Clone(previous)
+		for _, pass := range passesFor(specInfo, band, raidPreset) {
+			specInfo := pass.spec
+			lg := lastGood[pass.name]
+			// talents is the published band string, kept in the site's own
+			// (active-build) layout - talentPoints and buildReport's own
+			// "talents" field both read it unconverted, since that is the
+			// layout the web planner decodes. engineTalents is the SAME
+			// build, repositioned onto the compiled engine's own field
+			// order (engineLayout, above) - every character this band
+			// builds for the engine (ladderCh and every rank/verify/set
+			// character below) is spent from engineTalents, never talents,
+			// or paladin and shaman misread every talent at and after the
+			// first talent whose tree position moved between the engine's
+			// proto build and the active one (this lane's own brief).
+			talents, engineTalents, err := bandTalentStrings(activeTrees, talentTargets, specInfo.TreeIndex, band, engineLayout)
+			if err != nil {
+				return fmt.Errorf("band %d: %w", band, err)
+			}
+			talentPoints := talentPointsSpent(talents)
 
-		weapon := ladderWeapon(items, band)
-		ladderCh := ladderCharacter(guide.AllianceRace, specInfo.ClassSlug, band, engineTalents, weapon)
+			weapon := ladderWeapon(items, band)
+			ladderCh := ladderCharacter(guide.AllianceRace, specInfo.ClassSlug, band, engineTalents, weapon)
 
-		weightsStart := time.Now()
-		wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)
-		wresult, referenceDPSPerPoint, err := runner.RunWeights(wreq)
-		if err != nil {
-			return fmt.Errorf("band %d weights run: %w", band, err)
-		}
-		weightsReason := referenceMeasurementReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint)
-		if weightsReason != "" {
-			// This lane's brief, item 1's guard: a band whose reference
-			// stat is not positive beyond its own error re-runs the
-			// sweep ONCE at weightsRetryIterationsFactor iterations
-			// before giving up on it - warlock-destruction band 60's
-			// own repro (bis-ranker-integrity-11) found this tightens
-			// the raw standard error (±0.1332 at 100 iterations/
-			// direction to ±0.0642 at 400) but does not always flip an
-			// actually-negative measurement positive, so the fallback
-			// below still has to exist for when this retry alone is
-			// not enough.
-			retryReq := weightsRequest(specInfo, ladderCh, weightsIterations*weightsRetryIterationsFactor, 3)
-			retryResult, retryReferenceDPSPerPoint, retryErr := runner.RunWeights(retryReq)
-			if retryErr != nil {
-				return fmt.Errorf("band %d weights retry run: %w", band, retryErr)
+			weightsStart := time.Now()
+			wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)
+			wresult, referenceDPSPerPoint, err := runner.RunWeights(wreq)
+			if err != nil {
+				return fmt.Errorf("band %d weights run: %w", band, err)
 			}
-			retryReason := referenceMeasurementReason(specInfo.ReferenceStat, retryResult, retryReferenceDPSPerPoint)
-			log.Printf("leveling-bis: %s band %d: sweep at %d iterations/direction was not significant (%s); re-ran at %dx", spec, band, weightsIterations, weightsReason, weightsRetryIterationsFactor)
-			wresult, referenceDPSPerPoint, weightsReason = retryResult, retryReferenceDPSPerPoint, retryReason
-		}
-		// This lane's brief (ranker-weights-anchor), item 3's own
-		// guard: separate from the reference-stat retry just above,
-		// re-measure the PRIMARY-anchor row once at
-		// primaryStatRetryIterationsFactor iterations if it came back
-		// insignificant - but only on a band the reference-stat guard
-		// already trusts (weightsReason == ""); an already-untrustworthy
-		// band publishes no anchor at all regardless (normalizeScaleFactors'
-		// own doc), so spending the extra sim time here would be wasted.
-		weightsLowConfidence := false
-		if weightsReason == "" && anchorStat != "" {
-			retried, lowConf, pErr := primaryStatSignificanceCheck(runner, specInfo, ladderCh, anchorStat, weightsIterations, 3, wresult)
-			if pErr != nil {
-				return fmt.Errorf("band %d primary-stat (%s) weights retry: %w", band, anchorStat, pErr)
+			weightsReason := referenceMeasurementReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint)
+			if weightsReason != "" {
+				// This lane's brief, item 1's guard: a band whose reference
+				// stat is not positive beyond its own error re-runs the
+				// sweep ONCE at weightsRetryIterationsFactor iterations
+				// before giving up on it - warlock-destruction band 60's
+				// own repro (bis-ranker-integrity-11) found this tightens
+				// the raw standard error (±0.1332 at 100 iterations/
+				// direction to ±0.0642 at 400) but does not always flip an
+				// actually-negative measurement positive, so the fallback
+				// below still has to exist for when this retry alone is
+				// not enough.
+				retryReq := weightsRequest(specInfo, ladderCh, weightsIterations*weightsRetryIterationsFactor, 3)
+				retryResult, retryReferenceDPSPerPoint, retryErr := runner.RunWeights(retryReq)
+				if retryErr != nil {
+					return fmt.Errorf("band %d weights retry run: %w", band, retryErr)
+				}
+				retryReason := referenceMeasurementReason(specInfo.ReferenceStat, retryResult, retryReferenceDPSPerPoint)
+				log.Printf("leveling-bis: %s band %d: sweep at %d iterations/direction was not significant (%s); re-ran at %dx", spec, band, weightsIterations, weightsReason, weightsRetryIterationsFactor)
+				wresult, referenceDPSPerPoint, weightsReason = retryResult, retryReferenceDPSPerPoint, retryReason
 			}
-			if lowConf {
-				log.Printf("leveling-bis: %s band %d: primary stat %s still not significant after a %dx retry; publishing the anchor anyway (weights_low_confidence)", spec, band, anchorStat, primaryStatRetryIterationsFactor)
+			// This lane's brief (ranker-weights-anchor), item 3's own
+			// guard: separate from the reference-stat retry just above,
+			// re-measure the PRIMARY-anchor row once at
+			// primaryStatRetryIterationsFactor iterations if it came back
+			// insignificant - but only on a band the reference-stat guard
+			// already trusts (weightsReason == ""); an already-untrustworthy
+			// band publishes no anchor at all regardless (normalizeScaleFactors'
+			// own doc), so spending the extra sim time here would be wasted.
+			weightsLowConfidence := false
+			if weightsReason == "" && anchorStat != "" {
+				retried, lowConf, pErr := primaryStatSignificanceCheck(runner, specInfo, ladderCh, anchorStat, weightsIterations, 3, wresult)
+				if pErr != nil {
+					return fmt.Errorf("band %d primary-stat (%s) weights retry: %w", band, anchorStat, pErr)
+				}
+				if lowConf {
+					log.Printf("leveling-bis: %s band %d: primary stat %s still not significant after a %dx retry; publishing the anchor anyway (weights_low_confidence)", spec, band, anchorStat, primaryStatRetryIterationsFactor)
+				}
+				wresult = retried
+				weightsLowConfidence = lowConf
 			}
-			wresult = retried
-			weightsLowConfidence = lowConf
-		}
-		// weightsSeconds covers the whole band, including either
-		// retry above when one ran - a single per-band number, the
-		// same field buildReport has always taken one of.
-		weightsSeconds := time.Since(weightsStart).Seconds()
-		// buildBandPool/score() only ever need the plain number (a
-		// candidate's stats dotted against it), and only for a weight
-		// this command's own significance bar trusts -- effectiveWeights
-		// (weights.go) zeros the rest, so an insignificant (possibly
-		// negative) weight cannot move a ranking. wresult itself (with
-		// Error and Insignificant) still rides through to buildReport
-		// unchanged, so the published JSON keeps publishing what
-		// isWeightSignificant says about each one instead of a bare,
-		// unqualified number.
-		weights := effectiveWeights(wresult)
-		bandReferenceDPSPerPoint := referenceDPSPerPoint
-		if weightsReason != "" {
-			if lastGoodWeights != nil {
-				// The fallback half of the guard: rank and verify this
-				// band's picks against the nearest lower band's own
-				// trusted weights instead of an empty map, and say
-				// exactly that in the published weights_reason - an
-				// empty slot is only ever published when no candidate
-				// exists, never because a sweep was noisy (this lane's
-				// brief).
-				weights = lastGoodWeights
-				bandReferenceDPSPerPoint = lastGoodReferenceDPSPerPoint
-				weightsReason = fallbackWeightsReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint, band, lastGoodBand)
+			// weightsSeconds covers the whole band, including either
+			// retry above when one ran - a single per-band number, the
+			// same field buildReport has always taken one of.
+			weightsSeconds := time.Since(weightsStart).Seconds()
+			// buildBandPool/score() only ever need the plain number (a
+			// candidate's stats dotted against it), and only for a weight
+			// this command's own significance bar trusts -- effectiveWeights
+			// (weights.go) zeros the rest, so an insignificant (possibly
+			// negative) weight cannot move a ranking. wresult itself (with
+			// Error and Insignificant) still rides through to buildReport
+			// unchanged, so the published JSON keeps publishing what
+			// isWeightSignificant says about each one instead of a bare,
+			// unqualified number.
+			weights := effectiveWeights(wresult)
+			bandReferenceDPSPerPoint := referenceDPSPerPoint
+			if weightsReason != "" {
+				if lg.weights != nil {
+					// The fallback half of the guard: rank and verify this
+					// band's picks against the nearest lower band's own
+					// trusted weights instead of an empty map, and say
+					// exactly that in the published weights_reason - an
+					// empty slot is only ever published when no candidate
+					// exists, never because a sweep was noisy (this lane's
+					// brief).
+					weights = lg.weights
+					bandReferenceDPSPerPoint = lg.referenceDPSPerPoint
+					weightsReason = fallbackWeightsReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint, band, lg.band)
+				} else {
+					// No earlier band to fall back to (this is the lowest
+					// band run, or every band so far has been untrustworthy)
+					// - the whole sweep is untrustworthy (see
+					// referenceMeasurementReason's own doc) and nothing it
+					// measured may rank an item or convert a wand's flat
+					// DPS into score units for this band, so both feeds a
+					// corrupted reference could poison are cleared the
+					// same way an unmeasured band always reads: no weight,
+					// no reference to convert against.
+					weights = map[string]float64{}
+					bandReferenceDPSPerPoint = 0
+				}
+				log.Printf("leveling-bis: %s band %d: %s", spec, band, weightsReason)
 			} else {
-				// No earlier band to fall back to (this is the lowest
-				// band run, or every band so far has been untrustworthy)
-				// - the whole sweep is untrustworthy (see
-				// referenceMeasurementReason's own doc) and nothing it
-				// measured may rank an item or convert a wand's flat
-				// DPS into score units for this band, so both feeds a
-				// corrupted reference could poison are cleared the
-				// same way an unmeasured band always reads: no weight,
-				// no reference to convert against.
-				weights = map[string]float64{}
-				bandReferenceDPSPerPoint = 0
+				lastGood[pass.name] = goodWeights{weights: weights, referenceDPSPerPoint: bandReferenceDPSPerPoint, band: band}
 			}
-			log.Printf("leveling-bis: %s band %d: %s", spec, band, weightsReason)
-		} else {
-			lastGoodWeights = weights
-			lastGoodReferenceDPSPerPoint = bandReferenceDPSPerPoint
-			lastGoodBand = band
-		}
-		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
+			log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
-		work := make(map[string]*factionWork, len(factions))
-		for _, f := range factions {
-			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
-			bySlot := candidatesBySlot(pool.Scored)
-			// This lane's brief (bis-ranker-integrity-10), item 3:
-			// applied before the dagger/ranged-type restrictions below
-			// (a narrower, spec- or ranged-specific gate), to every
-			// weapon slot this class actually equips a weapon in - the
-			// general class-legality gate eligible.go's own doc says
-			// is otherwise "NOT checked here" at all.
-			bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
-			bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
-			bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
-			if requiresDagger {
-				// weapon_requirements.go's own doc: a mace or sword is a
-				// real, legally-equippable item this class file already
-				// passed (eligible.go delegates weapon proficiency to the
-				// per-class file entirely), but this spec's own rotation
-				// cannot cast its dagger-only opener/builder without one -
-				// restricted here, before pick() or any later pass ever
-				// sees either weapon slot, so a dual-wielder's off_hand
-				// (pick()'s own case, which merges main_hand's one-handers
-				// in) inherits the restriction for free.
-				bySlot["main_hand"] = restrictToDaggers(bySlot["main_hand"])
-				bySlot["off_hand"] = restrictToDaggers(bySlot["off_hand"])
-			}
-			// This lane's brief (bis-ranker-integrity-6), item 9:
-			// restrictRangedByProficiency's own doc (weapon_requirements.go)
-			// - a caster's ranged slot is only ever a real wand, never a
-			// thrown weapon or bow score()'s own Shoot fallback cannot
-			// tell apart from one today. Applied unconditionally (every
-			// classSlug, not gated behind a spec flag the way the dagger
-			// restriction is) since every spec of a given class shares
-			// the identical ranged-weapon proficiency.
-			bySlot["ranged"] = restrictRangedByProficiency(bySlot["ranged"], specInfo.ClassSlug)
-
-			// pickBySlot is bySlot's own candidates, further narrowed for
-			// the DECISION passes only (pick(), rankTrinketSlot,
-			// rankSlotWithEffects, trySetCompletion) - bySlot itself stays
-			// unfiltered because buildReport (below) reads it for
-			// buildAlternatives, and a PvP reward above band.go's
-			// pvpRankCap must still be able to appear there, labelled by
-			// rank, even though it must never be a DEFAULT pick (this
-			// lane's brief, item 3). promoteLowValueWeapon additionally
-			// reorders a weapon slot whose every candidate scored exactly
-			// 0 (pick.go's own doc; this lane's brief, item 1's second
-			// half) - reordering only ever changes which zero-scoring
-			// candidate wins a tie, so running it on bySlot too would be
-			// harmless, but pickBySlot is the one map every decision pass
-			// actually reads, so that is the only copy that needs it.
-			pickBySlot := make(map[string][]scored, len(bySlot))
-			for slot, list := range bySlot {
-				filtered := excludeAbovePvpRankCap(list)
-				if weaponSlots[slot] {
-					filtered = promoteLowValueWeapon(filtered, specInfo.WeightStats)
+			work := make(map[string]*factionWork, len(factions))
+			for _, f := range factions {
+				pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
+				bySlot := candidatesBySlot(pool.Scored)
+				// This lane's brief (bis-ranker-integrity-10), item 3:
+				// applied before the dagger/ranged-type restrictions below
+				// (a narrower, spec- or ranged-specific gate), to every
+				// weapon slot this class actually equips a weapon in - the
+				// general class-legality gate eligible.go's own doc says
+				// is otherwise "NOT checked here" at all.
+				bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
+				bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
+				bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
+				if requiresDagger {
+					// weapon_requirements.go's own doc: a mace or sword is a
+					// real, legally-equippable item this class file already
+					// passed (eligible.go delegates weapon proficiency to the
+					// per-class file entirely), but this spec's own rotation
+					// cannot cast its dagger-only opener/builder without one -
+					// restricted here, before pick() or any later pass ever
+					// sees either weapon slot, so a dual-wielder's off_hand
+					// (pick()'s own case, which merges main_hand's one-handers
+					// in) inherits the restriction for free.
+					bySlot["main_hand"] = restrictToDaggers(bySlot["main_hand"])
+					bySlot["off_hand"] = restrictToDaggers(bySlot["off_hand"])
 				}
-				pickBySlot[slot] = filtered
-			}
-			picks := pick(spec, pickBySlot)
+				// This lane's brief (bis-ranker-integrity-6), item 9:
+				// restrictRangedByProficiency's own doc (weapon_requirements.go)
+				// - a caster's ranged slot is only ever a real wand, never a
+				// thrown weapon or bow score()'s own Shoot fallback cannot
+				// tell apart from one today. Applied unconditionally (every
+				// classSlug, not gated behind a spec flag the way the dagger
+				// restriction is) since every spec of a given class shares
+				// the identical ranged-weapon proficiency.
+				bySlot["ranged"] = restrictRangedByProficiency(bySlot["ranged"], specInfo.ClassSlug)
 
-			// Trinkets carry no scorable stats (score.go's own doc), so
-			// pick()'s score-based choice for trinket1/trinket2 is
-			// really just "lowest item id" - replace it with an
-			// engine-verified ranking of the top item-level candidates
-			// (trinkets.go; this lane's brief). trinket1 first so
-			// trinket2's own ranking sees trinket1's final pick, not
-			// its score-based placeholder.
-			//
-			// This lane's brief (bis-ranker-integrity-6), item 5: the
-			// comment above only ever protected trinket2's OWN view of
-			// trinket1 - it never noticed that trinket1's OWN
-			// rankTrinketSlot call (running first) still reads
-			// picks["trinket2"] as its own pair-mate to exclude, and at
-			// that point picks["trinket2"] is STILL pick()'s bare
-			// score()-based placeholder, not a real decision -
-			// clearTrinketPlaceholders' own doc (pick.go) has the full
-			// repro and reasoning.
-			picks = clearTrinketPlaceholders(picks)
-			trinketStart := time.Now()
-			for _, slot := range []string{"trinket1", "trinket2"} {
-				var notes []string
-				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot, weights)
-				for _, n := range notes {
+				// pickBySlot is bySlot's own candidates, further narrowed for
+				// the DECISION passes only (pick(), rankTrinketSlot,
+				// rankSlotWithEffects, trySetCompletion) - bySlot itself stays
+				// unfiltered because buildReport (below) reads it for
+				// buildAlternatives, and a PvP reward above band.go's
+				// pvpRankCap must still be able to appear there, labelled by
+				// rank, even though it must never be a DEFAULT pick (this
+				// lane's brief, item 3). promoteLowValueWeapon additionally
+				// reorders a weapon slot whose every candidate scored exactly
+				// 0 (pick.go's own doc; this lane's brief, item 1's second
+				// half) - reordering only ever changes which zero-scoring
+				// candidate wins a tie, so running it on bySlot too would be
+				// harmless, but pickBySlot is the one map every decision pass
+				// actually reads, so that is the only copy that needs it.
+				pickBySlot := make(map[string][]scored, len(bySlot))
+				for slot, list := range bySlot {
+					filtered := excludeAbovePvpRankCap(list)
+					if weaponSlots[slot] {
+						filtered = promoteLowValueWeapon(filtered, specInfo.WeightStats)
+					}
+					pickBySlot[slot] = filtered
+				}
+				picks := pick(spec, pickBySlot)
+
+				// Trinkets carry no scorable stats (score.go's own doc), so
+				// pick()'s score-based choice for trinket1/trinket2 is
+				// really just "lowest item id" - replace it with an
+				// engine-verified ranking of the top item-level candidates
+				// (trinkets.go; this lane's brief). trinket1 first so
+				// trinket2's own ranking sees trinket1's final pick, not
+				// its score-based placeholder.
+				//
+				// This lane's brief (bis-ranker-integrity-6), item 5: the
+				// comment above only ever protected trinket2's OWN view of
+				// trinket1 - it never noticed that trinket1's OWN
+				// rankTrinketSlot call (running first) still reads
+				// picks["trinket2"] as its own pair-mate to exclude, and at
+				// that point picks["trinket2"] is STILL pick()'s bare
+				// score()-based placeholder, not a real decision -
+				// clearTrinketPlaceholders' own doc (pick.go) has the full
+				// repro and reasoning.
+				picks = clearTrinketPlaceholders(picks)
+				trinketStart := time.Now()
+				for _, slot := range []string{"trinket1", "trinket2"} {
+					var notes []string
+					picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot, weights)
+					for _, n := range notes {
+						log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+					}
+				}
+				trinketSeconds := time.Since(trinketStart).Seconds()
+				work[f.name] = &factionWork{faction: f.name, race: f.race, pool: pool, bySlot: bySlot, pickBySlot: pickBySlot, picks: picks, trinketSeconds: trinketSeconds}
+			}
+
+			// This lane's brief (bis-ranker-integrity-15, twelfth sweep): both
+			// factions' own rankTrinketSlot tournaments just above are now
+			// finished for this band - reconcile trinket1/trinket2 across
+			// them before either faction's picks continue into
+			// rankSlotWithEffects/trySetCompletion/verifyBand below, so a
+			// faction-neutral item's own published verdict never differs
+			// between Alliance and Horde for a reason that is really just
+			// one side's own sim noise landing on the wrong side of a shared
+			// bar (druid-feral band 50, druid-balance band 50 - this lane's
+			// own repro; faction_trinkets.go's own doc has the full design).
+			allianceWork, hordeWork := work["alliance"], work["horde"]
+			var reconcileNotes []string
+			allianceWork.picks, hordeWork.picks, reconcileNotes = reconcileFactionTrinkets(
+				runner, specInfo, specInfo.ClassSlug, band, engineTalents, lootIdx,
+				factionTrinketInputs{Faction: "alliance", Race: allianceWork.race, BySlot: allianceWork.bySlot}, allianceWork.picks,
+				factionTrinketInputs{Faction: "horde", Race: hordeWork.race, BySlot: hordeWork.bySlot}, hordeWork.picks,
+			)
+			for _, n := range reconcileNotes {
+				log.Printf("leveling-bis: %s band %d faction reconcile: %s", spec, band, n)
+			}
+
+			for _, f := range factions {
+				fw := work[f.name]
+				pool := fw.pool
+				bySlot := fw.bySlot
+				pickBySlot := fw.pickBySlot
+				picks := fw.picks
+				trinketSeconds := fw.trinketSeconds
+
+				// Every other slot with an engine-implemented effect
+				// candidate (rank.go; this lane's brief, item 3): score()
+				// cannot see a proc at all, so a slot score() would
+				// otherwise decide on stats alone gets a real verify pass
+				// against its own implemented-effect candidates.
+				effectStart := time.Now()
+				for _, slot := range slotsNeedingEffectVerification(pickBySlot) {
+					var notes []string
+					picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot)
+					for _, n := range notes {
+						log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+					}
+				}
+
+				// A pick that would complete an engine-implemented 2- or
+				// 3-piece set is tried together and kept only if it
+				// verifies ahead of the independently-scored picks (sets.go;
+				// this lane's brief, item 3's second half).
+				var setNotes []string
+				picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot)
+				for _, n := range setNotes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
-			}
-			trinketSeconds := time.Since(trinketStart).Seconds()
-			work[f.name] = &factionWork{faction: f.name, race: f.race, pool: pool, bySlot: bySlot, pickBySlot: pickBySlot, picks: picks, trinketSeconds: trinketSeconds}
-		}
+				effectSeconds := time.Since(effectStart).Seconds()
 
-		// This lane's brief (bis-ranker-integrity-15, twelfth sweep): both
-		// factions' own rankTrinketSlot tournaments just above are now
-		// finished for this band - reconcile trinket1/trinket2 across
-		// them before either faction's picks continue into
-		// rankSlotWithEffects/trySetCompletion/verifyBand below, so a
-		// faction-neutral item's own published verdict never differs
-		// between Alliance and Horde for a reason that is really just
-		// one side's own sim noise landing on the wrong side of a shared
-		// bar (druid-feral band 50, druid-balance band 50 - this lane's
-		// own repro; faction_trinkets.go's own doc has the full design).
-		allianceWork, hordeWork := work["alliance"], work["horde"]
-		var reconcileNotes []string
-		allianceWork.picks, hordeWork.picks, reconcileNotes = reconcileFactionTrinkets(
-			runner, specInfo, specInfo.ClassSlug, band, engineTalents, lootIdx,
-			factionTrinketInputs{Faction: "alliance", Race: allianceWork.race, BySlot: allianceWork.bySlot}, allianceWork.picks,
-			factionTrinketInputs{Faction: "horde", Race: hordeWork.race, BySlot: hordeWork.bySlot}, hordeWork.picks,
-		)
-		for _, n := range reconcileNotes {
-			log.Printf("leveling-bis: %s band %d faction reconcile: %s", spec, band, n)
-		}
+				// Re-assert pick()'s own two-hand/off-hand rule: either of
+				// the two passes just above can replace main_hand's pick
+				// with a two-hander without knowing off_hand exists (see
+				// pick.go's enforceTwoHandOffHandInvariant doc - this
+				// lane's report names every spec it found the gap on).
+				picks = enforceTwoHandOffHandInvariant(picks)
 
-		for _, f := range factions {
-			fw := work[f.name]
-			pool := fw.pool
-			bySlot := fw.bySlot
-			pickBySlot := fw.pickBySlot
-			picks := fw.picks
-			trinketSeconds := fw.trinketSeconds
-
-			// Every other slot with an engine-implemented effect
-			// candidate (rank.go; this lane's brief, item 3): score()
-			// cannot see a proc at all, so a slot score() would
-			// otherwise decide on stats alone gets a real verify pass
-			// against its own implemented-effect candidates.
-			effectStart := time.Now()
-			for _, slot := range slotsNeedingEffectVerification(pickBySlot) {
-				var notes []string
-				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot)
-				for _, n := range notes {
-					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+				verifyStart := time.Now()
+				setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks)
+				if err != nil {
+					return fmt.Errorf("band %d %s verify run (baseline): %w", band, f.name, err)
 				}
-			}
-
-			// A pick that would complete an engine-implemented 2- or
-			// 3-piece set is tried together and kept only if it
-			// verifies ahead of the independently-scored picks (sets.go;
-			// this lane's brief, item 3's second half).
-			var setNotes []string
-			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot)
-			for _, n := range setNotes {
-				log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
-			}
-			effectSeconds := time.Since(effectStart).Seconds()
-
-			// Re-assert pick()'s own two-hand/off-hand rule: either of
-			// the two passes just above can replace main_hand's pick
-			// with a two-hander without knowing off_hand exists (see
-			// pick.go's enforceTwoHandOffHandInvariant doc - this
-			// lane's report names every spec it found the gap on).
-			picks = enforceTwoHandOffHandInvariant(picks)
-
-			verifyStart := time.Now()
-			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks)
-			if err != nil {
-				return fmt.Errorf("band %d %s verify run (baseline): %w", band, f.name, err)
-			}
-			for _, e := range verifyErrors {
-				log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
-			}
-			// A runner-up the sim measured ahead of the scored pick IS the
-			// pick: swap it into the slot and re-measure the whole set once,
-			// so the published row, the set DPS and the next band's diff all
-			// name the item a player should actually wear.
-			picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, swaps, setDPS)
-			if err != nil {
-				return fmt.Errorf("band %d %s verify run (after swaps): %w", band, f.name, err)
-			}
-			verifySeconds := time.Since(verifyStart).Seconds()
-
-			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, bandReferenceDPSPerPoint, weightsReason)
-			// This lane's brief (ranker-weights-anchor), item 3:
-			// weights_low_confidence is this band's own flag (set
-			// above, once per band, before the faction loop) - not
-			// per-faction data, but published on every faction's own
-			// report the same way every other band-level field here is.
-			report.WeightsLowConfidence = weightsLowConfidence
-			// "No primary stat ever published as 'not significant'"
-			// (this lane's brief, item 3) - clears Insignificant on
-			// exactly the anchor row, on an otherwise-trustworthy band
-			// (see forceAnchorRowSignificant's own doc for why an
-			// already-untrustworthy band is excluded). Must run before
-			// normalizeScaleFactors below, which trusts this flag when
-			// deciding whether the anchor row is even usable as a
-			// divisor.
-			report.Weights = forceAnchorRowSignificant(report.Weights, anchorStat, weightsReason)
-			// This lane's brief, item 3: what the site publishes is per
-			// RATING point (what the item's own tooltip shows), not per
-			// sim unit (percent) - publishWeightRatingUnits (report.go)
-			// converts exactly the rating-family rows, keeping the raw
-			// sim-unit weight under weight_per_percent. Applied here,
-			// once per band+faction, rather than inside buildReport
-			// itself - see that function's own doc for why.
-			report.Weights = publishWeightRatingUnits(report.Weights, ratingFactorsForBuild)
-			// This lane's brief (bis-weights-simc, extended by
-			// ranker-weights-anchor): republish the same rows again,
-			// this time in the SimulationCraft/Pawn-familiar
-			// scale-factor convention (per point, normalized to the
-			// spec's own PRIMARY stat = 1.00, anchorStat) - see
-			// normalizeScaleFactors' own doc (weights.go) for why this
-			// runs after, not instead of, publishWeightRatingUnits
-			// above (it needs the already-converted per-rating-point
-			// Weight, not the raw per-percent one).
-			report.Weights, report.ScaleReferenceStat = normalizeScaleFactors(report.Weights, report.ReferenceDPSPerPoint, anchorStat)
-			// Owner correction, 2026-09-30, after player review: haste
-			// is not a table row on the site's own weight rail any
-			// more, only a one-line caption built from this one number
-			// - see bandReport.HasteScaleFactor's own doc.
-			report.HasteScaleFactor = hasteScaleFactorFromRows(report.Weights, report.ScaleReferenceStat)
-			// Owner correction, 2026-09-30, after the caption's own
-			// doubled-suffix bug was found on screenshot review: a
-			// plain inventory check (does this band's own eligible
-			// pool carry a haste stat at all), independent of whether
-			// the sweep's own sample happened to land significant -
-			// see bandReport.HasteOnItems' own doc.
-			report.HasteOnItems = bandHasHasteCandidate(pool.Scored, pool.NoSource)
-			reports = append(reports, report)
-			previous[f.name] = picks
-
-			// This lane's brief, item 1's last sentence: name every id
-			// this band published with SimStatus "not_in_sim" once per
-			// spec run, at warning level, so the nightly log tells the
-			// Python data lane exactly which ids its own simdb.bin
-			// rebuild needs to carry a row for (report.go's own
-			// SimStatus/SetDPSPartial doc has the full reasoning).
-			for _, row := range report.Slots {
-				if row.SimStatus != notInSimReason || notInSimWarned[row.ItemID] {
-					continue
+				for _, e := range verifyErrors {
+					log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
 				}
-				notInSimWarned[row.ItemID] = true
-				log.Printf("leveling-bis: %s: WARNING item %d (%s) is not in this build's simdb.bin (simdb.Known false) - stripped by simdb.Attach's UnequipUnknown before every sim, published score-decided with sim_status=not_in_sim", spec, row.ItemID, row.ItemName)
-			}
+				// A runner-up the sim measured ahead of the scored pick IS the
+				// pick: swap it into the slot and re-measure the whole set once,
+				// so the published row, the set DPS and the next band's diff all
+				// name the item a player should actually wear.
+				picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, swaps, setDPS)
+				if err != nil {
+					return fmt.Errorf("band %d %s verify run (after swaps): %w", band, f.name, err)
+				}
+				verifySeconds := time.Since(verifyStart).Seconds()
 
-			// This is the per-spec/band/faction breakdown the controller
-			// asked for after the memory incident: weights (once per
-			// band, logged above), trinket-rank and verify seconds
-			// separately per faction, so a slow band/spec is visible
-			// without re-deriving it from timestamps.
-			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
-			// lane rank-guardrails, guardrail A: one line per band+faction
-			// naming how much of the slot table a reader is actually
-			// looking at versus how much the ranker could see at all -
-			// the same coverage the published JSON's own Coverage field
-			// carries (report.go's coverageSummary), so a nightly log
-			// reader sees the honesty gap without opening the JSON.
-			log.Printf("leveling-bis: %s band %d %s: coverage %s", spec, band, f.name, coverageSummary(pool.Coverage))
+				report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, priorPicks[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, bandReferenceDPSPerPoint, weightsReason)
+				// This lane's brief (ranker-weights-anchor), item 3:
+				// weights_low_confidence is this band's own flag (set
+				// above, once per band, before the faction loop) - not
+				// per-faction data, but published on every faction's own
+				// report the same way every other band-level field here is.
+				report.WeightsLowConfidence = weightsLowConfidence
+				report.Preset = pass.name
+				// "No primary stat ever published as 'not significant'"
+				// (this lane's brief, item 3) - clears Insignificant on
+				// exactly the anchor row, on an otherwise-trustworthy band
+				// (see forceAnchorRowSignificant's own doc for why an
+				// already-untrustworthy band is excluded). Must run before
+				// normalizeScaleFactors below, which trusts this flag when
+				// deciding whether the anchor row is even usable as a
+				// divisor.
+				report.Weights = forceAnchorRowSignificant(report.Weights, anchorStat, weightsReason)
+				// This lane's brief, item 3: what the site publishes is per
+				// RATING point (what the item's own tooltip shows), not per
+				// sim unit (percent) - publishWeightRatingUnits (report.go)
+				// converts exactly the rating-family rows, keeping the raw
+				// sim-unit weight under weight_per_percent. Applied here,
+				// once per band+faction, rather than inside buildReport
+				// itself - see that function's own doc for why.
+				report.Weights = publishWeightRatingUnits(report.Weights, ratingFactorsForBuild)
+				// This lane's brief (bis-weights-simc, extended by
+				// ranker-weights-anchor): republish the same rows again,
+				// this time in the SimulationCraft/Pawn-familiar
+				// scale-factor convention (per point, normalized to the
+				// spec's own PRIMARY stat = 1.00, anchorStat) - see
+				// normalizeScaleFactors' own doc (weights.go) for why this
+				// runs after, not instead of, publishWeightRatingUnits
+				// above (it needs the already-converted per-rating-point
+				// Weight, not the raw per-percent one).
+				report.Weights, report.ScaleReferenceStat = normalizeScaleFactors(report.Weights, report.ReferenceDPSPerPoint, anchorStat)
+				// Owner correction, 2026-09-30, after player review: haste
+				// is not a table row on the site's own weight rail any
+				// more, only a one-line caption built from this one number
+				// - see bandReport.HasteScaleFactor's own doc.
+				report.HasteScaleFactor = hasteScaleFactorFromRows(report.Weights, report.ScaleReferenceStat)
+				// Owner correction, 2026-09-30, after the caption's own
+				// doubled-suffix bug was found on screenshot review: a
+				// plain inventory check (does this band's own eligible
+				// pool carry a haste stat at all), independent of whether
+				// the sweep's own sample happened to land significant -
+				// see bandReport.HasteOnItems' own doc.
+				report.HasteOnItems = bandHasHasteCandidate(pool.Scored, pool.NoSource)
+				reports = append(reports, report)
+				if pass.name == presetBare {
+					previous[f.name] = picks
+				}
+
+				// This lane's brief, item 1's last sentence: name every id
+				// this band published with SimStatus "not_in_sim" once per
+				// spec run, at warning level, so the nightly log tells the
+				// Python data lane exactly which ids its own simdb.bin
+				// rebuild needs to carry a row for (report.go's own
+				// SimStatus/SetDPSPartial doc has the full reasoning).
+				for _, row := range report.Slots {
+					if row.SimStatus != notInSimReason || notInSimWarned[row.ItemID] {
+						continue
+					}
+					notInSimWarned[row.ItemID] = true
+					log.Printf("leveling-bis: %s: WARNING item %d (%s) is not in this build's simdb.bin (simdb.Known false) - stripped by simdb.Attach's UnequipUnknown before every sim, published score-decided with sim_status=not_in_sim", spec, row.ItemID, row.ItemName)
+				}
+
+				// This is the per-spec/band/faction breakdown the controller
+				// asked for after the memory incident: weights (once per
+				// band, logged above), trinket-rank and verify seconds
+				// separately per faction, so a slow band/spec is visible
+				// without re-deriving it from timestamps.
+				log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
+				// lane rank-guardrails, guardrail A: one line per band+faction
+				// naming how much of the slot table a reader is actually
+				// looking at versus how much the ranker could see at all -
+				// the same coverage the published JSON's own Coverage field
+				// carries (report.go's coverageSummary), so a nightly log
+				// reader sees the honesty gap without opening the JSON.
+				log.Printf("leveling-bis: %s band %d %s: coverage %s", spec, band, f.name, coverageSummary(pool.Coverage))
+			}
 		}
 	}
 
 	jsonPath := filepath.Join(outDir, spec+".json")
-	if err := writeSpecReport(jsonPath, spec, activeBuild, reports); err != nil {
+	presets := map[string]request.ResolvedPreset{presetRaid: raidPreset}
+	if err := writeSpecReport(jsonPath, spec, activeBuild, reports, presets); err != nil {
 		return fmt.Errorf("writing %s: %w", jsonPath, err)
 	}
 	mdPath := filepath.Join(outDir, spec+".md")
