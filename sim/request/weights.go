@@ -73,9 +73,18 @@ func BuildWeights(req api.SimRequest, opt Options) (*proto.StatWeightsRequest, e
 		Encounter:  run.Encounter,
 		SimOptions: run.SimOptions,
 		// The engine indexes this slice; a nil one is a panic rather
-		// than a raid with no tank.
-		Tanks:           []*proto.UnitReference{},
+		// than a raid with no tank. A tank spec's request names its own
+		// character (applyTankFight): the boss it fights hits that tank.
+		Tanks:           tanksOf(run.Raid),
 		StatsToWeigh:    stats,
 		EpReferenceStat: reference,
 	}, nil
+}
+
+// tanksOf is the raid's tank list, never nil.
+func tanksOf(raid *proto.Raid) []*proto.UnitReference {
+	if len(raid.Tanks) == 0 {
+		return []*proto.UnitReference{}
+	}
+	return raid.Tanks
 }
