@@ -3,11 +3,11 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70009:mage:gnome:2050151/23552100030023051/005:'
+build: 'FS1:1.60.1.70009:mage:gnome:2050151/23552100130103051/005:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
-updated: 2026-09-24
+updated: 2026-10-07
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -40,15 +40,16 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Improved Scorch** — up to a guaranteed chance for Scorch to stack a 3%-per-stack Fire vulnerability debuff, up to 5 stacks, on the target.
 - **Critical Mass** — up to 6% more Fire critical strike chance at rank 3, feeding both Ignite and Combustion.
 - **Fire Power** — a flat 10% more Fire damage at rank 5, the tree's biggest raw damage talent.
-- **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land four non-periodic Fire crits.
+- **Pyroblast** and **Heating Up** — a pair of points in the middle of the tree. Heating Up is the renamed Hot Streak: every non-periodic critical strike with Fireball, Frostfire Bolt, Fire Blast, or Scorch cuts the cast time of your next Pyroblast by 25% for 20 seconds, stacking up to three times, so a Pyroblast cast on three stacks takes a quarter of its usual 6 seconds. Casting Pyroblast spends every stack.
+- **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land three non-periodic Fire crits.
 
-This build spends 32 points in Fire to reach Combustion at the bottom, one more than before: the sim's own level-60 search found **Master of Elements** (2/3, refunding 20% of the base mana cost on your Fire and Frost critical strikes) worth taking at the cost of a point out of **Burning Soul** (1/3 → 0/3), whose anti-pushback chance and threat reduction the sim's model can't turn into measurable damage.
+This build spends 32 points in Fire to reach Combustion at the bottom, and two of them are Pyroblast and Heating Up. They come out of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measures the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. Taking those two points from Wake of Fire or Incineration instead measures the same within the sim's error, so that is a matter of taste if you would rather keep the mana refund.
 
-Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 5 points in Frost instead, all into **Elemental Precision** (5/5, 5% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly. This build measures about +8.7% over the previous spend in our level-60 search run. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 5 points in Frost instead, all into **Elemental Precision** (5/5, 5% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly.  Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 
-Open by stacking Improved Scorch's vulnerability debuff with a few Scorch casts before your main damage window, then hold Combustion until the debuff is fully stacked so every Fire spell hit during Combustion lands as a guaranteed crit. Keep Scorch refreshed through the fight so the debuff never falls off, weaving it in whenever it's about to expire. Fire Blast slots in on cooldown as a free extra hit that doesn't compete with your Scorch or Fireball casts for a global cooldown. Fireball is the primary filler for every global that isn't spent on Scorch upkeep, Fire Blast, or Combustion. This site's simulator currently only models this loop when Improved Scorch is actually talented — without it, the rotation skips the Scorch-refresh line entirely and runs Fire Blast on cooldown with Fireball as the filler, so take Improved Scorch if you want the Combustion-stacking loop above to matter.
+Open by stacking Improved Scorch's vulnerability debuff with a few Scorch casts before your main damage window, then hold Combustion until the debuff is fully stacked so every Fire spell hit during Combustion lands as a guaranteed crit. Keep Scorch refreshed through the fight so the debuff never falls off, weaving it in whenever it's about to expire. Heating Up decides when Pyroblast is worth a global: cast it only once Heating Up has reached three stacks, which cuts it to a 1.5 second cast, and never at the full 6 seconds. In the sim a three-stack Pyroblast is worth roughly 3.5% more damage over the whole fight than leaving it out, while casting it on two stacks measured no better than not casting it and casting it on one stack lost damage. Fire Blast slots in on cooldown as a free extra hit that doesn't compete with your Scorch or Fireball casts for a global cooldown, and its crits feed Heating Up like the rest. Fireball is the primary filler for every global that isn't spent on Scorch upkeep, a three-stack Pyroblast, Fire Blast, or Combustion. Pyroblast's own damage-over-time is minor next to the hit; the point of the buff is the fast cast. This site's simulator currently only models this loop when Improved Scorch is actually talented — without it, the rotation skips the Scorch-refresh line entirely and runs Fire Blast on cooldown with Fireball as the filler, and without Heating Up it skips the Pyroblast line too, so take Improved Scorch if you want the Combustion-stacking loop above to matter.
 
 ## Stat priority
 
