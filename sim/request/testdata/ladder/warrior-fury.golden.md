@@ -39,7 +39,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below).
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a

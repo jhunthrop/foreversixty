@@ -39,7 +39,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below).
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -90,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:1933 | 7.9 | 4 | spell:5177=40.9, other:attack/1=33.1, spell:8924=4.7, spell:58984=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
-| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 50.9 | 4 | other:attack/1=182.1, spell:1082=46.5, spell:1079=8.6, spell:58984=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
-| 30 | 0000000000000000-55232220000000000000-0000000000000000 | bare | 67.2 | 6 | other:attack/1=182.1, spell:6800=23.8, spell:1822=20.6, spell:9492=8.1, spell:5217=6.6 | {SpellID: 1322605} |
-| 38 | 0000000000000000-55232232121010000000-0000000000000000 | bare | 95.0 | 8 | other:attack/1=182.1, spell:8992=33.6, spell:1823=20.1, spell:9493=9.8, spell:1322605=8.0 | - |
-| 40 | 0000000000000000-55232232121030000000-0000000000000000 | bare | 98.1 | 8 | other:attack/1=182.1, spell:8992=33.3, spell:1823=20.0, spell:9493=9.9, spell:1322605=7.9 | - |
-| 50 | 0100000000000000-55232232121032012001-3000000000000000 | bare | 130.8 | 10 | other:attack/1=182.1, spell:9829=31.7, spell:1824=20.4, spell:9752=11.3, spell:1322605=7.5 | - |
-| 60 | 0100000000000000-55232232121032012001-5053000000000000 | bare | 181.7 | 9 | other:attack/1=182.1, spell:9830=31.8, spell:9904=20.5, spell:9896=11.3, spell:1322605=7.5 | - |
+| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:1933 | 8.2 | 4 | spell:5177=43.9, other:attack/1=31.1, spell:8924=4.8, spell:58984=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
+| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 51.8 | 4 | other:attack/1=182.1, spell:1082=46.5, spell:1079=8.6, spell:58984=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
+| 30 | 0000000000000000-55232220000000000000-0000000000000000 | bare | 68.6 | 6 | other:attack/1=182.1, spell:6800=23.8, spell:1822=20.6, spell:9492=8.1, spell:5217=6.6 | {SpellID: 1322605} |
+| 38 | 0000000000000000-55232232121010000000-0000000000000000 | bare | 97.2 | 8 | other:attack/1=182.1, spell:8992=33.9, spell:1823=20.1, spell:9493=10.0, spell:1322605=8.4 | - |
+| 40 | 0000000000000000-55232232121030000000-0000000000000000 | bare | 101.0 | 8 | other:attack/1=182.1, spell:8992=33.8, spell:1823=20.1, spell:9493=9.9, spell:1322605=8.3 | - |
+| 50 | 0100000000000000-55232232121032012001-3000000000000000 | bare | 134.7 | 10 | other:attack/1=182.1, spell:9829=32.2, spell:1824=20.4, spell:9752=11.4, spell:1322605=8.1 | - |
+| 60 | 0100000000000000-55232232121032012001-5053000000000000 | bare | 186.4 | 9 | other:attack/1=182.1, spell:9830=32.1, spell:9904=20.4, spell:9896=11.6, spell:1322605=8.0 | - |
 
 ## Learned but unused (informational)
 

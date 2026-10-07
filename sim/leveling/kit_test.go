@@ -92,3 +92,47 @@ func TestDualWieldSpecsExcludesShaman(t *testing.T) {
 		}
 	}
 }
+
+func TestKitBuffsMageCarriesArcaneIntellectFromLevelOne(t *testing.T) {
+	for _, spec := range []string{"mage", "mage-arcane", "mage-fire", "mage-frost"} {
+		for _, level := range []int{1, 30, 60} {
+			got := KitBuffs(spec, level)
+			if len(got) != 1 || got[0] != "arcane_brilliance" {
+				t.Fatalf("%s at %d = %v, want arcane_brilliance", spec, level, got)
+			}
+		}
+	}
+}
+
+// Improved Mark of the Wild is a baseline passive, not a tree talent, in
+// the live build: no druid guide build takes it, so no ":improved".
+func TestKitBuffsDruidCarriesPlainMarkOfTheWild(t *testing.T) {
+	for _, spec := range []string{"druid-balance", "druid-feral", "druid-restoration"} {
+		got := KitBuffs(spec, 1)
+		if len(got) != 1 || got[0] != "gift_of_the_wild" {
+			t.Fatalf("%s at 1 = %v, want gift_of_the_wild", spec, got)
+		}
+	}
+}
+
+func TestKitBuffsPaladinCarriesBlessingOfMightFromFour(t *testing.T) {
+	for _, spec := range []string{"paladin-holy", "paladin-protection", "paladin-retribution"} {
+		if got := KitBuffs(spec, 3); got != nil {
+			t.Fatalf("%s at 3 = %v, want nothing (rank 1 is learned at 4)", spec, got)
+		}
+		for _, level := range []int{4, 60} {
+			got := KitBuffs(spec, level)
+			if len(got) != 1 || got[0] != "blessing_of_might" {
+				t.Fatalf("%s at %d = %v, want blessing_of_might", spec, level, got)
+			}
+		}
+	}
+}
+
+func TestKitBuffsOtherClassesCarryNothing(t *testing.T) {
+	for _, spec := range []string{"warrior-arms", "rogue-combat", "priest-shadow", "warlock-affliction", "shaman-enhancement", "hunter-beast-mastery", "magefoo"} {
+		if got := KitBuffs(spec, 60); got != nil {
+			t.Fatalf("%s = %v, want nothing", spec, got)
+		}
+	}
+}

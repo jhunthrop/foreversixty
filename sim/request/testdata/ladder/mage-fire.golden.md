@@ -39,7 +39,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below).
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -90,12 +93,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-10000000000000000-0000000000000000000 | main_hand:263937 ranged:263430 | 9.0 | 3 | spell:5019=87.4, spell:2136=21.0, spell:143=16.7 | {SpellID: 11129}, {SpellID: 12873} |
-| 20 | 000000000000000000-23510000000000000-0000000000000000000 | main_hand:890 ranged:5243 | 19.7 | 3 | spell:5019=90.7, spell:2137=18.5, spell:3140=11.0 | {SpellID: 11129}, {SpellID: 11366}, {SpellID: 12873}, {SpellID: 400625} |
-| 30 | 000000000000000000-23552100120000000-0000000000000000000 | main_hand:249392 ranged:5213 | 27.0 | 4 | spell:5019=98.9, spell:8444=21.9, spell:8401=6.1, spell:8412=5.4, item:5514=1.0 | {SpellID: 11129}, {SpellID: 400625} |
-| 38 | 000000000000000000-23552100130103030-0000000000000000000 | main_hand:1664 ranged:13064 | 43.9 | 5 | spell:5019=81.7, spell:8445=17.9, spell:8402=7.3, spell:8413=7.0, other:mana_gain=2.0 | {SpellID: 11129} |
-| 40 | 000000000000000000-23552100130103050-0000000000000000000 | main_hand:1664 ranged:5216 | 44.5 | 5 | spell:5019=90.3, spell:8446=17.3, spell:8413=6.8, spell:8402=5.9, other:mana_gain=2.0 | {SpellID: 11129} |
-| 50 | 205011000000000000-23552100130103051-0000000000000000000 | main_hand:812 ranged:249232 | 77.0 | 6 | spell:5019=62.7, spell:10205=18.1, spell:10149=8.5, spell:10197=7.4, other:mana_gain=2.0 | - |
+| 10 | 000000000000000000-10000000000000000-0000000000000000000 | main_hand:263937 ranged:263430 | 7.9 | 3 | spell:5019=96.8, spell:2136=19.5, spell:143=10.7 | {SpellID: 11129}, {SpellID: 12873} |
+| 20 | 000000000000000000-23510000000000000-0000000000000000000 | main_hand:890 ranged:5243 | 18.8 | 3 | spell:5019=94.2, spell:2137=18.0, spell:3140=8.0 | {SpellID: 11129}, {SpellID: 11366}, {SpellID: 12873}, {SpellID: 400625} |
+| 30 | 000000000000000000-23552100120000000-0000000000000000000 | main_hand:249392 ranged:5213 | 26.0 | 4 | spell:5019=100.6, spell:8444=21.9, spell:8401=5.4, spell:8412=4.7, item:5514=1.0 | {SpellID: 11129}, {SpellID: 400625} |
+| 38 | 000000000000000000-23552100130103030-0000000000000000000 | main_hand:1664 ranged:13064 | 42.5 | 5 | spell:5019=82.0, spell:8445=17.9, spell:8402=7.0, spell:8413=6.1, other:mana_gain=2.0 | {SpellID: 11129} |
+| 40 | 000000000000000000-23552100130103050-0000000000000000000 | main_hand:1664 ranged:5216 | 43.1 | 5 | spell:5019=92.9, spell:8446=17.3, spell:8413=7.0, spell:8402=4.9, other:mana_gain=2.0 | {SpellID: 11129} |
+| 50 | 205011000000000000-23552100130103051-0000000000000000000 | main_hand:812 ranged:249232 | 75.5 | 6 | spell:5019=63.8, spell:10205=18.1, spell:10149=7.8, spell:10197=7.5, other:mana_gain=2.0 | - |
 | 60 | 205015100000000000-23552100130103051-0050000000000000000 | main_hand:22589 ranged:22821 | 238.0 | 6 | spell:5019=60.1, spell:10207=20.8, spell:25306=18.0, spell:10199=13.5, other:mana_gain=2.0 | - |
 
 ## Learned but unused (informational)

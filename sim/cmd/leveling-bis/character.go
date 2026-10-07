@@ -119,6 +119,7 @@ func bandCharacter(name, race, classSlug, specSlug string, level int, talents st
 // this here; the curated data is the fix now, so this function just reads
 // the spec's own reference_stat.
 func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed int64) api.SimRequest {
+	ch = withKit(spec, ch)
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          spec.Spec,
@@ -131,18 +132,30 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 	}
 }
 
+// withKit gives ch the class kit the ladder's character carries too:
+// rogue poisons from 20, shaman-enhancement's weapon imbues throughout
+// (a rogue verified without poisons ranked its level-20 set at a tenth
+// of a hunter's), and the self buffs leveling.KitBuffs names. Keyed by
+// the full spec slug, not ch.Class, because the kit is a spec property.
+// Every request the ranker builds - the DPS runs and the stat-weight
+// sweep alike - goes through it, so the published weights come from the
+// same buffed character the picks are scored on. A character that
+// already carries its own consumes or buffs keeps them.
+func withKit(spec specInfo, ch api.CharacterSpec) api.CharacterSpec {
+	if ch.Consumes == nil {
+		ch.Consumes = leveling.KitConsumes(spec.Spec, ch.Level)
+	}
+	if ch.Buffs == nil {
+		ch.Buffs = leveling.KitBuffs(spec.Spec, ch.Level)
+	}
+	return ch
+}
+
 // plainRequest builds an ordinary DPS-run SimRequest for ch, at
 // iterations/seed - used by verify.go for the baseline and each
 // per-slot swap.
 func plainRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed int64) api.SimRequest {
-	if ch.Consumes == nil {
-		// The class kit the ladder's character carries too (rogue
-		// poisons from 20, shaman-enhancement's weapon imbues
-		// throughout): a rogue verified without poisons ranked its
-		// level-20 set at a tenth of a hunter's. Keyed by the full spec
-		// slug, not ch.Class, because the kit is a spec property.
-		ch.Consumes = leveling.KitConsumes(spec.Spec, ch.Level)
-	}
+	ch = withKit(spec, ch)
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          spec.Spec,
