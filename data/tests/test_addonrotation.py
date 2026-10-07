@@ -246,8 +246,11 @@ def test_the_real_committed_data_produces_a_rotation_for_every_spec():
 #: join correct. Aimed Shot/Multi-Shot are the "looks right, still checked" control pair.
 #: A change to any of these six values fails this test until a person re-verifies it
 #: against the same two sources and explains why the new answer is right (tenet 8).
+#: Heroic Strike is pinned on Fury only: the 2026-10-06 rotation search removed it from
+#: the Arms list (curated/apl/warrior-arms.json notes), so Arms band 60 no longer has the
+#: line to check; Rend still covers the Arms side of the Ambush/Gouge quirk.
 KNOWN_GOOD_ROTATION_ICONS = {
-    "warrior-arms": {"Heroic Strike": "ability_rogue_ambush", "Rend": "ability_gouge"},
+    "warrior-arms": {"Rend": "ability_gouge"},
     "warrior-fury": {"Heroic Strike": "ability_rogue_ambush"},
     "hunter-marksmanship": {
         "Aimed Shot": "inv_spear_07",

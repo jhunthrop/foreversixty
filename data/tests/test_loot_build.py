@@ -733,14 +733,32 @@ WORLD_BOSS_SOURCES = {
 }
 
 
+@cache
+def curated_opens() -> dict[str, str]:
+    """`opens` a `data/curated/loot/*.json` overlay patches onto an existing source by
+    id (`replace`), e.g. anachronos-war-effort.json gating the whole of Anachronos's
+    war-effort stock (`vendor:15192`) the way `raid:ahnqiraj` is gated. These are the
+    hand-curated phase gates; the generator's own are the sibling shapes below."""
+    patched: dict[str, str] = {}
+    for path in sorted(Path("curated/loot").glob("*.json")):
+        overlay = json.loads(path.read_text(encoding="utf-8"))
+        for patch in overlay.get("replace", []):
+            if "opens" in patch:
+                patched[patch["id"]] = patch["opens"]
+    return patched
+
+
 def test_every_raid_is_gated_and_nothing_else_is():
     """Raids open later (Onyxia with the first raid phase), the six world
     bosses open with the raids, a crafted item whose recipe or reagent is
     raid-bound sits in a `crafted:<profession>:<phase>` sibling source
-    (data-followups-3), and a vendor row with no working launch-day
+    (data-followups-3), a vendor row with no working launch-day
     purchase path (unresolvable `ItemExtendedCost`, or beta-overleveled
     stock -- vendor-11036 lane, 2026-09-30) sits in a
-    `vendor:<npc_id>:later` sibling. Nothing else carries `opens`."""
+    `vendor:<npc_id>:later` sibling, and a source a curated loot overlay
+    gates by hand carries exactly the phase the overlay names (the
+    Anachronos war-effort vendor, bis-ranker-integrity-16, 2026-09-30).
+    Nothing else carries `opens`."""
     for source in loot()["sources"]:
         opens = source.get("opens")
         if source["id"] == DATED_RAID:
@@ -753,6 +771,8 @@ def test_every_raid_is_gated_and_nothing_else_is():
             assert opens in PHASES | {OPENS_LATER}, source["id"]
         elif source["kind"] == "vendor" and source["id"].endswith(":later"):
             assert opens == OPENS_LATER, source["id"]
+        elif source["id"] in curated_opens():
+            assert opens == curated_opens()[source["id"]], source["id"]
         else:
             assert opens is None, source["id"]
         assert opens is None or opens in PHASES | {OPENS_LATER}

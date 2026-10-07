@@ -247,6 +247,7 @@ EXPECTED_ABILITY_NAMES = {
     },
     "mage-frost": {
         25304: "Frostbolt",
+        1239700: "Arcane Blast",
         5019: "Shoot",
     },
 }
