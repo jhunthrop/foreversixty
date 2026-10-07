@@ -36,7 +36,7 @@ Point allocation runs 31 points deep into Subtlety to reach Thousand Cuts at the
 
 ## Rotation and priority
 
-This site's simulator plays the fully supported version of the loop. Rupture comes first: whenever it is not on the target and you have four or more combo points, cast it. The bleed is the largest single gain the search found, about +20% in our level-60 search run. After that, spend five combo points on Eviscerate, keep Slice and Dice active (refreshed only at five combo points when it is down or about to drop), and use Hemorrhage as the combo-point builder, reapplying its bleed once the charges expire. Ghostly Strike is no longer in the loop: dropping it made no measurable difference, so its global goes to the builder instead. Cutthroat's proc-based free Ambush is not reflected in that priority list yet, so treat any Ambush-heavy opener sequencing as this site's own projection of the tree's intent rather than a confirmed rotation.
+This site's simulator plays the fully supported version of the loop: keep Slice and Dice active so combo points aren't wasted on idle swing time, use Ghostly Strike on cooldown since it's cheaper energy than Backstab and carries its own debuff, spend five combo points on Eviscerate, and use Hemorrhage as the combo-point builder, reapplying its bleed once the charges expire. Cutthroat's proc-based free Ambush isn't reflected in that priority list yet, so treat any Ambush-heavy opener sequencing as this site's own projection of the tree's intent rather than a confirmed rotation.
 
 ## Stat priority
 

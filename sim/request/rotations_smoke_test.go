@@ -161,6 +161,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 13750}": "Adrenaline Rush is a talent (sim/rogue/talents.go); this build takes none.",
 	},
 	"rogue-subtlety": {
+		"{SpellID: 14278}": "Ghostly Strike is a talent (sim/rogue/ghostly_strike.go); this build takes none.",
 		"{SpellID: 14183}": "Premeditation is a talent (sim/rogue/premeditation.go); this build takes none.",
 		"{SpellID: 16511}": "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
 	},
