@@ -26,6 +26,27 @@ APL_DIR = Path("curated/apl")
 #: edited every time a client build lands, and the ranks are checked against
 #: whatever build is current, which is the point of the check.
 SPELLCONST = Path("builds") / newest_build() / "spellconst"
+TALENTS = Path("builds") / newest_build() / "talents.json"
+
+
+def hotfix_talent_spell_ids() -> set[int]:
+    """Spell ids the live talent trees grant that the client tables may lack.
+
+    Blizzard ships some talent reworks as server hotfixes (Shifting Power,
+    1322605, on 1.60.1.70009): the Wowhead overlay puts the talent and the
+    ability it grants into `talents.json`, but no Spell table row exists for
+    spellconst to carry. A rotation may cast such an ability, and the client
+    cannot vouch for its rank, so the rank check is skipped for exactly the
+    ids a talent grants and spellconst does not know."""
+    if not TALENTS.exists():
+        return set()
+    return {
+        int(spell_id)
+        for talent in json.loads(TALENTS.read_text())
+        for spell_id in talent.get("spell_ids") or []
+    }
+
+
 WRITTEN = {"warrior-fury", "mage-frost"}
 
 
@@ -109,11 +130,14 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
         path.stem: json.loads(path.read_text())["spells"] for path in SPELLCONST.glob("*.json")
     }
     checked = 0
+    hotfix_granted = hotfix_talent_spell_ids()
     for key, document in documents().items():
         spells = by_class[key.split("-", 1)[0]]
         exempt = unchecked_engine_aura_ids(document.rotation) | set(UNGROUPED_CLIENT_SPELL_IDS)
         for spell_id, rank in action_ids(document.rotation):
             if spell_id in exempt:
+                continue
+            if str(spell_id) not in spells and spell_id in hotfix_granted:
                 continue
             assert str(spell_id) in spells, f"{key} names spell {spell_id}, which the build has not"
             assert spells[str(spell_id)]["rank"] == rank, (
