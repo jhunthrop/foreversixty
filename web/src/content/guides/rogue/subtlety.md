@@ -36,7 +36,7 @@ Point allocation runs 31 points deep into Subtlety to reach Thousand Cuts at the
 
 ## Rotation and priority
 
-This site's simulator plays the fully supported version of the loop: keep Slice and Dice active so combo points aren't wasted on idle swing time, use Ghostly Strike on cooldown since it's cheaper energy than Backstab and carries its own debuff, spend five combo points on Eviscerate, and use Hemorrhage as the combo-point builder, reapplying its bleed once the charges expire. Cutthroat's proc-based free Ambush isn't reflected in that priority list yet, so treat any Ambush-heavy opener sequencing as this site's own projection of the tree's intent rather than a confirmed rotation.
+Open from stealth with Stealth, Premeditation and Ambush, then play from Hemorrhage. Hemorrhage is the builder, hitting for 145% weapon damage with a dagger and awarding a combo point, and its debuff makes the target take 15% more damage from your Rupture for 15 seconds, so keep it going. Rupture is the main finisher: cast it at four or more combo points whenever it is not already running. Ghostly Strike goes on cooldown, hitting for 180% weapon damage with a dagger for a combo point. While Rupture is running, spend the combo points that build behind it: Eviscerate at three or more, and Slice and Dice when it is down or under 3 seconds from ending, so nothing idles at the cap. In this site's simulator, dropping Eviscerate and Slice and Dice entirely and putting every point into Rupture measured a few percent higher still; the priority above keeps all three finishers in play rather than adopting that. Cutthroat's proc-based free Ambush isn't reflected in that priority list yet, so treat any Ambush-heavy opener sequencing as this site's own projection of the tree's intent rather than a confirmed rotation.
 
 ## Stat priority
 
@@ -44,7 +44,7 @@ The table above is this band's own simulation at level 60, re-run by the nightly
 
 ## Gear
 
-Look for agility and attack power first, then the merged hit and crit ratings, then melee haste. Since Hemorrhage's bleed needs periodic reapplication rather than constant uptime like a DoT, raw weapon damage and attack power outweigh haste more than in a pure swing-speed spec. A new stat reducing target dodge and parry chance may show up on gear as itemization fills in. Specific pre-raid or raid-tier item picks aren't something this site can name with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
+Look for agility and attack power first, then the merged hit and crit ratings, then melee haste. Since Hemorrhage and Rupture are both driven by weapon damage and attack power, those outweigh haste more than in a pure swing-speed spec. A new stat reducing target dodge and parry chance may show up on gear as itemization fills in. Specific pre-raid or raid-tier item picks aren't something this site can name with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
 
 ## Enchants and consumables
 

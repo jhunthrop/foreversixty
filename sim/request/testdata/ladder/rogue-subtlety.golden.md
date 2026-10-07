@@ -90,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:1287 off_hand:2088 | 10.3 | 4 | other:attack/1=138.9, other:attack/2=121.7, spell:1757=42.1, spell:6760/5=4.2, spell:5171/5=3.2 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:2236 off_hand:2194 | 23.1 | 5 | other:attack/1=128.8, other:attack/2=77.5, spell:1758=40.6, spell:6761/5=4.5, spell:5171/5=2.8 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 30 | 00000000000000000-00000000000000000-5322210310011000000 | main_hand:6691 off_hand:9457 | 28.4 | 7 | other:attack/1=131.9, other:attack/2=86.2, spell:1760=32.7, spell:14278=9.0, spell:5171/5=4.0 | {SpellID: 16511} |
-| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:6831 off_hand:6829 | 54.3 | 7 | other:attack/1=133.0, other:attack/2=90.9, spell:16511=40.6, spell:14278=8.8, spell:8623/5=4.8 | - |
-| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:2164 off_hand:9359 | 59.9 | 8 | other:attack/1=111.1, other:attack/2=87.1, spell:16511=40.7, spell:14278=8.8, spell:8624/5=4.8 | - |
-| 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:2163 off_hand:6660 | 85.3 | 7 | other:attack/2=160.4, other:attack/1=149.0, spell:16511=40.8, spell:14278=8.8, spell:11299/5=4.7 | - |
-| 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:22802 off_hand:23054 | 139.2 | 7 | other:attack/1=116.3, other:attack/2=77.7, spell:16511=40.2, spell:14278=8.8, spell:31016/5=4.7 | - |
+| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:1287 off_hand:2088 | 10.1 | 4 | other:attack/1=145.9, other:attack/2=127.7, spell:1757=39.4, spell:5171/3=7.7, spell:6760/3=3.7 | {SpellID: 11275}, {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:2236 off_hand:2194 | 24.7 | 4 | other:attack/1=121.4, other:attack/2=73.0, spell:1758=40.4, spell:1943/4=9.8, spell:1785=1.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 30 | 00000000000000000-00000000000000000-5322210310011000000 | main_hand:6691 off_hand:9457 | 32.2 | 8 | other:attack/1=121.5, other:attack/2=79.4, spell:1760=31.7, spell:8639/4=9.3, spell:14278=9.2 | {SpellID: 16511} |
+| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:6831 off_hand:6829 | 57.1 | 9 | other:attack/1=126.4, other:attack/2=86.4, spell:16511=39.5, spell:14278=8.8, spell:8640/4=7.7 | - |
+| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:2164 off_hand:9359 | 65.8 | 10 | other:attack/1=105.7, other:attack/2=82.8, spell:16511=42.1, spell:14278=8.7, spell:8640/4=7.7 | - |
+| 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:2163 off_hand:6660 | 86.0 | 9 | other:attack/2=149.0, other:attack/1=138.4, spell:16511=42.1, spell:14278=8.7, spell:11273/4=7.6 | - |
+| 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:22802 off_hand:23054 | 154.9 | 9 | other:attack/1=107.9, other:attack/2=72.1, spell:16511=41.5, spell:14278=8.7, spell:11275/4=7.4 | - |
 
 ## Learned but unused (informational)
 
@@ -110,19 +110,19 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 20
 
 - Backstab (spell 2590)
+- Eviscerate (spell 6761)
 - Garrote (spell 703)
 - Gouge (spell 1777)
 - Kick (spell 1766)
-- Rupture (spell 1943)
 - Serrated Blades (spell 461327)
 
 ### Level 30
 
 - Backstab (spell 2591)
+- Eviscerate (spell 6762)
 - Garrote (spell 8632)
 - Gouge (spell 1777)
 - Kick (spell 1767)
-- Rupture (spell 8639)
 - Serrated Blades (spell 461327)
 
 ### Level 38
@@ -131,7 +131,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Garrote (spell 8633)
 - Gouge (spell 8629)
 - Kick (spell 1767)
-- Rupture (spell 8640)
 - Serrated Blades (spell 461327)
 - Sinister Strike (spell 8621)
 
@@ -141,7 +140,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Garrote (spell 8633)
 - Gouge (spell 8629)
 - Kick (spell 1767)
-- Rupture (spell 8640)
 - Serrated Blades (spell 461327)
 - Sinister Strike (spell 8621)
 
@@ -151,7 +149,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Garrote (spell 11289)
 - Gouge (spell 11285)
 - Kick (spell 1768)
-- Rupture (spell 11273)
 - Serrated Blades (spell 461327)
 - Sinister Strike (spell 11293)
 
@@ -161,7 +158,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
-- Rupture (spell 11275)
 - Serrated Blades (spell 461327)
 - Sinister Strike (spell 11294)
 - Test Stab R50 (spell 23959)
