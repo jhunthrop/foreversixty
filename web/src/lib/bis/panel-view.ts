@@ -9,7 +9,7 @@
 // cohesive modules over one page that both computes and renders 17 slots x N bands).
 import type { LootFile } from '../sim/loot';
 import { statLabelForSpec } from '../sim/weights-display';
-import { bisCopy } from './copy';
+import { bisCopy, tankCopy } from './copy';
 import {
   bandEntry,
   changedSinceBand,
@@ -36,6 +36,7 @@ import type { ItemTooltipModel } from '../items/tooltip';
 import type { Slot } from '../planner/types';
 import { hitCapLine, type HitCapLine } from './hit-cap';
 import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
+import { slotScoreUnitFor, tankHeadlineForBand, type SlotScoreUnit, type TankHeadline } from './tank-view';
 
 /** The two ranker-own `swap_note` templates (`sim/cmd/leveling-bis/report.go`'s own
  *  `fmt.Sprintf` calls): "confirmed by the sim against X (id N): kept the pick, A vs B set
@@ -103,8 +104,10 @@ function runnerUpNameFromSwapNote(note: string): string | undefined {
 function evidenceLineFor(
   swapNote: string | undefined,
   dpsDelta: number | null | undefined,
+  unit: SlotScoreUnit,
 ): string | undefined {
   if (swapNote === undefined) return undefined;
+  if (unit === 'tank_score') return tankEvidenceLineFor(swapNote, dpsDelta);
   if (dpsDelta !== undefined && dpsDelta !== null) {
     const runnerUpName = runnerUpNameFromSwapNote(swapNote);
     if (runnerUpName !== undefined) return bisCopy.evidenceLineDelta(runnerUpName, dpsDelta);
@@ -115,14 +118,24 @@ function evidenceLineFor(
     : bisCopy.evidenceLine(parsed.itemName, parsed.pickDps, parsed.altDps);
 }
 
+/** A tank band's evidence line: score points only, from the row's own `dps_delta`. The
+ *  swap note's absolute figures are not parsed -- they are tank-score points, and the DPS
+ *  templates would mislabel them. */
+function tankEvidenceLineFor(swapNote: string, scoreDelta: number | null | undefined): string | undefined {
+  if (scoreDelta === undefined || scoreDelta === null) return undefined;
+  const runnerUpName = runnerUpNameFromSwapNote(swapNote);
+  return runnerUpName === undefined ? undefined : tankCopy.evidenceLineDelta(runnerUpName, scoreDelta);
+}
+
 /** The main pick's own verified-glyph title -- the default "confirmed by a Top Gear pass"
  *  copy unless the pick carries `sim_dps` and no `swap_note` (a sim-decided row with no
  *  swap narrative to tell -- a trinket/proc/weapon-pair tournament winner), which names its
  *  own real number instead (spec item 1's second rule). */
-function verifiedGlyphTitleFor(row: BisSlot): string | undefined {
-  return row.swap_note === undefined && row.sim_dps !== undefined
-    ? bisCopy.simDpsVerifiedTitle(row.sim_dps)
-    : undefined;
+function verifiedGlyphTitleFor(row: BisSlot, unit: SlotScoreUnit): string | undefined {
+  if (row.swap_note !== undefined || row.sim_dps === undefined) return undefined;
+  return unit === 'tank_score'
+    ? tankCopy.simScoreVerifiedTitle(row.sim_dps)
+    : bisCopy.simDpsVerifiedTitle(row.sim_dps);
 }
 
 /** This slot's row at `band` in `file`/`faction`, or `undefined` when the band itself has
@@ -232,6 +245,8 @@ export interface AlternativeView {
   sourceKind: SourceCell['kind'];
   sourceDetail: string;
   dpsDelta: number;
+  /** The unit `dpsDelta` is in; absent means DPS (a tank band's is tank-score points). */
+  unit?: SlotScoreUnit;
   /** `BisAlternative.verified` -- true for the one alternative (per slot, at most) the
    *  ranker's own verify pass actually simmed against the pick, whose `dpsDelta` is real
    *  sim output rather than a score estimate (wow-player fix round 1: label it with the
@@ -308,6 +323,7 @@ function buildAlternativeView(
   lootFile: LootFile & Partial<LootQuestsFile>,
   tooltipFor: (itemId: number) => ItemTooltipModel | undefined,
   band: number,
+  unit: SlotScoreUnit,
 ): AlternativeView {
   const badgeLabel = sourceBadgeLabel({ source_kind: alt.source_kind }, faction);
   const cell = resolveSourceCell(
@@ -324,6 +340,7 @@ function buildAlternativeView(
     sourceKind: cell.kind,
     sourceDetail: describeSourceCell(cell),
     dpsDelta: alt.dps_delta,
+    unit,
     verified: alt.verified,
     metaLabel:
       model === undefined
@@ -346,6 +363,7 @@ function buildRowView(
   bands: readonly number[],
   mainHandItemName: string | undefined,
   isFirstInGroupThisBand: boolean,
+  unit: SlotScoreUnit,
 ): RowView {
   if (isMissingSlot(row) || !hasKnownSource(row)) {
     // A missing slot (`isMissingSlot`) never published an `empty_reason` at all -- the
@@ -374,11 +392,11 @@ function buildRowView(
     keyStatsLine: model && model.stats.length > 0 ? model.stats.slice(0, 4).join(', ') : undefined,
     verified: row.verified,
     alternatives: (row.alternatives ?? []).map((alt) =>
-      buildAlternativeView(alt, faction, lootFile, tooltipFor, band),
+      buildAlternativeView(alt, faction, lootFile, tooltipFor, band, unit),
     ),
     replacedName: replacedBySlot.get(row.slot),
-    evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta),
-    verifiedGlyphTitle: verifiedGlyphTitleFor(row),
+    evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta, unit),
+    verifiedGlyphTitle: verifiedGlyphTitleFor(row, unit),
     effectUnmodelled: row.effect_unmodelled,
     notSimChecked: row.sim_status === 'not_in_sim',
     lowValue: row.low_value,
@@ -461,6 +479,9 @@ export interface ScaleRow {
   dpsPerPoint?: number;
   /** `error`, on the same normalized divisor as `scaleFactor`. */
   scaleError: number;
+  /** The word after `dpsPerPoint`: "DPS", or "score" on a tank band (`dpsPerPoint` is then
+   *  raw tank score per point). */
+  perPointUnit: string;
   /** `false` greys this row out on the page and shows `bisCopy.weightsNotSignificant`
    *  instead of its own scale factor -- the row itself is never dropped (tenet 4). */
   significant: boolean;
@@ -479,6 +500,7 @@ function buildScaleRows(
   weights: readonly BisStatWeight[],
   spec: string,
   byStat: ReadonlyMap<string, ScaleFactors>,
+  perPointUnit: string,
 ): ScaleRow[] {
   const perPoint = weights.filter((w) => !isHasteStat(w.stat));
   const maxScale = Math.max(...perPoint.map((w) => byStat.get(w.stat)?.scaleFactor ?? 0), 0.0001);
@@ -492,6 +514,7 @@ function buildScaleRows(
         scaleFactor: factors.scaleFactor,
         dpsPerPoint: factors.dpsPerPoint,
         scaleError: factors.scaleError,
+        perPointUnit,
         significant: !(w.insignificant ?? false),
         barPercent: Math.min(100, Math.max(4, (factors.scaleFactor / maxScale) * 100)),
         ratingFactorTitle:
@@ -526,6 +549,17 @@ function hasteCaptionFor(
   const scaleFactor = publishedHasteScaleFactor ?? byStat.get(hasteRow.stat)?.scaleFactor;
   if (scaleFactor === undefined) return undefined;
   return bisCopy.weightsHasteCaption(scaleFactor, !hasteOnItems);
+}
+
+const DPS_UNIT_WORD = 'DPS';
+
+function perPointUnitFor(unit: SlotScoreUnit): string {
+  return unit === 'tank_score' ? tankCopy.scoreWord : DPS_UNIT_WORD;
+}
+
+/** The rail's first line, naming the unit a point of stat is worth in. */
+function scaleNoteFor(topLabel: string, unit: SlotScoreUnit): string {
+  return unit === 'tank_score' ? tankCopy.weightsScaleNote(topLabel) : bisCopy.weightsScaleNote(topLabel);
 }
 
 /** One band's worth of `.paperdoll` data: every row, the centre column's numbers, and the
@@ -567,6 +601,11 @@ export interface BandInfo {
   /** This band's own wearable-slot denominator (spec §4.B/§4.E) -- 17 minus the off hand
    *  under a two-hander, minus every still-empty trinket slot, computed from `rows`. */
   totalSlots: number;
+  /** The unit this band's slot figures and per-point weights are in. */
+  scoreUnit?: SlotScoreUnit;
+  /** A tank band's four headline figures, shown in place of `setDps`; `undefined` for a
+   *  DPS band (`tankHeadlineForBand`). */
+  tank?: TankHeadline | undefined;
 }
 
 export interface PanelViewDeps {
@@ -590,6 +629,7 @@ export function bandInfosFor(
   return bands.flatMap((band, bandIndex): BandInfo[] => {
     const bandData = bandEntry(file, band, faction, deps.preset);
     if (bandData === undefined) return [];
+    const scoreUnit = slotScoreUnitFor(bandData);
     const changed = changedSinceBand(file, band, faction, deps.preset);
     const replacedBySlot = new Map<string, string | undefined>(
       (changed ?? [])
@@ -633,6 +673,7 @@ export function bandInfosFor(
         bands,
         mainHandItemName,
         groupFirstSlot.get(SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot) === row.slot,
+        scoreUnit,
       ),
     );
     // The list's own "N / total wearable slots" denominator (spec §4.B, reused by §4.E's
@@ -664,13 +705,16 @@ export function bandInfosFor(
       weightsReason !== null
         ? { byStat: new Map<string, ScaleFactors>(), anchorStat: '' }
         : computeScaleFactors(bandData.weights, referenceDpsPerPoint, bandData.scale_reference_stat ?? null);
-    const scaleRows = weightsReason !== null ? [] : buildScaleRows(bandData.weights, deps.spec, byStat);
+    const scaleRows =
+      weightsReason !== null
+        ? []
+        : buildScaleRows(bandData.weights, deps.spec, byStat, perPointUnitFor(scoreUnit));
     const scaleNoteLine =
       weightsReason !== null
         ? bisCopy.weightsUnmeasuredLine
         : anchorStat === ''
           ? bisCopy.weightsUnmeasuredLine
-          : bisCopy.weightsScaleNote(statLabelForSpec(anchorStat, deps.spec));
+          : scaleNoteFor(statLabelForSpec(anchorStat, deps.spec), scoreUnit);
     const hasteCaptionLine =
       weightsReason !== null
         ? undefined
@@ -700,6 +744,8 @@ export function bandInfosFor(
         hasteCaptionLine,
         hitCap: hitCapLine(bandData.hit_to_cap),
         totalSlots,
+        scoreUnit,
+        tank: tankHeadlineForBand(bandData),
       },
     ];
   });

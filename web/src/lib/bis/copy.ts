@@ -426,3 +426,39 @@ export function joinWithAnd(parts: readonly string[]): string {
   if (parts.length === 1) return parts[0]!;
   return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
 }
+
+/** The tank band's own words (stage 4 of the tanks job). A tank band's per-slot figures
+ *  (`sim_dps`, `dps_delta`) and its per-point reference are tank-score points -- a composite
+ *  of mitigation, risk and threat -- so they read "score", never "DPS". */
+export const tankCopy = {
+  /** The neutral unit word for every tank-score figure. */
+  scoreWord: 'score',
+  effectiveHealthLabel: 'Effective health',
+  dtpsLabel: 'Damage taken per second',
+  chanceOfDeathLabel: 'Chance of death',
+  tpsLabel: 'Threat per second',
+  effectiveHealthTitle: 'Hit points against the boss profile.',
+  dtpsTitle: 'Damage taken per second at the boss profile. Lower is better.',
+  chanceOfDeathTitle: 'Chance of dying during the simulated boss fight. Lower is better.',
+  tpsTitle: 'Threat per second while tanking the boss profile.',
+  tmiTitle:
+    'Theck-Meloree Index: a risk index for the damage spikes a tank takes. Lower means a smoother, safer fight.',
+  /** The tiny non-zero chance of death, so it never rounds to a misleading 0.0%. */
+  chanceOfDeathBelowResolution: '<0.1%',
+  secondaryLine: (tmi: string, ownDps: string): string => `TMI ${tmi} · own damage ${ownDps} DPS`,
+  /** "Against the boss profile, level 60 Troll, 31 talent points". */
+  figureLine: (characterLevel: number, race: string, talentPoints: number): string =>
+    `Against the boss profile, level ${characterLevel} ${capitalise(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
+  /** The runner-up row's gap-from-the-pick line, in score points. */
+  alternativeGapLabel: (scoreDelta: number): string =>
+    Math.abs(scoreDelta) < 0.05
+      ? 'same score'
+      : `${scoreDelta > 0 ? '+' : '−'}${Math.abs(scoreDelta).toFixed(1)} score`,
+  evidenceLineDelta: (itemName: string, delta: number): string =>
+    `Sim-checked against ${itemName}: +${delta.toFixed(1)} score`,
+  simScoreVerifiedTitle: (score: number): string =>
+    `Confirmed by a full sim: ${score.toFixed(1)} score with this item`,
+  weightsScaleNote: (topLabel: string): string =>
+    `Per point of stat, normalized to ${topLabel} = 1.00, with score per point and the sim error.`,
+  indexSpecSummary: (effectiveHealth: string): string => `Level 60: ${effectiveHealth} effective health`,
+} as const;
