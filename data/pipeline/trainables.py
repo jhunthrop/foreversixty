@@ -17,7 +17,9 @@ ability and is dropped. The client does not list every learnable spell there:
 Unstable Affliction and Hydra Shot have no SkillLineAbility row in build
 1.60.1.70009, yet are gated by a level in `SpellLevels` like any trained spell.
 So a class-family spell (SpellClassSet) with a rank of 1 or more, a level and
-an active shape is also a trainable, tagged `source: "class_spell"`.
+an active shape is also listed, tagged `source: "class_spell"`; the report keeps
+those apart from the learnable ones. Only AcquireMethod 0 rows with a learn
+level above 0 count as learnable: method 3 rows are Season of Discovery runes.
 
 **Ranks.** An ability is every spell sharing a name within the class, merged
 with every `SupercedesSpell` link: the client reuses one id chain per rank for
@@ -35,6 +37,7 @@ import logging
 import re
 import shutil
 from collections import defaultdict
+from collections.abc import Callable
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -64,6 +67,10 @@ CLASS_SKILL_LINES = frozenset(
         "Elemental Combat", "Enhancement",
     }
 )  # fmt: skip
+
+#: SkillLineAbility.AcquireMethod of a spell a player learns. Method 3 rows are
+#: Season of Discovery runes (learn level 0 or 1), which Forever does not teach.
+LEARN_ACQUIRE_METHOD = 0
 
 #: Skill line reported for a spell found only through its class family.
 FAMILY_SKILL_LINE = ""
@@ -135,7 +142,9 @@ def _skill_line_names(raw: Path) -> dict[int, str]:
     }
 
 
-def _ability_candidates(raw: Path, family_by_spell: dict[int, int]) -> list[_Candidate]:
+def _ability_candidates(
+    raw: Path, family_by_spell: dict[int, int], level_of: Callable[[int], int]
+) -> list[_Candidate]:
     lines = _skill_line_names(raw)
     found: list[_Candidate] = []
     for row in read_csv(raw / "SkillLineAbility.csv"):
@@ -143,6 +152,8 @@ def _ability_candidates(raw: Path, family_by_spell: dict[int, int]) -> list[_Can
         if line is None:
             continue
         spell_id = int(row["Spell"])
+        if int(row["AcquireMethod"] or 0) != LEARN_ACQUIRE_METHOD or level_of(spell_id) < 1:
+            continue
         slug = _class_from_mask(int(row["ClassMask"])) or _SLUG_BY_FAMILY.get(
             family_by_spell.get(spell_id, -1)
         )
@@ -313,10 +324,11 @@ def build_trainables(build: str, raw: Path) -> list[ClassTrainables]:
     family_by_spell = _family_by_spell(raw)
     abilities = [
         c
-        for c in _ability_candidates(raw, family_by_spell)
+        for c in _ability_candidates(raw, family_by_spell, tables.level)
         if not is_excluded_name(tables.names.get(c.spell_id, ""))
     ]
-    known = {c.spell_id for c in abilities}
+    # A spell with any SkillLineAbility row (a rune included) is never a no-learn-row extra.
+    known = {int(row["Spell"]) for row in read_csv(raw / "SkillLineAbility.csv")}
     extras = [
         c
         for c in _family_candidates(

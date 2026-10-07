@@ -16,21 +16,23 @@ Build 1.60.1.70009. Question: which abilities does a Forever player learn that t
 
 ## Counts
 
+Corrected 2026-10-07: a trainable is a `SkillLineAbility` row with `AcquireMethod` 0 and a `SpellLevels` learn level above 0. `AcquireMethod` 3 rows are Season of Discovery runes (Lava Lash, Dispersion, Raging Blow, Divine Storm, Saber Slash, Icy Veins at level 1 or 0) and are excluded. `class_spell` fallback entries stay in the artefact and appear in each golden's "In the client, no learn row" subsection (Unstable Affliction, Hydra Shot); they are not counted.
+
 | Class | Active trainables | Not registered |
 |---|---|---|
-| Hunter | 58 | 40 |
-| Mage | 75 | 55 |
-| Warlock | 65 | 41 |
-| Paladin | 57 | 44 |
-| Warrior | 51 | 21 |
-| Druid | 64 | 44 |
-| Priest | 67 | 57 |
-| Shaman | 64 | 42 |
-| Rogue | 63 | 33 |
+| Hunter | 49 | 31 |
+| Mage | 58 | 38 |
+| Warlock | 47 | 25 |
+| Paladin | 46 | 34 |
+| Warrior | 40 | 11 |
+| Druid | 54 | 35 |
+| Priest | 53 | 45 |
+| Shaman | 54 | 34 |
+| Rogue | 27 | 12 |
 
 ## Reading the list
 
-The comparison is by spell id, so it over-reports. Many entries are the level-1 rune-style copy of an ability (`SkillLineAbility.AcquireMethod` 3: Raging Blow, Starsurge, Chimera Shot, Lava Lash, Mind Spike, Chaos Bolt) which the engine may register under another id or as a talent-granted ability. Before treating any row below as missing, check the class package for the ability by name. The ids in the goldens are the ones to grep for.
+The comparison is by spell id, so it over-reports. Some entries may still be an ability the engine registers under another id or as a talent-granted ability. Before treating any row below as missing, check the class package for the ability by name. The ids in the goldens are the ones to grep for.
 
 ## Unregistered active trainables that plausibly affect DPS
 
@@ -50,7 +52,8 @@ Pure utility (Polymorph, Blink, teleports and portals, conjure spells, resurrect
 
 ## Follow-ups
 
-- Rune-style ids versus the ids the engine registers: a name-based second pass in the conformance report would remove the false positives.
+- Ids versus names: a name-based second pass in the conformance report would remove any remaining false positives.
+- The per-class lists below predate the rune correction; runes (Lava Lash, Dispersion, Raging Blow, Divine Storm, Saber Slash, Mind Spike, Chaos Bolt, Chimera Shot and the like) are no longer in the goldens. The goldens are authoritative.
 - The `class_spell` heuristic could be replaced by whatever the client uses to teach Unstable Affliction and Hydra Shot (a trainer table the pipeline does not fetch).
 - `manifest.json` was not refreshed (the lane may not commit it); the next `simconst` or `levels` run will cover `trainables/`.
 - `tests/test_apl.py::test_every_spell_the_rotations_name_exists_with_that_rank` fails on this branch for druid-feral spell 1322605. It reads only curated rotations and spellconst, which this lane did not touch.
