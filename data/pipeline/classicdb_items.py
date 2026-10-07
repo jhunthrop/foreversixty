@@ -60,6 +60,7 @@ from pipeline.normalize.gear import (
     TWO_HAND_INVENTORY_TYPES,
     is_junk_name,
     is_weapon_row,
+    percent_stats_of,
     weapon_type_for,
 )
 from pipeline.proficiency import ARMOR, can_equip
@@ -970,7 +971,8 @@ def to_gear_item(
     )
     icon, icon_source = resolve_icon_name(base_icon, item.id, fork_icons, wowhead_icons)
     stats = planner_stats(item)
-    for key, amount in equip_stats(item, spells).items():
+    equipped = equip_stats(item, spells)
+    for key, amount in equipped.items():
         stats[key] = stats.get(key, 0) + amount
     return GearItem(
         id=item.id,
@@ -983,6 +985,7 @@ def to_gear_item(
         item_level=item.item_level,
         armor=item.armor if item.class_id == ARMOR else 0,
         stats=stats,
+        percent_stats=percent_stats_of(equipped),
         damage_min=item.damage_min if is_weapon else 0,
         damage_max=item.damage_max if is_weapon else 0,
         speed=speed if is_weapon else 0.0,

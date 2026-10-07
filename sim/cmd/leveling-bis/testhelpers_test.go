@@ -8,6 +8,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/wowsims/classic/sim/core"
 )
 
 // identityLayout is a talentLayout whose Reposition is the identity
@@ -66,6 +67,8 @@ type fakeEngine struct {
 	StdErrFunc    func(req api.SimRequest) float64
 	// FailWeights, if true, makes RunWeights return an error.
 	FailWeights bool
+	// HitProfile is what HitProfile returns.
+	HitProfile core.HitProfile
 
 	// WeightsFunc, when set, computes RunWeights' return value
 	// directly from the full request rather than
@@ -174,6 +177,10 @@ func (f *fakeEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64,
 		return mean, stdErr, nil
 	}
 	return mean, f.DefaultStdErr, nil
+}
+
+func (f *fakeEngine) HitProfileFor(api.SimRequest) (core.HitProfile, error) {
+	return f.HitProfile, nil
 }
 
 func (f *fakeEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {

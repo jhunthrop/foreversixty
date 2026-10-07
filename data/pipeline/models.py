@@ -261,6 +261,16 @@ class GearItem(BaseModel):
     #: next time `normalize` runs, the same way any other hotfix promotion
     #: works. False (the default) for every other row, client or wowhead alike.
     client_unconfirmed: bool = False
+    #: ratings lane, 2026-10-07: the part of each rating-family `stats` entry
+    #: (hit, crit, dodge, parry, block, defense) that an on-equip spell states
+    #: as a LITERAL PERCENT (Fury Visor's 1 hit / 1 crit). Every other
+    #: rating-family amount in `stats` is a combat-rating point count (Lionheart
+    #: Helm's 20 hit / 28 crit) that `gametables/combatratings.txt` divides down
+    #: to a percent (`pipeline/simdb/ratings.py`). A consumer converting `stats`
+    #: to percent divides `stats[key] - percent_stats[key]` by the factor and
+    #: adds `percent_stats[key]` back unchanged. Empty for a wowhead row (all
+    #: ratings) and for every item with no aura-sourced rating-family stat.
+    percent_stats: dict[str, int] = {}
     #: classicdb-fidelity lane, 2026-09-30: where `icon` actually came from --
     #: `"client"` (the client's own `IconFileDataID`, resolved through
     #: `ManifestInterfaceData`), `"fork"` (the engine fork's own

@@ -1256,3 +1256,50 @@ def test_a_literal_zero_float_column_is_eras_padding_not_a_disagreement():
     spell, misc = _spell_and_misc()
     row = _effect_row(EffectBasePoints="165", EffectBasePointsF="0")
     assert load_spell_text(spell, misc, [row], []).describe(10) == "165 dmg"
+
+
+def _single_aura_effects(item_id: int, aura: int, points: str) -> EffectIndex:
+    return EffectIndex(
+        [{"ParentItemID": str(item_id), "SpellID": "900", "TriggerType": "1"}],
+        [],
+        [
+            {
+                "SpellID": "900",
+                "Effect": "6",
+                "EffectAura": str(aura),
+                "EffectBasePointsF": points,
+                "EffectMiscValue_0": "0",
+            }
+        ],
+        load_spell_text([], [], [], []),
+    )
+
+
+def _first_fixture_item(rows, effects):
+    items = build_class_items(
+        rows,
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+        effects=effects,
+    )
+    item_id = int(rows[0]["ID"])
+    return next(i for record in items for i in record.items if i.id == item_id)
+
+
+def test_percent_stats_is_empty_for_an_itemsparse_rating():
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    rows[0]["StatModifier_bonusStat_0"] = "31"  # ITEM_MOD_HIT_RATING
+    rows[0]["StatModifier_bonusAmount_0"] = "20"
+    item = _first_fixture_item(rows, None)
+    assert item.stats["hit"] == 20
+    assert item.percent_stats == {}
+
+
+def test_percent_stats_names_an_on_equip_aura_hit_as_a_literal_percent():
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    item_id = int(rows[0]["ID"])
+    item = _first_fixture_item(rows, _single_aura_effects(item_id, 54, "5"))
+    assert item.stats["hit"] == 5
+    assert item.percent_stats == {"hit": 5}

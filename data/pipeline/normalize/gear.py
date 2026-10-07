@@ -346,6 +346,13 @@ def is_weapon_row(item_class_id: int, inventory_type: int) -> bool:
 RATING_FAMILY_STAT_KEYS = frozenset({"hit", "crit", "dodge", "parry", "block", "defense"})
 
 
+def percent_stats_of(equip_stats: dict[str, int]) -> dict[str, int]:
+    """The rating-family entries of an on-equip spell's stats: literal
+    percentages, recorded as `GearItem.percent_stats` so a consumer never
+    divides them by a rating factor."""
+    return {key: amount for key, amount in equip_stats.items() if key in RATING_FAMILY_STAT_KEYS}
+
+
 #: `resolve_required_level`'s item-level-proxy offset: `sim/leveling.
 #: ItemLevelProxyRequiredLevel`'s own formula, `item_level - 5`, kept as a
 #: named constant here rather than inlined so the Go file's comment ("the
@@ -866,8 +873,10 @@ def build_class_items(
         subclass_id = int_column(item_row, "SubclassID")
         item_level = int_column(row, "ItemLevel")
         armor, stats = resolve_item_values(row, item_row, curves)
+        percent_stats: dict[str, int] = {}
         if effects is not None:
             _merge_effect_stats(stats, item_id, display_name, effects)
+            percent_stats = percent_stats_of(effects.stats(item_id))
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         effect_text = "" if effects is None else effects.text(item_id)
         if not _has_gear_value(armor, stats, item_class_id, subclass_id, effect_text):
@@ -894,6 +903,7 @@ def build_class_items(
             item_level=item_level,
             armor=armor,
             stats=stats,
+            percent_stats=percent_stats,
             damage_min=weapon.damage_min,
             damage_max=weapon.damage_max,
             speed=weapon.speed,
