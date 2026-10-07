@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T18:49:29Z",
+  "generated_at": "2026-10-07T19:23:47Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -534,8 +534,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.641464957,
-      "verify_run_seconds": 1.662571555,
+      "weights_run_seconds": 2.633944586,
+      "verify_run_seconds": 1.694992694,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1166,8 +1166,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.641464957,
-      "verify_run_seconds": 1.61941368,
+      "weights_run_seconds": 2.633944586,
+      "verify_run_seconds": 1.618536628,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1891,8 +1891,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.841878138,
-      "verify_run_seconds": 1.896369758,
+      "weights_run_seconds": 2.904634863,
+      "verify_run_seconds": 1.873662909,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2602,8 +2602,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.841878138,
-      "verify_run_seconds": 1.819988608,
+      "weights_run_seconds": 2.904634863,
+      "verify_run_seconds": 1.84236845,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3278,8 +3278,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.139064625,
-      "verify_run_seconds": 2.026229616,
+      "weights_run_seconds": 3.167152375,
+      "verify_run_seconds": 2.059306767,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3955,8 +3955,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.139064625,
-      "verify_run_seconds": 1.996560604,
+      "weights_run_seconds": 3.167152375,
+      "verify_run_seconds": 1.999446763,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4622,8 +4622,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.210808398,
-      "verify_run_seconds": 2.158681192,
+      "weights_run_seconds": 3.188456268,
+      "verify_run_seconds": 2.177051099,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5306,8 +5306,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.210808398,
-      "verify_run_seconds": 2.07993821,
+      "weights_run_seconds": 3.188456268,
+      "verify_run_seconds": 2.1084424840000002,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5744,7 +5744,7 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.6608977635056261
+              "dps_delta": -1.6608977635056272
             }
           ]
         },
@@ -6015,8 +6015,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.130024361,
-      "verify_run_seconds": 2.2774945620000002,
+      "weights_run_seconds": 3.174214444,
+      "verify_run_seconds": 2.318084518,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6725,8 +6725,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.130024361,
-      "verify_run_seconds": 2.190187202,
+      "weights_run_seconds": 3.174214444,
+      "verify_run_seconds": 2.247834449,
       "coverage": {
         "back": {
           "eligible": 450,

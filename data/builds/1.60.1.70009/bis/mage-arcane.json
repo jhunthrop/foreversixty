@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T18:51:36Z",
+  "generated_at": "2026-10-07T19:25:55Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.992447786,
-      "verify_run_seconds": 0.664416671,
+      "weights_run_seconds": 0.988830334,
+      "verify_run_seconds": 0.670693438,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1179,8 +1179,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.992447786,
-      "verify_run_seconds": 0.696461081,
+      "weights_run_seconds": 0.988830334,
+      "verify_run_seconds": 0.692384711,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1880,8 +1880,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.021529419,
-      "verify_run_seconds": 0.731738516,
+      "weights_run_seconds": 1.071913115,
+      "verify_run_seconds": 0.717747923,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2588,8 +2588,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.021529419,
-      "verify_run_seconds": 0.732973786,
+      "weights_run_seconds": 1.071913115,
+      "verify_run_seconds": 0.761724261,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3261,8 +3261,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.337161752,
-      "verify_run_seconds": 0.799363626,
+      "weights_run_seconds": 1.313086417,
+      "verify_run_seconds": 0.780176417,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3932,8 +3932,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.337161752,
-      "verify_run_seconds": 0.794544214,
+      "weights_run_seconds": 1.313086417,
+      "verify_run_seconds": 0.792319106,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4628,8 +4628,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.316168072,
-      "verify_run_seconds": 0.966644697,
+      "weights_run_seconds": 1.345559757,
+      "verify_run_seconds": 1.011964141,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5318,8 +5318,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.316168072,
-      "verify_run_seconds": 0.998504845,
+      "weights_run_seconds": 1.345559757,
+      "verify_run_seconds": 1.013484093,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6053,8 +6053,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.36788301,
-      "verify_run_seconds": 0.914343492,
+      "weights_run_seconds": 1.3903852890000001,
+      "verify_run_seconds": 0.952724084,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6786,8 +6786,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.36788301,
-      "verify_run_seconds": 0.920786894,
+      "weights_run_seconds": 1.3903852890000001,
+      "verify_run_seconds": 0.905120583,
       "coverage": {
         "back": {
           "eligible": 450,
