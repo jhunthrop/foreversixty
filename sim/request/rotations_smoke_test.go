@@ -128,12 +128,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"mage-arcane": {
 		"{SpellID: 1239700}": "Arcane Blast is a talent (sim/mage/arcane_blast.go, Forever's tree); this build takes none.",
+		"{SpellID: 400573}":  "Arcane Blast's stacking buff, which the two-Blast gate reads, only exists with its talent; this build takes none.",
 		"{SpellID: 400589}":  "Missile Barrage's buff only exists with its talent (sim/mage/missile_barrage.go); this build takes none.",
 		"{SpellID: 12042}":   "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
 		"{SpellID: 12043}":   "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
-	},
-	"mage-frost": {
-		"{SpellID: 1239700}": "Arcane Blast is a talent (sim/mage/arcane_blast.go, Forever's tree); this build takes none.",
 	},
 	"mage-fire": {
 		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
