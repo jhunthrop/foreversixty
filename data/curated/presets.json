@@ -1,0 +1,336 @@
+{
+  "sources": [
+    {
+      "label": "This site, build 1.60.1.70009's items.json, spells.json, talents and simconsumes.json",
+      "url": "https://foreversixty.gg/data/1.60.1.70009/items.json",
+      "kind": "site"
+    },
+    {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard"
+    }
+  ],
+  "notes": "Named sim presets the BiS ranker runs a level-60 band under besides the bare character. Every id is in sim/request's vocabulary (buffs and debuffs from the engine's four buff messages, consumables from its Consumes message); a test refuses an unknown one. The class kit (sim/leveling KitBuffs and KitConsumes) is layered on top and wins any consumable slot it holds.",
+  "presets": {
+    "raid": {
+      "label": "Raid-ready, Phase 1",
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is the engine's main-hand imbue Windfury. Nothing from Ahn'Qiraj or Naxxramas is used.",
+      "buffs": [
+        {
+          "id": "arcane_brilliance",
+          "label": "Arcane Intellect",
+          "reason": "Any Phase 1 raid has a mage; intellect for every mana user."
+        },
+        {
+          "id": "gift_of_the_wild",
+          "label": "Mark of the Wild",
+          "reason": "Any raid has a druid; all stats and armor. Plain version: Forever's Restoration tree has no Improved Mark of the Wild."
+        },
+        {
+          "id": "power_word_fortitude",
+          "label": "Power Word: Fortitude",
+          "reason": "Any raid has a priest; stamina. Plain version: Forever's Discipline tree has no Improved Power Word: Fortitude."
+        },
+        {
+          "id": "divine_spirit",
+          "label": "Divine Spirit",
+          "reason": "Spirit, a Discipline talent a Phase 1 raid priest takes."
+        },
+        {
+          "id": "blessing_of_might",
+          "label": "Blessing of Might",
+          "reason": "Attack power from a raid paladin. Plain version: Forever's Holy tree has no Improved Blessing of Might."
+        },
+        {
+          "id": "blessing_of_wisdom",
+          "label": "Blessing of Wisdom",
+          "reason": "Mana per five seconds from a raid paladin. Plain version: no improved form in the live trees."
+        },
+        {
+          "id": "battle_shout",
+          "label": "Battle Shout",
+          "reason": "Attack power from a raid warrior. Plain version: Forever's warrior trees have no Improved Battle Shout."
+        },
+        {
+          "id": "trueshot_aura",
+          "label": "Trueshot Aura",
+          "reason": "Attack power from a raid hunter, a Marksmanship talent that exists in the live tree."
+        },
+        {
+          "id": "leader_of_the_pack",
+          "label": "Leader of the Pack",
+          "reason": "Melee and ranged crit from a raid feral druid, a talent that exists in the live tree."
+        },
+        {
+          "id": "moonkin_aura",
+          "label": "Moonkin Aura",
+          "reason": "Crit from a raid balance druid; the live Balance tree has Moonkin Form and the engine models the aura as a raid buff."
+        },
+        {
+          "id": "sanctity_aura",
+          "label": "Sanctity Aura",
+          "reason": "Holy damage taken and dealt, from a raid retribution paladin; the engine models it as a raid buff."
+        },
+        {
+          "id": "strength_of_earth_totem",
+          "label": "Strength of Earth Totem",
+          "reason": "Strength from a raid shaman. Plain version: the live shaman trees have no Enhancing Totems."
+        },
+        {
+          "id": "grace_of_air_totem",
+          "label": "Grace of Air Totem",
+          "reason": "Agility from a raid shaman. Plain version, same reason."
+        },
+        {
+          "id": "mana_spring_totem",
+          "label": "Mana Spring Totem",
+          "reason": "Mana per five seconds from a raid shaman. Plain version: Restorative Totems is a different talent and is not assumed."
+        }
+      ],
+      "debuffs": [
+        {
+          "id": "curse_of_elements",
+          "label": "Curse of the Elements",
+          "reason": "Forever's all-magic curse, which the engine carries now; a raid warlock keeps it up."
+        },
+        {
+          "id": "sunder_armor",
+          "label": "Sunder Armor",
+          "reason": "Five stacks, the engine applies them with its own periodic application; every raid warrior or druid brings it."
+        },
+        {
+          "id": "faerie_fire",
+          "label": "Faerie Fire",
+          "reason": "Armor from a raid druid."
+        },
+        {
+          "id": "judgement_of_wisdom",
+          "label": "Judgement of Wisdom",
+          "reason": "Mana returns from a raid paladin."
+        },
+        {
+          "id": "judgement_of_light",
+          "label": "Judgement of Light",
+          "reason": "Health returns from a raid paladin; no damage effect, listed because a raid carries it."
+        },
+        {
+          "id": "hunters_mark",
+          "label": "Hunter's Mark",
+          "reason": "Ranged attack power from a raid hunter. Plain version: the live Marksmanship tree has no Improved Hunter's Mark."
+        },
+        {
+          "id": "improved_scorch",
+          "label": "Improved Scorch",
+          "reason": "Fire vulnerability from a raid fire mage; the engine exposes it as a raid debuff and the live Fire tree carries the talent."
+        },
+        {
+          "id": "winters_chill",
+          "label": "Winter's Chill",
+          "reason": "Frost vulnerability from a raid frost mage; the engine exposes it as a raid debuff and the live Frost tree carries the talent."
+        },
+        {
+          "id": "curse_of_recklessness",
+          "label": "Curse of Recklessness",
+          "reason": "Armor reduction from a raid warlock."
+        }
+      ],
+      "consumes": {
+        "groups": {
+          "caster": {
+            "reference_stats": [
+              "spell_power"
+            ],
+            "ids": [
+              {
+                "id": "flask_of_supreme_power",
+                "label": "Flask of Supreme Power",
+                "reason": "Alchemy flask, obtainable at launch (client level 50); the caster flask."
+              },
+              {
+                "id": "greater_arcane_elixir",
+                "label": "Greater Arcane Elixir",
+                "reason": "Spell power, the engine's spell-power elixir slot; client level 47."
+              },
+              {
+                "id": "food_runn_tum_tuber_surprise",
+                "label": "Runn Tum Tuber Surprise",
+                "reason": "Caster food, client level 35."
+              },
+              {
+                "id": "main_hand_imbue:brilliant_wizard_oil",
+                "label": "Brilliant Wizard Oil",
+                "reason": "Spell power oil on the main hand."
+              },
+              {
+                "id": "major_mana_potion",
+                "label": "Major Mana Potion",
+                "reason": "Used on cooldown by the engine when mana allows."
+              },
+              {
+                "id": "conjured_demonic_rune",
+                "label": "Demonic Rune",
+                "reason": "Used on cooldown by the engine, in the engine's conjured slot."
+              }
+            ]
+          },
+          "melee": {
+            "reference_stats": [
+              "attack_power"
+            ],
+            "ids": [
+              {
+                "id": "elixir_of_the_mongoose",
+                "label": "Elixir of the Mongoose",
+                "reason": "Agility and crit; client level 46."
+              },
+              {
+                "id": "juju_power",
+                "label": "Juju Power",
+                "reason": "Strength. The engine's other strength elixir, Elixir of Giants, is not in the 1.60 client's item table, so Juju Power is the one a raid can have."
+              },
+              {
+                "id": "r_o_i_d_s",
+                "label": "R.O.I.D.S.",
+                "reason": "Strength."
+              },
+              {
+                "id": "food_grilled_squid",
+                "label": "Grilled Squid",
+                "reason": "Agility food, client level 35."
+              },
+              {
+                "id": "juju_might",
+                "label": "Juju Might",
+                "reason": "Attack power. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
+              },
+              {
+                "id": "main_hand_imbue:windfury",
+                "label": "Windfury Totem",
+                "reason": "The engine has no Windfury Totem raid buff: it spells the totem as the main-hand imbue Windfury, so the totem takes the main-hand imbue slot."
+              }
+            ],
+            "dual_wield_ids": [
+              {
+                "id": "off_hand_imbue:elemental_sharpening_stone",
+                "label": "Elemental Sharpening Stone",
+                "reason": "Off-hand stone for dual wielders; a single-weapon spec has no free imbue slot after the totem (the engine's main-hand slot), so it gets no stone."
+              }
+            ]
+          },
+          "ranged": {
+            "classes": [
+              "hunter"
+            ],
+            "ids": [
+              {
+                "id": "elixir_of_the_mongoose",
+                "label": "Elixir of the Mongoose",
+                "reason": "Agility and crit; client level 46."
+              },
+              {
+                "id": "juju_power",
+                "label": "Juju Power",
+                "reason": "Strength. The engine's other strength elixir, Elixir of Giants, is not in the 1.60 client's item table, so Juju Power is the one a raid can have."
+              },
+              {
+                "id": "r_o_i_d_s",
+                "label": "R.O.I.D.S.",
+                "reason": "Strength."
+              },
+              {
+                "id": "food_grilled_squid",
+                "label": "Grilled Squid",
+                "reason": "Agility food, client level 35."
+              },
+              {
+                "id": "juju_might",
+                "label": "Juju Might",
+                "reason": "Attack power. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
+              },
+              {
+                "id": "main_hand_imbue:windfury",
+                "label": "Windfury Totem",
+                "reason": "The engine has no Windfury Totem raid buff: it spells the totem as the main-hand imbue Windfury, so the totem takes the main-hand imbue slot."
+              }
+            ]
+          }
+        },
+        "by_class": {
+          "warrior": [
+            {
+              "id": "mighty_rage_potion",
+              "label": "Mighty Rage Potion",
+              "reason": "Warrior rage potion, client level 46."
+            }
+          ],
+          "paladin": [
+            {
+              "id": "major_mana_potion",
+              "label": "Major Mana Potion",
+              "reason": "Mana user among melee."
+            }
+          ],
+          "shaman": [
+            {
+              "id": "major_mana_potion",
+              "label": "Major Mana Potion",
+              "reason": "Mana user among melee."
+            }
+          ],
+          "hunter": [
+            {
+              "id": "major_mana_potion",
+              "label": "Major Mana Potion",
+              "reason": "Mana user among ranged."
+            }
+          ]
+        },
+        "by_spec": {
+          "mage-fire": [
+            {
+              "id": "elixir_of_firepower",
+              "label": "Elixir of Fire Power",
+              "reason": "School power elixir; the engine has no Greater Firepower and the client table has none."
+            }
+          ],
+          "mage-frost": [
+            {
+              "id": "elixir_of_frost_power",
+              "label": "Elixir of Frost Power",
+              "reason": "School power elixir; the client table has no Greater Frost Power."
+            }
+          ],
+          "warlock-destruction": [
+            {
+              "id": "elixir_of_firepower",
+              "label": "Elixir of Fire Power",
+              "reason": "Destruction's rotation is fire-led (Immolate, Conflagrate, Incinerate)."
+            }
+          ],
+          "warlock-affliction": [
+            {
+              "id": "elixir_of_shadow_power",
+              "label": "Elixir of Shadow Power",
+              "reason": "School power elixir."
+            }
+          ],
+          "warlock-demonology": [
+            {
+              "id": "elixir_of_shadow_power",
+              "label": "Elixir of Shadow Power",
+              "reason": "School power elixir."
+            }
+          ],
+          "priest-shadow": [
+            {
+              "id": "elixir_of_shadow_power",
+              "label": "Elixir of Shadow Power",
+              "reason": "School power elixir."
+            }
+          ]
+        }
+      }
+    }
+  }
+}
