@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:15:32Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:36:06Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -559,8 +559,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.459331345,
-      "verify_run_seconds": 1.09707305,
+      "weights_run_seconds": 1.8039222339999998,
+      "verify_run_seconds": 0.866203735,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.459331345,
-      "verify_run_seconds": 1.100005304,
+      "weights_run_seconds": 1.8039222339999998,
+      "verify_run_seconds": 0.865667181,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1913,8 +1913,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.390072041,
-      "verify_run_seconds": 1.172984458,
+      "weights_run_seconds": 1.820048231,
+      "verify_run_seconds": 0.907371671,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2632,8 +2632,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.390072041,
-      "verify_run_seconds": 1.202257038,
+      "weights_run_seconds": 1.820048231,
+      "verify_run_seconds": 0.945427956,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3318,8 +3318,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 2.058854016,
-      "verify_run_seconds": 1.132831206,
+      "weights_run_seconds": 1.5464730869999999,
+      "verify_run_seconds": 0.886610761,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4001,8 +4001,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 2.058854016,
-      "verify_run_seconds": 1.158801891,
+      "weights_run_seconds": 1.5464730869999999,
+      "verify_run_seconds": 0.897017056,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4697,8 +4697,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.009960395,
-      "verify_run_seconds": 1.302739886,
+      "weights_run_seconds": 1.541462519,
+      "verify_run_seconds": 1.014049961,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5399,8 +5399,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.009960395,
-      "verify_run_seconds": 1.308240035,
+      "weights_run_seconds": 1.541462519,
+      "verify_run_seconds": 1.016199667,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6143,8 +6143,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 9.379557458,
-      "verify_run_seconds": 1.306537682,
+      "weights_run_seconds": 7.127239939,
+      "verify_run_seconds": 1.030558024,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6885,8 +6885,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 9.379557458,
-      "verify_run_seconds": 1.3255307969999999,
+      "weights_run_seconds": 7.127239939,
+      "verify_run_seconds": 1.015522516,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:08:44Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:30:52Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.957055979,
-      "verify_run_seconds": 0.667781681,
+      "weights_run_seconds": 0.689376037,
+      "verify_run_seconds": 0.531827263,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1183,8 +1183,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.957055979,
-      "verify_run_seconds": 0.679120015,
+      "weights_run_seconds": 0.689376037,
+      "verify_run_seconds": 0.538805945,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1884,8 +1884,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.929732751,
-      "verify_run_seconds": 0.661613492,
+      "weights_run_seconds": 0.715574327,
+      "verify_run_seconds": 0.52727119,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2588,8 +2588,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.929732751,
-      "verify_run_seconds": 0.674373159,
+      "weights_run_seconds": 0.715574327,
+      "verify_run_seconds": 0.547873217,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3264,8 +3264,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.968114198,
-      "verify_run_seconds": 0.612921677,
+      "weights_run_seconds": 0.722056675,
+      "verify_run_seconds": 0.491165378,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3931,8 +3931,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.968114198,
-      "verify_run_seconds": 0.630519226,
+      "weights_run_seconds": 0.722056675,
+      "verify_run_seconds": 0.512870902,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4621,8 +4621,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.883681515,
-      "verify_run_seconds": 0.731737225,
+      "weights_run_seconds": 0.685603565,
+      "verify_run_seconds": 0.632032636,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4804,7 +4804,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.4328323101413043
+              "dps_delta": -1.432832310141305
             },
             {
               "item_id": 15999,
@@ -5307,8 +5307,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.883681515,
-      "verify_run_seconds": 0.738935769,
+      "weights_run_seconds": 0.685603565,
+      "verify_run_seconds": 0.613940526,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5538,7 +5538,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.75099363648797,
+          "score": 40.75099363648796,
           "verified": true,
           "alternatives": [
             {
@@ -5546,21 +5546,21 @@
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.5065807504676099
+              "dps_delta": -1.5065807504676083
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.310192237148145
+              "dps_delta": -2.3101922371481436
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -2.426726100269765
+              "dps_delta": -2.4267261002697635
             }
           ]
         },
@@ -6033,8 +6033,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.962052107,
-      "verify_run_seconds": 0.746550271,
+      "weights_run_seconds": 0.77069987,
+      "verify_run_seconds": 0.568646678,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6264,7 +6264,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.75099363648797,
+          "score": 40.75099363648796,
           "verified": true,
           "alternatives": [
             {
@@ -6272,21 +6272,21 @@
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.5065807504676099
+              "dps_delta": -1.5065807504676083
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.310192237148145
+              "dps_delta": -2.3101922371481436
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -2.426726100269765
+              "dps_delta": -2.4267261002697635
             }
           ]
         },
@@ -6760,8 +6760,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.962052107,
-      "verify_run_seconds": 0.79198176,
+      "weights_run_seconds": 0.77069987,
+      "verify_run_seconds": 0.603415887,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:16:16Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:36:39Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -545,8 +545,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.361345658,
-      "verify_run_seconds": 1.142962367,
+      "weights_run_seconds": 1.814015881,
+      "verify_run_seconds": 0.8583415,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1187,8 +1187,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.361345658,
-      "verify_run_seconds": 1.059541579,
+      "weights_run_seconds": 1.814015881,
+      "verify_run_seconds": 0.812833289,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.780184389,
-      "verify_run_seconds": 1.425071729,
+      "weights_run_seconds": 2.067248767,
+      "verify_run_seconds": 1.087170638,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2529,8 +2529,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.780184389,
-      "verify_run_seconds": 1.408932742,
+      "weights_run_seconds": 2.067248767,
+      "verify_run_seconds": 1.104243888,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3208,8 +3208,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.159594757,
-      "verify_run_seconds": 1.410095673,
+      "weights_run_seconds": 2.328176761,
+      "verify_run_seconds": 1.065575742,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3887,8 +3887,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.159594757,
-      "verify_run_seconds": 1.392376126,
+      "weights_run_seconds": 2.328176761,
+      "verify_run_seconds": 1.062803186,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4573,8 +4573,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.37420138,
-      "verify_run_seconds": 1.750904628,
+      "weights_run_seconds": 2.520769597,
+      "verify_run_seconds": 1.300820746,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5273,8 +5273,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.37420138,
-      "verify_run_seconds": 1.657521586,
+      "weights_run_seconds": 2.520769597,
+      "verify_run_seconds": 1.246289147,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6000,8 +6000,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.33153357,
-      "verify_run_seconds": 1.589060515,
+      "weights_run_seconds": 2.524917528,
+      "verify_run_seconds": 1.214112638,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6303,7 +6303,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.760885745261131
+              "dps_delta": -0.7608857452611303
             },
             {
               "item_id": 23087,
@@ -6721,8 +6721,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.33153357,
-      "verify_run_seconds": 1.62270471,
+      "weights_run_seconds": 2.524917528,
+      "verify_run_seconds": 1.201806484,
       "coverage": {
         "back": {
           "eligible": 450,
