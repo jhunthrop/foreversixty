@@ -68,7 +68,7 @@ No-known-source sample (15 of 490, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 00000000000000000-05153105022011500-000000000000000000)
 
-Set DPS (verified): 112.8. Weights run: 3.1s. Verify run: 1.6s. 682 eligible items had no known source.
+Set DPS (verified): 112.8. Weights run: 3.1s. Verify run: 1.7s. 682 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.002, agility=1.086 ± 0.046, crit=1.552 ± 0.066 per rating point (14 rating = 1%, 21.726 per %), hit=0.276 ± 0.009 per rating point (10 rating = 1%, 2.756 per %), melee_haste=9.252 ± 0.940
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 682, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 180.3. Weights run: 3.3s. Verify run: 2.2s. 867 eligible items had no known source.
+Set DPS (verified): 180.3. Weights run: 3.2s. Verify run: 2.2s. 867 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.805 ± 0.037, crit=1.151 ± 0.053 per rating point (14 rating = 1%, 16.107 per %), hit=0.250 ± 0.008 per rating point (10 rating = 1%, 2.499 per %), melee_haste=8.551 ± 0.697
 
@@ -153,6 +153,36 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | ranged | Bloodseeker (19107) | Korrak the Bloodrager [quest] | sim-verified (288.0 DPS) | yes | Riphook (12653, -0.09 DPS) [dungeon]; The Purifier (22656, -0.19 DPS) [quest]; Dark Iron Rifle (16004, -3.33 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Highlander's Plate Spaulders; back: Cloak of the Honor Guard; chest: Timbermaw Tunic; wrist: Berserker Bracers; hands: Raider Gauntlets; waist: Radiant Girdle of the Dawn; legs: Sentinel's Plate Legguards; feet: Scalegut Treaders; finger1: Don Julio's Band; finger2: Protector's Band; trinket2: Blackhand's Breadth; main_hand: Ravencrest's Legacy; off_hand: Shadowsong's Sorrow; ranged: Bloodseeker
+
+No-known-source sample (15 of 1943, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle
+
+### Band 60, raid preset (human, 34320003002000000-05153105022011501-200000000000000000)
+
+Set DPS (verified): 754.6. Weights run: 3.6s. Verify run: 2.4s. 1943 eligible items had no known source.
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.317 ± 0.065, crit=1.881 ± 0.093 per rating point (14 rating = 1%, 26.331 per %), hit=0.442 ± 0.014 per rating point (10 rating = 1%, 4.420 per %), melee_haste=16.655 ± 1.281
+
+| Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 97.5 attack_power points (13.85 DPS) | yes | Field Marshal's Plate Helm (231538, -2.16 DPS) [pvp]; Lieutenant Commander's Plate Helm (23314, -3.52 DPS) [vendor]; Outlaw's Collar (279253, -33.53 DPS, sim-verified) [crafted] |
+| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (754.6 DPS) | yes | Amulet of the Darkmoon (19491, -0.76 DPS) [quest]; Imperial Jewel (11933, -2.60 DPS) [dungeon]; Rage of Mugamba (19577, -5.32 DPS, sim-verified) [quest] |
+| shoulder | Darkspear Pauldrons (272105) (or Darkspear Epaulets (272106)) | Creeg Bothunk [vendor] | 61.9 attack_power points (8.79 DPS) | yes | Darkspear Epaulets (272106, +0.00 DPS) [vendor]; Field Marshal's Plate Shoulderguards (231537, -0.06 DPS) [pvp]; Lieutenant Commander's Plate Shoulders (227045, -0.22 DPS) [pvp] |
+| back | Cloak of the Honor Guard (20073) | The League of Arathor [rep] | 40.6 attack_power points (5.76 DPS) | yes | Cape of the Black Baron (13340, -0.12 DPS) [dungeon]; Windshear Cape (20691, -0.69 DPS) [world]; Shroud of Domination (22337, -0.94 DPS) [dungeon] |
+| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | sim-verified (754.6 DPS) | yes | Obsidian Mail Tunic (22191, -1.95 DPS) [crafted]; Savage Gladiator Chain (11726, -3.71 DPS) [dungeon]; Breastplate of Undead Slaying (23087, -28.98 DPS, sim-verified) [world] |
+| wrist | Berserker Bracers (19578) | Silverwing Sentinels [rep] | sim-verified (754.6 DPS) | yes | Forest Stalker's Bracers (19587, -0.22 DPS) [rep]; Marshal's Plate Bracers (16481, -0.76 DPS) [pvp]; Bracers of Undead Slaying (23090, -12.22 DPS, sim-verified) [world] |
+| hands | Raider Gauntlets (272095) | Creeg Bothunk [vendor] | sim-verified (754.6 DPS) | yes | Marshal's Plate Gauntlets (231541, -0.31 DPS) [pvp]; Gauntlets of Heroism (226861, -0.87 DPS) [quest]; Razor Gauntlets (18326, -13.00 DPS, sim-verified) [dungeon] |
+| waist | Radiant Girdle of the Dawn (227814) | Argent Quartermaster Hasana [vendor] | 80.3 attack_power points (11.41 DPS) | yes | Ferocity of the Timbermaw (227805, -0.85 DPS) [vendor]; Marshal's Plate Girdle (16482, -2.06 DPS) [pvp]; Dense Timbermaw Belt (227807, -2.32 DPS) [vendor] |
+| legs | Sentinel's Plate Legguards (237825) | Illiyana Moonblaze [vendor] | sim-verified (754.6 DPS) | yes | Sentinel's Chain Leggings (237819, -1.13 DPS) [vendor]; Marshal's Plate Legguards (231540, -1.99 DPS) [pvp]; Cloudkeeper Legplates (14554, -18.59 DPS, sim-verified) [world_drop] |
+| feet | Scalegut Treaders (275618) | Leatherworking [crafted] | 48.5 attack_power points (6.89 DPS) | yes | Marshal's Plate Boots (231539, +0.00 DPS) [pvp]; Drudge Boots (21532, -0.02 DPS) [quest]; Battlechaser's Greaves (12555, -0.49 DPS) [dungeon] |
+| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (754.6 DPS) | yes | Myrmidon's Signet (2246, -2.49 DPS) [world_drop]; Signet Ring of the Bronze Dragonflight (21201, -2.65 DPS) [quest]; Naglering (11669, -22.56 DPS, sim-verified) [dungeon] |
+| finger2 | Protector's Band (19514) | Silverwing Sentinels [rep] | sim-verified (754.6 DPS) | yes | Myrmidon's Signet (2246, -1.32 DPS) [world_drop]; Signet Ring of the Bronze Dragonflight (21201, -1.47 DPS) [quest]; Naglering (11669, -9.29 DPS, sim-verified) [dungeon] |
+| trinket1 | Diamond Flask (20130) | Voodoo Feathers [quest] | sim-verified (754.6 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-verified (754.6 DPS) | yes | Frozen Heart of the Mountain (249469, -2.28 DPS) [crafted]; Blackhand's Breadth (13965, -2.31 DPS) [quest]; Counterattack Lodestone (18537, -9.03 DPS, sim-verified) [dungeon] |
+| main_hand | Ravencrest's Legacy (21520) | Treasure of the Timeless One [quest] | sim-verified (754.6 DPS) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Felstriker (12590, -10.29 DPS, sim-verified) [dungeon] |
+| off_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (754.6 DPS) | yes | Grand Marshal's Left Hand Blade (234584, +0.00 DPS) [pvp]; Dal'Rend's Tribal Guardian (12939, -36.73 DPS) [dungeon]; Skullflame Shield (1168, -167.01 DPS, sim-verified) [world_drop] |
+| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (754.6 DPS) | yes | Bloodseeker (19107, -0.16 DPS) [quest]; Riphook (12653, -0.62 DPS) [dungeon]; Dark Iron Rifle (16004, -5.22 DPS, sim-verified) [crafted] |
+
+**New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Darkspear Pauldrons; back: Cloak of the Honor Guard; chest: Timbermaw Tunic; wrist: Berserker Bracers; hands: Raider Gauntlets; waist: Radiant Girdle of the Dawn; legs: Sentinel's Plate Legguards; feet: Scalegut Treaders; finger1: Don Julio's Band; finger2: Protector's Band; trinket2: Hand of Justice; main_hand: Ravencrest's Legacy; off_hand: Shadowsong's Sorrow; ranged: The Purifier
 
 No-known-source sample (15 of 1943, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle
 
@@ -250,7 +280,7 @@ No-known-source sample (15 of 635, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 182.5. Weights run: 3.3s. Verify run: 2.3s. 811 eligible items had no known source.
+Set DPS (verified): 182.5. Weights run: 3.2s. Verify run: 2.2s. 811 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.805 ± 0.037, crit=1.151 ± 0.053 per rating point (14 rating = 1%, 16.107 per %), hit=0.250 ± 0.008 per rating point (10 rating = 1%, 2.499 per %), melee_haste=8.551 ± 0.697
 
@@ -305,6 +335,36 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | ranged | Bloodseeker (19107) | The Legend of Korrak [quest] | sim-verified (292.1 DPS) | yes | Riphook (12653, -0.09 DPS) [dungeon]; The Purifier (22656, -0.19 DPS) [quest]; Dark Iron Rifle (16004, -2.90 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Defiler's Plate Spaulders; back: Deathguard's Cloak; chest: Timbermaw Tunic; wrist: Berserker Bracers; hands: Raider Gauntlets; waist: Radiant Girdle of the Dawn; legs: Sentinel's Plate Legguards; feet: Scalegut Treaders; finger1: Don Julio's Band; finger2: Legionnaire's Band; trinket1: Blackhand's Breadth; main_hand: Ravencrest's Legacy; off_hand: Shadowsong's Sorrow; ranged: Bloodseeker
+
+No-known-source sample (15 of 1913, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
+
+### Band 60, raid preset (troll, 34320003002000000-05153105022011501-200000000000000000)
+
+Set DPS (verified): 767.0. Weights run: 3.6s. Verify run: 2.5s. 1913 eligible items had no known source.
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.317 ± 0.065, crit=1.881 ± 0.093 per rating point (14 rating = 1%, 26.331 per %), hit=0.442 ± 0.014 per rating point (10 rating = 1%, 4.420 per %), melee_haste=16.655 ± 1.281
+
+| Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 97.5 attack_power points (13.85 DPS) | yes | Warlord's Plate Headpiece (231535, -2.16 DPS) [pvp]; Champion's Plate Helm (227043, -3.52 DPS) [pvp]; Outlaw's Collar (279253, -32.23 DPS, sim-verified) [crafted] |
+| neck | Medallion of the Dawn (22659) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (767.0 DPS) | yes | Amulet of the Darkmoon (19491, -0.76 DPS) [quest]; Imperial Jewel (11933, -2.60 DPS) [dungeon]; Rage of Mugamba (19577, -7.42 DPS, sim-verified) [quest] |
+| shoulder | Darkspear Pauldrons (272105) (or Darkspear Epaulets (272106)) | Creeg Bothunk [vendor] | 61.9 attack_power points (8.79 DPS) | yes | Darkspear Epaulets (272106, +0.00 DPS) [vendor]; Warlord's Plate Shoulders (231534, -0.06 DPS) [pvp]; Champion's Plate Shoulders (227042, -0.22 DPS) [pvp] |
+| back | Deathguard's Cloak (20068) | The Defilers [rep] | 40.6 attack_power points (5.76 DPS) | yes | Cape of the Black Baron (13340, -0.12 DPS) [dungeon]; Windshear Cape (20691, -0.69 DPS) [world]; Shroud of Domination (22337, -0.94 DPS) [dungeon] |
+| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | sim-verified (767.0 DPS) | yes | Obsidian Mail Tunic (22191, -1.95 DPS) [crafted]; Savage Gladiator Chain (11726, -3.71 DPS) [dungeon]; Breastplate of Undead Slaying (23087, -27.63 DPS, sim-verified) [world] |
+| wrist | Berserker Bracers (19578) | Warsong Outriders [rep] | sim-verified (767.0 DPS) | yes | Forest Stalker's Bracers (19587, -0.22 DPS) [rep]; General's Plate Armguards (16546, -0.76 DPS) [pvp]; Bracers of Undead Slaying (23090, -14.26 DPS, sim-verified) [world] |
+| hands | Raider Gauntlets (272095) | Creeg Bothunk [vendor] | sim-verified (767.0 DPS) | yes | General's Plate Gauntlets (231532, -0.31 DPS) [pvp]; Gauntlets of Heroism (226861, -0.87 DPS) [quest]; Razor Gauntlets (18326, -15.69 DPS, sim-verified) [dungeon] |
+| waist | Radiant Girdle of the Dawn (227814) | Argent Quartermaster Hasana [vendor] | 80.3 attack_power points (11.41 DPS) | yes | Ferocity of the Timbermaw (227805, -0.85 DPS) [vendor]; General's Plate Girdle (16547, -2.06 DPS) [pvp]; Dense Timbermaw Belt (227807, -2.32 DPS) [vendor] |
+| legs | Sentinel's Plate Legguards (237825) | Illiyana Moonblaze [vendor] | sim-verified (767.0 DPS) | yes | Sentinel's Chain Leggings (237819, -1.13 DPS) [vendor]; General's Plate Leggings (231533, -1.99 DPS) [pvp]; Cloudkeeper Legplates (14554, -19.81 DPS, sim-verified) [world_drop] |
+| feet | Scalegut Treaders (275618) | Leatherworking [crafted] | 48.5 attack_power points (6.89 DPS) | yes | General's Plate Boots (231531, +0.00 DPS) [pvp]; Drudge Boots (21532, -0.02 DPS) [quest]; Battlechaser's Greaves (12555, -0.49 DPS) [dungeon] |
+| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (767.0 DPS) | yes | Myrmidon's Signet (2246, -2.49 DPS) [world_drop]; Signet Ring of the Bronze Dragonflight (21201, -2.65 DPS) [quest]; Naglering (11669, -26.87 DPS, sim-verified) [dungeon] |
+| finger2 | Legionnaire's Band (19510) | Warsong Outriders [rep] | sim-verified (767.0 DPS) | yes | Myrmidon's Signet (2246, -1.32 DPS) [world_drop]; Signet Ring of the Bronze Dragonflight (21201, -1.47 DPS) [quest]; Naglering (11669, -11.90 DPS, sim-verified) [dungeon] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (767.0 DPS) | yes | Counterattack Lodestone (18537, -3.28 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -5.84 DPS) [crafted]; Blackhand's Breadth (13965, -5.87 DPS) [quest] |
+| trinket2 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-verified (767.0 DPS) | yes | Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Diamond Flask (20130, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, -2.28 DPS) [crafted] |
+| main_hand | Ravencrest's Legacy (21520) | Treasure of the Timeless One [quest] | sim-verified (767.0 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Felstriker (12590, -16.95 DPS, sim-verified) [dungeon] |
+| off_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (767.0 DPS) | yes | High Warlord's Left Claw (234558, +0.00 DPS) [pvp]; Dal'Rend's Tribal Guardian (12939, -36.73 DPS) [dungeon]; Skullflame Shield (1168, -169.65 DPS, sim-verified) [world_drop] |
+| ranged | The Purifier (22656) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (767.0 DPS) | yes | Bloodseeker (19107, -0.16 DPS) [quest]; Riphook (12653, -0.62 DPS) [dungeon]; Dark Iron Rifle (16004, -6.76 DPS, sim-verified) [crafted] |
+
+**New at 60:** head: Lionheart Helm; neck: Medallion of the Dawn; shoulder: Darkspear Pauldrons; back: Deathguard's Cloak; chest: Timbermaw Tunic; wrist: Berserker Bracers; hands: Raider Gauntlets; waist: Radiant Girdle of the Dawn; legs: Sentinel's Plate Legguards; feet: Scalegut Treaders; finger1: Don Julio's Band; finger2: Legionnaire's Band; trinket1: Rune of the Guard Captain; trinket2: Hand of Justice; main_hand: Ravencrest's Legacy; off_hand: Shadowsong's Sorrow; ranged: The Purifier
 
 No-known-source sample (15 of 1913, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 
