@@ -3,7 +3,7 @@ title: Demonology Warlock in Forever
 classSlug: warlock
 spec: demonology
 role: dps
-build: 'FS1:1.60.1.70009:warlock:gnome:255323/2352113101200001351/0:'
+build: 'FS1:1.60.1.70009:warlock:gnome:25532/233211310122000135/004:'
 recommendedRaces: [gnome, troll]
 statPriority:
   [Spell power, Hit, Intellect, Critical strike, Fire power, Spell haste, Spell penetration, Shadow power]
@@ -41,9 +41,9 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Master Summoner** — up to 4 seconds off summon cast time and 40% off its mana cost at rank 2, useful whenever you need to re-summon mid-fight.
 - **Demonic Knowledge** — up to 100% of your level added to your and your pet's spell damage while a demon is active, one of the tree's largest damage talents.
 - **Master Demonologist** — a scaling buff to both Warlock and demon that differs by pet, up to 10% at rank 5 for whichever pet is out.
-- **Demonic Pact** — the capstone: your Demonic Sacrifice buff is no longer cancelled by summoning a different pet, only by re-summoning the sacrificed one.
+- **Decimation** — the search run's best use of the points freed from Demonic Embrace; the simulator credits it with a measurable damage gain.
 
-This build spends 31 points in Demonology to reach Demonic Pact, with the remaining 20 in Affliction — Improved Corruption and Suppression both maxed, then Malediction, Improved Drains, Improved Life Tap, and Soul Harvesting for the rest of the budget — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
+This build spends 30 points in Demonology, with 17 in Affliction (Improved Corruption and Suppression maxed, then Malediction, Improved Life Tap, and Soul Harvest) and 4 in Destruction on Bane. Against the first draft it drops three Improved Drains points, two Demonic Embrace points and the Demonic Pact capstone, all of which the simulator measures at zero for a solo caster, and spends them on two Decimation points and four Bane points, which shorten the Shadow Bolt cast. That was worth about +10% in the search run, and about +8% on the level-60 row of the rotation ladder. Demonic Sacrifice and Soul Link stay, and so do the talents the simulator cannot yet see (Soul Harvest, Improved Health Funnel, Demonic Aegis, Improved Voidwalker). A deep Affliction build scored higher still, but it abandons the Demonology tree and those talents, so it is not the recommendation for this spec. This is a projection from the simulator, not beta play. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
 
 ## Rotation and priority
 
