@@ -1,9 +1,8 @@
 // web/src/lib/guides/signed-in-callout.ts
 // `/guides` index's own signed-in callout (rebuild spec §4.A): "Your guide: Fury Warrior
-// →", shown only once `me.characters[0]` resolves with a known class and spec -- the plain
-// first character on the account, not the home hero's own "best character" selection
-// (that answers a different question, "which character represents me across the site";
-// this one answers "where's my own guide", which is the account's own lead character).
+// →", shown only once the selected character (`selectedCharacter` in
+// lib/account/hero-character.ts: the current-character pointer, else the account main --
+// the same character the header chip shows) resolves with a known class and spec.
 // Pure view-model only: the page's own inline bootstrap script (no Svelte island -- the
 // guide rebuild's own budget keeps every page static beyond the one existing
 // `GuideBuildTree` island) calls `fetchMeOnce()` itself and passes the result here.

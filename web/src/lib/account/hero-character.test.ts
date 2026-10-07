@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { heroCharacter } from './hero-character';
+import { heroCharacter, selectedCharacter } from './hero-character';
 import type { CurrentCharacter } from '../current-character';
 import type { MeCharacter } from './api';
 
@@ -40,5 +40,35 @@ describe('heroCharacter', () => {
 
   it('returns null when the pointer names no listed character', () => {
     expect(heroCharacter({ ...POINTER, ref: 'us/pvp/somebody-else' }, [CHAR])).toBeNull();
+  });
+});
+
+describe('selectedCharacter', () => {
+  const SHAMAN: MeCharacter = {
+    key: 'us/pvp/totemic',
+    region: 'us',
+    ruleset: 'pvp',
+    name: 'Totemic',
+    class: 'shaman',
+    spec: 'Enhancement',
+  };
+
+  it('follows the current-character pointer over the account main and the list order', () => {
+    const me = { characters: [SHAMAN, CHAR], main_character_key: SHAMAN.key };
+    expect(selectedCharacter(POINTER, me)).toBe(CHAR);
+  });
+
+  it('falls back to the account main when there is no pointer', () => {
+    const me = { characters: [SHAMAN, CHAR], main_character_key: CHAR.key };
+    expect(selectedCharacter(null, me)).toBe(CHAR);
+  });
+
+  it('falls back to the account main when the pointer names no listed character', () => {
+    const me = { characters: [SHAMAN, CHAR], main_character_key: CHAR.key };
+    expect(selectedCharacter({ ...POINTER, ref: 'us/pvp/somebody-else' }, me)).toBe(CHAR);
+  });
+
+  it('is null with no characters at all', () => {
+    expect(selectedCharacter(POINTER, { characters: [] })).toBeNull();
   });
 });

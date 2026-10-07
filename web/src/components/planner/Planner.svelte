@@ -9,7 +9,7 @@
   import { untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { fetchMeOnce, type Me } from '../../lib/account/api';
-  import { heroCharacter } from '../../lib/account/hero-character';
+  import { selectedCharacter } from '../../lib/account/hero-character';
   import { mainCharacter } from '../../lib/account/main-character';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { clearCurrent, readCurrent } from '../../lib/current-character';
@@ -232,11 +232,7 @@
   // fallback, unchanged for every bare build.
   $effect(() => {
     if (session === null || linkNamesBuild) return;
-    const hero =
-      session.data === null
-        ? null
-        : (heroCharacter(readCurrent(), session.data.characters) ??
-          mainCharacter(session.data.characters, session.data.main_character_key));
+    const hero = session.data === null ? null : selectedCharacter(readCurrent(), session.data);
     store.setCharacterLevel(hero?.level ?? null);
   });
 

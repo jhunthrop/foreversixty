@@ -9,8 +9,8 @@
 import { fetchMeOnce, type Me, type MeCharacter } from './api';
 import { createQueryState } from '../data/query.svelte';
 import { readCurrent, writeCurrent, CURRENT_CHARACTER_CHANGED } from '../current-character';
-import { heroCharacter } from './hero-character';
-import { mainCharacter, pointerForCharacter } from './main-character';
+import { selectedCharacter } from './hero-character';
+import { pointerForCharacter } from './main-character';
 import { API_BASE_URL } from '../planner/config';
 import { fetchCharacterRating } from '../rankings/api';
 import type { CharacterRating } from '../rating/types';
@@ -53,10 +53,7 @@ export function createHomeHero(): HomeHeroHandle {
   }
 
   const hero = $derived<MeCharacter | null>(
-    me === null
-      ? null
-      : (heroCharacter(readCurrentIfReady(), me.characters) ??
-          mainCharacter(me.characters, me.main_character_key)),
+    me === null ? null : selectedCharacter(readCurrentIfReady(), me),
   );
 
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));

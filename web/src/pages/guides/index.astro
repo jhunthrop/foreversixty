@@ -75,13 +75,18 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
   // skeleton for the real callout, or removes it entirely signed-out / on a session with no
   // usable character (never blocks the grid beside it, which needs nothing from this fetch).
   import { fetchMeOnce } from '../../lib/account/api';
+  import { selectedCharacter } from '../../lib/account/hero-character';
+  import { readCurrent } from '../../lib/current-character';
   import { signedInCalloutView } from '../../lib/guides/signed-in-callout';
 
   async function mount(): Promise<void> {
     const root = document.getElementById('guides-signed-in-callout');
     if (root === null) return;
     const me = await fetchMeOnce().catch(() => null);
-    const view = signedInCalloutView(me?.characters[0]);
+    // The same character the header chip shows: the switched-to pointer, else the main
+    // (owner-reported defect 2026-10-07: `characters[0]` named an alt while a warrior
+    // was selected).
+    const view = signedInCalloutView(me === null ? undefined : (selectedCharacter(readCurrent(), me) ?? undefined));
     if (view === undefined) {
       root.remove();
       return;

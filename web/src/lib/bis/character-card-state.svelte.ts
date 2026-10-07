@@ -8,8 +8,7 @@
 import { fetchMeOnce, type Me, type MeCharacter } from '../account/api';
 import { createQueryState } from '../data/query.svelte';
 import { readCurrent } from '../current-character';
-import { heroCharacter } from '../account/hero-character';
-import { mainCharacter } from '../account/main-character';
+import { selectedCharacter } from '../account/hero-character';
 import { API_BASE_URL } from '../planner/config';
 
 export interface CharacterCardState {
@@ -27,9 +26,7 @@ export function createCharacterCardState(): CharacterCardState {
   });
   const me = $derived(session.data);
   const character = $derived<MeCharacter | null>(
-    me === null
-      ? null
-      : (heroCharacter(readCurrent(), me.characters) ?? mainCharacter(me.characters, me.main_character_key)),
+    me === null ? null : selectedCharacter(readCurrent(), me),
   );
 
   return {
