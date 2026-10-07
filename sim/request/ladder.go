@@ -1021,13 +1021,13 @@ func isDamageSpellID(consts map[int]spellConstEntry, id int) bool {
 // Cast tally.
 // ---------------------------------------------------------------------
 
-// castSpellCounts sums every plain-spell action's casts across the run,
+// CastSpellCounts sums every plain-spell action's casts across the run,
 // keyed by the base spell id (a tag or rank variant of the same spell -
 // see sim/adapter's ActionName - folds into the one id, since what this
 // ladder asks is "was this ability cast at all", not which of its
 // variants). Items, pets and "other" actions are not spells and are
 // left out.
-func castSpellCounts(player *proto.UnitMetrics) map[int]int64 {
+func CastSpellCounts(player *proto.UnitMetrics) map[int]int64 {
 	out := map[int]int64{}
 	for _, action := range player.GetActions() {
 		id := action.GetId()

@@ -59,7 +59,7 @@ func (s simSetup) character() api.CharacterSpec {
 // paired comparison (common random numbers).
 type dpsFunc func(r rotation, iterations int) (estimate, error)
 
-// engineRun builds a dpsFunc backed by inproc.PlainDPSWithRotation,
+// engineRun builds a dpsFunc backed by simRotation,
 // memoised by rotation JSON and iteration count so a rotation this
 // search has already simmed at this iteration count (the baseline,
 // re-screened inside a later round) is never re-run. The search
@@ -82,19 +82,7 @@ func engineRun(s simSetup) (dpsFunc, error) {
 		if cached {
 			return est, nil
 		}
-		apl := &proto.APLRotation{}
-		if err := protojson.Unmarshal(b, apl); err != nil {
-			return estimate{}, fmt.Errorf("the mutated rotation does not parse as an engine APL: %w", err)
-		}
-		apiEst, err := inproc.PlainDPSWithRotation(api.SimRequest{
-			EngineVersion: enginever.Version,
-			Spec:          s.spec.Spec,
-			Source:        api.CharacterSource{Kind: api.SourceBuild},
-			Character:     s.character(),
-			Encounter:     api.DefaultEncounter(),
-			Iterations:    iterations,
-			RandomSeed:    s.seed,
-		}, apl)
+		apiEst, _, err := simRotation(s, r, iterations)
 		if err != nil {
 			return estimate{}, err
 		}
@@ -104,4 +92,26 @@ func engineRun(s simSetup) (dpsFunc, error) {
 		mu.Unlock()
 		return out, nil
 	}, nil
+}
+
+// simRotation sims one rotation in this process and returns the
+// estimate with the player's own metrics (the cast tally reads them).
+func simRotation(s simSetup, r rotation, iterations int) (api.Estimate, *proto.UnitMetrics, error) {
+	b, err := r.marshalIndent()
+	if err != nil {
+		return api.Estimate{}, nil, fmt.Errorf("encoding the rotation to sim: %w", err)
+	}
+	apl := &proto.APLRotation{}
+	if err := protojson.Unmarshal(b, apl); err != nil {
+		return api.Estimate{}, nil, fmt.Errorf("the mutated rotation does not parse as an engine APL: %w", err)
+	}
+	return inproc.PlainRunWithRotation(api.SimRequest{
+		EngineVersion: enginever.Version,
+		Spec:          s.spec.Spec,
+		Source:        api.CharacterSource{Kind: api.SourceBuild},
+		Character:     s.character(),
+		Encounter:     api.DefaultEncounter(),
+		Iterations:    iterations,
+		RandomSeed:    s.seed,
+	}, apl)
 }

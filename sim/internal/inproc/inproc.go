@@ -54,10 +54,17 @@ func PlainDPS(req api.SimRequest) (api.Estimate, error) {
 // sim a mutated APL without ever touching the curated or embedded
 // rotation files on disk. A nil rotation is exactly PlainDPS.
 func PlainDPSWithRotation(req api.SimRequest, rotation *proto.APLRotation) (api.Estimate, error) {
+	est, _, err := PlainRunWithRotation(req, rotation)
+	return est, err
+}
+
+// PlainRunWithRotation is PlainDPSWithRotation that also returns the
+// player's own metrics (the cast tally reads them).
+func PlainRunWithRotation(req api.SimRequest, rotation *proto.APLRotation) (api.Estimate, *proto.UnitMetrics, error) {
 	Register()
 	engineReq, err := request.BuildWith(req, buildOptions)
 	if err != nil {
-		return api.Estimate{}, fmt.Errorf("building the request: %w", err)
+		return api.Estimate{}, nil, fmt.Errorf("building the request: %w", err)
 	}
 	if rotation != nil {
 		for _, party := range engineReq.GetRaid().GetParties() {
@@ -67,16 +74,20 @@ func PlainDPSWithRotation(req api.SimRequest, rotation *proto.APLRotation) (api.
 		}
 	}
 	if err := simdb.Attach(engineReq); err != nil {
-		return api.Estimate{}, fmt.Errorf("attaching the item database: %w", err)
+		return api.Estimate{}, nil, fmt.Errorf("attaching the item database: %w", err)
 	}
 	reporter := make(chan *proto.ProgressMetrics, 32)
 	core.RunRaidSimConcurrentAsync(engineReq, reporter, nextRunID())
 	res := simdrain.ToResult(reporter, nil)
 	if res == nil {
-		return api.Estimate{}, errors.New("the engine produced no result")
+		return api.Estimate{}, nil, errors.New("the engine produced no result")
 	}
 	if err := adapter.ResultError(res); err != nil {
-		return api.Estimate{}, fmt.Errorf("the sim failed: %w", err)
+		return api.Estimate{}, nil, fmt.Errorf("the sim failed: %w", err)
 	}
-	return adapter.DPS(res), nil
+	player, err := adapter.PlayerMetrics(res)
+	if err != nil {
+		return api.Estimate{}, nil, fmt.Errorf("reading the player's metrics: %w", err)
+	}
+	return adapter.DPS(res), player, nil
 }
