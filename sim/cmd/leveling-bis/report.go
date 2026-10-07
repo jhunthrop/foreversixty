@@ -103,13 +103,14 @@ type slotRow struct {
 	// when this row was never compared to anything a sim actually
 	// measured (a plain score()-decided pick with no swap result).
 	DPSDelta *float64 `json:"dps_delta,omitempty"`
-	// EffectUnmodelled is true when the picked item carries an
-	// effect_text the engine does NOT implement (effectids_generated.go)
+	// EffectUnmodelled is true when the picked item carries an effect
+	// (effect_text, or a client proc/use/equip-behaviour spell: rank.go's
+	// carriesEffect) the engine does NOT implement (effectids_generated.go)
 	// -- this lane's brief, item 3: such a candidate is still scored on
 	// its plain stats (score.go never saw the effect either way), but
 	// the page shows "proc not simulated" on it rather than letting the
 	// Score/Verified columns imply the whole item was accounted for.
-	// False (omitted) for a candidate with no effect_text at all, and
+	// False (omitted) for a candidate with no effect at all, and
 	// for one whose effect IS implemented -- see rank.go's
 	// hasImplementedEffect, the single predicate both this flag and the
 	// effect-verification pass itself read.
@@ -1563,7 +1564,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// ran (Hand of Justice 11815 - rank.go's own doc) never had
 			// its effect exercised either, so it earns the same honest
 			// label an unimplemented effect already gets here.
-			row.EffectUnmodelled = pk.Item.EffectText != "" && !effectVerifiedInSim(pk.Item.candidate)
+			row.EffectUnmodelled = carriesEffect(pk.Item.candidate) && !effectVerifiedInSim(pk.Item.candidate)
 			for _, tie := range pk.Ties {
 				row.Ties = append(row.Ties, tieAlternative{ItemID: tie.ID, ItemName: tie.Name})
 			}
@@ -1740,7 +1741,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// this just flags that fallback honestly via LowValue instead
 			// of blanking the row.
 			isTrinketSlot := slot == "trinket1" || slot == "trinket2"
-			trinketEffectExempt := isTrinketSlot && pk.Item.EffectText != ""
+			trinketEffectExempt := isTrinketSlot && carriesEffect(pk.Item.candidate)
 			// bis-ranker-integrity-3, 2026-09-29, this lane's brief item
 			// 2: simDecided alone can never gate a TRINKET - rankTrinketSlot
 			// always sets MeasuredDPS to the whole set's own absolute DPS
@@ -1785,7 +1786,11 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// own stated purpose for every trinket the tournament ever
 			// crowns, not only the ones lucky enough to never trigger
 			// this case in the first place.
-			trinketLowGain := isTrinketSlot && !trinketEffectExempt && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
+			// A relic is ranked by measured gain over an empty slot exactly as a
+			// trinket is (relics.go), so it is gated on that gain the same way:
+			// a modelled relic whose simulated gain is noise is no pick.
+			isGainRankedSlot := isTrinketSlot || isRelicCandidate(pk.Item.candidate)
+			trinketLowGain := isGainRankedSlot && !trinketEffectExempt && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
 			// A relic (libram/idol/totem) whose one real selling point -
 			// its engraved effect - the engine cannot simulate at all
 			// never got a fair shot at EITHER exemption below: score()

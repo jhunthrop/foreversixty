@@ -2,7 +2,8 @@
 engine fork's own source.
 
 Two passes over every .go file under <fork>/sim whose basename does not
-start with "_" (Go does not compile those): first collect every
+start with "_" (Go does not compile those) or end in "_test.go" (a test
+registering a made-up item id is not an engine effect): first collect every
 `Name = <int>` constant, then every registration call --
 `core.NewItemEffect(X, ...)` or an `itemhelpers.CreateWeaponProc*(X, ...)`
 helper -- and resolve X (a constant name or a literal) to its item id. The
@@ -24,7 +25,7 @@ CALL = re.compile(r"\b(?:core\.)?New(?!Enchant)\w*Effect\(\s*([A-Za-z_][A-Za-z0-
 
 
 def implemented_ids(fork: Path) -> set[int]:
-    files = [p for p in (fork / "sim").rglob("*.go") if not p.name.startswith("_")]
+    files = [p for p in (fork / "sim").rglob("*.go") if not p.name.startswith("_") and not p.name.endswith("_test.go")]
     consts: dict[str, int] = {}
     for path in files:
         for name, value in CONST.findall(path.read_text(encoding="utf-8")):
