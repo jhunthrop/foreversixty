@@ -95,3 +95,26 @@ def test_spell_ids_are_written_in_a_stable_numeric_order():
     for record in by_slug().values():
         keys = list(record.spells)
         assert keys == sorted(keys, key=int)
+
+
+def test_a_damage_effect_carries_its_variance_and_points_per_level():
+    """The client states a roll as a center (`amount`), a Variance fraction and a
+    per-level growth; the engine's conformance report derives the min-max range
+    from them, so they ride on the effect exactly as the table states them."""
+    bolt = by_slug()["mage"].spells["25304"]
+    assert bolt.effects[1].variance == pytest.approx(0.2)
+    assert bolt.effects[1].points_per_level == pytest.approx(3.6)
+    assert bolt.effects[0].variance == 0.0
+    assert bolt.effects[0].points_per_level == 0.0
+
+
+def test_max_level_is_the_spell_levels_cap_and_zero_when_uncapped():
+    assert by_slug()["mage"].spells["25304"].max_level == 64
+    assert by_slug()["warrior"].spells["23894"].max_level == 0
+    assert by_slug()["warrior"].spells["88888"].max_level == 0
+
+
+def test_the_new_damage_keys_are_appended_after_the_existing_ones():
+    effect = list(by_slug()["mage"].spells["25304"].effects[1].model_dump())
+    assert effect[-3:] == ["trigger_spell", "variance", "points_per_level"]
+    assert list(by_slug()["mage"].spells["25304"].model_dump())[-2:] == ["cost_pct", "max_level"]

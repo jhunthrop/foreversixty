@@ -145,10 +145,13 @@ def build_spell_constants(build: str, raw: Path) -> list[ClassSpellConstants]:
                     period_ms=_int(effect, "EffectAuraPeriod"),
                     misc_value=_int(effect, "EffectMiscValue_0"),
                     trigger_spell=_int(effect, "EffectTriggerSpell"),
+                    variance=_float(effect, "Variance"),
+                    points_per_level=_float(effect, "EffectRealPointsPerLevel"),
                 )
                 for effect in sorted(effects.get(spell_id, []), key=lambda e: int(e["EffectIndex"]))
             ],
             cost_pct=_float(power, "PowerCostPct"),
+            max_level=_int(levels.get(spell_id), "MaxLevel"),
         )
     return [
         ClassSpellConstants(
