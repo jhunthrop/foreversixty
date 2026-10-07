@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "8bc5b28c5",
-  "generated_at": "2026-10-07T14:13:49Z",
+  "engine_version": "42b2acbbc",
+  "generated_at": "2026-10-07T14:36:32Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -598,8 +598,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.627192252,
-      "verify_run_seconds": 1.5382231640000001,
+      "weights_run_seconds": 2.459347835,
+      "verify_run_seconds": 1.463137871,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1271,8 +1271,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.627192252,
-      "verify_run_seconds": 1.496054437,
+      "weights_run_seconds": 2.459347835,
+      "verify_run_seconds": 1.483625277,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1964,8 +1964,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.994446418,
-      "verify_run_seconds": 1.613828394,
+      "weights_run_seconds": 2.739715346,
+      "verify_run_seconds": 1.511335331,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2663,8 +2663,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.994446418,
-      "verify_run_seconds": 1.7200577419999998,
+      "weights_run_seconds": 2.739715346,
+      "verify_run_seconds": 1.599363545,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3353,8 +3353,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.212750948,
-      "verify_run_seconds": 1.7378455019999999,
+      "weights_run_seconds": 3.016364017,
+      "verify_run_seconds": 1.62413863,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4045,8 +4045,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.212750948,
-      "verify_run_seconds": 1.805872777,
+      "weights_run_seconds": 3.016364017,
+      "verify_run_seconds": 1.678530173,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4481,14 +4481,14 @@
               "item_name": "Scarlet Leggings",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.10357430174627938
+              "dps_delta": -0.10357430174627888
             },
             {
               "item_id": 17711,
               "item_name": "Elemental Rockridge Leggings",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.24281680730096653
+              "dps_delta": -0.24281680730096603
             },
             {
               "item_id": 13074,
@@ -4763,8 +4763,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.446643089,
-      "verify_run_seconds": 2.450670196,
+      "weights_run_seconds": 3.144354263,
+      "verify_run_seconds": 2.264919005,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5485,8 +5485,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.446643089,
-      "verify_run_seconds": 2.414004616,
+      "weights_run_seconds": 3.144354263,
+      "verify_run_seconds": 2.250508329,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5913,14 +5913,14 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.7125681090387277
+              "dps_delta": -0.7125681090387267
             },
             {
               "item_id": 231540,
               "item_name": "Marshal's Plate Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.0052893045639717
+              "dps_delta": -1.0052893045639706
             },
             {
               "item_id": 14554,
@@ -5980,14 +5980,14 @@
               "item_name": "Band of the Ogre King",
               "source_kind": "dungeon",
               "source": "Dire Maul: King Gordok",
-              "dps_delta": -0.7245272937554303
+              "dps_delta": -0.7245272937554308
             },
             {
               "item_id": 2246,
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.8212965359189679
+              "dps_delta": -0.8212965359189685
             },
             {
               "item_id": 11669,
@@ -6229,8 +6229,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.553491519,
-      "verify_run_seconds": 2.381429444,
+      "weights_run_seconds": 3.302015359,
+      "verify_run_seconds": 2.213430505,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6663,7 +6663,7 @@
               "item_name": "General's Plate Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.0052893045639726
+              "dps_delta": -1.0052893045639717
             },
             {
               "item_id": 14554,
@@ -6980,8 +6980,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.553491519,
-      "verify_run_seconds": 2.331144805,
+      "weights_run_seconds": 3.302015359,
+      "verify_run_seconds": 2.149972599,
       "coverage": {
         "back": {
           "eligible": 450,
