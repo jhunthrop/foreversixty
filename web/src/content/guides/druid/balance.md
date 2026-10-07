@@ -3,7 +3,7 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.70009:druid:night-elf:5222211015401051/0/55333:'
+build: 'FS1:1.60.1.70009:druid:night-elf:5232221115400051/05/503301:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
@@ -40,11 +40,11 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Vengeance** — up to a 100% critical-strike-damage bonus at rank 5 on Arcane and Nature spells, the tree's biggest single multiplier.
 - **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5; this build takes rank 4 (0.4 seconds, 12% stun chance) to free a point for Insect Swarm below, since a stun rarely lands on a raid boss anyway.
 - **Insect Swarm** (1 point) — a second cheap DoT the rotation keeps running alongside Moonfire; skipping it was an earlier error in this build, fixed by moving a point off Improved Starfire's last rank.
-- **Nature's Grace** — a non-periodic spell crit speeds up your casting and cuts your next global cooldown by 10% for 3 seconds.
+- **Nature's Splendor** (1 point) — the one-point talent that the simulator credits with the largest single gain in this tree, taken with the point Nature's Grace used to hold.
 - **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
 - **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
 
-This build spends 32 points in Balance to reach Moonkin Form at the bottom, with the remaining 19 in Restoration: Nature's Focus at rank 5, then Furor, Subtlety, and Natural Shapeshifter — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. (The reconciliation this build's `build:` string went through moved more points into Restoration than a bare "5" would spend, since Balance's own tree only needs 32 of the 51 to reach the capstone; the extra points went to the next-most-useful Restoration sustain talents rather than sitting unspent.) Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+This build spends 34 points in Balance and reaches Moonkin Form at the bottom, keeping Improved Wrath, Vengeance, Improved Starfire, Insect Swarm and Moonfury, and now also takes Moonglow, Nature's Reach and Nature's Splendor, with 5 points in Feral's Heart of the Wild and 12 in Restoration: Nature's Focus at rank 5, 3 points of Naturalist, 3 of Subtlety and one of Reflection. In the search run this beats the old build by about 21%. It drops Furor (5 points), Natural Shapeshifter (3) and Nature's Grace (1), which the simulator measures at no damage, and spends them on Moonglow, Nature's Reach, Nature's Splendor, Heart of the Wild and Reflection, all of which it credits with damage. Nature's Focus and Subtlety stay because the engine does not model them yet. Nature's Grace is no longer in the build: the simulator finds no gain from it. A deeper variant that also drops Subtlety, Nature's Focus and Improved Entangling Roots scored higher still, but it gives up talents the engine cannot yet measure, so this guide holds it back. (This split is a common 1.12 hybrid pattern, but it is not confirmed for Forever specifically.) Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
 
 ## Rotation and priority
 
