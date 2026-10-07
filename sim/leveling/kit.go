@@ -15,7 +15,13 @@ import "strings"
 //
 //   - Any rogue spec, from level 20 (the poison quest): Instant
 //     Poison on both weapons. Assassination's whole design (Mutilate's
-//     bonus on a poisoned target, Venom) assumes them.
+//     bonus on a poisoned target, Venom) assumes them - and Mutilate's
+//     "+20% against poisoned targets" counts only a poison that lingers
+//     (Deadly or Wound), not Instant, so Assassination carries Deadly
+//     Poison on the main hand from level 30, when its first rank is
+//     learned (2026-10-07; the rogue curation lane measured the Deadly
+//     main hand about 17% above two Instants with the same ranking).
+//     The off hand stays Instant.
 //   - Shaman-enhancement: ONE weapon imbue, on the main hand only -
 //     Rockbiter Weapon from level 1 (its earliest rank is learnable at
 //     level 1, well before Windfury Weapon exists), replaced by
@@ -37,6 +43,9 @@ func KitConsumes(spec string, level int) []string {
 		if level < 20 {
 			return nil
 		}
+		if spec == "rogue-assassination" && level >= deadlyPoisonLevel {
+			return []string{"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison"}
+		}
 		return []string{"main_hand_imbue:instant_poison", "off_hand_imbue:instant_poison"}
 	case spec == "shaman-enhancement":
 		if level < 30 {
@@ -47,6 +56,9 @@ func KitConsumes(spec string, level int) []string {
 		return nil
 	}
 }
+
+// deadlyPoisonLevel is the level Deadly Poison's first rank is learned.
+const deadlyPoisonLevel = 30
 
 // isRogueSpec matches the bare class ("rogue", used where a caller has
 // no spec to name) as well as any of its three specs.

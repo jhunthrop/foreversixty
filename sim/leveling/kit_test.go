@@ -9,8 +9,16 @@ func TestKitConsumesIsRoguePoisonsFromTwenty(t *testing.T) {
 	if got := KitConsumes("rogue", 20); len(got) != 2 {
 		t.Fatalf("rogue at 20 = %v, want Instant Poison on both weapons", got)
 	}
-	if got := KitConsumes("rogue-assassination", 20); len(got) != 2 {
-		t.Fatalf("rogue-assassination at 20 = %v, want Instant Poison on both weapons", got)
+	if got := KitConsumes("rogue-assassination", 20); len(got) != 2 || got[0] != "main_hand_imbue:instant_poison" {
+		t.Fatalf("rogue-assassination at 20 = %v, want Instant Poison on both weapons (Deadly is not learned yet)", got)
+	}
+	// Mutilate's bonus needs a lingering poison, so Assassination carries
+	// Deadly Poison on the main hand once it is learned at 30.
+	if got := KitConsumes("rogue-assassination", 30); len(got) != 2 || got[0] != "main_hand_imbue:deadly_poison" || got[1] != "off_hand_imbue:instant_poison" {
+		t.Fatalf("rogue-assassination at 30 = %v, want Deadly Poison main hand and Instant Poison off hand", got)
+	}
+	if got := KitConsumes("rogue-combat", 60); got[0] != "main_hand_imbue:instant_poison" {
+		t.Fatalf("rogue-combat at 60 = %v, want Instant Poison on both weapons", got)
 	}
 	if got := KitConsumes("rogue-combat", 19); got != nil {
 		t.Fatalf("rogue-combat at 19 = %v, want nothing", got)
