@@ -36,7 +36,7 @@ Point allocation runs deep into Combat to reach Adrenaline Rush at the bottom of
 
 ## Rotation and priority
 
-The core loop is simple and fully supported in this site's simulator: keep Slice and Dice active so combo points aren't wasted on idle swing time, use Adrenaline Rush on cooldown as the spec's burst window, and spend five combo points on Eviscerate. Sinister Strike fills the rest of the energy bar as the combo-point builder. There's no opener-specific sequencing beyond that in the current simulated priority — Combat's rotation is close to its 1.12 shape, with the tree's talent changes (cheaper Sinister Strike, stronger off-hand, Blade Flurry cleave) affecting the numbers behind each swing rather than the order abilities are used in.
+Keep Slice and Dice up at all times: it is the first thing you cast, at any number of combo points, and from then on you refresh it at five combo points once under 3 seconds remain, so its attack-speed bonus never lapses. Spend combo points on Eviscerate at four or more; in this site's simulator that beat waiting for a fifth. Use Adrenaline Rush on cooldown as the burst window (Blade Flurry goes up alongside it whenever it is ready), and build with Backstab when a dagger is in your main hand: it hits for 150% weapon damage against Sinister Strike's 100%, and Puncturing Wounds adds crit and a chance at a second combo point to it. In this site's simulator the Backstab version beat the Sinister Strike one by about 10%. With a sword or mace in the main hand Backstab cannot be cast, and Sinister Strike builds instead. There is no opener-specific sequencing beyond that in the current simulated priority, and the tree's talent changes (cheaper Sinister Strike, stronger off-hand, Blade Flurry cleave) affect the numbers behind each swing rather than the order abilities are used in.
 
 ## Stat priority
 
@@ -44,7 +44,7 @@ The table above is this band's own simulation at level 60, re-run by the nightly
 
 ## Gear
 
-Prioritize agility and attack power first, then the merged hit and crit ratings the itemization change consolidated, then melee haste. Dual Wield Specialization makes off-hand weapon damage worth checking specifically when comparing two weapon options. A new stat reducing the target's dodge and parry chance may appear on gear as itemization fills in, which is worth tracking alongside hit rating for a spec that depends on landing every Sinister Strike. Specific pre-raid or raid-tier item recommendations aren't something this site can name with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
+Prioritize agility and attack power first, then the merged hit and crit ratings the itemization change consolidated, then melee haste. Dual Wield Specialization makes off-hand weapon damage worth checking specifically when comparing two weapon options. A new stat reducing the target's dodge and parry chance may appear on gear as itemization fills in, which is worth tracking alongside hit rating for a spec that depends on landing every Backstab or Sinister Strike. Specific pre-raid or raid-tier item recommendations aren't something this site can name with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
 
 ## Enchants and consumables
 
