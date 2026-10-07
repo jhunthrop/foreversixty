@@ -15192,9 +15192,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 226930,
-              "source_kind": "vendor",
-              "source": "Mokvar"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -15269,6 +15269,7 @@
             272411,
             14152,
             19595,
+            22066,
             228190,
             237815,
             22064,
@@ -19896,7 +19897,7 @@
           "strength": 1.0,
           "agility": 1.018,
           "crit": 0.038,
-          "hit": 0.065
+          "hit": 0.06
         }
       },
       {
@@ -19964,12 +19965,12 @@
               "source": "Maraudon: Princess Theradras"
             },
             "trinket1": {
-              "item_id": 249470,
+              "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 249469,
+              "item_id": 249470,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -20056,7 +20057,7 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 249469,
+              "item_id": 249470,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -20090,8 +20091,8 @@
             252469,
             19516,
             17713,
-            249470,
             249469,
+            249470,
             2163,
             6660,
             2100
@@ -20109,7 +20110,7 @@
             11862,
             19511,
             19120,
-            249469,
+            249470,
             2163,
             6660,
             2100
@@ -20118,9 +20119,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.228,
-          "crit": 0.47,
-          "hit": 0.073
+          "agility": 1.222,
+          "crit": 0.479,
+          "hit": 0.062
         }
       },
       {
@@ -20280,9 +20281,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 19120,
+              "item_id": 18465,
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "source": "Garona: A Study on Stealth and Treachery"
             },
             "main_hand": {
               "item_id": 21522,
@@ -20335,7 +20336,7 @@
             19510,
             19325,
             19289,
-            19120,
+            18465,
             21522,
             12590,
             12653
@@ -20344,9 +20345,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.298,
-          "crit": 0.601,
-          "hit": 0.097
+          "agility": 1.283,
+          "crit": 0.588,
+          "hit": 0.073
         }
       }
     ],

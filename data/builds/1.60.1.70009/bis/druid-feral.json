@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:04:58Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:27:59Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -530,8 +530,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.213055947,
-      "verify_run_seconds": 1.5054617719999999,
+      "weights_run_seconds": 2.421910126,
+      "verify_run_seconds": 1.136026289,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1135,8 +1135,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 3.213055947,
-      "verify_run_seconds": 1.49707803,
+      "weights_run_seconds": 2.421910126,
+      "verify_run_seconds": 1.153162341,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1777,8 +1777,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.7421039,
-      "verify_run_seconds": 1.854729264,
+      "weights_run_seconds": 2.831789034,
+      "verify_run_seconds": 1.394168205,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2420,8 +2420,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.7421039,
-      "verify_run_seconds": 1.82991258,
+      "weights_run_seconds": 2.831789034,
+      "verify_run_seconds": 1.39234429,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3058,8 +3058,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.976449324,
-      "verify_run_seconds": 1.804597129,
+      "weights_run_seconds": 2.935236531,
+      "verify_run_seconds": 1.363558711,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3696,8 +3696,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.976449324,
-      "verify_run_seconds": 1.815286701,
+      "weights_run_seconds": 2.935236531,
+      "verify_run_seconds": 1.363332431,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4347,8 +4347,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.957561193,
-      "verify_run_seconds": 2.041473576,
+      "weights_run_seconds": 2.986292504,
+      "verify_run_seconds": 1.506022618,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4538,7 +4538,7 @@
               "item_name": "Blood Guard's Leather Headband",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.3664357916124805
+              "dps_delta": -1.366435791612481
             }
           ]
         },
@@ -5000,8 +5000,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.957561193,
-      "verify_run_seconds": 1.961500258,
+      "weights_run_seconds": 2.986292504,
+      "verify_run_seconds": 1.5034508149999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5477,7 +5477,7 @@
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -0.19147692400921532
+              "dps_delta": -0.1914769240092148
             },
             {
               "item_id": 22472,
@@ -5717,8 +5717,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.033081965,
-      "verify_run_seconds": 2.053333347,
+      "weights_run_seconds": 3.003805456,
+      "verify_run_seconds": 1.59024799,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6194,7 +6194,7 @@
               "item_name": "Blood Guard's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.19147692400921584
+              "dps_delta": -0.19147692400921532
             },
             {
               "item_id": 22472,
@@ -6226,7 +6226,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.9671530039624
+              "dps_delta": -0.9671530039624004
             },
             {
               "item_id": 11669,
@@ -6259,7 +6259,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.07112199146859213
+              "dps_delta": -0.07112199146859265
             },
             {
               "item_id": 11669,
@@ -6433,8 +6433,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.033081965,
-      "verify_run_seconds": 2.011065571,
+      "weights_run_seconds": 3.003805456,
+      "verify_run_seconds": 1.572923327,
       "coverage": {
         "back": {
           "eligible": 451,

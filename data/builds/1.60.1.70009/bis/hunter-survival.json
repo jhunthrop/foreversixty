@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:07:33Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:29:56Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.310962882,
-      "verify_run_seconds": 1.788291973,
+      "weights_run_seconds": 2.459129713,
+      "verify_run_seconds": 1.353314731,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1213,8 +1213,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.310962882,
-      "verify_run_seconds": 1.7633364660000002,
+      "weights_run_seconds": 2.459129713,
+      "verify_run_seconds": 1.313570303,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1899,8 +1899,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.538242244,
-      "verify_run_seconds": 1.9055284829999999,
+      "weights_run_seconds": 2.617317437,
+      "verify_run_seconds": 1.4511462339999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2585,8 +2585,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.538242244,
-      "verify_run_seconds": 1.868916603,
+      "weights_run_seconds": 2.617317437,
+      "verify_run_seconds": 1.434765295,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3276,8 +3276,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.7475899310000003,
-      "verify_run_seconds": 1.988843955,
+      "weights_run_seconds": 2.832271274,
+      "verify_run_seconds": 1.517410111,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.7475899310000003,
-      "verify_run_seconds": 1.961686239,
+      "weights_run_seconds": 2.832271274,
+      "verify_run_seconds": 1.493249989,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4684,8 +4684,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.786885199,
-      "verify_run_seconds": 2.202860159,
+      "weights_run_seconds": 2.8358210010000002,
+      "verify_run_seconds": 1.6868408000000001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5402,8 +5402,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.786885199,
-      "verify_run_seconds": 2.325519198,
+      "weights_run_seconds": 2.8358210010000002,
+      "verify_run_seconds": 1.7581317730000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5706,7 +5706,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.3077566305093237
+              "dps_delta": -0.307756630509323
             },
             {
               "item_id": 23089,
@@ -6150,8 +6150,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.8239622349999998,
-      "verify_run_seconds": 2.2368680850000002,
+      "weights_run_seconds": 2.846188895,
+      "verify_run_seconds": 1.7109030079999998,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6455,7 +6455,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.3077566305093237
+              "dps_delta": -0.307756630509323
             },
             {
               "item_id": 23089,
@@ -6673,14 +6673,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "quest",
               "source": "The Path of the Conqueror",
-              "dps_delta": -0.0692885394729039
+              "dps_delta": -0.06928853947290409
             },
             {
               "item_id": 11862,
               "item_name": "White Bone Band",
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons",
-              "dps_delta": -0.08054965316120752
+              "dps_delta": -0.0805496531612077
             },
             {
               "item_id": 11669,
@@ -6893,8 +6893,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.8239622349999998,
-      "verify_run_seconds": 2.312431846,
+      "weights_run_seconds": 2.846188895,
+      "verify_run_seconds": 1.772008029,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:07:57Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:30:14Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.969375094,
-      "verify_run_seconds": 0.679882577,
+      "weights_run_seconds": 0.737563639,
+      "verify_run_seconds": 0.534388609,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.969375094,
-      "verify_run_seconds": 0.657249271,
+      "weights_run_seconds": 0.737563639,
+      "verify_run_seconds": 0.526151395,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1880,8 +1880,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.048173963,
-      "verify_run_seconds": 0.698415985,
+      "weights_run_seconds": 0.830439913,
+      "verify_run_seconds": 0.556659072,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2587,8 +2587,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.048173963,
-      "verify_run_seconds": 0.711943593,
+      "weights_run_seconds": 0.830439913,
+      "verify_run_seconds": 0.570092945,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3263,8 +3263,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.311307856,
-      "verify_run_seconds": 0.809296719,
+      "weights_run_seconds": 1.021071037,
+      "verify_run_seconds": 0.588989721,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.311307856,
-      "verify_run_seconds": 0.801067034,
+      "weights_run_seconds": 1.021071037,
+      "verify_run_seconds": 0.611543273,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4631,8 +4631,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.309829084,
-      "verify_run_seconds": 0.984825149,
+      "weights_run_seconds": 0.994479607,
+      "verify_run_seconds": 0.770405125,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5321,8 +5321,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.309829084,
-      "verify_run_seconds": 0.968008486,
+      "weights_run_seconds": 0.994479607,
+      "verify_run_seconds": 0.751208815,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5489,7 +5489,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 45.25346645044239,
+          "score": 45.253466450442396,
           "verified": true,
           "alternatives": [
             {
@@ -5512,7 +5512,7 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.6672713567331376
+              "dps_delta": -1.6672713567331399
             }
           ]
         },
@@ -5726,7 +5726,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.338879657683597
+              "dps_delta": -3.3388796576835995
             },
             {
               "item_id": 272393,
@@ -6057,8 +6057,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.352742243,
-      "verify_run_seconds": 0.898317481,
+      "weights_run_seconds": 1.016797795,
+      "verify_run_seconds": 0.739828597,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6225,7 +6225,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 45.25346645044239,
+          "score": 45.253466450442396,
           "verified": true,
           "alternatives": [
             {
@@ -6240,14 +6240,14 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.6672713567331376
+              "dps_delta": -1.6672713567331399
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -3.146331963154249
+              "dps_delta": -3.1463319631542515
             }
           ]
         },
@@ -6378,7 +6378,7 @@
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -5.10168867023658
+              "dps_delta": -5.101688670236578
             }
           ]
         },
@@ -6461,7 +6461,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.338879657683597
+              "dps_delta": -3.3388796576835995
             },
             {
               "item_id": 272393,
@@ -6790,8 +6790,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.352742243,
-      "verify_run_seconds": 0.894773628,
+      "weights_run_seconds": 1.016797795,
+      "verify_run_seconds": 0.698306358,
       "coverage": {
         "back": {
           "eligible": 450,

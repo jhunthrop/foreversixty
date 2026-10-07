@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:04:03Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:27:17Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -549,8 +549,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.845596595,
-      "verify_run_seconds": 0.772143248,
+      "weights_run_seconds": 1.407241362,
+      "verify_run_seconds": 0.609947739,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1177,8 +1177,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.845596595,
-      "verify_run_seconds": 0.706803164,
+      "weights_run_seconds": 1.407241362,
+      "verify_run_seconds": 0.559528414,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1830,8 +1830,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.216916783,
-      "verify_run_seconds": 0.784088363,
+      "weights_run_seconds": 1.6811087279999999,
+      "verify_run_seconds": 0.635728996,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2520,8 +2520,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 2.216916783,
-      "verify_run_seconds": 0.881267203,
+      "weights_run_seconds": 1.6811087279999999,
+      "verify_run_seconds": 0.706091061,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3172,8 +3172,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.348391002,
-      "verify_run_seconds": 0.842499309,
+      "weights_run_seconds": 1.800661931,
+      "verify_run_seconds": 0.619308579,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3823,8 +3823,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.348391002,
-      "verify_run_seconds": 0.831885247,
+      "weights_run_seconds": 1.800661931,
+      "verify_run_seconds": 0.63768057,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4081,7 +4081,7 @@
               "item_name": "Knight-Lieutenant's Crackling Leather Spaulders",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.057385100653525
+              "dps_delta": -1.0573851006535244
             },
             {
               "item_id": 17732,
@@ -4479,8 +4479,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.558648291,
-      "verify_run_seconds": 0.981991813,
+      "weights_run_seconds": 1.953713063,
+      "verify_run_seconds": 0.77731174,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5135,8 +5135,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.558648291,
-      "verify_run_seconds": 0.958322937,
+      "weights_run_seconds": 1.953713063,
+      "verify_run_seconds": 0.728575193,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5843,8 +5843,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 2.550146561,
-      "verify_run_seconds": 0.979956095,
+      "weights_run_seconds": 1.956379315,
+      "verify_run_seconds": 0.738600103,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6249,7 +6249,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.37737316225019,
+          "score": 40.37737316225018,
           "verified": true,
           "alternatives": [
             {
@@ -6257,14 +6257,14 @@
               "item_name": "Elunite Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1.8679705884065678
+              "dps_delta": -1.8679705884065665
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.1427187948988218
+              "dps_delta": -2.1427187948988204
             },
             {
               "item_id": 18405,
@@ -6557,8 +6557,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Amethyst War Staff"
       ],
-      "weights_run_seconds": 2.550146561,
-      "verify_run_seconds": 1.001733864,
+      "weights_run_seconds": 1.956379315,
+      "verify_run_seconds": 0.771640075,
       "coverage": {
         "back": {
           "eligible": 451,

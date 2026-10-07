@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:09:24Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:31:23Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -540,8 +540,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 2.414581564,
-      "verify_run_seconds": 1.08915523,
+      "weights_run_seconds": 1.83339938,
+      "verify_run_seconds": 0.839524307,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1152,8 +1152,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.414581564,
-      "verify_run_seconds": 1.159874339,
+      "weights_run_seconds": 1.83339938,
+      "verify_run_seconds": 0.896399122,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1795,8 +1795,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.355603124,
-      "verify_run_seconds": 1.350816963,
+      "weights_run_seconds": 1.827016307,
+      "verify_run_seconds": 1.050820498,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2444,8 +2444,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.355603124,
-      "verify_run_seconds": 1.32520245,
+      "weights_run_seconds": 1.827016307,
+      "verify_run_seconds": 1.037574339,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3067,8 +3067,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.326966867,
-      "verify_run_seconds": 1.161666405,
+      "weights_run_seconds": 1.823150829,
+      "verify_run_seconds": 0.917216112,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3689,8 +3689,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.326966867,
-      "verify_run_seconds": 1.169542876,
+      "weights_run_seconds": 1.823150829,
+      "verify_run_seconds": 0.910538234,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4345,8 +4345,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.502792204,
-      "verify_run_seconds": 1.28635937,
+      "weights_run_seconds": 1.8869912210000002,
+      "verify_run_seconds": 0.930269747,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4992,8 +4992,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.502792204,
-      "verify_run_seconds": 1.207129188,
+      "weights_run_seconds": 1.8869912210000002,
+      "verify_run_seconds": 0.891846346,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5295,7 +5295,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.100374067494362
+              "dps_delta": -1.1003740674943627
             },
             {
               "item_id": 23087,
@@ -5416,7 +5416,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.2502531029550777
+              "dps_delta": -0.25025310295507835
             },
             {
               "item_id": 15065,
@@ -5691,8 +5691,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.516934781,
-      "verify_run_seconds": 1.331824014,
+      "weights_run_seconds": 1.9395635119999999,
+      "verify_run_seconds": 0.96436077,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6122,7 +6122,7 @@
               "item_name": "Outrider's Plate Legguards",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.7840739218270857
+              "dps_delta": -0.7840739218270864
             },
             {
               "item_id": 14554,
@@ -6387,8 +6387,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.516934781,
-      "verify_run_seconds": 1.317740728,
+      "weights_run_seconds": 1.9395635119999999,
+      "verify_run_seconds": 1.022050286,
       "coverage": {
         "back": {
           "eligible": 449,

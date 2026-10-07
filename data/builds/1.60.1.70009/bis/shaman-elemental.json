@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "f5fe31003",
-  "generated_at": "2026-10-07T18:13:01Z",
+  "engine_version": "8f0fa961b",
+  "generated_at": "2026-10-07T18:34:08Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -543,8 +543,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 2.424526764,
-      "verify_run_seconds": 1.014116672,
+      "weights_run_seconds": 1.786322401,
+      "verify_run_seconds": 0.749369702,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1157,8 +1157,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.424526764,
-      "verify_run_seconds": 0.97706439,
+      "weights_run_seconds": 1.786322401,
+      "verify_run_seconds": 0.757876788,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1803,8 +1803,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.885674806,
-      "verify_run_seconds": 1.081554676,
+      "weights_run_seconds": 2.129143054,
+      "verify_run_seconds": 0.769017348,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2484,8 +2484,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 2.885674806,
-      "verify_run_seconds": 1.132024043,
+      "weights_run_seconds": 2.129143054,
+      "verify_run_seconds": 0.90600626,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3129,8 +3129,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.108927534,
-      "verify_run_seconds": 1.207495882,
+      "weights_run_seconds": 2.333898177,
+      "verify_run_seconds": 0.904945365,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3773,8 +3773,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.108927534,
-      "verify_run_seconds": 1.181226171,
+      "weights_run_seconds": 2.333898177,
+      "verify_run_seconds": 0.889765918,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4446,8 +4446,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.164109097,
-      "verify_run_seconds": 1.340612962,
+      "weights_run_seconds": 2.370137154,
+      "verify_run_seconds": 1.044013546,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5116,8 +5116,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.164109097,
-      "verify_run_seconds": 1.197755615,
+      "weights_run_seconds": 2.370137154,
+      "verify_run_seconds": 0.891300144,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5351,7 +5351,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 41.103586879585364,
+          "score": 41.10358687958536,
           "verified": true,
           "alternatives": [
             {
@@ -5359,14 +5359,14 @@
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.9576478515951135
+              "dps_delta": -0.9576478515951128
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.9822221295043475
+              "dps_delta": -0.982222129504347
             },
             {
               "item_id": 272958,
@@ -5384,7 +5384,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 26.164817912478853,
+          "score": 26.16481791247885,
           "verified": true,
           "alternatives": [
             {
@@ -5392,21 +5392,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.31691878779082167
+              "dps_delta": -0.31691878779082133
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5091647341353661
+              "dps_delta": -0.5091647341353658
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -0.7119068793707232
+              "dps_delta": -0.711906879370723
             }
           ]
         },
@@ -5824,8 +5824,8 @@
         "main_hand: Crackling Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.151554828,
-      "verify_run_seconds": 1.298614137,
+      "weights_run_seconds": 2.36438921,
+      "verify_run_seconds": 0.998689079,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6089,7 +6089,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 26.164817912478853,
+          "score": 26.16481791247885,
           "verified": true,
           "alternatives": [
             {
@@ -6097,14 +6097,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5091647341353661
+              "dps_delta": -0.5091647341353658
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -0.7119068793707232
+              "dps_delta": -0.711906879370723
             },
             {
               "item_id": 20697,
@@ -6465,7 +6465,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.24910874376017147
+              "dps_delta": -0.24910874376017086
             },
             {
               "item_id": 2243,
@@ -6538,8 +6538,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.151554828,
-      "verify_run_seconds": 1.177418722,
+      "weights_run_seconds": 2.36438921,
+      "verify_run_seconds": 0.906229394,
       "coverage": {
         "back": {
           "eligible": 451,
