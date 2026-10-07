@@ -48,3 +48,11 @@ Era data** as of this snapshot, so it is not committed. Checked on 2026-09-14:
 So: **talents are Forever, items are not.** Anything gear-shaped waits for the beta client.
 `statToRating` in that payload is Wowhead's own generic stat-to-rating map, present in Era
 too, and is not evidence that Forever uses a rating system; see `research/08-stats.md` §2.
+
+## wowhead-talents-2026-10-07.json
+
+The same endpoint fetched again on 2026-10-07, after the 1 October Fury rebuild and the other
+live talent changes Blizzard shipped as hotfixes. It is the reference copy for
+`design/reviews/2026-10-07-live-talents-overlay.md`; in CI the `fetch-wowhead-talents`
+subcommand saves a fresh copy to `data/builds/<build>/raw/wowhead-talents.json` and
+`normalize` lays it over the trait-table trees.

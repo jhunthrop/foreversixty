@@ -89,6 +89,11 @@ jobs:
       # which never reach the client files wago exports (4,712 of 11,239 items on
       # 2026-09-27). normalize, icons and simdb merge it in when it is present in raw/.
       - run: uv run python -m pipeline fetch-wowhead --build "$BUILD"
+      # Blizzard ships most Forever talent-tree changes as hotfixes, which the DB2 tables
+      # above never carry. Wowhead's talent payload is read off the live game: normalize
+      # takes the talent trees from it when raw/wowhead-talents.json exists, and falls
+      # back to the trait tables when it does not.
+      - run: uv run python -m pipeline fetch-wowhead-talents --build "$BUILD"
       - name: Restore the icon cache
         uses: actions/cache@v4
         with:
