@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "912a458f7",
-  "generated_at": "2026-10-07T15:35:59Z",
+  "engine_version": "48af0eeaa",
+  "generated_at": "2026-10-07T16:01:36Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -543,8 +543,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 2.659467868,
-      "verify_run_seconds": 1.019946941,
+      "weights_run_seconds": 2.486721484,
+      "verify_run_seconds": 1.043683334,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1157,8 +1157,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.659467868,
-      "verify_run_seconds": 0.992277609,
+      "weights_run_seconds": 2.486721484,
+      "verify_run_seconds": 0.963180012,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1804,8 +1804,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 3.041748807,
-      "verify_run_seconds": 1.170277542,
+      "weights_run_seconds": 2.84526933,
+      "verify_run_seconds": 1.119496154,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2486,8 +2486,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 3.041748807,
-      "verify_run_seconds": 1.255094172,
+      "weights_run_seconds": 2.84526933,
+      "verify_run_seconds": 1.194637964,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3128,8 +3128,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.316327946,
-      "verify_run_seconds": 1.25879984,
+      "weights_run_seconds": 3.140923136,
+      "verify_run_seconds": 1.183761924,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3771,8 +3771,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.316327946,
-      "verify_run_seconds": 1.120640711,
+      "weights_run_seconds": 3.140923136,
+      "verify_run_seconds": 1.118424656,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4448,8 +4448,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.342265689,
-      "verify_run_seconds": 1.319976177,
+      "weights_run_seconds": 3.164787537,
+      "verify_run_seconds": 1.261982835,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5123,8 +5123,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.342265689,
-      "verify_run_seconds": 1.32821357,
+      "weights_run_seconds": 3.164787537,
+      "verify_run_seconds": 1.251190579,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5830,8 +5830,8 @@
         "main_hand: Crackling Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.306558168,
-      "verify_run_seconds": 1.398453774,
+      "weights_run_seconds": 3.184585767,
+      "verify_run_seconds": 1.3563313240000001,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6072,7 +6072,7 @@
               "item_name": "Warlord's Mail Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.4031628609878462
+              "dps_delta": -0.40316286098784676
             },
             {
               "item_id": 227003,
@@ -6546,8 +6546,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.306558168,
-      "verify_run_seconds": 1.252704173,
+      "weights_run_seconds": 3.184585767,
+      "verify_run_seconds": 1.221734369,
       "coverage": {
         "back": {
           "eligible": 451,

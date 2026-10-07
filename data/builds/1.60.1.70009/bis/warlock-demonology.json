@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "912a458f7",
-  "generated_at": "2026-10-07T15:37:59Z",
+  "engine_version": "48af0eeaa",
+  "generated_at": "2026-10-07T16:03:30Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -901,8 +901,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.777954061,
-      "verify_run_seconds": 1.422192944,
+      "weights_run_seconds": 2.530699394,
+      "verify_run_seconds": 1.367980102,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1942,8 +1942,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.777954061,
-      "verify_run_seconds": 1.421766053,
+      "weights_run_seconds": 2.530699394,
+      "verify_run_seconds": 1.3462684010000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2662,8 +2662,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.692850657,
-      "verify_run_seconds": 1.331619312,
+      "weights_run_seconds": 2.5496204540000003,
+      "verify_run_seconds": 1.2730486540000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3381,8 +3381,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.692850657,
-      "verify_run_seconds": 1.329763078,
+      "weights_run_seconds": 2.5496204540000003,
+      "verify_run_seconds": 1.2614931,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4069,8 +4069,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.03609739,
-      "verify_run_seconds": 1.108171454,
+      "weights_run_seconds": 1.981609036,
+      "verify_run_seconds": 1.065601426,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4750,8 +4750,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.03609739,
-      "verify_run_seconds": 1.1208396,
+      "weights_run_seconds": 1.981609036,
+      "verify_run_seconds": 1.074242265,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5461,8 +5461,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.069526233,
-      "verify_run_seconds": 1.383201149,
+      "weights_run_seconds": 2.015747207,
+      "verify_run_seconds": 1.292046027,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6176,8 +6176,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.069526233,
-      "verify_run_seconds": 1.363607136,
+      "weights_run_seconds": 2.015747207,
+      "verify_run_seconds": 1.304583515,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6922,8 +6922,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.160530482,
-      "verify_run_seconds": 1.385033572,
+      "weights_run_seconds": 2.069031585,
+      "verify_run_seconds": 1.284128955,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7115,7 +7115,7 @@
               "item_name": "Champion's Dreadweave Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.3121895186664698
+              "dps_delta": -1.312189518666471
             },
             {
               "item_id": 226909,
@@ -7336,7 +7336,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 36.47664727647655,
+          "score": 36.476647276476555,
           "verified": true,
           "alternatives": [
             {
@@ -7352,14 +7352,14 @@
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -4.82728327446412
+              "dps_delta": -4.827283274464123
             },
             {
               "item_id": 17755,
               "item_name": "Satyrmane Sash",
               "source_kind": "dungeon",
               "source": "Maraudon: Lord Vyletongue",
-              "dps_delta": -6.124269394805616
+              "dps_delta": -6.124269394805618
             }
           ]
         },
@@ -7668,8 +7668,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.160530482,
-      "verify_run_seconds": 1.404761442,
+      "weights_run_seconds": 2.069031585,
+      "verify_run_seconds": 1.300890634,
       "coverage": {
         "back": {
           "eligible": 450,

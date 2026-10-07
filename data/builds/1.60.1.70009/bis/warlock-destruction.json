@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
-  "engine_version": "912a458f7",
-  "generated_at": "2026-10-07T15:38:36Z",
+  "engine_version": "48af0eeaa",
+  "generated_at": "2026-10-07T16:04:05Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -560,8 +560,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.78416691,
-      "verify_run_seconds": 1.301275091,
+      "weights_run_seconds": 2.637909254,
+      "verify_run_seconds": 1.248827299,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1201,8 +1201,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.78416691,
-      "verify_run_seconds": 1.300889414,
+      "weights_run_seconds": 2.637909254,
+      "verify_run_seconds": 1.245119323,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1920,8 +1920,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.72021721,
-      "verify_run_seconds": 1.412446122,
+      "weights_run_seconds": 2.616774732,
+      "verify_run_seconds": 1.2807507280000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2640,8 +2640,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.72021721,
-      "verify_run_seconds": 1.369801917,
+      "weights_run_seconds": 2.616774732,
+      "verify_run_seconds": 1.312293272,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3325,8 +3325,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 2.373212759,
-      "verify_run_seconds": 1.309429798,
+      "weights_run_seconds": 2.349456745,
+      "verify_run_seconds": 1.269025699,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4002,8 +4002,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 2.373212759,
-      "verify_run_seconds": 1.305758563,
+      "weights_run_seconds": 2.349456745,
+      "verify_run_seconds": 1.252555257,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4712,8 +4712,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.321045422,
-      "verify_run_seconds": 1.465241343,
+      "weights_run_seconds": 2.228487214,
+      "verify_run_seconds": 1.386617812,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5428,8 +5428,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.321045422,
-      "verify_run_seconds": 1.477320593,
+      "weights_run_seconds": 2.228487214,
+      "verify_run_seconds": 1.410232063,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6170,8 +6170,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.395550843,
-      "verify_run_seconds": 1.515216191,
+      "weights_run_seconds": 2.354749701,
+      "verify_run_seconds": 1.399394848,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6826,7 +6826,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -1.7980781281980858
+              "dps_delta": -1.7980781281980895
             },
             {
               "item_id": 1728,
@@ -6914,8 +6914,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.395550843,
-      "verify_run_seconds": 1.491304884,
+      "weights_run_seconds": 2.354749701,
+      "verify_run_seconds": 1.406313567,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "912a458f7",
-  "generated_at": "2026-10-07T15:40:17Z",
+  "engine_version": "48af0eeaa",
+  "generated_at": "2026-10-07T16:05:40Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -598,8 +598,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.796564003,
-      "verify_run_seconds": 1.605738069,
+      "weights_run_seconds": 2.649133387,
+      "verify_run_seconds": 1.552686102,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1271,8 +1271,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.796564003,
-      "verify_run_seconds": 1.597122052,
+      "weights_run_seconds": 2.649133387,
+      "verify_run_seconds": 1.568125447,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1964,8 +1964,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.130063014,
-      "verify_run_seconds": 1.743799445,
+      "weights_run_seconds": 3.028431558,
+      "verify_run_seconds": 1.655159622,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2663,8 +2663,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.130063014,
-      "verify_run_seconds": 1.7735391740000002,
+      "weights_run_seconds": 3.028431558,
+      "verify_run_seconds": 1.655574176,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3352,8 +3352,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.372868328,
-      "verify_run_seconds": 1.899562069,
+      "weights_run_seconds": 3.26411774,
+      "verify_run_seconds": 1.7492383230000002,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4043,8 +4043,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.372868328,
-      "verify_run_seconds": 1.898464881,
+      "weights_run_seconds": 3.26411774,
+      "verify_run_seconds": 1.817792659,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4761,8 +4761,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.543487979,
-      "verify_run_seconds": 2.5507157,
+      "weights_run_seconds": 3.449070201,
+      "verify_run_seconds": 2.430270721,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5483,8 +5483,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.543487979,
-      "verify_run_seconds": 2.492053664,
+      "weights_run_seconds": 3.449070201,
+      "verify_run_seconds": 2.361788619,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6227,8 +6227,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.7044882919999997,
-      "verify_run_seconds": 2.451027697,
+      "weights_run_seconds": 3.552397508,
+      "verify_run_seconds": 2.3810038049999998,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6661,7 +6661,7 @@
               "item_name": "General's Plate Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.0052893045639717
+              "dps_delta": -1.0052893045639726
             },
             {
               "item_id": 14554,
@@ -6978,8 +6978,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.7044882919999997,
-      "verify_run_seconds": 2.408280406,
+      "weights_run_seconds": 3.552397508,
+      "verify_run_seconds": 2.315423001,
       "coverage": {
         "back": {
           "eligible": 450,

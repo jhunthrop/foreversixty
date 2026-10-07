@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "912a458f7",
-  "generated_at": "2026-10-07T15:39:23Z",
+  "engine_version": "48af0eeaa",
+  "generated_at": "2026-10-07T16:04:49Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -545,8 +545,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.541950442,
-      "verify_run_seconds": 1.205679042,
+      "weights_run_seconds": 2.38282823,
+      "verify_run_seconds": 1.1781806989999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1190,8 +1190,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.541950442,
-      "verify_run_seconds": 1.181596348,
+      "weights_run_seconds": 2.38282823,
+      "verify_run_seconds": 1.08603882,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1858,8 +1858,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.914148142,
-      "verify_run_seconds": 1.530000113,
+      "weights_run_seconds": 2.811000949,
+      "verify_run_seconds": 1.424487325,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2532,8 +2532,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.914148142,
-      "verify_run_seconds": 1.518814605,
+      "weights_run_seconds": 2.811000949,
+      "verify_run_seconds": 1.455527897,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3205,8 +3205,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.347759215,
-      "verify_run_seconds": 1.526579218,
+      "weights_run_seconds": 3.168129368,
+      "verify_run_seconds": 1.430379776,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3878,8 +3878,8 @@
         "main_hand: Pendulum of Doom",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.347759215,
-      "verify_run_seconds": 1.493680812,
+      "weights_run_seconds": 3.168129368,
+      "verify_run_seconds": 1.398949024,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4565,8 +4565,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.5767368299999998,
-      "verify_run_seconds": 1.818266925,
+      "weights_run_seconds": 3.372729578,
+      "verify_run_seconds": 1.6810102630000001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5264,8 +5264,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.5767368299999998,
-      "verify_run_seconds": 1.8650169509999999,
+      "weights_run_seconds": 3.372729578,
+      "verify_run_seconds": 1.765248201,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5422,7 +5422,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 81.23269902955207,
+          "score": 81.23269902955208,
           "verified": true,
           "alternatives": [
             {
@@ -5430,14 +5430,14 @@
               "item_name": "Field Marshal's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.297201671715894
+              "dps_delta": -0.29720167171589473
             },
             {
               "item_id": 23314,
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.7827395408708512
+              "dps_delta": -0.7827395408708518
             },
             {
               "item_id": 226860,
@@ -5573,7 +5573,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.8660711655150191
+              "dps_delta": -0.8660711655150184
             },
             {
               "item_id": 23087,
@@ -5697,7 +5697,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.43483079796871904
+              "dps_delta": -0.4348307979687184
             },
             {
               "item_id": 231540,
@@ -5989,8 +5989,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.539801782,
-      "verify_run_seconds": 1.765956207,
+      "weights_run_seconds": 3.355608259,
+      "verify_run_seconds": 1.597059572,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6292,7 +6292,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.8660711655150191
+              "dps_delta": -0.8660711655150184
             },
             {
               "item_id": 23087,
@@ -6416,7 +6416,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.43483079796871904
+              "dps_delta": -0.4348307979687184
             },
             {
               "item_id": 231533,
@@ -6710,8 +6710,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.539801782,
-      "verify_run_seconds": 1.74292259,
+      "weights_run_seconds": 3.355608259,
+      "verify_run_seconds": 1.60616211,
       "coverage": {
         "back": {
           "eligible": 450,

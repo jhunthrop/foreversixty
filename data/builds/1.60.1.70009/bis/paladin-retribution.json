@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "912a458f7",
-  "generated_at": "2026-10-07T15:32:09Z",
+  "engine_version": "48af0eeaa",
+  "generated_at": "2026-10-07T15:57:55Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 2.640228135,
-      "verify_run_seconds": 1.239380002,
+      "weights_run_seconds": 2.467010543,
+      "verify_run_seconds": 1.140348155,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1153,8 +1153,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.640228135,
-      "verify_run_seconds": 1.340702137,
+      "weights_run_seconds": 2.467010543,
+      "verify_run_seconds": 1.22172511,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1796,8 +1796,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.553840954,
-      "verify_run_seconds": 1.496872078,
+      "weights_run_seconds": 2.428909375,
+      "verify_run_seconds": 1.395899155,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2445,8 +2445,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.553840954,
-      "verify_run_seconds": 1.479617874,
+      "weights_run_seconds": 2.428909375,
+      "verify_run_seconds": 1.372420558,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3074,8 +3074,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.556085221,
-      "verify_run_seconds": 1.2900702179999999,
+      "weights_run_seconds": 2.401431438,
+      "verify_run_seconds": 1.221710575,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3702,8 +3702,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.556085221,
-      "verify_run_seconds": 1.268546608,
+      "weights_run_seconds": 2.401431438,
+      "verify_run_seconds": 1.222525606,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4357,8 +4357,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 2.679298334,
-      "verify_run_seconds": 1.361455944,
+      "weights_run_seconds": 2.552574108,
+      "verify_run_seconds": 1.314625747,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5004,8 +5004,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.679298334,
-      "verify_run_seconds": 1.305884404,
+      "weights_run_seconds": 2.552574108,
+      "verify_run_seconds": 1.239146393,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5703,8 +5703,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 2.714057329,
-      "verify_run_seconds": 1.430630254,
+      "weights_run_seconds": 2.619031772,
+      "verify_run_seconds": 1.414677895,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6399,8 +6399,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.714057329,
-      "verify_run_seconds": 1.461505035,
+      "weights_run_seconds": 2.619031772,
+      "verify_run_seconds": 1.410008299,
       "coverage": {
         "back": {
           "eligible": 449,
