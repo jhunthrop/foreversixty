@@ -104,6 +104,13 @@ type fakeEngine struct {
 	// the band's own talent string, not the zero value (this lane's
 	// brief, defect 1).
 	TalentsSeen []string
+	// BuffsSeen and ConsumesSeen record req.Character.Buffs and
+	// .Consumes for every RunPlainDPS call, parallel to Calls.
+	BuffsSeen    [][]string
+	ConsumesSeen [][]string
+	// WeightsBuffsSeen records req.Character.Buffs for every RunWeights
+	// call, parallel to WeightsIterationsSeen.
+	WeightsBuffsSeen [][]string
 }
 
 // gearKey fingerprints a gear list as a stable, comparable string:
@@ -131,6 +138,8 @@ func (f *fakeEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
 	key := gearKey(req.Character.Gear)
 	f.Calls = append(f.Calls, key)
 	f.TalentsSeen = append(f.TalentsSeen, req.Character.Talents)
+	f.BuffsSeen = append(f.BuffsSeen, req.Character.Buffs)
+	f.ConsumesSeen = append(f.ConsumesSeen, req.Character.Consumes)
 	if f.FailGear != "" && key == f.FailGear {
 		return 0, fmt.Errorf("fakeEngine: forced failure for gear %s", key)
 	}
@@ -169,6 +178,7 @@ func (f *fakeEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64,
 
 func (f *fakeEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
 	f.WeightsIterationsSeen = append(f.WeightsIterationsSeen, req.Iterations)
+	f.WeightsBuffsSeen = append(f.WeightsBuffsSeen, req.Character.Buffs)
 	if f.FailWeights {
 		return nil, 0, fmt.Errorf("fakeEngine: forced weights failure")
 	}

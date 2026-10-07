@@ -13,6 +13,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
 // finishedSetEpsilon is how close a row's own measured DPS number must
@@ -1176,8 +1177,12 @@ func alternativeCarriesRealEvidence(alts []alternativeRow) bool {
 // the counts an honest reader needs (how many eligible items had no
 // known source).
 type bandReport struct {
-	Spec         string      `json:"spec"`
-	Band         int         `json:"band"`
+	Spec string `json:"spec"`
+	Band int    `json:"band"`
+	// Preset is the sim context the entry was measured under: "bare"
+	// (the character and its class kit only) or "raid" (the curated Phase
+	// 1 raid preset on top, level 60 only).
+	Preset       string      `json:"preset"`
 	Faction      string      `json:"faction"`
 	Race         string      `json:"race"`
 	Talents      string      `json:"talents"`
@@ -2034,13 +2039,16 @@ type specReport struct {
 	EngineVersion string       `json:"engine_version"`
 	GeneratedAt   string       `json:"generated_at"`
 	Bands         []bandReport `json:"bands"`
+	// Presets states what each non-bare preset applied, by name: the
+	// request-vocabulary ids with a label per id.
+	Presets map[string]request.ResolvedPreset `json:"presets"`
 }
 
 // writeSpecReport writes path per the specReport contract above.
 // GeneratedAt is RFC3339, in UTC so two runs on different machines (a
 // dev's laptop, the nightly workflow's runner) produce comparable
 // timestamps rather than each in its own local zone.
-func writeSpecReport(path, spec, build string, reports []bandReport) error {
+func writeSpecReport(path, spec, build string, reports []bandReport, presets map[string]request.ResolvedPreset) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
@@ -2050,6 +2058,7 @@ func writeSpecReport(path, spec, build string, reports []bandReport) error {
 		EngineVersion: enginever.Version,
 		GeneratedAt:   time.Now().UTC().Format(time.RFC3339),
 		Bands:         reports,
+		Presets:       presets,
 	}
 	b, err := json.MarshalIndent(out, "", "  ")
 	if err != nil {
@@ -2092,7 +2101,7 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 	for _, faction := range factions {
 		fmt.Fprintf(&b, "## %s\n\n", titleCase(faction))
 		for _, r := range byFaction[faction] {
-			fmt.Fprintf(&b, "### Band %d (%s, %s)\n\n", r.Band, r.Race, r.Talents)
+			fmt.Fprintf(&b, "### Band %d%s (%s, %s)\n\n", r.Band, presetHeadingSuffix(r.Preset), r.Race, r.Talents)
 			fmt.Fprintf(&b, "Set DPS (verified): %.1f. Weights run: %.1fs. Verify run: %.1fs. %d eligible items had no known source.\n\n",
 				r.SetDPS, r.WeightsRunSeconds, r.VerifyRunSeconds, r.NoSourceCount)
 
@@ -2280,4 +2289,12 @@ func nonNil(xs []string) []string {
 		return []string{}
 	}
 	return xs
+}
+
+// presetHeadingSuffix labels a non-bare entry's heading in the markdown.
+func presetHeadingSuffix(preset string) string {
+	if preset == presetBare {
+		return ""
+	}
+	return ", " + preset + " preset"
 }

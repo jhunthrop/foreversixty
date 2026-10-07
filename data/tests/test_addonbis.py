@@ -251,3 +251,14 @@ def test_a_band_with_no_weights_measured_yet_is_simply_empty(tmp_path):
     _write_bis(tmp_path, BUILD, "hunter-marksmanship", [_band(20, "alliance", [])])
     bis = build_bis(tmp_path, BUILD)
     assert bis["hunter-marksmanship"][0].weights == {}
+
+
+def test_a_raid_preset_entry_never_replaces_the_bare_one(tmp_path):
+    """Level 60 carries a bare and a raid entry per faction; the addon table is the bare one."""
+    bare = _band(60, "alliance", [{"slot": "head", "item_id": 111, "source_kind": "quest"}])
+    bare["preset"] = "bare"
+    raid = _band(60, "alliance", [{"slot": "head", "item_id": 999, "source_kind": "quest"}])
+    raid["preset"] = "raid"
+    _write_bis(tmp_path, BUILD, "hunter-marksmanship", [bare, raid])
+    band = build_bis(tmp_path, BUILD)["hunter-marksmanship"][0]
+    assert band.factions["alliance"]["head"].item_id == 111

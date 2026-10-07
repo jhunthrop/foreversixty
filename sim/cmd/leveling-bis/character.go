@@ -140,13 +140,20 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 // Every request the ranker builds - the DPS runs and the stat-weight
 // sweep alike - goes through it, so the published weights come from the
 // same buffed character the picks are scored on. A character that
-// already carries its own consumes or buffs keeps them.
+// already carries its own consumes or buffs keeps them. A spec ranked
+// under a preset (specInfo.Applied) carries the preset's buffs, debuffs
+// and consumables with the kit on top (request.ResolvedPreset.Layer).
 func withKit(spec specInfo, ch api.CharacterSpec) api.CharacterSpec {
+	kitConsumes := leveling.KitConsumes(spec.Spec, ch.Level)
+	kitBuffs := leveling.KitBuffs(spec.Spec, ch.Level)
+	if spec.Applied != nil {
+		kitBuffs, kitConsumes = spec.Applied.Layer(kitBuffs, kitConsumes)
+	}
 	if ch.Consumes == nil {
-		ch.Consumes = leveling.KitConsumes(spec.Spec, ch.Level)
+		ch.Consumes = kitConsumes
 	}
 	if ch.Buffs == nil {
-		ch.Buffs = leveling.KitBuffs(spec.Spec, ch.Level)
+		ch.Buffs = kitBuffs
 	}
 	return ch
 }

@@ -38,6 +38,9 @@ from pathlib import Path
 
 from pipeline.models import AddonBisBand, AddonBisItem
 
+#: The `preset` tag of a band entry measured on the bare character (sim/cmd/leveling-bis/preset.go).
+BARE_PRESET = "bare"
+
 #: sim/cmd/leveling-bis/main.go's own defaultBandsFlag: 20 through 60 step
 #: 10 (owner ruling 2026-09-29). Not the rotation ladder's seven rungs
 #: (pipeline.addonrotation.LEVEL_BANDS) -- the two lists are kept
@@ -157,6 +160,11 @@ def _spec_bis(path: Path) -> list[AddonBisBand]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     by_level: dict[int, dict[str, dict]] = {}
     for band in payload.get("bands", []):
+        # Level 60 also carries a "raid" entry per faction (leveling-bis's
+        # presets); the addon's table is the bare character's, and a later
+        # entry would otherwise overwrite the bare one.
+        if band.get("preset", BARE_PRESET) != BARE_PRESET:
+            continue
         by_level.setdefault(band["band"], {})[band["faction"]] = band
     return [_one_band(path, level, by_faction) for level, by_faction in sorted(by_level.items())]
 

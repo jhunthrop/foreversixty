@@ -20,6 +20,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
 // flatItem is one row of data/builds/<build>/items.json: the fields
@@ -1171,6 +1172,11 @@ type specInfo struct {
 	TreeIndex     int      `json:"tree_index"`
 	ReferenceStat string   `json:"reference_stat"`
 	WeightStats   []string `json:"weight_stats"`
+
+	// Applied is the resolved sim preset a rank pass's requests carry on
+	// top of the class kit - nil for the bare pass. It is not part of
+	// data/curated/specs.json.
+	Applied *request.ResolvedPreset `json:"-"`
 }
 
 func loadAllSpecs(repoRoot string) ([]specInfo, error) {
