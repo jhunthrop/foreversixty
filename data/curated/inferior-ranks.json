@@ -1,0 +1,30 @@
+{
+  "description": "Spell ids of ranks whose effect is weaker than the rank before them in the client. A player keeps the stronger rank, so the spellranks emitter marks these inferior: true and nothing reads them as the highest learned rank.",
+  "sources": {
+    "client": "the effect amounts in data/builds/<build>/spellconst/<class>.json, the client's own numbers, compared rank against the rank before it within one id family (classic ids below 100000, Forever copies above)"
+  },
+  "floor_note": "A floor, not a census: an inferior rank missing here is treated as the highest learned rank. The sweep that built this list is in design/reviews/2026-10-07-inferior-ranks.md.",
+  "inferior": [
+    {
+      "id": 14322,
+      "class": "hunter",
+      "spell": "Aspect of the Hawk",
+      "rank": 6,
+      "basis": "55 ranged attack power against rank 5's 90 (14321), client 1.60.1.70009; the live Forever tooltip says 55 too"
+    },
+    {
+      "id": 14325,
+      "class": "hunter",
+      "spell": "Hunter's Mark",
+      "rank": 4,
+      "basis": "71 ranged attack power taken against rank 3's 98 (14324), client 1.60.1.70009; the Forever copy 1213268 of the same rank carries 110 and is the sound id"
+    },
+    {
+      "id": 20906,
+      "class": "hunter",
+      "spell": "Trueshot Aura",
+      "rank": 5,
+      "basis": "50 ranged attack power against rank 4's 75 (20905), client 1.60.1.70009"
+    }
+  ]
+}

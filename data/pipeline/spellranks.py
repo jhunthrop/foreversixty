@@ -44,6 +44,11 @@ SPELLRANKS_FILE = "spellranks.json"
 #: the engine's `core.IncludeAQ` is on.
 BOOK_RANKS_FILE = "book-ranks.json"
 
+#: The curated statement of ranks whose effect is weaker than the rank before them in
+#: the client; a rank whose id is listed is written `inferior: true`, and the rewrite
+#: never resolves a cast to it.
+INFERIOR_RANKS_FILE = "inferior-ranks.json"
+
 #: data/curated, found from this file rather than the working directory.
 CURATED_DIR = Path(__file__).resolve().parent.parent / "curated"
 
@@ -125,8 +130,19 @@ def load_book_ids(curated: Path) -> frozenset[int]:
     return frozenset(int(book["id"]) for book in books)
 
 
+def load_inferior_ids(curated: Path) -> frozenset[int]:
+    """The ids `curated/inferior-ranks.json` names as ranks weaker than their predecessor."""
+    path = curated / INFERIOR_RANKS_FILE
+    if not path.exists():
+        raise SystemExit(f"no {path}; the spellranks emitter marks inferior ranks from it")
+    inferior = json.loads(path.read_text(encoding="utf-8"))["inferior"]
+    return frozenset(int(entry["id"]) for entry in inferior)
+
+
 def _spell_ranks_for_class(
-    spells: dict[str, SpellConstant], book_ids: frozenset[int] = frozenset()
+    spells: dict[str, SpellConstant],
+    book_ids: frozenset[int] = frozenset(),
+    inferior_ids: frozenset[int] = frozenset(),
 ) -> dict[str, list[SpellRank]]:
     names: dict[str, list[SpellRank]] = {}
     for name, entries in sorted(_entries_by_name(spells).items()):
@@ -134,17 +150,21 @@ def _spell_ranks_for_class(
         if len(chain) <= 1 and all(level == 0 for _id, _rank, level, _castable in chain):
             continue
         names[name] = [
-            SpellRank(id=i, rank=r, level=lvl, book=i in book_ids) for i, r, lvl, _castable in chain
+            SpellRank(id=i, rank=r, level=lvl, book=i in book_ids, inferior=i in inferior_ids)
+            for i, r, lvl, _castable in chain
         ]
     return names
 
 
 def build_spell_ranks(
-    build: str, records: list[ClassSpellConstants], book_ids: frozenset[int] = frozenset()
+    build: str,
+    records: list[ClassSpellConstants],
+    book_ids: frozenset[int] = frozenset(),
+    inferior_ids: frozenset[int] = frozenset(),
 ) -> SpellRanksFile:
     """The pure transform: every class's spell constants, no file I/O."""
     classes = {
-        record.class_slug: _spell_ranks_for_class(record.spells, book_ids)
+        record.class_slug: _spell_ranks_for_class(record.spells, book_ids, inferior_ids)
         for record in sorted(records, key=lambda r: r.class_slug)
     }
     return SpellRanksFile(build=build, classes=classes)
@@ -158,7 +178,9 @@ def write_spell_ranks(
     if not spellconst_dir.exists():
         raise SystemExit(f"no {spellconst_dir}; run `python -m pipeline simconst` first")
     records = load_class_spell_constants(spellconst_dir)
-    result = build_spell_ranks(build, records, load_book_ids(curated))
+    result = build_spell_ranks(
+        build, records, load_book_ids(curated), load_inferior_ids(curated)
+    )
     path = build_dir / SPELLRANKS_FILE
     _write(result.model_dump(exclude_defaults=True), path, sort_keys=True)
     refresh_manifest(build_dir)

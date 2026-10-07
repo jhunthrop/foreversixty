@@ -58,6 +58,10 @@ type spellRankRow struct {
 	// Book marks an Ahn'Qiraj book rank (data/curated/book-ranks.json): a
 	// rank no trainer teaches, learnable only while core.IncludeAQ is on.
 	Book bool `json:"book"`
+	// Inferior marks a rank whose effect is weaker than the rank before it
+	// in the client (data/curated/inferior-ranks.json): a player keeps the
+	// stronger rank, so it is never the highest learned rank.
+	Inferior bool `json:"inferior"`
 }
 
 // RankAvailable reports whether a spellranks.json row is a rank a level-60
@@ -78,7 +82,11 @@ type spellRanksFile struct {
 // the level that rank is learned at.
 type rankTier struct {
 	level int
-	ids   []int32
+	// ids is every id of the rank, so a lookup by any of them finds the chain.
+	ids []int32
+	// castable is the ids of the rank that are not inferior: what a rewrite
+	// may resolve to. Empty when the whole rank is inferior.
+	castable []int32
 }
 
 // rankChain is one spell's rank progression, tiers sorted ascending by
@@ -135,6 +143,7 @@ func parseSpellRanks(b []byte) (map[string]map[int32]*rankChain, error) {
 func buildRankChain(class string, rows []spellRankRow) *rankChain {
 	levelByRank := make(map[int]int)
 	idsByRank := make(map[int][]int32)
+	castableByRank := make(map[int][]int32)
 	var ranks []int
 	for _, row := range rows {
 		if row.Rank <= 0 || !RankAvailable(row.Book) {
@@ -145,6 +154,9 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 			ranks = append(ranks, row.Rank)
 		}
 		idsByRank[row.Rank] = append(idsByRank[row.Rank], row.ID)
+		if !row.Inferior {
+			castableByRank[row.Rank] = append(castableByRank[row.Rank], row.ID)
+		}
 	}
 	if len(ranks) == 0 {
 		return singleTierOverrideChain(class, rows)
@@ -152,7 +164,7 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 	sort.Ints(ranks)
 	tiers := make([]rankTier, len(ranks))
 	for i, r := range ranks {
-		tiers[i] = rankTier{level: levelByRank[r], ids: idsByRank[r]}
+		tiers[i] = rankTier{level: levelByRank[r], ids: idsByRank[r], castable: castableByRank[r]}
 	}
 	return &rankChain{tiers: tiers}
 }
@@ -200,7 +212,7 @@ func singleTierOverrideChain(class string, rows []spellRankRow) *rankChain {
 	}
 	for _, row := range rows {
 		if level, ok := overrides[row.ID]; ok {
-			return &rankChain{tiers: []rankTier{{level: level, ids: []int32{row.ID}}}}
+			return &rankChain{tiers: []rankTier{{level: level, ids: []int32{row.ID}, castable: []int32{row.ID}}}}
 		}
 	}
 	return nil
@@ -220,6 +232,10 @@ var spellRankTable = sync.OnceValues(func() (map[string]map[int32]*rankChain, er
 // ranked spell this table tracks for class (an unranked ability, or
 // one the embed's class has no entry for at all): the rotation leaves
 // it exactly as authored.
+//
+// A rank flagged inferior is never the answer: its tier is skipped, so the
+// result is the strongest learnable rank, and in a tier that mixes an
+// inferior id with a sound one the sound id wins.
 //
 // A tier below the character's level whose ids do not include the
 // original id (the character out-ranks the tier the rotation was
@@ -254,13 +270,13 @@ func highestLearnedIn(byID map[int32]*rankChain, id int32, level int) (newID int
 	}
 	for i := len(chain.tiers) - 1; i >= 0; i-- {
 		tier := chain.tiers[i]
-		if tier.level > level {
+		if tier.level > level || len(tier.castable) == 0 {
 			continue
 		}
-		if slices.Contains(tier.ids, id) {
+		if slices.Contains(tier.castable, id) {
 			return id, true
 		}
-		return sameBandOrFirst(tier.ids, id), true
+		return sameBandOrFirst(tier.castable, id), true
 	}
 	return 0, false
 }

@@ -948,6 +948,8 @@ class SpellRank(BaseModel):
     level: int
     #: An Ahn'Qiraj book rank (curated/book-ranks.json). Written only when true.
     book: bool = False
+    #: A rank weaker than the one before it (curated/inferior-ranks.json). Written only when true.
+    inferior: bool = False
 
 
 class SpellRanksFile(BaseModel):

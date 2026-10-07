@@ -238,3 +238,50 @@ def test_named_book_ids_are_flagged_level_sixty_ranks_in_the_active_build():
             if book_id in rows:
                 assert rows[book_id].get("book") is True, f"{path.parent.name}: {book_id} not flagged"
                 assert rows[book_id]["level"] == 60
+
+
+# --- inferior ranks -------------------------------------------------------------------------
+
+INFERIOR_IDS = {14322, 14325, 20906}  # Aspect of the Hawk 6, Hunter's Mark 4, Trueshot Aura 5
+
+
+def test_the_curated_inferior_list_names_the_hawk_rank_with_its_basis():
+    entries = json.loads((CURATED / "inferior-ranks.json").read_text())["inferior"]
+    hawk = next(entry for entry in entries if entry["id"] == 14322)
+    assert hawk["spell"] == "Aspect of the Hawk"
+    assert hawk["rank"] == 6
+    assert "55" in hawk["basis"] and "90" in hawk["basis"]
+
+
+def test_the_curated_inferior_list_names_every_swept_rank():
+    assert INFERIOR_IDS <= spellranks.load_inferior_ids(CURATED)
+
+
+def test_inferior_ids_are_marked_and_every_other_rank_is_not():
+    spells = {
+        "1": _spell("Odd Aspect", rank=5, level=48, cost=1),
+        "2": _spell("Odd Aspect", rank=6, level=58, cost=1),
+    }
+    ranks = _spell_ranks_for_class(spells, inferior_ids=frozenset({2}))["Odd Aspect"]
+    assert [(r.id, r.inferior) for r in ranks] == [(1, False), (2, True)]
+
+
+def test_the_inferior_flag_is_written_only_when_true():
+    spells = {
+        "1": _spell("Odd Aspect", rank=5, level=48, cost=1),
+        "2": _spell("Odd Aspect", rank=6, level=58, cost=1),
+    }
+    file = spellranks.SpellRanksFile(
+        build="9.9.9.9", classes={"hunter": _spell_ranks_for_class(spells, inferior_ids=frozenset({2}))}
+    )
+    rows = file.model_dump(exclude_defaults=True)["classes"]["hunter"]["Odd Aspect"]
+    assert rows == [{"id": 1, "rank": 5, "level": 48}, {"id": 2, "rank": 6, "level": 58, "inferior": True}]
+
+
+def test_the_active_builds_hawk_rank_6_is_flagged_inferior():
+    active = json.loads((BUILDS.parent.parent / "web/src/data/active-build.json").read_text())
+    path = BUILDS / active["build"] / "spellranks.json"
+    hawk = json.loads(path.read_text())["classes"]["hunter"]["Aspect of the Hawk"]
+    rows = {row["id"]: row for row in hawk}
+    assert rows[14322].get("inferior") is True
+    assert not rows[14321].get("inferior")
