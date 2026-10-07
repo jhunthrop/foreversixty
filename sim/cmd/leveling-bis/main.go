@@ -810,6 +810,13 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// the sweep's own sample happened to land significant -
 				// see bandReport.HasteOnItems' own doc.
 				report.HasteOnItems = bandHasHasteCandidate(pool.Scored, pool.NoSource)
+				// hit_to_cap: where the character the weights were measured
+				// on stands against the miss table (hitToCap's own doc).
+				profile, err := runner.HitProfileFor(wreq)
+				if err != nil {
+					return fmt.Errorf("band %d hit profile: %w", band, err)
+				}
+				report.HitToCap = hitToCapFromProfile(profile)
 				reports = append(reports, report)
 				if pass.name == presetBare {
 					previous[f.name] = picks

@@ -68,14 +68,18 @@ type classItem struct {
 	ItemLevel     int                `json:"item_level"`
 	Armor         int                `json:"armor"`
 	Stats         map[string]float64 `json:"stats"`
-	DamageMin     float64            `json:"damage_min"`
-	DamageMax     float64            `json:"damage_max"`
-	Speed         float64            `json:"speed"`
-	DPS           float64            `json:"dps"`
-	TwoHand       bool               `json:"two_hand"`
-	EffectText    string             `json:"effect_text"`
-	SetID         *int               `json:"set_id"`
-	Unique        bool               `json:"unique"`
+	// PercentStats is the share of each rating-family Stats entry an
+	// on-equip aura states as a literal percent (data/pipeline/models.py
+	// GearItem.percent_stats); the rest of the entry is rating points.
+	PercentStats map[string]float64 `json:"percent_stats"`
+	DamageMin    float64            `json:"damage_min"`
+	DamageMax    float64            `json:"damage_max"`
+	Speed        float64            `json:"speed"`
+	DPS          float64            `json:"dps"`
+	TwoHand      bool               `json:"two_hand"`
+	EffectText   string             `json:"effect_text"`
+	SetID        *int               `json:"set_id"`
+	Unique       bool               `json:"unique"`
 	// WeaponType is a weapon row's own bow/gun/crossbow/wand/thrown (or
 	// melee axe/mace/polearm/sword/staff/fist/dagger) kind - this
 	// lane's brief (bis-ranker-integrity-6), item 9, corrected per the
@@ -141,14 +145,18 @@ type candidate struct {
 	WeaponType         string
 	FactionRestriction string
 	Stats              map[string]float64
-	DamageMin          float64
-	DamageMax          float64
-	Speed              float64
-	DPS                float64
-	TwoHand            bool
-	Unique             bool
-	Slots              []string
-	SetID              *int
+	// PercentStats is classItem.PercentStats carried through: the
+	// literal-percent share of Stats' rating-family entries, which
+	// convertRatingStats leaves undivided.
+	PercentStats map[string]float64
+	DamageMin    float64
+	DamageMax    float64
+	Speed        float64
+	DPS          float64
+	TwoHand      bool
+	Unique       bool
+	Slots        []string
+	SetID        *int
 	// EffectText is the item's own on-hit/on-use/proc description
 	// (data/builds/<build>/items/<class>.json's own effect_text), empty
 	// for an item with no such effect. Carried through from
@@ -263,6 +271,7 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 			WeaponType:             ci.WeaponType,
 			FactionRestriction:     factionOfRestriction(fi.FactionRestriction),
 			Stats:                  ci.Stats,
+			PercentStats:           ci.PercentStats,
 			DamageMin:              ci.DamageMin,
 			DamageMax:              ci.DamageMax,
 			Speed:                  ci.Speed,
@@ -411,22 +420,23 @@ func loadRatingFactors(buildDir string) (ratingFactors, error) {
 
 // convertRatingStats returns a NEW map (this package's immutability
 // rule; the same map a classItem/candidate carries may still be read
-// elsewhere for what the client's own tooltip states) with every
-// ratingFactors key's amount divided down from a combat-rating number
-// to the flat percentage data/pipeline/simdb/ratings.py's own
-// convert_rating_stats already produced for simdb.bin - the unit
-// score() (score.go) and every weight it dots against actually share.
-// A stat not in factors (agility, spell power, and so on - anything
-// the client never itemises through ItemModType 31/32/12-15) passes
-// through unchanged.
-func convertRatingStats(stats map[string]float64, factors ratingFactors) map[string]float64 {
+// elsewhere for what the client's own tooltip states) in engine percent:
+// every ratingFactors key's combat-rating share of the amount is divided
+// by its factor, exactly as data/pipeline/simdb/ratings.py's
+// convert_rating_stats does for simdb.bin, and percent's share (the
+// literal percentage an on-equip aura states - Fury Visor's 1 hit, 1
+// crit) is added back untouched. A stat not in factors (agility, spell
+// power, and so on) passes through unchanged.
+func convertRatingStats(stats, percent map[string]float64, factors ratingFactors) map[string]float64 {
 	out := make(map[string]float64, len(stats))
 	for stat, amount := range stats {
-		if factor, ok := factors[stat]; ok {
-			out[stat] = amount / factor
+		factor, ok := factors[stat]
+		if !ok {
+			out[stat] = amount
 			continue
 		}
-		out[stat] = amount
+		literal := percent[stat]
+		out[stat] = (amount-literal)/factor + literal
 	}
 	return out
 }
@@ -442,7 +452,7 @@ func convertRatingStats(stats map[string]float64, factors ratingFactors) map[str
 func convertCandidateRatings(items []candidate, factors ratingFactors) []candidate {
 	out := make([]candidate, len(items))
 	for i, c := range items {
-		c.Stats = convertRatingStats(c.Stats, factors)
+		c.Stats = convertRatingStats(c.Stats, c.PercentStats, factors)
 		out[i] = c
 	}
 	return out

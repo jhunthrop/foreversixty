@@ -1322,7 +1322,7 @@ func writeGameTable(t *testing.T, buildDir, contents string) {
 
 func TestConvertRatingStatsDividesRatingFamilyStatsOnly(t *testing.T) {
 	stats := map[string]float64{"crit": 14, "hit": 20, "agility": 10, "spell_power": 5}
-	got := convertRatingStats(stats, wantRatingFactors)
+	got := convertRatingStats(stats, nil, wantRatingFactors)
 	want := map[string]float64{"crit": 1, "hit": 2, "agility": 10, "spell_power": 5}
 	for stat, w := range want {
 		if got[stat] != w {

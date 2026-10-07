@@ -55,6 +55,9 @@ type engineRunner interface {
 	// read out of the weights run's raw result rather than the
 	// normalised map[string]api.StatWeight alone.
 	RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error)
+	// HitProfileFor reads where req's character stands against the miss
+	// table's caps, without simulating: the distance hit_to_cap publishes.
+	HitProfileFor(req api.SimRequest) (core.HitProfile, error)
 }
 
 // realEngine is the engineRunner backed by the actual wowsims-classic
@@ -70,6 +73,10 @@ func (realEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64, er
 
 func (realEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
 	return runWeights(req)
+}
+
+func (realEngine) HitProfileFor(req api.SimRequest) (core.HitProfile, error) {
+	return hitProfileFor(req)
 }
 
 // registerEngine registers every spec's agent factory exactly once
@@ -153,6 +160,21 @@ func runWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) 
 		return nil, 0, fmt.Errorf("reading the reference stat's raw weight: %w", err)
 	}
 	return out, referenceDPSPerPoint, nil
+}
+
+// hitProfileFor builds req (a weights request) exactly as runWeights does
+// and reads the character's hit profile from the engine, so the published
+// distance to the cap is measured on the character the weights were.
+func hitProfileFor(req api.SimRequest) (core.HitProfile, error) {
+	registerEngine()
+	engineReq, err := request.BuildWeights(req, request.Options{OpenIterations: true})
+	if err != nil {
+		return core.HitProfile{}, fmt.Errorf("building the weights request: %w", err)
+	}
+	if err := simdb.AttachWeights(engineReq); err != nil {
+		return core.HitProfile{}, fmt.Errorf("attaching the item database: %w", err)
+	}
+	return core.ComputeHitProfile(engineReq)
 }
 
 // referenceStatRawWeight is the engine's own raw (un-normalised) DPS
