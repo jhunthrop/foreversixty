@@ -118,7 +118,7 @@
       }
     },
     {
-      "notes": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops. It is not a spec-locked ability -- every Warlock spec keeps this curse up.",
+      "notes": "Bane of Agony ramps up over its duration, so it is refreshed the moment it drops. It is not a spec-locked ability -- every Warlock spec keeps this curse up.",
       "action": {
         "condition": {
           "not": {
