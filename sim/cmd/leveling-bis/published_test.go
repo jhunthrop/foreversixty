@@ -188,7 +188,12 @@ func checkSetDPSMonotonicAcrossBands(t testing.TB, path string, bands []bandRepo
 		if ok && band.SetDPS < prev.SetDPS && !prev.SetDPSPartial && !band.SetDPSPartial {
 			t.Errorf("%s: %s %s: set_dps fell from %.2f (band %d) to %.2f (band %d) with no published reason (set_dps_partial is false on both bands) - tenet 8: a real drop needs a reason, never silent", path, band.Spec, band.Faction, prev.SetDPS, prev.Band, band.SetDPS, band.Band)
 		}
-		previous[band.Faction] = band
+		// A raid entry is compared against the bare entry of its own band
+		// (written just before it) and never becomes the baseline the
+		// next band is measured against.
+		if band.Preset != presetRaid {
+			previous[band.Faction] = band
+		}
 	}
 }
 
@@ -600,5 +605,26 @@ func TestCheckSetDPSMonotonicAcrossBandsIgnoresOtherFactionsAndIncreases(t *test
 	checkSetDPSMonotonicAcrossBands(fake, "testdata/synthetic.json", bands)
 	if len(fake.errors) != 0 {
 		t.Fatalf("checkSetDPSMonotonicAcrossBands errors = %v, want none: every band increased within its own faction", fake.errors)
+	}
+}
+
+// TestCheckSetDPSMonotonicAcrossBandsComparesARaidEntryToItsBareTwin: the
+// raid entry is held to the bare entry of the same band, and does not
+// become the baseline the next band is compared against.
+func TestCheckSetDPSMonotonicAcrossBandsComparesARaidEntryToItsBareTwin(t *testing.T) {
+	bands := []bandReport{
+		{Spec: "hunter-marksmanship", Band: 60, Faction: "alliance", Preset: presetBare, SetDPS: 100},
+		{Spec: "hunter-marksmanship", Band: 60, Faction: "alliance", Preset: presetRaid, SetDPS: 150},
+	}
+	fake := &fakeTB{}
+	checkSetDPSMonotonicAcrossBands(fake, "testdata/synthetic.json", bands)
+	if len(fake.errors) != 0 {
+		t.Fatalf("errors = %v, want none: the raid entry is above its bare twin", fake.errors)
+	}
+	bands[1].SetDPS = 80
+	fake = &fakeTB{}
+	checkSetDPSMonotonicAcrossBands(fake, "testdata/synthetic.json", bands)
+	if len(fake.errors) != 1 {
+		t.Fatalf("errors = %v, want one: a raid entry below its bare twin is a bug", fake.errors)
 	}
 }

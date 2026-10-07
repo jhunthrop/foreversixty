@@ -183,3 +183,22 @@ func TestRaidPassDoesNotDisturbTheNextBandsDiffOrWeights(t *testing.T) {
 		}
 	}
 }
+
+// Readers that take the first entry for a band and faction (the API's
+// LoadBand, talent-search, rotation-search, seedguild) must find the bare
+// one, so it is always written before the raid one.
+func TestBareEntriesAreWrittenBeforeTheirRaidTwins(t *testing.T) {
+	report := runPresetSpec(t, presetFake(), []int{50, 60})
+	firstSeen := map[string]string{}
+	for _, b := range report.Bands {
+		key := b.Faction + "/" + string(rune('0'+b.Band/10))
+		if _, ok := firstSeen[key]; !ok {
+			firstSeen[key] = b.Preset
+		}
+	}
+	for key, preset := range firstSeen {
+		if preset != presetBare {
+			t.Errorf("%s: the first entry is %q, want bare", key, preset)
+		}
+	}
+}
