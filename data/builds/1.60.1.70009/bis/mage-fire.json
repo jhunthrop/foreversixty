@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:28:22Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:31:02Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.025289509,
-      "verify_run_seconds": 0.751418947,
+      "weights_run_seconds": 1.247079815,
+      "verify_run_seconds": 0.855705478,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1183,8 +1183,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.025289509,
-      "verify_run_seconds": 0.743308394,
+      "weights_run_seconds": 1.247079815,
+      "verify_run_seconds": 0.883134982,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.157042332,
-      "verify_run_seconds": 0.863713154,
+      "weights_run_seconds": 1.251635659,
+      "verify_run_seconds": 0.933832773,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2589,8 +2589,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.157042332,
-      "verify_run_seconds": 0.836688183,
+      "weights_run_seconds": 1.251635659,
+      "verify_run_seconds": 0.951202373,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3256,8 +3256,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.144433771,
-      "verify_run_seconds": 0.7501373,
+      "weights_run_seconds": 1.270892986,
+      "verify_run_seconds": 0.839754227,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3926,8 +3926,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.144433771,
-      "verify_run_seconds": 0.733827467,
+      "weights_run_seconds": 1.270892986,
+      "verify_run_seconds": 0.796474842,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4497,14 +4497,14 @@
               "dps_delta": 0
             }
           ],
-          "faction_note": "Smoking Heart of the Mountain (from horde) and alliance's own pick Frozen Heart of the Mountain measure statistically indistinguishable on gnome (0.00 ± 3.11 vs 1.18 ± 0.65 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Mark of the Chosen (from horde) and alliance's own pick Frozen Heart of the Mountain measure statistically indistinguishable on gnome (0.00 ± 3.11 vs 1.18 ± 0.65 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "trinket2",
-          "item_id": 11811,
-          "item_name": "Smoking Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
+          "item_id": 17774,
+          "item_name": "Mark of the Chosen",
+          "source": "The Pariah's Instructions",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -4515,7 +4515,7 @@
               "dps_delta": 0
             }
           ],
-          "faction_note": "Molten Heart of the Mountain (from horde) and alliance's own pick Smoking Heart of the Mountain measure statistically indistinguishable on gnome (0.00 ± 3.26 vs 0.00 ± 3.26 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Smoking Heart of the Mountain (from horde) and alliance's own pick Mark of the Chosen measure statistically indistinguishable on gnome (0.00 ± 3.26 vs 0.00 ± 3.26 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -4618,11 +4618,11 @@
         "legs: Spellshock Leggings",
         "finger2: Cyclopean Band",
         "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Smoking Heart of the Mountain",
+        "trinket2: Mark of the Chosen",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.107051955,
-      "verify_run_seconds": 0.891635269,
+      "weights_run_seconds": 1.2474947,
+      "verify_run_seconds": 0.987356065,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5172,6 +5172,38 @@
         },
         {
           "slot": "trinket1",
+          "item_id": 17774,
+          "item_name": "Mark of the Chosen",
+          "source": "The Pariah's Instructions",
+          "source_kind": "quest",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 11302,
+              "item_name": "Uther's Strength",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 19120,
+              "item_name": "Rune of the Guard Captain",
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            }
+          ],
+          "faction_note": "Frozen Heart of the Mountain (from alliance) and horde's own pick Mark of the Chosen measure statistically indistinguishable on orc (-0.04 ± 2.58 vs 0.00 ± 2.88 DPS gain) -- each faction's own tournament winner kept"
+        },
+        {
+          "slot": "trinket2",
           "item_id": 11811,
           "item_name": "Smoking Heart of the Mountain",
           "source": "Enchanting",
@@ -5200,39 +5232,7 @@
               "dps_delta": 0
             }
           ],
-          "faction_note": "Frozen Heart of the Mountain (from alliance) and horde's own pick Smoking Heart of the Mountain measure statistically indistinguishable on orc (-0.04 ± 2.58 vs 0.00 ± 2.88 DPS gain) -- each faction's own tournament winner kept"
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 249470,
-          "item_name": "Molten Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19120,
-              "item_name": "Rune of the Guard Captain",
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            }
-          ],
-          "faction_note": "Smoking Heart of the Mountain (from alliance) and horde's own pick Molten Heart of the Mountain measure statistically indistinguishable on orc (0.00 ± 2.88 vs 0.00 ± 2.88 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Mark of the Chosen (from alliance) and horde's own pick Smoking Heart of the Mountain measure statistically indistinguishable on orc (0.00 ± 2.88 vs 0.00 ± 2.88 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -5333,13 +5333,13 @@
         "waist: Ban'thok Sash",
         "legs: Spellshock Leggings",
         "finger2: Cyclopean Band",
-        "trinket1: Smoking Heart of the Mountain",
-        "trinket2: Molten Heart of the Mountain",
+        "trinket1: Mark of the Chosen",
+        "trinket2: Smoking Heart of the Mountain",
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.107051955,
-      "verify_run_seconds": 0.905656421,
+      "weights_run_seconds": 1.2474947,
+      "verify_run_seconds": 1.022089034,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5570,7 +5570,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 46.08955938171438,
+          "score": 46.08955938171437,
           "verified": true,
           "alternatives": [
             {
@@ -5578,14 +5578,14 @@
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.9410543945320018
+              "dps_delta": -1.9410543945320002
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.7458331630347814
+              "dps_delta": -2.7458331630347796
             },
             {
               "item_id": 272103,
@@ -6074,8 +6074,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.242605632,
-      "verify_run_seconds": 0.898482163,
+      "weights_run_seconds": 1.372137819,
+      "verify_run_seconds": 0.923120441,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6257,7 +6257,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.402259906931993
+              "dps_delta": -1.4022599069319945
             },
             {
               "item_id": 18727,
@@ -6815,8 +6815,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.242605632,
-      "verify_run_seconds": 0.883825445,
+      "weights_run_seconds": 1.372137819,
+      "verify_run_seconds": 0.986005709,
       "coverage": {
         "back": {
           "eligible": 450,

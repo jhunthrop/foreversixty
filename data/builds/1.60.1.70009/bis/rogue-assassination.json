@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:30:25Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:33:22Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -566,8 +566,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.159803941,
-      "verify_run_seconds": 1.385167987,
+      "weights_run_seconds": 2.440934607,
+      "verify_run_seconds": 1.548933995,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1214,8 +1214,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.159803941,
-      "verify_run_seconds": 1.303109919,
+      "weights_run_seconds": 2.440934607,
+      "verify_run_seconds": 1.444342943,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.315319807,
-      "verify_run_seconds": 1.387985998,
+      "weights_run_seconds": 2.563348165,
+      "verify_run_seconds": 1.5218409849999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2579,8 +2579,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.315319807,
-      "verify_run_seconds": 1.36853842,
+      "weights_run_seconds": 2.563348165,
+      "verify_run_seconds": 1.5163324839999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3139,9 +3139,15 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 474.46000000000004,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 10761,
+              "item_name": "Coldrage Dagger",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
+              "dps_delta": 0
+            },
             {
               "item_id": 868,
               "item_name": "Ardent Custodian",
@@ -3155,13 +3161,6 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.13463790648744
-            },
-            {
-              "item_id": 274753,
-              "item_name": "Jhordy's Misplaced Screwdriver",
-              "source_kind": "vendor",
-              "source": "Rettrick",
-              "dps_delta": -1.1712592963359232
             }
           ]
         },
@@ -3268,8 +3267,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.36158179,
-      "verify_run_seconds": 1.4148160619999999,
+      "weights_run_seconds": 2.557900926,
+      "verify_run_seconds": 1.543652936,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3835,9 +3834,15 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 474.46000000000004,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 10761,
+              "item_name": "Coldrage Dagger",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
+              "dps_delta": 0
+            },
             {
               "item_id": 868,
               "item_name": "Ardent Custodian",
@@ -3851,13 +3856,6 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.13463790648744
-            },
-            {
-              "item_id": 274753,
-              "item_name": "Jhordy's Misplaced Screwdriver",
-              "source_kind": "vendor",
-              "source": "Rettrick",
-              "dps_delta": -1.1712592963359232
             }
           ]
         },
@@ -3964,8 +3962,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.36158179,
-      "verify_run_seconds": 1.411033359,
+      "weights_run_seconds": 2.557900926,
+      "verify_run_seconds": 1.542489667,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4145,7 +4143,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.6771828547456249
+              "dps_delta": -0.6771828547456248
             }
           ]
         },
@@ -4526,10 +4524,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 11811,
-              "item_name": "Smoking Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 17774,
+              "item_name": "Mark of the Chosen",
+              "source_kind": "quest",
+              "source": "The Pariah's Instructions",
               "dps_delta": 0
             }
           ],
@@ -4671,8 +4669,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.516226603,
-      "verify_run_seconds": 1.925361284,
+      "weights_run_seconds": 2.762850943,
+      "verify_run_seconds": 2.150258221,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5373,8 +5371,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.516226603,
-      "verify_run_seconds": 1.921225046,
+      "weights_run_seconds": 2.762850943,
+      "verify_run_seconds": 2.087810906,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6119,8 +6117,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.4701616570000002,
-      "verify_run_seconds": 1.8619135039999999,
+      "weights_run_seconds": 2.800467685,
+      "verify_run_seconds": 2.04958265,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6865,8 +6863,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.4701616570000002,
-      "verify_run_seconds": 1.860386995,
+      "weights_run_seconds": 2.800467685,
+      "verify_run_seconds": 2.029694738,
       "coverage": {
         "back": {
           "eligible": 451,

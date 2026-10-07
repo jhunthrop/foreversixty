@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:27:57Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:30:35Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -553,8 +553,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.953433653,
-      "verify_run_seconds": 0.715193973,
+      "weights_run_seconds": 1.149264926,
+      "verify_run_seconds": 0.835032461,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1183,8 +1183,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.953433653,
-      "verify_run_seconds": 0.682623318,
+      "weights_run_seconds": 1.149264926,
+      "verify_run_seconds": 0.773098482,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1884,8 +1884,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.024042573,
-      "verify_run_seconds": 0.715850832,
+      "weights_run_seconds": 1.192763966,
+      "verify_run_seconds": 0.824463841,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.024042573,
-      "verify_run_seconds": 0.794096613,
+      "weights_run_seconds": 1.192763966,
+      "verify_run_seconds": 0.86828596,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3270,8 +3270,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.282754426,
-      "verify_run_seconds": 0.786881241,
+      "weights_run_seconds": 1.466766506,
+      "verify_run_seconds": 0.902051198,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3938,8 +3938,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.282754426,
-      "verify_run_seconds": 0.808635442,
+      "weights_run_seconds": 1.466766506,
+      "verify_run_seconds": 0.891758924,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4514,10 +4514,10 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 11811,
-          "item_name": "Smoking Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
+          "item_id": 17774,
+          "item_name": "Mark of the Chosen",
+          "source": "The Pariah's Instructions",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -4631,11 +4631,11 @@
         "legs: Spellshock Leggings",
         "finger2: Cyclopean Band",
         "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Smoking Heart of the Mountain",
+        "trinket2: Mark of the Chosen",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.268376368,
-      "verify_run_seconds": 0.972211651,
+      "weights_run_seconds": 1.458458105,
+      "verify_run_seconds": 1.102602504,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5320,8 +5320,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.268376368,
-      "verify_run_seconds": 0.977856225,
+      "weights_run_seconds": 1.458458105,
+      "verify_run_seconds": 1.108130972,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5488,7 +5488,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 47.39871068729438,
+          "score": 47.398710687294376,
           "verified": true,
           "alternatives": [
             {
@@ -5510,7 +5510,7 @@
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -3.592767630218681
+              "dps_delta": -3.5927676302186784
             }
           ]
         },
@@ -5586,7 +5586,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 29.64418946433221,
+          "score": 29.644189464332207,
           "verified": true,
           "alternatives": [
             {
@@ -5594,21 +5594,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -2.106176660806906
+              "dps_delta": -2.106176660806905
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.4895107067885154
+              "dps_delta": -2.4895107067885145
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -3.5454773610810113
+              "dps_delta": -3.54547736108101
             }
           ]
         },
@@ -6057,8 +6057,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.345674387,
-      "verify_run_seconds": 0.910364495,
+      "weights_run_seconds": 1.520605267,
+      "verify_run_seconds": 1.016103795,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6225,7 +6225,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 47.39871068729438,
+          "score": 47.398710687294376,
           "verified": true,
           "alternatives": [
             {
@@ -6240,14 +6240,14 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.8479416450118689
+              "dps_delta": -1.8479416450118642
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -3.592767630218681
+              "dps_delta": -3.5927676302186784
             }
           ]
         },
@@ -6322,7 +6322,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 29.64418946433221,
+          "score": 29.644189464332207,
           "verified": true,
           "alternatives": [
             {
@@ -6330,21 +6330,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -2.106176660806906
+              "dps_delta": -2.106176660806905
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.4895107067885154
+              "dps_delta": -2.4895107067885145
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -3.4092637128350916
+              "dps_delta": -3.4092637128350907
             }
           ]
         },
@@ -6494,7 +6494,7 @@
               "item_name": "General's Silk Trousers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.07168009734831386
+              "dps_delta": -0.0716800973483162
             },
             {
               "item_id": 227107,
@@ -6791,8 +6791,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.345674387,
-      "verify_run_seconds": 0.923749505,
+      "weights_run_seconds": 1.520605267,
+      "verify_run_seconds": 1.023748183,
       "coverage": {
         "back": {
           "eligible": 450,

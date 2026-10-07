@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:36:32Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:40:17Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -598,8 +598,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.459347835,
-      "verify_run_seconds": 1.463137871,
+      "weights_run_seconds": 2.796564003,
+      "verify_run_seconds": 1.605738069,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1271,8 +1271,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.459347835,
-      "verify_run_seconds": 1.483625277,
+      "weights_run_seconds": 2.796564003,
+      "verify_run_seconds": 1.597122052,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1964,8 +1964,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.739715346,
-      "verify_run_seconds": 1.511335331,
+      "weights_run_seconds": 3.130063014,
+      "verify_run_seconds": 1.743799445,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2663,8 +2663,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.739715346,
-      "verify_run_seconds": 1.599363545,
+      "weights_run_seconds": 3.130063014,
+      "verify_run_seconds": 1.7735391740000002,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3223,16 +3223,8 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 474.46000000000004,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 868,
-              "item_name": "Ardent Custodian",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
             {
               "item_id": 1982,
               "item_name": "Nightblade",
@@ -3245,6 +3237,13 @@
               "item_name": "Bonebiter",
               "source_kind": "quest",
               "source": "In the Name of the Light",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 10761,
+              "item_name": "Coldrage Dagger",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
               "dps_delta": 0
             }
           ]
@@ -3353,8 +3352,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.016364017,
-      "verify_run_seconds": 1.62413863,
+      "weights_run_seconds": 3.372868328,
+      "verify_run_seconds": 1.899562069,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3915,21 +3914,20 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 474.46000000000004,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 868,
-              "item_name": "Ardent Custodian",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0
-            },
             {
               "item_id": 1982,
               "item_name": "Nightblade",
               "source_kind": "world_drop",
               "source": "World drop",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 10761,
+              "item_name": "Coldrage Dagger",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
               "dps_delta": 0
             },
             {
@@ -4045,8 +4043,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.016364017,
-      "verify_run_seconds": 1.678530173,
+      "weights_run_seconds": 3.372868328,
+      "verify_run_seconds": 1.898464881,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4763,8 +4761,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.144354263,
-      "verify_run_seconds": 2.264919005,
+      "weights_run_seconds": 3.543487979,
+      "verify_run_seconds": 2.5507157,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5485,8 +5483,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.144354263,
-      "verify_run_seconds": 2.250508329,
+      "weights_run_seconds": 3.543487979,
+      "verify_run_seconds": 2.492053664,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5643,7 +5641,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 80.18002592194416,
+          "score": 80.18002592194418,
           "verified": true,
           "alternatives": [
             {
@@ -5651,14 +5649,14 @@
               "item_name": "Field Marshal's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.3714749916266811
+              "dps_delta": -0.3714749916266821
             },
             {
               "item_id": 23314,
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.1553655671400112
+              "dps_delta": -1.155365567140012
             },
             {
               "item_id": 226860,
@@ -5913,14 +5911,14 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.7125681090387267
+              "dps_delta": -0.7125681090387277
             },
             {
               "item_id": 231540,
               "item_name": "Marshal's Plate Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.0052893045639706
+              "dps_delta": -1.0052893045639717
             },
             {
               "item_id": 14554,
@@ -6229,8 +6227,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.302015359,
-      "verify_run_seconds": 2.213430505,
+      "weights_run_seconds": 3.7044882919999997,
+      "verify_run_seconds": 2.451027697,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6387,7 +6385,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 80.18002592194416,
+          "score": 80.18002592194418,
           "verified": true,
           "alternatives": [
             {
@@ -6395,14 +6393,14 @@
               "item_name": "Warlord's Plate Headpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.3714749916266811
+              "dps_delta": -0.3714749916266821
             },
             {
               "item_id": 227043,
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.1553655671400112
+              "dps_delta": -1.155365567140012
             },
             {
               "item_id": 226860,
@@ -6980,8 +6978,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.302015359,
-      "verify_run_seconds": 2.149972599,
+      "weights_run_seconds": 3.7044882919999997,
+      "verify_run_seconds": 2.408280406,
       "coverage": {
         "back": {
           "eligible": 450,

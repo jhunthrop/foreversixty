@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:33:29Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:36:50Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -516,8 +516,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.249530054,
-      "verify_run_seconds": 1.15972239,
+      "weights_run_seconds": 2.539477556,
+      "verify_run_seconds": 1.348686651,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1103,8 +1103,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 2.249530054,
-      "verify_run_seconds": 1.00303489,
+      "weights_run_seconds": 2.539477556,
+      "verify_run_seconds": 1.161966815,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1747,8 +1747,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.328542551,
-      "verify_run_seconds": 1.365290834,
+      "weights_run_seconds": 2.552330218,
+      "verify_run_seconds": 1.524896543,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2392,8 +2392,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.328542551,
-      "verify_run_seconds": 1.210107657,
+      "weights_run_seconds": 2.552330218,
+      "verify_run_seconds": 1.347898508,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3016,8 +3016,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.715956866,
-      "verify_run_seconds": 1.304041493,
+      "weights_run_seconds": 3.041022545,
+      "verify_run_seconds": 1.443234222,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3178,6 +3178,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 250537,
+              "item_name": "Hard Gold Coif",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -0.2608895689253715
+            },
+            {
               "item_id": 10008,
               "item_name": "White Bandit Mask",
               "source_kind": "crafted",
@@ -3190,14 +3197,6 @@
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
               "dps_delta": -0.3432821984754075
-            },
-            {
-              "item_id": 250537,
-              "item_name": "Hard Gold Coif",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -1.848960778559956,
-              "verified": true
             }
           ]
         },
@@ -3235,36 +3234,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 4737,
-          "item_name": "Imperial Leather Spaulders",
-          "source": "Uldaman: Ancient Treasure",
-          "source_kind": "dungeon",
-          "sim_dps": 124.45486570296518,
+          "item_id": 250539,
+          "item_name": "Hard Gold Pauldrons",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 21.999999999999893,
           "verified": true,
-          "swap_note": "beat the scored pick Hard Gold Pauldrons (id 250539) in the sim: +1.2 DPS (124.5 vs 123.2 set DPS)",
-          "dps_delta": 1.2443503318758076,
           "alternatives": [
+            {
+              "item_id": 4737,
+              "item_name": "Imperial Leather Spaulders",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.16478525910007177
+            },
             {
               "item_id": 15698,
               "item_name": "Wrangling Spaulders",
               "source_kind": "quest",
               "source": "Kodo Roundup",
-              "dps_delta": -0.0475570647422053
+              "dps_delta": -0.21234232384227705
             },
             {
               "item_id": 274751,
               "item_name": "Sunburn Spaulders",
               "source_kind": "vendor",
               "source": "Rettrick",
-              "dps_delta": -0.05558228220703683
-            },
-            {
-              "item_id": 250539,
-              "item_name": "Hard Gold Pauldrons",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -1.2443503318758076,
-              "verified": true
+              "dps_delta": -0.2203675413071086
             }
           ]
         },
@@ -3296,7 +3292,7 @@
               "item_name": "Dark Hooded Cape",
               "source_kind": "world",
               "source": "Nimar the Slayer",
-              "dps_delta": -1.0739242491667085,
+              "dps_delta": -2.141487369984702,
               "verified": true
             }
           ]
@@ -3471,6 +3467,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 6423,
+              "item_name": "Blackforge Greaves",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.11253191188832586
+            },
+            {
               "item_id": 252564,
               "item_name": "Skirmisher's Mail Boots",
               "source_kind": "crafted",
@@ -3483,14 +3486,6 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.2598993885844822
-            },
-            {
-              "item_id": 6423,
-              "item_name": "Blackforge Greaves",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -1.1715306196634714,
-              "verified": true
             }
           ]
         },
@@ -3502,8 +3497,8 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.7 DPS over it",
-          "dps_delta": 1.7167342107461963,
+          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.8 DPS (122.4 vs 120.6 set DPS)",
+          "dps_delta": 1.753303619076874,
           "ties": [
             {
               "item_id": 13095,
@@ -3564,10 +3559,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 9425,
-          "item_name": "Pendulum of Doom",
-          "source": "Uldaman: Shadowforge Relic Hunter",
+          "item_id": 7717,
+          "item_name": "Ravager",
+          "source": "Scarlet Monastery: Herod",
           "source_kind": "dungeon",
+          "sim_dps": 122.38469220450541,
           "verified": true,
           "alternatives": [
             {
@@ -3578,19 +3574,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 9425,
+              "item_name": "Pendulum of Doom",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Shadowforge Relic Hunter",
+              "dps_delta": 0
+            },
+            {
               "item_id": 272081,
               "item_name": "Darkspear Raider's Reaper",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": 0
-            },
-            {
-              "item_id": 870,
-              "item_name": "Fiery War Axe",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -5.835935580632906,
-              "verified": true
             }
           ]
         },
@@ -3606,7 +3601,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 124.45486570296518,
+      "set_dps": 122.38469220450541,
       "no_source_count": 555,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -3628,7 +3623,7 @@
       "new_at_band": [
         "head: Raging Berserker's Helm",
         "neck: Zealous Shadowshard Pendant",
-        "shoulder: Imperial Leather Spaulders",
+        "shoulder: Hard Gold Pauldrons",
         "back: First Sergeant's Cloak",
         "chest: Kolkar Marauder Chain",
         "wrist: Branded Leather Bracers",
@@ -3638,10 +3633,10 @@
         "feet: Prowler's Leather Shoes",
         "finger1: Mark of Kern",
         "finger2: Assault Band",
-        "main_hand: Pendulum of Doom"
+        "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.715956866,
-      "verify_run_seconds": 1.253107328,
+      "weights_run_seconds": 3.041022545,
+      "verify_run_seconds": 1.159251343,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4210,10 +4205,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 11811,
-              "item_name": "Smoking Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 17774,
+              "item_name": "Mark of the Chosen",
+              "source_kind": "quest",
+              "source": "The Pariah's Instructions",
               "dps_delta": 0
             }
           ],
@@ -4297,8 +4292,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 2.742194926,
-      "verify_run_seconds": 1.477062192,
+      "weights_run_seconds": 3.026347373,
+      "verify_run_seconds": 1.652901837,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4948,8 +4943,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.742194926,
-      "verify_run_seconds": 1.367030285,
+      "weights_run_seconds": 3.026347373,
+      "verify_run_seconds": 1.564139422,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5600,8 +5595,16 @@
         {
           "slot": "ranged",
           "verified": false,
-          "effect_unmodelled": true,
-          "empty_reason": "effect_not_modelled"
+          "alternatives": [
+            {
+              "item_id": 272432,
+              "item_name": "Totem of the Storm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
+            }
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 230.0801321211394,
@@ -5639,8 +5642,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.681855566,
-      "verify_run_seconds": 1.37021243,
+      "weights_run_seconds": 2.942412355,
+      "verify_run_seconds": 1.530012051,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6286,8 +6289,16 @@
         {
           "slot": "ranged",
           "verified": false,
-          "effect_unmodelled": true,
-          "empty_reason": "effect_not_modelled"
+          "alternatives": [
+            {
+              "item_id": 272432,
+              "item_name": "Totem of the Storm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
+            }
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 212.27251813448817,
@@ -6325,8 +6336,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.681855566,
-      "verify_run_seconds": 1.250196857,
+      "weights_run_seconds": 2.942412355,
+      "verify_run_seconds": 1.3968574120000001,
       "coverage": {
         "back": {
           "eligible": 451,

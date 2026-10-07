@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:31:15Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:34:16Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -565,8 +565,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.6390361799999997,
-      "verify_run_seconds": 1.802106971,
+      "weights_run_seconds": 2.655969592,
+      "verify_run_seconds": 1.9107244140000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1210,8 +1210,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.6390361799999997,
-      "verify_run_seconds": 1.815873615,
+      "weights_run_seconds": 2.655969592,
+      "verify_run_seconds": 1.9176950659999998,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1891,8 +1891,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.83304725,
-      "verify_run_seconds": 1.865838894,
+      "weights_run_seconds": 2.690429632,
+      "verify_run_seconds": 1.9463177310000002,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.83304725,
-      "verify_run_seconds": 1.8785451119999999,
+      "weights_run_seconds": 2.690429632,
+      "verify_run_seconds": 1.973553442,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3139,10 +3139,8 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 474.46000000000004,
+          "sim_dps": 106.5733557446132,
           "verified": true,
-          "swap_note": "confirmed by the sim against Jhordy's Misplaced Screwdriver (id 274753): kept the pick, +18.1 DPS (106.6 vs 88.5 set DPS)",
-          "dps_delta": 18.059150682717274,
           "alternatives": [
             {
               "item_id": 6831,
@@ -3152,18 +3150,19 @@
               "dps_delta": -2.9379724316113602
             },
             {
-              "item_id": 10761,
-              "item_name": "Coldrage Dagger",
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Amnennar the Coldbringer",
-              "dps_delta": -2.9379724316113602
-            },
-            {
               "item_id": 272085,
               "item_name": "Darkspear Insurgent's Spellblade",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": -3.4531619101403668
+            },
+            {
+              "item_id": 10761,
+              "item_name": "Coldrage Dagger",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
+              "dps_delta": -5.756186729921183,
+              "verified": true
             }
           ]
         },
@@ -3269,8 +3268,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.792440472,
-      "verify_run_seconds": 1.856160856,
+      "weights_run_seconds": 2.8195296389999998,
+      "verify_run_seconds": 1.9728751450000002,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3837,10 +3836,8 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 474.46000000000004,
+          "sim_dps": 105.44169883845909,
           "verified": true,
-          "swap_note": "confirmed by the sim against Jhordy's Misplaced Screwdriver (id 274753): kept the pick, +17.9 DPS (105.4 vs 87.5 set DPS)",
-          "dps_delta": 17.938157454246237,
           "alternatives": [
             {
               "item_id": 19544,
@@ -3850,18 +3847,19 @@
               "dps_delta": -2.9160135676154053
             },
             {
-              "item_id": 10761,
-              "item_name": "Coldrage Dagger",
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Amnennar the Coldbringer",
-              "dps_delta": -2.9379724316113602
-            },
-            {
               "item_id": 272085,
               "item_name": "Darkspear Insurgent's Spellblade",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": -3.4531619101403668
+            },
+            {
+              "item_id": 10761,
+              "item_name": "Coldrage Dagger",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Amnennar the Coldbringer",
+              "dps_delta": -6.226363401589197,
+              "verified": true
             }
           ]
         },
@@ -3967,8 +3965,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.792440472,
-      "verify_run_seconds": 1.882502781,
+      "weights_run_seconds": 2.8195296389999998,
+      "verify_run_seconds": 1.957141646,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4148,7 +4146,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.8996153024007749
+              "dps_delta": -0.8996153024007747
             }
           ]
         },
@@ -4530,10 +4528,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 11811,
-              "item_name": "Smoking Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 17774,
+              "item_name": "Mark of the Chosen",
+              "source_kind": "quest",
+              "source": "The Pariah's Instructions",
               "dps_delta": -1.0901785672688789,
               "verified": true
             }
@@ -4676,8 +4674,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.8311145939999998,
-      "verify_run_seconds": 2.347639262,
+      "weights_run_seconds": 2.872465527,
+      "verify_run_seconds": 2.424745407,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5102,7 +5100,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.3957963508387983
+              "dps_delta": -0.3957963508387985
             },
             {
               "item_id": 6690,
@@ -5380,8 +5378,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.8311145939999998,
-      "verify_run_seconds": 2.391415884,
+      "weights_run_seconds": 2.872465527,
+      "verify_run_seconds": 2.428752283,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5901,14 +5899,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "quest",
               "source": "The Path of the Conqueror",
-              "dps_delta": -0.06330716045443828
+              "dps_delta": -0.06330716045443847
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.25817498797866567
+              "dps_delta": -0.25817498797866584
             },
             {
               "item_id": 11669,
@@ -6122,8 +6120,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.867750997,
-      "verify_run_seconds": 2.306557373,
+      "weights_run_seconds": 2.858052716,
+      "verify_run_seconds": 2.395076864,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6866,8 +6864,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.867750997,
-      "verify_run_seconds": 2.326339215,
+      "weights_run_seconds": 2.858052716,
+      "verify_run_seconds": 2.415796798,
       "coverage": {
         "back": {
           "eligible": 451,

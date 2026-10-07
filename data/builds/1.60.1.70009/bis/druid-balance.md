@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 5222000000000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 27.6. Weights run: 1.8s. Verify run: 0.7s. 193 eligible items had no known source.
+Set DPS (verified): 27.6. Weights run: 2.2s. Verify run: 0.8s. 193 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.856 ± 0.005, crit=0.034 ± 0.002 per rating point (14 rating = 1%, 0.470 per %), hit=0.088 ± 0.001 per rating point (10 rating = 1%, 0.878 per %), spell_haste=0.278 ± 0.016, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.034 ± 0.001, arcane_power=0.966 ± 0.003
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 193, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 5222211015000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 51.1. Weights run: 2.3s. Verify run: 0.8s. 322 eligible items had no known source.
+Set DPS (verified): 51.1. Weights run: 2.5s. Verify run: 0.9s. 322 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.613 ± 0.007, crit=0.051 ± 0.003 per rating point (14 rating = 1%, 0.707 per %), hit=0.105 ± 0.001 per rating point (10 rating = 1%, 1.053 per %), spell_haste=-0.797 ± 0.084, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.411 ± 0.001, arcane_power=0.589 ± 0.002
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 5222211015401050-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 75.4. Weights run: 2.4s. Verify run: 0.9s. 438 eligible items had no known source.
+Set DPS (verified): 75.4. Weights run: 2.7s. Verify run: 1.0s. 438 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.403 ± 0.006, crit=0.070 ± 0.004 per rating point (14 rating = 1%, 0.975 per %), hit=0.139 ± 0.002 per rating point (10 rating = 1%, 1.392 per %), spell_haste=0.265 ± 0.038, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.415 ± 0.001, arcane_power=0.585 ± 0.003
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 438, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 5222211015401051-00000000000000000000-5400000000000000)
 
-Set DPS (verified): 97.3. Weights run: 2.6s. Verify run: 1.0s. 577 eligible items had no known source.
+Set DPS (verified): 97.3. Weights run: 2.9s. Verify run: 1.0s. 577 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.575 ± 0.008, crit=0.078 ± 0.006 per rating point (14 rating = 1%, 1.092 per %), hit=0.211 ± 0.003 per rating point (10 rating = 1%, 2.114 per %), spell_haste=not significant (0.012 ± 0.088), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.507 ± 0.001, arcane_power=0.493 ± 0.003
 
@@ -117,7 +117,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | finger1 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | 13.4 spell_power points (2.12 DPS) | yes | Band of the Unicorn (7553, -0.07 DPS) [world_drop]; Lorekeeper's Ring (19523, -0.23 DPS) [rep] |
 | finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 13.0 spell_power points (2.05 DPS) | yes | Lorekeeper's Ring (19523, -0.16 DPS) [rep]; Band of the Unicorn (7553, -1.50 DPS, sim-verified) [world_drop] |
 | trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (97.3 DPS) | yes | - |
-| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (97.3 DPS) | yes | Smoking Heart of the Mountain (11811, -1.28 DPS, sim-verified) [crafted] |
+| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (97.3 DPS) | yes | Mark of the Chosen (17774, -1.28 DPS, sim-verified) [quest] |
 | main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | sim-verified (97.3 DPS) | yes | Mechanic's Pipehammer (9604, -0.18 DPS) [quest]; Spellforce Rod (1664, -0.47 DPS) [world]; Blade of Eternal Darkness (17780, -1.43 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
@@ -128,7 +128,7 @@ No-known-source sample (15 of 577, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 5222211015401051-00000000000000000000-5533300000000000)
 
-Set DPS (verified): 171.2. Weights run: 2.6s. Verify run: 1.0s. 1449 eligible items had no known source.
+Set DPS (verified): 171.2. Weights run: 2.9s. Verify run: 1.1s. 1449 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.656 ± 0.012, crit=0.122 ± 0.009 per rating point (14 rating = 1%, 1.706 per %), hit=0.299 ± 0.004 per rating point (10 rating = 1%, 2.994 per %), spell_haste=0.379 ± 0.086, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.517 ± 0.001, arcane_power=0.483 ± 0.003
 
@@ -150,9 +150,9 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Weakness Analyzer (272438, -1.12 DPS) [vendor]; Serenity Field (272439, -2.39 DPS) [vendor]; Burst of Knowledge (11832, -2.71 DPS) [dungeon] |
 | main_hand | Crackling Staff (19102) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Amethyst War Staff (20654, -0.24 DPS) [world]; Hand of Edward the Odd (2243, -6.46 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Moon (23197) (or Howling Idol (272427), Enraged Idol (272428), Idol of Synthesis (272429), Swarming Idol (272430), Idol of Swiftness (279250), and 12 more) | World drop [world_drop] | 0.0 spell_power points (0.00 DPS) | yes | Howling Idol (272427, +0.00 DPS) [vendor] |
+| ranged | - | - |  |  |  |
 
-**New at 60:** head: Living Crown; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Feralheart Vest; wrist: Dryad's Wrist Bindings; waist: Knowledge of the Timbermaw; legs: Ironfeather Leggings; feet: Feralheart Galoshes; finger1: Elemental Focus Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Talisman of Ascendance; trinket2: Briarwood Reed; main_hand: Crackling Staff; ranged: Idol of the Moon
+**New at 60:** head: Living Crown; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Feralheart Vest; wrist: Dryad's Wrist Bindings; waist: Knowledge of the Timbermaw; legs: Ironfeather Leggings; feet: Feralheart Galoshes; finger1: Elemental Focus Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Talisman of Ascendance; trinket2: Briarwood Reed; main_hand: Crackling Staff
 
 No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 5222000000000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 25.7. Weights run: 1.8s. Verify run: 0.7s. 183 eligible items had no known source.
+Set DPS (verified): 25.7. Weights run: 2.2s. Verify run: 0.8s. 183 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.856 ± 0.005, crit=0.034 ± 0.002 per rating point (14 rating = 1%, 0.470 per %), hit=0.088 ± 0.001 per rating point (10 rating = 1%, 0.878 per %), spell_haste=0.278 ± 0.016, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.034 ± 0.001, arcane_power=0.966 ± 0.003
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 183, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 5222211015000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 47.1. Weights run: 2.3s. Verify run: 0.8s. 315 eligible items had no known source.
+Set DPS (verified): 47.1. Weights run: 2.5s. Verify run: 0.9s. 315 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.613 ± 0.007, crit=0.051 ± 0.003 per rating point (14 rating = 1%, 0.707 per %), hit=0.105 ± 0.001 per rating point (10 rating = 1%, 1.053 per %), spell_haste=-0.797 ± 0.084, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.411 ± 0.001, arcane_power=0.589 ± 0.002
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 315, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 5222211015401050-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 75.6. Weights run: 2.4s. Verify run: 0.9s. 426 eligible items had no known source.
+Set DPS (verified): 75.6. Weights run: 2.7s. Verify run: 0.9s. 426 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.403 ± 0.006, crit=0.070 ± 0.004 per rating point (14 rating = 1%, 0.975 per %), hit=0.139 ± 0.002 per rating point (10 rating = 1%, 1.392 per %), spell_haste=0.265 ± 0.038, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.415 ± 0.001, arcane_power=0.585 ± 0.003
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 426, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 5222211015401051-00000000000000000000-5400000000000000)
 
-Set DPS (verified): 95.8. Weights run: 2.6s. Verify run: 0.9s. 561 eligible items had no known source.
+Set DPS (verified): 95.8. Weights run: 2.9s. Verify run: 1.0s. 561 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.575 ± 0.008, crit=0.078 ± 0.006 per rating point (14 rating = 1%, 1.092 per %), hit=0.211 ± 0.003 per rating point (10 rating = 1%, 2.114 per %), spell_haste=not significant (0.012 ± 0.088), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.507 ± 0.001, arcane_power=0.493 ± 0.003
 
@@ -258,11 +258,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 |---|---|---|---|---|---|
 | head | Soothsayer's Headdress (17740) | Maraudon: Celebras the Cursed [dungeon] | 31.6 spell_power points (4.98 DPS) | yes | Spellpower Goggles Xtreme Plus (15999, -0.73 DPS) [crafted]; Dreamweave Circlet (10041, -0.77 DPS) [crafted]; Red Mageweave Headband (10033, -1.31 DPS, sim-verified) [crafted] |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 10.4 spell_power points (1.65 DPS) | yes | Mindburst Medallion (11196, -0.16 DPS) [quest]; Horizon Choker (13085, -0.38 DPS) [world_drop]; Prodigious Shadowshard Pendant (17773, -0.74 DPS) [quest] |
-| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 26.5 spell_power points (4.18 DPS) | yes | Kentic Amice (11624, -0.79 DPS) [dungeon]; Blood Guard's Crackling Leather Spaulders (220871, -1.05 DPS) [vendor]; Rotgrip Mantle (17732, -2.17 DPS, sim-verified) [dungeon] |
+| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 26.5 spell_power points (4.18 DPS) | yes | Kentic Amice (11624, -0.79 DPS) [dungeon]; Blood Guard's Crackling Leather Spaulders (220871, -1.05 DPS) [vendor]; Rotgrip Mantle (17732, -2.18 DPS, sim-verified) [dungeon] |
 | back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 17.4 spell_power points (2.75 DPS) | yes | Mantle of Lady Falther'ess (23178, -0.52 DPS) [dungeon]; Runecloth Cloak (13860, -0.61 DPS) [crafted]; Deep Woodlands Cloak (19121, -0.88 DPS, sim-verified) [quest] |
 | chest | Acumen Robes (17775) | Twisted Evils [quest] | 30.5 spell_power points (4.81 DPS) | yes | Robe of the Magi (1716, -0.80 DPS) [world_drop]; Feathered Breastplate (8349, -0.91 DPS) [crafted]; Runecloth Tunic (13857, -1.13 DPS) [crafted] |
 | wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 15.7 spell_power points (2.48 DPS) | yes | Dryad's Wrist Bindings (19596, +0.00 DPS) [pvp]; Skycaller's Leather Bracers (252542, -0.27 DPS) [crafted] |
-| hands | Feralheart Hands (226777) | Mokvar [vendor] | 26.5 spell_power points (4.17 DPS) | yes | Skycaller's Leather Gauntlets (252550, -0.84 DPS) [crafted]; Bloodfire Talons (12464, -0.88 DPS) [dungeon]; Gloves of the Greatfather (17721, -1.30 DPS, sim-verified) [crafted] |
+| hands | Feralheart Hands (226777) | Mokvar [vendor] | 26.5 spell_power points (4.17 DPS) | yes | Skycaller's Leather Gauntlets (252550, -0.84 DPS) [crafted]; Bloodfire Talons (12464, -0.88 DPS) [dungeon]; Gloves of the Greatfather (17721, -1.31 DPS, sim-verified) [crafted] |
 | waist | Skycaller's Leather Waistguard (252476) | Leatherworking [crafted] | 22.9 spell_power points (3.61 DPS) | yes | Satyrmane Sash (17755, -0.50 DPS) [dungeon]; Ban'thok Sash (11662, -0.69 DPS) [dungeon]; Dawnspire Cord (12466, -0.94 DPS) [dungeon] |
 | legs | Spellshock Leggings (9484) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 28.7 spell_power points (4.53 DPS) | yes | Red Mageweave Pants (10009, -1.24 DPS) [crafted]; Big Voodoo Pants (8202, -1.26 DPS) [crafted]; Stone Guard's Crackling Leather Leggings (220865, -2.41 DPS, sim-verified) [vendor] |
 | feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 spell_power points (3.78 DPS) | yes | First Sergeant's Crackling Leather Boots (220863, -0.81 DPS) [vendor]; Skycaller's Leather Shoes (252532, -1.10 DPS) [crafted]; Skycaller's Leather Boots (252471, -1.20 DPS, sim-verified) [crafted] |
@@ -280,7 +280,7 @@ No-known-source sample (15 of 561, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 5222211015401051-00000000000000000000-5533300000000000)
 
-Set DPS (verified): 170.1. Weights run: 2.6s. Verify run: 1.0s. 1446 eligible items had no known source.
+Set DPS (verified): 170.1. Weights run: 2.9s. Verify run: 1.1s. 1446 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.656 ± 0.012, crit=0.122 ± 0.009 per rating point (14 rating = 1%, 1.706 per %), hit=0.299 ± 0.004 per rating point (10 rating = 1%, 2.994 per %), spell_haste=0.379 ± 0.086, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.517 ± 0.001, arcane_power=0.483 ± 0.003
 
@@ -302,9 +302,9 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
 | main_hand | Amethyst War Staff (20654) | Azure Templar [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Lord Valthalak's Staff of Command (22335, -0.49 DPS) [dungeon]; Hand of Edward the Odd (2243, -7.78 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Moon (23197) (or Howling Idol (272427), Enraged Idol (272428), Idol of Synthesis (272429), Swarming Idol (272430), Idol of Swiftness (279250), and 12 more) | World drop [world_drop] | 0.0 spell_power points (0.00 DPS) | yes | Howling Idol (272427, +0.00 DPS) [vendor] |
+| ranged | - | - |  |  |  |
 
-**New at 60:** head: Living Crown; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Feralheart Vest; wrist: Dryad's Wrist Bindings; waist: Knowledge of the Timbermaw; legs: Ironfeather Leggings; feet: Feralheart Galoshes; finger1: Elemental Focus Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Talisman of Ascendance; trinket2: Second Wind; main_hand: Amethyst War Staff; ranged: Idol of the Moon
+**New at 60:** head: Living Crown; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Feralheart Vest; wrist: Dryad's Wrist Bindings; waist: Knowledge of the Timbermaw; legs: Ironfeather Leggings; feet: Feralheart Galoshes; finger1: Elemental Focus Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Talisman of Ascendance; trinket2: Second Wind; main_hand: Amethyst War Staff
 
 No-known-source sample (15 of 1446, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
