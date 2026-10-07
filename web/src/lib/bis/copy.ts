@@ -6,6 +6,7 @@
 // that file's own header for why (the item tooltip needs those two functions but must
 // never pay for the rest of this much larger, /bis-page-only object).
 import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from '../items/source-labels';
+import type { RateUnit } from './types';
 
 export { pvpRankTitle };
 
@@ -118,7 +119,7 @@ export const bisCopy = {
   runnerUpLabel: 'Runner-up',
 
   // --- header (step 3) ----------------------------------------------------------------------
-  indexSpecDps60: (dps: number): string => `Level 60: ${dps.toFixed(1)} DPS`,
+  indexSpecDps60: (dps: number, unit: RateUnit = 'DPS'): string => `Level 60: ${dps.toFixed(1)} ${unit}`,
 
   // --- list-first redesign (bis-ux, 2026-09-29 -- owner: "still looks like shit") ----------
   levelScaleGroupLabel: 'Jump to level',
@@ -133,15 +134,15 @@ export const bisCopy = {
       ? `Nothing changed since level ${previousBand}`
       : `${count} upgrade${count === 1 ? '' : 's'} since level ${previousBand}`,
   newSlotLabel: 'New slot',
-  setDpsDelta: (delta: number): string =>
-    `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} DPS since the last band`,
+  setDpsDelta: (delta: number, unit: RateUnit = 'DPS'): string =>
+    `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} ${unit} since the last band`,
   /** Shown under `setDpsLabel`'s big number when `BisBand.set_dps_partial` is true (spec
    *  addendum 3, §E): `count` always equals the number of rows this same band actually
    *  renders with `notSimCheckedTag` (`panel-view.ts`'s `BandInfo.setDpsPartialCount`,
    *  computed off the same `rows` array the paperdoll renders), so the number named here
    *  always matches a row a player can go find and read for themselves. */
-  setDpsPartialNote: (count: number): string =>
-    `Set DPS leaves out ${count} pick${count === 1 ? '' : 's'} marked not sim-checked`,
+  setDpsPartialNote: (count: number, unit: RateUnit = 'DPS'): string =>
+    `Set ${unit} leaves out ${count} pick${count === 1 ? '' : 's'} marked not sim-checked`,
   raceTalentsLine: (race: string, points: number): string =>
     `${capitalise(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
 
@@ -152,10 +153,10 @@ export const bisCopy = {
    *  ranker's real dps_delta is a float that is essentially never an exact 0, so a strict
    *  `=== 0` check missed every practical tie; 0.05 is below the 0.1 the line itself
    *  rounds to, so nothing that would still show as a non-zero number reads as a tie). */
-  alternativeGapLabel: (dpsDelta: number): string =>
+  alternativeGapLabel: (dpsDelta: number, unit: RateUnit = 'DPS'): string =>
     Math.abs(dpsDelta) < 0.05
-      ? 'same DPS'
-      : `${dpsDelta > 0 ? '+' : '−'}${Math.abs(dpsDelta).toFixed(1)} DPS`,
+      ? `same ${unit}`
+      : `${dpsDelta > 0 ? '+' : '−'}${Math.abs(dpsDelta).toFixed(1)} ${unit}`,
   /** An alternative's item level, and its required level only when that is above the
    *  band it's shown at (fix round 1, wow-player review): a requirement at or under the
    *  band's own level is already implied by the row being shown here at all, so naming it
@@ -180,8 +181,8 @@ export const bisCopy = {
    *  to make the stat weights align with simcraft stat weights output"): `topLabel` is
    *  `scale_reference_stat`'s own display label -- the single highest-weighted PER-POINT
    *  stat every other row's `scale_factor` is normalized against (never a haste stat). */
-  weightsScaleNote: (topLabel: string): string =>
-    `Per point of stat, normalized to ${topLabel} = 1.00, with DPS per point and the sim error.`,
+  weightsScaleNote: (topLabel: string, unit: RateUnit = 'DPS'): string =>
+    `Per point of stat, normalized to ${topLabel} = 1.00, with ${unit} per point and the sim error.`,
   /** Haste's own one-line caption (owner correction, 2026-09-30, after player review: haste
    *  is not a per-point stat and never appears as a table row) -- `scaleFactor` is the same
    *  number `band.haste_scale_factor` (or its client-side fallback) publishes. `noItemAtBand`
@@ -233,20 +234,20 @@ export const bisCopy = {
   /** The row's own evidence line, one muted line under the source line, in player words
    *  rather than the ranker's own `swap_note` sentence -- `panel-view.ts`'s `parseSwapNote`
    *  supplies the item name and the two DPS numbers, this row's own pick first. */
-  evidenceLine: (itemName: string, pickDps: number, altDps: number): string =>
-    `Sim-checked against ${itemName}: ${pickDps.toFixed(1)} vs ${altDps.toFixed(1)} DPS`,
+  evidenceLine: (itemName: string, pickDps: number, altDps: number, unit: RateUnit = 'DPS'): string =>
+    `Sim-checked against ${itemName}: ${pickDps.toFixed(1)} vs ${altDps.toFixed(1)} ${unit}`,
   /** The row's own evidence line when the slot carries a real `dps_delta` (bis-ranker-
    *  integrity-5): the one number that stays true regardless of which snapshot `swap_note`'s
    *  own two absolute numbers were measured at (`panel-view.ts`'s own doc) -- preferred over
    *  `evidenceLine` above whenever `dps_delta` is present, so the row never shows two
    *  absolute numbers that can silently disagree with the band's own header `set_dps`. */
-  evidenceLineDelta: (itemName: string, delta: number): string =>
-    `Sim-checked against ${itemName}: +${delta.toFixed(1)} DPS`,
+  evidenceLineDelta: (itemName: string, delta: number, unit: RateUnit = 'DPS'): string =>
+    `Sim-checked against ${itemName}: +${delta.toFixed(1)} ${unit}`,
   /** The verified glyph's own title when a pick carries `sim_dps` but no `swap_note` --
    *  still a real sim result (a trinket/proc/weapon-pair tournament winner), just not one
    *  phrased as a swap against a named runner-up. */
-  simDpsVerifiedTitle: (dps: number): string =>
-    `Confirmed by a full sim: ${dps.toFixed(1)} DPS with this item`,
+  simDpsVerifiedTitle: (dps: number, unit: RateUnit = 'DPS'): string =>
+    `Confirmed by a full sim: ${dps.toFixed(1)} ${unit} with this item`,
   /** `sim_status === 'not_in_sim'` (spec addendum 3, §D): this build's sim database does
    *  not carry the item at all, so the pick is ranked by stat weights only, with no full
    *  sim run behind it -- the umbrella statement, shown before `effectUnmodelledTag` when
@@ -259,7 +260,8 @@ export const bisCopy = {
   effectUnmodelledTitle:
     "This item's proc or use effect is not modelled yet; it was ranked on its stats alone",
   lowValueTag: 'best available',
-  lowValueTitle: 'No sourced weapon at this level adds DPS; this is the best by item level',
+  lowValueTitle: (unit: RateUnit = 'DPS'): string =>
+    `No sourced weapon at this level adds ${unit}; this is the best by item level`,
   /** An item sourced from classic-db's 1.12 tables rather than the client's own shipped
    *  tables (spec addendum §B, `Item.client_unconfirmed`) -- a data-confidence flag on the
    *  item itself, never conflated with `sourceLines` (where you GET the item) or coloured
@@ -276,7 +278,8 @@ export const bisCopy = {
   /** `empty_reason` copy, one line per value the ranker publishes -- `no_sourced_item` and
    *  any value this page does not recognise both fall back to `noKnownSourceForSlot`'s own
    *  text (spec's "unknown -> the last"), never a fabricated reason. */
-  emptyReasonNoDpsValue: 'Nothing sourced at this level helps your DPS',
+  emptyReasonNoDpsValue: (unit: RateUnit = 'DPS'): string =>
+    `Nothing sourced at this level helps your ${unit}`,
   emptyReasonEffectNotModelled: "Relic effects aren't simulated yet",
 
   // --- "The list" rebuild (bis rebuild spec, 2026-09-30) -----------------------------------
@@ -328,7 +331,7 @@ export const bisCopy = {
   hoverOrTapCaption: 'Hover or tap an item for its stats',
   slotHeaderLabel: 'Slot',
   pickHeaderLabel: 'Best in slot · where it comes from',
-  runnersUpHeaderLabel: 'Runners-up · DPS vs the pick',
+  runnersUpHeaderLabel: (unit: RateUnit = 'DPS'): string => `Runners-up · ${unit} vs the pick`,
   youHeaderLabel: 'You',
   whereToGetItHeading: 'Where to get it',
   newAtThisBandHeading: 'New at this band',
@@ -405,8 +408,40 @@ export const bisCopy = {
    *  so the component that renders it needs no second copy module once a future lane
    *  supplies real data. */
   equippedTickLabel: 'equipped',
-  youGainOverWorn: (dpsDelta: number, wornItemName: string): string =>
-    `+${dpsDelta.toFixed(1)} DPS over your ${wornItemName}`,
+  youGainOverWorn: (dpsDelta: number, wornItemName: string, unit: RateUnit = 'DPS'): string =>
+    `+${dpsDelta.toFixed(1)} ${unit} over your ${wornItemName}`,
+
+  // --- healer band panel (healer BiS lane) ---------------------------------------------------
+  // A healing sim ranks gear under a STATED incoming-damage profile and never says one healer
+  // beats another: every healer figure below is worded with the profile's name beside it.
+  healerFigureUnit: 'HPS',
+  healerFigureCaption: (profileLabel: string): string => `Effective healing per second under ${profileLabel}`,
+  /** Fallback when a healer band names no profile at all (a file the ranker published without
+   *  `heal_profile`/`profile`): the figure still says it depends on one. */
+  healerProfileUnstated: 'an unstated incoming-damage profile',
+  healerOverhealLabel: 'Overheal',
+  healerOverhealValue: (share: number): string => `${Math.round(share * 100)}%`,
+  healerOverhealLine: (share: number): string => `${Math.round(share * 100)}% overheal`,
+  healerManaLabel: 'Mana lasts',
+  healerManaWholeFightValue: 'Whole fight',
+  healerManaWholeFightLine: (duration: string | undefined): string =>
+    duration === undefined ? 'Mana lasts the whole fight' : `Mana lasts the whole ${duration} fight`,
+  healerManaOutValue: (clock: string): string => clock,
+  healerManaOutLine: (clock: string): string => `Out of mana at ${clock}`,
+  healerHpmLabel: 'Healing per mana',
+  healerHpmValue: (hpm: number): string => hpm.toFixed(1),
+  healerHpmLine: (hpm: number): string => `${hpm.toFixed(1)} healing per mana`,
+  healerProfileSummary: 'What this profile assumes',
+  healerProfileTankHeading: 'Tank',
+  healerProfileTankLine: (health: number, hit: number, swingSeconds: number): string =>
+    `${health.toLocaleString('en-US')} health, a ${hit.toLocaleString('en-US')} hit every ${swingSeconds} seconds`,
+  healerProfileMembersHeading: 'Raid members',
+  healerProfileMembersLine: (health: number): string => `${health.toLocaleString('en-US')} health each`,
+  healerProfilePulseHeading: 'Raid pulses',
+  healerProfilePulseLine: (damage: number, intervalSeconds: number, members: number): string =>
+    `${damage.toLocaleString('en-US')} damage to ${members} members every ${intervalSeconds} seconds`,
+  healerProfileFightHeading: 'Fight',
+  healerProfileFightLine: (duration: string): string => `${duration} long`,
 } as const;
 
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner

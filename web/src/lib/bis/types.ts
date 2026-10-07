@@ -7,6 +7,10 @@
 
 export type Faction = 'alliance' | 'horde';
 
+/** The per-second unit a band's figures are in: damage for the damage specs, effective
+ *  healing for a healer (the ranker keeps the DPS key names for both). */
+export type RateUnit = 'DPS' | 'HPS';
+
 export interface BisStatWeight {
   stat: string;
   weight: number;
@@ -183,7 +187,42 @@ export interface BisHitToCap {
   white?: number;
 }
 
+/** A healer band's measured outcomes under its `profile` (contract: the healer ranker). */
+export interface BisHealMetrics {
+  /** Effective healing per second; equals the band's `set_dps`. */
+  hps: number;
+  raw_hps: number;
+  /** 0..1 share of raw healing that landed on full health. */
+  overheal_pct: number;
+  /** Seconds until the first out-of-mana, capped at 3600; at or past the fight length = mana to spare. */
+  mana_lasts_sec: number;
+  /** Effective healing per point of mana spent. */
+  hpm: number;
+}
+
+/** The incoming-damage profile a healer file ranks gear under
+ *  (`data/curated/heal-profile.json`, republished as the file's top-level `heal_profile`). */
+export interface BisHealProfile {
+  id: string;
+  label: string;
+  summary: string;
+  notes: string;
+  duration_sec: number;
+  damage_spread: number;
+  tank: { health: number; hit_damage: number; swing_seconds: number; reason: string };
+  members: { health: number; reason: string };
+  pulse: { damage: number; interval_seconds: number; members: number; reason: string };
+  sources: { label: string; url: string; kind: 'blessing' | 'site' | 'blizzard' }[];
+}
+
 export interface BisBand {
+  /** `"healer"` on a healer band: every `*_dps*` key is then effective healing per second.
+   *  Absent on the damage and tank specs. */
+  role?: 'healer';
+  /** The `heal_profile.id` a healer band was ranked under. */
+  profile?: string;
+  /** Healer bands only. */
+  metrics?: BisHealMetrics;
   /** Absent on a file published before presets: such an entry is bare. */
   preset?: BisPresetId;
   spec: string;
@@ -279,6 +318,8 @@ export interface BisFile {
   bands: BisBand[];
   /** Absent on a file published before presets. */
   presets?: Partial<Record<BisPresetId, BisPresetMeta>>;
+  /** Healer files only: the incoming-damage profile every healer figure is measured under. */
+  heal_profile?: BisHealProfile;
 }
 
 /** data/curated/specs.json's own shape -- the master list of written specs, one row per
