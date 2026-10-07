@@ -848,6 +848,7 @@ var junkAbilityName = regexp.MustCompile(`^\d`)
 // copy) widens the tier's id set without ever lowering its level.
 type rankTier struct {
 	Level int
+	Rank  int
 	IDs   []int
 }
 
@@ -886,7 +887,7 @@ func buildClassAbilities(all spellRanksFile, class string) classAbilities {
 		sort.Ints(ranks)
 		tiers := make([]rankTier, len(ranks))
 		for i, r := range ranks {
-			tiers[i] = rankTier{Level: levelByRank[r], IDs: idsByRank[r]}
+			tiers[i] = rankTier{Level: levelByRank[r], Rank: r, IDs: idsByRank[r]}
 		}
 		out.Tiers[name] = tiers
 	}
@@ -934,13 +935,17 @@ func abilityNameByID(abilities classAbilities) map[int]string {
 // spellEffectConst is one effect of one spell, from
 // data/builds/<build>/spellconst/<class>.json.
 type spellEffectConst struct {
-	Effect int `json:"effect"`
-	Aura   int `json:"aura"`
+	Effect   int   `json:"effect"`
+	Aura     int   `json:"aura"`
+	PeriodMS int32 `json:"period_ms"`
 }
 
 type spellConstEntry struct {
-	Name    string             `json:"name"`
-	Effects []spellEffectConst `json:"effects"`
+	Name       string             `json:"name"`
+	GCDMS      int32              `json:"gcd_ms"`
+	CooldownMS int32              `json:"cooldown_ms"`
+	DurationMS int32              `json:"duration_ms"`
+	Effects    []spellEffectConst `json:"effects"`
 }
 
 type spellConstFile struct {

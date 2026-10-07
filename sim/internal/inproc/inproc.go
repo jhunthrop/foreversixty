@@ -22,6 +22,11 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
+// buildOptions is PlainDPS's own request.Options, named so
+// PlainDPSWithRotation can build an identical request and then swap
+// in a different rotation.
+var buildOptions = request.Options{OpenIterations: true, NoSampleIteration: true}
+
 var registerOnce sync.Once
 
 // Register registers every spec's agent factory exactly once per
@@ -38,10 +43,28 @@ func nextRunID() string {
 // PlainDPS runs req at exactly req.Iterations (OpenIterations) with no
 // sample iteration and returns the mean DPS and its standard error.
 func PlainDPS(req api.SimRequest) (api.Estimate, error) {
+	return PlainDPSWithRotation(req, nil)
+}
+
+// PlainDPSWithRotation is PlainDPS with the built player's rotation
+// replaced by rotation when it is non-nil. The request still names
+// req.Spec so the player gets the right agent and default options
+// (totems, shout, and the rest of applySpec's per-spec setup) - only
+// the priority list changes, which is what lets sim/cmd/rotation-search
+// sim a mutated APL without ever touching the curated or embedded
+// rotation files on disk. A nil rotation is exactly PlainDPS.
+func PlainDPSWithRotation(req api.SimRequest, rotation *proto.APLRotation) (api.Estimate, error) {
 	Register()
-	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: true})
+	engineReq, err := request.BuildWith(req, buildOptions)
 	if err != nil {
 		return api.Estimate{}, fmt.Errorf("building the request: %w", err)
+	}
+	if rotation != nil {
+		for _, party := range engineReq.GetRaid().GetParties() {
+			for _, player := range party.GetPlayers() {
+				player.Rotation = rotation
+			}
+		}
 	}
 	if err := simdb.Attach(engineReq); err != nil {
 		return api.Estimate{}, fmt.Errorf("attaching the item database: %w", err)
