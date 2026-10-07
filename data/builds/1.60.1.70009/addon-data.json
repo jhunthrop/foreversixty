@@ -11139,9 +11139,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 227807,
+              "item_id": 272397,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Pix Xizzix"
             },
             "legs": {
               "item_id": 237819,
@@ -11212,7 +11212,7 @@
             252483,
             18375,
             272099,
-            227807,
+            272397,
             237819,
             275618,
             21201,
@@ -11319,9 +11319,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 5404,
+              "item_id": 6461,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lady Anacondra"
+              "source": "Wailing Caverns: Mutanus the Devourer"
             },
             "back": {
               "item_id": 6449,
@@ -11349,9 +11349,9 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 10410,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Cobrahn"
+              "item_id": 252500,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 1121,
@@ -11400,13 +11400,13 @@
           "horde": [
             252504,
             20442,
-            5404,
+            6461,
             6449,
             252490,
             3202,
             5970,
             10403,
-            10410,
+            252500,
             1121,
             285330,
             20429,
@@ -12158,9 +12158,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 227807,
+              "item_id": 272397,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Pix Xizzix"
             },
             "legs": {
               "item_id": 237819,
@@ -12188,9 +12188,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 11832,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 250619,
@@ -12231,12 +12231,12 @@
             252483,
             18375,
             272099,
-            227807,
+            272397,
             237819,
             275618,
             21201,
             19325,
-            11832,
+            11819,
             250619,
             279273
           ]
@@ -12986,9 +12986,9 @@
               "source": "Blackrock Depths: Eviscerator"
             },
             "legs": {
-              "item_id": 8262,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 6690,
+              "source_kind": "dungeon",
+              "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
               "item_id": 252469,
@@ -13059,7 +13059,6 @@
             17714,
             272100,
             11686,
-            8262,
             252469,
             11862,
             17713,
@@ -13170,9 +13169,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 9479,
+              "item_id": 13359,
               "source_kind": "dungeon",
-              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+              "source": "Stratholme: Balnazzar"
             },
             "neck": {
               "item_id": 19491,
@@ -13180,7 +13179,7 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 20175,
+              "item_id": 20194,
               "source_kind": "rep",
               "source": "The Defilers"
             },
@@ -13230,14 +13229,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 11819,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach"
-            },
-            "trinket2": {
               "item_id": 19289,
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck"
+            },
+            "trinket2": {
+              "item_id": 19991,
+              "source_kind": "quest",
+              "source": "The Green Drake"
             },
             "main_hand": {
               "item_id": 1728,
@@ -13277,8 +13276,9 @@
             12653
           ],
           "horde": [
+            13359,
             19491,
-            20175,
+            20194,
             20068,
             22191,
             19582,
@@ -13288,7 +13288,6 @@
             275618,
             19510,
             19325,
-            11819,
             19289,
             1728,
             21520,
@@ -13330,9 +13329,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 263336,
-              "source_kind": "quest",
-              "source": "Breaking the Breaker"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -13449,7 +13448,7 @@
             12998,
             4311,
             253901,
-            263336,
+            1974,
             5970,
             253925,
             23173,
@@ -13477,11 +13476,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.155,
-          "crit": 0.077,
-          "hit": 0.233,
-          "spell_haste": 0.495,
-          "arcane_power": 0.45
+          "intellect": 0.229,
+          "crit": 0.084,
+          "hit": 0.254,
+          "spell_haste": 0.494,
+          "arcane_power": 0.432
         }
       },
       {
@@ -13509,9 +13508,9 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 1486,
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
+              "item_id": 7065,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 9448,
@@ -13586,9 +13585,9 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 1486,
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
+              "item_id": 7065,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 9448,
@@ -13648,7 +13647,7 @@
             23169,
             7684,
             3719,
-            1486,
+            7065,
             9448,
             270029,
             20099,
@@ -13665,7 +13664,7 @@
             23169,
             7684,
             3719,
-            1486,
+            7065,
             9448,
             10654,
             20164,
@@ -13680,10 +13679,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.302,
-          "crit": 0.077,
-          "hit": 0.228,
-          "arcane_power": 0.664
+          "intellect": 0.318,
+          "crit": 0.084,
+          "hit": 0.244,
+          "arcane_power": 0.645
         }
       },
       {
@@ -13867,10 +13866,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.529,
-          "crit": 0.17,
-          "hit": 0.304,
-          "arcane_power": 0.91
+          "intellect": 0.555,
+          "crit": 0.169,
+          "hit": 0.303,
+          "arcane_power": 0.916
         }
       },
       {
@@ -13953,9 +13952,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "ranged": {
-              "item_id": 17745,
+              "item_id": 11748,
               "source_kind": "dungeon",
-              "source": "Maraudon: Noxxion"
+              "source": "Blackrock Depths: Pyromancer Loregrain"
             }
           },
           "horde": {
@@ -14056,7 +14055,7 @@
             249469,
             17774,
             17780,
-            17745
+            11748
           ],
           "horde": [
             10033,
@@ -14077,10 +14076,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.702,
-          "crit": 0.276,
-          "hit": 0.46,
-          "arcane_power": 0.917
+          "intellect": 0.701,
+          "crit": 0.277,
+          "hit": 0.464,
+          "arcane_power": 0.92
         }
       },
       {
@@ -14291,10 +14290,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.719,
-          "crit": 0.448,
-          "hit": 0.704,
-          "arcane_power": 0.909
+          "intellect": 0.815,
+          "crit": 0.443,
+          "hit": 0.718,
+          "spell_haste": 3.805,
+          "arcane_power": 0.914
         }
       }
     ],
@@ -14339,9 +14339,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 23173,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Sever"
+              "item_id": 253937,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 4320,
@@ -14406,9 +14406,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 23173,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Sever"
+              "item_id": 253937,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 4320,
@@ -14446,7 +14446,7 @@
             1974,
             5970,
             253925,
-            23173,
+            253937,
             4320,
             1449,
             20431,
@@ -14461,7 +14461,7 @@
             251486,
             5970,
             253925,
-            23173,
+            253937,
             4320,
             20426,
             286535,
@@ -14471,9 +14471,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.404,
-          "crit": 0.118,
-          "hit": 0.358,
+          "intellect": 0.305,
+          "crit": 0.124,
+          "hit": 0.38,
+          "spell_haste": -1.086,
           "fire_power": 1.0
         }
       },
@@ -14645,6 +14646,7 @@
             9448,
             270029,
             20099,
+            23173,
             254001,
             19525,
             274746,
@@ -14661,6 +14663,7 @@
             9448,
             10654,
             20164,
+            23173,
             254001,
             19521,
             274746,
@@ -14671,9 +14674,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.56,
-          "crit": 0.173,
-          "hit": 0.334,
+          "intellect": 0.623,
+          "crit": 0.175,
+          "hit": 0.34,
           "fire_power": 1.0
         }
       },
@@ -14707,9 +14710,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 4744,
-              "source_kind": "quest",
-              "source": "Wanted! Marez Cowl"
+              "item_id": 9448,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
               "item_id": 10019,
@@ -14831,7 +14834,6 @@
             19507,
             23178,
             1716,
-            4744,
             10019,
             10771,
             10009,
@@ -14859,9 +14861,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.733,
-          "crit": 0.235,
-          "hit": 0.439,
+          "intellect": 0.788,
+          "crit": 0.259,
+          "hit": 0.437,
           "fire_power": 1.0
         }
       },
@@ -14895,9 +14897,9 @@
               "source": "Twisted Evils"
             },
             "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 12546,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anvilrage Overseer"
             },
             "hands": {
               "item_id": 226930,
@@ -14905,9 +14907,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 11662,
+              "item_id": 12466,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ok'thor the Breaker"
+              "source": "Sunken Temple: Morphaz"
             },
             "legs": {
               "item_id": 9484,
@@ -14915,9 +14917,9 @@
               "source": "Zul'Farrak: Chief Ukorz Sandscalp"
             },
             "feet": {
-              "item_id": 254013,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 220891,
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "finger1": {
               "item_id": 281635,
@@ -14940,9 +14942,9 @@
               "source": "The Pariah's Instructions"
             },
             "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 17780,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "ranged": {
               "item_id": 11748,
@@ -14977,9 +14979,9 @@
               "source": "Twisted Evils"
             },
             "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 12546,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anvilrage Overseer"
             },
             "hands": {
               "item_id": 226930,
@@ -14987,9 +14989,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 11662,
+              "item_id": 12466,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ok'thor the Breaker"
+              "source": "Sunken Temple: Morphaz"
             },
             "legs": {
               "item_id": 9484,
@@ -15016,11 +15018,6 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -15040,14 +15037,15 @@
             17732,
             11623,
             17775,
-            254061,
+            12546,
             226930,
-            11662,
+            12466,
             9484,
+            220891,
             11824,
             249469,
             17774,
-            812,
+            17780,
             11748
           ],
           "horde": [
@@ -15056,22 +15054,21 @@
             17732,
             19121,
             17775,
-            254061,
+            12546,
             226930,
-            11662,
+            12466,
             9484,
             11824,
             249469,
-            19120,
             812,
             11748
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.821,
-          "crit": 0.297,
-          "hit": 0.605,
+          "intellect": 0.921,
+          "crit": 0.282,
+          "hit": 0.645,
           "fire_power": 1.0
         }
       },
@@ -15110,9 +15107,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 228190,
@@ -15192,9 +15189,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 14146,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 228190,
@@ -15251,7 +15248,7 @@
             272411,
             14152,
             19595,
-            22066,
+            14146,
             228190,
             237815,
             22064,
@@ -15269,7 +15266,7 @@
             272411,
             14152,
             19595,
-            22066,
+            14146,
             228190,
             237815,
             22064,
@@ -15283,9 +15280,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.785,
-          "crit": 0.506,
-          "hit": 0.851,
+          "intellect": 0.752,
+          "crit": 0.554,
+          "hit": 0.885,
           "fire_power": 1.0
         }
       }
@@ -15331,9 +15328,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 253937,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 23173,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Sever"
             },
             "feet": {
               "item_id": 4320,
@@ -15398,9 +15395,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 253937,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 23173,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Sever"
             },
             "feet": {
               "item_id": 4320,
@@ -15438,7 +15435,7 @@
             1974,
             5970,
             253925,
-            253937,
+            23173,
             4320,
             1449,
             20431,
@@ -15453,7 +15450,7 @@
             16981,
             5970,
             253925,
-            253937,
+            23173,
             4320,
             20426,
             286535,
@@ -15463,10 +15460,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.219,
-          "crit": 0.067,
-          "hit": 0.184,
-          "spell_haste": 0.784,
+          "intellect": 0.216,
+          "crit": 0.071,
+          "hit": 0.199,
+          "spell_haste": 0.592,
           "frost_power": 1.0
         }
       },
@@ -15666,9 +15663,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.319,
-          "crit": 0.106,
-          "hit": 0.189,
+          "intellect": 0.359,
+          "crit": 0.11,
+          "hit": 0.199,
           "frost_power": 1.0
         }
       },
@@ -15853,9 +15850,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.514,
-          "crit": 0.179,
-          "hit": 0.316,
+          "intellect": 0.569,
+          "crit": 0.18,
+          "hit": 0.331,
           "frost_power": 1.0
         }
       },
@@ -15874,9 +15871,9 @@
               "source": "Destroy Morphaz"
             },
             "shoulder": {
-              "item_id": 11624,
+              "item_id": 17732,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
+              "source": "Maraudon: Rotgrip"
             },
             "back": {
               "item_id": 11623,
@@ -15899,9 +15896,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 11662,
+              "item_id": 17755,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ok'thor the Breaker"
+              "source": "Maraudon: Lord Vyletongue"
             },
             "legs": {
               "item_id": 9484,
@@ -15981,9 +15978,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 11662,
+              "item_id": 17755,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ok'thor the Breaker"
+              "source": "Maraudon: Lord Vyletongue"
             },
             "legs": {
               "item_id": 9484,
@@ -16016,9 +16013,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 17780,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 812,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "ranged": {
               "item_id": 11748,
@@ -16031,12 +16028,12 @@
           "alliance": [
             10033,
             20037,
-            11624,
+            17732,
             11623,
             17775,
             254061,
             226930,
-            11662,
+            17755,
             9484,
             11824,
             249469,
@@ -16052,21 +16049,21 @@
             17775,
             254061,
             226930,
-            11662,
+            17755,
             9484,
             11824,
             249469,
             19120,
-            17780,
+            812,
             11748
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.771,
-          "crit": 0.272,
-          "hit": 0.55,
-          "spell_haste": 10.044,
+          "intellect": 0.835,
+          "crit": 0.269,
+          "hit": 0.569,
+          "spell_haste": 11.366,
           "frost_power": 1.0
         }
       },
@@ -16187,9 +16184,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 13253,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Quartermaster Zigris"
+              "item_id": 20716,
+              "source_kind": "quest",
+              "source": "Armaments of War"
             },
             "waist": {
               "item_id": 228190,
@@ -16217,14 +16214,14 @@
               "source": "The Path of the Invoker"
             },
             "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
-            },
-            "trinket2": {
               "item_id": 22678,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "trinket2": {
+              "item_id": 12930,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher"
             },
             "main_hand": {
               "item_id": 20654,
@@ -16264,24 +16261,24 @@
             272411,
             14152,
             19595,
-            13253,
+            20716,
             228190,
             237815,
             22064,
             20682,
             21206,
-            11832,
             22678,
+            12930,
             20654,
             279246
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.566,
-          "crit": 0.376,
-          "hit": 0.751,
-          "spell_haste": 10.398,
+          "intellect": 0.661,
+          "crit": 0.385,
+          "hit": 0.791,
+          "spell_haste": 11.08,
           "frost_power": 1.0
         }
       }
@@ -17182,14 +17179,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
-            },
-            "trinket2": {
               "item_id": 11832,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "trinket2": {
+              "item_id": 22268,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 19323,
@@ -17234,8 +17231,8 @@
             275618,
             19325,
             19510,
-            22268,
             11832,
+            22268,
             19323
           ]
         },
@@ -17422,9 +17419,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.233,
-          "crit": 0.105,
-          "hit": 0.326,
+          "intellect": 0.306,
+          "crit": 0.108,
+          "hit": 0.343,
           "shadow_power": 1.0
         }
       },
@@ -17622,9 +17619,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.401,
-          "crit": 0.042,
-          "hit": 0.191,
+          "intellect": 0.481,
+          "crit": 0.045,
+          "hit": 0.196,
           "shadow_power": 1.0
         }
       },
@@ -17658,9 +17655,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 9448,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Electrocutioner 6000"
+              "item_id": 4744,
+              "source_kind": "quest",
+              "source": "Wanted! Marez Cowl"
             },
             "hands": {
               "item_id": 10019,
@@ -17782,6 +17779,7 @@
             19507,
             23178,
             1716,
+            4744,
             10019,
             10771,
             10009,
@@ -17809,9 +17807,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.711,
-          "crit": 0.04,
-          "hit": 0.289,
+          "intellect": 0.793,
+          "crit": 0.042,
+          "hit": 0.276,
           "shadow_power": 1.0
         }
       },
@@ -17830,9 +17828,9 @@
               "source": "World drop"
             },
             "shoulder": {
-              "item_id": 11624,
+              "item_id": 17732,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
+              "source": "Maraudon: Rotgrip"
             },
             "back": {
               "item_id": 11623,
@@ -17870,14 +17868,14 @@
               "source": "Tailoring"
             },
             "finger1": {
+              "item_id": 6440,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+            },
+            "finger2": {
               "item_id": 11824,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
-            },
-            "finger2": {
-              "item_id": 281635,
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library"
             },
             "trinket1": {
               "item_id": 249469,
@@ -17952,14 +17950,14 @@
               "source": "Tailoring"
             },
             "finger1": {
+              "item_id": 6440,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+            },
+            "finger2": {
               "item_id": 11824,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker"
-            },
-            "finger2": {
-              "item_id": 281635,
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library"
             },
             "trinket1": {
               "item_id": 249469,
@@ -17987,15 +17985,15 @@
           "alliance": [
             10033,
             13085,
-            11624,
+            17732,
             11623,
             17775,
             12546,
             226958,
             12466,
             9484,
+            6440,
             11824,
-            281635,
             249469,
             11302,
             812,
@@ -18011,8 +18009,8 @@
             226958,
             12466,
             9484,
+            6440,
             11824,
-            281635,
             249469,
             19120,
             812,
@@ -18021,9 +18019,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 1.02,
-          "crit": 0.047,
-          "hit": 0.408,
+          "intellect": 1.262,
+          "crit": 0.054,
+          "hit": 0.44,
           "shadow_power": 1.0
         }
       },
@@ -18097,9 +18095,9 @@
               "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "trinket2": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 19102,
@@ -18210,7 +18208,7 @@
             20682,
             21206,
             11819,
-            22678,
+            11832,
             19102,
             279246
           ],
@@ -18235,9 +18233,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.995,
-          "crit": 0.114,
-          "hit": 0.748,
+          "intellect": 1.199,
+          "crit": 0.128,
+          "hit": 0.809,
           "shadow_power": 1.0
         }
       }
@@ -18390,9 +18388,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "off_hand": {
-              "item_id": 2194,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 5191,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "ranged": {
               "item_id": 13136,
@@ -18433,7 +18431,7 @@
             20429,
             285330,
             1482,
-            2194,
+            5191,
             13136
           ]
         },
@@ -19227,9 +19225,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 18465,
+              "source_kind": "quest",
+              "source": "Garona: A Study on Stealth and Treachery"
             },
             "main_hand": {
               "item_id": 21522,
@@ -19280,7 +19278,7 @@
             19510,
             11862,
             19289,
-            11815,
+            18465,
             21522,
             21520,
             12653
@@ -20057,7 +20055,7 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 249470,
+              "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -20110,7 +20108,7 @@
             11862,
             19511,
             19120,
-            249470,
+            249469,
             2163,
             6660,
             2100
@@ -21336,9 +21334,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 19120,
+              "item_id": 18465,
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "source": "Garona: A Study on Stealth and Treachery"
             },
             "main_hand": {
               "item_id": 21522,
@@ -21389,7 +21387,7 @@
             19510,
             11862,
             19289,
-            19120,
+            18465,
             21522,
             12590,
             12653
@@ -23472,10 +23470,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": -0.074,
-          "crit": 0.039,
-          "hit": 0.138,
-          "shadow_power": 0.685
+          "intellect": -0.054,
+          "crit": 0.034,
+          "hit": 0.119,
+          "shadow_power": 0.733
         }
       },
       {
@@ -23673,10 +23671,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.105,
-          "crit": 0.025,
-          "hit": 0.086,
-          "shadow_power": 0.839
+          "intellect": 0.145,
+          "crit": 0.032,
+          "hit": 0.112,
+          "shadow_power": 0.793
         }
       },
       {
@@ -23858,11 +23856,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.378,
-          "crit": 0.043,
-          "hit": 0.149,
-          "spell_haste": -0.819,
-          "shadow_power": 0.8
+          "intellect": 0.361,
+          "crit": 0.042,
+          "hit": 0.15,
+          "shadow_power": 0.806
         }
       },
       {
@@ -23895,9 +23892,9 @@
               "source": "Twisted Evils"
             },
             "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 4744,
+              "source_kind": "quest",
+              "source": "Wanted! Marez Cowl"
             },
             "hands": {
               "item_id": 10019,
@@ -23920,14 +23917,14 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 281635,
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library"
-            },
-            "finger2": {
               "item_id": 7553,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "finger2": {
+              "item_id": 19523,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "trinket1": {
               "item_id": 20534,
@@ -23935,9 +23932,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
               "item_id": 1664,
@@ -23987,9 +23984,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 11662,
+              "item_id": 17755,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ok'thor the Breaker"
+              "source": "Maraudon: Lord Vyletongue"
             },
             "legs": {
               "item_id": 9484,
@@ -24002,14 +23999,14 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 281635,
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library"
-            },
-            "finger2": {
               "item_id": 7553,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "finger2": {
+              "item_id": 19519,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "trinket1": {
               "item_id": 20534,
@@ -24039,12 +24036,12 @@
             17732,
             11623,
             17775,
-            254061,
             17755,
             9484,
             7553,
+            19523,
             20534,
-            249469,
+            20534,
             17745
           ],
           "horde": [
@@ -24053,9 +24050,10 @@
             11623,
             17775,
             254061,
-            11662,
+            17755,
             9484,
             7553,
+            19519,
             20534,
             249469,
             17745
@@ -24063,10 +24061,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.534,
-          "crit": 0.074,
-          "hit": 0.474,
-          "spell_haste": -1.557
+          "intellect": 0.253,
+          "crit": 0.031,
+          "hit": 0.194,
+          "shadow_power": 0.889
         }
       },
       {
@@ -24196,9 +24194,9 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 13170,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Highlord Omokk"
+              "item_id": 237815,
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
               "item_id": 254013,
@@ -24264,7 +24262,7 @@
             19595,
             20716,
             228190,
-            13170,
+            237815,
             20682,
             21206,
             22678,
@@ -24275,10 +24273,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.061,
-          "crit": 0.061,
-          "hit": 0.281,
-          "shadow_power": 0.911
+          "intellect": 0.05,
+          "crit": 0.073,
+          "hit": 0.338
         }
       }
     ],
@@ -24467,12 +24464,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": -0.017,
-          "crit": 0.028,
-          "hit": 0.112,
-          "spell_haste": 0.432,
-          "shadow_power": 0.737,
-          "fire_power": 0.266
+          "intellect": -0.018,
+          "crit": 0.031,
+          "hit": 0.129,
+          "shadow_power": 0.699,
+          "fire_power": 0.302
         }
       },
       {
@@ -24670,12 +24666,12 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.121,
-          "crit": 0.037,
-          "hit": 0.149,
-          "spell_haste": 0.832,
-          "shadow_power": 0.72,
-          "fire_power": 0.28
+          "intellect": 0.101,
+          "crit": 0.031,
+          "hit": 0.128,
+          "spell_haste": 0.617,
+          "shadow_power": 0.775,
+          "fire_power": 0.228
         }
       },
       {
@@ -24748,9 +24744,9 @@
               "source": "Venture Co. Surveyor"
             },
             "ranged": {
-              "item_id": 13064,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249144,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -24820,9 +24816,9 @@
               "source": "Venture Co. Surveyor"
             },
             "ranged": {
-              "item_id": 13064,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 249144,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -24839,7 +24835,7 @@
             281635,
             19524,
             1664,
-            13064
+            249144
           ],
           "horde": [
             10502,
@@ -24852,105 +24848,23 @@
             281635,
             19520,
             1664,
-            13064
+            249144
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.346,
-          "crit": 0.048,
-          "hit": 0.198,
-          "spell_haste": 1.191,
-          "shadow_power": 0.757,
-          "fire_power": 0.244
+          "intellect": 0.206,
+          "crit": 0.039,
+          "hit": 0.156,
+          "spell_haste": 0.932,
+          "shadow_power": 0.806,
+          "fire_power": 0.194
         }
       },
       {
         "level": 50,
         "factions": {
           "alliance": {
-            "head": {
-              "item_id": 15999,
-              "source_kind": "crafted",
-              "source": "Engineering"
-            },
-            "neck": {
-              "item_id": 23169,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Scorn"
-            },
-            "shoulder": {
-              "item_id": 11624,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
-            },
-            "back": {
-              "item_id": 11623,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
-            },
-            "chest": {
-              "item_id": 17775,
-              "source_kind": "quest",
-              "source": "Twisted Evils"
-            },
-            "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            "hands": {
-              "item_id": 10019,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            "waist": {
-              "item_id": 11662,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ok'thor the Breaker"
-            },
-            "legs": {
-              "item_id": 9484,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
-            },
-            "feet": {
-              "item_id": 254013,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            "finger1": {
-              "item_id": 7553,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "finger2": {
-              "item_id": 281635,
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library"
-            },
-            "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
-            },
-            "trinket2": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
-            },
-            "main_hand": {
-              "item_id": 1664,
-              "source_kind": "world",
-              "source": "Venture Co. Surveyor"
-            },
-            "ranged": {
-              "item_id": 17745,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Noxxion"
-            }
-          },
-          "horde": {
             "head": {
               "item_id": 15999,
               "source_kind": "crafted",
@@ -25007,9 +24921,9 @@
               "source": "World drop"
             },
             "finger2": {
-              "item_id": 281635,
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library"
+              "item_id": 19523,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "trinket1": {
               "item_id": 20534,
@@ -25031,24 +24945,92 @@
               "source_kind": "dungeon",
               "source": "Maraudon: Noxxion"
             }
+          },
+          "horde": {
+            "head": {
+              "item_id": 15999,
+              "source_kind": "crafted",
+              "source": "Engineering"
+            },
+            "neck": {
+              "item_id": 23169,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Scorn"
+            },
+            "shoulder": {
+              "item_id": 11624,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn "
+            },
+            "back": {
+              "item_id": 11623,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn "
+            },
+            "chest": {
+              "item_id": 17775,
+              "source_kind": "quest",
+              "source": "Twisted Evils"
+            },
+            "wrist": {
+              "item_id": 254061,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            },
+            "hands": {
+              "item_id": 10019,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            },
+            "waist": {
+              "item_id": 11662,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ok'thor the Breaker"
+            },
+            "legs": {
+              "item_id": 9484,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+            },
+            "feet": {
+              "item_id": 254013,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            },
+            "finger1": {
+              "item_id": 7553,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
+            "finger2": {
+              "item_id": 19519,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
+            },
+            "trinket1": {
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
+            },
+            "trinket2": {
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
+            },
+            "main_hand": {
+              "item_id": 1664,
+              "source_kind": "world",
+              "source": "Venture Co. Surveyor"
+            },
+            "ranged": {
+              "item_id": 17745,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Noxxion"
+            }
           }
         },
         "new_at_band": {
           "alliance": [
-            15999,
-            11624,
-            11623,
-            17775,
-            254061,
-            11662,
-            9484,
-            7553,
-            281635,
-            20534,
-            20534,
-            17745
-          ],
-          "horde": [
             15999,
             17732,
             11623,
@@ -25057,20 +25039,33 @@
             11662,
             9484,
             7553,
-            281635,
+            19523,
             20534,
             249469,
+            17745
+          ],
+          "horde": [
+            15999,
+            11624,
+            11623,
+            17775,
+            254061,
+            11662,
+            9484,
+            7553,
+            19519,
+            20534,
+            20534,
             17745
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.364,
-          "crit": 0.068,
-          "hit": 0.26,
-          "spell_haste": 0.765,
-          "shadow_power": 0.771,
-          "fire_power": 0.229
+          "intellect": 0.323,
+          "crit": 0.059,
+          "hit": 0.227,
+          "shadow_power": 0.802,
+          "fire_power": 0.199
         }
       },
       {
@@ -25118,9 +25113,9 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 237815,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 13170,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Highlord Omokk"
             },
             "feet": {
               "item_id": 254013,
@@ -25138,14 +25133,14 @@
               "source": "The Path of the Invoker"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
-            },
-            "trinket2": {
               "item_id": 12930,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher"
+            },
+            "trinket2": {
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "main_hand": {
               "item_id": 20654,
@@ -25251,11 +25246,11 @@
             19595,
             20716,
             228190,
-            237815,
+            13170,
             20682,
             21206,
-            22268,
             12930,
+            22678,
             20654,
             22408
           ],
@@ -25279,10 +25274,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.165,
-          "crit": 0.075,
-          "hit": 0.296,
-          "fire_power": 0.133
+          "intellect": 0.123,
+          "crit": 0.066,
+          "hit": 0.258,
+          "shadow_power": 0.883,
+          "fire_power": 0.117
         }
       }
     ],
@@ -25459,12 +25455,12 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.089,
+          "intellect": 0.108,
           "crit": 0.035,
-          "hit": 0.129,
-          "spell_haste": 0.358,
-          "shadow_power": 0.701,
-          "fire_power": 0.298
+          "hit": 0.128,
+          "spell_haste": 0.465,
+          "shadow_power": 0.707,
+          "fire_power": 0.291
         }
       },
       {
@@ -25502,9 +25498,9 @@
               "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
-              "item_id": 270029,
+              "item_id": 9609,
               "source_kind": "quest",
-              "source": "Crime and Punishment"
+              "source": "Gyrodrillmatic Excavationators"
             },
             "waist": {
               "item_id": 20099,
@@ -25512,9 +25508,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 6903,
+              "item_id": 23173,
               "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Twilight Lord Kelris"
+              "source": "Shadowfang Keep: Sever"
             },
             "feet": {
               "item_id": 254001,
@@ -25633,9 +25629,8 @@
             3719,
             1486,
             9448,
-            270029,
+            9609,
             20099,
-            6903,
             254001,
             19525,
             274746,
@@ -25663,11 +25658,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.295,
-          "crit": 0.068,
-          "hit": 0.144,
-          "shadow_power": 0.738,
-          "fire_power": 0.262
+          "intellect": 0.468,
+          "crit": 0.102,
+          "hit": 0.23,
+          "fire_power": 0.43
         }
       },
       {
@@ -25685,9 +25679,9 @@
               "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
-              "item_id": 7684,
+              "item_id": 19507,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Bloodmage Thalnos"
+              "source": "Scarlet Monastery: High Inquisitor Fairbanks"
             },
             "back": {
               "item_id": 23178,
@@ -25757,9 +25751,9 @@
               "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
-              "item_id": 7684,
+              "item_id": 19507,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Bloodmage Thalnos"
+              "source": "Scarlet Monastery: High Inquisitor Fairbanks"
             },
             "back": {
               "item_id": 23178,
@@ -25772,9 +25766,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 9448,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Electrocutioner 6000"
+              "item_id": 4545,
+              "source_kind": "quest",
+              "source": "Foul Magics"
             },
             "hands": {
               "item_id": 10019,
@@ -25782,9 +25776,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 20166,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 10771,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "legs": {
               "item_id": 10009,
@@ -25812,15 +25806,16 @@
               "source": "Venture Co. Surveyor"
             },
             "ranged": {
-              "item_id": 5216,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 13064,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             10502,
+            19507,
             23178,
             1716,
             4744,
@@ -25835,25 +25830,26 @@
           ],
           "horde": [
             10502,
+            19507,
             23178,
             1716,
+            4545,
             10019,
-            20166,
+            10771,
             10009,
             254013,
             281635,
             19520,
             1664,
-            5216
+            13064
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.29,
-          "crit": 0.086,
-          "hit": 0.229,
-          "spell_haste": 0.941,
-          "fire_power": 0.565
+          "intellect": 0.637,
+          "crit": 0.144,
+          "hit": 0.353,
+          "fire_power": 0.952
         }
       },
       {
@@ -25861,9 +25857,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 15999,
+              "item_id": 10033,
               "source_kind": "crafted",
-              "source": "Engineering"
+              "source": "Tailoring"
             },
             "neck": {
               "item_id": 23169,
@@ -25871,9 +25867,9 @@
               "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
-              "item_id": 17732,
+              "item_id": 11624,
               "source_kind": "dungeon",
-              "source": "Maraudon: Rotgrip"
+              "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "back": {
               "item_id": 11623,
@@ -25926,9 +25922,9 @@
               "source": "Trolls of a Feather"
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
               "item_id": 1664,
@@ -25943,9 +25939,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 10033,
+              "item_id": 15999,
               "source_kind": "crafted",
-              "source": "Tailoring"
+              "source": "Engineering"
             },
             "neck": {
               "item_id": 23169,
@@ -26026,8 +26022,8 @@
         },
         "new_at_band": {
           "alliance": [
-            15999,
-            17732,
+            10033,
+            11624,
             11623,
             17775,
             254061,
@@ -26036,11 +26032,11 @@
             7553,
             281635,
             20534,
-            249469,
+            20534,
             17745
           ],
           "horde": [
-            10033,
+            15999,
             11624,
             11623,
             17775,
@@ -26056,11 +26052,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.46,
-          "crit": 0.1,
-          "hit": 0.242,
-          "spell_haste": 1.195,
-          "fire_power": 0.407
+          "intellect": 0.442,
+          "crit": 0.083,
+          "hit": 0.193,
+          "fire_power": 0.327
         }
       },
       {
@@ -26128,14 +26123,14 @@
               "source": "The Path of the Invoker"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
-            },
-            "trinket2": {
               "item_id": 12930,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher"
+            },
+            "trinket2": {
+              "item_id": 22268,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 20654,
@@ -26245,8 +26240,8 @@
             11822,
             20682,
             21206,
-            22268,
             12930,
+            22268,
             20654,
             22408
           ],
@@ -26269,7 +26264,13 @@
             22408
           ]
         },
-        "weights": {}
+        "weights": {
+          "spell_power": 1.0,
+          "intellect": 0.402,
+          "crit": 0.143,
+          "hit": 0.371,
+          "fire_power": 0.375
+        }
       }
     ],
     "warrior-arms": [
@@ -28022,14 +28023,14 @@
               "source": "Maraudon: Princess Theradras"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
-            "trinket2": {
               "item_id": 20130,
               "source_kind": "quest",
               "source": "Voodoo Feathers"
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 810,
@@ -28079,8 +28080,8 @@
             12555,
             19511,
             17713,
-            19120,
             20130,
+            19120,
             810,
             2163,
             13039
@@ -28252,14 +28253,14 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 13965,
+              "item_id": 20130,
               "source_kind": "quest",
-              "source": "For The Horde!"
+              "source": "Voodoo Feathers"
             },
             "main_hand": {
-              "item_id": 21520,
-              "source_kind": "quest",
-              "source": "Treasure of the Timeless One"
+              "item_id": 12590,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "off_hand": {
               "item_id": 21522,
@@ -28307,8 +28308,8 @@
             19325,
             19510,
             19289,
-            13965,
-            21520,
+            20130,
+            12590,
             21522,
             19107
           ]

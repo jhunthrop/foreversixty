@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "8f0fa961b",
-  "generated_at": "2026-10-07T18:27:17Z",
+  "engine_version": "d1af3529f",
+  "generated_at": "2026-10-07T18:47:43Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -549,8 +549,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.407241362,
-      "verify_run_seconds": 0.609947739,
+      "weights_run_seconds": 1.906243002,
+      "verify_run_seconds": 0.689146096,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1177,8 +1177,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.407241362,
-      "verify_run_seconds": 0.559528414,
+      "weights_run_seconds": 1.906243002,
+      "verify_run_seconds": 0.69167675,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1830,8 +1830,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.6811087279999999,
-      "verify_run_seconds": 0.635728996,
+      "weights_run_seconds": 2.428347377,
+      "verify_run_seconds": 0.846024224,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2520,8 +2520,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 1.6811087279999999,
-      "verify_run_seconds": 0.706091061,
+      "weights_run_seconds": 2.428347377,
+      "verify_run_seconds": 0.894533953,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3172,8 +3172,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.800661931,
-      "verify_run_seconds": 0.619308579,
+      "weights_run_seconds": 2.407368616,
+      "verify_run_seconds": 0.816574489,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3823,8 +3823,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.800661931,
-      "verify_run_seconds": 0.63768057,
+      "weights_run_seconds": 2.407368616,
+      "verify_run_seconds": 0.875437875,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4081,7 +4081,7 @@
               "item_name": "Knight-Lieutenant's Crackling Leather Spaulders",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.0573851006535244
+              "dps_delta": -1.057385100653525
             },
             {
               "item_id": 17732,
@@ -4479,8 +4479,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.953713063,
-      "verify_run_seconds": 0.77731174,
+      "weights_run_seconds": 2.614197038,
+      "verify_run_seconds": 0.973813626,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5135,8 +5135,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.953713063,
-      "verify_run_seconds": 0.728575193,
+      "weights_run_seconds": 2.614197038,
+      "verify_run_seconds": 0.975258465,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5843,8 +5843,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 1.956379315,
-      "verify_run_seconds": 0.738600103,
+      "weights_run_seconds": 2.577895164,
+      "verify_run_seconds": 0.993330113,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6557,8 +6557,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Amethyst War Staff"
       ],
-      "weights_run_seconds": 1.956379315,
-      "verify_run_seconds": 0.771640075,
+      "weights_run_seconds": 2.577895164,
+      "verify_run_seconds": 1.007134707,
       "coverage": {
         "back": {
           "eligible": 451,

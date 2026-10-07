@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 5420000000000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 81.6. Weights run: 2.0s. Verify run: 1.3s. 220 eligible items had no known source.
+Set DPS (verified): 81.6. Weights run: 2.6s. Verify run: 1.7s. 220 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.145 ± 0.007, crit=0.491 ± 0.013 per rating point (14 rating = 1%, 6.879 per %), hit=0.179 ± 0.005 per rating point (10 rating = 1%, 1.791 per %), melee_haste=6.794 ± 0.574
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 220, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 5420001504000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 107.9. Weights run: 2.1s. Verify run: 1.4s. 366 eligible items had no known source.
+Set DPS (verified): 107.9. Weights run: 2.8s. Verify run: 1.9s. 366 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.156 ± 0.007, crit=0.597 ± 0.016 per rating point (14 rating = 1%, 8.365 per %), hit=0.200 ± 0.006 per rating point (10 rating = 1%, 2.002 per %), melee_haste=7.470 ± 0.786
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 366, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 5420001505001251-0000000000000000-000000000000000000)
 
-Set DPS (verified): 145.5. Weights run: 2.4s. Verify run: 1.5s. 597 eligible items had no known source.
+Set DPS (verified): 145.5. Weights run: 3.1s. Verify run: 2.0s. 597 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.171 ± 0.008, crit=0.647 ± 0.017 per rating point (14 rating = 1%, 9.056 per %), hit=0.220 ± 0.007 per rating point (10 rating = 1%, 2.198 per %), melee_haste=7.348 ± 1.214
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 597, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 5420001505001251-0053200000000000-000000000000000000)
 
-Set DPS (verified): 180.3. Weights run: 2.4s. Verify run: 1.6s. 754 eligible items had no known source.
+Set DPS (verified): 180.3. Weights run: 3.2s. Verify run: 2.2s. 754 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.188 ± 0.008, crit=0.722 ± 0.019 per rating point (14 rating = 1%, 10.107 per %), hit=0.257 ± 0.008 per rating point (10 rating = 1%, 2.570 per %), melee_haste=12.437 ± 1.199
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 754, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 244.6. Weights run: 2.3s. Verify run: 1.7s. 1670 eligible items had no known source.
+Set DPS (verified): 244.6. Weights run: 3.1s. Verify run: 2.3s. 1670 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.282 ± 0.012, crit=1.110 ± 0.027 per rating point (14 rating = 1%, 15.543 per %), hit=0.382 ± 0.011 per rating point (10 rating = 1%, 3.820 per %), melee_haste=12.602 ± 1.512
 
@@ -160,20 +160,20 @@ No-known-source sample (15 of 1670, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (troll, 5420000000000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 81.1. Weights run: 2.0s. Verify run: 1.2s. 209 eligible items had no known source.
+Set DPS (verified): 81.6. Weights run: 2.6s. Verify run: 1.6s. 209 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.145 ± 0.007, crit=0.491 ± 0.013 per rating point (14 rating = 1%, 6.879 per %), hit=0.179 ± 0.005 per rating point (10 rating = 1%, 1.791 per %), melee_haste=6.794 ± 0.574
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 17.2 ranged_attack_power points (1.15 DPS) | yes | Red Winter Hat (21524, -1.15 DPS, sim-verified) [dungeon] |
+| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 17.2 ranged_attack_power points (1.15 DPS) | yes | Red Winter Hat (21524, -1.16 DPS, sim-verified) [dungeon] |
 | neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 12.9 ranged_attack_power points (0.87 DPS) | yes | Erudite's Amulet (277204, -0.29 DPS, sim-verified) [quest] |
-| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 10.7 ranged_attack_power points (0.72 DPS) | yes | Slime-encrusted Pads (6461, -0.41 DPS, sim-verified) [dungeon] |
-| back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | 12.9 ranged_attack_power points (0.87 DPS) | yes | Cape of the Brotherhood (5193, -0.14 DPS) [dungeon]; Hide of Lupos (3018, -0.29 DPS) [world]; Bristlebark Cape (14571, -0.29 DPS) [world_drop] |
-| chest | Brawler's Leather Armor (252490) (or Trapper's Leather Armor (252491)) | Leatherworking [crafted] | 15.0 ranged_attack_power points (1.01 DPS) | yes | Trapper's Leather Armor (252491, +0.00 DPS) [crafted]; Dark Leather Tunic (2317, -0.14 DPS) [crafted]; Prospector's Chestpiece (14562, -0.14 DPS) [world_drop] |
+| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 10.7 ranged_attack_power points (0.72 DPS) | yes | Slime-encrusted Pads (6461, -0.66 DPS, sim-verified) [dungeon] |
+| back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | 12.9 ranged_attack_power points (0.87 DPS) | yes | Cape of the Brotherhood (5193, -0.26 DPS, sim-verified) [dungeon]; Hide of Lupos (3018, -0.29 DPS) [world]; Bristlebark Cape (14571, -0.29 DPS) [world_drop] |
+| chest | Brawler's Leather Armor (252490) (or Trapper's Leather Armor (252491)) | Leatherworking [crafted] | 15.0 ranged_attack_power points (1.01 DPS) | yes | Trapper's Leather Armor (252491, +0.00 DPS, sim-verified) [crafted]; Dark Leather Tunic (2317, -0.14 DPS) [crafted]; Prospector's Chestpiece (14562, -0.14 DPS) [world_drop] |
 | wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 10.7 ranged_attack_power points (0.72 DPS) | yes | Wolf Bracers (4794, -0.14 DPS) [vendor]; Bristlebark Bindings (14569, -0.29 DPS) [world_drop]; Ratchet Wristwraps (274742, -0.29 DPS) [vendor] |
 | hands | Serpent Gloves (5970) (or Gloves of the Fang (10413)) | Wailing Caverns: Lord Serpentis [dungeon] | 12.9 ranged_attack_power points (0.87 DPS) | yes | Gloves of the Fang (10413, +0.00 DPS) [dungeon]; Forest Leather Gloves (3058, -0.29 DPS) [world_drop]; Nimble Leather Gloves (7285, -0.29 DPS) [crafted] |
-| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 ranged_attack_power points (1.21 DPS) | yes | Deviate Scale Belt (6468, -0.49 DPS, sim-verified) [crafted]; Guardsman Belt (3429, -0.63 DPS) [world]; Dark Leather Belt (4249, -0.63 DPS) [crafted] |
+| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 ranged_attack_power points (1.21 DPS) | yes | Deviate Scale Belt (6468, -0.51 DPS, sim-verified) [crafted]; Guardsman Belt (3429, -0.63 DPS) [world]; Dark Leather Belt (4249, -0.63 DPS) [crafted] |
 | legs | Leggings of the Fang (10410) (or Brawler's Leather Pants (252500), Trapper's Leather Pants (252501)) | Wailing Caverns: Lord Cobrahn [dungeon] | 19.3 ranged_attack_power points (1.30 DPS) | yes | Brawler's Leather Pants (252500, +0.00 DPS) [crafted]; Trapper's Leather Pants (252501, +0.00 DPS) [crafted]; Bluegill Breeches (3022, -0.14 DPS) [world] |
 | feet | Feet of the Lynx (1121) | World drop [world_drop] | 17.2 ranged_attack_power points (1.15 DPS) | yes | Footpads of the Fang (10411, -0.29 DPS, sim-verified) [dungeon]; Blackened Defias Boots (10402, -0.29 DPS) [dungeon]; Agile Boots (4788, -0.43 DPS) [vendor] |
 | finger1 | Signet of the Zhevra (285330) | Swiftmane [world] | 12.9 ranged_attack_power points (0.87 DPS) | yes | Bounty Hunter's Ring (5351, -0.43 DPS) [quest]; Lavishly Jeweled Ring (1156, -0.58 DPS) [dungeon]; The 1 Ring (8350, -0.72 DPS) [world] |
@@ -182,7 +182,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | trinket2 | - | - |  |  |  |
 | main_hand | Bronze Dory (250603) | Blacksmithing [crafted] | 23.2 ranged_attack_power points (1.56 DPS) | yes | Impaling Harpoon (5200, +0.00 DPS, sim-verified) [dungeon]; Scythe Axe (5749, -0.55 DPS) [world]; Crescent Staff (6505, -0.55 DPS) [quest] |
 | off_hand | - | - |  |  |  |
-| ranged | Ranger Bow (3021) | World drop [world_drop] | 178.4 ranged_attack_power points (12.00 DPS) | yes | Outrider's Bow (20437, -0.72 DPS) [pvp]; Lil Timmy's Peashooter (13136, -0.96 DPS, sim-verified) [world_drop]; Cracked Blacksmith Hammer (285279, -2.58 DPS) [crafted] |
+| ranged | Ranger Bow (3021) | World drop [world_drop] | 178.4 ranged_attack_power points (12.00 DPS) | yes | Outrider's Bow (20437, -0.72 DPS) [pvp]; Lil Timmy's Peashooter (13136, -1.23 DPS, sim-verified) [world_drop]; Cracked Blacksmith Hammer (285279, -2.58 DPS) [crafted] |
 
 **New at 20:** head: Brawler's Leather Hood; neck: Scout's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Brawler's Leather Armor; wrist: Forest Leather Bracers; hands: Serpent Gloves; waist: Blackened Defias Belt; legs: Leggings of the Fang; feet: Feet of the Lynx; finger1: Signet of the Zhevra; finger2: Legionnaire's Band; main_hand: Bronze Dory; ranged: Ranger Bow
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 209, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 5420001504000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 108.7. Weights run: 2.1s. Verify run: 1.4s. 352 eligible items had no known source.
+Set DPS (verified): 109.0. Weights run: 2.8s. Verify run: 1.8s. 352 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.156 ± 0.007, crit=0.597 ± 0.016 per rating point (14 rating = 1%, 8.365 per %), hit=0.200 ± 0.006 per rating point (10 rating = 1%, 2.002 per %), melee_haste=7.470 ± 0.786
 
@@ -207,12 +207,12 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | legs | Petrolspill Leggings (9509) (or Troll's Bane Leggings (13114)) | Gnomeregan: Caverndeep Burrower [dungeon] | 30.2 ranged_attack_power points (1.98 DPS) | yes | Troll's Bane Leggings (13114, +0.00 DPS) [world_drop]; Dusky Leather Leggings (7373, -0.14 DPS) [crafted]; Ferine Leggings (6690, -0.27 DPS) [dungeon] |
 | feet | Insignia Boots (4055) (or Highlander's Mail Greaves (20123), Vorrel's Boots (7751), Warsong Boots (16977), Feet of the Lynx (1121)) | World drop [world_drop] | 17.2 ranged_attack_power points (1.13 DPS) | yes | Vorrel's Boots (7751, +0.00 DPS) [quest]; Warsong Boots (16977, +0.00 DPS) [quest]; Highlander's Mail Greaves (20123, +0.00 DPS) [vendor] |
 | finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 19.4 ranged_attack_power points (1.27 DPS) | yes | Ring of Precision (1491, -0.42 DPS) [dungeon]; Legionnaire's Band (19513, -0.42 DPS) [rep]; Signet of the Zhevra (285330, -0.42 DPS) [world] |
-| finger2 | Monkey Ring (6748) | Willix the Importer [quest] | 15.1 ranged_attack_power points (0.99 DPS) | yes | Ring of Precision (1491, -0.14 DPS) [dungeon]; Legionnaire's Band (19513, -0.14 DPS) [rep]; Signet of the Zhevra (285330, -0.14 DPS) [world] |
+| finger2 | Monkey Ring (6748) | Willix the Importer [quest] | 15.1 ranged_attack_power points (0.99 DPS) | yes | Legionnaire's Band (19513, -0.14 DPS) [rep]; Signet of the Zhevra (285330, -0.14 DPS) [world]; Ring of Precision (1491, -0.54 DPS, sim-verified) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Alliance Outrunner's Sword (285346) | Thora Feathermoon [world] | 16.8 ranged_attack_power points (1.10 DPS) | yes | Kam's Walking Stick (2280, +0.00 DPS) [dungeon]; Armor Piercer (6679, +0.00 DPS) [dungeon]; Bronze Dory (250603, +0.00 DPS) [crafted] |
 | off_hand | Outlaw Sabre (16886) | Baron Aquanis [quest] | 15.0 ranged_attack_power points (0.98 DPS) | yes | Vendetta (776, +0.00 DPS) [dungeon]; Satyr's Rod (15962, -0.84 DPS) [world_drop] |
-| ranged | Booty Bay Bruiser's Buckshot (274748) | Gezzy Gunkgear [vendor] | 261.6 ranged_attack_power points (17.14 DPS) | yes | Silver Star (3463, -0.51 DPS, sim-verified) [quest]; Glass Shooter (9456, -0.69 DPS) [dungeon]; Ironweaver (13137, -1.26 DPS) [world_drop] |
+| ranged | Booty Bay Bruiser's Buckshot (274748) | Gezzy Gunkgear [vendor] | 261.6 ranged_attack_power points (17.14 DPS) | yes | Silver Star (3463, -0.53 DPS, sim-verified) [quest]; Glass Shooter (9456, -0.69 DPS) [dungeon]; Ironweaver (13137, -1.26 DPS) [world_drop] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Scout's Medallion; shoulder: Forest Tracker Epaulets; back: Tigerstrike Mantle; chest: Dusky Leather Armor; wrist: Hawkeye's Bracers; hands: Pilferer's Gloves; waist: Defiler's Chain Girdle; legs: Petrolspill Leggings; feet: Insignia Boots; finger1: Ironspine's Eye; finger2: Monkey Ring; main_hand: Alliance Outrunner's Sword; off_hand: Outlaw Sabre; ranged: Booty Bay Bruiser's Buckshot
 
@@ -220,29 +220,29 @@ No-known-source sample (15 of 352, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 5420001505001251-0000000000000000-000000000000000000)
 
-Set DPS (verified): 145.1. Weights run: 2.4s. Verify run: 1.5s. 563 eligible items had no known source.
+Set DPS (verified): 146.9. Weights run: 3.1s. Verify run: 2.0s. 563 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.171 ± 0.008, crit=0.647 ± 0.017 per rating point (14 rating = 1%, 9.056 per %), hit=0.220 ± 0.007 per rating point (10 rating = 1%, 2.198 per %), melee_haste=7.348 ± 1.214
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Warden's Wizard Hat (14604) | World drop [world_drop] | 28.2 ranged_attack_power points (1.79 DPS) | yes | Nightscape Headband (8176, -0.14 DPS) [crafted]; Guard's Chain Helm (250499, -0.14 DPS) [crafted]; Skullsplitter Helm (1624, -0.28 DPS) [world] |
+| head | Warden's Wizard Hat (14604) | World drop [world_drop] | 28.2 ranged_attack_power points (1.79 DPS) | yes | Guard's Chain Helm (250499, -0.14 DPS) [crafted]; Skullsplitter Helm (1624, -0.28 DPS) [world]; Nightscape Headband (8176, -0.97 DPS, sim-verified) [crafted] |
 | neck | Scout's Medallion (19536) | Warsong Outriders [rep] | 23.9 ranged_attack_power points (1.52 DPS) | yes | Zealous Shadowshard Pendant (17772, -0.25 DPS) [quest]; Ghostshard Talisman (7731, -0.63 DPS) [dungeon]; Erudite's Amulet (277204, -0.96 DPS) [quest] |
-| shoulder | Sunburn Spaulders (274751) | Rettrick [vendor] | 35.9 ranged_attack_power points (2.28 DPS) | yes | Forest Tracker Epaulets (2278, -0.76 DPS) [world_drop]; Nightscape Shoulders (8192, -0.78 DPS, sim-verified) [crafted]; Flintrock Shoulders (7755, -0.90 DPS) [dungeon] |
+| shoulder | Sunburn Spaulders (274751) | Rettrick [vendor] | 35.9 ranged_attack_power points (2.28 DPS) | yes | Forest Tracker Epaulets (2278, -0.76 DPS) [world_drop]; Nightscape Shoulders (8192, -0.79 DPS, sim-verified) [crafted]; Flintrock Shoulders (7755, -0.90 DPS) [dungeon] |
 | back | Dark Hooded Cape (5257) | Nimar the Slayer [world] | 21.7 ranged_attack_power points (1.38 DPS) | yes | Imperial Cloak (6432, -0.28 DPS) [dungeon]; Parachute Cloak (10518, -0.28 DPS) [crafted]; Tigerstrike Mantle (13108, -0.28 DPS) [world_drop] |
-| chest | Quillward Harness (10583) | Razorfen Downs: Withered Warrior [dungeon] | 41.2 ranged_attack_power points (2.62 DPS) | yes | Wolffear Harness (13110, -0.28 DPS) [world_drop]; Nightscape Tunic (8175, -0.55 DPS) [crafted]; Tough Scorpid Breastplate (8203, -0.55 DPS) [crafted] |
+| chest | Quillward Harness (10583) | Razorfen Downs: Withered Warrior [dungeon] | 41.2 ranged_attack_power points (2.62 DPS) | yes | Wolffear Harness (13110, -0.52 DPS, sim-verified) [world_drop]; Nightscape Tunic (8175, -0.55 DPS) [crafted]; Tough Scorpid Breastplate (8203, -0.55 DPS) [crafted] |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 ranged_attack_power points (1.27 DPS) | yes | Windtalker's Wristguards (19584, +0.00 DPS) [pvp]; Forest Stalker's Bracers (19590, +0.00 DPS) [pvp]; Dusky Bracers (7378, -0.17 DPS) [crafted] |
 | hands | Gauntlets of Divinity (7724) | Scarlet Monastery: Scarlet Commander Mograine [dungeon] | 32.0 ranged_attack_power points (2.03 DPS) | yes | Gloves of Holy Might (867, -0.19 DPS) [world_drop]; Dragonscale Gauntlets (8347, -0.63 DPS) [crafted]; Tough Scorpid Gloves (8204, -0.65 DPS) [crafted] |
 | waist | Defiler's Leather Girdle (20192) | The Defilers [rep] | 30.0 ranged_attack_power points (1.90 DPS) | yes | Defiler's Chain Girdle (20152, -0.38 DPS) [rep]; Scorpashi Sash (14652, -0.53 DPS) [world_drop]; Deftkin Belt (16659, -0.59 DPS) [quest] |
-| legs | Basilisk Hide Pants (1718) | World drop [world_drop] | 45.6 ranged_attack_power points (2.89 DPS) | yes | Triprunner Dungarees (9624, -0.41 DPS) [quest]; Petrolspill Leggings (9509, -0.96 DPS) [dungeon]; Hawkeye's Breeches (14595, -0.96 DPS) [world_drop] |
+| legs | Basilisk Hide Pants (1718) | World drop [world_drop] | 45.6 ranged_attack_power points (2.89 DPS) | yes | Petrolspill Leggings (9509, -0.96 DPS) [dungeon]; Hawkeye's Breeches (14595, -0.96 DPS) [world_drop]; Triprunner Dungarees (9624, -1.24 DPS, sim-verified) [quest] |
 | feet | Swampwalker Boots (2276) | World drop [world_drop] | 28.2 ranged_attack_power points (1.79 DPS) | yes | Imperial Leather Boots (6431, -0.28 DPS) [dungeon]; Dusky Boots (7390, -0.28 DPS) [crafted]; Worn Running Boots (9398, -0.28 DPS) [dungeon] |
 | finger1 | Ring of the Underwood (2951) | World drop [world_drop] | 21.7 ranged_attack_power points (1.38 DPS) | yes | Assault Band (13095, -0.11 DPS) [world_drop]; Falcon's Hook (7552, -0.14 DPS) [dungeon]; Ironspine's Eye (7686, -0.14 DPS) [dungeon] |
-| finger2 | Mark of Kern (2262) (or Assault Band (13095)) | Scarlet Monastery: Houndmaster Loksey [dungeon] | 20.0 ranged_attack_power points (1.27 DPS) | yes | Assault Band (13095, +0.00 DPS, sim-verified) [world_drop]; Falcon's Hook (7552, -0.03 DPS) [dungeon]; Ironspine's Eye (7686, -0.03 DPS) [dungeon] |
+| finger2 | Mark of Kern (2262) (or Assault Band (13095)) | Scarlet Monastery: Houndmaster Loksey [dungeon] | 20.0 ranged_attack_power points (1.27 DPS) | yes | Assault Band (13095, +0.00 DPS) [world_drop]; Falcon's Hook (7552, -0.03 DPS) [dungeon]; Ironspine's Eye (7686, -0.03 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Vanquisher's Sword (10823) | Bring the End [quest] | sim-verified (145.1 DPS) | yes | Manslayer (10570, +0.00 DPS) [dungeon]; Steel Spear (250605, +0.00 DPS) [crafted]; Gut Ripper (2164, -1.44 DPS, sim-verified) [world_drop] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 19.5 ranged_attack_power points (1.24 DPS) | yes | Blue Glittering Axe (7942, +0.00 DPS) [crafted]; Satyr's Rod (15962, -1.10 DPS) [world_drop] |
-| ranged | Bow of Searing Arrows (2825) | World drop [world_drop] | 350.0 ranged_attack_power points (22.22 DPS) | yes | Outrider's Bow (19560, -1.62 DPS) [pvp]; Shadowforge Bushmaster (9422, -1.99 DPS) [dungeon]; The Silencer (13138, -2.62 DPS, sim-verified) [world_drop] |
+| main_hand | Vanquisher's Sword (10823) | Bring the End [quest] | sim-verified (146.9 DPS) | yes | Manslayer (10570, +0.00 DPS) [dungeon]; Steel Spear (250605, +0.00 DPS) [crafted]; Gut Ripper (2164, -1.45 DPS, sim-verified) [world_drop] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 19.5 ranged_attack_power points (1.24 DPS) | yes | Blue Glittering Axe (7942, -0.60 DPS, sim-verified) [crafted]; Satyr's Rod (15962, -1.10 DPS) [world_drop] |
+| ranged | Bow of Searing Arrows (2825) | World drop [world_drop] | 350.0 ranged_attack_power points (22.22 DPS) | yes | Outrider's Bow (19560, -1.62 DPS) [pvp]; Shadowforge Bushmaster (9422, -1.99 DPS) [dungeon]; The Silencer (13138, -3.85 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: Warden's Wizard Hat; neck: Scout's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Quillward Harness; wrist: Branded Leather Bracers; hands: Gauntlets of Divinity; waist: Defiler's Leather Girdle; legs: Basilisk Hide Pants; feet: Swampwalker Boots; finger1: Ring of the Underwood; finger2: Mark of Kern; main_hand: Vanquisher's Sword; off_hand: Jhordy's Misplaced Screwdriver; ranged: Bow of Searing Arrows
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 563, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 5420001505001251-0053200000000000-000000000000000000)
 
-Set DPS (verified): 183.5. Weights run: 2.4s. Verify run: 1.6s. 713 eligible items had no known source.
+Set DPS (verified): 184.7. Weights run: 3.2s. Verify run: 2.1s. 713 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.188 ± 0.008, crit=0.722 ± 0.019 per rating point (14 rating = 1%, 10.107 per %), hit=0.257 ± 0.008 per rating point (10 rating = 1%, 2.570 per %), melee_haste=12.437 ± 1.199
 
@@ -263,16 +263,16 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | chest | Fungus Shroud Armor (17742) | Maraudon: Meshlok the Harvester [dungeon] | 54.7 ranged_attack_power points (3.64 DPS) | yes | Blazewind Breastplate (11193, -0.29 DPS) [quest]; Stone Guard's Chain Armor (220827, -0.78 DPS) [vendor]; Quillward Harness (10583, -0.87 DPS) [dungeon] |
 | wrist | Deepfury Bracers (13120) | World drop [world_drop] | 32.8 ranged_attack_power points (2.18 DPS) | yes | Arena Bands (18711, +0.00 DPS) [world]; Windtalker's Wristguards (19583, +0.00 DPS) [pvp]; Forest Stalker's Bracers (19589, +0.00 DPS) [pvp] |
 | hands | Raider Gloves (272100) | Creeg Bothunk [vendor] | 48.1 ranged_attack_power points (3.20 DPS) | yes | Gauntlets of Divinity (7724, -1.07 DPS) [dungeon]; First Sergeant's Chain Gauntlets (220830, -1.12 DPS, sim-verified) [vendor]; Beastmaster's Gauntlets (226883, -1.16 DPS) [vendor] |
-| waist | Substandard Belt Chain (274757) | Zippie Fizzbolt [vendor] | 45.8 ranged_attack_power points (3.05 DPS) | yes | Sagebrush Girdle (17778, +0.00 DPS, sim-verified) [quest]; Skulker's Leather Waistguard (252474, -1.01 DPS) [crafted]; Stalker's Mail Belt (252588, -1.01 DPS) [crafted] |
+| waist | Substandard Belt Chain (274757) | Zippie Fizzbolt [vendor] | 45.8 ranged_attack_power points (3.05 DPS) | yes | Sagebrush Girdle (17778, -0.86 DPS) [quest]; Skulker's Leather Waistguard (252474, -1.01 DPS) [crafted]; Stalker's Mail Belt (252588, -1.01 DPS) [crafted] |
 | legs | Basilisk Hide Pants (1718) | World drop [world_drop] | 46.0 ranged_attack_power points (3.06 DPS) | yes | Infernal Trickster Leggings (17754, -0.15 DPS) [dungeon]; Keeper's Woolies (14668, -0.29 DPS) [world_drop]; Stone Guard's Chain Legplates (220833, -0.35 DPS) [vendor] |
 | feet | Albino Crocscale Boots (17728) | Maraudon: Rotgrip [dungeon] | 43.8 ranged_attack_power points (2.91 DPS) | yes | Fleetfoot Greaves (11627, -0.15 DPS) [dungeon]; Elven Chain Boots (13125, -0.29 DPS) [world_drop]; Sandstalker Ankleguards (12470, -0.44 DPS) [dungeon] |
 | finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 30.6 ranged_attack_power points (2.04 DPS) | yes | Blackstone Ring (17713, -0.54 DPS) [dungeon]; Ring of the Underwood (2951, -0.58 DPS) [world_drop]; Mark of Kern (2262, -0.71 DPS) [dungeon] |
 | finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 ranged_attack_power points (1.60 DPS) | yes | Blackstone Ring (17713, +0.00 DPS, sim-verified) [dungeon]; Ring of the Underwood (2951, -0.14 DPS) [world_drop]; Mark of Kern (2262, -0.27 DPS) [dungeon] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (183.5 DPS) | yes | Frozen Heart of the Mountain (249469, -5.55 DPS) [crafted] |
-| trinket2 | Devilsaur Eye (19991) | The Green Drake [quest] | sim-verified (183.5 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Devilsaur Tooth (19992, -2.74 DPS, sim-verified) [quest] |
-| main_hand | Eyegouger (9480) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | sim-verified (183.5 DPS) | yes | Steel Spear (250605, -0.79 DPS) [crafted]; Manslayer (10570, -0.82 DPS) [dungeon]; Hanzo Sword (8190, -3.70 DPS, sim-verified) [world_drop] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (184.7 DPS) | yes | Frozen Heart of the Mountain (249469, -5.55 DPS) [crafted] |
+| trinket2 | Devilsaur Eye (19991) | The Green Drake [quest] | sim-verified (184.7 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Devilsaur Tooth (19992, -2.97 DPS, sim-verified) [quest] |
+| main_hand | Eyegouger (9480) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | sim-verified (184.7 DPS) | yes | Steel Spear (250605, -0.79 DPS) [crafted]; Manslayer (10570, -0.82 DPS) [dungeon]; Hanzo Sword (8190, -3.74 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Arcanite Blacksmith Hammer (285281) | Blacksmithing [crafted] | sim-verified (183.5 DPS) | yes | Hurricane (2824, -1.62 DPS) [world_drop]; Precisely Calibrated Boomstick (2100, -2.04 DPS) [world_drop]; Dark Iron Rifle (16004, -3.29 DPS, sim-verified) [crafted] |
+| ranged | Arcanite Blacksmith Hammer (285281) | Blacksmithing [crafted] | sim-verified (184.7 DPS) | yes | Hurricane (2824, -1.62 DPS) [world_drop]; Precisely Calibrated Boomstick (2100, -2.04 DPS) [world_drop]; Dark Iron Rifle (16004, -2.89 DPS, sim-verified) [crafted] |
 
 **New at 50:** head: Helm of Fire; neck: Skibi's Pendant; back: Dark Phantom Cape; chest: Fungus Shroud Armor; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Substandard Belt Chain; feet: Albino Crocscale Boots; finger1: Masons Fraternity Ring; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Devilsaur Eye; main_hand: Eyegouger; ranged: Arcanite Blacksmith Hammer
 
@@ -280,31 +280,31 @@ No-known-source sample (15 of 713, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (troll, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 247.1. Weights run: 2.3s. Verify run: 1.7s. 1650 eligible items had no known source.
+Set DPS (verified): 249.6. Weights run: 3.1s. Verify run: 2.2s. 1650 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.282 ± 0.012, crit=1.110 ± 0.027 per rating point (14 rating = 1%, 15.543 per %), hit=0.382 ± 0.011 per rating point (10 rating = 1%, 3.820 per %), melee_haste=12.602 ± 1.512
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Black Dragonscale Helm (252605) | Leatherworking [crafted] | sim-verified (247.1 DPS) | yes | Warlord's Chain Helmet (16566, +0.00 DPS) [vendor]; Warlord's Chain Helm (231571, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -3.65 DPS, sim-verified) [crafted] |
+| head | Black Dragonscale Helm (252605) | Leatherworking [crafted] | sim-verified (+5.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Warlord's Chain Helmet (16566, +0.00 DPS) [vendor]; Warlord's Chain Helm (231571, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -5.34 DPS, sim-verified) [crafted] |
 | neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 43.4 ranged_attack_power points (2.95 DPS) | yes | Medallion of the Dawn (22659, -0.26 DPS) [quest]; Pendant of Celerity (22340, -0.59 DPS) [dungeon]; Scout's Medallion (19534, -0.62 DPS) [rep] |
 | shoulder | Darkspear Pauldrons (272105) (or Darkspear Epaulets (272106)) | Creeg Bothunk [vendor] | 77.2 ranged_attack_power points (5.24 DPS) | yes | Darkspear Epaulets (272106, +0.00 DPS) [vendor]; Defiler's Leather Shoulders (20194, -0.41 DPS) [rep]; Warlord's Chain Shoulders (231572, -0.95 DPS) [pvp] |
 | back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 54.2 ranged_attack_power points (3.69 DPS) | yes | Deathguard's Cloak (20068, -0.76 DPS, sim-verified) [rep]; Shifting Cloak (18511, -1.05 DPS) [crafted]; Shadow Prowler's Cloak (22269, -1.05 DPS) [dungeon] |
-| chest | Dawn Armor (252483) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Chain Chestpiece (16565, -0.72 DPS) [vendor]; Warlord's Chain Hauberk (231573, -0.72 DPS) [vendor]; Tunic of Undead Slaying (23089, -10.28 DPS, sim-verified) [world] |
-| wrist | Bracers of the Eclipse (18375) | Dire Maul: Prince Tortheldrin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Chain Wristguards (16570, -0.08 DPS) [pvp]; Forest Stalker's Bracers (19587, -0.24 DPS) [rep]; Wristwraps of Undead Slaying (23093, -3.80 DPS, sim-verified) [world] |
-| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 61.6 ranged_attack_power points (4.19 DPS) | yes | General's Chain Gloves (16571, +0.00 DPS) [vendor]; Gauntlets of Deftness (22410, +0.00 DPS) [dungeon]; General's Chain Vices (231575, +0.00 DPS) [vendor] |
-| waist | Dense Timbermaw Belt (227807) | Meilosh [vendor] | 64.0 ranged_attack_power points (4.35 DPS) | yes | Ranger's Belt (272397, +0.00 DPS, sim-verified) [vendor]; Belt of the Trickster (22325, -0.94 DPS) [dungeon]; Defiler's Chain Girdle (20150, -0.98 DPS) [rep] |
-| legs | Sentinel's Chain Leggings (237819) | Illiyana Moonblaze [vendor] | 114.8 ranged_attack_power points (7.80 DPS) | yes | General's Chain Legguards (231574, -1.47 DPS) [pvp]; Outrider's Chain Leggings (22673, -1.49 DPS, sim-verified) [rep]; Sentinel's Leather Pants (237818, -1.50 DPS) [vendor] |
+| chest | Dawn Armor (252483) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Chain Chestpiece (16565, -0.72 DPS) [vendor]; Warlord's Chain Hauberk (231573, -0.72 DPS) [vendor]; Tunic of Undead Slaying (23089, -9.00 DPS, sim-verified) [world] |
+| wrist | Bracers of the Eclipse (18375) | Dire Maul: Prince Tortheldrin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Chain Wristguards (16570, -0.08 DPS) [pvp]; Forest Stalker's Bracers (19587, -0.24 DPS) [rep]; Wristwraps of Undead Slaying (23093, -3.79 DPS, sim-verified) [world] |
+| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 61.6 ranged_attack_power points (4.19 DPS) | yes | General's Chain Gloves (16571, +0.00 DPS) [vendor]; General's Chain Vices (231575, +0.00 DPS) [vendor]; Gauntlets of Deftness (22410, -0.75 DPS, sim-verified) [dungeon] |
+| waist | Ranger's Belt (272397) | Pix Xizzix [vendor] | sim-verified (+2.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Belt of the Trickster (22325, -0.31 DPS) [dungeon]; Defiler's Chain Girdle (20150, -0.36 DPS) [rep]; Dense Timbermaw Belt (227807, -2.50 DPS, sim-verified) [vendor] |
+| legs | Sentinel's Chain Leggings (237819) | Illiyana Moonblaze [vendor] | 114.8 ranged_attack_power points (7.80 DPS) | yes | General's Chain Legguards (231574, -1.47 DPS) [pvp]; Outrider's Chain Leggings (22673, -1.47 DPS, sim-verified) [rep]; Sentinel's Leather Pants (237818, -1.50 DPS) [vendor] |
 | feet | Scalegut Treaders (275618) | Leatherworking [crafted] | 56.3 ranged_attack_power points (3.82 DPS) | yes | General's Chain Sabatons (231564, +0.00 DPS) [pvp]; General's Chain Greaves (231570, +0.00 DPS) [vendor]; Beastmaster's Boots (22061, -0.10 DPS) [quest] |
-| finger1 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Don Julio's Band (19325, -0.65 DPS) [rep]; Tarnished Elven Ring (18500, -0.70 DPS) [dungeon]; Naglering (11669, -5.47 DPS, sim-verified) [dungeon] |
-| finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Don Julio's Band (19325, -0.03 DPS) [rep]; Tarnished Elven Ring (18500, -0.08 DPS) [dungeon]; Naglering (11669, -4.74 DPS, sim-verified) [dungeon] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (+8.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Counterattack Lodestone (18537, -4.39 DPS) [dungeon]; Hand of Justice (11815, -4.53 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -5.66 DPS) [crafted] |
-| trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Second Wind (11819, -2.16 DPS, sim-verified) [dungeon] |
-| main_hand | Legionite Glaive (250619) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Glacial Blade (19099, -7.53 DPS, sim-verified) [rep] |
+| finger1 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Don Julio's Band (19325, -0.65 DPS) [rep]; Tarnished Elven Ring (18500, -0.70 DPS) [dungeon]; Naglering (11669, -4.27 DPS, sim-verified) [dungeon] |
+| finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Don Julio's Band (19325, -0.03 DPS) [rep]; Tarnished Elven Ring (18500, -0.08 DPS) [dungeon]; Naglering (11669, -3.52 DPS, sim-verified) [dungeon] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (+7.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Counterattack Lodestone (18537, -4.39 DPS) [dungeon]; Hand of Justice (11815, -4.53 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -5.66 DPS) [crafted] |
+| trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Second Wind (11819, -1.30 DPS, sim-verified) [dungeon] |
+| main_hand | Legionite Glaive (250619) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Glacial Blade (19099, -6.31 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Hyper Deluxe Sniper Rifle Mk XVII (279273) | Engineering [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Recurve (234559, +0.00 DPS) [pvp]; High Warlord's Crossbow (234560, +0.00 DPS) [pvp]; Dark Iron Rifle (16004, -9.36 DPS, sim-verified) [crafted] |
+| ranged | Hyper Deluxe Sniper Rifle Mk XVII (279273) | Engineering [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Recurve (234559, +0.00 DPS) [pvp]; High Warlord's Crossbow (234560, +0.00 DPS) [pvp]; Dark Iron Rifle (16004, -5.88 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Black Dragonscale Helm; neck: Amulet of the Darkmoon; shoulder: Darkspear Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Bracers of the Eclipse; hands: Raider Gloves; waist: Dense Timbermaw Belt; legs: Sentinel's Chain Leggings; feet: Scalegut Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Cutthroat's Signet; trinket2: Burst of Knowledge; main_hand: Legionite Glaive; ranged: Hyper Deluxe Sniper Rifle Mk XVII
+**New at 60:** head: Black Dragonscale Helm; neck: Amulet of the Darkmoon; shoulder: Darkspear Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Bracers of the Eclipse; hands: Raider Gloves; waist: Ranger's Belt; legs: Sentinel's Chain Leggings; feet: Scalegut Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Cutthroat's Signet; trinket2: Burst of Knowledge; main_hand: Legionite Glaive; ranged: Hyper Deluxe Sniper Rifle Mk XVII
 
 No-known-source sample (15 of 1650, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 
