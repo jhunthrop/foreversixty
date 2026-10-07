@@ -3,7 +3,7 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70009:warrior:dwarf:0/5555/552531213110010001:'
+build: 'FS1:1.60.1.70009:warrior:dwarf:0/5525003/255513121310001001:'
 recommendedRaces: [dwarf, tauren]
 statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, tanking priority, stat priority, and race picks for Protection Warrior in Forever, with beta-versus-projection called out.'
@@ -43,12 +43,12 @@ Verified against this build's talent data, in roughly the order you'd take them:
 
 - **Shield Specialization** — up to 5% more Block chance and a guaranteed 5 Rage whenever you Block at max rank, a Rage-generation talent as much as a mitigation one.
 - **Anticipation** — up to 20 Defense Skill at max rank, which raises avoidance across Dodge, Parry, and Block together.
-- **Toughness** — up to 10% more Armor from items at max rank, stacking with everything else you wear.
+- **Iron Will** — up to 15% shorter Stun and Fear durations at max rank. It replaced Toughness, which left the Protection tree in the 1 October 2026 rework, as the tree's defensive filler.
 - **Defiance** — up to 15% more threat generated in Defensive Stance while a shield is equipped, on top of the stance's own threat bonus.
 - **Concussion Blow** (one point, and the prerequisite for Shield Slam below) — a 5-second stun, useful crowd control on top of being a stepping stone.
 - **Shield Slam** (requires 1 point in Concussion Blow) — the capstone: a shield bash dealing damage that scales with Block Value and generating a very high amount of threat.
 
-This build reaching Shield Slam spends 31 points in Protection, with the remaining 20 in Fury — Cruelty, Iron Will, Booming Voice, and Unbridled Wrath all maxed (crit and Rage generation, plus shorter Stun and Fear durations) — rather than Arms, since Fury alone covers the whole remainder inside 51 points. Exact splits vary by preference and aren't fixed by anything confirmed for Forever. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+This build reaching Shield Slam spends 31 points in Protection, with the remaining 20 in Fury — Cruelty, Booming Voice and Unbridled Wrath all maxed (crit, Rage generation and Shout cost), with Blood Craze 3/3 for health back after a critical hit and 2 points in Lingering Rage — rather than Arms, since Fury alone covers the whole remainder inside 51 points. The five points Fury Iron Will used to hold are re-spent there because Iron Will moved to the Protection tree (where it replaces Toughness, so the Protection total stays at 31); Lingering Rage has no effect on a tank in combat and is a filler. Exact splits vary by preference and aren't fixed by anything confirmed for Forever. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
 ## Rotation and priority
 

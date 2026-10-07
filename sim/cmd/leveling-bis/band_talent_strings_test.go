@@ -65,10 +65,13 @@ func TestBandTalentStringsRoutesPaladinAndShamanThroughTheEngineLayout(t *testin
 			if err != nil {
 				t.Fatal(err)
 			}
-			if site == engine {
-				t.Fatalf("%s: bandTalentStrings' site and engine strings are identical (%q) - either the "+
-					"conversion was bypassed, or this class no longer exercises the known site/engine "+
-					"drift this guard depends on", tc.class, site)
+			// The engine proto was regenerated from the live trees on
+			// 2026-10-07, so paladin and shaman no longer drift from the
+			// site layout; the conversion itself is pinned by
+			// TestBandTalentStringsUsesTheGivenLayoutNotTheSiteOrder.
+			if site != engine {
+				t.Fatalf("%s: the engine string %q differs from the site string %q - the engine proto lags "+
+					"the site's active build", tc.class, engine, site)
 			}
 		})
 	}

@@ -129,17 +129,17 @@ func TestRepositionPutsRankedTalentsOnTheEnginesOwnIndex(t *testing.T) {
 	}
 }
 
-// TestRepositionBypassGuardWouldHaveCaughtTheRealDrift is the guard
-// this lane's brief asks for: it fails if a class whose site layout
-// and compiled-engine layout genuinely differ - paladin and shaman,
-// verified below by direct comparison - were ever read by a code path
-// that skips Reposition and hands the engine the positional string
-// unconverted. It is not a test of Reposition itself (the table test
-// above already pins that); it is a test that the DIVERGENCE those two
-// classes carry today is real, so a future regression that quietly
-// drops a Reposition call cannot pass by accident just because the
-// drift it was protecting against happened to close.
-func TestRepositionBypassGuardWouldHaveCaughtTheRealDrift(t *testing.T) {
+// TestSiteAndEngineLayoutsAgreeAfterTheLiveTreeRegeneration records the
+// state the engine's proto regeneration from the live trees (2026-10-07)
+// left: paladin and shaman, the two classes whose layouts used to
+// diverge (stale Improved Holy Strike and Crusade fields; Elemental Fury
+// and Alacrity swapped), now read the site's positional string
+// unchanged, so Reposition is the identity for them. The bypass guard
+// that used to demand a divergence moved to a layout stand-in
+// (cmd/leveling-bis TestBandTalentStringsUsesTheGivenLayoutNotTheSiteOrder);
+// this test fails if a class drifts again, so the drift is noticed
+// rather than silently absorbed by Reposition.
+func TestSiteAndEngineLayoutsAgreeAfterTheLiveTreeRegeneration(t *testing.T) {
 	build, err := leveling.ReadActiveBuild(repoRoot)
 	if err != nil {
 		t.Fatal(err)
@@ -176,10 +176,10 @@ func TestRepositionBypassGuardWouldHaveCaughtTheRealDrift(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if engineString == site {
-				t.Fatalf("%s: the site and engine talent strings are identical (%q) - this class no longer "+
-					"exercises the drift this guard exists to catch; replace it with a class/spec that still does",
-					tc.class, site)
+			if engineString != site {
+				t.Fatalf("%s: the engine reads %q where the site writes %q - the engine proto was regenerated "+
+					"from an older build than the site's active one; run `make talents` in the fork",
+					tc.class, engineString, site)
 			}
 		})
 	}
