@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T22:50:37Z",
+  "generated_at": "2026-10-07T23:17:34Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -541,8 +541,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.419905935,
-      "verify_run_seconds": 1.014388986,
+      "weights_run_seconds": 2.450565913,
+      "verify_run_seconds": 1.004449075,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -617,10 +617,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -2.753067551054212,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -1160,8 +1156,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.419905935,
-      "verify_run_seconds": 0.922572896,
+      "weights_run_seconds": 2.450565913,
+      "verify_run_seconds": 0.957457443,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1236,10 +1232,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -2.753067551054212,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -1812,8 +1804,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.6592646269999998,
-      "verify_run_seconds": 1.023835048,
+      "weights_run_seconds": 2.625277457,
+      "verify_run_seconds": 1.014899376,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1888,10 +1880,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.16883843845074833,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -2499,8 +2487,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 2.6592646269999998,
-      "verify_run_seconds": 1.055481196,
+      "weights_run_seconds": 2.625277457,
+      "verify_run_seconds": 1.08984023,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2575,10 +2563,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.16883843845074833,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -3147,8 +3131,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.035087495,
-      "verify_run_seconds": 1.087501645,
+      "weights_run_seconds": 3.040931504,
+      "verify_run_seconds": 1.07963752,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3223,10 +3207,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -2.9726804716457558,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -3794,8 +3774,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.035087495,
-      "verify_run_seconds": 1.106314592,
+      "weights_run_seconds": 3.040931504,
+      "verify_run_seconds": 1.138213877,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3870,10 +3850,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -2.9726804716457558,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -4260,7 +4236,7 @@
           "item_name": "Greaves of Withering Despair",
           "source": "Blackrock Depths: High Interrogator Gerstahn ",
           "source_kind": "dungeon",
-          "score": 24.64601304923688,
+          "score": 24.646013049236878,
           "verified": true,
           "alternatives": [
             {
@@ -4268,21 +4244,21 @@
               "item_name": "Skycaller's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.022257955317534973
+              "dps_delta": -0.02225795531753464
             },
             {
               "item_id": 252577,
               "item_name": "Skycaller's Mail Sabatons",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.022257955317534973
+              "dps_delta": -0.02225795531753464
             },
             {
               "item_id": 254013,
               "item_name": "Earthen Silk Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.06059320596851742
+              "dps_delta": -0.06059320596851709
             }
           ]
         },
@@ -4459,8 +4435,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.121244089,
-      "verify_run_seconds": 1.32111767,
+      "weights_run_seconds": 3.082454599,
+      "verify_run_seconds": 1.306038875,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4535,10 +4511,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -2.9469784474140264,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -4918,7 +4890,7 @@
           "item_name": "Greaves of Withering Despair",
           "source": "Blackrock Depths: High Interrogator Gerstahn ",
           "source_kind": "dungeon",
-          "score": 24.64601304923688,
+          "score": 24.646013049236878,
           "verified": true,
           "alternatives": [
             {
@@ -4926,21 +4898,21 @@
               "item_name": "Skycaller's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.022257955317534973
+              "dps_delta": -0.02225795531753464
             },
             {
               "item_id": 252577,
               "item_name": "Skycaller's Mail Sabatons",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.022257955317534973
+              "dps_delta": -0.02225795531753464
             },
             {
               "item_id": 254013,
               "item_name": "Earthen Silk Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.06059320596851742
+              "dps_delta": -0.06059320596851709
             }
           ]
         },
@@ -5122,8 +5094,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.121244089,
-      "verify_run_seconds": 1.223632192,
+      "weights_run_seconds": 3.082454599,
+      "verify_run_seconds": 1.248048435,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5198,10 +5170,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -2.9469784474140264,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -5762,7 +5730,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.10669840924972243
+              "dps_delta": -0.10669840924972172
             },
             {
               "item_id": 2243,
@@ -5834,8 +5802,8 @@
         "main_hand: Crackling Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.058109579,
-      "verify_run_seconds": 1.33152862,
+      "weights_run_seconds": 3.101245358,
+      "verify_run_seconds": 1.307917667,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5910,10 +5878,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -3.1006674632722038,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -6224,7 +6188,7 @@
               "item_name": "General's Mail Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.23609022557159393
+              "dps_delta": -0.23609022557159356
             }
           ]
         },
@@ -6551,8 +6515,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.058109579,
-      "verify_run_seconds": 1.177564815,
+      "weights_run_seconds": 3.101245358,
+      "verify_run_seconds": 1.151791133,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6627,10 +6591,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -3.1006674632722038,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -6724,7 +6684,7 @@
           "item_name": "Blue Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 39.36022061742551,
+          "score": 39.360220617425504,
           "verified": true,
           "alternatives": [
             {
@@ -6732,14 +6692,14 @@
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.2159940877899955
+              "dps_delta": -2.2159940877899933
             },
             {
               "item_id": 17740,
               "item_name": "Soothsayer's Headdress",
               "source_kind": "dungeon",
               "source": "Maraudon: Celebras the Cursed",
-              "dps_delta": -3.295710482133464
+              "dps_delta": -3.2957104821334617
             },
             {
               "item_id": 18727,
@@ -6991,19 +6951,19 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 49.92154603240084,
+          "score": 49.92154603240085,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -1.687472659661221
-            },
-            {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -1.6874726596612233
+            },
+            {
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -3.8670827227446694,
@@ -7014,7 +6974,7 @@
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -4.131173226245205
+              "dps_delta": -4.131173226245208
             }
           ]
         },
@@ -7278,8 +7238,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.8694380179999999,
-      "verify_run_seconds": 0.93480728,
+      "weights_run_seconds": 1.906914105,
+      "verify_run_seconds": 0.937840472,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7354,10 +7314,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 6.335167905476431,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -7451,7 +7407,7 @@
           "item_name": "Blue Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 39.36022061742551,
+          "score": 39.360220617425504,
           "verified": true,
           "alternatives": [
             {
@@ -7459,21 +7415,21 @@
               "item_name": "Coif of The Five Thunders",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -1.1434946963514272
+              "dps_delta": -1.1434946963514248
             },
             {
               "item_id": 231663,
               "item_name": "Warlord's Mail Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.1839487398455035
+              "dps_delta": -1.183948739845501
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -1.9670759347009508
+              "dps_delta": -1.9670759347009483
             }
           ]
         },
@@ -7721,22 +7677,22 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.687472659661221
+              "dps_delta": -1.6874726596612186
             },
             {
               "item_id": 231664,
               "item_name": "General's Mail Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.4581345723937917
+              "dps_delta": -2.458134572393789
             },
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -2.9248631503564866,
@@ -8005,8 +7961,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.8694380179999999,
-      "verify_run_seconds": 0.905426396,
+      "weights_run_seconds": 1.906914105,
+      "verify_run_seconds": 0.932414408,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8081,10 +8037,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 6.335167905476431,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     }
   ],

@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T22:38:26Z",
+  "generated_at": "2026-10-07T23:05:27Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.8248957099999998,
-      "verify_run_seconds": 0.772546795,
+      "weights_run_seconds": 1.9907909620000002,
+      "verify_run_seconds": 0.682812515,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -632,10 +632,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -1.0896581217656631,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -1184,8 +1180,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.8248957099999998,
-      "verify_run_seconds": 0.68802189,
+      "weights_run_seconds": 1.9907909620000002,
+      "verify_run_seconds": 0.70223359,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1260,10 +1256,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -1.0896581217656631,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -1846,8 +1838,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.029265992,
-      "verify_run_seconds": 0.74888502,
+      "weights_run_seconds": 2.095552811,
+      "verify_run_seconds": 0.736809361,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1922,10 +1914,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.5790590543915678,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -2543,8 +2531,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 2.029265992,
-      "verify_run_seconds": 0.768765073,
+      "weights_run_seconds": 2.095552811,
+      "verify_run_seconds": 0.775118856,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2619,10 +2607,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.5790590543915678,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -3199,8 +3183,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.163239671,
-      "verify_run_seconds": 0.812535191,
+      "weights_run_seconds": 2.215660233,
+      "verify_run_seconds": 0.774787986,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3275,10 +3259,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -0.8488811349973703,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -3856,8 +3836,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.163239671,
-      "verify_run_seconds": 0.778495838,
+      "weights_run_seconds": 2.215660233,
+      "verify_run_seconds": 0.799573176,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3932,10 +3912,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -0.8488811349973703,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -4535,8 +4511,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.41430614,
-      "verify_run_seconds": 0.873387733,
+      "weights_run_seconds": 2.3930014379999998,
+      "verify_run_seconds": 0.831900961,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4611,10 +4587,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.7287503319460563,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -5211,8 +5183,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.41430614,
-      "verify_run_seconds": 0.907333324,
+      "weights_run_seconds": 2.3930014379999998,
+      "verify_run_seconds": 0.887766035,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5287,10 +5259,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.7287503319460563,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -5624,7 +5592,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 44.66155263117088,
+          "score": 44.661552631170885,
           "verified": true,
           "alternatives": [
             {
@@ -5632,14 +5600,14 @@
               "item_name": "Elunite Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.231023849522749
+              "dps_delta": -2.2310238495227503
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.5768851021250803
+              "dps_delta": -2.5768851021250816
             },
             {
               "item_id": 18405,
@@ -5858,7 +5826,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.46527781533074464
+              "dps_delta": -0.4652778153307432
             },
             {
               "item_id": 2243,
@@ -5925,8 +5893,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 2.35910557,
-      "verify_run_seconds": 0.90556347,
+      "weights_run_seconds": 2.409222291,
+      "verify_run_seconds": 0.902690093,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6001,10 +5969,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.15182193972580277,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -6206,7 +6170,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 25.449847474417318,
+          "score": 25.449847474417314,
           "verified": true,
           "alternatives": [
             {
@@ -6214,21 +6178,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.5064138361857065
+              "dps_delta": -0.5064138361857058
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8311058125407933
+              "dps_delta": -0.8311058125407926
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -1.3769553561405463
+              "dps_delta": -1.3769553561405454
             }
           ]
         },
@@ -6643,8 +6607,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 2.35910557,
-      "verify_run_seconds": 0.916753308,
+      "weights_run_seconds": 2.409222291,
+      "verify_run_seconds": 0.921072879,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6719,10 +6683,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.15182193972580277,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -6904,14 +6864,14 @@
               "item_name": "Field Marshal's Dragonhide Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.8740906444442498
+              "dps_delta": -1.8740906444442513
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -2.8853334494416143
+              "dps_delta": -2.885333449441616
             },
             {
               "item_id": 19059,
@@ -7095,18 +7055,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.8609679003703183
             },
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8609679003703214
+              "dps_delta": -1.8609679003703183
             },
             {
               "item_id": 13170,
@@ -7372,8 +7332,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.238780759,
-      "verify_run_seconds": 0.702264951,
+      "weights_run_seconds": 1.255208427,
+      "verify_run_seconds": 0.713174835,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7448,10 +7408,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 5.962134845524356,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     },
     {
@@ -7570,7 +7526,7 @@
               "item_name": "Warlord's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.1464844150536084
+              "dps_delta": -1.1464844150536069
             },
             {
               "item_id": 252561,
@@ -7615,7 +7571,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.511299814067364
+              "dps_delta": -2.5112998140673626
             }
           ]
         },
@@ -7640,7 +7596,7 @@
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -2.8853334494416143
+              "dps_delta": -2.885333449441616
             },
             {
               "item_id": 19059,
@@ -7657,7 +7613,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 23.35624420019273,
+          "score": 23.356244200192734,
           "verified": true,
           "alternatives": [
             {
@@ -7665,21 +7621,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.1165778443876975
+              "dps_delta": -1.116577844387699
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.383365889874744
+              "dps_delta": -2.3833658898747454
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.221122261200669
+              "dps_delta": -3.2211222612006707
             }
           ]
         },
@@ -7835,7 +7791,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8609679003703214
+              "dps_delta": -1.8609679003703183
             },
             {
               "item_id": 13170,
@@ -8033,7 +7989,7 @@
               "item_name": "Amethyst War Staff",
               "source_kind": "world",
               "source": "Azure Templar",
-              "dps_delta": -0.8339412244463371
+              "dps_delta": -0.8339412244463402
             },
             {
               "item_id": 2243,
@@ -8101,8 +8057,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.238780759,
-      "verify_run_seconds": 0.711164907,
+      "weights_run_seconds": 1.255208427,
+      "verify_run_seconds": 0.729089714,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8177,10 +8133,6 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 5.962134845524356,
-      "hit_to_cap": {
-        "baseline": 0,
-        "specials": 9
-      },
       "haste_on_items": false
     }
   ],

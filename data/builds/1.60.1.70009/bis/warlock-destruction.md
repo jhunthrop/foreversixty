@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 00000000000000000-0000000000000000000-2053100000000000)
 
-Set DPS (verified): 39.2. Weights run: 2.4s. Verify run: 1.1s. 150 eligible items had no known source.
+Set DPS (verified): 39.2. Weights run: 2.5s. Verify run: 1.1s. 150 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.067, intellect=0.082 ± 0.004, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.490 per %), hit=0.148 ± 0.005 per rating point (10 rating = 1%, 1.484 per %), spell_haste=not significant (0.199 ± 0.068), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.688 ± 0.067, fire_power=0.313 ± 0.000
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1075, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 25532000000000000-0000000000000000000-2053225103101351)
 
-Set DPS (verified): 766.2. Weights run: 6.4s. Verify run: 1.4s. 1075 eligible items had no known source.
+Set DPS (verified): 766.2. Weights run: 6.5s. Verify run: 1.4s. 1075 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.184, intellect=0.100 ± 0.021, crit=0.189 ± 0.006 per rating point (14 rating = 1%, 2.649 per %), hit=0.614 ± 0.039 per rating point (10 rating = 1%, 6.142 per %), spell_haste=not significant (-0.828 ± 0.506), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.521 ± 0.184), fire_power=0.478 ± 0.001
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1075, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-0000000000000000000-2053100000000000)
 
-Set DPS (verified): 38.2. Weights run: 2.4s. Verify run: 1.1s. 139 eligible items had no known source.
+Set DPS (verified): 38.2. Weights run: 2.5s. Verify run: 1.1s. 139 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.067, intellect=0.082 ± 0.004, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.490 per %), hit=0.148 ± 0.005 per rating point (10 rating = 1%, 1.484 per %), spell_haste=not significant (0.199 ± 0.068), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.688 ± 0.067, fire_power=0.313 ± 0.000
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1063, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 25532000000000000-0000000000000000000-2053225103101351)
 
-Set DPS (verified): 757.8. Weights run: 6.4s. Verify run: 1.3s. 1063 eligible items had no known source.
+Set DPS (verified): 757.8. Weights run: 6.5s. Verify run: 1.3s. 1063 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.184, intellect=0.100 ± 0.021, crit=0.189 ± 0.006 per rating point (14 rating = 1%, 2.649 per %), hit=0.614 ± 0.039 per rating point (10 rating = 1%, 6.142 per %), spell_haste=not significant (-0.828 ± 0.506), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.521 ± 0.184), fire_power=0.478 ± 0.001
 

@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T22:44:51Z",
+  "generated_at": "2026-10-07T23:11:50Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.015101185,
-      "verify_run_seconds": 0.632480625,
+      "weights_run_seconds": 0.97846137,
+      "verify_run_seconds": 0.639337766,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.015101185,
-      "verify_run_seconds": 0.662820713,
+      "weights_run_seconds": 0.97846137,
+      "verify_run_seconds": 0.65308255,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1892,8 +1892,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.087594689,
-      "verify_run_seconds": 0.809883325,
+      "weights_run_seconds": 1.099691317,
+      "verify_run_seconds": 0.768842324,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2602,8 +2602,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.087594689,
-      "verify_run_seconds": 0.841885519,
+      "weights_run_seconds": 1.099691317,
+      "verify_run_seconds": 0.802915161,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3278,8 +3278,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.018900691,
-      "verify_run_seconds": 0.664421554,
+      "weights_run_seconds": 1.000772105,
+      "verify_run_seconds": 0.645997904,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3948,8 +3948,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.018900691,
-      "verify_run_seconds": 0.664990699,
+      "weights_run_seconds": 1.000772105,
+      "verify_run_seconds": 0.649050663,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4645,8 +4645,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.9519455,
-      "verify_run_seconds": 0.756348614,
+      "weights_run_seconds": 0.961056096,
+      "verify_run_seconds": 0.735077365,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4829,7 +4829,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.6982857881796602
+              "dps_delta": -1.6982857881796596
             },
             {
               "item_id": 15999,
@@ -5326,8 +5326,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.9519455,
-      "verify_run_seconds": 0.757536967,
+      "weights_run_seconds": 0.961056096,
+      "verify_run_seconds": 0.720315587,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6063,8 +6063,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.03268254,
-      "verify_run_seconds": 0.744417439,
+      "weights_run_seconds": 1.012183701,
+      "verify_run_seconds": 0.722110601,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6801,8 +6801,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.03268254,
-      "verify_run_seconds": 0.757676523,
+      "weights_run_seconds": 1.012183701,
+      "verify_run_seconds": 0.72889651,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7536,8 +7536,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.038832808,
-      "verify_run_seconds": 0.76771277,
+      "weights_run_seconds": 1.047950952,
+      "verify_run_seconds": 0.761635311,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8271,8 +8271,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.038832808,
-      "verify_run_seconds": 0.788828275,
+      "weights_run_seconds": 1.047950952,
+      "verify_run_seconds": 0.764556504,
       "coverage": {
         "back": {
           "eligible": 450,

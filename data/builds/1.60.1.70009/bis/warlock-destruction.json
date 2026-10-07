@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
   "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T22:54:04Z",
+  "generated_at": "2026-10-07T23:21:01Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -562,8 +562,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.408683158,
-      "verify_run_seconds": 1.127841705,
+      "weights_run_seconds": 2.462396757,
+      "verify_run_seconds": 1.098754894,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1204,8 +1204,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.408683158,
-      "verify_run_seconds": 1.14504215,
+      "weights_run_seconds": 2.462396757,
+      "verify_run_seconds": 1.115232237,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1925,8 +1925,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.491422461,
-      "verify_run_seconds": 1.188137961,
+      "weights_run_seconds": 2.525622363,
+      "verify_run_seconds": 1.21123413,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2645,8 +2645,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.491422461,
-      "verify_run_seconds": 1.240051216,
+      "weights_run_seconds": 2.525622363,
+      "verify_run_seconds": 1.201969504,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3334,8 +3334,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 2.115722928,
-      "verify_run_seconds": 1.135180395,
+      "weights_run_seconds": 2.106699739,
+      "verify_run_seconds": 1.140233949,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4017,8 +4017,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.115722928,
-      "verify_run_seconds": 1.081588905,
+      "weights_run_seconds": 2.106699739,
+      "verify_run_seconds": 1.081557364,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4732,8 +4732,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 8.33189973,
-      "verify_run_seconds": 1.274589151,
+      "weights_run_seconds": 8.333576596,
+      "verify_run_seconds": 1.2758237829999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5454,8 +5454,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 8.33189973,
-      "verify_run_seconds": 1.341226915,
+      "weights_run_seconds": 8.333576596,
+      "verify_run_seconds": 1.282712758,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5737,7 +5737,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 23.992444439796014,
+          "score": 23.992444439796017,
           "verified": true,
           "alternatives": [
             {
@@ -5753,14 +5753,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.8327199120229545
+              "dps_delta": -2.8327199120229563
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.9969872951910377
+              "dps_delta": -2.9969872951910395
             }
           ]
         },
@@ -6200,8 +6200,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.185617465,
-      "verify_run_seconds": 1.2982890710000001,
+      "weights_run_seconds": 2.200428193,
+      "verify_run_seconds": 1.285847924,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6613,7 +6613,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.052275696297805,
+          "score": 39.05227569629781,
           "verified": true,
           "alternatives": [
             {
@@ -6629,14 +6629,14 @@
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -8.364047585679435
+              "dps_delta": -8.364047585679439
             },
             {
               "item_id": 11662,
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -8.882915637300762
+              "dps_delta": -8.882915637300766
             }
           ]
         },
@@ -6944,8 +6944,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.185617465,
-      "verify_run_seconds": 1.297134733,
+      "weights_run_seconds": 2.200428193,
+      "verify_run_seconds": 1.314052338,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7391,7 +7391,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 38.29520861398334,
+          "score": 38.295208613983334,
           "verified": true,
           "alternatives": [
             {
@@ -7406,14 +7406,14 @@
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -2.537357816530657
+              "dps_delta": -2.537357816530652
             },
             {
               "item_id": 227095,
               "item_name": "Knight-Captain's Dreadweave Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -6.52829648132758
+              "dps_delta": -6.528296481327574
             }
           ]
         },
@@ -7686,8 +7686,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.425080649,
-      "verify_run_seconds": 1.3706180049999999,
+      "weights_run_seconds": 6.455286502,
+      "verify_run_seconds": 1.367104426,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8341,7 +8341,7 @@
               "item_name": "Amethyst War Staff",
               "source_kind": "world",
               "source": "Azure Templar",
-              "dps_delta": -1.6262178507542386
+              "dps_delta": -1.6262178507542335
             },
             {
               "item_id": 1728,
@@ -8430,8 +8430,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.425080649,
-      "verify_run_seconds": 1.324714271,
+      "weights_run_seconds": 6.455286502,
+      "verify_run_seconds": 1.3450338560000001,
       "coverage": {
         "back": {
           "eligible": 450,
