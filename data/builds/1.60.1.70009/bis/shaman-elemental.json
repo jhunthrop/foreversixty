@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "20258554d",
-  "generated_at": "2026-10-07T13:05:35Z",
+  "engine_version": "f39303113",
+  "generated_at": "2026-10-07T13:27:07Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -543,8 +543,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 2.421076455,
-      "verify_run_seconds": 0.947823309,
+      "weights_run_seconds": 1.768452605,
+      "verify_run_seconds": 0.76605508,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1159,8 +1159,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.421076455,
-      "verify_run_seconds": 0.973622043,
+      "weights_run_seconds": 1.768452605,
+      "verify_run_seconds": 0.816877456,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1810,8 +1810,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.815889682,
-      "verify_run_seconds": 1.076695882,
+      "weights_run_seconds": 2.101988806,
+      "verify_run_seconds": 0.837571507,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2490,8 +2490,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 2.815889682,
-      "verify_run_seconds": 1.036443595,
+      "weights_run_seconds": 2.101988806,
+      "verify_run_seconds": 0.826048593,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3133,8 +3133,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.05442095,
-      "verify_run_seconds": 1.195600778,
+      "weights_run_seconds": 2.323466548,
+      "verify_run_seconds": 0.915772436,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3777,8 +3777,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.05442095,
-      "verify_run_seconds": 1.170126569,
+      "weights_run_seconds": 2.323466548,
+      "verify_run_seconds": 0.893293528,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4450,8 +4450,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.124328002,
-      "verify_run_seconds": 1.210093302,
+      "weights_run_seconds": 2.309141233,
+      "verify_run_seconds": 0.961486518,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5120,8 +5120,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.124328002,
-      "verify_run_seconds": 1.217448745,
+      "weights_run_seconds": 2.309141233,
+      "verify_run_seconds": 0.958157954,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5507,7 +5507,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 58.32919856186186,
+          "score": 58.329198561861865,
           "verified": true,
           "alternatives": [
             {
@@ -5515,14 +5515,14 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.513342411377554
+              "dps_delta": -1.5133424113775549
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.712893538818868
+              "dps_delta": -1.7128935388188689
             },
             {
               "item_id": 272399,
@@ -5807,8 +5807,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 3.0742533930000002,
-      "verify_run_seconds": 1.256627873,
+      "weights_run_seconds": 2.370027839,
+      "verify_run_seconds": 0.985997884,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6071,7 +6071,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 31.77999818136873,
+          "score": 31.779998181368725,
           "verified": true,
           "alternatives": [
             {
@@ -6079,21 +6079,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6196475000046018
+              "dps_delta": -0.6196475000046013
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.7993544798486761
+              "dps_delta": -0.7993544798486757
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -1.0040302884809211
+              "dps_delta": -1.0040302884809207
             }
           ]
         },
@@ -6242,7 +6242,7 @@
               "item_name": "General's Mail Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.29286852038122424
+              "dps_delta": -0.2928685203812234
             },
             {
               "item_id": 252603,
@@ -6506,8 +6506,8 @@
         "trinket2: Second Wind",
         "main_hand: Hammer of Divine Might"
       ],
-      "weights_run_seconds": 3.0742533930000002,
-      "verify_run_seconds": 1.116251541,
+      "weights_run_seconds": 2.370027839,
+      "verify_run_seconds": 0.853304321,
       "coverage": {
         "back": {
           "eligible": 451,

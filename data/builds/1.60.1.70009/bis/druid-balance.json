@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "20258554d",
-  "generated_at": "2026-10-07T12:56:52Z",
+  "engine_version": "f39303113",
+  "generated_at": "2026-10-07T13:20:25Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -545,8 +545,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.9351286239999999,
-      "verify_run_seconds": 0.887654348,
+      "weights_run_seconds": 1.501728755,
+      "verify_run_seconds": 0.571129285,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1173,8 +1173,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 1.9351286239999999,
-      "verify_run_seconds": 0.765857871,
+      "weights_run_seconds": 1.501728755,
+      "verify_run_seconds": 0.580608132,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1831,8 +1831,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.419800231,
-      "verify_run_seconds": 0.883714362,
+      "weights_run_seconds": 1.859894244,
+      "verify_run_seconds": 0.698315358,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2490,8 +2490,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 2.419800231,
-      "verify_run_seconds": 0.812764316,
+      "weights_run_seconds": 1.859894244,
+      "verify_run_seconds": 0.644696287,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3141,8 +3141,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.590647055,
-      "verify_run_seconds": 0.9548948,
+      "weights_run_seconds": 2.105857602,
+      "verify_run_seconds": 0.720022956,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3795,8 +3795,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.590647055,
-      "verify_run_seconds": 0.964271902,
+      "weights_run_seconds": 2.105857602,
+      "verify_run_seconds": 0.717764525,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4469,8 +4469,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.81808626,
-      "verify_run_seconds": 1.064489059,
+      "weights_run_seconds": 2.1343481,
+      "verify_run_seconds": 0.82905865,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5140,8 +5140,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.81808626,
-      "verify_run_seconds": 1.068758114,
+      "weights_run_seconds": 2.1343481,
+      "verify_run_seconds": 0.827542682,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5406,7 +5406,7 @@
               "item_name": "Field Marshal's Dragonhide Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.6688792887457111
+              "dps_delta": -0.6688792887457102
             }
           ]
         },
@@ -5546,7 +5546,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 55.35597143609915,
+          "score": 55.35597143609916,
           "verified": true,
           "alternatives": [
             {
@@ -5554,14 +5554,14 @@
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.7919498052632035
+              "dps_delta": -1.7919498052632046
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.8224431283230427
+              "dps_delta": -1.8224431283230436
             },
             {
               "item_id": 272401,
@@ -5579,7 +5579,7 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 61.62109447031142,
+          "score": 61.62109447031141,
           "verified": true,
           "alternatives": [
             {
@@ -5587,14 +5587,14 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.517103740436234
+              "dps_delta": -1.5171037404362329
             },
             {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.6077805424817257
+              "dps_delta": -1.6077805424817246
             }
           ]
         },
@@ -5921,8 +5921,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.819747282,
-      "verify_run_seconds": 1.089734271,
+      "weights_run_seconds": 2.113606456,
+      "verify_run_seconds": 0.815893233,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6708,8 +6708,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 2.819747282,
-      "verify_run_seconds": 1.067702387,
+      "weights_run_seconds": 2.113606456,
+      "verify_run_seconds": 0.795925168,
       "coverage": {
         "back": {
           "eligible": 451,

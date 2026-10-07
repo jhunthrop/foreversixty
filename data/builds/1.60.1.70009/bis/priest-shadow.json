@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
-  "engine_version": "20258554d",
-  "generated_at": "2026-10-07T13:02:39Z",
+  "engine_version": "f39303113",
+  "generated_at": "2026-10-07T13:24:49Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -548,8 +548,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.974476643,
-      "verify_run_seconds": 0.719169395,
+      "weights_run_seconds": 0.726237488,
+      "verify_run_seconds": 0.532775895,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1178,8 +1178,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.974476643,
-      "verify_run_seconds": 0.70606983,
+      "weights_run_seconds": 0.726237488,
+      "verify_run_seconds": 0.584884806,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.912810761,
-      "verify_run_seconds": 0.788622135,
+      "weights_run_seconds": 0.732428984,
+      "verify_run_seconds": 0.612197937,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2586,8 +2586,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.912810761,
-      "verify_run_seconds": 0.745775196,
+      "weights_run_seconds": 0.732428984,
+      "verify_run_seconds": 0.588511474,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3247,8 +3247,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.025284041,
-      "verify_run_seconds": 0.681893312,
+      "weights_run_seconds": 0.799395122,
+      "verify_run_seconds": 0.518713326,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3910,8 +3910,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.025284041,
-      "verify_run_seconds": 0.713274793,
+      "weights_run_seconds": 0.799395122,
+      "verify_run_seconds": 0.539658454,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4370,7 +4370,7 @@
           "item_name": "Sergeant Major's Dreadweave Boots",
           "source": "PvP rank 9 · Sergeant Major · Alliance",
           "source_kind": "vendor",
-          "score": 26.103508558534823,
+          "score": 26.10350855853482,
           "verified": true,
           "alternatives": [
             {
@@ -4378,21 +4378,21 @@
               "item_name": "Earthen Silk Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.2533285174840633
+              "dps_delta": -0.2533285174840629
             },
             {
               "item_id": 254107,
               "item_name": "Gilded Sandals",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.267444261326948
+              "dps_delta": -0.26744426132694754
             },
             {
               "item_id": 20641,
               "item_name": "Southsea Mojo Boots",
               "source_kind": "quest",
               "source": "Southsea Shakedown",
-              "dps_delta": -0.28396236190611995
+              "dps_delta": -0.28396236190611956
             }
           ]
         },
@@ -4602,8 +4602,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.004813559,
-      "verify_run_seconds": 0.778746633,
+      "weights_run_seconds": 0.798015485,
+      "verify_run_seconds": 0.584860395,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5297,8 +5297,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.004813559,
-      "verify_run_seconds": 0.812043217,
+      "weights_run_seconds": 0.798015485,
+      "verify_run_seconds": 0.610220012,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6029,8 +6029,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.159834212,
-      "verify_run_seconds": 0.830580024,
+      "weights_run_seconds": 0.849648319,
+      "verify_run_seconds": 0.613268864,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6197,7 +6197,7 @@
           "item_name": "Virtuous Cowl",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 51.534994423821416,
+          "score": 51.53499442382142,
           "verified": true,
           "alternatives": [
             {
@@ -6757,8 +6757,8 @@
         "main_hand: Trindlehaven Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.159834212,
-      "verify_run_seconds": 0.840232939,
+      "weights_run_seconds": 0.849648319,
+      "verify_run_seconds": 0.612258392,
       "coverage": {
         "back": {
           "eligible": 450,
