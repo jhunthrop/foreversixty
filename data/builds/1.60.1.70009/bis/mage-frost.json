@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:15:39Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:37:33Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.698893856,
-      "verify_run_seconds": 0.547032628,
+      "weights_run_seconds": 0.930052074,
+      "verify_run_seconds": 0.676208932,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1183,8 +1183,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.698893856,
-      "verify_run_seconds": 0.568338786,
+      "weights_run_seconds": 0.930052074,
+      "verify_run_seconds": 0.701529681,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1884,8 +1884,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.727240859,
-      "verify_run_seconds": 0.503892843,
+      "weights_run_seconds": 0.937092654,
+      "verify_run_seconds": 0.650983663,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2588,8 +2588,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.727240859,
-      "verify_run_seconds": 0.546084006,
+      "weights_run_seconds": 0.937092654,
+      "verify_run_seconds": 0.698400574,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3264,8 +3264,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.750130549,
-      "verify_run_seconds": 0.504472558,
+      "weights_run_seconds": 0.998393274,
+      "verify_run_seconds": 0.620996022,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3931,8 +3931,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.750130549,
-      "verify_run_seconds": 0.510106498,
+      "weights_run_seconds": 0.998393274,
+      "verify_run_seconds": 0.657879694,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4621,8 +4621,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.731663431,
-      "verify_run_seconds": 0.583880622,
+      "weights_run_seconds": 0.90880018,
+      "verify_run_seconds": 0.753880147,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5307,8 +5307,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.731663431,
-      "verify_run_seconds": 0.617500309,
+      "weights_run_seconds": 0.90880018,
+      "verify_run_seconds": 0.779267632,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5538,7 +5538,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.75099363648796,
+          "score": 40.75099363648797,
           "verified": true,
           "alternatives": [
             {
@@ -5546,21 +5546,21 @@
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.5065807504676083
+              "dps_delta": -1.5065807504676099
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.3101922371481436
+              "dps_delta": -2.310192237148145
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -2.4267261002697635
+              "dps_delta": -2.426726100269765
             }
           ]
         },
@@ -5570,7 +5570,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 28.042925950080637,
+          "score": 28.04292595008064,
           "verified": true,
           "alternatives": [
             {
@@ -5578,21 +5578,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.1991998083248259
+              "dps_delta": -1.1991998083248265
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.73949238303481
+              "dps_delta": -1.7394923830348106
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.084149639543906
+              "dps_delta": -2.0841496395439068
             }
           ]
         },
@@ -6033,8 +6033,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.758914669,
-      "verify_run_seconds": 0.571854024,
+      "weights_run_seconds": 0.955617701,
+      "verify_run_seconds": 0.735840495,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6264,7 +6264,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.75099363648796,
+          "score": 40.75099363648797,
           "verified": true,
           "alternatives": [
             {
@@ -6272,21 +6272,21 @@
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.5065807504676083
+              "dps_delta": -1.5065807504676099
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.3101922371481436
+              "dps_delta": -2.310192237148145
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -2.4267261002697635
+              "dps_delta": -2.426726100269765
             }
           ]
         },
@@ -6760,8 +6760,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.758914669,
-      "verify_run_seconds": 0.61742929,
+      "weights_run_seconds": 0.955617701,
+      "verify_run_seconds": 0.763581988,
       "coverage": {
         "back": {
           "eligible": 450,

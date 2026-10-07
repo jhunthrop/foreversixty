@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:20:24Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:43:43Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -901,8 +901,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.793047252,
-      "verify_run_seconds": 0.939941912,
+      "weights_run_seconds": 2.331844065,
+      "verify_run_seconds": 1.25498562,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1949,8 +1949,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.793047252,
-      "verify_run_seconds": 0.991799832,
+      "weights_run_seconds": 2.331844065,
+      "verify_run_seconds": 1.247649514,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2668,8 +2668,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.7947081360000001,
-      "verify_run_seconds": 0.90831967,
+      "weights_run_seconds": 2.328475913,
+      "verify_run_seconds": 1.124908631,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3386,8 +3386,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.7947081360000001,
-      "verify_run_seconds": 0.9164792,
+      "weights_run_seconds": 2.328475913,
+      "verify_run_seconds": 1.185735977,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4073,8 +4073,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.396069661,
-      "verify_run_seconds": 0.761457902,
+      "weights_run_seconds": 1.824258789,
+      "verify_run_seconds": 0.962284794,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4754,8 +4754,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.396069661,
-      "verify_run_seconds": 0.757660339,
+      "weights_run_seconds": 1.824258789,
+      "verify_run_seconds": 0.973162776,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5465,8 +5465,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.391123108,
-      "verify_run_seconds": 0.927139427,
+      "weights_run_seconds": 1.8041563969999999,
+      "verify_run_seconds": 1.184847645,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5874,14 +5874,14 @@
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -0.18205721852764026
+              "dps_delta": -0.18205721852764106
             },
             {
               "item_id": 254073,
               "item_name": "Ghostweave Cord",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.5101253977727404
+              "dps_delta": -0.5101253977727411
             },
             {
               "item_id": 17755,
@@ -6168,8 +6168,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.391123108,
-      "verify_run_seconds": 0.925400681,
+      "weights_run_seconds": 1.8041563969999999,
+      "verify_run_seconds": 1.1840835969999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6911,8 +6911,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.4900777170000001,
-      "verify_run_seconds": 0.910839406,
+      "weights_run_seconds": 1.935345287,
+      "verify_run_seconds": 1.187459174,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7324,7 +7324,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 31.59048166019703,
+          "score": 31.590481660197028,
           "verified": true,
           "alternatives": [
             {
@@ -7340,14 +7340,14 @@
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -4.909924477996972
+              "dps_delta": -4.909924477996971
             },
             {
               "item_id": 20163,
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -6.395064246067407
+              "dps_delta": -6.395064246067406
             }
           ]
         },
@@ -7655,8 +7655,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.4900777170000001,
-      "verify_run_seconds": 0.956786217,
+      "weights_run_seconds": 1.935345287,
+      "verify_run_seconds": 1.210794892,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:20:00Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:43:12Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -891,8 +891,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.592485125,
-      "verify_run_seconds": 1.003772312,
+      "weights_run_seconds": 2.11931128,
+      "verify_run_seconds": 1.262495029,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1931,8 +1931,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.592485125,
-      "verify_run_seconds": 0.996499238,
+      "weights_run_seconds": 2.11931128,
+      "verify_run_seconds": 1.253985976,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2641,8 +2641,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.6488457859999999,
-      "verify_run_seconds": 0.932525103,
+      "weights_run_seconds": 2.110615871,
+      "verify_run_seconds": 1.13843833,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3349,8 +3349,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.6488457859999999,
-      "verify_run_seconds": 0.973445167,
+      "weights_run_seconds": 2.110615871,
+      "verify_run_seconds": 1.18631786,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4026,8 +4026,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.299317625,
-      "verify_run_seconds": 0.776935225,
+      "weights_run_seconds": 1.708150364,
+      "verify_run_seconds": 0.987983763,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4697,8 +4697,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.299317625,
-      "verify_run_seconds": 0.790411944,
+      "weights_run_seconds": 1.708150364,
+      "verify_run_seconds": 0.999822928,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5381,8 +5381,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.543650479,
-      "verify_run_seconds": 1.063127759,
+      "weights_run_seconds": 1.959017839,
+      "verify_run_seconds": 1.337918775,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5565,7 +5565,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.7836745969436496
+              "dps_delta": -0.7836745969436492
             },
             {
               "item_id": 10033,
@@ -5815,7 +5815,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.254494751769258
+              "dps_delta": -1.2544947517692584
             },
             {
               "item_id": 14132,
@@ -6073,8 +6073,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.543650479,
-      "verify_run_seconds": 1.061360035,
+      "weights_run_seconds": 1.959017839,
+      "verify_run_seconds": 1.321921945,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6312,7 +6312,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 28.771905355075955,
+          "score": 28.77190535507595,
           "verified": true,
           "alternatives": [
             {
@@ -6320,7 +6320,7 @@
               "item_name": "Field Marshal's Dreadweave Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.223684502177968
+              "dps_delta": -1.2236845021779665
             },
             {
               "item_id": 19059,
@@ -6335,7 +6335,7 @@
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.4885146239893308
+              "dps_delta": -3.488514623989329
             }
           ]
         },
@@ -6353,7 +6353,7 @@
               "item_name": "Arcanoweave Cloak",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.4243822996718682
+              "dps_delta": -0.4243822996718666
             },
             {
               "item_id": 18350,
@@ -6798,8 +6798,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.41109097,
-      "verify_run_seconds": 1.071466816,
+      "weights_run_seconds": 5.709259323,
+      "verify_run_seconds": 1.361263209,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7530,8 +7530,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.41109097,
-      "verify_run_seconds": 1.093055254,
+      "weights_run_seconds": 5.709259323,
+      "verify_run_seconds": 1.366078084,
       "coverage": {
         "back": {
           "eligible": 450,

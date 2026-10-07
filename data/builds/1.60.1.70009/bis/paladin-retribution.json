@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:16:10Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:38:13Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -540,8 +540,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.859095699,
-      "verify_run_seconds": 0.839524554,
+      "weights_run_seconds": 2.454977652,
+      "verify_run_seconds": 1.081400762,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1152,8 +1152,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.859095699,
-      "verify_run_seconds": 0.908063688,
+      "weights_run_seconds": 2.454977652,
+      "verify_run_seconds": 1.18593058,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1795,8 +1795,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.863761078,
-      "verify_run_seconds": 1.068214322,
+      "weights_run_seconds": 2.387661102,
+      "verify_run_seconds": 1.3601713069999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2444,8 +2444,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.863761078,
-      "verify_run_seconds": 1.072101411,
+      "weights_run_seconds": 2.387661102,
+      "verify_run_seconds": 1.355088069,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3067,8 +3067,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.827522952,
-      "verify_run_seconds": 0.912314185,
+      "weights_run_seconds": 2.395228446,
+      "verify_run_seconds": 1.187285343,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3689,8 +3689,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 1.827522952,
-      "verify_run_seconds": 0.933754056,
+      "weights_run_seconds": 2.395228446,
+      "verify_run_seconds": 1.184654571,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4345,8 +4345,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.9742041110000002,
-      "verify_run_seconds": 1.021218384,
+      "weights_run_seconds": 2.501531436,
+      "verify_run_seconds": 1.293242897,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4992,8 +4992,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.9742041110000002,
-      "verify_run_seconds": 0.949798214,
+      "weights_run_seconds": 2.501531436,
+      "verify_run_seconds": 1.204366098,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5482,14 +5482,14 @@
               "item_name": "Band of the Ogre King",
               "source_kind": "dungeon",
               "source": "Dire Maul: King Gordok",
-              "dps_delta": -0.5046660762307047
+              "dps_delta": -0.504666076230705
             },
             {
               "item_id": 2246,
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6104609192614728
+              "dps_delta": -0.6104609192614732
             },
             {
               "item_id": 11669,
@@ -5690,8 +5690,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.934484233,
-      "verify_run_seconds": 1.067544875,
+      "weights_run_seconds": 2.5049221360000002,
+      "verify_run_seconds": 1.371972244,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5993,7 +5993,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.100374067494362
+              "dps_delta": -1.1003740674943627
             },
             {
               "item_id": 23087,
@@ -6178,14 +6178,14 @@
               "item_name": "Band of the Ogre King",
               "source_kind": "dungeon",
               "source": "Dire Maul: King Gordok",
-              "dps_delta": -0.504666076230705
+              "dps_delta": -0.5046660762307047
             },
             {
               "item_id": 2246,
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6104609192614732
+              "dps_delta": -0.6104609192614728
             },
             {
               "item_id": 11669,
@@ -6386,8 +6386,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.934484233,
-      "verify_run_seconds": 1.031242794,
+      "weights_run_seconds": 2.5049221360000002,
+      "verify_run_seconds": 1.296241937,
       "coverage": {
         "back": {
           "eligible": 449,

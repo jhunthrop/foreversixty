@@ -2144,7 +2144,7 @@ ns.Data = {
 					ranged = { 279273, "C", "Engineering" },
 					shoulder = { 272105, "V", "Creeg Bothunk" },
 					trinket1 = { 11832, "D", "Blackrock Depths: Ambassador Flamelash" },
-					trinket2 = { 19991, "Q", "The Green Drake" },
+					trinket2 = { 11819, "D", "Blackrock Depths: Golem Lord Argelmach" },
 					waist = { 227807, "V", "Meilosh" },
 					wrist = { 18375, "D", "Dire Maul: Prince Tortheldrin" },
 				},
@@ -2329,7 +2329,7 @@ ns.Data = {
 					shoulder = { 272105, "V", "Creeg Bothunk" },
 					trinket1 = { 11832, "D", "Blackrock Depths: Ambassador Flamelash" },
 					trinket2 = { 11819, "D", "Blackrock Depths: Golem Lord Argelmach" },
-					waist = { 227807, "V", "Meilosh" },
+					waist = { 272397, "V", "Pix Xizzix" },
 					wrist = { 18375, "D", "Dire Maul: Prince Tortheldrin" },
 				},
 				horde = {
@@ -2888,7 +2888,7 @@ ns.Data = {
 					feet = { 22064, "Q", "Anthion's Parting Words" },
 					finger1 = { 20682, "W", "Prince Skaldrenox" },
 					finger2 = { 21206, "Q", "The Path of the Invoker" },
-					hands = { 22066, "Q", "Just Compensation" },
+					hands = { 226930, "V", "Mokvar" },
 					head = { 226935, "Q", "Saving the Best for Last" },
 					legs = { 237815, "V", "Illiyana Moonblaze" },
 					main_hand = { 20654, "W", "Azure Templar" },
@@ -5323,7 +5323,7 @@ ns.Data = {
 				horde = { 8348, 13089, 13122, 17742, 13120, 272100, 274757, 17728, 9533, 11862, 19120, 19991, 9480, 285281 },
 			},
 			[60] = {
-				alliance = { 252605, 19491, 272105, 13340, 252483, 18375, 272099, 227807, 237819, 275618, 21201, 272408, 11832, 19991, 250619, 279273 },
+				alliance = { 252605, 19491, 272105, 13340, 252483, 18375, 272099, 227807, 237819, 275618, 21201, 272408, 11832, 11819, 250619, 279273 },
 				horde = { 252605, 19491, 272105, 13340, 252483, 18375, 272099, 227807, 237819, 275618, 21201, 272408, 11832, 250619, 279273 },
 			},
 		},
@@ -5345,7 +5345,7 @@ ns.Data = {
 				horde = { 8348, 13089, 13122, 17742, 13120, 272100, 274757, 17728, 9533, 11862, 19120, 19991, 9480, 285281 },
 			},
 			[60] = {
-				alliance = { 252605, 19491, 272105, 13340, 252483, 18375, 272099, 227807, 237819, 275618, 21201, 19325, 11832, 11819, 250619, 279273 },
+				alliance = { 252605, 19491, 272105, 13340, 252483, 18375, 272099, 272397, 237819, 275618, 21201, 19325, 11832, 11819, 250619, 279273 },
 				horde = { 252605, 19491, 272105, 13340, 252483, 18375, 272099, 227807, 237819, 275618, 21201, 19325, 11832, 250619, 279273 },
 			},
 		},
@@ -5412,7 +5412,7 @@ ns.Data = {
 			},
 			[60] = {
 				alliance = { 226935, 22657, 227808, 272411, 14152, 19595, 22066, 228190, 237815, 22064, 20682, 21206, 12930, 22678, 19102, 279246 },
-				horde = { 226935, 22657, 227808, 272411, 14152, 19595, 22066, 228190, 237815, 22064, 20682, 21206, 11832, 12930, 20654, 279246 },
+				horde = { 226935, 22657, 227808, 272411, 14152, 19595, 228190, 237815, 22064, 20682, 21206, 11832, 12930, 20654, 279246 },
 			},
 		},
 		["mage-frost"] = {
@@ -5722,14 +5722,14 @@ ns.Data = {
 			[30] = { ["agility"] = 2.156, ["crit"] = 0.597, ["hit"] = 0.2, ["melee_haste"] = 7.47, ["ranged_attack_power"] = 1 },
 			[40] = { ["agility"] = 2.171, ["crit"] = 0.647, ["hit"] = 0.22, ["melee_haste"] = 7.348, ["ranged_attack_power"] = 1 },
 			[50] = { ["agility"] = 2.188, ["crit"] = 0.722, ["hit"] = 0.257, ["melee_haste"] = 12.437, ["ranged_attack_power"] = 1 },
-			[60] = { ["agility"] = 2.278, ["crit"] = 1.096, ["hit"] = 0.387, ["melee_haste"] = 13.446, ["ranged_attack_power"] = 1 },
+			[60] = { ["agility"] = 2.282, ["crit"] = 1.11, ["hit"] = 0.382, ["melee_haste"] = 12.602, ["ranged_attack_power"] = 1 },
 		},
 		["hunter-marksmanship"] = {
 			[20] = { ["agility"] = 2.143, ["crit"] = 0.545, ["hit"] = 0.167, ["ranged_attack_power"] = 1 },
-			[30] = { ["agility"] = 2.214, ["crit"] = 0.816, ["hit"] = 0.205, ["melee_haste"] = 8.226, ["ranged_attack_power"] = 1 },
-			[40] = { ["agility"] = 2.247, ["crit"] = 0.913, ["hit"] = 0.231, ["melee_haste"] = 5.545, ["ranged_attack_power"] = 1 },
-			[50] = { ["agility"] = 2.273, ["crit"] = 1.023, ["hit"] = 0.277, ["melee_haste"] = 11.693, ["ranged_attack_power"] = 1 },
-			[60] = { ["agility"] = 2.347, ["crit"] = 1.387, ["hit"] = 0.389, ["melee_haste"] = 10.49, ["ranged_attack_power"] = 1 },
+			[30] = { ["agility"] = 2.198, ["crit"] = 0.755, ["hit"] = 0.19, ["melee_haste"] = 7.796, ["ranged_attack_power"] = 1 },
+			[40] = { ["agility"] = 2.235, ["crit"] = 0.869, ["hit"] = 0.22, ["melee_haste"] = 5.187, ["ranged_attack_power"] = 1 },
+			[50] = { ["agility"] = 2.267, ["crit"] = 1.001, ["hit"] = 0.271, ["melee_haste"] = 11.444, ["ranged_attack_power"] = 1 },
+			[60] = { ["agility"] = 2.365, ["crit"] = 1.439, ["hit"] = 0.396, ["melee_haste"] = 9.995, ["ranged_attack_power"] = 1 },
 		},
 		["hunter-survival"] = {
 			[20] = { ["agility"] = 1.033, ["attack_power"] = 1, ["crit"] = 0.12, ["hit"] = 0.04, ["strength"] = 1 },

@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:19:33Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:42:38Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -516,8 +516,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.8277669749999998,
-      "verify_run_seconds": 0.943689671,
+      "weights_run_seconds": 2.377330996,
+      "verify_run_seconds": 1.21113515,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1103,8 +1103,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.8277669749999998,
-      "verify_run_seconds": 0.79762175,
+      "weights_run_seconds": 2.377330996,
+      "verify_run_seconds": 0.986149334,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1747,8 +1747,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.901621521,
-      "verify_run_seconds": 1.095562247,
+      "weights_run_seconds": 2.422431038,
+      "verify_run_seconds": 1.3609026,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2392,8 +2392,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.901621521,
-      "verify_run_seconds": 0.980286267,
+      "weights_run_seconds": 2.422431038,
+      "verify_run_seconds": 1.244380808,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3013,8 +3013,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.182842848,
-      "verify_run_seconds": 1.006545247,
+      "weights_run_seconds": 2.882841513,
+      "verify_run_seconds": 1.2983117229999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3634,8 +3634,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.182842848,
-      "verify_run_seconds": 0.921893654,
+      "weights_run_seconds": 2.882841513,
+      "verify_run_seconds": 1.210566901,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4290,8 +4290,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 2.165789567,
-      "verify_run_seconds": 1.179185623,
+      "weights_run_seconds": 2.856962771,
+      "verify_run_seconds": 1.5514939829999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4956,8 +4956,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.165789567,
-      "verify_run_seconds": 1.046854634,
+      "weights_run_seconds": 2.856962771,
+      "verify_run_seconds": 1.3489322590000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5261,7 +5261,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.26538310332720677
+              "dps_delta": -0.2653831033272062
             },
             {
               "item_id": 23089,
@@ -5652,8 +5652,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.120163228,
-      "verify_run_seconds": 1.151185324,
+      "weights_run_seconds": 2.781032357,
+      "verify_run_seconds": 1.484787264,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6347,8 +6347,8 @@
         "trinket2: Eye of the Beast",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.120163228,
-      "verify_run_seconds": 1.031197991,
+      "weights_run_seconds": 2.781032357,
+      "verify_run_seconds": 1.339448345,
       "coverage": {
         "back": {
           "eligible": 451,
