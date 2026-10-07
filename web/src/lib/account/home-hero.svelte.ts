@@ -52,9 +52,7 @@ export function createHomeHero(): HomeHeroHandle {
     return readCurrent();
   }
 
-  const hero = $derived<MeCharacter | null>(
-    me === null ? null : selectedCharacter(readCurrentIfReady(), me),
-  );
+  const hero = $derived<MeCharacter | null>(me === null ? null : selectedCharacter(readCurrentIfReady(), me));
 
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
 

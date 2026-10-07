@@ -25,9 +25,7 @@ export function createCharacterCardState(): CharacterCardState {
     ttlMs: 10 * 60 * 1000,
   });
   const me = $derived(session.data);
-  const character = $derived<MeCharacter | null>(
-    me === null ? null : selectedCharacter(readCurrent(), me),
-  );
+  const character = $derived<MeCharacter | null>(me === null ? null : selectedCharacter(readCurrent(), me));
 
   return {
     get status() {

@@ -86,7 +86,9 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
     // The same character the header chip shows: the switched-to pointer, else the main
     // (owner-reported defect 2026-10-07: `characters[0]` named an alt while a warrior
     // was selected).
-    const view = signedInCalloutView(me === null ? undefined : (selectedCharacter(readCurrent(), me) ?? undefined));
+    const view = signedInCalloutView(
+      me === null ? undefined : (selectedCharacter(readCurrent(), me) ?? undefined),
+    );
     if (view === undefined) {
       root.remove();
       return;
