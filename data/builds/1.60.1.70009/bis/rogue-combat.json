@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-07T00:02:05Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:20:23Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -566,8 +566,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.180217376,
-      "verify_run_seconds": 1.34226057,
+      "weights_run_seconds": 2.093859677,
+      "verify_run_seconds": 1.375541998,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1214,8 +1214,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.180217376,
-      "verify_run_seconds": 1.2808272,
+      "weights_run_seconds": 2.093859677,
+      "verify_run_seconds": 1.266701338,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.188765475,
-      "verify_run_seconds": 1.298788844,
+      "weights_run_seconds": 2.084922299,
+      "verify_run_seconds": 1.334999763,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2586,8 +2586,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.188765475,
-      "verify_run_seconds": 1.300536623,
+      "weights_run_seconds": 2.084922299,
+      "verify_run_seconds": 1.31692203,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3276,8 +3276,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.29271326,
-      "verify_run_seconds": 1.372035069,
+      "weights_run_seconds": 2.180628,
+      "verify_run_seconds": 1.338059536,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.29271326,
-      "verify_run_seconds": 1.409979201,
+      "weights_run_seconds": 2.180628,
+      "verify_run_seconds": 1.346603064,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4155,7 +4155,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.8997383544782276
+              "dps_delta": -0.8997383544782277
             }
           ]
         },
@@ -4414,7 +4414,7 @@
               "item_name": "Knight's Leather Pants",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.40062686964307465
+              "dps_delta": -0.40062686964307487
             }
           ]
         },
@@ -4682,8 +4682,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.369894314,
-      "verify_run_seconds": 1.7389263879999999,
+      "weights_run_seconds": 2.209271235,
+      "verify_run_seconds": 1.680818374,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5101,7 +5101,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.35665767355447503
+              "dps_delta": -0.3566576735544752
             },
             {
               "item_id": 1718,
@@ -5393,8 +5393,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.369894314,
-      "verify_run_seconds": 1.7405250620000001,
+      "weights_run_seconds": 2.209271235,
+      "verify_run_seconds": 1.7029548989999999,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6133,8 +6133,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.345909422,
-      "verify_run_seconds": 1.7726245569999999,
+      "weights_run_seconds": 2.228624716,
+      "verify_run_seconds": 1.778137759,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6873,8 +6873,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.345909422,
-      "verify_run_seconds": 1.777328944,
+      "weights_run_seconds": 2.228624716,
+      "verify_run_seconds": 1.775896674,
       "coverage": {
         "back": {
           "eligible": 451,

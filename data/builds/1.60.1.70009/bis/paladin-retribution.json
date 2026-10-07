@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-07T00:00:17Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:18:38Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -540,8 +540,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 2.283508458,
-      "verify_run_seconds": 1.085410059,
+      "weights_run_seconds": 2.1734905700000002,
+      "verify_run_seconds": 1.039696539,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1153,8 +1153,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.283508458,
-      "verify_run_seconds": 1.085336915,
+      "weights_run_seconds": 2.1734905700000002,
+      "verify_run_seconds": 1.064959309,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1795,8 +1795,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.315007527,
-      "verify_run_seconds": 1.3239765540000001,
+      "weights_run_seconds": 2.187573096,
+      "verify_run_seconds": 1.303749534,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2443,8 +2443,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.315007527,
-      "verify_run_seconds": 1.330929455,
+      "weights_run_seconds": 2.187573096,
+      "verify_run_seconds": 1.316546494,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3066,8 +3066,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.358159691,
-      "verify_run_seconds": 1.250624134,
+      "weights_run_seconds": 2.212294727,
+      "verify_run_seconds": 1.208244647,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3689,8 +3689,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.358159691,
-      "verify_run_seconds": 1.254014985,
+      "weights_run_seconds": 2.212294727,
+      "verify_run_seconds": 1.227075594,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4343,8 +4343,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 2.389725639,
-      "verify_run_seconds": 1.3776614010000001,
+      "weights_run_seconds": 2.228713879,
+      "verify_run_seconds": 1.360197233,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4990,8 +4990,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.389725639,
-      "verify_run_seconds": 1.202087843,
+      "weights_run_seconds": 2.228713879,
+      "verify_run_seconds": 1.1943734560000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5668,8 +5668,8 @@
         "trinket2: Blackhand's Breadth",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 2.385961259,
-      "verify_run_seconds": 1.319816348,
+      "weights_run_seconds": 2.230342576,
+      "verify_run_seconds": 1.272135287,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6087,7 +6087,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.5163354161165725
+              "dps_delta": -0.5163354161165732
             },
             {
               "item_id": 237819,
@@ -6351,8 +6351,8 @@
         "trinket2: Blackhand's Breadth",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.385961259,
-      "verify_run_seconds": 1.183317469,
+      "weights_run_seconds": 2.230342576,
+      "verify_run_seconds": 1.16873182,
       "coverage": {
         "back": {
           "eligible": 449,

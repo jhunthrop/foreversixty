@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-07T00:02:54Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:21:10Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -562,8 +562,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.2379059,
-      "verify_run_seconds": 1.398800662,
+      "weights_run_seconds": 2.091831902,
+      "verify_run_seconds": 1.406363152,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1208,8 +1208,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.2379059,
-      "verify_run_seconds": 1.436115881,
+      "weights_run_seconds": 2.091831902,
+      "verify_run_seconds": 1.400132481,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1890,8 +1890,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.452702824,
-      "verify_run_seconds": 1.587095928,
+      "weights_run_seconds": 2.253240289,
+      "verify_run_seconds": 1.53656875,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.452702824,
-      "verify_run_seconds": 1.587666065,
+      "weights_run_seconds": 2.253240289,
+      "verify_run_seconds": 1.56638778,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3269,8 +3269,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.633056644,
-      "verify_run_seconds": 1.585247337,
+      "weights_run_seconds": 2.464451576,
+      "verify_run_seconds": 1.537208058,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3967,8 +3967,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.633056644,
-      "verify_run_seconds": 1.650071745,
+      "weights_run_seconds": 2.464451576,
+      "verify_run_seconds": 1.590559005,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4678,8 +4678,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.664447218,
-      "verify_run_seconds": 1.962235237,
+      "weights_run_seconds": 2.474585953,
+      "verify_run_seconds": 1.877819853,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5387,8 +5387,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.664447218,
-      "verify_run_seconds": 2.109535518,
+      "weights_run_seconds": 2.474585953,
+      "verify_run_seconds": 1.986576022,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6131,8 +6131,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.679187711,
-      "verify_run_seconds": 1.996371868,
+      "weights_run_seconds": 2.461958659,
+      "verify_run_seconds": 1.936540135,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6623,7 +6623,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.057833707091935735
+              "dps_delta": -0.05783370709193592
             },
             {
               "item_id": 21201,
@@ -6655,7 +6655,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -0.0012405587652200528
+              "dps_delta": -0.0012405587652202415
             },
             {
               "item_id": 21201,
@@ -6877,8 +6877,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.679187711,
-      "verify_run_seconds": 2.074546061,
+      "weights_run_seconds": 2.461958659,
+      "verify_run_seconds": 1.9599811379999998,
       "coverage": {
         "back": {
           "eligible": 451,

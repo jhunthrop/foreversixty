@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-06T23:58:51Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:17:12Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.073138154,
-      "verify_run_seconds": 0.763534558,
+      "weights_run_seconds": 1.11164069,
+      "verify_run_seconds": 0.786304932,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.073138154,
-      "verify_run_seconds": 0.704808535,
+      "weights_run_seconds": 1.11164069,
+      "verify_run_seconds": 0.742224585,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1885,8 +1885,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.138832287,
-      "verify_run_seconds": 0.792602317,
+      "weights_run_seconds": 1.1719339739999999,
+      "verify_run_seconds": 0.845174392,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.138832287,
-      "verify_run_seconds": 0.774891111,
+      "weights_run_seconds": 1.1719339739999999,
+      "verify_run_seconds": 0.786276638,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.392602665,
-      "verify_run_seconds": 0.818519354,
+      "weights_run_seconds": 1.351321339,
+      "verify_run_seconds": 0.861545684,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3934,8 +3934,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.392602665,
-      "verify_run_seconds": 0.804350463,
+      "weights_run_seconds": 1.351321339,
+      "verify_run_seconds": 0.836849278,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4628,8 +4628,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.406320824,
-      "verify_run_seconds": 0.949917004,
+      "weights_run_seconds": 1.390591596,
+      "verify_run_seconds": 0.970794696,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5310,8 +5310,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.406320824,
-      "verify_run_seconds": 0.966216921,
+      "weights_run_seconds": 1.390591596,
+      "verify_run_seconds": 0.94317501,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5577,7 +5577,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 24.093516744027305,
+          "score": 24.0935167440273,
           "verified": true,
           "alternatives": [
             {
@@ -5585,21 +5585,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.370032322860038
+              "dps_delta": -1.3700323228600366
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.3489147167945155
+              "dps_delta": -2.348914716794514
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.371007880413391
+              "dps_delta": -3.37100788041339
             }
           ]
         },
@@ -6040,8 +6040,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.4276753260000001,
-      "verify_run_seconds": 0.928323781,
+      "weights_run_seconds": 1.3992150749999999,
+      "verify_run_seconds": 0.936447295,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6348,7 +6348,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.4384349976178115
+              "dps_delta": -2.438434997617809
             },
             {
               "item_id": 18385,
@@ -6770,8 +6770,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.4276753260000001,
-      "verify_run_seconds": 0.940979287,
+      "weights_run_seconds": 1.3992150749999999,
+      "verify_run_seconds": 0.886247661,
       "coverage": {
         "back": {
           "eligible": 450,

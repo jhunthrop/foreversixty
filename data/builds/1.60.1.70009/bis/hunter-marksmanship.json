@@ -1,8 +1,8 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-06T23:57:38Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:16:01Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -539,8 +539,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.5908593509999998,
-      "verify_run_seconds": 1.652834417,
+      "weights_run_seconds": 2.430720266,
+      "verify_run_seconds": 1.579531678,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1172,8 +1172,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.5908593509999998,
-      "verify_run_seconds": 1.638757267,
+      "weights_run_seconds": 2.430720266,
+      "verify_run_seconds": 1.538366356,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1895,8 +1895,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.787942786,
-      "verify_run_seconds": 1.8441870630000001,
+      "weights_run_seconds": 2.578088872,
+      "verify_run_seconds": 1.754460398,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2608,8 +2608,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.787942786,
-      "verify_run_seconds": 1.816242344,
+      "weights_run_seconds": 2.578088872,
+      "verify_run_seconds": 1.708068784,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3276,8 +3276,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.849628928,
-      "verify_run_seconds": 1.8741348260000001,
+      "weights_run_seconds": 2.634297915,
+      "verify_run_seconds": 1.8012657490000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3954,8 +3954,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.849628928,
-      "verify_run_seconds": 1.8612351440000001,
+      "weights_run_seconds": 2.634297915,
+      "verify_run_seconds": 1.756434039,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4635,8 +4635,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.961908369,
-      "verify_run_seconds": 2.033006903,
+      "weights_run_seconds": 2.675152018,
+      "verify_run_seconds": 1.9004616859999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5321,8 +5321,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.961908369,
-      "verify_run_seconds": 1.960290673,
+      "weights_run_seconds": 2.675152018,
+      "verify_run_seconds": 1.88686987,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5759,7 +5759,7 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.3353882655851104
+              "dps_delta": -2.3353882655851095
             }
           ]
         },
@@ -6029,8 +6029,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.862835717,
-      "verify_run_seconds": 2.160533949,
+      "weights_run_seconds": 2.653018897,
+      "verify_run_seconds": 2.107313314,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6739,8 +6739,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.862835717,
-      "verify_run_seconds": 2.090059351,
+      "weights_run_seconds": 2.653018897,
+      "verify_run_seconds": 2.043044427,
       "coverage": {
         "back": {
           "eligible": 450,

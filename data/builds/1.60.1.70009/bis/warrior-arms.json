@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-07T00:06:57Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:25:04Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -542,8 +542,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.628052764,
-      "verify_run_seconds": 1.2605689039999999,
+      "weights_run_seconds": 2.479205595,
+      "verify_run_seconds": 1.212478694,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1185,8 +1185,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.628052764,
-      "verify_run_seconds": 1.229699056,
+      "weights_run_seconds": 2.479205595,
+      "verify_run_seconds": 1.236910479,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.894278076,
-      "verify_run_seconds": 1.47157358,
+      "weights_run_seconds": 2.67056072,
+      "verify_run_seconds": 1.431788287,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2529,8 +2529,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.894278076,
-      "verify_run_seconds": 1.469424912,
+      "weights_run_seconds": 2.67056072,
+      "verify_run_seconds": 1.405634997,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3209,8 +3209,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.587486552,
-      "verify_run_seconds": 1.486144855,
+      "weights_run_seconds": 3.267486756,
+      "verify_run_seconds": 1.4365428709999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3888,8 +3888,8 @@
         "main_hand: Fiery War Axe",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.587486552,
-      "verify_run_seconds": 1.492296574,
+      "weights_run_seconds": 3.267486756,
+      "verify_run_seconds": 1.448756397,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4566,8 +4566,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.776775659,
-      "verify_run_seconds": 1.907856229,
+      "weights_run_seconds": 3.453162221,
+      "verify_run_seconds": 1.79561443,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5257,8 +5257,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.776775659,
-      "verify_run_seconds": 1.82635113,
+      "weights_run_seconds": 3.453162221,
+      "verify_run_seconds": 1.8223681,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5430,7 +5430,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.42351574245771856
+              "dps_delta": -0.42351574245771895
             },
             {
               "item_id": 9479,
@@ -5978,8 +5978,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 10.88092466,
-      "verify_run_seconds": 1.82565659,
+      "weights_run_seconds": 9.749813187,
+      "verify_run_seconds": 1.680617467,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6700,8 +6700,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 10.88092466,
-      "verify_run_seconds": 1.7447297389999998,
+      "weights_run_seconds": 9.749813187,
+      "verify_run_seconds": 1.643389759,
       "coverage": {
         "back": {
           "eligible": 450,

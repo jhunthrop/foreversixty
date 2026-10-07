@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-07T00:05:31Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:23:41Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -561,8 +561,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.395082387,
-      "verify_run_seconds": 1.166775561,
+      "weights_run_seconds": 2.243164641,
+      "verify_run_seconds": 1.147067601,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1203,8 +1203,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.395082387,
-      "verify_run_seconds": 1.170263393,
+      "weights_run_seconds": 2.243164641,
+      "verify_run_seconds": 1.134871446,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1922,8 +1922,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.386418384,
-      "verify_run_seconds": 1.171628472,
+      "weights_run_seconds": 2.181456657,
+      "verify_run_seconds": 1.139307152,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2636,8 +2636,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.386418384,
-      "verify_run_seconds": 1.162539325,
+      "weights_run_seconds": 2.181456657,
+      "verify_run_seconds": 1.095659464,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3322,8 +3322,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.7563378200000002,
-      "verify_run_seconds": 0.966852322,
+      "weights_run_seconds": 1.694893955,
+      "verify_run_seconds": 0.988644541,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4004,8 +4004,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.7563378200000002,
-      "verify_run_seconds": 0.969848821,
+      "weights_run_seconds": 1.694893955,
+      "verify_run_seconds": 0.990166135,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4711,8 +4711,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.739929054,
-      "verify_run_seconds": 1.1730500209999999,
+      "weights_run_seconds": 1.7555230320000001,
+      "verify_run_seconds": 1.191103643,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5159,7 +5159,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.057702104672739
+              "dps_delta": -2.0577021046727384
             },
             {
               "item_id": 14132,
@@ -5425,8 +5425,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.739929054,
-      "verify_run_seconds": 1.17522155,
+      "weights_run_seconds": 1.7555230320000001,
+      "verify_run_seconds": 1.191887909,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6165,8 +6165,8 @@
         "main_hand: Crackling Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.81726835,
-      "verify_run_seconds": 1.18629083,
+      "weights_run_seconds": 1.795395585,
+      "verify_run_seconds": 1.190329727,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6411,7 +6411,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.250496325213135,
+          "score": 40.25049632521313,
           "verified": true,
           "alternatives": [
             {
@@ -6419,14 +6419,14 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.46413996218911385
+              "dps_delta": -0.464139962189113
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -1.2116286845448705
+              "dps_delta": -1.2116286845448696
             },
             {
               "item_id": 18681,
@@ -6568,7 +6568,7 @@
               "item_name": "Deathmist Wraps",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -0.10905136596163136
+              "dps_delta": -0.10905136596163094
             }
           ]
         },
@@ -6593,7 +6593,7 @@
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -3.076329464431469
+              "dps_delta": -3.0763294644314687
             },
             {
               "item_id": 18405,
@@ -6907,8 +6907,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.81726835,
-      "verify_run_seconds": 1.153004798,
+      "weights_run_seconds": 1.795395585,
+      "verify_run_seconds": 1.189612213,
       "coverage": {
         "back": {
           "eligible": 450,

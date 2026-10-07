@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "bebda865a",
-  "generated_at": "2026-10-07T00:07:47Z",
+  "engine_version": "97d08e0e0",
+  "generated_at": "2026-10-07T02:25:51Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -603,8 +603,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.734357018,
-      "verify_run_seconds": 1.519450288,
+      "weights_run_seconds": 2.5046274349999997,
+      "verify_run_seconds": 1.471763316,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1276,8 +1276,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.734357018,
-      "verify_run_seconds": 1.5110727609999999,
+      "weights_run_seconds": 2.5046274349999997,
+      "verify_run_seconds": 1.472929171,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1973,8 +1973,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.898679385,
-      "verify_run_seconds": 1.514861652,
+      "weights_run_seconds": 2.678281977,
+      "verify_run_seconds": 1.500768506,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,8 +2678,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.898679385,
-      "verify_run_seconds": 1.545064649,
+      "weights_run_seconds": 2.678281977,
+      "verify_run_seconds": 1.460352527,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3355,8 +3355,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.38294568,
-      "verify_run_seconds": 1.704444347,
+      "weights_run_seconds": 3.066334268,
+      "verify_run_seconds": 1.645834291,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4040,8 +4040,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.38294568,
-      "verify_run_seconds": 1.8032655260000001,
+      "weights_run_seconds": 3.066334268,
+      "verify_run_seconds": 1.6916123029999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4207,7 +4207,7 @@
               "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.0074471868951026645
+              "dps_delta": -0.007447186895103068
             },
             {
               "item_id": 14849,
@@ -4748,8 +4748,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.693186196,
-      "verify_run_seconds": 2.4569208209999998,
+      "weights_run_seconds": 3.311247157,
+      "verify_run_seconds": 2.324010543,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5458,8 +5458,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.693186196,
-      "verify_run_seconds": 2.465564275,
+      "weights_run_seconds": 3.311247157,
+      "verify_run_seconds": 2.293540698,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5892,7 +5892,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.19777476613380454
+              "dps_delta": -0.19777476613380354
             },
             {
               "item_id": 231540,
@@ -6220,8 +6220,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.777934611,
-      "verify_run_seconds": 2.243082428,
+      "weights_run_seconds": 3.410102699,
+      "verify_run_seconds": 2.128129959,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6975,8 +6975,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.777934611,
-      "verify_run_seconds": 2.283785327,
+      "weights_run_seconds": 3.410102699,
+      "verify_run_seconds": 2.156293433,
       "coverage": {
         "back": {
           "eligible": 450,
