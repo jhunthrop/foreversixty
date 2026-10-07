@@ -48,18 +48,37 @@
   ],
   "priorityList": [
     {
-      "notes": "Rupture whenever it is not on the target, at whatever combo points you have: the bleed ticks for the whole fight and was the largest single gain the search found.",
+      "notes": "Rupture whenever it is not on the target and you have four or more combo points: the bleed ticks for the whole fight and was the largest single gain the search found.",
       "action": {
         "condition": {
-          "not": {
-            "val": {
-              "dotIsActive": {
-                "spellId": {
-                  "spellId": 11275,
-                  "rank": 6
+          "and": {
+            "vals": [
+              {
+                "not": {
+                  "val": {
+                    "dotIsActive": {
+                      "spellId": {
+                        "spellId": 11275,
+                        "rank": 6
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentComboPoints": {}
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "4"
+                    }
+                  }
                 }
               }
-            }
+            ]
           }
         },
         "castSpell": {

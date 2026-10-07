@@ -91,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 10000000000000000-00000000000000000-0000000000000000000 | main_hand:1287 off_hand:2088 | 11.8 | 3 | other:attack/1=138.7, other:attack/2=121.4, spell:1757=42.0, spell:6760/5=4.3, spell:5171/5=3.1 | {SpellID: 1241584}, {SpellID: 1310703}, {SpellID: 14177} |
-| 20 | 32500000100000000-00000000000000000-0000000000000000000 | main_hand:2236 off_hand:251485 | 26.7 | 3 | other:attack/1=121.4, other:attack/2=113.9, spell:1758=33.6, spell:1943/1=11.5, spell:1943/2=10.6 | {SpellID: 1241584}, {SpellID: 1310703}, {SpellID: 14177} |
-| 30 | 32500000551000000-00000000000000000-0000000000000000000 | main_hand:6691 off_hand:23168 | 32.0 | 3 | other:attack/2=130.1, other:attack/1=121.4, spell:1760=33.8, spell:8639/1=11.7, spell:8639/2=10.4 | {SpellID: 1241584}, {SpellID: 1310703} |
-| 38 | 32500000551501020-00000000000000000-0000000000000000000 | main_hand:6831 off_hand:10761 | 61.8 | 4 | other:attack/2=121.4, other:attack/1=121.4, spell:8621=33.7, spell:8640/1=11.5, spell:8640/2=10.5 | {SpellID: 1241584}, {SpellID: 1310703} |
-| 40 | 32500000551501040-00000000000000000-0000000000000000000 | main_hand:2164 off_hand:274753 | 74.2 | 4 | other:attack/1=101.2, other:attack/2=95.9, spell:399956=25.5, spell:8640/4=13.0, spell:18107=3.1 | {SpellID: 1310703} |
-| 50 | 32500000551501051-32300000000000000-0000000000000000000 | main_hand:2163 off_hand:6660 | 101.0 | 3 | other:attack/2=140.0, other:attack/1=130.0, spell:1241582=25.4, spell:11273/4=13.0, spell:11273/2=2.5 | - |
-| 60 | 32500000551501051-32520000000000000-5100000000000000000 | main_hand:22802 off_hand:21126 | 171.8 | 3 | other:attack/1=101.2, other:attack/2=101.2, spell:1241584=25.4, spell:11275/4=13.1, spell:11275/2=2.3 | - |
+| 20 | 32500000100000000-00000000000000000-0000000000000000000 | main_hand:2236 off_hand:251485 | 27.9 | 2 | other:attack/1=121.4, other:attack/2=113.9, spell:1758=41.5, spell:1943/4=9.8 | {SpellID: 1241584}, {SpellID: 1310703}, {SpellID: 14177} |
+| 30 | 32500000551000000-00000000000000000-0000000000000000000 | main_hand:6691 off_hand:23168 | 33.8 | 2 | other:attack/2=130.1, other:attack/1=121.4, spell:1760=41.5, spell:8639/4=9.8 | {SpellID: 1241584}, {SpellID: 1310703} |
+| 38 | 32500000551501020-00000000000000000-0000000000000000000 | main_hand:6831 off_hand:10761 | 63.9 | 4 | other:attack/2=121.4, other:attack/1=121.4, spell:8621=41.3, spell:8640/4=9.9, spell:8640/5=0.1 | {SpellID: 1241584}, {SpellID: 1310703} |
+| 40 | 32500000551501040-00000000000000000-0000000000000000000 | main_hand:2164 off_hand:274753 | 74.6 | 3 | other:attack/1=101.2, other:attack/2=95.9, spell:399956=25.9, spell:8640/4=14.4, spell:18107=3.0 | {SpellID: 1310703} |
+| 50 | 32500000551501051-32300000000000000-0000000000000000000 | main_hand:2163 off_hand:6660 | 101.5 | 2 | other:attack/2=140.0, other:attack/1=130.0, spell:1241582=25.9, spell:11273/4=14.4 | - |
+| 60 | 32500000551501051-32520000000000000-5100000000000000000 | main_hand:22802 off_hand:21126 | 172.5 | 2 | other:attack/1=101.2, other:attack/2=101.2, spell:1241584=25.9, spell:11275/4=14.4 | - |
 
 ## Learned but unused (informational)
 
@@ -174,4 +174,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-assassination level=30 kind=zero_casts id=14177 authored=14177 (untracked ability; not in spellranks.json's rank chains)
+- rogue-assassination level=40 kind=zero_casts id=14177 authored=14177 (untracked ability; not in spellranks.json's rank chains)
+- rogue-assassination level=50 kind=zero_casts id=1310703 authored=1310703 (untracked ability; not in spellranks.json's rank chains)
+- rogue-assassination level=50 kind=zero_casts id=14177 authored=14177 (untracked ability; not in spellranks.json's rank chains)
+- rogue-assassination level=60 kind=zero_casts id=1310703 authored=1310703 (untracked ability; not in spellranks.json's rank chains)
+- rogue-assassination level=60 kind=zero_casts id=14177 authored=14177 (untracked ability; not in spellranks.json's rank chains)

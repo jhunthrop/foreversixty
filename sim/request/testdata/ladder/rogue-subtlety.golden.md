@@ -91,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:1287 off_hand:2088 | 11.7 | 4 | other:attack/1=138.9, other:attack/2=121.7, spell:1757=42.1, spell:6760/5=4.2, spell:5171/5=3.2 | {SpellID: 14183}, {SpellID: 16511} |
-| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:2236 off_hand:2194 | 25.4 | 5 | other:attack/1=121.4, other:attack/2=73.0, spell:1758=32.3, spell:1943/1=12.4, spell:1943/2=10.1 | {SpellID: 14183}, {SpellID: 16511} |
-| 30 | 00000000000000000-00000000000000000-5322210310011000000 | main_hand:6691 off_hand:9457 | 30.8 | 8 | other:attack/1=121.4, other:attack/2=79.3, spell:1760=33.1, spell:8639/2=10.0, spell:8639/1=9.0 | {SpellID: 16511} |
-| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:6831 off_hand:6829 | 66.4 | 9 | other:attack/1=121.4, other:attack/2=82.9, spell:16511=45.6, spell:8640/3=8.9, spell:8640/2=6.8 | - |
-| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:2164 off_hand:9359 | 76.0 | 9 | other:attack/1=101.2, other:attack/2=79.3, spell:16511=54.6, spell:8640/4=9.3, spell:8640/3=5.7 | - |
-| 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:2163 off_hand:6660 | 100.7 | 8 | other:attack/2=140.0, other:attack/1=130.0, spell:16511=54.3, spell:11273/4=9.4, spell:11273/3=5.7 | - |
-| 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:22802 off_hand:23054 | 175.8 | 8 | other:attack/1=101.2, other:attack/2=67.6, spell:16511=54.2, spell:11275/4=9.7, spell:11275/3=5.0 | - |
+| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:2236 off_hand:2194 | 26.6 | 4 | other:attack/1=121.4, other:attack/2=73.0, spell:1758=40.4, spell:1943/4=9.8, spell:1785=1.0 | {SpellID: 14183}, {SpellID: 16511} |
+| 30 | 00000000000000000-00000000000000000-5322210310011000000 | main_hand:6691 off_hand:9457 | 32.3 | 5 | other:attack/1=121.4, other:attack/2=79.3, spell:1760=40.0, spell:8639/4=10.4, spell:14183=1.0 | {SpellID: 16511} |
+| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:6831 off_hand:6829 | 67.7 | 6 | other:attack/1=121.4, other:attack/2=82.9, spell:16511=49.9, spell:8640/4=12.7, spell:14183=1.0 | - |
+| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:2164 off_hand:9359 | 76.0 | 7 | other:attack/1=101.2, other:attack/2=79.3, spell:16511=55.5, spell:8640/4=14.0, spell:18107=4.0 | - |
+| 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:2163 off_hand:6660 | 101.0 | 6 | other:attack/2=140.0, other:attack/1=130.0, spell:16511=55.3, spell:11273/4=14.0, spell:11268=1.0 | - |
+| 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:22802 off_hand:23054 | 175.3 | 6 | other:attack/1=101.2, other:attack/2=67.6, spell:16511=55.0, spell:11275/4=13.7, spell:11269=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -169,4 +169,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-subtlety level=20 kind=zero_casts spell="Eviscerate" id=6761 authored=31016
+- rogue-subtlety level=20 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-subtlety level=30 kind=zero_casts spell="Eviscerate" id=6762 authored=31016
+- rogue-subtlety level=30 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-subtlety level=38 kind=zero_casts spell="Eviscerate" id=8623 authored=31016
+- rogue-subtlety level=38 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-subtlety level=40 kind=zero_casts spell="Eviscerate" id=8624 authored=31016
+- rogue-subtlety level=40 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-subtlety level=50 kind=zero_casts spell="Eviscerate" id=11299 authored=31016
+- rogue-subtlety level=50 kind=zero_casts spell="Slice and Dice" id=6774 authored=6774
+- rogue-subtlety level=60 kind=zero_casts spell="Eviscerate" id=31016 authored=31016
+- rogue-subtlety level=60 kind=zero_casts spell="Slice and Dice" id=6774 authored=6774

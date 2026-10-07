@@ -124,6 +124,17 @@
       }
     },
     {
+      "notes": "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.",
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 10199,
+            "rank": 7
+          }
+        }
+      }
+    },
+    {
       "notes": "Fireball is the primary filler once Improved Scorch's debuff is up.",
       "action": {
         "castSpell": {

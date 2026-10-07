@@ -6,14 +6,6 @@
     {
       "id": 11294,
       "reason": "Sinister Strike is gated `not spellIsKnown(Hemorrhage/16511)`, the fallback builder for a bare build below Hemorrhage's talent row (Subtlety tier 4). At every level this ladder's own zero_casts check flags it, the truncated talent build has already spent points on Hemorrhage, so the gate correctly keeps Sinister Strike idle and lets Hemorrhage claim the builder slot instead -- the fallback yielding as designed, not a defect."
-    },
-    {
-      "id": 31016,
-      "reason": "Rupture sits first and spends combo points at whatever count as soon as its bleed falls off, so on the bare ladder character combo points rarely reach five and every five-point line below it starves; the rotation search measured this ordering as the best one."
-    },
-    {
-      "id": 6774,
-      "reason": "Rupture sits first and spends combo points at whatever count as soon as its bleed falls off, so on the bare ladder character combo points rarely reach five and every five-point line below it starves; the rotation search measured this ordering as the best one."
     }
   ],
   "engineering_notes": {
@@ -87,18 +79,37 @@
     ],
     "priorityList": [
       {
-        "notes": "Rupture whenever it is not on the target, at whatever combo points you have: the bleed ticks for the whole fight and was the largest single gain the search found.",
+        "notes": "Rupture whenever it is not on the target and you have four or more combo points: the bleed ticks for the whole fight and was the largest single gain the search found.",
         "action": {
           "condition": {
-            "not": {
-              "val": {
-                "dotIsActive": {
-                  "spellId": {
-                    "spellId": 11275,
-                    "rank": 6
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 11275,
+                          "rank": 6
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentComboPoints": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "4"
+                      }
+                    }
                   }
                 }
-              }
+              ]
             }
           },
           "castSpell": {

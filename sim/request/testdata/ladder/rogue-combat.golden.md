@@ -91,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:1926 off_hand:1287 | 13.1 | 3 | other:attack/2=138.8, other:attack/1=88.5, spell:1757=41.5, spell:6760/5=4.2, spell:5171/5=3.2 | {SpellID: 13750} |
-| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:1482 off_hand:2236 | 30.4 | 3 | other:attack/2=121.3, other:attack/1=67.6, spell:1758=36.9, spell:1943/2=14.1, spell:1943/1=7.8 | {SpellID: 13750} |
-| 30 | 00000000000000000-32531300000400000-0000000000000000000 | main_hand:9457 off_hand:7687 | 40.8 | 3 | other:attack/1=79.3, other:attack/2=76.0, spell:1760=37.0, spell:8639/2=14.3, spell:8639/1=7.7 | {SpellID: 13750} |
-| 38 | 00000000000000000-32531300000515100-0000000000000000000 | main_hand:868 off_hand:6829 | 68.5 | 4 | other:attack/1=88.3, other:attack/2=84.2, spell:8621=36.3, spell:8640/2=13.6, spell:8640/1=8.2 | {SpellID: 13750} |
-| 40 | 00000000000000000-32531300000515201-0000000000000000000 | main_hand:868 off_hand:2164 | 74.5 | 9 | other:attack/2=102.9, other:attack/1=88.3, spell:8621=41.4, spell:8640/2=11.4, spell:8640/1=5.3 | - |
-| 50 | 32500000000000000-32531300000515201-0000000000000000000 | main_hand:810 off_hand:2163 | 103.5 | 8 | other:attack/2=132.2, other:attack/1=88.3, spell:11293=41.0, spell:11273/2=11.5, spell:11273/1=5.4 | - |
-| 60 | 32531000000000000-32531300000515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 259.2 | 10 | other:attack/2=69.8, other:attack/1=66.0, spell:11294=41.1, other:attack/3=7.6, spell:11275/3=7.3 | - |
+| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:1482 off_hand:2236 | 32.2 | 2 | other:attack/2=121.3, other:attack/1=67.6, spell:1758=44.6, spell:1943/4=10.7 | {SpellID: 13750} |
+| 30 | 00000000000000000-32531300000400000-0000000000000000000 | main_hand:9457 off_hand:7687 | 43.4 | 2 | other:attack/1=79.3, other:attack/2=76.0, spell:1760=44.6, spell:8639/4=10.6 | {SpellID: 13750} |
+| 38 | 00000000000000000-32531300000515100-0000000000000000000 | main_hand:868 off_hand:6829 | 71.6 | 3 | other:attack/1=88.3, other:attack/2=84.2, spell:8621=44.0, spell:8640/4=10.7, other:attack/3=3.0 | {SpellID: 13750} |
+| 40 | 00000000000000000-32531300000515201-0000000000000000000 | main_hand:868 off_hand:2164 | 76.4 | 8 | other:attack/2=103.9, other:attack/1=89.1, spell:8621=47.5, spell:8640/4=10.2, spell:18107=2.3 | - |
+| 50 | 32500000000000000-32531300000515201-0000000000000000000 | main_hand:810 off_hand:2163 | 106.2 | 7 | other:attack/2=133.5, other:attack/1=89.2, spell:11293=47.4, spell:11273/4=10.4, spell:13750=1.0 | - |
+| 60 | 32531000000000000-32531300000515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 260.3 | 7 | other:attack/2=70.0, other:attack/1=66.2, spell:11294=44.9, spell:11275/4=11.3, other:attack/3=7.6 | - |
 
 ## Learned but unused (informational)
 
@@ -141,7 +141,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 8725)
 - Backstab (spell 8721)
-- Eviscerate (spell 8624)
 - Garrote (spell 8633)
 - Gouge (spell 8629)
 - Kick (spell 1767)
@@ -151,7 +150,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 11268)
 - Backstab (spell 11279)
-- Eviscerate (spell 11299)
 - Garrote (spell 11289)
 - Gouge (spell 11285)
 - Kick (spell 1768)
@@ -170,4 +168,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-combat level=20 kind=zero_casts spell="Eviscerate" id=6761 authored=31016
+- rogue-combat level=20 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-combat level=30 kind=zero_casts spell="Eviscerate" id=6762 authored=31016
+- rogue-combat level=30 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-combat level=38 kind=zero_casts spell="Eviscerate" id=8623 authored=31016
+- rogue-combat level=38 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
