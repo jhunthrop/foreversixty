@@ -860,6 +860,13 @@ class SpellEffectConstant(BaseModel):
     period_ms: int
     misc_value: int
     trigger_spell: int
+    #: SpellEffect.Variance: the roll is amount x (1 - variance/2) through
+    #: amount x (1 + variance/2). Appended last (key order is the generated
+    #: files' compatibility surface); 0 when the effect does not roll.
+    variance: float = 0.0
+    #: SpellEffect.EffectRealPointsPerLevel: added to the amount per caster
+    #: level above the spell's own level, up to the spell's `max_level`.
+    points_per_level: float = 0.0
 
 
 class SpellConstant(BaseModel):
@@ -884,6 +891,9 @@ class SpellConstant(BaseModel):
     #: end and existing ones never move. 0 when the spell has a flat cost or
     #: none.
     cost_pct: float = 0.0
+    #: SpellLevels.MaxLevel: the highest caster level that still adds
+    #: `points_per_level` to an effect. 0 when the client states no cap.
+    max_level: int = 0
 
 
 class ClassSpellConstants(BaseModel):
