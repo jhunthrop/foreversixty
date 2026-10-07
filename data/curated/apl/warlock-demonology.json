@@ -5,10 +5,9 @@
     5019
   ],
   "engineering_notes": {
-    "3": "The fork's own shared warlock preset (ui/warlock/apls/rotation.apl.json) already maintains this curse for every spec -- only Affliction's own maintenance kept it after the three files were split apart.",
-    "5": "The engine implements Decimation (440870, sim/warlock/soul_fire.go's applyDecimation) for a build that takes it, but the guide's own level-60 build spends 0 of its 2 points on it."
+    "3": "The fork's own shared warlock preset (ui/warlock/apls/rotation.apl.json) already maintains this curse for every spec -- only Affliction's own maintenance kept it after the three files were split apart."
   },
-  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 58 percent of top casts) alongside Life Tap on this bare, no-consumes, no-buffs ladder character. Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json). Dropped the shared preset's prepull Demonic Sacrifice (18788): the talent tree names that id as the tier 2 Demonology talent's own spell, but the build's spellconst has no entry for 18788 at all, so this build cannot cast it under that id -- a concern for the engine lane to resolve (either a different cast id for the sacrifice effect or the talent is not yet implemented client-side). Corruption and Life Tap were kept from the shared preset. Fixed the same stale Shadow Bolt rank the preset carried (25307 cast at rank 9 where the build's current top rank is 10). Immolate and the Bane of Agony curse maintenance from the shared preset were dropped -- Demonology's own capstone is meant to be Decimation (440870), a talent that is supposed to drop Soul Fire's 60 second cooldown to near nothing after a Shadow Bolt or Searing Pain crit. Fix round 1 (superseded): Decimation was reported as having no implementation in sim/warlock. Rotation-accuracy program (2026-09-28): sim/warlock/soul_fire.go now wires Decimation for real (applyDecimation: up to 90% cooldown reduction passively, plus the 10 s post-crit cast-time/cost window) -- but the guide's own recommended level-60 build (web/src/content/guides/warlock/demonology.md) spends 0 of Decimation's 2 points, rushing past it to reach Demonic Pact instead, so on THIS build Soul Fire still only comes off cooldown once a minute; the level-60 ladder golden confirms 17924 (rank 2) casting on that flat cadence. The guide's rotation prose is corrected to say so rather than describe a Decimation synergy this exact build does not take. Soul Fire is still placed ahead of the Shadow Bolt filler so it fires the instant it is off cooldown either way. Rotation-accuracy audit, engine numbers (2026-09-28): Corruption's and Soul Fire's base damage in sim/warlock carried classic tooltip values roughly double spellconst/warlock.json's own flat per-rank amount; fixed in the fork with a regression test each, which is why this spec's DPS dropped in this round's golden refresh -- the cast set and priority order are unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/.",
+  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 58 percent of top casts) alongside Life Tap on this bare, no-consumes, no-buffs ladder character. Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json). Dropped the shared preset's prepull Demonic Sacrifice (18788): the talent tree names that id as the tier 2 Demonology talent's own spell, but the build's spellconst has no entry for 18788 at all, so this build cannot cast it under that id -- a concern for the engine lane to resolve (either a different cast id for the sacrifice effect or the talent is not yet implemented client-side). Corruption and Life Tap were kept from the shared preset. Fixed the same stale Shadow Bolt rank the preset carried (25307 cast at rank 9 where the build's current top rank is 10). Immolate and the Bane of Agony curse maintenance from the shared preset were dropped -- Demonology's own capstone is meant to be Decimation (440870), a talent that is supposed to drop Soul Fire's 60 second cooldown to near nothing after a Shadow Bolt or Searing Pain crit. Fix round 1 (superseded): Decimation was reported as having no implementation in sim/warlock. Rotation-accuracy program (2026-09-28): sim/warlock/soul_fire.go now wires Decimation for real (applyDecimation: up to 90% cooldown reduction passively, plus the 10 s post-crit cast-time/cost window) -- but the guide's own recommended level-60 build (web/src/content/guides/warlock/demonology.md) spends 0 of Decimation's 2 points, rushing past it to reach Demonic Pact instead, so on THIS build Soul Fire still only comes off cooldown once a minute; the level-60 ladder golden confirms 17924 (rank 2) casting on that flat cadence. The guide's rotation prose is corrected to say so rather than describe a Decimation synergy this exact build does not take. Soul Fire is still placed ahead of the Shadow Bolt filler so it fires the instant it is off cooldown either way. Rotation-accuracy audit, engine numbers (2026-09-28): Corruption's and Soul Fire's base damage in sim/warlock carried classic tooltip values roughly double spellconst/warlock.json's own flat per-rank amount; fixed in the fork with a regression test each, which is why this spec's DPS dropped in this round's golden refresh -- the cast set and priority order are unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/. Rotation search (2026-10-06, level 60, 800 iterations, seed 7): Soul Fire is dropped (it lost damage against the Shadow Bolt it displaced on this no-Decimation build), Immolate is added after Corruption and recast under 3 seconds remaining, and the wand gate moved from 20 to 50 percent mana; about +13 percent in that run. The search's duplicate Immolate line near the top was collapsed to the single later line, which measured the same.",
   "sources": [
     {
       "label": "wowsims-forever warlock default priority list (shared across all three specs)",
@@ -147,18 +146,36 @@
         }
       },
       {
-        "notes": "Soul Fire on cooldown. This build spends its Demonology talent points on Demonic Pact rather than Decimation, so Soul Fire casts on its flat, unshortened 60 second cooldown.",
+        "notes": "Immolate follows the two curses and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
         "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "dotRemainingTime": {
+                  "spellId": {
+                    "spellId": 25309,
+                    "rank": 8
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "3s"
+                }
+              }
+            }
+          },
           "castSpell": {
             "spellId": {
-              "spellId": 17924,
-              "rank": 2
+              "spellId": 25309,
+              "rank": 8
             }
           }
         }
       },
       {
-        "notes": "Shadow Bolt is the default filler and what feeds Decimation's proc.",
+        "notes": "Shadow Bolt is the filler between DoT refreshes.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -169,7 +186,7 @@
         }
       },
       {
-        "notes": "Shoot with your wand once mana falls under 20%: it costs nothing and keeps damage going while your DoTs tick and you regenerate.",
+        "notes": "Shoot with your wand once mana is under 50 percent: it costs nothing, so mana regenerates while it keeps damage going. Life Tap is only the backstop below 10 percent.",
         "action": {
           "condition": {
             "cmp": {
@@ -179,7 +196,7 @@
               },
               "rhs": {
                 "const": {
-                  "val": "20%"
+                  "val": "50%"
                 }
               }
             }

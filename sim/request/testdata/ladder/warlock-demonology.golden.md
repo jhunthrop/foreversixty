@@ -90,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 9.4 | 5 | spell:5019=62.8, other:mana_gain=55.9, spell:1454=55.9, spell:695=24.2, spell:172=12.6 | {OtherID: 13} |
-| 20 | 00000000000000000-2351000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 18.7 | 5 | spell:5019=57.3, other:mana_gain=31.2, spell:1455=31.2, spell:1088=19.7, spell:6222=11.0 | {OtherID: 13} |
-| 30 | 00000000000000000-2352113101200000000-0000000000000000 | main_hand:249392 ranged:5213 | 27.3 | 5 | spell:5019=48.9, other:mana_gain=41.8, spell:1456=41.8, spell:1106=31.8, spell:6223=9.9 | {OtherID: 13} |
-| 38 | 00000000000000000-2352113101200001340-0000000000000000 | main_hand:1664 ranged:13064 | 51.7 | 5 | spell:7641=32.3, other:mana_gain=27.7, spell:11687=27.7, spell:5019=26.9, spell:7648=10.1 | {OtherID: 13} |
-| 40 | 00000000000000000-2352113101200001351-0000000000000000 | main_hand:1664 ranged:5216 | 78.0 | 5 | spell:7641=32.9, other:mana_gain=27.5, spell:11687=27.5, spell:5019=26.6, spell:7648=10.3 | {OtherID: 13} |
-| 50 | 25300000000000000-2352113101200001351-0000000000000000 | main_hand:812 ranged:249232 | 101.8 | 6 | spell:11659=29.2, spell:5019=22.3, other:mana_gain=20.6, spell:11688=20.6, spell:11671=9.8 | {OtherID: 13} |
-| 60 | 25532300000000000-2352113101200001351-0000000000000000 | main_hand:22630 ranged:22821 | 235.7 | 6 | spell:25307=35.2, other:mana_gain=19.1, spell:11689=19.1, spell:5019=11.1, spell:25311=10.4 | {OtherID: 13} |
+| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 10.4 | 6 | spell:5019=64.4, other:mana_gain=57.5, spell:1454=57.5, spell:695=13.3, spell:172=12.6 | {OtherID: 13} |
+| 20 | 00000000000000000-2351000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 21.4 | 6 | spell:5019=54.6, other:mana_gain=39.7, spell:1455=39.7, spell:1088=13.7, spell:6222=11.3 | {OtherID: 13} |
+| 30 | 00000000000000000-2352113101200000000-0000000000000000 | main_hand:249392 ranged:5213 | 32.5 | 6 | spell:5019=52.2, other:mana_gain=44.6, spell:1456=44.6, spell:1106=22.3, spell:2941=12.0 | {OtherID: 13} |
+| 38 | 00000000000000000-2352113101200001340-0000000000000000 | main_hand:1664 ranged:13064 | 59.6 | 6 | spell:5019=38.6, other:mana_gain=28.4, spell:11687=28.4, spell:7641=24.0, spell:2941=12.4 | {OtherID: 13} |
+| 40 | 00000000000000000-2352113101200001351-0000000000000000 | main_hand:1664 ranged:5216 | 87.9 | 6 | spell:5019=43.2, other:mana_gain=29.6, spell:11687=29.6, spell:7641=23.1, spell:11665=12.2 | {OtherID: 13} |
+| 50 | 25300000000000000-2352113101200001351-0000000000000000 | main_hand:812 ranged:249232 | 114.3 | 6 | spell:5019=38.4, other:mana_gain=23.3, spell:11688=23.3, spell:11659=22.9, spell:11667=12.4 | {OtherID: 13} |
+| 60 | 25532300000000000-2352113101200001351-0000000000000000 | main_hand:22630 ranged:22821 | 270.7 | 6 | spell:5019=43.5, spell:25307=28.3, other:mana_gain=20.8, spell:11689=20.8, spell:25309=13.5 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -105,7 +105,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Drain Soul (spell 1120)
 - Firebolt (spell 7799)
-- Immolate (spell 707)
 - Shadow Cleave (spell 403839)
 
 ### Level 20
@@ -113,7 +112,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Drain Soul (spell 1120)
 - Firebolt (spell 7800)
 - Health Funnel (spell 3698)
-- Immolate (spell 1094)
 - Lash of Pain (spell 7814)
 - Rain of Fire (spell 5740)
 - Searing Pain (spell 5676)
@@ -128,7 +126,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 3699)
 - Hellfire (spell 1949)
 - Hellfire Effect (spell 5857)
-- Immolate (spell 2941)
 - Lash of Pain (spell 7815)
 - Rain of Fire (spell 5740)
 - Searing Pain (spell 17919)
@@ -143,7 +140,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 3700)
 - Hellfire (spell 1949)
 - Hellfire Effect (spell 5857)
-- Immolate (spell 2941)
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
 - Searing Pain (spell 17920)
@@ -159,7 +155,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 3700)
 - Hellfire (spell 1949)
 - Hellfire Effect (spell 5857)
-- Immolate (spell 11665)
 - Incinerate (spell 412758)
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
@@ -178,13 +173,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 11693)
 - Hellfire (spell 11683)
 - Hellfire Effect (spell 11681)
-- Immolate (spell 11667)
 - Incinerate (spell 1293812)
 - Lash of Pain (spell 11778)
 - Rain of Fire (spell 11677)
 - Searing Pain (spell 17922)
 - Shadow Cleave (spell 403844)
 - Shadowburn (spell 18870)
+- Soul Fire (spell 6353)
 - Unstable Affliction (spell 1242972)
 - Wrack (spell 1316697)
 
@@ -197,13 +192,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 11695)
 - Hellfire (spell 11684)
 - Hellfire Effect (spell 11682)
-- Immolate (spell 25309)
 - Incinerate (spell 1293813)
 - Lash of Pain (spell 11780)
 - Rain of Fire (spell 11678)
 - Searing Pain (spell 17923)
 - Shadow Cleave (spell 403852)
 - Shadowburn (spell 18871)
+- Soul Fire (spell 17924)
 - Test Curse of Agony (spell 28608)
 - Unstable Affliction (spell 1242972)
 - Wrack (spell 1316697)
