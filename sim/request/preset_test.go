@@ -226,3 +226,27 @@ func countOf(list []string, id string) int {
 	}
 	return n
 }
+
+// A healer is matched by its role before its reference stat, which it
+// shares with every caster: it carries the healer's flask, food and mana
+// consumables, not the caster's spell-power elixirs.
+func TestHealersCarryTheHealerConsumables(t *testing.T) {
+	presets := loadRealPresets(t)
+	wantAlways := []string{"flask_of_distilled_wisdom", "mageblood_potion", "food_nightfin_soup"}
+	for _, spec := range specs.All {
+		resolved, err := presets.Resolve(RaidPreset, spec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got := entryIDs(resolved.Consumes)
+		isHealer := spec.Role == "healer"
+		for _, id := range wantAlways {
+			if slices.Contains(got, id) != isHealer {
+				t.Errorf("%s (role %s): carries %s = %v, want %v", spec.Spec, spec.Role, id, !isHealer, isHealer)
+			}
+		}
+		if isHealer && slices.Contains(got, "greater_arcane_elixir") {
+			t.Errorf("%s: a healer carries the caster's spell-power elixir", spec.Spec)
+		}
+	}
+}

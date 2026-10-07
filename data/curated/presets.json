@@ -174,7 +174,44 @@
               }
             ]
           },
-          "melee": {
+          "healer": {
+        "roles": [
+          "healer"
+        ],
+        "ids": [
+          {
+            "id": "flask_of_distilled_wisdom",
+            "label": "Flask of Distilled Wisdom",
+            "reason": "The healer's flask: a large pool of mana for the whole fight. Client level 50."
+          },
+          {
+            "id": "mageblood_potion",
+            "label": "Mageblood Elixir",
+            "reason": "Mana per five seconds, in the engine's mana-regeneration elixir slot; client level 40. Forever's Greater Mageblood Elixir (level 55) is not in the engine's consumable list, so the plain one stands in for it."
+          },
+          {
+            "id": "food_nightfin_soup",
+            "label": "Nightfin Soup",
+            "reason": "The healer's food: mana per five seconds. Client level 35."
+          },
+          {
+            "id": "main_hand_imbue:brilliant_mana_oil",
+            "label": "Brilliant Mana Oil",
+            "reason": "Mana per five seconds and healing power on the main hand; client level 45."
+          },
+          {
+            "id": "major_mana_potion",
+            "label": "Major Mana Potion",
+            "reason": "Used on cooldown by the engine when mana allows; client level 49."
+          },
+          {
+            "id": "conjured_demonic_rune",
+            "label": "Demonic Rune",
+            "reason": "Used on cooldown by the engine, in the engine's conjured slot; it is the mana rune the engine models."
+          }
+        ]
+      },
+      "melee": {
             "reference_stats": [
               "attack_power"
             ],

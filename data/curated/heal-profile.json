@@ -1,0 +1,36 @@
+{
+  "id": "onyxia-sized",
+  "label": "Onyxia-sized tank hits and raid pulses",
+  "summary": "One healer's share of a Phase 1 boss fight: a tank taking big melee hits, raid-wide damage in regular pulses, and four more raid members to look after.",
+  "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption sized to a Phase 1 raid boss; the first raid tier (9 December) is Onyxia, Barrow Deeps and Hyjal Summit. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights.",
+  "duration_sec": 300,
+  "damage_spread": 0.25,
+  "tank": {
+    "health": 9500,
+    "hit_damage": 1150,
+    "swing_seconds": 2.0,
+    "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. An Onyxia-sized boss hits a mitigated tank for about 1,150 every other second once misses, dodges and parries are averaged in; each hit rolls 25 percent either side."
+  },
+  "members": {
+    "health": 5000,
+    "reason": "A raid member that is not the tank has about 5,000 health: a plate or mail wearer sits above it and a cloth wearer below."
+  },
+  "pulse": {
+    "damage": 450,
+    "interval_seconds": 4.0,
+    "members": 3,
+    "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every four seconds three of the four raid members take 450, which is about 340 damage a second spread over the group the healer stands in."
+  },
+  "sources": [
+    {
+      "label": "Blizzard, World of Warcraft Forever Deep Dive panel recap: first raid tier opens 9 December",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard"
+    },
+    {
+      "label": "This site, data/curated/loot/forever-raid-phases.json: Barrow Deeps, Hyjal Summit and Onyxia open on 9 December",
+      "url": "https://foreversixty.gg/data/1.60.1.70009/loot.json",
+      "kind": "site"
+    }
+  ]
+}
