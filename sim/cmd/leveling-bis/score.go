@@ -158,6 +158,9 @@ func score(c candidate, slot string, weights map[string]float64, referenceDPSPer
 	for stat, amount := range c.Stats {
 		total += amount * statWeight(stat, weights)
 	}
+	// Armor is an item property, not a stat line; only a tank's weights
+	// carry an "armor" entry, so this adds nothing for any other spec.
+	total += float64(c.Armor) * weights[armorWeightStat]
 	if c.DPS > 0 {
 		if apStat, ok := weaponAPStat[slot]; ok {
 			if apWeight := weights[apStat]; apWeight > 0 {

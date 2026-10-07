@@ -1320,6 +1320,13 @@ type bandReport struct {
 	// does not render anything from this field yet (this lane's
 	// brief: "web shows nothing new yet").
 	WeightsLowConfidence bool `json:"weights_low_confidence,omitempty"`
+	// Role and Metrics are set for a tank band only (annotateTankBand,
+	// score_tank_report.go): Role is "tank", and Metrics the figures the
+	// site headlines in place of DPS. On such a band SetDPS is the tank's
+	// own damage, and every sim-decided figure (sim_dps, dps_delta) is in
+	// tank score, as ScoreUnit says.
+	Role    string             `json:"role,omitempty"`
+	Metrics *tankMetricsReport `json:"metrics,omitempty"`
 }
 
 // scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value

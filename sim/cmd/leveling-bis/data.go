@@ -145,6 +145,9 @@ type candidate struct {
 	WeaponType         string
 	FactionRestriction string
 	Stats              map[string]float64
+	// Armor is the item's own armor value (classItem.Armor), which no
+	// DPS spec weighs and every tank does.
+	Armor int
 	// PercentStats is classItem.PercentStats carried through: the
 	// literal-percent share of Stats' rating-family entries, which
 	// convertRatingStats leaves undivided.
@@ -271,6 +274,7 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 			WeaponType:             ci.WeaponType,
 			FactionRestriction:     factionOfRestriction(fi.FactionRestriction),
 			Stats:                  ci.Stats,
+			Armor:                  ci.Armor,
 			PercentStats:           ci.PercentStats,
 			DamageMin:              ci.DamageMin,
 			DamageMax:              ci.DamageMax,
@@ -1179,6 +1183,7 @@ type specInfo struct {
 	ClassSlug     string   `json:"class_slug"`
 	SpecSlug      string   `json:"spec_slug"`
 	Name          string   `json:"name"`
+	Role          string   `json:"role"`
 	TreeIndex     int      `json:"tree_index"`
 	ReferenceStat string   `json:"reference_stat"`
 	WeightStats   []string `json:"weight_stats"`

@@ -24,6 +24,7 @@ package main
 var primaryStatBySpec = map[string]string{
 	"druid-balance":        "intellect",
 	"druid-feral":          "agility",
+	"druid-feral-bear":     "agility",
 	"druid-restoration":    "intellect",
 	"hunter-beast-mastery": "agility",
 	"hunter-marksmanship":  "agility",
