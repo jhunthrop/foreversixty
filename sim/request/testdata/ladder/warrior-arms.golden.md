@@ -94,12 +94,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 01000000000000000-00000000000000000-000000000000000000 | main_hand:263407 | 10.0 | 3 | other:attack/1=61.0, spell:6546=17.8, other:rage_gain=11.0, spell:6673=2.0, spell:2687=1.0 | - |
-| 20 | 05321000000000000-00000000000000000-000000000000000000 | main_hand:6631 | 16.8 | 4 | other:attack/1=63.1, spell:6547=14.2, other:rage_gain=12.1, spell:7384=4.7, spell:5242=2.0 | - |
-| 30 | 05325213000000000-00000000000000000-000000000000000000 | main_hand:13045 | 41.9 | 5 | other:rage_gain=83.1, other:attack/1=63.1, spell:6548=11.9, spell:5308=11.0, spell:7887=5.4 | - |
-| 38 | 05325213032300000-00000000000000000-000000000000000000 | main_hand:873 | 53.6 | 5 | other:rage_gain=83.0, other:attack/1=49.6, spell:6548=11.9, spell:7887=10.3, spell:20658=9.8 | - |
-| 40 | 05325213032310001-00000000000000000-000000000000000000 | main_hand:1982 | 88.0 | 6 | other:rage_gain=99.1, other:attack/1=65.3, spell:12294=19.3, spell:7887=14.7, spell:11572=10.2 | - |
-| 50 | 05325213032310001-05050000000000000-000000000000000000 | main_hand:812 | 115.3 | 6 | other:rage_gain=129.8, other:attack/1=59.1, spell:21551=20.9, spell:11584=13.7, spell:20661=10.4 | - |
-| 60 | 05325213032310001-05050000000000000-055000000000000000 | main_hand:22798 | 187.6 | 6 | other:rage_gain=124.0, other:attack/1=48.3, spell:21553=22.2, spell:11585=12.2, spell:11574=10.2 | - |
+| 20 | 03323000000000000-00000000000000000-000000000000000000 | main_hand:6631 | 16.8 | 4 | other:attack/1=63.1, spell:6547=14.2, other:rage_gain=12.1, spell:7384=4.7, spell:5242=2.0 | - |
+| 30 | 03325213020000000-00000000000000000-000000000000000000 | main_hand:13045 | 42.8 | 5 | other:rage_gain=83.1, other:attack/1=63.1, spell:6548=11.9, spell:5308=11.0, spell:7887=5.4 | - |
+| 38 | 03325213032500000-00000000000000000-000000000000000000 | main_hand:873 | 57.9 | 5 | other:rage_gain=83.0, other:attack/1=49.6, spell:7887=14.3, spell:6548=11.8, spell:20658=9.4 | - |
+| 40 | 03325213032511000-00000000000000000-000000000000000000 | main_hand:1982 | 78.6 | 5 | other:rage_gain=83.0, other:attack/1=65.2, spell:7887=17.3, spell:11572=10.3, spell:20660=9.5 | {SpellID: 12294} |
+| 50 | 03325213032515001-05000000000000000-000000000000000000 | main_hand:812 | 124.3 | 6 | other:rage_gain=99.1, other:attack/1=59.1, spell:21551=19.8, spell:11584=17.9, spell:11573=10.2 | - |
+| 60 | 03325213032515001-05050000000000000-005000000000000000 | main_hand:22798 | 210.7 | 6 | other:rage_gain=124.0, other:attack/1=48.3, spell:21553=21.9, spell:11585=16.3, spell:11574=10.1 | - |
 
 ## Learned but unused (informational)
 
@@ -139,6 +139,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Bloodthirst (spell 23881)
 - Hamstring (spell 7372)
 - Mocking Blow (spell 7402)
+- Mortal Strike (spell 12294)
 - Pummel (spell 6552)
 - Revenge (spell 7379)
 - Shield Bash (spell 1671)
