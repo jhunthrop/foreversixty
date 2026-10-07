@@ -864,6 +864,14 @@ class SpellConstant(BaseModel):
     spell_level: int
     family_mask: list[int]
     effects: list[SpellEffectConstant]
+    #: SpellPower.PowerCostPct: the cost as a percentage of base mana for the
+    #: spells the client prices that way (Arcane Blast 15, Judgement 6, the
+    #: warlock summons 80/100) instead of through the flat `cost` column,
+    #: which reads 0 for them. Appended last: the emitted key order is the
+    #: generated files' only compatibility surface, so new fields go on the
+    #: end and existing ones never move. 0 when the spell has a flat cost or
+    #: none.
+    cost_pct: float = 0.0
 
 
 class ClassSpellConstants(BaseModel):

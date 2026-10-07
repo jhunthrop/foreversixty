@@ -78,6 +78,19 @@ def test_a_spell_present_in_no_other_table_is_all_zeros_not_an_error():
     assert spell.effects == []
 
 
+def test_a_percent_of_base_mana_cost_is_carried_beside_the_flat_column():
+    """SpellPower prices some spells as PowerCostPct (Arcane Blast 15, Judgement 6)
+    with a flat ManaCost of 0; the engine's conformance report and its percent
+    cost model both need the percentage, not a misleading flat zero. The fixture
+    gives Deep Wounds (88888) a 15% row with no flat cost for exactly this case."""
+    percent = by_slug()["warrior"].spells["88888"]
+    assert percent.cost == 0
+    assert percent.cost_pct == 15.0
+    flat = by_slug()["mage"].spells["25304"]
+    assert flat.cost == 290
+    assert flat.cost_pct == 0.0
+
+
 def test_spell_ids_are_written_in_a_stable_numeric_order():
     for record in by_slug().values():
         keys = list(record.spells)

@@ -89,6 +89,14 @@ def _int(row: dict[str, str] | None, column: str) -> int:
     return int(value) if value not in ("", None) else 0
 
 
+def _float(row: dict[str, str] | None, column: str) -> float:
+    """`_int` for a column the client stores as a decimal (PowerCostPct)."""
+    if not row:
+        return 0.0
+    value = row.get(column, "")
+    return float(value) if value not in ("", None) else 0.0
+
+
 def build_spell_constants(build: str, raw: Path) -> list[ClassSpellConstants]:
     names = {int(row["ID"]): row["Name_lang"] for row in read_csv(raw / "SpellName.csv")}
     subtexts = {int(row["ID"]): row["NameSubtext_lang"] for row in read_csv(raw / "Spell.csv")}
@@ -140,6 +148,7 @@ def build_spell_constants(build: str, raw: Path) -> list[ClassSpellConstants]:
                 )
                 for effect in sorted(effects.get(spell_id, []), key=lambda e: int(e["EffectIndex"]))
             ],
+            cost_pct=_float(power, "PowerCostPct"),
         )
     return [
         ClassSpellConstants(
