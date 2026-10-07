@@ -91,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-10000000000000000-0000000000000000000 | main_hand:263937 ranged:263430 | 9.0 | 3 | spell:5019=87.4, spell:2136=21.0, spell:143=16.7 | {SpellID: 11129}, {SpellID: 12873} |
-| 20 | 000000000000000000-23510000000000000-0000000000000000000 | main_hand:890 ranged:5243 | 19.7 | 3 | spell:5019=90.7, spell:2137=18.5, spell:3140=11.0 | {SpellID: 11129}, {SpellID: 12873} |
-| 30 | 000000000000000000-23552100030000000-0000000000000000000 | main_hand:249392 ranged:5213 | 27.9 | 4 | spell:5019=102.1, spell:8444=17.4, spell:8401=7.0, spell:8412=6.4, item:5514=1.0 | {SpellID: 11129} |
-| 38 | 000000000000000000-23552100030023030-0000000000000000000 | main_hand:1664 ranged:13064 | 44.8 | 4 | spell:5019=81.0, spell:8445=18.1, spell:8402=7.6, spell:8413=7.1, other:mana_gain=6.0 | {SpellID: 11129} |
-| 40 | 000000000000000000-23552100030023050-0000000000000000000 | main_hand:1664 ranged:5216 | 44.8 | 4 | spell:5019=89.9, spell:8446=17.4, spell:8413=7.2, spell:8402=6.1, other:mana_gain=5.7 | {SpellID: 11129} |
-| 50 | 205011000000000000-23552100030023051-0000000000000000000 | main_hand:812 ranged:249232 | 78.5 | 5 | spell:5019=62.0, spell:10205=18.1, spell:10149=9.4, spell:10197=8.7, other:mana_gain=8.0 | - |
-| 60 | 205015100000000000-23552100030023051-0050000000000000000 | main_hand:22589 ranged:22821 | 232.6 | 5 | spell:5019=57.1, spell:10207=21.1, spell:25306=20.3, spell:10199=13.7, other:mana_gain=7.3 | - |
+| 20 | 000000000000000000-23510000000000000-0000000000000000000 | main_hand:890 ranged:5243 | 19.7 | 3 | spell:5019=90.7, spell:2137=18.5, spell:3140=11.0 | {SpellID: 11129}, {SpellID: 11366}, {SpellID: 12873}, {SpellID: 400625} |
+| 30 | 000000000000000000-23552100120000000-0000000000000000000 | main_hand:249392 ranged:5213 | 27.0 | 4 | spell:5019=98.9, spell:8444=21.9, spell:8401=6.1, spell:8412=5.4, item:5514=1.0 | {SpellID: 11129}, {SpellID: 400625} |
+| 38 | 000000000000000000-23552100130103030-0000000000000000000 | main_hand:1664 ranged:13064 | 43.9 | 5 | spell:5019=81.7, spell:8445=17.9, spell:8402=7.3, spell:8413=7.0, other:mana_gain=2.0 | {SpellID: 11129} |
+| 40 | 000000000000000000-23552100130103050-0000000000000000000 | main_hand:1664 ranged:5216 | 44.5 | 5 | spell:5019=90.3, spell:8446=17.3, spell:8413=6.8, spell:8402=5.9, other:mana_gain=2.0 | {SpellID: 11129} |
+| 50 | 205011000000000000-23552100130103051-0000000000000000000 | main_hand:812 ranged:249232 | 77.0 | 6 | spell:5019=62.7, spell:10205=18.1, spell:10149=8.5, spell:10197=7.4, other:mana_gain=2.0 | - |
+| 60 | 205015100000000000-23552100130103051-0050000000000000000 | main_hand:22589 ranged:22821 | 238.0 | 6 | spell:5019=60.1, spell:10207=20.8, spell:25306=18.0, spell:10199=13.5, other:mana_gain=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -148,7 +148,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Nova (spell 865)
 - Frostbolt (spell 8408)
 - Ice Lance (spell 1240044)
-- Pyroblast (spell 12523)
 
 ### Level 40
 
@@ -164,7 +163,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbolt (spell 8408)
 - Frostfire Bolt (spell 401502)
 - Ice Lance (spell 1240044)
-- Pyroblast (spell 12523)
 
 ### Level 50
 
@@ -180,7 +178,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbolt (spell 10180)
 - Frostfire Bolt (spell 1237312)
 - Ice Lance (spell 1240046)
-- Pyroblast (spell 12525)
 
 ### Level 60
 
@@ -197,7 +194,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbolt (spell 25304)
 - Frostfire Bolt (spell 1237313)
 - Ice Lance (spell 1240047)
-- Pyroblast (spell 18809)
 
 ## Violations found in this run
 

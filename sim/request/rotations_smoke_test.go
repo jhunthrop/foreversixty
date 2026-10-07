@@ -135,6 +135,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"mage-fire": {
 		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 18809}": "Pyroblast is a talent (sim/mage/pyroblast.go); this build takes none.",
 		"{SpellID: 12873}": "Improved Scorch's debuff aura only exists once sim/mage/talents.go's " +
 			"applyImprovedScorch wires it up (Talents.ImprovedScorch != 0) or the raid debuff toggle " +
 			"is on; this build takes neither, so core.GetAPLAura finds no such aura on the current " +
