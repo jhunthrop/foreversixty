@@ -130,7 +130,8 @@
                     "val": {
                       "dotIsActive": {
                         "spellId": {
-                          "spellId": 11275
+                          "spellId": 11275,
+                          "rank": 6
                         }
                       }
                     }
@@ -169,7 +170,8 @@
                 {
                   "dotIsActive": {
                     "spellId": {
-                      "spellId": 11275
+                      "spellId": 11275,
+                      "rank": 6
                     }
                   }
                 }
@@ -248,7 +250,8 @@
                 {
                   "dotIsActive": {
                     "spellId": {
-                      "spellId": 11275
+                      "spellId": 11275,
+                      "rank": 6
                     }
                   }
                 }
