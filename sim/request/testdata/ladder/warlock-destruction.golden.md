@@ -90,27 +90,25 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:263430 | 9.7 | 5 | spell:5019=64.9, other:mana_gain=58.1, spell:1454=58.1, spell:695=25.3, spell:707=10.4 | {OtherID: 13}, {SpellID: 412758} |
-| 20 | 00000000000000000-0000000000000000000-2351000000000000 | main_hand:890 ranged:5243 | 21.7 | 5 | spell:5019=64.9, other:mana_gain=41.4, spell:1455=41.4, spell:1088=21.0, spell:1094=11.6 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758} |
-| 30 | 00000000000000000-0000000000000000000-2353224000000000 | main_hand:249392 ranged:5213 | 32.3 | 5 | spell:5019=72.4, other:mana_gain=41.8, spell:1456=41.8, spell:1106=27.7, spell:2941=11.4 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867}, {SpellID: 412758} |
-| 38 | 00000000000000000-0000000000000000000-2353225100101040 | main_hand:1664 ranged:13064 | 53.6 | 7 | spell:5019=49.0, other:mana_gain=34.2, spell:11687=34.2, spell:7641=21.9, spell:1293818=14.4 | {OtherID: 13}, {SpellID: 412758} |
-| 40 | 00000000000000000-0000000000000000000-2353225100101051 | main_hand:1664 ranged:5216 | 76.8 | 7 | spell:5019=56.5, other:mana_gain=35.8, spell:11687=35.8, spell:412758=21.3, spell:17962=13.9 | {OtherID: 13} |
-| 50 | 25300000000000000-0000000000000000000-2353225100101051 | main_hand:812 ranged:249232 | 102.5 | 7 | spell:5019=36.5, other:mana_gain=31.1, spell:11688=31.1, spell:1293812=25.3, spell:18930=14.3 | {OtherID: 13} |
-| 60 | 25532300000000000-0000000000000000000-2353225100101051 | main_hand:22630 ranged:22821 | 231.7 | 7 | spell:1293813=35.5, other:mana_gain=24.7, spell:11689=24.7, spell:5019=15.2, spell:18932=14.6 | {OtherID: 13} |
+| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:263430 | 10.3 | 6 | spell:5019=63.8, other:mana_gain=57.9, spell:1454=57.9, spell:172=13.5, spell:695=13.2 | {OtherID: 13}, {SpellID: 412758} |
+| 20 | 00000000000000000-0000000000000000000-2351000000000000 | main_hand:890 ranged:5243 | 22.7 | 6 | spell:5019=59.5, other:mana_gain=43.6, spell:1455=43.6, spell:1088=14.8, spell:1094=12.3 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758} |
+| 30 | 00000000000000000-0000000000000000000-2353224000000000 | main_hand:249392 ranged:5213 | 35.4 | 6 | spell:5019=66.4, other:mana_gain=44.5, spell:1456=44.5, spell:1106=21.6, spell:2941=12.4 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867}, {SpellID: 412758} |
+| 38 | 00000000000000000-0000000000000000000-2353225100101040 | main_hand:1664 ranged:13064 | 63.0 | 8 | spell:5019=67.1, other:mana_gain=36.1, spell:11687=36.1, spell:2941=14.9, spell:1293818=12.4 | {OtherID: 13}, {SpellID: 412758} |
+| 40 | 00000000000000000-0000000000000000000-2353225100101051 | main_hand:1664 ranged:5216 | 87.2 | 8 | spell:5019=73.8, other:mana_gain=39.6, spell:11687=39.6, spell:11665=12.7, spell:17962=12.5 | {OtherID: 13} |
+| 50 | 25300000000000000-0000000000000000000-2353225100101051 | main_hand:812 ranged:249232 | 115.3 | 8 | spell:5019=63.5, other:mana_gain=30.3, spell:11688=30.3, spell:11667=12.8, spell:18930=11.9 | {OtherID: 13} |
+| 60 | 25532300000000000-0000000000000000000-2353225100101051 | main_hand:22630 ranged:22821 | 295.1 | 8 | spell:5019=65.7, other:mana_gain=27.8, spell:11689=27.8, spell:1293813=22.8, spell:25309=13.9 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Corruption (spell 172)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7799)
 - Shadow Cleave (spell 403839)
 
 ### Level 20
 
-- Corruption (spell 6222)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7800)
 - Health Funnel (spell 3698)
@@ -123,7 +121,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 30
 
 - Conflagrate (spell 1293817)
-- Corruption (spell 6223)
 - Drain Soul (spell 8288)
 - Firebolt (spell 7801)
 - Health Funnel (spell 3699)
@@ -137,7 +134,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
-- Corruption (spell 7648)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
 - Health Funnel (spell 3700)
@@ -150,7 +146,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Corruption (spell 7648)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
 - Haunt (spell 403501)
@@ -167,7 +162,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Corruption (spell 11671)
 - Drain Soul (spell 8289)
 - Firebolt (spell 11762)
 - Haunt (spell 1293693)
@@ -185,7 +179,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Corruption (spell 25311)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
 - Haunt (spell 1293694)
