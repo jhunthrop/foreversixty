@@ -56,6 +56,7 @@ describe('band60Weights', () => {
     expect(result!.weights).toEqual(expected.weights);
     expect(result!.hasteScaleFactor).toBe(expected.haste_scale_factor ?? null);
     expect(result!.generatedAt).toBe(file.generated_at);
+    expect(result!.hitToCap).toBe(expected.hit_to_cap ?? null);
   });
 
   it('is undefined for a spec with no ranked BiS file (Protection)', () => {

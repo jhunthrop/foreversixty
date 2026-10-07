@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { bandEntry, loadBisFile } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import { classRows, racesForClass } from '../planner/reference';
-import type { BisFile, BisStatWeight, Faction } from '../bis/types';
+import type { BisFile, BisHitToCap, BisStatWeight, Faction } from '../bis/types';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -87,6 +87,7 @@ export function classLandingSetDps(
 export interface Band60Weights {
   weights: readonly BisStatWeight[];
   hasteScaleFactor: number | null;
+  hitToCap: BisHitToCap | null;
   generatedAt: string;
   /** Which preset these weights were measured under, as the file labels it. */
   presetLabel: string;
@@ -114,6 +115,7 @@ export function band60Weights(
   return {
     weights: band.weights,
     hasteScaleFactor: band.haste_scale_factor ?? null,
+    hitToCap: band.hit_to_cap ?? null,
     generatedAt: file.generated_at,
     presetLabel: presetLabelFor(file, band),
   };

@@ -207,6 +207,18 @@ export const bisCopy = {
    *  page is showing (`sim/cmd/leveling-bis/data.go`'s own `loadRatingFactors` doc), so one
    *  note for the whole rail, not per band. */
   weightsRatingConversionNote: 'At level 60, 1% crit = 14 rating and 1% hit = 10 rating.',
+  /** What every BiS sim is run against, under the preset caption. Static copy, so it may
+   *  name the target level and fight length; no data-rendered figure appears here. */
+  simTargetNote:
+    'Simulated against a level-63 target of no creature type over 180 seconds; slaying bonuses such as attack power against Undead count for nothing here.',
+  /** The hit-to-cap line under the weights (`hit-cap.ts`'s `hitCapLine`); `white` is
+   *  `undefined` for a spec that does not dual wield. Percent strings arrive formatted. */
+  hitToCapLine: (specials: string, white: string | undefined): string =>
+    `Hit to cap: ${specials}% for specials${white === undefined ? '' : `, ${white}% for white swings`}`,
+  /** The hover on that line: hit is worth its full weight until the cap and nothing past it,
+   *  and the rail's weights are per rating point. */
+  hitToCapTitle:
+    'Hit is worth its full weight until the cap and nothing past it. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.',
   /** The addon cross-sell under the rail (owner correction, 2026-09-30: "no Pawn anywhere...
    *  under the rail, replace the string box with one secondary button"). The addon feature
    *  itself is a separate lane; `weightsAddonButton`'s own link is `/addon` until it lands. */

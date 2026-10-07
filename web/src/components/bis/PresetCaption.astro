@@ -26,6 +26,9 @@ const groups = meta === undefined ? [] : effectGroupsFor(meta);
 
 <div class="preset-caption" data-testid={testId}>
   <p class="text-muted preset-caption-line">{captionLine}</p>
+  <p class="text-muted preset-caption-line" data-testid={`${testId}-target`}>
+    {bisCopy.simTargetNote}
+  </p>
   {meta !== undefined && preset !== BARE_PRESET && (groups.length > 0 || meta.notes !== undefined) && (
     <details class="preset-details">
       <summary>{bisCopy.presetDetailsSummary}</summary>

@@ -17,6 +17,7 @@
 // than inventing a second convention for the same fact.
 import { band60Weights } from '../../lib/guides/class-dps';
 import { formatDate } from '../../lib/dates';
+import { hitCapLine } from '../../lib/bis/hit-cap';
 import { railStatRows } from '../../lib/guides/rail-stats';
 
 interface Props {
@@ -36,6 +37,7 @@ const { build, spec, classSlug, recommendedRaces, statPriority } = Astro.props;
 const band60 = band60Weights(build, spec, classSlug, recommendedRaces);
 const rows =
   band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
+const hitCap = hitCapLine(band60?.hitToCap);
 const updated = band60 === undefined ? undefined : formatDate(new Date(band60.generatedAt));
 ---
 
@@ -60,6 +62,11 @@ const updated = band60 === undefined ? undefined : formatDate(new Date(band60.ge
         ))}
       </tbody>
     </table>
+    {hitCap !== undefined && (
+      <p class="text-muted text-[12px]" title={hitCap.title} data-testid="guide-stat-table-hit-cap">
+        {hitCap.text}
+      </p>
+    )}
     {updated !== undefined && (
       <p class="text-muted text-[12px]" data-testid="guide-stat-table-updated">
         Updated {updated} · {band60?.presetLabel}

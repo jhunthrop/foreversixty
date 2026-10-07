@@ -25,6 +25,7 @@ function bandInfo(overrides: Partial<BandInfo>): BandInfo {
     scaleRows: [],
     scaleNoteLine: '',
     hasteCaptionLine: undefined,
+    hitCap: undefined,
     totalSlots: 17,
     ...overrides,
   };

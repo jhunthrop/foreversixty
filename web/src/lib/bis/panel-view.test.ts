@@ -358,6 +358,24 @@ describe('bandInfosFor: scale rail', () => {
     expect(infos[0].hasteCaptionLine).toBeUndefined();
   });
 
+  it('carries the hit-to-cap line, with the white clause only when published', () => {
+    const file = fileWith([
+      band({ slots: [slot()], hit_to_cap: { baseline: 3, specials: 6, white: 25 } }),
+      band({ band: 30, slots: [slot()], hit_to_cap: { baseline: 3, specials: 6.5 } }),
+    ]);
+    const [dual, single] = bandInfosFor(file, [20, 30], 'alliance', depsWith());
+    expect(dual.hitCap?.text).toBe('Hit to cap: 6% for specials, 25% for white swings');
+    expect(single.hitCap?.text).toBe('Hit to cap: 6.5% for specials');
+    expect(dual.hitCap?.title).toBe(bisCopy.hitToCapTitle);
+  });
+
+  it('carries no hit-to-cap line when the band publishes none', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    expect(bandInfosFor(file, [20], 'alliance', depsWith())[0].hitCap).toBeUndefined();
+    const nulled = fileWith([band({ slots: [slot()], hit_to_cap: null })]);
+    expect(bandInfosFor(nulled, [20], 'alliance', depsWith())[0].hitCap).toBeUndefined();
+  });
+
   it('states the band’s own top stat in scaleNoteLine', () => {
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
