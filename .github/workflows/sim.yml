@@ -111,7 +111,7 @@ jobs:
           # No -ldflags -X: both mains import sim/enginever, so the pin
           # is compiled in rather than injected here and in the Makefile
           # and scraped out of version.go by a sed in each.
-          GOOS=js GOARCH=wasm go build -o ../artifacts/sim.wasm ./cmd/wasm
+          GOOS=js GOARCH=wasm go build -trimpath -ldflags="-s -w" -o ../artifacts/sim.wasm ./cmd/wasm
           # install, not cp: wasm_exec.js is read-only inside GOROOT and
           # cp copies the mode with it, so the next build over the same
           # directory dies with "Permission denied" on its own output.
