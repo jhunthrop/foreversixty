@@ -1,7 +1,7 @@
 {
   "spec": "warlock-affliction",
   "state": "written",
-  "notes": "Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json), which wowsims models as one package for all three specs. That preset's Shadow Bolt was a stale rank (25307 cast at rank 9; the build's current top rank for 25307 is 10) -- fixed here. It kept Amplify Curse as a prepull (buffs the next curse) which Affliction alone talents into, so it stays; Demonic Sacrifice was dropped since sacrificing the pet is a Demonology-tree talent Affliction does not have. Immolate was dropped as a maintained DoT (Destruction's signature, not Affliction's) in favor of Bane of Agony and Corruption, and Wrack (1316697) is added as a third maintained DoT -- Forever's own tier 6 Affliction capstone, a 6 second instant DoT the base wowsims/classic Affliction tree does not have. Fix round 1 (superseded): Wrack was reported inert here because sim/warlock had no spell file for it yet. Rotation-accuracy program (2026-09-28): sim/warlock/wrack.go now registers Wrack for real (talent-gated on warlock.Talents.Wrack, RequiredLevel 40) -- the line below is no longer inert, and the level-60 ladder golden shows it as the spec's #2 damage source (behind Shadow Bolt), ticking at high uptime alongside the vulnerability aura the talent grants. The line's own note is corrected to match. Confirmed clean by the fix-round-1 review: Bane of Agony (11713) is exactly the spell id the engine's curse registration (sim/warlock/curses.go, function name getCurseOfAgonyBaseConfig notwithstanding) uses, and is fully castable; the separate 'Curse of Agony' spellconst entries (18671/1233077) are unrelated tuning data referenced nowhere in the engine, so no change was needed there. Rotation-accuracy audit, engine numbers (2026-09-28): Corruption's and Bane of Agony's per-tick base damage in sim/warlock (corruption.go, curses.go) carried classic tooltip values roughly double spellconst/warlock.json's own flat per-rank amount; fixed in the fork with a regression test each (commit 34803746d), which is why this spec's DPS dropped in this round's golden refresh -- the cast set and priority order are unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/. Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 62 percent of top casts) alongside Life Tap on this bare, no-consumes, no-buffs ladder character.",
+  "notes": "Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json), which wowsims models as one package for all three specs. That preset's Shadow Bolt was a stale rank (25307 cast at rank 9; the build's current top rank for 25307 is 10) -- fixed here. It kept Amplify Curse as a prepull (buffs the next curse) which Affliction alone talents into, so it stays; Demonic Sacrifice was dropped since sacrificing the pet is a Demonology-tree talent Affliction does not have. Immolate was dropped as a maintained DoT (Destruction's signature, not Affliction's) in favor of Bane of Agony and Corruption, and Wrack (1316697) is added as a third maintained DoT -- Forever's own tier 6 Affliction capstone, a 6 second instant DoT the base wowsims/classic Affliction tree does not have. Fix round 1 (superseded): Wrack was reported inert here because sim/warlock had no spell file for it yet. Rotation-accuracy program (2026-09-28): sim/warlock/wrack.go now registers Wrack for real (talent-gated on warlock.Talents.Wrack, RequiredLevel 40) -- the line below is no longer inert, and the level-60 ladder golden shows it as the spec's #2 damage source (behind Shadow Bolt), ticking at high uptime alongside the vulnerability aura the talent grants. The line's own note is corrected to match. Confirmed clean by the fix-round-1 review: Bane of Agony (11713) is exactly the spell id the engine's curse registration (sim/warlock/curses.go, function name getCurseOfAgonyBaseConfig notwithstanding) uses, and is fully castable; the separate 'Curse of Agony' spellconst entries (18671/1233077) are unrelated tuning data referenced nowhere in the engine, so no change was needed there. Rotation-accuracy audit, engine numbers (2026-09-28): Corruption's and Bane of Agony's per-tick base damage in sim/warlock (corruption.go, curses.go) carried classic tooltip values roughly double spellconst/warlock.json's own flat per-rank amount; fixed in the fork with a regression test each (commit 34803746d), which is why this spec's DPS dropped in this round's golden refresh -- the cast set and priority order are unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/. Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 62 percent of top casts) alongside Life Tap on this bare, no-consumes, no-buffs ladder character. Rotation search (2026-10-06, level 60, 800 iterations, seed 7): Corruption now leads Bane of Agony, Wrack is recast in its last second instead of after it drops, Immolate joins as a fourth DoT ahead of Shadow Bolt, and the wand gate moved from 20 to 40 percent mana; about +5.6 percent in that run.",
   "inert": [
     5019
   ],
@@ -116,30 +116,7 @@
         }
       },
       {
-        "notes": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown.",
-        "action": {
-          "condition": {
-            "not": {
-              "val": {
-                "dotIsActive": {
-                  "spellId": {
-                    "spellId": 11713,
-                    "rank": 6
-                  }
-                }
-              }
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 11713,
-              "rank": 6
-            }
-          }
-        }
-      },
-      {
-        "notes": "Corruption is the cheapest DoT per damage and is kept up throughout.",
+        "notes": "Corruption is the cheapest DoT per damage and goes down first, then is kept up throughout.",
         "action": {
           "condition": {
             "not": {
@@ -162,16 +139,45 @@
         }
       },
       {
-        "notes": "Wrack (talent, learned at level 40) is an instant, no-cooldown 6 second DoT that also applies a 10% Shadow-damage-taken vulnerability to the target, so refresh it the moment it drops rather than waiting behind the longer Bane of Agony and Corruption timers above it.",
+        "notes": "Bane of Agony ramps up over its duration, so it is refreshed the moment it drops.",
         "action": {
           "condition": {
             "not": {
               "val": {
                 "dotIsActive": {
                   "spellId": {
+                    "spellId": 11713,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11713,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "Wrack (talent, learned at level 40) is an instant, no-cooldown 6 second DoT that also applies a 10% Shadow-damage-taken vulnerability to the target, so recast it in its last second to keep the vulnerability up without a gap.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "dotRemainingTime": {
+                  "spellId": {
                     "spellId": 1316697,
                     "rank": 1
                   }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "1s"
                 }
               }
             }
@@ -180,6 +186,29 @@
             "spellId": {
               "spellId": 1316697,
               "rank": 1
+            }
+          }
+        }
+      },
+      {
+        "notes": "Immolate is kept up as a fourth DoT: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 25309,
+                    "rank": 8
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 25309,
+              "rank": 8
             }
           }
         }
@@ -196,7 +225,7 @@
         }
       },
       {
-        "notes": "Shoot with your wand once mana falls under 20%: it costs nothing and keeps damage going while your DoTs tick and you regenerate.",
+        "notes": "Shoot with your wand once mana is under 40 percent: it costs nothing, so mana regenerates while it keeps damage going. Life Tap is only the backstop below 10 percent.",
         "action": {
           "condition": {
             "cmp": {
@@ -206,7 +235,7 @@
               },
               "rhs": {
                 "const": {
-                  "val": "20%"
+                  "val": "40%"
                 }
               }
             }
