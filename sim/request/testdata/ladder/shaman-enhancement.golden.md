@@ -93,9 +93,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 17.7 | 4 | other:attack/1=70.3, spell:3606=69.6, spell:3599=5.9, spell:20572=2.0, spell:8075=2.0 | {SpellID: 17364} |
+| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 15.8 | 4 | other:attack/1=70.3, spell:3606=69.6, spell:3599=5.9, spell:20572=2.0, spell:8075=2.0 | {SpellID: 17364} |
 | 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 24.6 | 4 | other:attack/1=121.6, spell:6350=69.5, spell:6363=5.1, spell:20572=2.0, spell:8075=2.0 | {SpellID: 17364} |
-| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:4066 | 45.8 | 4 | other:attack/1=79.3, spell:6351=70.1, spell:6364=4.5, spell:20572=2.0, spell:8160=2.0 | {SpellID: 17364} |
+| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:4066 | 42.3 | 4 | other:attack/1=79.3, spell:6351=70.1, spell:6364=4.5, spell:20572=2.0, spell:8160=2.0 | {SpellID: 17364} |
 | 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:868 off_hand:4652 | 60.0 | 6 | other:attack/1=91.8, spell:6351=64.6, spell:17364=16.5, spell:6364=4.2, spell:20572=2.0 | - |
 | 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:2164 off_hand:4652 | 65.6 | 8 | other:attack/1=112.8, spell:6352=65.4, spell:17364=16.7, spell:18107=4.2, spell:6365=3.7 | - |
 | 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 85.6 | 7 | other:attack/1=97.2, spell:10435=59.7, spell:17364=20.8, spell:10437=3.0, spell:20572=2.0 | - |
