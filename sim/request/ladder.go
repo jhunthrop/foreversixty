@@ -935,9 +935,10 @@ func abilityNameByID(abilities classAbilities) map[int]string {
 // spellEffectConst is one effect of one spell, from
 // data/builds/<build>/spellconst/<class>.json.
 type spellEffectConst struct {
-	Effect   int   `json:"effect"`
-	Aura     int   `json:"aura"`
-	PeriodMS int32 `json:"period_ms"`
+	Effect   int     `json:"effect"`
+	Aura     int     `json:"aura"`
+	Amount   float64 `json:"amount"`
+	PeriodMS int32   `json:"period_ms"`
 }
 
 type spellConstEntry struct {

@@ -32,6 +32,10 @@ type LearnedAbility struct {
 	// duration - a line a default condition should gate on dotIsActive
 	// rather than cast unconditionally.
 	IsDOT bool
+	// RaisesDamageTaken is a timed debuff that makes the target take more
+	// damage (a positive aura-87 effect over a finite duration): Curse of the
+	// Elements. It deals none itself, so IsDamage misses it.
+	RaisesDamageTaken bool
 	// TickSeconds is the periodic effect's own period, in seconds, 0
 	// if the ability carries none (set whenever IsDOT is true).
 	TickSeconds float64
@@ -53,6 +57,10 @@ type LearnedAbility struct {
 	// safe to cast at all.
 	GCDMS int32
 }
+
+// auraModDamageTakenPercent is the client's aura code for "increases damage
+// taken by N percent".
+const auraModDamageTakenPercent = 87
 
 // LearnedAbilities is every damage-relevant ability a class has
 // learned by level, one entry per highest-reached rank tier (ties the
@@ -147,6 +155,9 @@ func learnedAbilityFrom(consts map[int]spellConstEntry, name string, tier rankTi
 		for _, e := range entry.Effects {
 			if isDamageEffect(e) {
 				out.IsDamage = true
+			}
+			if e.Effect == 6 && e.Aura == auraModDamageTakenPercent && e.Amount > 0 && entry.DurationMS > 0 {
+				out.RaisesDamageTaken = true
 			}
 			if e.Effect == 6 && e.Aura == 3 && entry.DurationMS > 0 {
 				out.IsDOT = true

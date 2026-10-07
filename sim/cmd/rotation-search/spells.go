@@ -16,6 +16,7 @@ const (
 	condDOT        conditionKind = "dot: not active"
 	condExecute    conditionKind = "execute-only: isExecutePhase"
 	condBuffOrForm conditionKind = "buff/form/seal: not active"
+	condDebuff     conditionKind = "target debuff: not active on the target"
 )
 
 // defaultCondition picks the sensible default condition the task
@@ -34,6 +35,8 @@ func defaultCondition(a request.LearnedAbility) (action, conditionKind) {
 		return notCondition(dotIsActiveCondition(id, rank)), condDOT
 	case isExecuteName(a.Name):
 		return isExecutePhaseCondition(), condExecute
+	case a.RaisesDamageTaken:
+		return notCondition(targetAuraIsActiveCondition(id, rank)), condDebuff
 	case a.DurationMS == -1 && !a.IsDamage:
 		return notCondition(auraIsActiveCondition(id, rank)), condBuffOrForm
 	default:
@@ -47,9 +50,10 @@ func isExecuteName(name string) bool {
 
 // isProbeWorthy is which learned abilities the probe and the search's
 // insertion mutator bother trying: a damage-dealing cast
-// (a.IsDamage), an execute-phase nuke by name, or a persistent
+// (a.IsDamage), an execute-phase nuke by name, a persistent
 // non-damage toggle (a form, a seal, a stance) - the task's "learned
-// damage or DPS-cooldown spell" - and not already in the rotation.
+// damage or DPS-cooldown spell" - or a debuff that raises the damage the
+// target takes (Curse of the Elements), and not already in the rotation.
 // GCDMS > 0 is required regardless of category: an ability with no
 // GCD of its own is not a player-chosen rotation action at all - this
 // build's internal "Attack" entry (the white-damage melee swing,
@@ -60,7 +64,7 @@ func isProbeWorthy(a request.LearnedAbility) bool {
 	if a.GCDMS <= 0 {
 		return false
 	}
-	return a.IsDamage || isExecuteName(a.Name) || (a.DurationMS == -1 && !a.IsDamage)
+	return a.IsDamage || isExecuteName(a.Name) || a.RaisesDamageTaken || (a.DurationMS == -1 && !a.IsDamage)
 }
 
 // learnedCandidates is every learned, probe-worthy ability the

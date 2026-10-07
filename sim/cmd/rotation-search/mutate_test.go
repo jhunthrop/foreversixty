@@ -246,3 +246,55 @@ func TestResourceGateMutationsVaryTheThreshold(t *testing.T) {
 		t.Errorf("got %d distinct thresholds, want %d", len(seen), len(gateThresholds)-1)
 	}
 }
+
+func maintenanceCandidates() []learnedCandidate {
+	return append(testCandidates(), learnedCandidate{
+		Name: "DebuffCurse", ID: 600, Rank: 2,
+		Condition: notCondition(targetAuraIsActiveCondition(600, 2)), ConditionLabel: string(condDebuff),
+	})
+}
+
+// TestReplaceMaintenanceMutations is the swap a one-per-target pair needs
+// (Immolate or Unstable Affliction, Agony or the Elements): neither insert nor
+// remove alone ever reaches it, since each half is worse than the pair it
+// came from.
+func TestReplaceMaintenanceMutations(t *testing.T) {
+	base := testRotation()
+	muts := replaceMaintenanceMutations(base, maintenanceCandidates(), nil)
+
+	// One maintenance line (#2) times the two maintenance candidates; the plain
+	// candidate and every other line are left out.
+	if len(muts) != 2 {
+		t.Fatalf("got %d mutations, want 2: %v", len(muts), labels(muts))
+	}
+	for _, m := range muts {
+		assertLegalAPL(t, m.Label, m.Rotation)
+		assertNoDuplicateActions(t, m.Label, m.Rotation.PriorityList)
+		if len(m.Rotation.PriorityList) != len(base.PriorityList) {
+			t.Errorf("%s: length %d, want %d", m.Label, len(m.Rotation.PriorityList), len(base.PriorityList))
+		}
+		if id, _ := castSpellID(m.Rotation.PriorityList[1].Action); id.SpellID == 100 {
+			t.Errorf("%s: the maintenance line was not replaced", m.Label)
+		}
+		if id, _ := castSpellID(base.PriorityList[1].Action); id.SpellID != 100 {
+			t.Error("the base rotation was modified")
+		}
+	}
+}
+
+func labels(muts []mutation) []string {
+	out := make([]string, len(muts))
+	for i, m := range muts {
+		out[i] = m.Label
+	}
+	return out
+}
+
+func TestRefreshMutationsLeaveTargetAuraGatesAlone(t *testing.T) {
+	base := rotation{Type: "TypeAPL", PriorityList: []entry{
+		buildCastEntry("curse", 600, 2, notCondition(targetAuraIsActiveCondition(600, 2))),
+	}}
+	if muts := refreshConditionMutations(base, map[int]float64{600: 3}, nil); len(muts) != 0 {
+		t.Errorf("got %d refresh mutations of a target-aura gate, want none: %v", len(muts), labels(muts))
+	}
+}
