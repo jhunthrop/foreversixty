@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
-  "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:49:47Z",
+  "engine_version": "8bc5b28c5",
+  "generated_at": "2026-10-07T14:12:14Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -561,8 +561,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.977193077,
-      "verify_run_seconds": 0.892222781,
+      "weights_run_seconds": 2.642757276,
+      "verify_run_seconds": 1.217048343,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1203,8 +1203,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.977193077,
-      "verify_run_seconds": 0.928484509,
+      "weights_run_seconds": 2.642757276,
+      "verify_run_seconds": 1.219581125,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1923,8 +1923,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.044858013,
-      "verify_run_seconds": 1.000581977,
+      "weights_run_seconds": 2.695182303,
+      "verify_run_seconds": 1.30524485,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2643,8 +2643,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.044858013,
-      "verify_run_seconds": 0.936673528,
+      "weights_run_seconds": 2.695182303,
+      "verify_run_seconds": 1.305711136,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3330,8 +3330,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.78348797,
-      "verify_run_seconds": 0.944607197,
+      "weights_run_seconds": 2.2501860369999998,
+      "verify_run_seconds": 1.2615243600000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4012,8 +4012,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.78348797,
-      "verify_run_seconds": 1.000515377,
+      "weights_run_seconds": 2.2501860369999998,
+      "verify_run_seconds": 1.248673844,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4278,7 +4278,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.7321726529038806
+              "dps_delta": -2.7321726529038814
             }
           ]
         },
@@ -4722,8 +4722,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.650796679,
-      "verify_run_seconds": 1.066415185,
+      "weights_run_seconds": 2.161031412,
+      "verify_run_seconds": 1.42344041,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4988,7 +4988,7 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -2.7321726529038806
+              "dps_delta": -2.7321726529038814
             }
           ]
         },
@@ -5434,8 +5434,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.650796679,
-      "verify_run_seconds": 1.114942912,
+      "weights_run_seconds": 2.161031412,
+      "verify_run_seconds": 1.411124828,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6176,8 +6176,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.8332969239999999,
-      "verify_run_seconds": 1.071555062,
+      "weights_run_seconds": 2.2878070409999998,
+      "verify_run_seconds": 1.38033261,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6918,8 +6918,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.8332969239999999,
-      "verify_run_seconds": 1.097647353,
+      "weights_run_seconds": 2.2878070409999998,
+      "verify_run_seconds": 1.431400963,
       "coverage": {
         "back": {
           "eligible": 450,

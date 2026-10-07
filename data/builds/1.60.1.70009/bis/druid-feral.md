@@ -6,9 +6,9 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ## Alliance
 
-### Band 20 (night-elf, 0000000000000000-5420000000000000000-0000000000000000)
+### Band 20 (night-elf, 0000000000000000-54200000000000000000-0000000000000000)
 
-Set DPS (verified): 62.9. Weights run: 2.5s. Verify run: 1.2s. 193 eligible items had no known source.
+Set DPS (verified): 62.9. Weights run: 3.3s. Verify run: 1.6s. 193 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.001, agility=1.474 ± 0.008, crit=0.677 ± 0.011 per rating point (14 rating = 1%, 9.478 per %), hit=0.174 ± 0.005 per rating point (10 rating = 1%, 1.738 per %), melee_haste=5.215 ± 0.295
 
@@ -36,39 +36,39 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 193, see the JSON for more): 1189 Overseer's Ring; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5821 Darkstalker Boots; 5968 Rugged Boots; 6478 Rat Stompers
 
-### Band 30 (night-elf, 0000000000000000-5423222100000000000-0000000000000000)
+### Band 30 (night-elf, 0000000000000000-54232212000000000000-0000000000000000)
 
-Set DPS (verified): 102.7. Weights run: 2.9s. Verify run: 1.4s. 322 eligible items had no known source.
+Set DPS (verified): 104.9. Weights run: 3.9s. Verify run: 1.9s. 322 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.547 ± 0.011, crit=0.782 ± 0.015 per rating point (14 rating = 1%, 10.942 per %), hit=0.206 ± 0.006 per rating point (10 rating = 1%, 2.057 per %), melee_haste=6.725 ± 0.495
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.534 ± 0.010, crit=0.763 ± 0.015 per rating point (14 rating = 1%, 10.679 per %), hit=0.210 ± 0.006 per rating point (10 rating = 1%, 2.099 per %), melee_haste=6.983 ± 0.502
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Defender's Leather Helm (252455) | Leatherworking [crafted] | 27.8 attack_power points (1.45 DPS) | yes | Azure Gustwoven Hood (277050, -0.36 DPS) [crafted]; Defender's Leather Hood (252447, -0.48 DPS) [crafted]; Cloudy Gustwoven Hood (277042, -0.50 DPS, sim-verified) [crafted] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 15.5 attack_power points (0.81 DPS) | yes | Sentinel's Medallion (19541, -0.16 DPS) [rep]; Ghostshard Talisman (7731, -0.30 DPS, sim-verified) [dungeon] |
-| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 28.6 attack_power points (1.49 DPS) | yes | Bristlebark Amice (14573, -0.65 DPS) [world_drop]; Mantle of Thieves (2264, -0.69 DPS) [dungeon]; Barbaric Shoulders (5964, -0.71 DPS, sim-verified) [crafted] |
-| back | Hawkeye's Cloak (14593) | World drop [world_drop] | 17.8 attack_power points (0.93 DPS) | yes | Sergeant Major's Cape (16315, -0.12 DPS) [pvp]; Tigerstrike Mantle (13108, -0.28 DPS) [world_drop]; Grave Shroud (279865, -0.40 DPS) [quest] |
-| chest | Brawler's Leather Tunic (252508) | Leatherworking [crafted] | 26.3 attack_power points (1.37 DPS) | yes | Defender's Leather Tunic (252450, -0.16 DPS) [crafted]; Brawler's Leather Armor (252490, -0.20 DPS) [crafted]; Dusky Leather Armor (7374, -0.24 DPS) [crafted] |
-| wrist | Hawkeye's Bracers (14590) | World drop [world_drop] | 18.6 attack_power points (0.97 DPS) | yes | Barbaric Bracers (18948, -0.16 DPS) [crafted]; Jurassic Wristguards (6198, -0.24 DPS) [world]; Bands of Serra'kis (6902, -0.24 DPS) [dungeon] |
-| hands | Insignia Gloves (6408) | World drop [world_drop] | 25.5 attack_power points (1.33 DPS) | yes | Toughened Leather Gloves (4253, -0.12 DPS) [crafted]; Wolfclaw Gloves (1978, -0.24 DPS) [dungeon]; Gloves of the Fang (10413, -0.36 DPS) [dungeon] |
-| waist | Prowler's Leather Belt (252459) | Leatherworking [crafted] | 30.2 attack_power points (1.58 DPS) | yes | Skulker's Leather Belt (252520, -0.29 DPS, sim-verified) [crafted]; Highlander's Chain Girdle (20090, -0.32 DPS) [rep]; Highlander's Leather Girdle (20117, -0.32 DPS) [rep] |
-| legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 30.2 attack_power points (1.58 DPS) | yes | Brawler's Leather Pants (252500, -0.12 DPS) [crafted]; Trapper's Leather Pants (252501, -0.12 DPS) [crafted]; Barbaric Leggings (5963, -0.16 DPS) [crafted] |
-| feet | Feet of the Lynx (1121) | World drop [world_drop] | 19.3 attack_power points (1.01 DPS) | yes | Brawler's Leather Boots (252439, -0.00 DPS) [crafted]; Insignia Boots (4055, -0.36 DPS) [world_drop]; Highlander's Mail Greaves (20123, -0.36 DPS) [vendor] |
-| finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 23.2 attack_power points (1.21 DPS) | yes | Thunderbrow Ring (13097, -0.00 DPS) [world_drop]; Tiger Band (6749, -0.48 DPS) [quest]; Seal of Wrynn (2933, -0.61 DPS) [quest] |
-| finger2 | Protector's Band (19517) | Silverwing Sentinels [rep] | 23.2 attack_power points (1.21 DPS) | yes | Thunderbrow Ring (13097, -0.00 DPS) [world_drop]; Tiger Band (6749, -0.48 DPS) [quest]; Seal of Wrynn (2933, -0.61 DPS) [quest] |
+| head | Defender's Leather Helm (252455) | Leatherworking [crafted] | 27.8 attack_power points (1.50 DPS) | yes | Azure Gustwoven Hood (277050, -0.37 DPS) [crafted]; Defender's Leather Hood (252447, -0.50 DPS) [crafted]; Cloudy Gustwoven Hood (277042, -0.51 DPS, sim-verified) [crafted] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 15.4 attack_power points (0.83 DPS) | yes | Sentinel's Medallion (19541, -0.17 DPS) [rep]; Ghostshard Talisman (7731, -0.32 DPS, sim-verified) [dungeon]; River Pride Choker (13087, -0.33 DPS) [world_drop] |
+| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 28.5 attack_power points (1.53 DPS) | yes | Bristlebark Amice (14573, -0.66 DPS) [world_drop]; Mantle of Thieves (2264, -0.71 DPS) [dungeon]; Barbaric Shoulders (5964, -0.75 DPS, sim-verified) [crafted] |
+| back | Hawkeye's Cloak (14593) | World drop [world_drop] | 17.7 attack_power points (0.95 DPS) | yes | Sergeant Major's Cape (16315, -0.12 DPS) [pvp]; Tigerstrike Mantle (13108, -0.29 DPS) [world_drop]; Grave Shroud (279865, -0.41 DPS) [quest] |
+| chest | Brawler's Leather Tunic (252508) | Leatherworking [crafted] | 26.2 attack_power points (1.41 DPS) | yes | Defender's Leather Tunic (252450, -0.16 DPS) [crafted]; Brawler's Leather Armor (252490, -0.21 DPS) [crafted]; Dusky Leather Armor (7374, -0.25 DPS) [crafted] |
+| wrist | Hawkeye's Bracers (14590) | World drop [world_drop] | 18.5 attack_power points (0.99 DPS) | yes | Barbaric Bracers (18948, -0.16 DPS) [crafted]; Bands of Serra'kis (6902, -0.25 DPS) [dungeon]; Jurassic Wristguards (6198, -0.25 DPS) [world] |
+| hands | Insignia Gloves (6408) | World drop [world_drop] | 25.4 attack_power points (1.37 DPS) | yes | Toughened Leather Gloves (4253, -0.12 DPS) [crafted]; Wolfclaw Gloves (1978, -0.25 DPS) [dungeon]; Brawler Gloves (720, -0.37 DPS) [world_drop] |
+| waist | Prowler's Leather Belt (252459) | Leatherworking [crafted] | 30.1 attack_power points (1.62 DPS) | yes | Skulker's Leather Belt (252520, -0.30 DPS, sim-verified) [crafted]; Highlander's Chain Girdle (20090, -0.33 DPS) [rep]; Highlander's Leather Girdle (20117, -0.33 DPS) [rep] |
+| legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 30.0 attack_power points (1.62 DPS) | yes | Brawler's Leather Pants (252500, -0.12 DPS) [crafted]; Trapper's Leather Pants (252501, -0.12 DPS) [crafted]; Defender's Leather Pants (252445, -0.16 DPS) [crafted] |
+| feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 19.3 attack_power points (1.04 DPS) | yes | Feet of the Lynx (1121, -0.00 DPS) [world_drop]; Insignia Boots (4055, -0.38 DPS) [world_drop]; Highlander's Mail Greaves (20123, -0.38 DPS) [vendor] |
+| finger1 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.2 attack_power points (1.25 DPS) | yes | Ironspine's Eye (7686, -0.00 DPS) [dungeon]; Tiger Band (6749, -0.50 DPS) [quest]; Silverlaine's Family Seal (6321, -0.62 DPS) [dungeon] |
+| finger2 | Protector's Band (19517) | Silverwing Sentinels [rep] | 23.1 attack_power points (1.24 DPS) | yes | Ironspine's Eye (7686, -0.00 DPS) [dungeon]; Tiger Band (6749, -0.49 DPS) [quest]; Silverlaine's Family Seal (6321, -0.62 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (102.7 DPS) | yes | Cobalt Crusher (7730, -2.41 DPS) [dungeon]; Wind Spirit Staff (6689, -4.05 DPS) [dungeon]; Viscous Hammer (13045, -22.24 DPS, sim-verified) [world_drop] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (104.9 DPS) | yes | Cobalt Crusher (7730, -2.48 DPS) [dungeon]; Wind Spirit Staff (6689, -4.16 DPS) [dungeon]; Viscous Hammer (13045, -22.19 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 30:** head: Defender's Leather Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Brawler's Leather Tunic; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Prowler's Leather Belt; legs: Brawler's Leather Legguards; feet: Feet of the Lynx; finger1: Ironspine's Eye; finger2: Protector's Band; main_hand: Manual Crowd Pummeler
+**New at 30:** head: Defender's Leather Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Brawler's Leather Tunic; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Prowler's Leather Belt; legs: Brawler's Leather Legguards; finger1: Thunderbrow Ring; finger2: Protector's Band; main_hand: Manual Crowd Pummeler
 
 No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher
 
-### Band 40 (night-elf, 0000000000000000-5423222121032010001-0000000000000000)
+### Band 40 (night-elf, 0000000000000000-54232212120032010001-0000000000000000)
 
-Set DPS (verified): 141.5. Weights run: 3.0s. Verify run: 1.5s. 438 eligible items had no known source.
+Set DPS (verified): 141.5. Weights run: 4.1s. Verify run: 2.1s. 438 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.620 ± 0.018, crit=0.885 ± 0.026 per rating point (14 rating = 1%, 12.395 per %), hit=0.223 ± 0.007 per rating point (10 rating = 1%, 2.226 per %), melee_haste=8.573 ± 0.762
 
@@ -96,9 +96,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 438, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher
 
-### Band 50 (night-elf, 0000000000000000-5423222121032010001-5500000000000000)
+### Band 50 (night-elf, 0000000000000000-54232212120032010001-5500000000000000)
 
-Set DPS (verified): 145.2. Weights run: 3.0s. Verify run: 1.6s. 577 eligible items had no known source.
+Set DPS (verified): 145.2. Weights run: 4.1s. Verify run: 2.2s. 577 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.716 ± 0.023, crit=1.022 ± 0.033 per rating point (14 rating = 1%, 14.311 per %), hit=0.257 ± 0.008 per rating point (10 rating = 1%, 2.572 per %), melee_haste=9.300 ± 1.003
 
@@ -126,9 +126,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 577, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher
 
-### Band 60 (night-elf, 0000000000000000-5423222121032010001-5553200000000000)
+### Band 60 (night-elf, 0000000000000000-54232212120032010001-5553200000000000)
 
-Set DPS (verified): 220.9. Weights run: 3.1s. Verify run: 1.6s. 1449 eligible items had no known source.
+Set DPS (verified): 220.9. Weights run: 4.1s. Verify run: 2.2s. 1449 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.904 ± 0.035, crit=1.291 ± 0.050 per rating point (14 rating = 1%, 18.074 per %), hit=0.321 ± 0.010 per rating point (10 rating = 1%, 3.212 per %), melee_haste=10.099 ± 1.584
 
@@ -158,9 +158,9 @@ No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring
 
 ## Horde
 
-### Band 20 (tauren, 0000000000000000-5420000000000000000-0000000000000000)
+### Band 20 (tauren, 0000000000000000-54200000000000000000-0000000000000000)
 
-Set DPS (verified): 61.5. Weights run: 2.5s. Verify run: 1.1s. 183 eligible items had no known source.
+Set DPS (verified): 61.5. Weights run: 3.3s. Verify run: 1.5s. 183 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.001, agility=1.474 ± 0.008, crit=0.677 ± 0.011 per rating point (14 rating = 1%, 9.478 per %), hit=0.174 ± 0.005 per rating point (10 rating = 1%, 1.738 per %), melee_haste=5.215 ± 0.295
 
@@ -188,39 +188,39 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 183, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 5821 Darkstalker Boots; 5968 Rugged Boots; 6478 Rat Stompers; 7187 VanCleef's Boots; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 18863 Insignia of the Alliance; 209617 Insignia of the Alliance
 
-### Band 30 (tauren, 0000000000000000-5423222100000000000-0000000000000000)
+### Band 30 (tauren, 0000000000000000-54232212000000000000-0000000000000000)
 
-Set DPS (verified): 101.3. Weights run: 2.9s. Verify run: 1.4s. 315 eligible items had no known source.
+Set DPS (verified): 103.4. Weights run: 3.9s. Verify run: 1.9s. 315 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.547 ± 0.011, crit=0.782 ± 0.015 per rating point (14 rating = 1%, 10.942 per %), hit=0.206 ± 0.006 per rating point (10 rating = 1%, 2.057 per %), melee_haste=6.725 ± 0.495
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.534 ± 0.010, crit=0.763 ± 0.015 per rating point (14 rating = 1%, 10.679 per %), hit=0.210 ± 0.006 per rating point (10 rating = 1%, 2.099 per %), melee_haste=6.983 ± 0.502
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Defender's Leather Helm (252455) | Leatherworking [crafted] | 27.8 attack_power points (1.45 DPS) | yes | Azure Gustwoven Hood (277050, -0.36 DPS) [crafted]; Defender's Leather Hood (252447, -0.48 DPS) [crafted]; Cloudy Gustwoven Hood (277042, -0.49 DPS, sim-verified) [crafted] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 15.5 attack_power points (0.81 DPS) | yes | Scout's Medallion (19537, -0.16 DPS) [rep]; Ghostshard Talisman (7731, -0.31 DPS, sim-verified) [dungeon] |
-| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 28.6 attack_power points (1.49 DPS) | yes | Bristlebark Amice (14573, -0.65 DPS) [world_drop]; Mantle of Thieves (2264, -0.69 DPS) [dungeon]; Barbaric Shoulders (5964, -0.72 DPS, sim-verified) [crafted] |
-| back | Hawkeye's Cloak (14593) | World drop [world_drop] | 17.8 attack_power points (0.93 DPS) | yes | Tigerstrike Mantle (13108, -0.37 DPS, sim-verified) [world_drop]; Grave Shroud (279865, -0.40 DPS) [quest]; Wildhunter Cloak (16658, -0.41 DPS) [quest] |
-| chest | Brawler's Leather Tunic (252508) | Leatherworking [crafted] | 26.3 attack_power points (1.37 DPS) | yes | Defender's Leather Tunic (252450, -0.16 DPS) [crafted]; Brawler's Leather Armor (252490, -0.20 DPS) [crafted]; Dusky Leather Armor (7374, -0.24 DPS) [crafted] |
-| wrist | Hawkeye's Bracers (14590) | World drop [world_drop] | 18.6 attack_power points (0.97 DPS) | yes | Barbaric Bracers (18948, -0.16 DPS) [crafted]; Jurassic Wristguards (6198, -0.24 DPS) [world]; Bands of Serra'kis (6902, -0.24 DPS) [dungeon] |
-| hands | Insignia Gloves (6408) | World drop [world_drop] | 25.5 attack_power points (1.33 DPS) | yes | Toughened Leather Gloves (4253, -0.12 DPS) [crafted]; Wolfclaw Gloves (1978, -0.24 DPS) [dungeon]; Gloves of the Fang (10413, -0.36 DPS) [dungeon] |
-| waist | Prowler's Leather Belt (252459) | Leatherworking [crafted] | 30.2 attack_power points (1.58 DPS) | yes | Skulker's Leather Belt (252520, -0.29 DPS, sim-verified) [crafted]; Defiler's Chain Girdle (20152, -0.32 DPS) [rep]; Defiler's Leather Girdle (20191, -0.32 DPS) [rep] |
-| legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 30.2 attack_power points (1.58 DPS) | yes | Brawler's Leather Pants (252500, -0.12 DPS) [crafted]; Trapper's Leather Pants (252501, -0.12 DPS) [crafted]; Barbaric Leggings (5963, -0.16 DPS) [crafted] |
-| feet | Feet of the Lynx (1121) | World drop [world_drop] | 19.3 attack_power points (1.01 DPS) | yes | Brawler's Leather Boots (252439, -0.00 DPS) [crafted]; Stomping Boots (3741, -0.20 DPS) [quest]; Insignia Boots (4055, -0.36 DPS) [world_drop] |
-| finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 23.2 attack_power points (1.21 DPS) | yes | Thunderbrow Ring (13097, -0.00 DPS) [world_drop]; Band of the Fist (17694, -0.40 DPS) [quest]; Tiger Band (6749, -0.48 DPS) [quest] |
-| finger2 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 23.2 attack_power points (1.21 DPS) | yes | Thunderbrow Ring (13097, -0.00 DPS) [world_drop]; Band of the Fist (17694, -0.40 DPS) [quest]; Tiger Band (6749, -0.48 DPS) [quest] |
+| head | Defender's Leather Helm (252455) | Leatherworking [crafted] | 27.8 attack_power points (1.50 DPS) | yes | Azure Gustwoven Hood (277050, -0.37 DPS) [crafted]; Cloudy Gustwoven Hood (277042, -0.50 DPS, sim-verified) [crafted]; Defender's Leather Hood (252447, -0.50 DPS) [crafted] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 15.4 attack_power points (0.83 DPS) | yes | Scout's Medallion (19537, -0.17 DPS) [rep]; Ghostshard Talisman (7731, -0.29 DPS, sim-verified) [dungeon]; River Pride Choker (13087, -0.33 DPS) [world_drop] |
+| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 28.5 attack_power points (1.53 DPS) | yes | Bristlebark Amice (14573, -0.66 DPS) [world_drop]; Mantle of Thieves (2264, -0.71 DPS) [dungeon]; Barbaric Shoulders (5964, -0.72 DPS, sim-verified) [crafted] |
+| back | Hawkeye's Cloak (14593) | World drop [world_drop] | 17.7 attack_power points (0.95 DPS) | yes | Tigerstrike Mantle (13108, -0.37 DPS, sim-verified) [world_drop]; Grave Shroud (279865, -0.41 DPS) [quest]; Wildhunter Cloak (16658, -0.41 DPS) [quest] |
+| chest | Brawler's Leather Tunic (252508) | Leatherworking [crafted] | 26.2 attack_power points (1.41 DPS) | yes | Brawler's Leather Armor (252490, -0.21 DPS) [crafted]; Defender's Leather Tunic (252450, -0.24 DPS, sim-verified) [crafted]; Dusky Leather Armor (7374, -0.25 DPS) [crafted] |
+| wrist | Hawkeye's Bracers (14590) | World drop [world_drop] | 18.5 attack_power points (0.99 DPS) | yes | Barbaric Bracers (18948, -0.24 DPS, sim-verified) [crafted]; Bands of Serra'kis (6902, -0.25 DPS) [dungeon]; Jurassic Wristguards (6198, -0.25 DPS) [world] |
+| hands | Insignia Gloves (6408) | World drop [world_drop] | 25.4 attack_power points (1.37 DPS) | yes | Toughened Leather Gloves (4253, -0.12 DPS) [crafted]; Wolfclaw Gloves (1978, -0.25 DPS) [dungeon]; Brawler Gloves (720, -0.37 DPS) [world_drop] |
+| waist | Prowler's Leather Belt (252459) | Leatherworking [crafted] | 30.1 attack_power points (1.62 DPS) | yes | Skulker's Leather Belt (252520, -0.30 DPS, sim-verified) [crafted]; Defiler's Chain Girdle (20152, -0.33 DPS) [rep]; Defiler's Leather Girdle (20191, -0.33 DPS) [rep] |
+| legs | Brawler's Leather Legguards (252516) | Leatherworking [crafted] | 30.0 attack_power points (1.62 DPS) | yes | Brawler's Leather Pants (252500, -0.12 DPS) [crafted]; Trapper's Leather Pants (252501, -0.12 DPS) [crafted]; Defender's Leather Pants (252445, -0.16 DPS) [crafted] |
+| feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 19.3 attack_power points (1.04 DPS) | yes | Feet of the Lynx (1121, -0.00 DPS) [world_drop]; Stomping Boots (3741, -0.21 DPS) [quest]; Insignia Boots (4055, -0.38 DPS) [world_drop] |
+| finger1 | Thunderbrow Ring (13097) | World drop [world_drop] | 23.2 attack_power points (1.25 DPS) | yes | Ironspine's Eye (7686, -0.00 DPS) [dungeon]; Band of the Fist (17694, -0.42 DPS) [quest]; Tiger Band (6749, -0.50 DPS) [quest] |
+| finger2 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 23.1 attack_power points (1.24 DPS) | yes | Ironspine's Eye (7686, -0.00 DPS) [dungeon]; Band of the Fist (17694, -0.41 DPS) [quest]; Tiger Band (6749, -0.49 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (101.3 DPS) | yes | Cobalt Crusher (7730, -2.41 DPS) [dungeon]; Advisor's Gnarled Staff (19569, -3.25 DPS) [pvp]; Viscous Hammer (13045, -21.76 DPS, sim-verified) [world_drop] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (103.4 DPS) | yes | Cobalt Crusher (7730, -2.48 DPS) [dungeon]; Advisor's Gnarled Staff (19569, -3.34 DPS) [pvp]; Viscous Hammer (13045, -21.71 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 30:** head: Defender's Leather Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Brawler's Leather Tunic; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Prowler's Leather Belt; legs: Brawler's Leather Legguards; feet: Feet of the Lynx; finger1: Ironspine's Eye; finger2: Legionnaire's Band; main_hand: Manual Crowd Pummeler
+**New at 30:** head: Defender's Leather Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Brawler's Leather Tunic; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Prowler's Leather Belt; legs: Brawler's Leather Legguards; finger1: Thunderbrow Ring; finger2: Legionnaire's Band; main_hand: Manual Crowd Pummeler
 
 No-known-source sample (15 of 315, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5821 Darkstalker Boots; 5968 Rugged Boots
 
-### Band 40 (tauren, 0000000000000000-5423222121032010001-0000000000000000)
+### Band 40 (tauren, 0000000000000000-54232212120032010001-0000000000000000)
 
-Set DPS (verified): 140.2. Weights run: 3.0s. Verify run: 1.5s. 426 eligible items had no known source.
+Set DPS (verified): 140.2. Weights run: 4.1s. Verify run: 2.0s. 426 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.620 ± 0.018, crit=0.885 ± 0.026 per rating point (14 rating = 1%, 12.395 per %), hit=0.223 ± 0.007 per rating point (10 rating = 1%, 2.226 per %), melee_haste=8.573 ± 0.762
 
@@ -248,9 +248,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 426, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring; 5010 Inscribed Gold Ring
 
-### Band 50 (tauren, 0000000000000000-5423222121032010001-5500000000000000)
+### Band 50 (tauren, 0000000000000000-54232212120032010001-5500000000000000)
 
-Set DPS (verified): 149.2. Weights run: 3.0s. Verify run: 1.6s. 561 eligible items had no known source.
+Set DPS (verified): 149.2. Weights run: 4.1s. Verify run: 2.2s. 561 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.716 ± 0.023, crit=1.022 ± 0.033 per rating point (14 rating = 1%, 14.311 per %), hit=0.257 ± 0.008 per rating point (10 rating = 1%, 2.572 per %), melee_haste=9.300 ± 1.003
 
@@ -278,9 +278,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 561, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
-### Band 60 (tauren, 0000000000000000-5423222121032010001-5553200000000000)
+### Band 60 (tauren, 0000000000000000-54232212120032010001-5553200000000000)
 
-Set DPS (verified): 222.4. Weights run: 3.1s. Verify run: 1.5s. 1446 eligible items had no known source.
+Set DPS (verified): 222.4. Weights run: 4.1s. Verify run: 2.2s. 1446 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.904 ± 0.035, crit=1.291 ± 0.050 per rating point (14 rating = 1%, 18.074 per %), hit=0.321 ± 0.010 per rating point (10 rating = 1%, 3.212 per %), melee_haste=10.099 ± 1.584
 

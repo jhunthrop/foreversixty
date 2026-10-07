@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:48:56Z",
+  "engine_version": "8bc5b28c5",
+  "generated_at": "2026-10-07T14:11:07Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -891,8 +891,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.727545879,
-      "verify_run_seconds": 1.017127012,
+      "weights_run_seconds": 2.328489798,
+      "verify_run_seconds": 1.3517345170000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1933,8 +1933,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.727545879,
-      "verify_run_seconds": 1.028340872,
+      "weights_run_seconds": 2.328489798,
+      "verify_run_seconds": 1.35589426,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2642,8 +2642,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.722329212,
-      "verify_run_seconds": 0.943891393,
+      "weights_run_seconds": 2.326534153,
+      "verify_run_seconds": 1.28889872,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3350,8 +3350,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.722329212,
-      "verify_run_seconds": 0.948194648,
+      "weights_run_seconds": 2.326534153,
+      "verify_run_seconds": 1.253287217,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4027,8 +4027,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.48674876,
-      "verify_run_seconds": 0.850842701,
+      "weights_run_seconds": 1.917723676,
+      "verify_run_seconds": 1.081341465,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4698,8 +4698,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.48674876,
-      "verify_run_seconds": 0.845338791,
+      "weights_run_seconds": 1.917723676,
+      "verify_run_seconds": 1.101189632,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5111,7 +5111,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5405678779462486
+              "dps_delta": -0.540567877946248
             },
             {
               "item_id": 20098,
@@ -5397,8 +5397,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.6724052390000002,
-      "verify_run_seconds": 1.139889989,
+      "weights_run_seconds": 2.129935846,
+      "verify_run_seconds": 1.4691450910000001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6103,8 +6103,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.6724052390000002,
-      "verify_run_seconds": 1.0961044659999999,
+      "weights_run_seconds": 2.129935846,
+      "verify_run_seconds": 1.479103302,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6286,7 +6286,7 @@
               "item_name": "Lieutenant Commander's Dreadweave Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -2.416713119097553
+              "dps_delta": -2.4167131190975515
             },
             {
               "item_id": 15999,
@@ -6830,8 +6830,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.77576742,
-      "verify_run_seconds": 1.193468314,
+      "weights_run_seconds": 2.245527418,
+      "verify_run_seconds": 1.45766993,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7563,8 +7563,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.77576742,
-      "verify_run_seconds": 1.139793913,
+      "weights_run_seconds": 2.245527418,
+      "verify_run_seconds": 1.5003837039999999,
       "coverage": {
         "back": {
           "eligible": 450,
