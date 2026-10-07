@@ -90,11 +90,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:1287 off_hand:2088 | 11.7 | 4 | other:attack/1=138.9, other:attack/2=121.7, spell:1757=42.1, spell:6760/5=4.2, spell:5171/5=3.2 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:2236 off_hand:2194 | 24.0 | 5 | other:attack/1=128.8, other:attack/2=77.5, spell:1758=40.6, spell:6761/5=4.5, spell:5171/5=2.8 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:1287 off_hand:2088 | 10.3 | 4 | other:attack/1=138.9, other:attack/2=121.7, spell:1757=42.1, spell:6760/5=4.2, spell:5171/5=3.2 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:2236 off_hand:2194 | 23.1 | 5 | other:attack/1=128.8, other:attack/2=77.5, spell:1758=40.6, spell:6761/5=4.5, spell:5171/5=2.8 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
 | 30 | 00000000000000000-00000000000000000-5322210310011000000 | main_hand:6691 off_hand:9457 | 28.4 | 7 | other:attack/1=131.9, other:attack/2=86.2, spell:1760=32.7, spell:14278=9.0, spell:5171/5=4.0 | {SpellID: 16511} |
-| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:6831 off_hand:6829 | 53.1 | 7 | other:attack/1=133.0, other:attack/2=90.9, spell:16511=40.6, spell:14278=8.8, spell:8623/5=4.8 | - |
-| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:2164 off_hand:9359 | 60.4 | 8 | other:attack/1=111.1, other:attack/2=87.1, spell:16511=40.7, spell:14278=8.8, spell:8624/5=4.8 | - |
+| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:6831 off_hand:6829 | 54.3 | 7 | other:attack/1=133.0, other:attack/2=90.9, spell:16511=40.6, spell:14278=8.8, spell:8623/5=4.8 | - |
+| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:2164 off_hand:9359 | 59.9 | 8 | other:attack/1=111.1, other:attack/2=87.1, spell:16511=40.7, spell:14278=8.8, spell:8624/5=4.8 | - |
 | 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:2163 off_hand:6660 | 85.3 | 7 | other:attack/2=160.4, other:attack/1=149.0, spell:16511=40.8, spell:14278=8.8, spell:11299/5=4.7 | - |
 | 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:22802 off_hand:23054 | 139.2 | 7 | other:attack/1=116.3, other:attack/2=77.7, spell:16511=40.2, spell:14278=8.8, spell:31016/5=4.7 | - |
 
