@@ -9172,11 +9172,6 @@
               "item_id": 19102,
               "source_kind": "rep",
               "source": "Stormpike Guard"
-            },
-            "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           },
           "horde": {
@@ -9254,11 +9249,6 @@
               "item_id": 20654,
               "source_kind": "world",
               "source": "Azure Templar"
-            },
-            "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           }
         },
@@ -9277,8 +9267,7 @@
             21206,
             22678,
             12930,
-            19102,
-            23197
+            19102
           ],
           "horde": [
             252561,
@@ -9294,8 +9283,7 @@
             21206,
             22678,
             11819,
-            20654,
-            23197
+            20654
           ]
         },
         "weights": {
@@ -10128,9 +10116,9 @@
               "source": "Stormpike Guard"
             },
             "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 220606,
+              "source_kind": "dungeon",
+              "source": "The Temple of Atal'Hakkar: Hazzas"
             }
           },
           "horde": {
@@ -10210,9 +10198,9 @@
               "source": "Frostwolf Clan"
             },
             "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 220606,
+              "source_kind": "dungeon",
+              "source": "The Temple of Atal'Hakkar: Hazzas"
             }
           }
         },
@@ -10233,7 +10221,7 @@
             19289,
             13965,
             19323,
-            23197
+            220606
           ],
           "horde": [
             226792,
@@ -10251,7 +10239,7 @@
             19289,
             19120,
             19323,
-            23197
+            220606
           ]
         },
         "weights": {
@@ -13997,9 +13985,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 17774,
+              "source_kind": "quest",
+              "source": "The Pariah's Instructions"
             },
             "main_hand": {
               "item_id": 1664,
@@ -14108,7 +14096,7 @@
             9484,
             11824,
             249469,
-            11811,
+            17774,
             11748
           ],
           "horde": [
@@ -14988,9 +14976,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 17774,
+              "source_kind": "quest",
+              "source": "The Pariah's Instructions"
             },
             "main_hand": {
               "item_id": 1664,
@@ -15065,12 +15053,12 @@
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
             "trinket1": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 17774,
+              "source_kind": "quest",
+              "source": "The Pariah's Instructions"
             },
             "trinket2": {
-              "item_id": 249470,
+              "item_id": 11811,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -15099,7 +15087,7 @@
             9484,
             11824,
             249469,
-            11811,
+            17774,
             11748
           ],
           "horde": [
@@ -15113,8 +15101,8 @@
             11662,
             9484,
             11824,
+            17774,
             11811,
-            249470,
             17780,
             11748
           ]
@@ -15984,9 +15972,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 17774,
+              "source_kind": "quest",
+              "source": "The Pariah's Instructions"
             },
             "main_hand": {
               "item_id": 812,
@@ -16090,7 +16078,7 @@
             9484,
             11824,
             249469,
-            11811,
+            17774,
             812,
             17745
           ],
@@ -16154,9 +16142,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 226930,
-              "source_kind": "vendor",
-              "source": "Mokvar"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -16236,9 +16224,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -16295,6 +16283,7 @@
             272411,
             14152,
             19595,
+            22066,
             228190,
             237815,
             22064,
@@ -16312,7 +16301,6 @@
             272411,
             14152,
             19595,
-            22066,
             228190,
             237815,
             22064,
@@ -16875,9 +16863,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 220804,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 9479,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
             },
             "neck": {
               "item_id": 17772,
@@ -16948,6 +16936,11 @@
               "item_id": 1982,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "ranged": {
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -17025,12 +17018,17 @@
               "item_id": 250613,
               "source_kind": "crafted",
               "source": "Blacksmithing"
+            },
+            "ranged": {
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            220804,
+            9479,
             220795,
             11626,
             11195,
@@ -17065,10 +17063,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.2,
-          "agility": 0.657,
-          "crit": 0.927,
-          "hit": 0.512,
-          "melee_haste": 4.889
+          "agility": 0.681,
+          "crit": 0.961,
+          "hit": 0.518,
+          "melee_haste": 4.931
         }
       },
       {
@@ -17149,13 +17147,18 @@
               "item_id": 12592,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath"
+            },
+            "ranged": {
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
             "head": {
-              "item_id": 12640,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 226976,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "neck": {
               "item_id": 22659,
@@ -17226,6 +17229,11 @@
               "item_id": 19323,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
+            },
+            "ranged": {
+              "item_id": 249442,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -17248,7 +17256,7 @@
             12592
           ],
           "horde": [
-            12640,
+            226976,
             22659,
             20212,
             20068,
@@ -22238,6 +22246,11 @@
               "item_id": 19102,
               "source_kind": "rep",
               "source": "Stormpike Guard"
+            },
+            "ranged": {
+              "item_id": 228176,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             }
           },
           "horde": {
@@ -22315,6 +22328,11 @@
               "item_id": 20654,
               "source_kind": "world",
               "source": "Azure Templar"
+            },
+            "ranged": {
+              "item_id": 228176,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             }
           }
         },
@@ -22334,7 +22352,8 @@
             21206,
             11832,
             11819,
-            19102
+            19102,
+            228176
           ],
           "horde": [
             227002,
@@ -22351,7 +22370,8 @@
             21206,
             11832,
             11819,
-            20654
+            20654,
+            228176
           ]
         },
         "weights": {
@@ -22804,9 +22824,9 @@
               "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 4737,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 250539,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "back": {
               "item_id": 16340,
@@ -22854,9 +22874,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 9425,
+              "item_id": 7717,
               "source_kind": "dungeon",
-              "source": "Uldaman: Shadowforge Relic Hunter"
+              "source": "Scarlet Monastery: Herod"
             }
           }
         },
@@ -22879,7 +22899,7 @@
           "horde": [
             7719,
             17772,
-            4737,
+            250539,
             16340,
             6773,
             19508,
@@ -22889,7 +22909,7 @@
             252465,
             2262,
             13095,
-            9425
+            7717
           ]
         },
         "weights": {
@@ -24942,14 +24962,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
-            },
-            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
               "item_id": 1664,
@@ -25024,14 +25044,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Trolls of a Feather"
-            },
-            "trinket2": {
               "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 20534,
+              "source_kind": "quest",
+              "source": "Trolls of a Feather"
             },
             "main_hand": {
               "item_id": 1664,
@@ -25054,8 +25074,8 @@
             9484,
             7553,
             19523,
-            20534,
             249469,
+            20534,
             17745
           ],
           "horde": [
@@ -25066,8 +25086,8 @@
             9484,
             7553,
             19519,
-            20534,
             249469,
+            20534,
             17745
           ]
         },

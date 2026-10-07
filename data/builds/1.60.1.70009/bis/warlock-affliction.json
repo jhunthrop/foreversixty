@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:34:00Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:37:25Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -886,8 +886,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.122753821,
-      "verify_run_seconds": 1.246681155,
+      "weights_run_seconds": 2.416146437,
+      "verify_run_seconds": 1.395858354,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1928,8 +1928,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.122753821,
-      "verify_run_seconds": 1.267954869,
+      "weights_run_seconds": 2.416146437,
+      "verify_run_seconds": 1.447520946,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2638,8 +2638,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.138939696,
-      "verify_run_seconds": 1.170332357,
+      "weights_run_seconds": 2.420711388,
+      "verify_run_seconds": 1.342689906,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3345,8 +3345,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.138939696,
-      "verify_run_seconds": 1.201277947,
+      "weights_run_seconds": 2.420711388,
+      "verify_run_seconds": 1.3675986629999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4024,8 +4024,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.737209731,
-      "verify_run_seconds": 1.105635939,
+      "weights_run_seconds": 2.011406388,
+      "verify_run_seconds": 1.215060679,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4695,8 +4695,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.737209731,
-      "verify_run_seconds": 1.115978422,
+      "weights_run_seconds": 2.011406388,
+      "verify_run_seconds": 1.245539459,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5266,6 +5266,7 @@
           "source": "Trolls of a Feather",
           "source_kind": "quest",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 11302,
@@ -5398,8 +5399,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.0184262,
-      "verify_run_seconds": 1.38167668,
+      "weights_run_seconds": 2.186093922,
+      "verify_run_seconds": 1.527322783,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5958,6 +5959,7 @@
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +4.7 DPS over it",
           "dps_delta": 4.696316363614301,
+          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 11302,
@@ -6104,8 +6106,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.0184262,
-      "verify_run_seconds": 1.393563181,
+      "weights_run_seconds": 2.186093922,
+      "verify_run_seconds": 1.546985382,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6343,7 +6345,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 29.590982437285497,
+          "score": 29.5909824372855,
           "verified": true,
           "alternatives": [
             {
@@ -6351,7 +6353,7 @@
               "item_name": "Field Marshal's Dreadweave Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.082921851403788
+              "dps_delta": -1.0829218514037895
             },
             {
               "item_id": 19059,
@@ -6366,7 +6368,7 @@
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.0938512235013382
+              "dps_delta": -3.09385122350134
             }
           ]
         },
@@ -6511,7 +6513,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 30.31153697935535,
+          "score": 30.311536979355346,
           "verified": true,
           "alternatives": [
             {
@@ -6527,14 +6529,14 @@
               "item_name": "Stormpike Cloth Girdle",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -4.420498944011229
+              "dps_delta": -4.420498944011227
             },
             {
               "item_id": 18475,
               "item_name": "Oddly Magical Belt",
               "source_kind": "dungeon",
               "source": "Dire Maul: Gordok Mastiff",
-              "dps_delta": -5.633933166135634
+              "dps_delta": -5.633933166135633
             }
           ]
         },
@@ -6833,8 +6835,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.115799628,
-      "verify_run_seconds": 1.409993211,
+      "weights_run_seconds": 2.345947413,
+      "verify_run_seconds": 1.545456659,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7072,7 +7074,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 29.590982437285497,
+          "score": 29.5909824372855,
           "verified": true,
           "alternatives": [
             {
@@ -7080,21 +7082,21 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.082921851403788
+              "dps_delta": -1.0829218514037895
             },
             {
               "item_id": 19059,
               "item_name": "Argent Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.807303314513327
+              "dps_delta": -1.8073033145133284
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.0938512235013382
+              "dps_delta": -3.09385122350134
             }
           ]
         },
@@ -7566,8 +7568,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.115799628,
-      "verify_run_seconds": 1.404698639,
+      "weights_run_seconds": 2.345947413,
+      "verify_run_seconds": 1.5365058440000001,
       "coverage": {
         "back": {
           "eligible": 450,

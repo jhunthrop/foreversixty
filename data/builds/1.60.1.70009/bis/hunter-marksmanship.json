@@ -1,8 +1,8 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "42b2acbbc",
-  "generated_at": "2026-10-07T14:26:42Z",
+  "engine_version": "912a458f7",
+  "generated_at": "2026-10-07T15:29:08Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -539,8 +539,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.4693458169999998,
-      "verify_run_seconds": 1.588828769,
+      "weights_run_seconds": 2.899652462,
+      "verify_run_seconds": 1.811395513,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1172,8 +1172,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.4693458169999998,
-      "verify_run_seconds": 1.563418953,
+      "weights_run_seconds": 2.899652462,
+      "verify_run_seconds": 1.732908422,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1895,8 +1895,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.719352855,
-      "verify_run_seconds": 1.743094366,
+      "weights_run_seconds": 3.01957852,
+      "verify_run_seconds": 2.002632247,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2608,8 +2608,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.719352855,
-      "verify_run_seconds": 1.726860105,
+      "weights_run_seconds": 3.01957852,
+      "verify_run_seconds": 2.034890295,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3275,8 +3275,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.725241712,
-      "verify_run_seconds": 1.807434286,
+      "weights_run_seconds": 3.080018749,
+      "verify_run_seconds": 2.076586539,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3952,8 +3952,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.725241712,
-      "verify_run_seconds": 1.749971097,
+      "weights_run_seconds": 3.080018749,
+      "verify_run_seconds": 1.98752387,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4626,8 +4626,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.774575554,
-      "verify_run_seconds": 1.93525351,
+      "weights_run_seconds": 3.11364113,
+      "verify_run_seconds": 2.19926408,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5313,8 +5313,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.774575554,
-      "verify_run_seconds": 1.9075923320000001,
+      "weights_run_seconds": 3.11364113,
+      "verify_run_seconds": 2.105488838,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5751,7 +5751,7 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.3312789721449394
+              "dps_delta": -2.3312789721449407
             }
           ]
         },
@@ -6021,8 +6021,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.716205403,
-      "verify_run_seconds": 2.076176834,
+      "weights_run_seconds": 3.116584992,
+      "verify_run_seconds": 2.325087793,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6574,21 +6574,21 @@
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -4.9000252069535595
+              "dps_delta": -4.900025206953561
             },
             {
               "item_id": 11815,
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -5.051263084400587
+              "dps_delta": -5.0512630844005875
             },
             {
               "item_id": 249469,
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -6.29151913674778
+              "dps_delta": -6.291519136747782
             }
           ]
         },
@@ -6731,8 +6731,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.716205403,
-      "verify_run_seconds": 2.041370456,
+      "weights_run_seconds": 3.116584992,
+      "verify_run_seconds": 2.244688666,
       "coverage": {
         "back": {
           "eligible": 450,
