@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "c0c749361",
-  "generated_at": "2026-10-07T17:42:38Z",
+  "engine_version": "f5fe31003",
+  "generated_at": "2026-10-07T18:13:47Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -366,7 +366,7 @@
           "source_kind": "rep",
           "score": 8.71950126515878,
           "verified": true,
-          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.4 DPS over it",
+          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.4 DPS (32.3 vs 31.9 set DPS)",
           "dps_delta": 0.365728844379003,
           "alternatives": [
             {
@@ -437,36 +437,34 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7230,
-          "item_name": "Smite's Mighty Hammer",
-          "source": "The Deadmines: Mr. Smite",
+          "item_id": 23171,
+          "item_name": "The Axe of Severing",
+          "source": "Shadowfang Keep: Sever",
           "source_kind": "dungeon",
-          "sim_dps": 35.15437960220099,
+          "score": 321.9999999999999,
           "verified": true,
-          "swap_note": "beat the scored pick The Axe of Severing (id 23171) in the sim: +2.9 DPS (35.2 vs 32.3 set DPS)",
-          "dps_delta": 2.8599289665420713,
           "alternatives": [
+            {
+              "item_id": 7230,
+              "item_name": "Smite's Mighty Hammer",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Mr. Smite",
+              "dps_delta": -0.8365736451778822,
+              "verified": true
+            },
             {
               "item_id": 6631,
               "item_name": "Living Root",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Verdan the Everliving",
-              "dps_delta": -0.05932542083497723
+              "dps_delta": -0.8646082886058748
             },
             {
               "item_id": 1318,
               "item_name": "Night Reaver",
               "source_kind": "dungeon",
               "source": "Shadowfang Keep: Son of Arugal",
-              "dps_delta": -0.34913825500454665
-            },
-            {
-              "item_id": 23171,
-              "item_name": "The Axe of Severing",
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Sever",
-              "dps_delta": -2.8599289665420713,
-              "verified": true
+              "dps_delta": -1.1544211227754442
             }
           ]
         },
@@ -482,7 +480,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 35.15437960220099,
+      "set_dps": 32.29445063565892,
       "no_source_count": 225,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -514,10 +512,10 @@
         "feet: Brawler's Leather Boots",
         "finger1: Protector's Band",
         "finger2: Demon Band",
-        "main_hand: Smite's Mighty Hammer"
+        "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 2.377330996,
-      "verify_run_seconds": 1.21113515,
+      "weights_run_seconds": 2.3322889399999998,
+      "verify_run_seconds": 1.122400434,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -682,7 +680,7 @@
               "item_name": "Brawler's Leather Hood",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5347083341778998,
+              "dps_delta": -0.4128297969485786,
               "verified": true
             }
           ]
@@ -865,7 +863,7 @@
               "item_name": "Ruffian Belt",
               "source_kind": "world",
               "source": "Rot Hide Bruiser",
-              "dps_delta": -0.22582071923751101,
+              "dps_delta": -0.19793816133606157,
               "verified": true
             },
             {
@@ -956,8 +954,8 @@
           "source_kind": "rep",
           "score": 8.71950126515878,
           "verified": true,
-          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.4 DPS (36.6 vs 36.2 set DPS)",
-          "dps_delta": 0.4108904983747905,
+          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.4 DPS (32.7 vs 32.3 set DPS)",
+          "dps_delta": 0.3736630154242704,
           "alternatives": [
             {
               "item_id": 281673,
@@ -1041,19 +1039,19 @@
               "dps_delta": -0.6555290296692595
             },
             {
+              "item_id": 270018,
+              "item_name": "Hammerbone",
+              "source_kind": "quest",
+              "source": "Leaders of the Fang",
+              "dps_delta": -0.7244008447400141,
+              "verified": true
+            },
+            {
               "item_id": 7230,
               "item_name": "Smite's Mighty Hammer",
               "source_kind": "dungeon",
               "source": "The Deadmines: Mr. Smite",
               "dps_delta": -0.8052828677708975
-            },
-            {
-              "item_id": 270018,
-              "item_name": "Hammerbone",
-              "source_kind": "quest",
-              "source": "Leaders of the Fang",
-              "dps_delta": -4.673383518071358,
-              "verified": true
             }
           ]
         },
@@ -1069,7 +1067,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 36.63720640090668,
+      "set_dps": 32.688223727575334,
       "no_source_count": 205,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1103,8 +1101,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 2.377330996,
-      "verify_run_seconds": 0.986149334,
+      "weights_run_seconds": 2.3322889399999998,
+      "verify_run_seconds": 1.048782291,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1265,6 +1263,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 277042,
+              "item_name": "Cloudy Gustwoven Hood",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.2121169573191753
+            },
+            {
               "item_id": 277050,
               "item_name": "Azure Gustwoven Hood",
               "source_kind": "crafted",
@@ -1277,14 +1282,6 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.28282260975890033
-            },
-            {
-              "item_id": 277042,
-              "item_name": "Cloudy Gustwoven Hood",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.4941755926827085,
-              "verified": true
             }
           ]
         },
@@ -1302,8 +1299,7 @@
               "item_name": "Kaleidoscope Chain",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.16451328508539065
             },
             {
               "item_id": 13087,
@@ -1355,36 +1351,34 @@
         },
         {
           "slot": "back",
-          "item_id": 16315,
-          "item_name": "Sergeant Major's Cape",
-          "source": "PvP rank 9 · Sergeant Major · Alliance",
-          "source_kind": "pvp",
-          "sim_dps": 90.0576315087427,
+          "item_id": 6314,
+          "item_name": "Wolfmaster Cape",
+          "source": "Shadowfang Keep: Wolf Master Nandos",
+          "source_kind": "dungeon",
+          "score": 10,
           "verified": true,
-          "swap_note": "beat the scored pick Wolfmaster Cape (id 6314) in the sim: +0.9 DPS (90.1 vs 89.1 set DPS)",
-          "dps_delta": 0.917737211341958,
           "alternatives": [
+            {
+              "item_id": 16315,
+              "item_name": "Sergeant Major's Cape",
+              "source_kind": "pvp",
+              "source": "PvP rank 9 · Sergeant Major · Alliance",
+              "dps_delta": 0,
+              "verified": true
+            },
             {
               "item_id": 14593,
               "item_name": "Hawkeye's Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.035002898264384755
+              "dps_delta": -0.05810487847032454
             },
             {
               "item_id": 14752,
               "item_name": "Slayer's Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.04760367223378709
-            },
-            {
-              "item_id": 6314,
-              "item_name": "Wolfmaster Cape",
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Wolf Master Nandos",
-              "dps_delta": -0.917737211341958,
-              "verified": true
+              "dps_delta": -0.07070565243972687
             }
           ]
         },
@@ -1556,7 +1550,7 @@
               "item_name": "Defender's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.746588906383991,
+              "dps_delta": -1.7448718343191132,
               "verified": true
             }
           ]
@@ -1601,8 +1595,8 @@
           "source_kind": "world_drop",
           "score": 17.009898160709938,
           "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 19517): kept the pick, +1.5 DPS over it",
-          "dps_delta": 1.5009888518192582,
+          "swap_note": "confirmed by the sim against Protector's Band (id 19517): kept the pick, +1.4 DPS (81.1 vs 79.7 set DPS)",
+          "dps_delta": 1.4054045115867524,
           "alternatives": [
             {
               "item_id": 6749,
@@ -1675,6 +1669,7 @@
           "item_name": "Manual Crowd Pummeler",
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
+          "sim_dps": 81.14563339177825,
           "verified": true,
           "alternatives": [
             {
@@ -1696,7 +1691,7 @@
               "item_name": "Viscous Hammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -23.217040840965993,
+              "dps_delta": -21.03551930677739,
               "verified": true
             }
           ]
@@ -1713,7 +1708,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 90.0576315087427,
+      "set_dps": 81.14563339177825,
       "no_source_count": 366,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1736,7 +1731,7 @@
         "head: Defender's Leather Helm",
         "neck: Ghostshard Talisman",
         "shoulder: Forest Tracker Epaulets",
-        "back: Sergeant Major's Cape",
+        "back: Wolfmaster Cape",
         "chest: Thick Murloc Armor",
         "wrist: Bands of Serra'kis",
         "hands: Insignia Gloves",
@@ -1747,8 +1742,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.422431038,
-      "verify_run_seconds": 1.3609026,
+      "weights_run_seconds": 2.3772791,
+      "verify_run_seconds": 1.3113919840000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2392,8 +2387,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.422431038,
-      "verify_run_seconds": 1.244380808,
+      "weights_run_seconds": 2.3772791,
+      "verify_run_seconds": 1.212760722,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2951,19 +2946,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 7717,
+              "item_name": "Ravager",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Herod",
+              "dps_delta": 0
+            },
+            {
               "item_id": 272081,
               "item_name": "Darkspear Raider's Reaper",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": 0
-            },
-            {
-              "item_id": 9423,
-              "item_name": "The Jackhammer",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Shadowforge Relic Hunter",
-              "dps_delta": -1.001604247974825,
-              "verified": true
             }
           ]
         },
@@ -3013,8 +3007,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.882841513,
-      "verify_run_seconds": 1.2983117229999999,
+      "weights_run_seconds": 2.876017169,
+      "verify_run_seconds": 1.273131327,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3193,7 +3187,7 @@
               "item_name": "Hard Gold Coif",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.799948863002939,
+              "dps_delta": -2.3520549930117056,
               "verified": true
             }
           ]
@@ -3244,8 +3238,7 @@
               "item_name": "Imperial Leather Spaulders",
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -0.16478525910007125
             },
             {
               "item_id": 15698,
@@ -3291,7 +3284,7 @@
               "item_name": "Dark Hooded Cape",
               "source_kind": "world",
               "source": "Nimar the Slayer",
-              "dps_delta": -1.18537600861832,
+              "dps_delta": -2.236297789693623,
               "verified": true
             }
           ]
@@ -3496,8 +3489,8 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.7 DPS (120.6 vs 118.9 set DPS)",
-          "dps_delta": 1.7167342107461963,
+          "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.6 DPS (112.9 vs 111.3 set DPS)",
+          "dps_delta": 1.6435536641720603,
           "ties": [
             {
               "item_id": 13095,
@@ -3558,11 +3551,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 9425,
-          "item_name": "Pendulum of Doom",
-          "source": "Uldaman: Shadowforge Relic Hunter",
+          "item_id": 7717,
+          "item_name": "Ravager",
+          "source": "Scarlet Monastery: Herod",
           "source_kind": "dungeon",
-          "sim_dps": 120.6396941750851,
+          "sim_dps": 112.93060050903267,
           "verified": true,
           "alternatives": [
             {
@@ -3573,18 +3566,19 @@
               "dps_delta": 0
             },
             {
-              "item_id": 7717,
-              "item_name": "Ravager",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod",
-              "dps_delta": 0
-            },
-            {
               "item_id": 272081,
               "item_name": "Darkspear Raider's Reaper",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": 0
+            },
+            {
+              "item_id": 9425,
+              "item_name": "Pendulum of Doom",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Shadowforge Relic Hunter",
+              "dps_delta": -3.001121551535647,
+              "verified": true
             }
           ]
         },
@@ -3600,7 +3594,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 120.6396941750851,
+      "set_dps": 112.93060050903267,
       "no_source_count": 555,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -3632,10 +3626,10 @@
         "feet: Prowler's Leather Shoes",
         "finger1: Mark of Kern",
         "finger2: Assault Band",
-        "main_hand: Pendulum of Doom"
+        "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.882841513,
-      "verify_run_seconds": 1.210566901,
+      "weights_run_seconds": 2.876017169,
+      "verify_run_seconds": 1.129070051,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3814,7 +3808,7 @@
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -2.542631893449709,
+              "dps_delta": -1.2897328608376029,
               "verified": true
             }
           ]
@@ -3911,7 +3905,7 @@
               "item_name": "Bloodlust Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.8122772510412801,
+              "dps_delta": -1.3351928405610067,
               "verified": true
             }
           ]
@@ -3922,10 +3916,9 @@
           "item_name": "Knight's Mail Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 154.60741616600228,
           "verified": true,
-          "swap_note": "beat the scored pick Mixologist's Tunic (id 12793) in the sim: +3.1 DPS (154.6 vs 151.5 set DPS)",
-          "dps_delta": 3.106522647915398,
+          "swap_note": "beat the scored pick Mixologist's Tunic (id 12793) in the sim: +1.9 DPS over it",
+          "dps_delta": 1.8919851332659334,
           "alternatives": [
             {
               "item_id": 6773,
@@ -3946,7 +3939,7 @@
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -3.106522647915398,
+              "dps_delta": -1.8919851332659334,
               "verified": true
             }
           ]
@@ -3991,34 +3984,35 @@
         },
         {
           "slot": "hands",
-          "item_id": 11867,
-          "item_name": "Maddening Gauntlets",
-          "source": "Ogre Head On A Stick = Party",
-          "source_kind": "quest",
-          "score": 32.31135754428778,
+          "item_id": 252547,
+          "item_name": "Prowler's Leather Gauntlets",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
           "verified": true,
+          "swap_note": "beat the scored pick Maddening Gauntlets (id 11867) in the sim: +1.7 DPS over it",
+          "dps_delta": 1.653208468137251,
           "alternatives": [
-            {
-              "item_id": 252547,
-              "item_name": "Prowler's Leather Gauntlets",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 7724,
               "item_name": "Gauntlets of Divinity",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Scarlet Commander Mograine",
-              "dps_delta": -0.013125557030827571
+              "dps_delta": -0.006763643259838442
             },
             {
               "item_id": 272100,
               "item_name": "Raider Gloves",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.09027198126043319
+              "dps_delta": -0.08391006748944406
+            },
+            {
+              "item_id": 11867,
+              "item_name": "Maddening Gauntlets",
+              "source_kind": "quest",
+              "source": "Ogre Head On A Stick = Party",
+              "dps_delta": -1.653208468137251,
+              "verified": true
             }
           ]
         },
@@ -4126,8 +4120,8 @@
           "source_kind": "rep",
           "score": 24.160443579718308,
           "verified": true,
-          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +3.9 DPS over it",
-          "dps_delta": 3.8515791334439484,
+          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +3.0 DPS over it",
+          "dps_delta": 3.0310383464279766,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4180,7 +4174,7 @@
               "item_name": "Mark of Kern",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -2.9926987006425634,
+              "dps_delta": -2.9277253669930587,
               "verified": true
             }
           ]
@@ -4193,7 +4187,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +2.7 DPS over it",
-          "dps_delta": 2.6517372550599987
+          "dps_delta": 2.6641156102990067
         },
         {
           "slot": "trinket2",
@@ -4214,10 +4208,10 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 10626,
-          "item_name": "Ragehammer",
-          "source": "Sunken Temple: Atal'ai Warrior",
-          "source_kind": "dungeon",
+          "item_id": 812,
+          "item_name": "Glowing Brightwood Staff",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "verified": true,
           "alternatives": [
             {
@@ -4225,21 +4219,21 @@
               "item_name": "Thorium Greatmace",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": 0
+              "dps_delta": -0.5488697983287835
             },
             {
               "item_id": 272080,
               "item_name": "Darkspear Raider's Reaper",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": 0
+              "dps_delta": -0.9577820136735677
             },
             {
-              "item_id": 812,
-              "item_name": "Glowing Brightwood Staff",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -4.157784833425609,
+              "item_id": 10626,
+              "item_name": "Ragehammer",
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Atal'ai Warrior",
+              "dps_delta": -10.721387861812048,
               "verified": true
             }
           ]
@@ -4256,7 +4250,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 154.60741616600228,
+      "set_dps": 151.1085536664365,
       "no_source_count": 762,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -4281,17 +4275,17 @@
         "back: Blackveil Cape",
         "chest: Knight's Mail Armor",
         "wrist: Arena Bands",
-        "hands: Maddening Gauntlets",
+        "hands: Prowler's Leather Gauntlets",
         "waist: Girdle of Beastial Fury",
         "feet: Prowler's Leather Boots",
         "finger1: Protector's Band",
         "finger2: Blackstone Ring",
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Molten Heart of the Mountain",
-        "main_hand: Ragehammer"
+        "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.856962771,
-      "verify_run_seconds": 1.5514939829999999,
+      "weights_run_seconds": 2.865745227,
+      "verify_run_seconds": 1.517696127,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4901,11 +4895,11 @@
               "dps_delta": -0.9577820136735677
             },
             {
-              "item_id": 870,
-              "item_name": "Fiery War Axe",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -6.852243296559777,
+              "item_id": 10626,
+              "item_name": "Ragehammer",
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Atal'ai Warrior",
+              "dps_delta": -9.596610149297874,
               "verified": true
             }
           ]
@@ -4956,8 +4950,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.856962771,
-      "verify_run_seconds": 1.3489322590000001,
+      "weights_run_seconds": 2.865745227,
+      "verify_run_seconds": 1.314056228,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5150,6 +5144,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 11933,
+              "item_name": "Imperial Jewel",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": -0.11567084568597907
+            },
+            {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
@@ -5162,49 +5163,39 @@
               "source_kind": "quest",
               "source": "Aurius' Reckoning",
               "dps_delta": -0.1983679649324074
-            },
-            {
-              "item_id": 11933,
-              "item_name": "Imperial Jewel",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -2.946275627877327,
-              "verified": true
             }
           ]
         },
         {
           "slot": "shoulder",
-          "item_id": 20059,
-          "item_name": "Highlander's Leather Shoulders",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
-          "sim_dps": 227.75051186473905,
+          "item_id": 15051,
+          "item_name": "Black Dragonscale Shoulders",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 40,
           "verified": true,
-          "swap_note": "beat the scored pick Black Dragonscale Shoulders (id 15051) in the sim: +2.3 DPS (227.8 vs 225.4 set DPS)",
-          "dps_delta": 2.3075059133180105,
           "alternatives": [
+            {
+              "item_id": 20059,
+              "item_name": "Highlander's Leather Shoulders",
+              "source_kind": "rep",
+              "source": "The League of Arathor",
+              "dps_delta": 0,
+              "verified": true
+            },
             {
               "item_id": 20060,
               "item_name": "Highlander's Lizardhide Shoulders",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -0.1358071645083638
+              "dps_delta": -0.14187126721541354
             },
             {
               "item_id": 19058,
               "item_name": "Golden Mantle of the Dawn",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.32383593041928027
-            },
-            {
-              "item_id": 15051,
-              "item_name": "Black Dragonscale Shoulders",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -2.3075059133180105,
-              "verified": true
+              "dps_delta": -0.32990003312633
             }
           ]
         },
@@ -5246,6 +5237,7 @@
           "item_name": "Obsidian Mail Tunic",
           "source": "Blacksmithing",
           "source_kind": "crafted",
+          "sim_dps": 203.31999264912096,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5268,7 +5260,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -10.903520183469709,
+              "dps_delta": -8.762774372714489,
               "verified": true
             }
           ]
@@ -5279,6 +5271,7 @@
           "item_name": "Windtalker's Wristguards",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
+          "sim_dps": 203.31999264912096,
           "verified": true,
           "alternatives": [
             {
@@ -5300,7 +5293,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -7.20657022345128,
+              "dps_delta": -5.973991927112792,
               "verified": true
             }
           ]
@@ -5440,6 +5433,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
+          "sim_dps": 203.31999264912096,
           "verified": true,
           "alternatives": [
             {
@@ -5461,7 +5455,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -7.1741023590304565,
+              "dps_delta": -3.206524377412194,
               "verified": true
             }
           ]
@@ -5472,6 +5466,7 @@
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
+          "sim_dps": 203.31999264912096,
           "verified": true,
           "alternatives": [
             {
@@ -5493,26 +5488,27 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.900527663794406,
+              "dps_delta": -3.06947209408537,
               "verified": true
             }
           ]
         },
         {
           "slot": "trinket1",
-          "item_id": 19289,
-          "item_name": "Darkmoon Card: Maelstrom",
-          "source": "Darkmoon Elementals Deck",
+          "item_id": 13965,
+          "item_name": "Blackhand's Breadth",
+          "source": "General Drakkisath's Demise",
           "source_kind": "quest",
+          "sim_dps": 203.31999264912096,
           "verified": true,
-          "swap_note": "confirmed by the sim against Hand of Justice (id 11815): kept the pick, +8.7 DPS over it",
-          "dps_delta": 8.734636132912783,
+          "swap_note": "confirmed by the sim against Eye of the Beast (id 13968): kept the pick, +5.2 DPS (203.3 vs 198.2 set DPS)",
+          "dps_delta": 5.161335511227293,
           "alternatives": [
             {
-              "item_id": 13965,
-              "item_name": "Blackhand's Breadth",
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise",
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
               "dps_delta": 0
             },
             {
@@ -5533,12 +5529,20 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 11815,
-          "item_name": "Hand of Justice",
-          "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-          "source_kind": "dungeon",
+          "item_id": 13968,
+          "item_name": "Eye of the Beast",
+          "source": "General Drakkisath's Demise",
+          "source_kind": "quest",
+          "sim_dps": 203.31999264912096,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": 0
+            },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
@@ -5547,22 +5551,14 @@
               "dps_delta": 0
             },
             {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -0.6288264685597447
-            },
-            {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
+              "item_id": 11819,
+              "item_name": "Second Wind",
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -3.6721713685820134,
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -1.8753298532498945,
               "verified": true
             }
-          ],
-          "faction_note": "Eye of the Beast (from horde) and alliance's own pick Hand of Justice measure statistically indistinguishable on dwarf (4.92 ± 1.09 vs 5.50 ± 1.10 DPS gain) -- each faction's own tournament winner kept"
+          ]
         },
         {
           "slot": "main_hand",
@@ -5570,6 +5566,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Stormpike Guard",
           "source_kind": "rep",
+          "sim_dps": 203.31999264912096,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5588,11 +5585,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 12969,
-              "item_name": "Seeping Willow",
+              "item_id": 13983,
+              "item_name": "Gravestone War Axe",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: The Beast",
-              "dps_delta": -18.50300167353103,
+              "source": "Scholomance: Kirtonos the Herald",
+              "dps_delta": -14.746726931779051,
               "verified": true
             }
           ]
@@ -5617,7 +5614,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 227.75051186473905,
+      "set_dps": 203.31999264912096,
       "no_source_count": 1751,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -5638,7 +5635,7 @@
       ],
       "new_at_band": [
         "neck: Medallion of the Dawn",
-        "shoulder: Highlander's Leather Shoulders",
+        "shoulder: Black Dragonscale Shoulders",
         "back: Cloak of the Honor Guard",
         "chest: Obsidian Mail Tunic",
         "wrist: Windtalker's Wristguards",
@@ -5648,12 +5645,12 @@
         "feet: Scalegut Treaders",
         "finger1: Don Julio's Band",
         "finger2: Protector's Band",
-        "trinket1: Darkmoon Card: Maelstrom",
-        "trinket2: Hand of Justice",
+        "trinket1: Blackhand's Breadth",
+        "trinket2: Eye of the Beast",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.781032357,
-      "verify_run_seconds": 1.484787264,
+      "weights_run_seconds": 2.764617658,
+      "verify_run_seconds": 1.407762711,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6270,13 +6267,6 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 13983,
-              "item_name": "Gravestone War Axe",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald",
-              "dps_delta": 0
-            },
-            {
               "item_id": 234543,
               "item_name": "High Warlord's Battle Axe",
               "source_kind": "pvp",
@@ -6289,6 +6279,14 @@
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
               "dps_delta": 0
+            },
+            {
+              "item_id": 13983,
+              "item_name": "Gravestone War Axe",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Kirtonos the Herald",
+              "dps_delta": -15.872050215679906,
+              "verified": true
             }
           ]
         },
@@ -6347,8 +6345,8 @@
         "trinket2: Eye of the Beast",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.781032357,
-      "verify_run_seconds": 1.339448345,
+      "weights_run_seconds": 2.764617658,
+      "verify_run_seconds": 1.285674069,
       "coverage": {
         "back": {
           "eligible": 451,

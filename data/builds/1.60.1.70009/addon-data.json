@@ -16896,9 +16896,9 @@
               "source": "Forging the Mightstone"
             },
             "main_hand": {
-              "item_id": 1982,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 250613,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "ranged": {
               "item_id": 249442,
@@ -17005,7 +17005,7 @@
             17713,
             249469,
             20512,
-            1982
+            250613
           ],
           "horde": [
             9479,
@@ -17109,9 +17109,9 @@
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
-              "item_id": 12592,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "ranged": {
               "item_id": 249442,
@@ -17218,7 +17218,7 @@
             19514,
             22268,
             11832,
-            12592
+            19323
           ],
           "horde": [
             226976,
@@ -22414,9 +22414,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 7230,
+              "item_id": 23171,
               "source_kind": "dungeon",
-              "source": "The Deadmines: Mr. Smite"
+              "source": "Shadowfang Keep: Sever"
             }
           },
           "horde": {
@@ -22501,7 +22501,7 @@
             252439,
             20439,
             12054,
-            7230
+            23171
           ],
           "horde": [
             252447,
@@ -22548,9 +22548,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 16315,
-              "source_kind": "pvp",
-              "source": "PvP rank 9 · Sergeant Major · Alliance"
+              "item_id": 6314,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Wolf Master Nandos"
             },
             "chest": {
               "item_id": 5782,
@@ -22671,7 +22671,7 @@
             252455,
             7731,
             2278,
-            16315,
+            6314,
             5782,
             6902,
             6408,
@@ -22838,9 +22838,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 9425,
+              "item_id": 7717,
               "source_kind": "dungeon",
-              "source": "Uldaman: Shadowforge Relic Hunter"
+              "source": "Scarlet Monastery: Herod"
             }
           }
         },
@@ -22873,7 +22873,7 @@
             252465,
             2262,
             13095,
-            9425
+            7717
           ]
         },
         "weights": {
@@ -22920,9 +22920,9 @@
               "source": "Arena Treasure Chest"
             },
             "hands": {
-              "item_id": 11867,
-              "source_kind": "quest",
-              "source": "Ogre Head On A Stick = Party"
+              "item_id": 252547,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 11686,
@@ -22960,9 +22960,9 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 10626,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Atal'ai Warrior"
+              "item_id": 812,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           },
           "horde": {
@@ -23050,14 +23050,14 @@
             11626,
             223078,
             18711,
-            11867,
+            252547,
             11686,
             252468,
             19516,
             17713,
             249469,
             249470,
-            10626
+            812
           ],
           "horde": [
             9479,
@@ -23099,9 +23099,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 20059,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 15051,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 20073,
@@ -23149,14 +23149,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 19289,
+              "item_id": 13965,
               "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "source": "General Drakkisath's Demise"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 13968,
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise"
             },
             "main_hand": {
               "item_id": 19323,
@@ -23245,7 +23245,7 @@
         "new_at_band": {
           "alliance": [
             22659,
-            20059,
+            15051,
             20073,
             22191,
             19582,
@@ -23255,8 +23255,8 @@
             275618,
             19325,
             19514,
-            19289,
-            11815,
+            13965,
+            13968,
             19323
           ],
           "horde": [
@@ -26776,9 +26776,9 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 9425,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Shadowforge Relic Hunter"
+              "item_id": 1982,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "ranged": {
               "item_id": 13138,
@@ -26817,7 +26817,7 @@
             250546,
             2262,
             13095,
-            9425,
+            1982,
             13138
           ]
         },
@@ -26835,9 +26835,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 9479,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+              "item_id": 220804,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 17772,
@@ -26905,7 +26905,7 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 1982,
+              "item_id": 812,
               "source_kind": "world_drop",
               "source": "World drop"
             },
@@ -26972,9 +26972,9 @@
               "source": "Warsong Outriders"
             },
             "finger2": {
-              "item_id": 17713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 11862,
+              "source_kind": "quest",
+              "source": "Bone-Bladed Weapons"
             },
             "trinket1": {
               "item_id": 20130,
@@ -26987,9 +26987,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 870,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 7959,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "ranged": {
               "item_id": 13039,
@@ -27000,7 +27000,7 @@
         },
         "new_at_band": {
           "alliance": [
-            9479,
+            220804,
             220795,
             11626,
             11195,
@@ -27013,6 +27013,7 @@
             17713,
             20130,
             249469,
+            812,
             13039
           ],
           "horde": [
@@ -27026,10 +27027,10 @@
             220798,
             12555,
             19511,
-            17713,
+            11862,
             20130,
             19120,
-            870,
+            7959,
             13039
           ]
         },
@@ -27117,9 +27118,9 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "main_hand": {
-              "item_id": 12592,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "ranged": {
               "item_id": 19107,
@@ -27226,7 +27227,7 @@
             19514,
             19289,
             11815,
-            12592,
+            19323,
             19107
           ],
           "horde": [
@@ -27943,14 +27944,14 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 8190,
+              "item_id": 810,
               "source_kind": "world_drop",
               "source": "World drop"
             },
             "off_hand": {
-              "item_id": 12535,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anvilrage Overseer"
+              "item_id": 2163,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "ranged": {
               "item_id": 13039,
@@ -28061,8 +28062,8 @@
             17713,
             20130,
             249469,
-            8190,
-            12535,
+            810,
+            2163,
             13039
           ],
           "horde": [
@@ -28163,9 +28164,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 20130,
+              "item_id": 13965,
               "source_kind": "quest",
-              "source": "Voodoo Feathers"
+              "source": "General Drakkisath's Demise"
             },
             "main_hand": {
               "item_id": 21520,
@@ -28286,7 +28287,7 @@
             19325,
             19514,
             19289,
-            20130,
+            13965,
             21520,
             21522,
             19107

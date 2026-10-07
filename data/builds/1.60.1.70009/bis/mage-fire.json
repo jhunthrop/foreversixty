@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70009",
-  "engine_version": "c0c749361",
-  "generated_at": "2026-10-07T17:37:11Z",
+  "engine_version": "f5fe31003",
+  "generated_at": "2026-10-07T18:08:23Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.060980965,
-      "verify_run_seconds": 0.698947609,
+      "weights_run_seconds": 1.035001027,
+      "verify_run_seconds": 0.720298059,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1179,8 +1179,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.060980965,
-      "verify_run_seconds": 0.725138138,
+      "weights_run_seconds": 1.035001027,
+      "verify_run_seconds": 0.696119173,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1878,8 +1878,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.146192251,
-      "verify_run_seconds": 0.807735384,
+      "weights_run_seconds": 1.128569176,
+      "verify_run_seconds": 0.788097665,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2583,8 +2583,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.146192251,
-      "verify_run_seconds": 0.783278919,
+      "weights_run_seconds": 1.128569176,
+      "verify_run_seconds": 0.747501832,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3251,8 +3251,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.167177347,
-      "verify_run_seconds": 0.732818437,
+      "weights_run_seconds": 1.182989068,
+      "verify_run_seconds": 0.725007281,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3914,8 +3914,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.167177347,
-      "verify_run_seconds": 0.722595552,
+      "weights_run_seconds": 1.182989068,
+      "verify_run_seconds": 0.718136209,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4610,8 +4610,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.1504970939999999,
-      "verify_run_seconds": 0.907570907,
+      "weights_run_seconds": 1.137335063,
+      "verify_run_seconds": 0.889892684,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5295,8 +5295,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.1504970939999999,
-      "verify_run_seconds": 0.904824621,
+      "weights_run_seconds": 1.137335063,
+      "verify_run_seconds": 0.894925657,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5560,7 +5560,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.78689418939166,
+          "score": 30.786894189391663,
           "verified": true,
           "alternatives": [
             {
@@ -5568,14 +5568,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.9409352800430155
+              "dps_delta": -1.9409352800430162
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -2.62301419207479
+              "dps_delta": -2.6230141920747907
             },
             {
               "item_id": 20697,
@@ -5593,7 +5593,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 56.50840253381831,
+          "score": 56.508402533818305,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5602,21 +5602,21 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.6678093420982875
+              "dps_delta": -0.6678093420982859
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -3.2742230257634364
+              "dps_delta": -3.274223025763435
             },
             {
               "item_id": 18385,
               "item_name": "Robe of Everlasting Night",
               "source_kind": "dungeon",
               "source": "Dire Maul: Immol'thar",
-              "dps_delta": -4.192502214833685
+              "dps_delta": -4.192502214833684
             }
           ]
         },
@@ -5660,6 +5660,12 @@
           "source_kind": "quest",
           "score": 31.497359183309044,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 226930,
+              "item_name": "Sorcerer's Gauntlets"
+            }
+          ],
           "alternatives": [
             {
               "item_id": 16440,
@@ -6030,8 +6036,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.297703737,
-      "verify_run_seconds": 0.878481249,
+      "weights_run_seconds": 1.251444456,
+      "verify_run_seconds": 0.895320466,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6198,7 +6204,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 47.7144100206393,
+          "score": 47.71441002063929,
           "verified": true,
           "alternatives": [
             {
@@ -6213,14 +6219,14 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.1936380960556046
+              "dps_delta": -1.193638096055603
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -2.483432232257228
+              "dps_delta": -2.483432232257227
             }
           ]
         },
@@ -6294,7 +6300,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.78689418939166,
+          "score": 30.786894189391663,
           "verified": true,
           "alternatives": [
             {
@@ -6302,21 +6308,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.660846806258102
+              "dps_delta": -1.660846806258103
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.9409352800430155
+              "dps_delta": -1.9409352800430162
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -2.545857288661817
+              "dps_delta": -2.545857288661818
             }
           ]
         },
@@ -6326,7 +6332,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 56.50840253381831,
+          "score": 56.508402533818305,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6335,14 +6341,14 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.6678093420982875
+              "dps_delta": -0.6678093420982859
             },
             {
               "item_id": 227106,
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -3.2742230257634364
+              "dps_delta": -3.274223025763435
             },
             {
               "item_id": 18385,
@@ -6759,8 +6765,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.297703737,
-      "verify_run_seconds": 0.876624636,
+      "weights_run_seconds": 1.251444456,
+      "verify_run_seconds": 0.88677413,
       "coverage": {
         "back": {
           "eligible": 450,

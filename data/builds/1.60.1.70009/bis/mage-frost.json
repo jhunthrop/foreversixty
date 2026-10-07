@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "c0c749361",
-  "generated_at": "2026-10-07T17:37:33Z",
+  "engine_version": "f5fe31003",
+  "generated_at": "2026-10-07T18:08:44Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.930052074,
-      "verify_run_seconds": 0.676208932,
+      "weights_run_seconds": 0.957055979,
+      "verify_run_seconds": 0.667781681,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1183,8 +1183,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.930052074,
-      "verify_run_seconds": 0.701529681,
+      "weights_run_seconds": 0.957055979,
+      "verify_run_seconds": 0.679120015,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1884,8 +1884,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.937092654,
-      "verify_run_seconds": 0.650983663,
+      "weights_run_seconds": 0.929732751,
+      "verify_run_seconds": 0.661613492,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2588,8 +2588,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.937092654,
-      "verify_run_seconds": 0.698400574,
+      "weights_run_seconds": 0.929732751,
+      "verify_run_seconds": 0.674373159,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3264,8 +3264,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.998393274,
-      "verify_run_seconds": 0.620996022,
+      "weights_run_seconds": 0.968114198,
+      "verify_run_seconds": 0.612921677,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3931,8 +3931,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.998393274,
-      "verify_run_seconds": 0.657879694,
+      "weights_run_seconds": 0.968114198,
+      "verify_run_seconds": 0.630519226,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4621,8 +4621,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.90880018,
-      "verify_run_seconds": 0.753880147,
+      "weights_run_seconds": 0.883681515,
+      "verify_run_seconds": 0.731737225,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5307,8 +5307,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.90880018,
-      "verify_run_seconds": 0.779267632,
+      "weights_run_seconds": 0.883681515,
+      "verify_run_seconds": 0.738935769,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5570,7 +5570,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 28.04292595008064,
+          "score": 28.042925950080637,
           "verified": true,
           "alternatives": [
             {
@@ -5578,21 +5578,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.1991998083248265
+              "dps_delta": -1.1991998083248259
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.7394923830348106
+              "dps_delta": -1.73949238303481
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.0841496395439068
+              "dps_delta": -2.084149639543906
             }
           ]
         },
@@ -6033,8 +6033,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.955617701,
-      "verify_run_seconds": 0.735840495,
+      "weights_run_seconds": 0.962052107,
+      "verify_run_seconds": 0.746550271,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6673,7 +6673,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.5566817171513856
+              "dps_delta": -0.5566817171513841
             },
             {
               "item_id": 1728,
@@ -6760,8 +6760,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.955617701,
-      "verify_run_seconds": 0.763581988,
+      "weights_run_seconds": 0.962052107,
+      "verify_run_seconds": 0.79198176,
       "coverage": {
         "back": {
           "eligible": 450,

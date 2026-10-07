@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 39.6. Weights run: 2.4s. Verify run: 1.1s. 150 eligible items had no known source.
+Set DPS (verified): 39.6. Weights run: 2.5s. Verify run: 1.1s. 150 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.062, intellect=0.089 ± 0.004, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.489 per %), hit=0.129 ± 0.001 per rating point (10 rating = 1%, 1.288 per %), spell_haste=0.358 ± 0.066, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.701 ± 0.062, fire_power=0.298 ± 0.000
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 417, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 392.6. Weights run: 9.2s. Verify run: 1.3s. 1075 eligible items had no known source.
+Set DPS (verified): 392.6. Weights run: 9.4s. Verify run: 1.3s. 1075 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=not significant (1.000 ± 1.380), intellect=not significant (-4.202 ± 0.108), crit=not significant (-1.319 ± 0.020) per rating point (14 rating = 1%, -18.463 per %), hit=not significant (-3.578 ± 0.016) per rating point (10 rating = 1%, -35.778 per %), spell_haste=not significant (7.767 ± 1.813), spell_penetration=not significant (-0.000 ± 0.000), shadow_power=not significant (4.588 ± 1.380), fire_power=not significant (-3.597 ± 0.004)
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1075, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 38.4. Weights run: 2.4s. Verify run: 1.1s. 139 eligible items had no known source.
+Set DPS (verified): 38.4. Weights run: 2.5s. Verify run: 1.1s. 139 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.062, intellect=0.089 ± 0.004, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.489 per %), hit=0.129 ± 0.001 per rating point (10 rating = 1%, 1.288 per %), spell_haste=0.358 ± 0.066, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.701 ± 0.062, fire_power=0.298 ± 0.000
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 391, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 388.1. Weights run: 9.2s. Verify run: 1.3s. 1063 eligible items had no known source.
+Set DPS (verified): 388.1. Weights run: 9.4s. Verify run: 1.3s. 1063 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=not significant (1.000 ± 1.380), intellect=not significant (-4.202 ± 0.108), crit=not significant (-1.319 ± 0.020) per rating point (14 rating = 1%, -18.463 per %), hit=not significant (-3.578 ± 0.016) per rating point (10 rating = 1%, -35.778 per %), spell_haste=not significant (7.767 ± 1.813), spell_penetration=not significant (-0.000 ± 0.000), shadow_power=not significant (4.588 ± 1.380), fire_power=not significant (-3.597 ± 0.004)
 

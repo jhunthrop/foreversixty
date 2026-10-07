@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 00000000000000000-2351000000000000000-0000000000000000)
 
-Set DPS (verified): 36.2. Weights run: 2.3s. Verify run: 1.3s. 150 eligible items had no known source.
+Set DPS (verified): 36.2. Weights run: 2.3s. Verify run: 1.2s. 150 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.057, intellect=-0.017 ± 0.004, crit=0.028 ± 0.001 per rating point (14 rating = 1%, 0.387 per %), hit=0.112 ± 0.001 per rating point (10 rating = 1%, 1.122 per %), spell_haste=0.432 ± 0.063, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.737 ± 0.057, fire_power=0.266 ± 0.000
 

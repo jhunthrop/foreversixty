@@ -1,8 +1,8 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "c0c749361",
-  "generated_at": "2026-10-07T17:35:25Z",
+  "engine_version": "f5fe31003",
+  "generated_at": "2026-10-07T18:06:39Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -539,8 +539,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.609017302,
-      "verify_run_seconds": 1.646503249,
+      "weights_run_seconds": 2.586768147,
+      "verify_run_seconds": 1.643327559,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1172,8 +1172,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.609017302,
-      "verify_run_seconds": 1.6177751150000002,
+      "weights_run_seconds": 2.586768147,
+      "verify_run_seconds": 1.57290492,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1896,8 +1896,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.816406809,
-      "verify_run_seconds": 1.819236743,
+      "weights_run_seconds": 2.84133102,
+      "verify_run_seconds": 1.830773752,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2609,8 +2609,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.816406809,
-      "verify_run_seconds": 1.78748917,
+      "weights_run_seconds": 2.84133102,
+      "verify_run_seconds": 1.804184633,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3277,8 +3277,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.835448039,
-      "verify_run_seconds": 1.890019999,
+      "weights_run_seconds": 2.846196404,
+      "verify_run_seconds": 1.859093442,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3954,8 +3954,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.835448039,
-      "verify_run_seconds": 1.813595382,
+      "weights_run_seconds": 2.846196404,
+      "verify_run_seconds": 1.820548149,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4628,8 +4628,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.940523287,
-      "verify_run_seconds": 1.98286131,
+      "weights_run_seconds": 2.929099985,
+      "verify_run_seconds": 1.991763052,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5315,8 +5315,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.940523287,
-      "verify_run_seconds": 1.963491071,
+      "weights_run_seconds": 2.929099985,
+      "verify_run_seconds": 1.942824595,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5731,7 +5731,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 127.03782536881864,
+          "score": 127.03782536881866,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +1.9 DPS over it",
           "dps_delta": 1.8849328589424772,
@@ -5741,21 +5741,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.7327531227591726
+              "dps_delta": -1.7327531227591737
             },
             {
               "item_id": 231577,
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.004504429802807
+              "dps_delta": -2.0045044298028083
             },
             {
               "item_id": 231558,
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.3232275400736477
+              "dps_delta": -2.323227540073649
             }
           ]
         },
@@ -6026,8 +6026,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.867831999,
-      "verify_run_seconds": 2.087309574,
+      "weights_run_seconds": 2.903998637,
+      "verify_run_seconds": 2.117330143,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6736,8 +6736,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.867831999,
-      "verify_run_seconds": 2.045548113,
+      "weights_run_seconds": 2.903998637,
+      "verify_run_seconds": 2.09895825,
       "coverage": {
         "back": {
           "eligible": 450,
