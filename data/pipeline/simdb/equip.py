@@ -174,15 +174,20 @@ STAT_AURAS: dict[int, str] = {
 #: Forever corroboration (https://www.wowhead.com/forever/spell=1270490)
 #: states them as "Mod Base Resistance - % (Physical)" and "Mod Armor Bonus
 #: %" -- percentage modifiers of resistance/armor, not the flat amount aura 22
-#: (AURA_RESISTANCE) reads. Every aura this build puts on a kept item's or an
-#: enchant's equip spell is in this set or in STAT_AURAS.
+#: (AURA_RESISTANCE) reads. One was added for build 1.60.1.70245: 137 is the
+#: aura spell 1248751 "Increased Spirit" ("Increases Spirit by $s1%", item
+#: 213827) carries in that build's SpellEffect (80 in 1.60.1.70009's) -- the
+#: SpellAuraNames enum's SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE, a percentage
+#: stat modifier like 69, 80 and 598 above, not a flat amount. Every aura this
+#: build puts on a kept item's or an enchant's equip spell is in this set or
+#: in STAT_AURAS.
 IGNORED_AURAS = frozenset(
     {
         3, 4, 8, 10, 14, 15, 17, 19, 23, 31, 33, 34, 35, 42, 43, 56, 57, 58,
         59, 64, 69, 77, 79, 80, 82, 87, 89, 98, 102, 107, 108, 109, 112, 117,
-        122, 129, 130, 131, 134, 139, 140, 142, 144, 154, 155, 161, 168, 180,
-        187, 194, 197, 213, 226, 232, 234, 262, 272, 275, 290, 319, 328, 332, 342,
-        395, 436, 466, 470, 561, 576, 593, 598, 601, 608,
+        122, 129, 130, 131, 134, 137, 139, 140, 142, 144, 154, 155, 161, 168,
+        180, 187, 194, 197, 213, 226, 232, 234, 262, 272, 275, 290, 319, 328,
+        332, 342, 395, 436, 466, 470, 561, 576, 593, 598, 601, 608,
     }
 )
 
