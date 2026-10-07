@@ -188,6 +188,13 @@ def build_parser() -> argparse.ArgumentParser:
     sc = sub.add_parser("simconst", help="write per-class spell constants for a build")
     sc.add_argument("--build", required=True)
 
+    tr = sub.add_parser(
+        "trainables",
+        help="write per-class trainable abilities (builds/<build>/trainables/) from the "
+        "client's SkillLineAbility; needs raw/ from `fetch`",
+    )
+    tr.add_argument("--build", required=True)
+
     lv = sub.add_parser(
         "levels",
         help="write levels.json (per-level base stats) and spellranks.json (rank "
@@ -463,6 +470,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.simconst import write_spell_constants
 
         print(write_spell_constants(args.build))
+    elif args.command == "trainables":
+        from pipeline.trainables import write_trainables
+
+        print(write_trainables(args.build))
     elif args.command == "levels":
         from pipeline.levels import write_levels
         from pipeline.spellranks import write_spell_ranks
