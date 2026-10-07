@@ -269,7 +269,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		}
 		dps := player.Dps.GetAvg()
 		tallies := ladderCastSet(player, ladderIterations)
-		castCounts := castSpellCounts(player)
+		castCounts := CastSpellCounts(player)
 
 		// Rule 4: no cast but auto-attack at level >= 20.
 		if level >= 20 && ladderDistinctSpellCasts(tallies) == 0 {

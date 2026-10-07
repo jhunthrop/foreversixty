@@ -76,6 +76,9 @@ func run(args []string) error {
 			return err
 		}
 		rep.best, rep.bestEst, rep.accepted = best, bestEst, accepted
+		if rep.finishers, err = tallyFinishers(in, in.base, best, o.confirmIterations, names); err != nil {
+			return err
+		}
 	}
 	rep.elapsed = time.Since(start)
 

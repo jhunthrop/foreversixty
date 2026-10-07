@@ -18,6 +18,7 @@ type report struct {
 	bestEst   estimate
 	accepted  []acceptedMutation
 	names     map[int]string
+	finishers *finisherCasts
 	elapsed   time.Duration
 }
 
@@ -36,6 +37,9 @@ func (r report) markdown() string {
 	}
 	r.writeVerdict(&b)
 	r.writeAccepted(&b)
+	if r.finishers != nil {
+		b.WriteString(r.finishers.markdown())
+	}
 	r.writeDanglingGates(&b)
 	r.writeRotations(&b)
 	r.writeWinnerJSON(&b)
