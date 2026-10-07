@@ -269,7 +269,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Pinch (spell 1264742)
 - Savage Rend (spell 1265069)
 - Scorpid Poison (spell 24587)
-- Serpent Sting (spell 25295)
+- Serpent Sting (spell 13555)
 - Sniper Shot (spell 1310786)
 - Sonic Blast (spell 1264482)
 - Summon Hawk (spell 1293527)

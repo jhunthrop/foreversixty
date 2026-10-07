@@ -99,7 +99,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:6831 off_hand:6829 | 54.3 | 9 | other:attack/1=126.4, other:attack/2=86.4, spell:16511=39.5, spell:14278=8.8, spell:8640/4=7.7 | - |
 | 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:2164 off_hand:9359 | 63.1 | 10 | other:attack/1=105.7, other:attack/2=82.8, spell:16511=42.1, spell:14278=8.7, spell:8640/4=7.7 | - |
 | 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:2163 off_hand:6660 | 80.5 | 9 | other:attack/2=149.0, other:attack/1=138.4, spell:16511=42.1, spell:14278=8.7, spell:11273/4=7.6 | - |
-| 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:22802 off_hand:23054 | 147.9 | 9 | other:attack/1=107.9, other:attack/2=72.1, spell:16511=41.5, spell:14278=8.7, spell:11275/4=7.4 | - |
+| 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:22802 off_hand:23054 | 147.3 | 9 | other:attack/1=107.9, other:attack/2=72.1, spell:16511=41.5, spell:14278=8.7, spell:11275/4=7.4 | - |
 
 ## Learned but unused (informational)
 
@@ -157,7 +157,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Backstab (spell 25300)
+- Backstab (spell 11281)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
@@ -168,4 +168,5 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-subtlety level=20 kind=zero_casts spell="Eviscerate" id=6761 authored=11300
+- rogue-subtlety level=30 kind=zero_casts spell="Eviscerate" id=6762 authored=11300

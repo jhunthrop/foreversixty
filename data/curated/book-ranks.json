@@ -1,0 +1,264 @@
+{
+  "description": "Spell ids of the Ahn'Qiraj book ranks: the level-60 ranks a trainer does not teach. The spellranks emitter marks them book: true, and the engine consumers skip them unless core.IncludeAQ is on.",
+  "sources": {
+    "engine": "the engine fork gates this rank on core.IncludeAQ (grep IncludeAQ under sim/ in wowsims-forever)",
+    "vanilla": "the vanilla 1.9 Ahn'Qiraj spell book list; not gated by the fork, so not independently verified in this build",
+    "owner": "named in the owner's brief; vanilla book status not independently verified",
+    "copy": "a Forever copy (a 4xxxxx id) of a book rank above: same spell, rank and level 60"
+  },
+  "floor_note": "A floor, not a census: a book rank missing here is treated as a trainer rank.",
+  "books": [
+    {
+      "id": 31018,
+      "class": "druid",
+      "spell": "Ferocious Bite",
+      "rank": 5,
+      "basis": "engine"
+    },
+    {
+      "id": 21850,
+      "class": "druid",
+      "spell": "Gift of the Wild",
+      "rank": 2,
+      "basis": "owner"
+    },
+    {
+      "id": 25297,
+      "class": "druid",
+      "spell": "Healing Touch",
+      "rank": 11,
+      "basis": "vanilla"
+    },
+    {
+      "id": 25299,
+      "class": "druid",
+      "spell": "Rejuvenation",
+      "rank": 11,
+      "basis": "vanilla"
+    },
+    {
+      "id": 417068,
+      "class": "druid",
+      "spell": "Rejuvenation",
+      "rank": 11,
+      "basis": "copy"
+    },
+    {
+      "id": 25298,
+      "class": "druid",
+      "spell": "Starfire",
+      "rank": 7,
+      "basis": "engine"
+    },
+    {
+      "id": 25296,
+      "class": "hunter",
+      "spell": "Aspect of the Hawk",
+      "rank": 7,
+      "basis": "engine"
+    },
+    {
+      "id": 25295,
+      "class": "hunter",
+      "spell": "Serpent Sting",
+      "rank": 9,
+      "basis": "engine"
+    },
+    {
+      "id": 25306,
+      "class": "mage",
+      "spell": "Fireball",
+      "rank": 12,
+      "basis": "engine"
+    },
+    {
+      "id": 25304,
+      "class": "mage",
+      "spell": "Frostbolt",
+      "rank": 11,
+      "basis": "engine"
+    },
+    {
+      "id": 25291,
+      "class": "paladin",
+      "spell": "Blessing of Might",
+      "rank": 7,
+      "basis": "engine"
+    },
+    {
+      "id": 25290,
+      "class": "paladin",
+      "spell": "Blessing of Wisdom",
+      "rank": 6,
+      "basis": "engine"
+    },
+    {
+      "id": 25916,
+      "class": "paladin",
+      "spell": "Greater Blessing of Might",
+      "rank": 2,
+      "basis": "owner"
+    },
+    {
+      "id": 25918,
+      "class": "paladin",
+      "spell": "Greater Blessing of Wisdom",
+      "rank": 2,
+      "basis": "vanilla"
+    },
+    {
+      "id": 25292,
+      "class": "paladin",
+      "spell": "Holy Light",
+      "rank": 9,
+      "basis": "vanilla"
+    },
+    {
+      "id": 25314,
+      "class": "priest",
+      "spell": "Greater Heal",
+      "rank": 5,
+      "basis": "vanilla"
+    },
+    {
+      "id": 25316,
+      "class": "priest",
+      "spell": "Prayer of Healing",
+      "rank": 5,
+      "basis": "vanilla"
+    },
+    {
+      "id": 25315,
+      "class": "priest",
+      "spell": "Renew",
+      "rank": 10,
+      "basis": "vanilla"
+    },
+    {
+      "id": 425277,
+      "class": "priest",
+      "spell": "Renew",
+      "rank": 10,
+      "basis": "copy"
+    },
+    {
+      "id": 25300,
+      "class": "rogue",
+      "spell": "Backstab",
+      "rank": 9,
+      "basis": "engine"
+    },
+    {
+      "id": 462717,
+      "class": "rogue",
+      "spell": "Backstab",
+      "rank": 9,
+      "basis": "copy"
+    },
+    {
+      "id": 25347,
+      "class": "rogue",
+      "spell": "Deadly Poison V",
+      "rank": 5,
+      "basis": "engine"
+    },
+    {
+      "id": 25351,
+      "class": "rogue",
+      "spell": "Deadly Poison V",
+      "rank": 5,
+      "basis": "vanilla"
+    },
+    {
+      "id": 31016,
+      "class": "rogue",
+      "spell": "Eviscerate",
+      "rank": 9,
+      "basis": "engine"
+    },
+    {
+      "id": 25302,
+      "class": "rogue",
+      "spell": "Feint",
+      "rank": 5,
+      "basis": "vanilla"
+    },
+    {
+      "id": 25360,
+      "class": "shaman",
+      "spell": "Grace of Air",
+      "rank": 3,
+      "basis": "engine"
+    },
+    {
+      "id": 25359,
+      "class": "shaman",
+      "spell": "Grace of Air Totem",
+      "rank": 3,
+      "basis": "engine"
+    },
+    {
+      "id": 25357,
+      "class": "shaman",
+      "spell": "Healing Wave",
+      "rank": 10,
+      "basis": "vanilla"
+    },
+    {
+      "id": 25362,
+      "class": "shaman",
+      "spell": "Strength of Earth",
+      "rank": 5,
+      "basis": "engine"
+    },
+    {
+      "id": 25361,
+      "class": "shaman",
+      "spell": "Strength of Earth Totem",
+      "rank": 5,
+      "basis": "engine"
+    },
+    {
+      "id": 25311,
+      "class": "warlock",
+      "spell": "Corruption",
+      "rank": 7,
+      "basis": "engine"
+    },
+    {
+      "id": 25309,
+      "class": "warlock",
+      "spell": "Immolate",
+      "rank": 8,
+      "basis": "engine"
+    },
+    {
+      "id": 25307,
+      "class": "warlock",
+      "spell": "Shadow Bolt",
+      "rank": 10,
+      "basis": "engine"
+    },
+    {
+      "id": 25289,
+      "class": "warrior",
+      "spell": "Battle Shout",
+      "rank": 7,
+      "basis": "engine"
+    },
+    {
+      "id": 25286,
+      "class": "warrior",
+      "spell": "Heroic Strike",
+      "rank": 9,
+      "basis": "engine"
+    },
+    {
+      "id": 25288,
+      "class": "warrior",
+      "spell": "Revenge",
+      "rank": 6,
+      "basis": "engine"
+    }
+  ]
+}

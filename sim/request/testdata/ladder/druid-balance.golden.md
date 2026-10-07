@@ -39,10 +39,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
-  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
-  Might from level 4), at the highest rank the level can learn; no
-  raid buffs.
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -93,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-00000000000000000000-0000000000000000 | main_hand:263937 | 5.1 | 4 | other:attack/1=89.5, spell:5177=2.0, spell:58984=1.5, spell:29166=1.0, spell:8924=1.0 | - |
-| 20 | 5222000000000000-00000000000000000000-0000000000000000 | main_hand:890 | 15.2 | 5 | spell:2912=29.3, other:attack/1=19.5, spell:58984=1.5, spell:5178=1.5, spell:29166=1.0 | {SpellID: 5570} |
-| 30 | 5222211015000000-00000000000000000000-0000000000000000 | main_hand:9604 | 30.6 | 5 | other:attack/1=34.3, spell:8949=21.0, spell:24974=15.1, spell:58984=1.5, spell:5180=1.4 | - |
-| 38 | 5222211015401030-00000000000000000000-0000000000000000 | main_hand:9604 | 36.2 | 5 | other:attack/1=38.9, spell:8950=20.2, spell:24974=14.5, spell:58984=1.5, spell:6780=1.3 | - |
-| 40 | 5222211015401050-00000000000000000000-0000000000000000 | main_hand:9604 | 40.4 | 5 | other:attack/1=38.9, spell:8950=20.8, spell:24975=14.2, spell:58984=1.5, spell:6780=1.3 | - |
-| 50 | 5222211015401051-00000000000000000000-5400000000000000 | main_hand:812 | 59.5 | 5 | other:attack/1=37.7, spell:9875=17.4, spell:24976=15.1, spell:58984=1.5, spell:8905=1.5 | - |
-| 60 | 5222211015401051-00000000000000000000-5533300000000000 | main_hand:22799 | 110.0 | 5 | other:attack/1=38.5, spell:25298=15.8, spell:24977=15.3, spell:9912=1.6, spell:58984=1.5 | - |
+| 10 | 1000000000000000-00000000000000000000-0000000000000000 | main_hand:263937 | 4.8 | 4 | other:attack/1=89.5, spell:5177=2.0, spell:58984=1.5, spell:29166=1.0, spell:8924=1.0 | - |
+| 20 | 5222000000000000-00000000000000000000-0000000000000000 | main_hand:890 | 14.7 | 5 | spell:2912=27.6, other:attack/1=21.0, spell:5178=1.6, spell:58984=1.5, spell:29166=1.0 | {SpellID: 5570} |
+| 30 | 5222211015000000-00000000000000000000-0000000000000000 | main_hand:9604 | 29.1 | 5 | other:attack/1=36.5, spell:8949=19.0, spell:24974=14.5, spell:58984=1.5, spell:5180=1.4 | - |
+| 38 | 5222211015401030-00000000000000000000-0000000000000000 | main_hand:9604 | 35.0 | 5 | other:attack/1=40.7, spell:8950=18.6, spell:24974=15.0, spell:58984=1.5, spell:6780=1.5 | - |
+| 40 | 5222211015401050-00000000000000000000-0000000000000000 | main_hand:9604 | 38.5 | 5 | other:attack/1=41.1, spell:8950=18.5, spell:24975=14.8, spell:58984=1.5, spell:6780=1.5 | - |
+| 50 | 5222211015401051-00000000000000000000-5400000000000000 | main_hand:812 | 56.8 | 5 | other:attack/1=39.9, spell:9875=15.8, spell:24976=15.1, spell:58984=1.5, spell:8905=1.5 | - |
+| 60 | 5222211015401051-00000000000000000000-5533300000000000 | main_hand:22799 | 103.3 | 5 | other:attack/1=39.4, spell:24977=15.5, spell:9876=15.2, spell:9912=1.6, spell:58984=1.5 | - |
 
 ## Learned but unused (informational)
 
@@ -179,7 +176,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9850)
 - Entangling Roots (spell 9853)
-- Ferocious Bite (spell 31018)
+- Ferocious Bite (spell 22829)
 - Hurricane (spell 17402)
 - Lacerate (spell 1235827)
 - Maul (spell 9881)

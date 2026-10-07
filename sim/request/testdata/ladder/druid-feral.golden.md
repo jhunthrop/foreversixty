@@ -176,18 +176,20 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9850)
 - Entangling Roots (spell 9853)
-- Ferocious Bite (spell 31018)
+- Ferocious Bite (spell 22829)
 - Hurricane (spell 17402)
 - Insect Swarm (spell 24977)
 - Lacerate (spell 1235827)
 - Maul (spell 9881)
 - Moonfire (spell 9835)
 - Primal Bite (spell 1238073)
-- Starfire (spell 25298)
+- Starfire (spell 9876)
 - Swipe (spell 9908)
 - Test Maul (spell 24042)
 - Wrath (spell 9912)
 
 ## Violations found in this run
 
-None.
+- druid-feral level=38 kind=zero_casts spell="Ferocious Bite" id=22568 authored=22829
+- druid-feral level=40 kind=zero_casts spell="Ferocious Bite" id=22827 authored=22829
+- druid-feral level=60 kind=zero_casts spell="Ferocious Bite" id=22829 authored=22829

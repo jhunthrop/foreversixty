@@ -99,7 +99,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 00000000000000000-32531300000515100-0000000000000000000 | main_hand:868 off_hand:6829 | 60.2 | 5 | other:attack/1=98.2, other:attack/2=93.8, spell:8621=44.1, spell:5171/5=3.7, spell:8623/5=3.5 | {SpellID: 13750} |
 | 40 | 00000000000000000-32531300000515201-0000000000000000000 | main_hand:868 off_hand:2164 | 66.9 | 7 | other:attack/2=113.9, other:attack/1=97.7, spell:8621=47.3, spell:8624/5=4.4, spell:5171/5=3.4 | - |
 | 50 | 32500000000000000-32531300000515201-0000000000000000000 | main_hand:810 off_hand:2163 | 96.5 | 6 | other:attack/2=152.7, other:attack/1=102.0, spell:11293=47.3, spell:11299/5=4.3, spell:6774/5=3.5 | - |
-| 60 | 32531000000000000-32531300000515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 234.5 | 6 | other:attack/2=80.3, other:attack/1=76.3, spell:11294=44.9, other:attack/3=7.8, spell:31016/5=4.7 | - |
+| 60 | 32531000000000000-32531300000515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 232.6 | 6 | other:attack/2=80.3, other:attack/1=76.3, spell:11294=44.9, other:attack/3=7.8, spell:11300/5=4.7 | - |
 
 ## Learned but unused (informational)
 
@@ -163,7 +163,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Ambush (spell 11269)
-- Backstab (spell 25300)
+- Backstab (spell 11281)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
@@ -174,4 +174,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-combat level=10 kind=zero_casts spell="Backstab" id=53 authored=11281
+- rogue-combat level=20 kind=zero_casts spell="Backstab" id=2590 authored=11281
+- rogue-combat level=30 kind=zero_casts spell="Backstab" id=2591 authored=11281
+- rogue-combat level=38 kind=zero_casts spell="Backstab" id=8721 authored=11281
+- rogue-combat level=40 kind=zero_casts spell="Backstab" id=8721 authored=11281
+- rogue-combat level=50 kind=zero_casts spell="Backstab" id=11279 authored=11281
+- rogue-combat level=60 kind=zero_casts spell="Backstab" id=11281 authored=11281

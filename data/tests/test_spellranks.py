@@ -184,3 +184,57 @@ def test_write_spell_ranks_raises_without_spellconst(tmp_path: Path):
     build_dir.mkdir(parents=True)
     with pytest.raises(SystemExit, match="spellconst"):
         spellranks.write_spell_ranks("1.0.0.1", root=tmp_path / "builds")
+
+
+CURATED = Path(__file__).parent.parent / "curated"
+BUILDS = Path(__file__).parent.parent / "builds"
+
+#: Book ranks the fork's core.IncludeAQ gates today (sim/core/config.go) -- a floor,
+#: never a census: the curated file may name more, never fewer.
+ENGINE_GATED_BOOK_IDS = {
+    25307, 25311, 25309, 25306, 25304, 31016, 25300, 25347, 25295, 25296, 25286, 25288,
+    31018, 25298, 25289, 25291, 25361, 25359, 25290,
+}  # fmt: skip
+
+
+def test_the_curated_book_list_names_every_engine_gated_rank():
+    assert ENGINE_GATED_BOOK_IDS <= spellranks.load_book_ids(CURATED)
+
+
+def test_book_ids_are_marked_and_every_other_rank_is_not():
+    spells = {
+        "1": _spell("Odd Bolt", rank=9, level=58, cost=1),
+        "2": _spell("Odd Bolt", rank=10, level=60, cost=1),
+    }
+    ranks = _spell_ranks_for_class(spells, frozenset({2}))["Odd Bolt"]
+    assert [(r.id, r.book) for r in ranks] == [(1, False), (2, True)]
+
+
+def test_the_book_flag_is_written_only_when_true():
+    spells = {
+        "1": _spell("Odd Bolt", rank=9, level=58, cost=1),
+        "2": _spell("Odd Bolt", rank=10, level=60, cost=1),
+    }
+    file = spellranks.SpellRanksFile(
+        build="9.9.9.9", classes={"mage": _spell_ranks_for_class(spells, frozenset({2}))}
+    )
+    rows = file.model_dump(exclude_defaults=True)["classes"]["mage"]["Odd Bolt"]
+    assert rows == [{"id": 1, "rank": 9, "level": 58}, {"id": 2, "rank": 10, "level": 60, "book": True}]
+
+
+def test_named_book_ids_are_flagged_level_sixty_ranks_in_the_active_build():
+    """Floor contract: these ids stay flagged in the active build's own table. A named id
+    the table does not carry is not a failure (the build may genuinely lack it)."""
+    named = {1: 25307, 2: 25304, 3: 25295, 4: 25289}
+    active = json.loads((BUILDS.parent.parent / "web/src/data/active-build.json").read_text())
+    for path in [BUILDS / active["build"] / "spellranks.json"]:
+        rows = {
+            row["id"]: row
+            for classes in json.loads(path.read_text())["classes"].values()
+            for ranks in classes.values()
+            for row in ranks
+        }
+        for book_id in named.values():
+            if book_id in rows:
+                assert rows[book_id].get("book") is True, f"{path.parent.name}: {book_id} not flagged"
+                assert rows[book_id]["level"] == 60

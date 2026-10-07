@@ -39,10 +39,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
-  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
-  Might from level 4), at the highest rank the level can learn; no
-  raid buffs.
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -93,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:263430 | 8.4 | 2 | spell:5019=71.6, spell:205=36.8 | - |
-| 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 16.8 | 2 | spell:5019=68.6, spell:7322=30.5 | - |
-| 30 | 000000000000000000-00000000000000000-2535111300000000000 | main_hand:249392 ranged:5213 | 24.9 | 2 | spell:5019=79.8, spell:8406=30.8, item:5514=1.0, other:mana_gain=1.0 | - |
-| 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:1664 ranged:13064 | 42.9 | 3 | spell:5019=70.4, spell:8408=27.2, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
-| 40 | 100000000000000000-00000000000000000-2535111300000301050 | main_hand:1664 ranged:5216 | 43.5 | 3 | spell:5019=75.3, spell:8408=27.1, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
-| 50 | 203005000100000000-00000000000000000-2535111300000301050 | main_hand:812 ranged:249232 | 85.2 | 3 | spell:10180=41.0, spell:5019=39.0, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
-| 60 | 203005000100000000-11302300000000000-2535111300000301050 | main_hand:22589 ranged:22821 | 185.4 | 3 | spell:5019=53.9, spell:25304=40.0, other:mana_gain=2.0, spell:12472=1.0, item:5514=1.0 | - |
+| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:263430 | 9.8 | 2 | spell:5019=61.1, spell:205=46.1 | - |
+| 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 17.6 | 2 | spell:5019=63.3, spell:7322=34.8 | - |
+| 30 | 000000000000000000-00000000000000000-2535111300000000000 | main_hand:249392 ranged:5213 | 25.5 | 2 | spell:5019=76.5, spell:8406=32.5, item:5514=1.0, other:mana_gain=1.0 | - |
+| 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:1664 ranged:13064 | 44.0 | 3 | spell:5019=68.7, spell:8408=28.3, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
+| 40 | 100000000000000000-00000000000000000-2535111300000301050 | main_hand:1664 ranged:5216 | 44.7 | 3 | spell:5019=73.5, spell:8408=28.1, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
+| 50 | 203005000100000000-00000000000000000-2535111300000301050 | main_hand:812 ranged:249232 | 86.6 | 3 | spell:10180=41.7, spell:5019=38.2, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
+| 60 | 203005000100000000-11302300000000000-2535111300000301050 | main_hand:22589 ranged:22821 | 173.7 | 3 | spell:5019=48.4, spell:10181=43.2, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -206,7 +203,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Cone of Cold (spell 10161)
 - Debug Frost Spell (spell 29607)
 - Fire Blast (spell 10199)
-- Fireball (spell 25306)
+- Fireball (spell 10151)
 - Flamestrike (spell 10216)
 - Frost Nova (spell 10230)
 - Frostfire Bolt (spell 1237313)

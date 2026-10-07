@@ -204,7 +204,8 @@ def test_an_engine_aura_exception_is_accepted_as_an_aura_but_rejected_as_a_cast(
 #:   itself, and the APL-castable queue (`SpellFlagAPL`) is tag 3
 #:   (`hunter.RaptorStrike.WithTag(3)`), not tag 1.
 ON_NEXT_SWING_QUEUE_TAG = {
-    25286: 1,  # Heroic Strike
+    25286: 1,  # Heroic Strike (the Ahn'Qiraj book rank)
+    11567: 1,  # Heroic Strike (the top trainer rank)
     20569: 1,  # Cleave
     48480: 1,  # Maul
     2973: 3,  # Raptor Strike rank 1
@@ -261,16 +262,16 @@ def test_cast_spell_action_ids_ignores_conditions_and_auras():
 #: the check that ties each id back to spells.json by name, not just by rank.
 EXPECTED_ABILITY_NAMES = {
     "warrior-fury": {
-        25289: "Battle Shout",
+        11551: "Battle Shout",
         2687: "Bloodrage",
         12328: "Death Wish",
         23894: "Bloodthirst",
         1680: "Whirlwind",
         20662: "Execute",
-        25286: "Heroic Strike",
+        11567: "Heroic Strike",
     },
     "mage-frost": {
-        25304: "Frostbolt",
+        10181: "Frostbolt",
         5019: "Shoot",
     },
 }

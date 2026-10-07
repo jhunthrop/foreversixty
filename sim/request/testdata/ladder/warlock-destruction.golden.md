@@ -39,10 +39,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
-  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
-  Might from level 4), at the highest rank the level can learn; no
-  raid buffs.
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -93,27 +90,25 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:263430 | 8.9 | 5 | other:mana_gain=58.2, spell:1454=58.2, spell:5019=57.6, spell:695=15.9, spell:172=14.3 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
-| 20 | 00000000000000000-0000000000000000000-2351000000000000 | main_hand:890 ranged:5243 | 19.3 | 5 | spell:5019=54.8, other:mana_gain=43.1, spell:1455=43.1, spell:1088=18.1, spell:1094=13.0 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
-| 30 | 00000000000000000-0000000000000000000-2353224000000000 | main_hand:249392 ranged:5213 | 30.7 | 5 | spell:5019=63.1, other:mana_gain=41.0, spell:1456=41.0, spell:1106=23.8, spell:2941=13.3 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867}, {SpellID: 412758}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-2353225100101040 | main_hand:1664 ranged:13064 | 57.3 | 7 | spell:5019=63.3, other:mana_gain=35.1, spell:11687=35.1, spell:2941=15.7, spell:1293818=13.8 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
-| 40 | 00000000000000000-0000000000000000000-2353225100101051 | main_hand:1664 ranged:5216 | 81.9 | 7 | spell:5019=66.6, other:mana_gain=40.5, spell:11687=40.5, spell:412758=15.6, spell:11665=13.1 | {OtherID: 13}, {SpellID: 603} |
-| 50 | 25300000000000000-0000000000000000000-2353225100101051 | main_hand:812 ranged:249232 | 105.4 | 7 | spell:5019=58.4, other:mana_gain=30.7, spell:11688=30.7, spell:11667=13.4, spell:1293812=13.4 | {OtherID: 13}, {SpellID: 603} |
-| 60 | 25532300000000000-0000000000000000000-2353225100101051 | main_hand:22630 ranged:22821 | 307.3 | 8 | spell:5019=62.0, other:mana_gain=28.1, spell:11689=28.1, spell:1293813=25.0, spell:18932=14.1 | {OtherID: 13} |
+| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:263430 | 10.5 | 6 | spell:5019=63.9, other:mana_gain=57.9, spell:1454=57.9, spell:172=13.5, spell:695=13.1 | {OtherID: 13}, {SpellID: 412758} |
+| 20 | 00000000000000000-0000000000000000000-2351000000000000 | main_hand:890 ranged:5243 | 22.6 | 6 | spell:5019=59.5, other:mana_gain=43.5, spell:1455=43.5, spell:1088=14.6, spell:1094=12.4 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758} |
+| 30 | 00000000000000000-0000000000000000000-2353224000000000 | main_hand:249392 ranged:5213 | 35.6 | 6 | spell:5019=66.3, other:mana_gain=44.8, spell:1456=44.8, spell:1106=21.6, spell:2941=12.5 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867}, {SpellID: 412758} |
+| 38 | 00000000000000000-0000000000000000000-2353225100101040 | main_hand:1664 ranged:13064 | 64.5 | 8 | spell:5019=67.0, other:mana_gain=36.1, spell:11687=36.1, spell:2941=15.0, spell:1293818=12.3 | {OtherID: 13}, {SpellID: 412758} |
+| 40 | 00000000000000000-0000000000000000000-2353225100101051 | main_hand:1664 ranged:5216 | 88.3 | 8 | spell:5019=73.4, other:mana_gain=39.8, spell:11687=39.8, spell:11665=12.7, spell:17962=12.5 | {OtherID: 13} |
+| 50 | 25300000000000000-0000000000000000000-2353225100101051 | main_hand:812 ranged:249232 | 114.9 | 8 | spell:5019=63.5, other:mana_gain=30.3, spell:11688=30.3, spell:11667=12.9, spell:18930=11.9 | {OtherID: 13} |
+| 60 | 25532300000000000-0000000000000000000-2353225100101051 | main_hand:22630 ranged:22821 | 298.8 | 8 | spell:5019=65.4, other:mana_gain=27.1, spell:11689=27.1, spell:1293813=22.9, spell:18932=14.1 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Bane of Agony (spell 980)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7799)
 - Shadow Cleave (spell 403839)
 
 ### Level 20
 
-- Bane of Agony (spell 1014)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7800)
 - Health Funnel (spell 3698)
@@ -125,7 +120,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
-- Bane of Agony (spell 6217)
 - Conflagrate (spell 1293817)
 - Drain Soul (spell 8288)
 - Firebolt (spell 7801)
@@ -140,7 +134,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
-- Bane of Agony (spell 11711)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
 - Health Funnel (spell 3700)
@@ -153,7 +146,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Bane of Agony (spell 11711)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
 - Haunt (spell 403501)
@@ -170,7 +162,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Bane of Agony (spell 11712)
 - Drain Soul (spell 8289)
 - Firebolt (spell 11762)
 - Haunt (spell 1293693)
@@ -188,7 +179,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Bane of Agony (spell 11713)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
 - Haunt (spell 1293694)
@@ -198,7 +188,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 11780)
 - Rain of Fire (spell 11678)
 - Searing Pain (spell 17923)
-- Shadow Bolt (spell 25307)
+- Shadow Bolt (spell 11661)
 - Shadow Cleave (spell 403852)
 - Soul Fire (spell 17924)
 - Test Curse of Agony (spell 28608)
@@ -207,9 +197,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warlock-destruction level=10 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=20 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=30 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=38 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=40 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=50 kind=unresolved_id action={SpellID: 603}
+- warlock-destruction level=40 kind=zero_casts spell="Shadow Bolt" id=7641 authored=11661
+- warlock-destruction level=50 kind=zero_casts spell="Shadow Bolt" id=11659 authored=11661
+- warlock-destruction level=60 kind=zero_casts spell="Shadow Bolt" id=11661 authored=11661

@@ -39,10 +39,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
-  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
-  Might from level 4), at the highest rank the level can learn; no
-  raid buffs.
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -93,27 +90,25 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 8.9 | 5 | other:mana_gain=55.3, spell:1454=55.3, spell:5019=54.7, spell:695=20.1, spell:172=13.7 | {OtherID: 13}, {SpellID: 18288}, {SpellID: 603} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 19.2 | 5 | spell:5019=56.3, other:mana_gain=34.4, spell:1455=34.4, spell:1088=18.9, spell:6222=11.7 | {OtherID: 13}, {SpellID: 18288}, {SpellID: 603} |
-| 30 | 25552000110000000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 30.3 | 6 | spell:5019=56.4, other:mana_gain=38.0, spell:1456=38.0, spell:1106=27.7, spell:2941=11.3 | {OtherID: 13}, {SpellID: 603} |
-| 38 | 25552000130201030-0000000000000000000-0000000000000000 | main_hand:1664 ranged:13064 | 44.7 | 6 | spell:5019=52.0, spell:7641=26.2, other:mana_gain=24.4, spell:11687=24.4, spell:2941=11.1 | {OtherID: 13}, {SpellID: 603} |
-| 40 | 25552000130201050-0000000000000000000-0000000000000000 | main_hand:1664 ranged:5216 | 67.6 | 6 | spell:5019=49.1, spell:7641=29.7, other:mana_gain=28.3, spell:11687=28.3, spell:11665=10.8 | {OtherID: 13}, {SpellID: 1316697}, {SpellID: 603} |
-| 50 | 25552000130201051-2340000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 114.2 | 7 | spell:5019=63.0, other:mana_gain=27.7, spell:11688=27.7, spell:1316697=27.7, spell:11659=11.1 | {OtherID: 13}, {SpellID: 603} |
-| 60 | 25552000130201051-2355220000000000000-0000000000000000 | main_hand:22630 ranged:22821 | 319.2 | 8 | spell:5019=68.1, spell:1316697=27.7, other:mana_gain=23.1, spell:11689=23.1, spell:25307=18.7 | {OtherID: 13} |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:263430 | 10.5 | 6 | spell:5019=61.5, other:mana_gain=55.4, spell:1454=55.4, spell:695=15.7, spell:172=13.3 | {OtherID: 13}, {SpellID: 18288} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 22.9 | 6 | spell:5019=61.6, other:mana_gain=34.9, spell:1455=34.9, spell:1088=15.8, spell:6222=11.9 | {OtherID: 13}, {SpellID: 18288} |
+| 30 | 25552000110000000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 36.4 | 7 | spell:5019=63.6, other:mana_gain=38.6, spell:1456=38.6, spell:1106=24.3, spell:2941=10.8 | {OtherID: 13} |
+| 38 | 25552000130201030-0000000000000000000-0000000000000000 | main_hand:1664 ranged:13064 | 55.7 | 7 | spell:5019=55.1, other:mana_gain=26.3, spell:11687=26.3, spell:7641=24.0, spell:2941=10.8 | {OtherID: 13} |
+| 40 | 25552000130201050-0000000000000000000-0000000000000000 | main_hand:1664 ranged:5216 | 78.6 | 7 | spell:5019=57.4, other:mana_gain=28.3, spell:11687=28.3, spell:7641=25.0, spell:11665=10.6 | {OtherID: 13}, {SpellID: 1316697} |
+| 50 | 25552000130201051-2340000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 125.3 | 8 | spell:5019=65.2, other:mana_gain=27.3, spell:11688=27.3, spell:1316697=23.6, spell:11671=10.6 | {OtherID: 13} |
+| 60 | 25552000130201051-2355220000000000000-0000000000000000 | main_hand:22630 ranged:22821 | 309.6 | 8 | spell:5019=69.6, spell:1316697=27.4, other:mana_gain=22.6, spell:11689=22.6, spell:11661=17.9 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Bane of Agony (spell 980)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7799)
 - Shadow Cleave (spell 403839)
 
 ### Level 20
 
-- Bane of Agony (spell 1014)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7800)
 - Health Funnel (spell 3698)
@@ -125,7 +120,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
-- Bane of Agony (spell 6217)
 - Conflagrate (spell 1293817)
 - Drain Soul (spell 8288)
 - Firebolt (spell 7801)
@@ -140,7 +134,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
-- Bane of Agony (spell 11711)
 - Conflagrate (spell 1293818)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
@@ -155,7 +148,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Bane of Agony (spell 11711)
 - Conflagrate (spell 17962)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
@@ -174,7 +166,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Bane of Agony (spell 11712)
 - Conflagrate (spell 18930)
 - Drain Soul (spell 8289)
 - Firebolt (spell 11762)
@@ -193,7 +184,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Bane of Agony (spell 11713)
 - Conflagrate (spell 18932)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
@@ -213,9 +203,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warlock-affliction level=10 kind=unresolved_id action={SpellID: 603}
-- warlock-affliction level=20 kind=unresolved_id action={SpellID: 603}
-- warlock-affliction level=30 kind=unresolved_id action={SpellID: 603}
-- warlock-affliction level=38 kind=unresolved_id action={SpellID: 603}
-- warlock-affliction level=40 kind=unresolved_id action={SpellID: 603}
-- warlock-affliction level=50 kind=unresolved_id action={SpellID: 603}
+None.

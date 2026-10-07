@@ -15,12 +15,14 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/internal/spellranks"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -807,9 +809,10 @@ func formatGear(gear []api.GearSlot) string {
 // spellRankEntry is one rank of one named ability, from
 // data/builds/<build>/spellranks.json.
 type spellRankEntry struct {
-	ID    int `json:"id"`
-	Level int `json:"level"`
-	Rank  int `json:"rank"`
+	ID    int  `json:"id"`
+	Level int  `json:"level"`
+	Rank  int  `json:"rank"`
+	Book  bool `json:"book"`
 }
 
 type spellRanksFile struct {
@@ -829,7 +832,21 @@ func loadSpellRanks(repoRoot, build string) (spellRanksFile, error) {
 	if err := json.Unmarshal(b, &f); err != nil {
 		return spellRanksFile{}, fmt.Errorf("ladder: parsing %s: %w", path, err)
 	}
+	dropUnavailableRanks(&f)
 	return f, nil
+}
+
+// dropUnavailableRanks removes the Ahn'Qiraj book ranks while the engine's
+// core.IncludeAQ is off, so every later reader of the table (the tiers, the
+// learn levels, the learned list) sees only ranks a character can learn.
+func dropUnavailableRanks(f *spellRanksFile) {
+	for _, spells := range f.Classes {
+		for name, rows := range spells {
+			spells[name] = slices.DeleteFunc(rows, func(e spellRankEntry) bool {
+				return !spellranks.RankAvailable(e.Book)
+			})
+		}
+	}
 }
 
 // junkAbilityName matches spellranks.json keys that are not a named
