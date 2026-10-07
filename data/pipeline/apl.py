@@ -106,6 +106,12 @@ ENGINE_AURA_IDS: dict[int, str] = {
         "toggle is on; the client's own copy of the same debuff is 22959, "
         "but nothing in the engine ever registers that id"
     ),
+    5302: (
+        "Mongoose Bite's window (sim/hunter's MongooseBiteWindowAura): the "
+        "client's Defensive State, which a dodge or an Expose Prey proc opens "
+        "for 5 seconds; it is not a hunter class spell, so spellconst never "
+        "carries it, and the Survival rotation only gates on it"
+    ),
 }
 
 
