@@ -3,7 +3,7 @@ title: Assassination Rogue in Forever
 classSlug: rogue
 spec: assassination
 role: dps
-build: 'FS1:1.60.1.70009:rogue:night-elf:32500000551501051/3252/51:'
+build: 'FS1:1.60.1.70009:rogue:night-elf:32502110551501001/302303/512:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Assassination Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -30,9 +30,11 @@ Assassination is a poison-focused melee DPS spec that trades Combat's flat weapo
 
 ## Talents and builds
 
-Reading the tree in priority order for a single-target build: **Malice** (flat crit chance with attacks and poisons) and **Lethality** (bonus critical strike damage on Sinister Strike, Gouge, Backstab, Mutilate, Ghostly Strike, and Hemorrhage) come first as damage multipliers that scale everything after them. **Seal Fate** follows, since it converts combo-point-generating crits into bonus combo points and rewards the crit investment already made. **Cold Blood** is the spec's signature burst cooldown, guaranteeing a critical strike on the next attack. **Vile Poisons** and **Improved Poisons** raise both poison damage and application chance, which matters more here than in the other two trees. The two talent-granted abilities new to this tree in Forever, **Mutilate** (a dual-wield combo builder that hits harder against a target already carrying your poisons) and **Venom** (a finisher that raises how hard and how often your poisons land), round out the kit and are both live in this site's simulated rotation once talented — see Rotation below.
+Reading the tree in priority order for a single-target build: **Malice** (flat crit chance with attacks and poisons) and **Lethality** (bonus critical strike damage on Sinister Strike, Gouge, Backstab, Mutilate, Ghostly Strike, and Hemorrhage) come first as damage multipliers that scale everything after them. **Seal Fate** converts combo-point-generating crits into bonus combo points, but this build no longer takes it (see below). **Cold Blood** is the spec's signature burst cooldown, guaranteeing a critical strike on the next attack. **Vile Poisons** and **Improved Poisons** raise both poison damage and application chance, which matters more here than in the other two trees. The two talent-granted abilities new to this tree in Forever, **Mutilate** (a dual-wield combo builder that hits harder against a target already carrying your poisons) and **Venom** (a finisher that raises how hard and how often your poisons land), round out the kit and are both live in this site's simulated rotation once talented — see Rotation below.
 
-Point allocation is heavily weighted into Assassination: roughly 33 points are needed to reach Venom at the bottom of the tree, leaving the rest split as a handful of points in Combat for weapon-skill and survivability talents and a few in Subtlety for utility. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+The point allocation was re-searched against the simulated rotation on the current engine, and the build moved. It gained about +19% in the search run by re-spending points the engine measures at zero damage: **Seal Fate** (all five points), **Improved Sinister Strike** and three of the five **Lightning Reflexes** went to **Murder**, **Improved Slice and Dice**, **Relentless Strikes** (the largest single gain on the list), **Puncturing Wounds**, **Precision** and **Opportunity**. The trade is honest: Seal Fate's bonus combo points are not credited by the simulation, so its value here is unmeasured rather than proven nil, and a player who values it can take it back at a real cost in the measured damage. The search also wanted to drop **Venom**, because the engine scores it slightly negative, but Venom is the finisher the rotation casts, so it stays. Every other point of the old build stays, including **Cold Blood**, **Mutilate**, the poison talents, and the Improved Gouge, Remorseless Attacks, Camouflage and Master of Deception points the engine cannot yet measure.
+
+Point allocation is still heavily weighted into Assassination: 32 points reach Venom at the bottom of the tree, with 11 in Combat (Improved Eviscerate, Lightning Reflexes, Puncturing Wounds, Precision) and 8 in Subtlety (Camouflage, Master of Deception, Opportunity). Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
 
 ## Rotation and priority
 
