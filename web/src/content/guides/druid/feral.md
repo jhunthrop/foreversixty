@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70009:druid:night-elf:0/54232212120032010001/55532:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Strength, Agility, Critical strike, Attack power, Feral attack power, Hit, Melee haste]
 description: 'Talents, rotation, stats, and gear for Feral Druid in Forever, covering both Cat Form DPS and Bear Form tanking from the one tree.'
-updated: 2026-09-24
+updated: 2026-10-07
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -47,6 +47,8 @@ The point split differs by role. This build (a cat-DPS spread) spends 31 points 
 ## Rotation and priority
 
 **Cat DPS**: open with Tiger's Fury, since it costs nothing and refunds energy on its own 30-second cooldown, and keep it on cooldown throughout. Keep Rake ticking on the target — it's a strong bleed that costs no combo points, so upkeep on it shouldn't lapse. At 5 combo points, cast Rip if it isn't already running; once Rip is up, spend 5 combo points on Ferocious Bite instead of letting them cap out uselessly. Shred fills every other global, building combo points the rest of the time.
+
+**Shifting Power**: this is the new energy tool in the tree, replacing King of the Jungle. It is instant, turns a slice of your base mana into 40 energy, and has a 16 second cooldown (Improved Shifting Power takes 4 or 8 seconds off that). Press it every time it comes off cooldown, but only when your energy is 60 or lower, so the whole 40 fits under the 100 cap; if you are above that, spend a few energy on Shred first and press it on the next global. It sits ahead of Tiger's Fury and every builder in the order. The mana is otherwise unused in cat form, and Natural Shapeshifter makes it cheaper. Blizzard has not published whether it shares the global cooldown; our simulator treats it as an ordinary global, so if the real spell turns out to be off the global, you will do slightly better than this advice. The build above does not spend a point in it yet: Shifting Power sits behind three points of Shredding Attacks, and our simulator rates taking both well ahead of the points they would replace, so open the planner and move them in before you rely on this rotation.
 
 **Bear tank**: this site doesn't yet have a curated rotation file for tanking, so this is general Classic-era tanking knowledge rather than a sourced priority list. Open threat with Growl, then keep the new baseline Lacerate bleed refreshed on the target alongside Mangle or Maul as rage allows; Swipe covers multiple targets, and Demoralizing Roar reduces incoming melee damage for the group. Shredding Attacks' rage discount on Lacerate makes upkeep cheaper once talented.
 

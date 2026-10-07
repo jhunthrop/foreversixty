@@ -185,6 +185,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"druid-balance": {
 		"{SpellID: 24977}": "Insect Swarm is a single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930), not a baseline spell every druid learns by level; sim/druid/insect_swarm.go's registerInsectSwarmSpell now gates on Talents.InsectSwarm (rotation-accuracy program, 2026-09-28 -- it previously did not check the talent at all, so a zero-talent character could cast it same as this smoke build does). This build takes none.",
 	},
+	"druid-feral": {
+		"{SpellID: 1322605}": "Shifting Power is a Feral talent (hotfix-only spell 1322605, sim/druid/shifting_power.go, gated on Talents.ShiftingPower); this build takes none.",
+	},
 }
 
 const noPotionWarning = "OtherActionPotion: this build carries no consumables, so there is " +
