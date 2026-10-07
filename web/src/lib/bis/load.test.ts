@@ -126,6 +126,14 @@ const baseBand: BisBand = {
 };
 
 describe('normaliseBisFile', () => {
+  it('reads hit_to_cap through, and defaults an absent key to null', () => {
+    const withKey = { ...baseBand, hit_to_cap: { baseline: 3, specials: 6, white: 25 } };
+    const file = { bands: [withKey, baseBand] } as unknown as BisFile;
+    const [keyed, bare] = normaliseBisFile(file).bands;
+    expect(keyed.hit_to_cap).toEqual({ baseline: 3, specials: 6, white: 25 });
+    expect(bare.hit_to_cap).toBeNull();
+  });
+
   it('defaults a missing coverage field to {} (a file published before guardrail A landed)', () => {
     const { coverage: _coverage, ...bandWithoutCoverage } = baseBand;
     const file = {

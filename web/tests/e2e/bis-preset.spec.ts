@@ -26,6 +26,15 @@ test('level 60 opens on the raid-ready preset with a caption naming what it incl
   await expect(caption).toContainText('2 buffs, 1 debuff and 2 consumables');
 });
 
+test('both presets state what the sim fights, next to the caption', async ({ page }) => {
+  await page.goto(PRESET_PAGE);
+  const note =
+    /Simulated against a level-63 target of no creature type over 180 seconds; slaying bonuses such as attack power against Undead count for nothing here\./;
+  await expect(page.getByTestId('bis-preset-caption-alliance-60-raid-target')).toHaveText(note);
+  await option(page, 'bare').click();
+  await expect(page.getByTestId('bis-preset-caption-alliance-60-bare-target')).toHaveText(note);
+});
+
 test('the id lists live in a disclosure, not inline', async ({ page }) => {
   await page.goto(PRESET_PAGE);
   const caption = page.getByTestId('bis-preset-caption-alliance-60-raid');
@@ -59,6 +68,24 @@ test('a ?preset=bare link opens on the bare numbers, stat weights and list inclu
   await expect(page.getByTestId('bis-weights-alliance-60-bare')).toBeVisible();
   await expect(page.getByTestId('bis-weights-alliance-60')).toBeHidden();
   await expect(page.getByTestId('bis-list-alliance-60-bare')).toBeVisible();
+});
+
+test('the weights carry a hit-to-cap line per preset, white clause only when published', async ({ page }) => {
+  await page.goto(PRESET_PAGE);
+  const raidLine = page.getByTestId('bis-weights-alliance-60-hit-cap');
+  await expect(raidLine).toHaveText('Hit to cap: 6% for specials, 25% for white swings');
+  await expect(raidLine).toHaveAttribute('title', /full weight until the cap and nothing past it/);
+  await expect(raidLine).toHaveAttribute('title', /10 hit rating and 14 crit rating are 1%/);
+  await option(page, 'bare').click();
+  await expect(page.getByTestId('bis-weights-alliance-60-bare-hit-cap')).toHaveText(
+    'Hit to cap: 6% for specials',
+  );
+});
+
+test('a band without the key shows no hit-to-cap line and keeps the table in place', async ({ page }) => {
+  await page.goto('/bis/warrior/protection#band-horde-60');
+  await expect(page.getByTestId('bis-weights-horde-60')).toBeAttached();
+  await expect(page.locator('[data-testid^="bis-weights-horde-60"][data-testid$="-hit-cap"]')).toHaveCount(0);
 });
 
 test('below level 60 there is no control: bare only', async ({ page }) => {

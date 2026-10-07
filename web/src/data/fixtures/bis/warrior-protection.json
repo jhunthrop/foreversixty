@@ -50,6 +50,10 @@
           "error": 0.2
         }
       ],
+      "hit_to_cap": {
+        "baseline": 3,
+        "specials": 6
+      },
       "slots": [
         {
           "slot": "head",
@@ -474,6 +478,11 @@
           "error": 0.22
         }
       ],
+      "hit_to_cap": {
+        "baseline": 3,
+        "specials": 6,
+        "white": 25
+      },
       "slots": [
         {
           "slot": "head",

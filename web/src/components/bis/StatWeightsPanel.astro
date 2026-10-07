@@ -17,6 +17,7 @@
 // redirect lives; a second Astro page at this path would shadow that rule, which is
 // exactly what tripped the postbuild guard when this lane first tried it.
 import { bisCopy } from '../../lib/bis/copy';
+import type { HitCapLine } from '../../lib/bis/hit-cap';
 import type { ScaleRow } from '../../lib/bis/panel-view';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
 
@@ -25,6 +26,8 @@ interface Props {
   scaleRows: ScaleRow[];
   scaleNoteLine: string;
   hasteCaptionLine: string | undefined;
+  /** Absent when the band publishes no `hit_to_cap`: the line is then not rendered at all. */
+  hitCap?: HitCapLine | undefined;
   /** `bis-weights-<faction>-<band>` -- assembled by the caller, which alone knows the
    *  faction and band this panel belongs to (one instance per band/faction pair renders on
    *  the page, so the generic `bis-stat-weights` class name alone is not unique -- same
@@ -32,7 +35,7 @@ interface Props {
   testId: string;
 }
 
-const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, testId } = Astro.props;
+const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, hitCap, testId } = Astro.props;
 const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLine} ${hasteCaptionLine}`;
 ---
 
@@ -80,6 +83,11 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
       </div>
     ))}
   </div>
+  {hitCap !== undefined && (
+    <p class="stat-weights-hit-cap text-muted" title={hitCap.title} data-testid={`${testId}-hit-cap`}>
+      {hitCap.text}
+    </p>
+  )}
   <p class="stat-weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
   <a
     href="/addon"
@@ -155,6 +163,11 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   .stat-weights-num-muted {
     font-size: 11px;
     color: var(--color-muted);
+  }
+  .stat-weights-hit-cap {
+    margin: 4px 0 0;
+    font-size: 12px;
+    cursor: help;
   }
   .stat-weights-addon-blurb {
     margin: 4px 0 0;

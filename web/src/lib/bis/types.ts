@@ -170,6 +170,19 @@ export interface BisPresetMeta {
   notes?: string;
 }
 
+/** `BisBand.hit_to_cap` (`sim/cmd/leveling-bis/hitcap.go`): the weights character's distance to
+ *  the hit caps, all in engine percent of hit (10 hit rating = 1%). Published only for a band
+ *  whose spec swings or shoots; casters carry none. */
+export interface BisHitToCap {
+  /** The percent of hit the band's character has. */
+  baseline: number;
+  /** Percent still worth its full weight for specials, before the 9% cap against a level-63
+   *  target. */
+  specials: number;
+  /** Percent to the white-swing cap; present only for a dual-wield spec. */
+  white?: number;
+}
+
 export interface BisBand {
   /** Absent on a file published before presets: such an entry is bare. */
   preset?: BisPresetId;
@@ -180,6 +193,9 @@ export interface BisBand {
   talents: string;
   talent_points: number;
   weights: BisStatWeight[];
+  /** See `BisHitToCap`. Absent on a file published before the key, and on casters;
+   *  `normaliseBisFile` (`load.ts`) defaults it to `null`. */
+  hit_to_cap?: BisHitToCap | null;
   slots: BisSlot[];
   set_dps: number;
   no_source_count: number;

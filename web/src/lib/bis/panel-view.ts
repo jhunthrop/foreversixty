@@ -34,6 +34,7 @@ import type {
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { Slot } from '../planner/types';
+import { hitCapLine, type HitCapLine } from './hit-cap';
 import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 
 /** The two ranker-own `swap_note` templates (`sim/cmd/leveling-bis/report.go`'s own
@@ -560,6 +561,9 @@ export interface BandInfo {
   /** Haste's own one-line caption (`hasteCaptionFor`) -- `undefined` when this spec carries
    *  no haste weight_stat, or the band's own weights could not be trusted at all. */
   hasteCaptionLine: string | undefined;
+  /** The "Hit to cap" line under the rail (`hitCapLine`) -- `undefined` when the band
+   *  publishes no `hit_to_cap` (a caster, or a file older than the key). */
+  hitCap: HitCapLine | undefined;
   /** This band's own wearable-slot denominator (spec §4.B/§4.E) -- 17 minus the off hand
    *  under a two-hander, minus every still-empty trinket slot, computed from `rows`. */
   totalSlots: number;
@@ -694,6 +698,7 @@ export function bandInfosFor(
         scaleRows,
         scaleNoteLine,
         hasteCaptionLine,
+        hitCap: hitCapLine(bandData.hit_to_cap),
         totalSlots,
       },
     ];
