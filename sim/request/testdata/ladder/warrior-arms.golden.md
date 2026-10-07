@@ -39,7 +39,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below).
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -90,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 01000000000000000-00000000000000000-000000000000000000 | main_hand:263407 | 11.5 | 3 | other:attack/1=61.0, spell:6546=17.3, other:rage_gain=11.0, spell:6673=2.0, spell:2687=1.0 | - |
-| 20 | 05321000000000000-00000000000000000-000000000000000000 | main_hand:6631 | 17.4 | 4 | other:attack/1=63.1, spell:6547=14.2, other:rage_gain=12.1, spell:7384=4.7, spell:5242=2.0 | - |
-| 30 | 05325213000000000-00000000000000000-000000000000000000 | main_hand:13045 | 42.8 | 5 | other:rage_gain=83.1, other:attack/1=63.1, spell:6548=11.9, spell:5308=11.0, spell:7887=5.4 | - |
-| 38 | 05325213032300000-00000000000000000-000000000000000000 | main_hand:873 | 55.5 | 5 | other:rage_gain=83.0, other:attack/1=49.6, spell:6548=11.9, spell:7887=10.3, spell:20658=9.8 | - |
-| 40 | 05325213032310001-00000000000000000-000000000000000000 | main_hand:1982 | 96.4 | 6 | other:rage_gain=99.1, other:attack/1=65.3, spell:12294=19.4, spell:7887=14.7, spell:11572=9.9 | - |
-| 50 | 05325213032310001-05050000000000000-000000000000000000 | main_hand:812 | 119.4 | 6 | other:rage_gain=129.8, other:attack/1=59.1, spell:21551=20.9, spell:11584=13.7, spell:20661=10.4 | - |
-| 60 | 05325213032310001-05050000000000000-055000000000000000 | main_hand:22798 | 193.3 | 6 | other:rage_gain=124.0, other:attack/1=48.3, spell:21553=22.2, spell:11585=12.2, spell:11574=10.2 | - |
+| 10 | 01000000000000000-00000000000000000-000000000000000000 | main_hand:263407 | 11.2 | 3 | other:attack/1=61.0, spell:6546=17.3, other:rage_gain=11.0, spell:6673=2.0, spell:2687=1.0 | - |
+| 20 | 05321000000000000-00000000000000000-000000000000000000 | main_hand:6631 | 16.8 | 4 | other:attack/1=63.1, spell:6547=14.2, other:rage_gain=12.1, spell:7384=4.7, spell:5242=2.0 | - |
+| 30 | 05325213000000000-00000000000000000-000000000000000000 | main_hand:13045 | 41.9 | 5 | other:rage_gain=83.1, other:attack/1=63.1, spell:6548=11.9, spell:5308=11.0, spell:7887=5.4 | - |
+| 38 | 05325213032300000-00000000000000000-000000000000000000 | main_hand:873 | 53.6 | 5 | other:rage_gain=83.0, other:attack/1=49.6, spell:6548=11.9, spell:7887=10.3, spell:20658=9.8 | - |
+| 40 | 05325213032310001-00000000000000000-000000000000000000 | main_hand:1982 | 93.6 | 6 | other:rage_gain=99.1, other:attack/1=65.3, spell:12294=19.4, spell:7887=14.7, spell:11572=9.9 | - |
+| 50 | 05325213032310001-05050000000000000-000000000000000000 | main_hand:812 | 115.3 | 6 | other:rage_gain=129.8, other:attack/1=59.1, spell:21551=20.9, spell:11584=13.7, spell:20661=10.4 | - |
+| 60 | 05325213032310001-05050000000000000-055000000000000000 | main_hand:22798 | 187.6 | 6 | other:rage_gain=124.0, other:attack/1=48.3, spell:21553=22.2, spell:11585=12.2, spell:11574=10.2 | - |
 
 ## Learned but unused (informational)
 
