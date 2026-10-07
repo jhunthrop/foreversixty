@@ -271,6 +271,8 @@ EXPECTED_ABILITY_NAMES = {
         11567: "Heroic Strike",
     },
     "mage-frost": {
+        1240047: "Ice Lance",
+        400669: "Fingers of Frost",
         10181: "Frostbolt",
         5019: "Shoot",
     },
