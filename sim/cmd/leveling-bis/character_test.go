@@ -172,3 +172,9 @@ func TestLadderMeleeWeaponsArmsTheWeightsCharacterForMelee(t *testing.T) {
 		t.Fatalf("a caster = %+v, want no melee weapon", got)
 	}
 }
+
+func TestRankerEncounterHasNoCreatureType(t *testing.T) {
+	if got := rankerEncounter().TargetType; got != api.TargetTypeUnknown {
+		t.Fatalf("ranker target type = %q, want %q so no slaying bonus is credited", got, api.TargetTypeUnknown)
+	}
+}

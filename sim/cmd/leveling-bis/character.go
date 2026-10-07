@@ -203,7 +203,7 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 		Spec:          spec.Spec,
 		Source:        api.CharacterSource{Kind: api.SourceBuild},
 		Character:     ch,
-		Encounter:     api.DefaultEncounter(),
+		Encounter:     rankerEncounter(),
 		Iterations:    iterations,
 		RandomSeed:    seed,
 		Weights:       &api.WeightsSpec{Stats: spec.WeightStats, Reference: spec.ReferenceStat},
@@ -246,8 +246,19 @@ func plainRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed int6
 		Spec:          spec.Spec,
 		Source:        api.CharacterSource{Kind: api.SourceBuild},
 		Character:     ch,
-		Encounter:     api.DefaultEncounter(),
+		Encounter:     rankerEncounter(),
 		Iterations:    iterations,
 		RandomSeed:    seed,
 	}
+}
+
+// rankerEncounter is the default encounter with no creature type: a raid
+// boss never grants a slaying bonus (the engine's own default target type
+// is Humanoid, which would credit humanoid-slaying gear), so every
+// published number is against a level-63 target of unknown type and a
+// "+45 Attack Power against Undead" bracer counts for exactly nothing.
+func rankerEncounter() api.EncounterSpec {
+	e := api.DefaultEncounter()
+	e.TargetType = api.TargetTypeUnknown
+	return e
 }
