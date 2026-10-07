@@ -9,6 +9,11 @@ import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from '../items/sourc
 
 export { pvpRankTitle };
 
+/** `1 buff`, `2 buffs`. */
+function countOf(count: number, noun: string): string {
+  return `${count} ${noun}${count === 1 ? '' : 's'}`;
+}
+
 export const bisCopy = {
   navLabel: 'Leveling BiS',
   indexTitle: 'Leveling BiS',
@@ -301,7 +306,7 @@ export const bisCopy = {
   presetOptionRaid: 'Raid-ready',
   presetOptionBare: 'Bare',
   presetRaidCaption: (label: string, buffs: number, debuffs: number, consumes: number): string =>
-    `${label}: ${buffs} buffs, ${debuffs} debuffs and ${consumes} consumables.`,
+    `${label}: ${countOf(buffs, 'buff')}, ${countOf(debuffs, 'debuff')} and ${countOf(consumes, 'consumable')}.`,
   presetBareCaption: 'Bare character: no raid buffs, debuffs or consumables.',
   presetDetailsSummary: 'What is included',
   presetBuffsHeading: 'Buffs',

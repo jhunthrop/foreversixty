@@ -127,7 +127,7 @@ describe('preset labels and captions', () => {
   });
 
   it('counts the includes in the caption and drops empty groups from the disclosure', () => {
-    expect(raidCaptionFor(RAID_META)).toBe('Raid-ready, Phase 1: 1 buffs, 0 debuffs and 2 consumables.');
+    expect(raidCaptionFor(RAID_META)).toBe('Raid-ready, Phase 1: 1 buff, 0 debuffs and 2 consumables.');
     expect(effectGroupsFor(RAID_META).map((group) => group.heading)).toEqual(['Buffs', 'Consumables']);
   });
 });
