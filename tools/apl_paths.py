@@ -58,6 +58,7 @@ def written_specs(curated_dir: pathlib.Path, specs_json: pathlib.Path):
 FORK_UI_DIRS = {
     "druid-balance": "balance_druid",
     "druid-feral": "feral_druid",
+    "druid-feral-bear": "feral_tank_druid",
     "druid-restoration": "restoration_druid",
     "hunter-beast-mastery": "hunter",
     "hunter-marksmanship": "hunter",
