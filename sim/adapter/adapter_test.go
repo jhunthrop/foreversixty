@@ -881,6 +881,42 @@ func TestWeightsMapping(t *testing.T) {
 	}
 }
 
+// A healer's weights are the engine's healing table, not its damage one:
+// a result whose damage weights are all zero still normalises.
+func TestHealingWeightsReadTheHealingTable(t *testing.T) {
+	req := api.SimRequest{Weights: &api.WeightsSpec{
+		Stats:     []string{"healing_power", "intellect", "mp5"},
+		Reference: "healing_power",
+	}}
+	stats := make([]float64, len(proto.Stat_name))
+	stdev := make([]float64, len(proto.Stat_name))
+	stats[proto.Stat_StatHealingPower] = 0.5
+	stats[proto.Stat_StatIntellect] = 0.3
+	stats[proto.Stat_StatMP5] = 1.0
+	stdev[proto.Stat_StatHealingPower] = 0.01
+
+	res := &proto.StatWeightsResult{
+		Dps: &proto.StatWeightValues{Weights: &proto.UnitStats{Stats: make([]float64, len(proto.Stat_name))}},
+		Hps: &proto.StatWeightValues{
+			Weights:      &proto.UnitStats{Stats: stats},
+			WeightsStdev: &proto.UnitStats{Stats: stdev},
+		},
+	}
+	if _, err := Weights(res, req); err == nil {
+		t.Error("the damage table weighs nothing for a healer, so Weights must refuse it")
+	}
+	got, err := HealingWeights(res, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]float64{"healing_power": 1, "intellect": 0.6, "mp5": 2}
+	for _, w := range got {
+		if diff := w.Weight - want[w.Stat]; diff > 1e-9 || diff < -1e-9 {
+			t.Errorf("%s weight = %v, want %v", w.Stat, w.Weight, want[w.Stat])
+		}
+	}
+}
+
 // TestWeightsConvertsPopulationStdevToStandardError pins the
 // denominator sim/api.WeightsIterationsFactor's doc documents:
 // sim/core/statweight.go's WeightsStdev is a population standard
