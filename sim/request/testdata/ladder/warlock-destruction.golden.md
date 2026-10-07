@@ -94,12 +94,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:263430 | 8.9 | 5 | other:mana_gain=58.2, spell:1454=58.2, spell:5019=57.6, spell:695=15.9, spell:172=14.3 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
-| 20 | 00000000000000000-0000000000000000000-2351000000000000 | main_hand:890 ranged:5243 | 19.3 | 5 | spell:5019=54.8, other:mana_gain=43.1, spell:1455=43.1, spell:1088=18.1, spell:1094=13.0 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
-| 30 | 00000000000000000-0000000000000000000-2353224000000000 | main_hand:249392 ranged:5213 | 30.7 | 5 | spell:5019=63.1, other:mana_gain=41.0, spell:1456=41.0, spell:1106=23.8, spell:2941=13.3 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867}, {SpellID: 412758}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-2353225100101040 | main_hand:1664 ranged:13064 | 57.3 | 7 | spell:5019=63.3, other:mana_gain=35.1, spell:11687=35.1, spell:2941=15.7, spell:1293818=13.8 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
-| 40 | 00000000000000000-0000000000000000000-2353225100101051 | main_hand:1664 ranged:5216 | 81.9 | 7 | spell:5019=66.6, other:mana_gain=40.5, spell:11687=40.5, spell:412758=15.6, spell:11665=13.1 | {OtherID: 13}, {SpellID: 603} |
-| 50 | 25300000000000000-0000000000000000000-2353225100101051 | main_hand:812 ranged:249232 | 105.4 | 7 | spell:5019=58.4, other:mana_gain=30.7, spell:11688=30.7, spell:11667=13.4, spell:1293812=13.4 | {OtherID: 13}, {SpellID: 603} |
-| 60 | 25532300000000000-0000000000000000000-2353225100101051 | main_hand:22630 ranged:22821 | 300.1 | 8 | spell:5019=61.5, other:mana_gain=27.4, spell:11689=27.4, spell:1293813=25.2, spell:11668=14.1 | {OtherID: 13} |
+| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:890 ranged:5243 | 19.3 | 5 | spell:5019=53.9, other:mana_gain=43.8, spell:1455=43.8, spell:1088=18.8, spell:1094=12.8 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
+| 30 | 00000000000000000-0000000000000000000-2053225101000000 | main_hand:249392 ranged:5213 | 34.7 | 6 | spell:5019=69.5, other:mana_gain=46.2, spell:1456=46.2, spell:1106=19.9, spell:2941=12.8 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
+| 38 | 00000000000000000-0000000000000000000-2053225103101310 | main_hand:1664 ranged:13064 | 59.2 | 7 | spell:5019=63.3, other:mana_gain=37.5, spell:11687=37.5, spell:2941=18.7, spell:1293818=14.6 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
+| 40 | 00000000000000000-0000000000000000000-2053225103101330 | main_hand:1664 ranged:5216 | 82.7 | 7 | spell:5019=70.6, other:mana_gain=40.1, spell:11687=40.1, spell:11665=15.7, spell:17962=13.7 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
+| 50 | 25000000000000000-0000000000000000000-2053225103101351 | main_hand:812 ranged:249232 | 115.3 | 7 | spell:5019=52.0, other:mana_gain=31.8, spell:11688=31.8, spell:1293812=14.2, spell:11667=13.7 | {OtherID: 13}, {SpellID: 603} |
+| 60 | 25532000000000000-0000000000000000000-2053225103101351 | main_hand:22630 ranged:22821 | 322.3 | 8 | spell:5019=61.5, other:mana_gain=27.4, spell:11689=27.4, spell:1293813=25.2, spell:11668=14.1 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -136,7 +136,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Rain of Fire (spell 5740)
 - Searing Pain (spell 17919)
 - Shadow Cleave (spell 403842)
-- Shadowburn (spell 18867)
 
 ### Level 38
 
@@ -160,10 +159,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 3700)
 - Hellfire (spell 1949)
 - Hellfire Effect (spell 5857)
+- Incinerate (spell 412758)
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
 - Searing Pain (spell 17920)
-- Shadow Bolt (spell 7641)
 - Shadow Cleave (spell 403843)
 - Unstable Affliction (spell 427717)
 - Wrack (spell 1316697)
@@ -212,7 +211,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - warlock-destruction level=30 kind=unresolved_id action={SpellID: 603}
 - warlock-destruction level=38 kind=unresolved_id action={SpellID: 603}
 - warlock-destruction level=40 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=40 kind=zero_casts spell="Shadow Bolt" id=7641 authored=11661
 - warlock-destruction level=50 kind=unresolved_id action={SpellID: 603}
 - warlock-destruction level=50 kind=zero_casts spell="Shadow Bolt" id=11659 authored=11661
 - warlock-destruction level=60 kind=zero_casts spell="Shadow Bolt" id=11661 authored=11661
