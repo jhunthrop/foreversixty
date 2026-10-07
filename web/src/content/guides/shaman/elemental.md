@@ -3,7 +3,7 @@ title: Elemental Shaman in Forever
 classSlug: shaman
 spec: elemental
 role: dps
-build: 'FS1:1.60.1.70009:shaman:dwarf:4532310300103051/0/553322:'
+build: 'FS1:1.60.1.70009:shaman:dwarf:553231130010305/01/553302:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -32,7 +32,7 @@ Elemental is Shaman's ranged spellcasting DPS spec, built on Lightning Bolt and 
 
 In rough priority order: **Concussion** raises the damage of Lightning Bolt, Chain Lightning, and Earth Shock, a broad multiplier across the entire single-target and AoE kit. **Call of Flame**, reworked in Forever, now boosts Lava Burst and Fire Nova alongside Flame Shock within a single talent instead of touching only the Fire Totems it used to buff, effectively unifying the tree's fire-damage kit under one pick. **Elemental Fury** raises critical strike damage on the totems and elements the spec relies on, moved earlier in the tree with a lower first-rank value than 1.12's single large-rank version. **Lightning Overload** gives Lightning Bolt and Chain Lightning a chance to cast a second, weaker bolt for free, a straight damage-per-cast increase. **Elemental Alacrity** cuts the cast time of Lightning Bolt, Chain Lightning, and Lava Burst further on top of the baseline speed-up Forever already gave those spells — maxed, it brings deep Elemental's effective cast speed roughly back to where 1.12 Elemental topped out, since the starting point is already faster. **Lava Burst**, the tree's new capstone nuke, hits harder against a target already carrying Flame Shock.
 
-Point allocation runs deep into Elemental to reach Lava Burst at the bottom of the tree (31 points), with the remaining 20 in Restoration for mana-sustain talents — Improved Healing Wave and Totemic Focus both maxed, then Mindfulness, Natural Grace, Tidal Focus, and Improved Reincarnation for the rest of the budget. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
+Point allocation runs deep into Elemental to reach the bottom of the tree (32 points: Convection, Concussion, Call of Flame, Elemental Fury and Lightning Overload as above, plus Elemental Focus and Call of Thunder), with 1 point in Enhancement for Thundering Strikes and the remaining 18 in Restoration for Improved Healing Wave and Totemic Focus (both maxed), Mindfulness, Natural Grace, and Improved Reincarnation. This replaces the earlier 31/0/20 build, and the talent search on the current engine put it about 10% ahead, beyond the run's error. Two things moved. Elemental Focus is now taken: it was the single largest per-point gain the search found. Convection takes its fifth rank and Thundering Strikes its first. The points came from Tidal Focus, which adds no damage in the engine, and from the Lava Burst talent itself, a fire-and-forget capstone this loop never casts; the loop never casts Lava Burst and the search measured the point as a small net loss, so it went to Elemental Focus. Every talent the engine does not yet model (Elemental Warding, Mindfulness, Natural Grace, Improved Healing Wave, Improved Reincarnation) stays as before, since the search cannot judge it. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
 
 ## Rotation and priority
 

@@ -3,7 +3,7 @@ title: Enhancement Shaman in Forever
 classSlug: shaman
 spec: enhancement
 role: dps
-build: 'FS1:1.60.1.70009:shaman:dwarf:553322/253130030005102051/0:'
+build: 'FS1:1.60.1.70009:shaman:dwarf:32303/255130030005102051/052:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Strength, Attack power, Hit, Critical strike, Agility, Melee haste]
 description: 'Enhancement Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -32,7 +32,7 @@ Enhancement is Shaman's melee DPS spec, combining weapon imbues like Windfury We
 
 In rough priority order: **Thundering Strikes** raises critical strike chance with all attacks and spells, a broad early multiplier. **Elemental Weapons** increases the attack power bonus from Rockbiter Weapon and the proc value of Windfury Weapon and Flametongue Weapon, directly scaling the spec's weapon-imbue kit. **Flurry** grants an attack speed bonus for several swings after a melee crit, compounding with the crit chance Thundering Strikes already added. **Stormstrike**, used heavily in the rotation, is the highest damage-per-global-cooldown ability Enhancement has, on an 8-second cooldown. **Maelstrom Weapon**, new to the tree, can proc off a melee swing and stacks up a discount that shortens Lightning Bolt's cast and trims its mana cost, letting Enhancement weave in a ranged nuke without losing much melee uptime. **Rage of the Farseer**, the tree's new capstone, increases melee attack speed by 30% for 25 seconds as a burst cooldown; it no longer touches casting speed, a change the beta notes made in late September and this site's engine now follows.
 
-Point allocation runs deep into Enhancement to reach Maelstrom Weapon and Rage of the Farseer near the bottom of the tree (31 points), with the remaining 20 in Elemental for Concussion's shock damage — Convection and Concussion both maxed, then Elemental Warding, Reverberation, Call of Flame, and Elemental Devastation for the rest of the budget. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
+Point allocation runs deep into Enhancement to reach Maelstrom Weapon and Rage of the Farseer near the bottom of the tree (33 points, with Ancestral Knowledge raised to five), with 11 in Elemental (Convection 3, Concussion 2, Elemental Warding, Call of Flame 3) and 7 in Restoration for Totemic Focus (maxed) and 2 in Mindfulness. This replaces the earlier 20/31/0 build, and the talent search on the current engine put it about 2% ahead, beyond the run's error. The points came from Convection, Concussion, Reverberation and Elemental Devastation, which the search measured at little or no damage for this spec, and went to Ancestral Knowledge, Totemic Focus, Call of Flame and Mindfulness; Stormstrike, Maelstrom Weapon, Flurry and the rest of the melee core are untouched. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
 
 ## Rotation and priority
 
