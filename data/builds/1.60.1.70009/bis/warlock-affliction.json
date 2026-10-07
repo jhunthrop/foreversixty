@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:28:08Z",
+  "generated_at": "2026-10-07T13:48:56Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -891,8 +891,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.735616545,
-      "verify_run_seconds": 1.025352252,
+      "weights_run_seconds": 1.727545879,
+      "verify_run_seconds": 1.017127012,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1933,8 +1933,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.735616545,
-      "verify_run_seconds": 1.07542709,
+      "weights_run_seconds": 1.727545879,
+      "verify_run_seconds": 1.028340872,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2642,8 +2642,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.7133512039999998,
-      "verify_run_seconds": 0.984329593,
+      "weights_run_seconds": 1.722329212,
+      "verify_run_seconds": 0.943891393,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3350,8 +3350,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.7133512039999998,
-      "verify_run_seconds": 1.007817691,
+      "weights_run_seconds": 1.722329212,
+      "verify_run_seconds": 0.948194648,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4027,8 +4027,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.502174014,
-      "verify_run_seconds": 0.860876119,
+      "weights_run_seconds": 1.48674876,
+      "verify_run_seconds": 0.850842701,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4698,8 +4698,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.502174014,
-      "verify_run_seconds": 0.872871128,
+      "weights_run_seconds": 1.48674876,
+      "verify_run_seconds": 0.845338791,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5397,8 +5397,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.6551494089999998,
-      "verify_run_seconds": 1.158175013,
+      "weights_run_seconds": 1.6724052390000002,
+      "verify_run_seconds": 1.139889989,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6103,8 +6103,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.6551494089999998,
-      "verify_run_seconds": 1.130149516,
+      "weights_run_seconds": 1.6724052390000002,
+      "verify_run_seconds": 1.0961044659999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6286,7 +6286,7 @@
               "item_name": "Lieutenant Commander's Dreadweave Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -2.4167131190975515
+              "dps_delta": -2.416713119097553
             },
             {
               "item_id": 15999,
@@ -6830,8 +6830,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.699180046,
-      "verify_run_seconds": 1.161152671,
+      "weights_run_seconds": 1.77576742,
+      "verify_run_seconds": 1.193468314,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7563,8 +7563,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.699180046,
-      "verify_run_seconds": 1.172868738,
+      "weights_run_seconds": 1.77576742,
+      "verify_run_seconds": 1.139793913,
       "coverage": {
         "back": {
           "eligible": 450,

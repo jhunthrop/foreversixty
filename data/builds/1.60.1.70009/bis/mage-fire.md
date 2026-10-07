@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 32.9. Weights run: 0.8s. Verify run: 0.6s. 149 eligible items had no known source.
+Set DPS (verified): 32.9. Weights run: 0.9s. Verify run: 0.6s. 149 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.617 ± 0.012, crit=0.140 ± 0.005 per rating point (14 rating = 1%, 1.960 per %), hit=0.389 ± 0.002 per rating point (10 rating = 1%, 3.887 per %), spell_haste=not significant (-0.588 ± 0.226), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1074, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 30.1. Weights run: 0.8s. Verify run: 0.6s. 138 eligible items had no known source.
+Set DPS (verified): 30.1. Weights run: 0.9s. Verify run: 0.6s. 138 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.617 ± 0.012, crit=0.140 ± 0.005 per rating point (14 rating = 1%, 1.960 per %), hit=0.389 ± 0.002 per rating point (10 rating = 1%, 3.887 per %), spell_haste=not significant (-0.588 ± 0.226), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 

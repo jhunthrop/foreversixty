@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:21:08Z",
+  "generated_at": "2026-10-07T13:42:01Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.497606664,
-      "verify_run_seconds": 1.212414758,
+      "weights_run_seconds": 2.49941327,
+      "verify_run_seconds": 1.166026535,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1138,8 +1138,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.497606664,
-      "verify_run_seconds": 1.179887961,
+      "weights_run_seconds": 2.49941327,
+      "verify_run_seconds": 1.145006003,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1772,8 +1772,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.927394672,
-      "verify_run_seconds": 1.458836014,
+      "weights_run_seconds": 2.861758045,
+      "verify_run_seconds": 1.422115406,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2407,8 +2407,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.927394672,
-      "verify_run_seconds": 1.448423953,
+      "weights_run_seconds": 2.861758045,
+      "verify_run_seconds": 1.423812503,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3045,8 +3045,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.067506519,
-      "verify_run_seconds": 1.5205429289999999,
+      "weights_run_seconds": 3.026535152,
+      "verify_run_seconds": 1.499377458,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3684,8 +3684,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.067506519,
-      "verify_run_seconds": 1.516824059,
+      "weights_run_seconds": 3.026535152,
+      "verify_run_seconds": 1.499930974,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4333,8 +4333,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.051435359,
-      "verify_run_seconds": 1.639708963,
+      "weights_run_seconds": 3.048294275,
+      "verify_run_seconds": 1.606195011,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4986,8 +4986,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.051435359,
-      "verify_run_seconds": 1.6437674740000001,
+      "weights_run_seconds": 3.048294275,
+      "verify_run_seconds": 1.586203486,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5462,7 +5462,7 @@
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -0.10909166838099893
+              "dps_delta": -0.1090916683809985
             },
             {
               "item_id": 22472,
@@ -5769,8 +5769,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.099867272,
-      "verify_run_seconds": 1.653395553,
+      "weights_run_seconds": 3.062135153,
+      "verify_run_seconds": 1.555040947,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6246,7 +6246,7 @@
               "item_name": "Blood Guard's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.10909166838099893
+              "dps_delta": -0.1090916683809985
             },
             {
               "item_id": 22472,
@@ -6555,8 +6555,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.099867272,
-      "verify_run_seconds": 1.6570369729999999,
+      "weights_run_seconds": 3.062135153,
+      "verify_run_seconds": 1.549288018,
       "coverage": {
         "back": {
           "eligible": 451,

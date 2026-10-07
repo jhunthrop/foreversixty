@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:27:42Z",
+  "generated_at": "2026-10-07T13:48:30Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -517,8 +517,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.7976756310000002,
-      "verify_run_seconds": 0.939054027,
+      "weights_run_seconds": 1.808519506,
+      "verify_run_seconds": 0.923652453,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1105,8 +1105,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.7976756310000002,
-      "verify_run_seconds": 0.828827801,
+      "weights_run_seconds": 1.808519506,
+      "verify_run_seconds": 0.750574212,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1749,8 +1749,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.9335202470000001,
-      "verify_run_seconds": 1.123303692,
+      "weights_run_seconds": 1.818893463,
+      "verify_run_seconds": 1.035081841,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2394,8 +2394,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.9335202470000001,
-      "verify_run_seconds": 0.980513834,
+      "weights_run_seconds": 1.818893463,
+      "verify_run_seconds": 0.915304832,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3018,8 +3018,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.152963868,
-      "verify_run_seconds": 1.063715194,
+      "weights_run_seconds": 2.181998392,
+      "verify_run_seconds": 1.056392564,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3641,8 +3641,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.152963868,
-      "verify_run_seconds": 1.044066542,
+      "weights_run_seconds": 2.181998392,
+      "verify_run_seconds": 0.966746531,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4298,8 +4298,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 2.175900644,
-      "verify_run_seconds": 1.196569325,
+      "weights_run_seconds": 2.153222823,
+      "verify_run_seconds": 1.195515717,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4949,8 +4949,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.175900644,
-      "verify_run_seconds": 1.123125897,
+      "weights_run_seconds": 2.153222823,
+      "verify_run_seconds": 1.071228134,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5640,8 +5640,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.078746407,
-      "verify_run_seconds": 1.114489182,
+      "weights_run_seconds": 2.179927308,
+      "verify_run_seconds": 1.068962902,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6326,8 +6326,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.078746407,
-      "verify_run_seconds": 1.040836367,
+      "weights_run_seconds": 2.179927308,
+      "verify_run_seconds": 1.007976396,
       "coverage": {
         "back": {
           "eligible": 451,

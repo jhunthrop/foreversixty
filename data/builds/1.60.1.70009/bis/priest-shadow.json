@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:24:49Z",
+  "generated_at": "2026-10-07T13:45:41Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -548,8 +548,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.726237488,
-      "verify_run_seconds": 0.532775895,
+      "weights_run_seconds": 0.74731117,
+      "verify_run_seconds": 0.562431595,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1178,8 +1178,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.726237488,
-      "verify_run_seconds": 0.584884806,
+      "weights_run_seconds": 0.74731117,
+      "verify_run_seconds": 0.573878494,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.732428984,
-      "verify_run_seconds": 0.612197937,
+      "weights_run_seconds": 0.748184209,
+      "verify_run_seconds": 0.599629683,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2586,8 +2586,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.732428984,
-      "verify_run_seconds": 0.588511474,
+      "weights_run_seconds": 0.748184209,
+      "verify_run_seconds": 0.567336859,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3247,8 +3247,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.799395122,
-      "verify_run_seconds": 0.518713326,
+      "weights_run_seconds": 0.796439758,
+      "verify_run_seconds": 0.518656272,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3910,8 +3910,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.799395122,
-      "verify_run_seconds": 0.539658454,
+      "weights_run_seconds": 0.796439758,
+      "verify_run_seconds": 0.544011174,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4370,7 +4370,7 @@
           "item_name": "Sergeant Major's Dreadweave Boots",
           "source": "PvP rank 9 · Sergeant Major · Alliance",
           "source_kind": "vendor",
-          "score": 26.10350855853482,
+          "score": 26.103508558534823,
           "verified": true,
           "alternatives": [
             {
@@ -4378,21 +4378,21 @@
               "item_name": "Earthen Silk Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.2533285174840629
+              "dps_delta": -0.2533285174840633
             },
             {
               "item_id": 254107,
               "item_name": "Gilded Sandals",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.26744426132694754
+              "dps_delta": -0.267444261326948
             },
             {
               "item_id": 20641,
               "item_name": "Southsea Mojo Boots",
               "source_kind": "quest",
               "source": "Southsea Shakedown",
-              "dps_delta": -0.28396236190611956
+              "dps_delta": -0.28396236190611995
             }
           ]
         },
@@ -4602,8 +4602,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.798015485,
-      "verify_run_seconds": 0.584860395,
+      "weights_run_seconds": 0.761037744,
+      "verify_run_seconds": 0.577118305,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5058,7 +5058,7 @@
           "item_name": "First Sergeant's Dreadweave Boots",
           "source": "PvP rank 9 · First Sergeant · Horde",
           "source_kind": "vendor",
-          "score": 26.10350855853482,
+          "score": 26.103508558534823,
           "verified": true,
           "alternatives": [
             {
@@ -5066,14 +5066,14 @@
               "item_name": "Gilded Sandals",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.26744426132694754
+              "dps_delta": -0.267444261326948
             },
             {
               "item_id": 20641,
               "item_name": "Southsea Mojo Boots",
               "source_kind": "quest",
               "source": "Southsea Shakedown",
-              "dps_delta": -0.28396236190611956
+              "dps_delta": -0.28396236190611995
             },
             {
               "item_id": 254013,
@@ -5297,8 +5297,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.798015485,
-      "verify_run_seconds": 0.610220012,
+      "weights_run_seconds": 0.761037744,
+      "verify_run_seconds": 0.616918434,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6029,8 +6029,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.849648319,
-      "verify_run_seconds": 0.613268864,
+      "weights_run_seconds": 0.850154369,
+      "verify_run_seconds": 0.606717425,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6757,8 +6757,8 @@
         "main_hand: Trindlehaven Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.849648319,
-      "verify_run_seconds": 0.612258392,
+      "weights_run_seconds": 0.850154369,
+      "verify_run_seconds": 0.618115742,
       "coverage": {
         "back": {
           "eligible": 450,

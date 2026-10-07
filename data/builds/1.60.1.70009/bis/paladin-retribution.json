@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:24:33Z",
+  "generated_at": "2026-10-07T13:45:25Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -540,8 +540,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.838185027,
-      "verify_run_seconds": 0.848982424,
+      "weights_run_seconds": 1.846583731,
+      "verify_run_seconds": 0.818079815,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1149,8 +1149,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.838185027,
-      "verify_run_seconds": 0.907933923,
+      "weights_run_seconds": 1.846583731,
+      "verify_run_seconds": 0.890227162,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1792,8 +1792,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.8757107039999998,
-      "verify_run_seconds": 1.057901809,
+      "weights_run_seconds": 1.8303247360000001,
+      "verify_run_seconds": 1.01574594,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2441,8 +2441,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.8757107039999998,
-      "verify_run_seconds": 1.058681285,
+      "weights_run_seconds": 1.8303247360000001,
+      "verify_run_seconds": 1.032901639,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3085,8 +3085,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.850983935,
-      "verify_run_seconds": 0.972014855,
+      "weights_run_seconds": 1.831135414,
+      "verify_run_seconds": 0.967717312,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3729,8 +3729,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.850983935,
-      "verify_run_seconds": 0.989695458,
+      "weights_run_seconds": 1.831135414,
+      "verify_run_seconds": 0.964229969,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4382,8 +4382,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.919543178,
-      "verify_run_seconds": 1.027234376,
+      "weights_run_seconds": 1.8989704779999999,
+      "verify_run_seconds": 1.0271836030000001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5028,8 +5028,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.919543178,
-      "verify_run_seconds": 0.978531594,
+      "weights_run_seconds": 1.8989704779999999,
+      "verify_run_seconds": 0.931134879,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5331,7 +5331,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.160105327926022
+              "dps_delta": -1.1601053279260214
             },
             {
               "item_id": 23087,
@@ -5715,8 +5715,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.920871252,
-      "verify_run_seconds": 1.050755755,
+      "weights_run_seconds": 1.916545716,
+      "verify_run_seconds": 0.960837986,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6400,8 +6400,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.920871252,
-      "verify_run_seconds": 0.984693562,
+      "weights_run_seconds": 1.916545716,
+      "verify_run_seconds": 0.968642172,
       "coverage": {
         "back": {
           "eligible": 449,

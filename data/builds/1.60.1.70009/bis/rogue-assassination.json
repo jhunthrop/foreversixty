@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:25:24Z",
+  "generated_at": "2026-10-07T13:46:15Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -566,8 +566,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.69907583,
-      "verify_run_seconds": 1.160817788,
+      "weights_run_seconds": 1.784151301,
+      "verify_run_seconds": 1.068581113,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1213,8 +1213,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.69907583,
-      "verify_run_seconds": 1.057047131,
+      "weights_run_seconds": 1.784151301,
+      "verify_run_seconds": 0.983969723,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.85697986,
-      "verify_run_seconds": 1.116000913,
+      "weights_run_seconds": 1.863170996,
+      "verify_run_seconds": 1.098364714,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2580,8 +2580,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.85697986,
-      "verify_run_seconds": 1.115904296,
+      "weights_run_seconds": 1.863170996,
+      "verify_run_seconds": 1.010328138,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3267,8 +3267,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.88048322,
-      "verify_run_seconds": 1.112685179,
+      "weights_run_seconds": 1.8407512879999999,
+      "verify_run_seconds": 1.100282841,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3963,8 +3963,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.88048322,
-      "verify_run_seconds": 1.125705806,
+      "weights_run_seconds": 1.8407512879999999,
+      "verify_run_seconds": 1.087882435,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4669,8 +4669,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.985680943,
-      "verify_run_seconds": 1.490403503,
+      "weights_run_seconds": 1.928689657,
+      "verify_run_seconds": 1.470300817,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5370,8 +5370,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.985680943,
-      "verify_run_seconds": 1.469261658,
+      "weights_run_seconds": 1.928689657,
+      "verify_run_seconds": 1.451595744,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6118,8 +6118,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.954609433,
-      "verify_run_seconds": 1.464230944,
+      "weights_run_seconds": 1.9203011110000001,
+      "verify_run_seconds": 1.40542806,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6865,8 +6865,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.954609433,
-      "verify_run_seconds": 1.450950656,
+      "weights_run_seconds": 1.9203011110000001,
+      "verify_run_seconds": 1.368633006,
       "coverage": {
         "back": {
           "eligible": 451,

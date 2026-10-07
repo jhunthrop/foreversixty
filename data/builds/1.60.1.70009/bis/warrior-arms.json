@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:29:36Z",
+  "generated_at": "2026-10-07T13:50:23Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -551,8 +551,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.942127557,
-      "verify_run_seconds": 0.907873785,
+      "weights_run_seconds": 1.968865047,
+      "verify_run_seconds": 0.899857439,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1196,8 +1196,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.942127557,
-      "verify_run_seconds": 0.859112592,
+      "weights_run_seconds": 1.968865047,
+      "verify_run_seconds": 0.802869859,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.17107871,
-      "verify_run_seconds": 1.084643198,
+      "weights_run_seconds": 2.170020806,
+      "verify_run_seconds": 1.058442867,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2538,8 +2538,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.17107871,
-      "verify_run_seconds": 1.107460104,
+      "weights_run_seconds": 2.170020806,
+      "verify_run_seconds": 1.064690139,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3223,8 +3223,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.622334623,
-      "verify_run_seconds": 1.115373767,
+      "weights_run_seconds": 2.648408826,
+      "verify_run_seconds": 1.082983685,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3902,8 +3902,8 @@
         "main_hand: Fiery War Axe",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.622334623,
-      "verify_run_seconds": 1.1337212540000001,
+      "weights_run_seconds": 2.648408826,
+      "verify_run_seconds": 1.114474982,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4588,8 +4588,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.793443879,
-      "verify_run_seconds": 1.3542381589999999,
+      "weights_run_seconds": 2.8126620669999998,
+      "verify_run_seconds": 1.338374927,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4755,14 +4755,14 @@
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.032805474420852285
+              "dps_delta": -0.03280547442085267
             },
             {
               "item_id": 220803,
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.0773153260103399
+              "dps_delta": -0.07731532601034029
             },
             {
               "item_id": 9479,
@@ -5285,8 +5285,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.793443879,
-      "verify_run_seconds": 1.383945505,
+      "weights_run_seconds": 2.8126620669999998,
+      "verify_run_seconds": 1.397933379,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5443,7 +5443,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 60.147072014300804,
+          "score": 60.1470720143008,
           "verified": true,
           "alternatives": [
             {
@@ -5458,7 +5458,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.331437267765922
+              "dps_delta": -0.33143726776592153
             },
             {
               "item_id": 226860,
@@ -6018,8 +6018,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.777054853,
-      "verify_run_seconds": 1.292297178,
+      "weights_run_seconds": 2.785401219,
+      "verify_run_seconds": 1.31401288,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6176,7 +6176,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 60.1470720143008,
+          "score": 60.147072014300804,
           "verified": true,
           "alternatives": [
             {
@@ -6191,7 +6191,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.33143726776592153
+              "dps_delta": -0.331437267765922
             },
             {
               "item_id": 226860,
@@ -6748,8 +6748,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.777054853,
-      "verify_run_seconds": 1.257241514,
+      "weights_run_seconds": 2.785401219,
+      "verify_run_seconds": 1.242770436,
       "coverage": {
         "back": {
           "eligible": 450,
