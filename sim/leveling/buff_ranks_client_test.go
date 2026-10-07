@@ -22,6 +22,10 @@ const (
 	auraModResistance  = 22 // misc 1 = armor, a school mask otherwise
 	auraModStat        = 29 // misc -1 = all stats, 3 = Intellect
 	auraModAttackPower = 99
+	// Trueshot Aura's single effect is ranged attack power (aura 124, misc
+	// 0); the engine grants the same amount to melee as the client's area
+	// aura does.
+	auraModRangedAttackPower = 124
 
 	miscArmor     = 1
 	miscAllStats  = -1
@@ -98,4 +102,8 @@ func TestMarkOfTheWildRanksMatchTheClient(t *testing.T) {
 
 func TestBattleShoutRanksMatchTheClient(t *testing.T) {
 	assertRanks(t, "Battle Shout", loadClass(t, "warrior"), core.BattleShoutRankTable, auraModAttackPower, 0, true)
+}
+
+func TestTrueshotAuraRanksMatchTheClient(t *testing.T) {
+	assertRanks(t, "Trueshot Aura", loadClass(t, "hunter"), core.TrueshotAuraRanks, auraModRangedAttackPower, 0, false)
 }
