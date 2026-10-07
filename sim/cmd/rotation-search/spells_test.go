@@ -37,6 +37,11 @@ func TestDefaultConditionChooser(t *testing.T) {
 			kind: condPlain, hasKey: "",
 		},
 		{
+			name: "Ice Lance waits for a Fingers of Frost charge",
+			a:    request.LearnedAbility{Name: "Ice Lance", IDs: []int{1240047}, Rank: 6, IsDamage: true, GCDMS: 1500},
+			kind: condChargeGated, hasKey: "auraIsActive",
+		},
+		{
 			name: "a cooldown with no dot/toggle/execute shape gets no condition",
 			a:    request.LearnedAbility{Name: "Stormstrike", IDs: []int{17364}, IsDamage: true, GCDMS: 1500},
 			kind: condPlain, hasKey: "",
@@ -129,5 +134,19 @@ func TestTargetDebuffCurseIsProbedWithATargetAuraGate(t *testing.T) {
 	}
 	if got, ok := readActionID(gate["auraId"]); !ok || got.SpellID != 1311680 {
 		t.Errorf("gate aura = %v, want spell 1311680", gate["auraId"])
+	}
+}
+
+// The Fingers of Frost gate must name the buff's own id (400669), not
+// the Ice Lance rank's: the aura, not the spell, is what is held.
+func TestIceLanceGateNamesTheFingersOfFrostAura(t *testing.T) {
+	cond, _ := defaultCondition(request.LearnedAbility{Name: "Ice Lance", IDs: []int{1240047}, Rank: 6, IsDamage: true, GCDMS: 1500})
+	inner, ok := cond["auraIsActive"].(map[string]any)
+	if !ok {
+		t.Fatalf("condition = %v, want an auraIsActive node", cond)
+	}
+	id, _ := inner["auraId"].(map[string]any)
+	if id["spellId"] != float64(fingersOfFrostAuraID) {
+		t.Errorf("gate aura id = %v, want %d", id["spellId"], fingersOfFrostAuraID)
 	}
 }

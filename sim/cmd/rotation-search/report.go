@@ -129,6 +129,17 @@ func (r report) writeDanglingGates(b *strings.Builder) {
 	b.WriteString("\n")
 }
 
+// isPassiveProcAura is an aura a talent grants on its own proc, so no
+// rotation line ever casts it and its gates are not dangling.
+func isPassiveProcAura(id int) bool {
+	for _, aura := range chargeGatedSpells {
+		if aura == id {
+			return true
+		}
+	}
+	return false
+}
+
 func danglingGates(r rotation, names map[int]string) []string {
 	cast := authoredCastIDs(r)
 	var out []string
@@ -140,7 +151,7 @@ func danglingGates(r rotation, names map[int]string) []string {
 		var gates []actionID
 		findBareActiveGates(cond, &gates)
 		for _, g := range gates {
-			if !cast[g.SpellID] {
+			if !cast[g.SpellID] && !isPassiveProcAura(g.SpellID) {
 				out = append(out, fmt.Sprintf("%s requires %s, which nothing in this rotation casts", entryActionLabel(e.Action, names), spellLabel(names, g.SpellID, g.Rank)))
 			}
 		}

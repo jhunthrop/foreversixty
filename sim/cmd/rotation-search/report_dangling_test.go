@@ -41,3 +41,14 @@ func TestDanglingGatesIsSatisfiedWhenSomethingElseCastsTheGate(t *testing.T) {
 		t.Fatalf("got %v, want none (Flame Shock is still cast above Lava Burst)", got)
 	}
 }
+
+// TestDanglingGatesIgnoresAPassiveProcGate: the Fingers of Frost buff is
+// granted by the talent, never cast, so a line gated on it is live.
+func TestDanglingGatesIgnoresAPassiveProcGate(t *testing.T) {
+	r := rotation{PriorityList: []entry{
+		{Action: action{"castSpell": map[string]any{"spellId": buildActionID(1240047, 6)}, "condition": auraIsActiveCondition(fingersOfFrostAuraID, 0)}},
+	}}
+	if got := danglingGates(r, nil); len(got) != 0 {
+		t.Fatalf("got %v, want no dangling gate", got)
+	}
+}

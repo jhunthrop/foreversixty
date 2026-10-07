@@ -94,12 +94,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:263430 | 8.4 | 2 | spell:5019=71.6, spell:205=36.8 | - |
-| 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 16.8 | 2 | spell:5019=68.6, spell:7322=30.5 | - |
-| 30 | 000000000000000000-00000000000000000-2535111300000000000 | main_hand:249392 ranged:5213 | 24.9 | 2 | spell:5019=79.8, spell:8406=30.8, item:5514=1.0, other:mana_gain=1.0 | - |
-| 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:1664 ranged:13064 | 42.9 | 3 | spell:5019=70.4, spell:8408=27.2, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
-| 40 | 100000000000000000-00000000000000000-2535111300000301050 | main_hand:1664 ranged:5216 | 43.5 | 3 | spell:5019=75.3, spell:8408=27.1, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
-| 50 | 203005000100000000-00000000000000000-2535111300000301050 | main_hand:812 ranged:249232 | 85.2 | 3 | spell:10180=41.0, spell:5019=39.0, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
-| 60 | 203005000100000000-11302300000000000-2535111300000301050 | main_hand:22589 ranged:22821 | 173.7 | 3 | spell:5019=48.4, spell:10181=43.2, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
+| 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 16.8 | 2 | spell:5019=68.6, spell:7322=30.5 | {SpellID: 1312002}, {SpellID: 400669} |
+| 30 | 000000000000000000-00000000000000000-2535101301000000000 | main_hand:249392 ranged:5213 | 20.6 | 2 | spell:5019=103.1, spell:400640=52.4, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 400669} |
+| 38 | 000000000000000000-00000000000000000-2535101301000300230 | main_hand:1664 ranged:13064 | 46.2 | 3 | spell:5019=72.0, spell:8408=25.1, spell:1240044=4.1, other:mana_gain=2.0, item:5513=1.0 | - |
+| 40 | 000000000000000000-00000000000000000-2535101301000300250 | main_hand:1664 ranged:5216 | 46.6 | 3 | spell:5019=76.9, spell:8408=25.1, spell:1240044=4.0, other:mana_gain=2.0, item:5513=1.0 | - |
+| 50 | 203005000000000000-00000000000000000-2535101301000300250 | main_hand:812 ranged:249232 | 97.9 | 3 | spell:10180=39.1, spell:5019=38.9, spell:1240046=5.7, other:mana_gain=2.0, item:5514=1.0 | - |
+| 60 | 203005000000000000-11302300000000000-2535101301000300250 | main_hand:22589 ranged:22821 | 199.8 | 3 | spell:5019=47.1, spell:10181=41.7, spell:1240047=6.2, other:mana_gain=2.0, item:5514=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -138,7 +138,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fireball (spell 8401)
 - Flamestrike (spell 2121)
 - Frost Nova (spell 865)
-- Ice Lance (spell 400640)
+- Frostbolt (spell 8406)
 - Pyroblast (spell 12522)
 - Scorch (spell 8444)
 
@@ -155,7 +155,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fireball (spell 8402)
 - Flamestrike (spell 8422)
 - Frost Nova (spell 865)
-- Ice Lance (spell 1240044)
 - Pyroblast (spell 12523)
 - Scorch (spell 8445)
 
@@ -173,7 +172,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flamestrike (spell 8423)
 - Frost Nova (spell 6131)
 - Frostfire Bolt (spell 401502)
-- Ice Lance (spell 1240044)
 - Pyroblast (spell 12523)
 - Scorch (spell 8446)
 
@@ -191,7 +189,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flamestrike (spell 10215)
 - Frost Nova (spell 6131)
 - Frostfire Bolt (spell 1237312)
-- Ice Lance (spell 1240046)
 - Pyroblast (spell 12525)
 - Scorch (spell 10205)
 
@@ -210,10 +207,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flamestrike (spell 10216)
 - Frost Nova (spell 10230)
 - Frostfire Bolt (spell 1237313)
-- Ice Lance (spell 1240047)
 - Pyroblast (spell 18809)
 - Scorch (spell 10207)
 
 ## Violations found in this run
 
-None.
+- mage-frost level=20 kind=unresolved_id action={SpellID: 400669}
+- mage-frost level=30 kind=unresolved_id action={SpellID: 400669}
+- mage-frost level=30 kind=zero_casts spell="Frostbolt" id=8406 authored=10181
