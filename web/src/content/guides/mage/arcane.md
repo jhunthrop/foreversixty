@@ -3,7 +3,7 @@ title: Arcane Mage in Forever
 classSlug: mage
 spec: arcane
 role: dps
-build: 'FS1:1.60.1.70009:mage:gnome:253225113100011531/032023/005:'
+build: 'FS1:1.60.1.70009:mage:gnome:153005113100011531/032023/055:'
 recommendedRaces: [gnome, orc]
 statPriority: [Spell power, Arcane power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Arcane Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -43,9 +43,9 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Arcane Mind** — up to 10% Intellect and a 100% bonus to Arcane critical strike damage at rank 5.
 - **Arcane Power** — the capstone: 30% more spell damage for 15 seconds at the cost of 30% more mana per cast.
 
-This build spends 36 points in Arcane to reach Arcane Power at the bottom, two more than a bare 31-point path needs, because the sim's own level-60 search found two extra Arcane picks worth maxing on the way down: **Arcane Impact** (3/3, 6% more Arcane critical strike chance) and **Arcane Instability** (3/3, 3% more spell damage and 3% more critical strike chance), both measured as real damage gains rather than assumed.
+This build spends 31 points in Arcane, exactly the path to Arcane Power, and keeps every Arcane pick the sim measures as damage: **Arcane Impact** (3/3, 6% more Arcane critical strike chance) and **Arcane Instability** (3/3, 3% more spell damage and 3% more critical strike chance) stay maxed. The five points that earlier carried the Arcane tree past 31 (both ranks of **Arcane Subtlety**, both of **Magic Absorption**, one rank of **Wand Specialization**) came out because the sim measures none of them as damage for this rotation.
 
-That leaves 15 points to split between Fire and Frost, down from 20 in Fire alone. Fire drops to 10 points: **Wake of Fire** goes to 0/2, **Improved Fireball** falls from 5/5 to 2/5, and **Ignite** goes to 0/5 — none of those three measured any damage in the sim's model for this rotation, so giving them up cost nothing the sim could see. The other 5 points go into Frost for **Elemental Precision** (5/5, 5% more hit chance with Frost and Fire spells); this rotation never actually casts a Frost or Fire spell, so the sim can't register a damage gain from it either, but it's a real stat for a build that does mix in an off-school cast, and it was still the strongest use of those 5 points among the options the sim could measure. This build measures about +9.2% over the previous spend in our level-60 search run. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+The other 20 points split 10 and 10. Fire keeps **Incineration** (3/3), **Improved Fireball** at 2/5, **Flame Throwing** (2/2) and **Impact** (3/3); **Wake of Fire** and **Ignite** stay at 0, as before. Those picks are held on purpose: the sim does not model Flame Throwing or Impact, so it cannot show what they grant, and the guide keeps them rather than trade away a talent nobody has measured. Frost now takes 10 points instead of 5: **Elemental Precision** stays at 5/5 and **Improved Frostbolt** (5/5) is new, which lifts Frostbolt's damage in the two-Blast loop and is the single largest gain in this spend. This build measures about +1.9% over the previous spend in our level-60 search run, and every talent the engine cannot model (Improved Channeling, Arcane Resilience, Arcane Geometry, Flame Throwing, Impact) is still in it. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 
