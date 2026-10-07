@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "97d08e0e0",
-  "generated_at": "2026-10-07T02:25:51Z",
+  "engine_version": "81d950bf9",
+  "generated_at": "2026-10-07T03:27:33Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -603,8 +603,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.5046274349999997,
-      "verify_run_seconds": 1.471763316,
+      "weights_run_seconds": 1.73229832,
+      "verify_run_seconds": 0.989347229,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1276,8 +1276,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.5046274349999997,
-      "verify_run_seconds": 1.472929171,
+      "weights_run_seconds": 1.73229832,
+      "verify_run_seconds": 0.974693679,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1973,8 +1973,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.678281977,
-      "verify_run_seconds": 1.500768506,
+      "weights_run_seconds": 1.7983315420000001,
+      "verify_run_seconds": 0.962717186,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,8 +2678,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.678281977,
-      "verify_run_seconds": 1.460352527,
+      "weights_run_seconds": 1.7983315420000001,
+      "verify_run_seconds": 1.002255337,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3355,8 +3355,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.066334268,
-      "verify_run_seconds": 1.645834291,
+      "weights_run_seconds": 2.134565664,
+      "verify_run_seconds": 1.147703098,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4040,8 +4040,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.066334268,
-      "verify_run_seconds": 1.6916123029999999,
+      "weights_run_seconds": 2.134565664,
+      "verify_run_seconds": 1.150046363,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4207,7 +4207,7 @@
               "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.007447186895103068
+              "dps_delta": -0.0074471868951026645
             },
             {
               "item_id": 14849,
@@ -4748,8 +4748,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.311247157,
-      "verify_run_seconds": 2.324010543,
+      "weights_run_seconds": 2.256348955,
+      "verify_run_seconds": 1.53960652,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5458,8 +5458,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.311247157,
-      "verify_run_seconds": 2.293540698,
+      "weights_run_seconds": 2.256348955,
+      "verify_run_seconds": 1.5885959760000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6220,8 +6220,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.410102699,
-      "verify_run_seconds": 2.128129959,
+      "weights_run_seconds": 2.366218056,
+      "verify_run_seconds": 1.417089268,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6975,8 +6975,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.410102699,
-      "verify_run_seconds": 2.156293433,
+      "weights_run_seconds": 2.366218056,
+      "verify_run_seconds": 1.449943687,
       "coverage": {
         "back": {
           "eligible": 450,

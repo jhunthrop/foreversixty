@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
-  "engine_version": "97d08e0e0",
-  "generated_at": "2026-10-07T02:16:49Z",
+  "engine_version": "81d950bf9",
+  "generated_at": "2026-10-07T03:21:29Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.050492725,
-      "verify_run_seconds": 1.709216973,
+      "weights_run_seconds": 2.059560539,
+      "verify_run_seconds": 1.163382616,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1211,8 +1211,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.050492725,
-      "verify_run_seconds": 1.672298163,
+      "weights_run_seconds": 2.059560539,
+      "verify_run_seconds": 1.168136515,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.160396698,
-      "verify_run_seconds": 1.83172675,
+      "weights_run_seconds": 2.17952807,
+      "verify_run_seconds": 1.229114634,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2583,8 +2583,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.160396698,
-      "verify_run_seconds": 1.783972916,
+      "weights_run_seconds": 2.17952807,
+      "verify_run_seconds": 1.209562035,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3274,8 +3274,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.169009018,
-      "verify_run_seconds": 1.771540006,
+      "weights_run_seconds": 2.168599852,
+      "verify_run_seconds": 1.211907423,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.169009018,
-      "verify_run_seconds": 1.872585957,
+      "weights_run_seconds": 2.168599852,
+      "verify_run_seconds": 1.259746392,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4689,8 +4689,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.205776348,
-      "verify_run_seconds": 1.966999094,
+      "weights_run_seconds": 2.124912159,
+      "verify_run_seconds": 1.3512982550000001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5417,8 +5417,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.205776348,
-      "verify_run_seconds": 2.023236213,
+      "weights_run_seconds": 2.124912159,
+      "verify_run_seconds": 1.476027372,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6159,8 +6159,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.163638643,
-      "verify_run_seconds": 2.109689474,
+      "weights_run_seconds": 2.26861632,
+      "verify_run_seconds": 1.433669321,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6457,7 +6457,7 @@
               "item_name": "Warlord's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.05627974918390079
+              "dps_delta": -0.0562797491839
             },
             {
               "item_id": 14637,
@@ -6579,7 +6579,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 59.657279997226226,
+          "score": 59.65727999722622,
           "verified": true,
           "alternatives": [
             {
@@ -6594,7 +6594,7 @@
               "item_name": "Legionnaire's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.18270254292421395
+              "dps_delta": -0.18270254292421356
             },
             {
               "item_id": 15052,
@@ -6904,8 +6904,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.163638643,
-      "verify_run_seconds": 2.108482462,
+      "weights_run_seconds": 2.26861632,
+      "verify_run_seconds": 1.4582539780000001,
       "coverage": {
         "back": {
           "eligible": 450,
