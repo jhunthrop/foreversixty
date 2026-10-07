@@ -25,6 +25,8 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/request"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // errSkipped marks a spec this search does not answer for (a healer, a
@@ -47,11 +49,11 @@ func main() {
 
 // options is one search's parameters.
 type options struct {
-	repoRoot, spec, faction, build, out, engineSrc string
-	level                                          int
-	probeIters, screenIters, finalIters            int
-	top, limit, refineTop                          int
-	seed                                           int64
+	repoRoot, spec, faction, preset, build, out, engineSrc string
+	level                                                  int
+	probeIters, screenIters, finalIters                    int
+	top, limit, refineTop                                  int
+	seed                                                   int64
 }
 
 func parseOptions(args []string) (options, error) {
@@ -61,6 +63,7 @@ func parseOptions(args []string) (options, error) {
 	fs.StringVar(&o.spec, "spec", "", "spec slug from data/curated/specs.json (required)")
 	fs.IntVar(&o.level, "level", 60, "level band (a band data/builds/<build>/bis/<spec>.json carries, e.g. 40 or 60)")
 	fs.StringVar(&o.faction, "faction", "alliance", "faction whose BiS band (gear and race) to wear")
+	fs.StringVar(&o.preset, "preset", request.BarePreset, "sim preset: bare (gear and class kit) or raid (the Phase 1 raid buffs and consumables on the raid band's gear)")
 	fs.StringVar(&o.build, "build", "", "client build; defaults to web/src/data/active-build.json's")
 	fs.IntVar(&o.probeIters, "probe-iterations", 200, "iterations for each talent's credit probe")
 	fs.IntVar(&o.screenIters, "screen-iterations", 300, "iterations for screening every candidate")
@@ -123,10 +126,14 @@ func run(args []string) error {
 
 // reportName is <spec> at level 60 and <spec>-<level> otherwise.
 func reportName(o options) string {
-	if o.level == 60 {
-		return o.spec
+	name := o.spec
+	if o.level != 60 {
+		name = fmt.Sprintf("%s-%d", name, o.level)
 	}
-	return fmt.Sprintf("%s-%d", o.spec, o.level)
+	if o.preset != "" && o.preset != request.BarePreset {
+		name += "-" + o.preset
+	}
+	return name
 }
 
 // inputs is everything a search reads before its first sim.
@@ -184,11 +191,17 @@ func prepare(o options) (inputs, error) {
 	if err := trees.legal(guide, o.level-9); err != nil {
 		in.guideIssue = err.Error()
 	}
-	band, err := loadBISBand(filepath.Join(o.repoRoot, "data", "builds", clientBuild), o.spec, o.level, o.faction)
+	band, err := loadBISBand(filepath.Join(o.repoRoot, "data", "builds", clientBuild), o.spec, o.level, o.faction, o.preset)
 	if err != nil {
 		return inputs{}, err
 	}
-	in.setup = simSetup{spec: spec, band: band, level: o.level, seed: o.seed, layout: layout, trees: trees}
+	applied, err := request.ResolveFromFile(
+		filepath.Join(o.repoRoot, "data", "curated", "presets.json"), o.preset,
+		specs.Spec{Spec: spec.Spec, ClassSlug: spec.ClassSlug, ReferenceStat: spec.ReferenceStat})
+	if err != nil {
+		return inputs{}, err
+	}
+	in.setup = simSetup{preset: applied, spec: spec, band: band, level: o.level, seed: o.seed, layout: layout, trees: trees}
 	names, err := modeledGoNames(engineDir, spec.ClassSlug)
 	if err != nil {
 		return inputs{}, err

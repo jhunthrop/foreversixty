@@ -52,3 +52,12 @@ func TestPrepareSkipsHealersTanksAndUnwrittenRotations(t *testing.T) {
 		}
 	}
 }
+
+func TestReportNameSuffixesANonBarePreset(t *testing.T) {
+	if got := reportName(options{spec: "x", level: 60, preset: "raid"}); got != "x-raid" {
+		t.Errorf("raid = %q, want x-raid", got)
+	}
+	if got := reportName(options{spec: "x", level: 60, preset: "bare"}); got != "x" {
+		t.Errorf("bare = %q, want x", got)
+	}
+}

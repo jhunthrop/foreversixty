@@ -26,6 +26,8 @@ type specInfo struct {
 	Name      string `json:"name"`
 	Role      string `json:"role"`
 	TreeIndex int    `json:"tree_index"`
+
+	ReferenceStat string `json:"reference_stat"`
 }
 
 func loadSpec(repoRoot, spec string) (specInfo, error) {
@@ -77,6 +79,7 @@ func loadCuratedAPL(repoRoot, spec string) (curatedAPL, error) {
 // fixed).
 type bisBand struct {
 	Band    int    `json:"band"`
+	Preset  string `json:"preset"`
 	Faction string `json:"faction"`
 	Race    string `json:"race"`
 	Talents string `json:"talents"`
@@ -86,7 +89,7 @@ type bisBand struct {
 	} `json:"slots"`
 }
 
-func loadBISBand(buildDir, spec string, level int, faction string) (bisBand, error) {
+func loadBISBand(buildDir, spec string, level int, faction, preset string) (bisBand, error) {
 	path := filepath.Join(buildDir, "bis", spec+".json")
 	b, err := os.ReadFile(path)
 	if err != nil {
@@ -99,11 +102,11 @@ func loadBISBand(buildDir, spec string, level int, faction string) (bisBand, err
 		return bisBand{}, fmt.Errorf("decoding %s: %w", path, err)
 	}
 	for _, band := range f.Bands {
-		if band.Band == level && band.Faction == faction {
+		if band.Band == level && band.Faction == faction && band.Preset == preset {
 			return band, nil
 		}
 	}
-	return bisBand{}, fmt.Errorf("%s has no level-%d %s band", path, level, faction)
+	return bisBand{}, fmt.Errorf("%s has no level-%d %s %s band", path, level, faction, preset)
 }
 
 func (b bisBand) gear() []api.GearSlot {

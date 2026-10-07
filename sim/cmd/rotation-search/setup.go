@@ -7,6 +7,8 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/request"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // errSkipped marks a spec this search does not answer for (a healer,
@@ -56,7 +58,7 @@ func prepare(o options) (inputs, error) {
 	if err != nil {
 		return inputs{}, err
 	}
-	band, err := loadBISBand(filepath.Join(o.repoRoot, "data", "builds", clientBuild), o.spec, o.level, o.faction)
+	band, err := loadBISBand(filepath.Join(o.repoRoot, "data", "builds", clientBuild), o.spec, o.level, o.faction, o.preset)
 	if err != nil {
 		return inputs{}, err
 	}
@@ -71,9 +73,17 @@ func prepare(o options) (inputs, error) {
 		return inputs{}, err
 	}
 
+	applied, err := request.ResolveFromFile(
+		filepath.Join(o.repoRoot, "data", "curated", "presets.json"), o.preset,
+		specs.Spec{Spec: spec.Spec, ClassSlug: spec.ClassSlug, ReferenceStat: spec.ReferenceStat})
+	if err != nil {
+		return inputs{}, err
+	}
+
 	return inputs{
 		setup: simSetup{
 			spec:          spec,
+			preset:        applied,
 			band:          band,
 			level:         o.level,
 			seed:          o.seed,
@@ -99,7 +109,7 @@ func guideEngineTalents(o options, spec specInfo, clientBuild string) (string, e
 	if err != nil {
 		return "", err
 	}
-	guideClient, digits, err := leveling.GuideBuildTalents(o.repoRoot, spec.ClassSlug, spec.SpecSlug)
+	guideClient, digits, err := guideOrOverrideBuild(o, spec)
 	if err != nil {
 		return "", err
 	}
@@ -121,4 +131,14 @@ func guideEngineTalents(o options, spec specInfo, clientBuild string) (string, e
 		return "", err
 	}
 	return layout.Reposition(activeTrees, talents)
+}
+
+// guideOrOverrideBuild is the build every sim wears: the guide's own, or
+// the FS1 code -build-code names when a search must hold a different one
+// (a rotation can only be searched on the talents it casts).
+func guideOrOverrideBuild(o options, spec specInfo) (string, [3]string, error) {
+	if o.buildCode != "" {
+		return leveling.ParseBuildCode(o.buildCode)
+	}
+	return leveling.GuideBuildTalents(o.repoRoot, spec.ClassSlug, spec.SpecSlug)
 }

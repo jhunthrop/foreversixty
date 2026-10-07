@@ -88,6 +88,20 @@ func LoadTalentTrees(repoRoot, build, class string) ([]TalentTree, error) {
 // build: 'FS1:<build>:<class>:<race>:<tree1>/<tree2>/<tree3>:'
 var guideBuildRe = regexp.MustCompile(`build:\s*'FS1:([^:]+):([^:]+):([^:]+):([^/]+)/([^/]+)/([^:]+):'`)
 
+// buildCodeRe is guideBuildRe's code on its own, as the search tools take
+// it on a command line.
+var buildCodeRe = regexp.MustCompile(`^FS1:([^:]+):([^:]+):([^:]+):([^/]+)/([^/]+)/([^:]+):$`)
+
+// ParseBuildCode splits one FS1 build code into the client build it names
+// and the three trees' digit strings.
+func ParseBuildCode(code string) (build string, trees [3]string, err error) {
+	m := buildCodeRe.FindStringSubmatch(code)
+	if m == nil {
+		return "", trees, fmt.Errorf("leveling: %q is not an FS1 build code (FS1:<build>:<class>:<race>:<tree1>/<tree2>/<tree3>:)", code)
+	}
+	return m[1], [3]string{m[4], m[5], m[6]}, nil
+}
+
 // GuideBuildTalents reads a spec's guide and returns the client build its
 // FS1 code names and the three trees' digit strings, in the code's own
 // order.

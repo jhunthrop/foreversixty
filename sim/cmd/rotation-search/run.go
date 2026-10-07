@@ -9,6 +9,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/request"
 	"github.com/wowsims/classic/sim/core/proto"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -36,9 +37,14 @@ type simSetup struct {
 	level         int
 	seed          int64
 	engineTalents string
+	preset        *request.ResolvedPreset // nil for the bare character
 }
 
 func (s simSetup) character() api.CharacterSpec {
+	buffs, consumes := leveling.KitBuffs(s.spec.Spec, s.level), leveling.KitConsumes(s.spec.Spec, s.level)
+	if s.preset != nil {
+		buffs, consumes = s.preset.Layer(buffs, consumes)
+	}
 	ch := api.CharacterSpec{
 		Name:     "rotation-search",
 		Race:     s.band.Race,
@@ -46,8 +52,8 @@ func (s simSetup) character() api.CharacterSpec {
 		Level:    s.level,
 		Talents:  s.engineTalents,
 		Gear:     s.band.gear(),
-		Consumes: leveling.KitConsumes(s.spec.Spec, s.level),
-		Buffs:    leveling.KitBuffs(s.spec.Spec, s.level),
+		Consumes: consumes,
+		Buffs:    buffs,
 	}
 	if leveling.NoMeleeAutoAttackSpecs[s.spec.Spec] {
 		ch.DistanceFromTarget = leveling.CasterDistanceFromTarget

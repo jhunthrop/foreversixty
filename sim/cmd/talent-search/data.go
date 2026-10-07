@@ -17,6 +17,8 @@ type specInfo struct {
 	Name      string `json:"name"`
 	Role      string `json:"role"`
 	TreeIndex int    `json:"tree_index"`
+
+	ReferenceStat string `json:"reference_stat"`
 }
 
 // dpsRole is the only role a DPS search answers for: a healer's or a
@@ -62,6 +64,7 @@ func aplState(repoRoot, spec string) (string, error) {
 // bisBand is one band of data/builds/<build>/bis/<spec>.json.
 type bisBand struct {
 	Band    int     `json:"band"`
+	Preset  string  `json:"preset"`
 	Faction string  `json:"faction"`
 	Race    string  `json:"race"`
 	Talents string  `json:"talents"`
@@ -74,7 +77,7 @@ type bisBand struct {
 
 // loadBISBand is the committed BiS set for one band and faction - the
 // gear every candidate wears, so only the talents vary.
-func loadBISBand(buildDir, spec string, level int, faction string) (bisBand, error) {
+func loadBISBand(buildDir, spec string, level int, faction, preset string) (bisBand, error) {
 	path := filepath.Join(buildDir, "bis", spec+".json")
 	b, err := os.ReadFile(path)
 	if err != nil {
@@ -87,11 +90,11 @@ func loadBISBand(buildDir, spec string, level int, faction string) (bisBand, err
 		return bisBand{}, fmt.Errorf("decoding %s: %w", path, err)
 	}
 	for _, band := range f.Bands {
-		if band.Band == level && band.Faction == faction {
+		if band.Band == level && band.Faction == faction && band.Preset == preset {
 			return band, nil
 		}
 	}
-	return bisBand{}, fmt.Errorf("%s has no level-%d %s band", path, level, faction)
+	return bisBand{}, fmt.Errorf("%s has no level-%d %s %s band", path, level, faction, preset)
 }
 
 func (b bisBand) gear() []api.GearSlot {

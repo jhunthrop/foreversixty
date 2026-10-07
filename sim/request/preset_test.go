@@ -226,3 +226,23 @@ func countOf(list []string, id string) int {
 	}
 	return n
 }
+
+func TestResolveFromFileBareIsNil(t *testing.T) {
+	got, err := ResolveFromFile(realPresetsPath, BarePreset, specs.Spec{Spec: "shaman-elemental", ClassSlug: "shaman", ReferenceStat: "spell_power"})
+	if err != nil || got != nil {
+		t.Fatalf("bare = %v, %v; want nil, nil", got, err)
+	}
+}
+
+func TestResolveFromFileRaidCarriesTheRaidBuffs(t *testing.T) {
+	got, err := ResolveFromFile(realPresetsPath, RaidPreset, specs.Spec{Spec: "shaman-elemental", ClassSlug: "shaman", ReferenceStat: "spell_power"})
+	if err != nil || got == nil || len(got.Buffs) == 0 {
+		t.Fatalf("raid = %v, %v; want a preset with buffs", got, err)
+	}
+}
+
+func TestResolveFromFileUnknownPresetFails(t *testing.T) {
+	if _, err := ResolveFromFile(realPresetsPath, "nope", specs.Spec{Spec: "shaman-elemental", ClassSlug: "shaman", ReferenceStat: "spell_power"}); !errors.Is(err, ErrUnknownPreset) {
+		t.Fatalf("err = %v; want ErrUnknownPreset", err)
+	}
+}

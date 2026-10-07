@@ -20,6 +20,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/jhunthrop/foreversixty/sim/request"
 	"log"
 	"os"
 	"path/filepath"
@@ -85,10 +86,19 @@ func run(args []string) error {
 	if err := os.MkdirAll(o.out, 0o755); err != nil {
 		return err
 	}
-	path := filepath.Join(o.out, o.spec+".md")
+	path := filepath.Join(o.out, reportName(o))
 	if err := os.WriteFile(path, []byte(rep.markdown()), 0o644); err != nil {
 		return err
 	}
 	log.Printf("rotation-search: %s: wrote %s in %s", o.spec, path, time.Since(start).Round(time.Second))
 	return nil
+}
+
+// reportName is the report file for one search: the bare search keeps its
+// historical <spec>.md, any other preset gets its own file beside it.
+func reportName(o options) string {
+	if o.preset == request.BarePreset {
+		return o.spec + ".md"
+	}
+	return o.spec + "-" + o.preset + ".md"
 }

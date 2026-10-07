@@ -89,3 +89,13 @@ func TestGuideBuildTalentsMissingGuide(t *testing.T) {
 		t.Fatal("GuideBuildTalents with a missing guide: want an error, got nil")
 	}
 }
+
+func TestParseBuildCode(t *testing.T) {
+	build, trees, err := ParseBuildCode("FS1:1.60.1.70009:shaman:dwarf:553231130010305/01/553302:")
+	if err != nil || build != "1.60.1.70009" || trees != [3]string{"553231130010305", "01", "553302"} {
+		t.Fatalf("got %q %v %v", build, trees, err)
+	}
+	if _, _, err := ParseBuildCode("553231130010305/01/553302"); err == nil {
+		t.Fatal("a bare digit string must be rejected")
+	}
+}

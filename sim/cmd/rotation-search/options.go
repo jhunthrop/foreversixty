@@ -5,19 +5,21 @@ import (
 	"flag"
 	"fmt"
 	"path/filepath"
+
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
 // options is one search's parameters, named and defaulted to match
 // sim/cmd/talent-search's own flag set wherever the two commands share
 // a concern.
 type options struct {
-	repoRoot, spec, faction, build, out, engineSrc string
-	level                                          int
-	iterations                                     int // screening and probe iterations
-	confirmIterations                              int
-	rounds                                         int
-	seed                                           int64
-	probeOnly                                      bool
+	repoRoot, spec, faction, preset, build, buildCode, out, engineSrc string
+	level                                                  int
+	iterations                                             int // screening and probe iterations
+	confirmIterations                                      int
+	rounds                                                 int
+	seed                                                   int64
+	probeOnly                                              bool
 }
 
 func parseOptions(args []string) (options, error) {
@@ -27,6 +29,8 @@ func parseOptions(args []string) (options, error) {
 	fs.StringVar(&o.spec, "spec", "", "spec slug from data/curated/specs.json (required)")
 	fs.IntVar(&o.level, "level", 60, "level band; this command only supports 60 today")
 	fs.StringVar(&o.faction, "faction", "alliance", "faction whose BiS band (gear and race) to wear")
+	fs.StringVar(&o.preset, "preset", request.BarePreset, "sim preset: bare (gear and class kit) or raid (the Phase 1 raid buffs and consumables on the raid band's gear)")
+	fs.StringVar(&o.buildCode, "build-code", "", "FS1 build code to wear instead of the guide's (FS1:<build>:<class>:<race>:<t1>/<t2>/<t3>:)")
 	fs.StringVar(&o.build, "build", "", "client build; defaults to web/src/data/active-build.json's")
 	fs.IntVar(&o.iterations, "iterations", 300, "iterations for screening every mutation and every probe")
 	fs.IntVar(&o.confirmIterations, "confirm", 800, "iterations for confirming the final rotation")

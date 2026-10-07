@@ -8,6 +8,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
 // simSetup is everything but the talents: one spec, one band's gear
@@ -19,6 +20,7 @@ type simSetup struct {
 	seed   int64
 	layout enginetalents.Layout
 	trees  talentTrees
+	preset *request.ResolvedPreset // nil for the bare character
 }
 
 // character is the band's character wearing the band's BiS set with
@@ -26,6 +28,10 @@ type simSetup struct {
 // (sim/cmd/leveling-bis bandCharacter + plainRequest): the class kit,
 // and casters standing out of melee range.
 func (s simSetup) character(talents string) api.CharacterSpec {
+	buffs, consumes := leveling.KitBuffs(s.spec.Spec, s.level), leveling.KitConsumes(s.spec.Spec, s.level)
+	if s.preset != nil {
+		buffs, consumes = s.preset.Layer(buffs, consumes)
+	}
 	ch := api.CharacterSpec{
 		Name:     "talent-search",
 		Race:     s.band.Race,
@@ -33,8 +39,8 @@ func (s simSetup) character(talents string) api.CharacterSpec {
 		Level:    s.level,
 		Talents:  talents,
 		Gear:     s.band.gear(),
-		Consumes: leveling.KitConsumes(s.spec.Spec, s.level),
-		Buffs:    leveling.KitBuffs(s.spec.Spec, s.level),
+		Consumes: consumes,
+		Buffs:    buffs,
 	}
 	if leveling.NoMeleeAutoAttackSpecs[s.spec.Spec] {
 		ch.DistanceFromTarget = leveling.CasterDistanceFromTarget

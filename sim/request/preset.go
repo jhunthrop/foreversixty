@@ -27,6 +27,9 @@ import (
 // RaidPreset names the Phase 1 raid context in data/curated/presets.json.
 const RaidPreset = "raid"
 
+// BarePreset names the character with only its class kit applied.
+const BarePreset = "bare"
+
 var (
 	// ErrUnknownPreset is returned for a preset name the curated file
 	// does not state.
@@ -300,4 +303,22 @@ func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs
 func buffBase(id string) string {
 	base, _ := strings.CutSuffix(id, improvedSuffix)
 	return base
+}
+
+// ResolveFromFile reads the curated presets at path and resolves the named
+// one for spec, for the search tools that sim a character under a preset.
+// A name of "bare" (the character with only its class kit) resolves to nil.
+func ResolveFromFile(path, name string, spec specs.Spec) (*ResolvedPreset, error) {
+	if name == BarePreset {
+		return nil, nil
+	}
+	presets, err := LoadPresets(path)
+	if err != nil {
+		return nil, err
+	}
+	resolved, err := presets.Resolve(name, spec)
+	if err != nil {
+		return nil, err
+	}
+	return &resolved, nil
 }
