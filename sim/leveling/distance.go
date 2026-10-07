@@ -24,6 +24,12 @@ var NoMeleeAutoAttackSpecs = map[string]bool{
 	"priest-shadow":       true,
 	"shaman-elemental":    true,
 	"druid-balance":       true,
+	// A healer heals; it never swings in melee.
+	"druid-restoration":  true,
+	"paladin-holy":       true,
+	"priest-discipline":  true,
+	"priest-holy":        true,
+	"shaman-restoration": true,
 }
 
 // CasterDistanceFromTarget clears MinRangedAttackDistance (12 yards,

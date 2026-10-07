@@ -1320,6 +1320,10 @@ type bandReport struct {
 	// does not render anything from this field yet (this lane's
 	// brief: "web shows nothing new yet").
 	WeightsLowConfidence bool `json:"weights_low_confidence,omitempty"`
+
+	// healerFields are a healer's additions to the entry (role, profile,
+	// metrics; score_heal.go). A damage spec's entry carries none.
+	healerFields
 }
 
 // scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value
@@ -2046,13 +2050,24 @@ type specReport struct {
 	// Presets states what each non-bare preset applied, by name: the
 	// request-vocabulary ids with a label per id.
 	Presets map[string]request.ResolvedPreset `json:"presets"`
+	// HealProfile is the incoming-damage profile every healer entry in the
+	// file was measured under, reasons included. Set only for a healer.
+	HealProfile *request.HealProfile `json:"heal_profile,omitempty"`
+}
+
+// specReportOption adds an optional block to a spec report.
+type specReportOption func(*specReport)
+
+// withHealProfile publishes the profile a healer's file was measured under.
+func withHealProfile(profile *request.HealProfile) specReportOption {
+	return func(r *specReport) { r.HealProfile = profile }
 }
 
 // writeSpecReport writes path per the specReport contract above.
 // GeneratedAt is RFC3339, in UTC so two runs on different machines (a
 // dev's laptop, the nightly workflow's runner) produce comparable
 // timestamps rather than each in its own local zone.
-func writeSpecReport(path, spec, build string, reports []bandReport, presets map[string]request.ResolvedPreset) error {
+func writeSpecReport(path, spec, build string, reports []bandReport, presets map[string]request.ResolvedPreset, options ...specReportOption) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
@@ -2063,6 +2078,9 @@ func writeSpecReport(path, spec, build string, reports []bandReport, presets map
 		GeneratedAt:   time.Now().UTC().Format(time.RFC3339),
 		Bands:         reports,
 		Presets:       presets,
+	}
+	for _, option := range options {
+		option(&out)
 	}
 	b, err := json.MarshalIndent(out, "", "  ")
 	if err != nil {

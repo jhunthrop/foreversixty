@@ -56,6 +56,9 @@ var genericAttackPowerWeightStats = []string{"attack_power", "ranged_attack_powe
 // weight_stats lists at most one of the two per spec), so this never
 // double-counts a spec that actually cares about both.
 func statWeight(stat string, weights map[string]float64) float64 {
+	if stat == itemHealingStat {
+		return weights[healingWeightStat]
+	}
 	if stat != "attack_power" {
 		return weights[stat]
 	}

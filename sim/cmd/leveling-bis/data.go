@@ -1179,6 +1179,7 @@ type specInfo struct {
 	ClassSlug     string   `json:"class_slug"`
 	SpecSlug      string   `json:"spec_slug"`
 	Name          string   `json:"name"`
+	Role          string   `json:"role"`
 	TreeIndex     int      `json:"tree_index"`
 	ReferenceStat string   `json:"reference_stat"`
 	WeightStats   []string `json:"weight_stats"`

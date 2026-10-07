@@ -37,6 +37,7 @@ func resolveRaidPreset(repoRoot string, spec specInfo) (request.ResolvedPreset, 
 	return presets.Resolve(presetRaid, specs.Spec{
 		Spec:          spec.Spec,
 		ClassSlug:     spec.ClassSlug,
+		Role:          spec.Role,
 		ReferenceStat: spec.ReferenceStat,
 	})
 }
