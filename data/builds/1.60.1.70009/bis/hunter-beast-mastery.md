@@ -68,7 +68,7 @@ No-known-source sample (15 of 366, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 5420001505001251-0000000000000000-000000000000000000)
 
-Set DPS (verified): 145.5. Weights run: 3.2s. Verify run: 2.1s. 597 eligible items had no known source.
+Set DPS (verified): 145.5. Weights run: 3.2s. Verify run: 2.0s. 597 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.171 ± 0.008, crit=0.647 ± 0.017 per rating point (14 rating = 1%, 9.056 per %), hit=0.220 ± 0.007 per rating point (10 rating = 1%, 2.198 per %), melee_haste=7.348 ± 1.214
 

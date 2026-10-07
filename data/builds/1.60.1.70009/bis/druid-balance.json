@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:22:00Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:45:20Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -555,8 +555,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.807701776,
-      "verify_run_seconds": 0.694106469,
+      "weights_run_seconds": 1.842456303,
+      "verify_run_seconds": 0.78676121,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1178,8 +1178,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.807701776,
-      "verify_run_seconds": 0.702011667,
+      "weights_run_seconds": 1.842456303,
+      "verify_run_seconds": 0.667977074,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1835,8 +1835,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.227053915,
-      "verify_run_seconds": 0.794747174,
+      "weights_run_seconds": 2.109186357,
+      "verify_run_seconds": 0.777682408,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2527,8 +2527,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 2.227053915,
-      "verify_run_seconds": 0.838864933,
+      "weights_run_seconds": 2.109186357,
+      "verify_run_seconds": 0.802030411,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3178,8 +3178,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.23062768,
-      "verify_run_seconds": 0.814284337,
+      "weights_run_seconds": 2.266179637,
+      "verify_run_seconds": 0.832666519,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3830,8 +3830,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.23062768,
-      "verify_run_seconds": 0.781159578,
+      "weights_run_seconds": 2.266179637,
+      "verify_run_seconds": 0.81074577,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4504,8 +4504,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.411141857,
-      "verify_run_seconds": 0.871013157,
+      "weights_run_seconds": 2.4956772640000002,
+      "verify_run_seconds": 0.84660936,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5175,8 +5175,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.411141857,
-      "verify_run_seconds": 0.845492005,
+      "weights_run_seconds": 2.4956772640000002,
+      "verify_run_seconds": 0.87005521,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5884,8 +5884,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 2.377700645,
-      "verify_run_seconds": 0.931753256,
+      "weights_run_seconds": 2.367352799,
+      "verify_run_seconds": 0.922727156,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6598,8 +6598,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Amethyst War Staff"
       ],
-      "weights_run_seconds": 2.377700645,
-      "verify_run_seconds": 0.924374384,
+      "weights_run_seconds": 2.367352799,
+      "verify_run_seconds": 0.921979398,
       "coverage": {
         "back": {
           "eligible": 451,

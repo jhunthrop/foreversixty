@@ -1,8 +1,8 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:24:37Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:47:56Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -539,8 +539,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.616930399,
-      "verify_run_seconds": 1.656128071,
+      "weights_run_seconds": 2.58701308,
+      "verify_run_seconds": 1.623867326,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1164,8 +1164,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.616930399,
-      "verify_run_seconds": 1.7349090820000002,
+      "weights_run_seconds": 2.58701308,
+      "verify_run_seconds": 1.684610535,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1888,8 +1888,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.802985615,
-      "verify_run_seconds": 1.843570446,
+      "weights_run_seconds": 2.79259117,
+      "verify_run_seconds": 1.847307909,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2601,8 +2601,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.802985615,
-      "verify_run_seconds": 1.838127022,
+      "weights_run_seconds": 2.79259117,
+      "verify_run_seconds": 1.761338428,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3269,8 +3269,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.877501017,
-      "verify_run_seconds": 1.885007978,
+      "weights_run_seconds": 2.810816858,
+      "verify_run_seconds": 1.8477558539999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3945,8 +3945,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.877501017,
-      "verify_run_seconds": 1.8822329020000002,
+      "weights_run_seconds": 2.810816858,
+      "verify_run_seconds": 1.824979122,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4619,8 +4619,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.95264024,
-      "verify_run_seconds": 2.031908651,
+      "weights_run_seconds": 2.917738834,
+      "verify_run_seconds": 1.997644478,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5301,8 +5301,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.95264024,
-      "verify_run_seconds": 1.93646215,
+      "weights_run_seconds": 2.917738834,
+      "verify_run_seconds": 1.888008667,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6011,8 +6011,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.874217287,
-      "verify_run_seconds": 2.149077109,
+      "weights_run_seconds": 2.859179786,
+      "verify_run_seconds": 2.143028646,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6303,14 +6303,14 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.83695602113636
+              "dps_delta": -0.8369560211363589
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.83695602113636
+              "dps_delta": -0.8369560211363589
             },
             {
               "item_id": 23089,
@@ -6719,8 +6719,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.874217287,
-      "verify_run_seconds": 2.059718949,
+      "weights_run_seconds": 2.859179786,
+      "verify_run_seconds": 2.067677331,
       "coverage": {
         "back": {
           "eligible": 450,

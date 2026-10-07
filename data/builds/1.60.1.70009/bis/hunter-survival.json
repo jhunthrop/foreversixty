@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:25:31Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:48:49Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.285279833,
-      "verify_run_seconds": 1.780443877,
+      "weights_run_seconds": 3.2389924629999998,
+      "verify_run_seconds": 1.767378186,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1214,8 +1214,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.285279833,
-      "verify_run_seconds": 1.73155232,
+      "weights_run_seconds": 3.2389924629999998,
+      "verify_run_seconds": 1.713282145,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1900,8 +1900,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.469127558,
-      "verify_run_seconds": 1.932394982,
+      "weights_run_seconds": 3.483522069,
+      "verify_run_seconds": 1.907838956,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2586,8 +2586,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.469127558,
-      "verify_run_seconds": 1.857123171,
+      "weights_run_seconds": 3.483522069,
+      "verify_run_seconds": 1.844616705,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3277,8 +3277,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.753913055,
-      "verify_run_seconds": 2.013312053,
+      "weights_run_seconds": 3.766513169,
+      "verify_run_seconds": 2.018985126,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3975,8 +3975,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.753913055,
-      "verify_run_seconds": 2.019855474,
+      "weights_run_seconds": 3.766513169,
+      "verify_run_seconds": 1.96062235,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4686,8 +4686,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.862353423,
-      "verify_run_seconds": 2.236648864,
+      "weights_run_seconds": 3.800262758,
+      "verify_run_seconds": 2.220056202,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5402,8 +5402,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.862353423,
-      "verify_run_seconds": 2.286763746,
+      "weights_run_seconds": 3.800262758,
+      "verify_run_seconds": 2.282253045,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5641,7 +5641,7 @@
               "item_name": "Lieutenant Commander's Chain Pauldrons",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.2581966533704653
+              "dps_delta": -0.2581966533704657
             },
             {
               "item_id": 20060,
@@ -5700,7 +5700,7 @@
               "item_name": "Field Marshal's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.03292209604942838
+              "dps_delta": -0.03292209604942916
             },
             {
               "item_id": 14637,
@@ -5823,7 +5823,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 60.784373349752194,
+          "score": 60.7843733497522,
           "verified": true,
           "alternatives": [
             {
@@ -5838,7 +5838,7 @@
               "item_name": "Black Dragonscale Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.37203614123996515
+              "dps_delta": -0.37203614123996553
             },
             {
               "item_id": 227085,
@@ -6152,8 +6152,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.842829928,
-      "verify_run_seconds": 2.23412861,
+      "weights_run_seconds": 3.791067125,
+      "verify_run_seconds": 2.219267361,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6391,7 +6391,7 @@
               "item_name": "Champion's Chain Pauldrons",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.2581966533704657
+              "dps_delta": -0.2581966533704653
             },
             {
               "item_id": 20175,
@@ -6574,7 +6574,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 60.784373349752194,
+          "score": 60.7843733497522,
           "verified": true,
           "alternatives": [
             {
@@ -6589,7 +6589,7 @@
               "item_name": "Legionnaire's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.21686740527180642
+              "dps_delta": -0.2168674052718068
             },
             {
               "item_id": 15052,
@@ -6681,14 +6681,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "quest",
               "source": "The Path of the Conqueror",
-              "dps_delta": -0.05277307873541687
+              "dps_delta": -0.05277307873541706
             },
             {
               "item_id": 11862,
               "item_name": "White Bone Band",
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons",
-              "dps_delta": -0.060622061945155535
+              "dps_delta": -0.06062206194515573
             },
             {
               "item_id": 11669,
@@ -6903,8 +6903,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 3.842829928,
-      "verify_run_seconds": 2.175394484,
+      "weights_run_seconds": 3.791067125,
+      "verify_run_seconds": 2.14838638,
       "coverage": {
         "back": {
           "eligible": 450,

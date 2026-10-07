@@ -5349,7 +5349,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the whole rotation.",
+            "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5358,9 +5358,15 @@
         "level": 20,
         "lines": [
           {
+            "spell_id": 1312002,
+            "name": "Ice Lance",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the whole rotation.",
+            "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5369,9 +5375,15 @@
         "level": 30,
         "lines": [
           {
+            "spell_id": 400640,
+            "name": "Ice Lance",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 8406,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the whole rotation.",
+            "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5380,9 +5392,15 @@
         "level": 38,
         "lines": [
           {
+            "spell_id": 1240044,
+            "name": "Ice Lance",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the whole rotation.",
+            "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5391,9 +5409,15 @@
         "level": 40,
         "lines": [
           {
+            "spell_id": 1240044,
+            "name": "Ice Lance",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the whole rotation.",
+            "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5402,9 +5426,15 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 1240046,
+            "name": "Ice Lance",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the whole rotation.",
+            "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -5413,9 +5443,15 @@
         "level": 60,
         "lines": [
           {
+            "spell_id": 1240047,
+            "name": "Ice Lance",
+            "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 25304,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the whole rotation.",
+            "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
           }
         ]
@@ -13395,9 +13431,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 16981,
+              "item_id": 251486,
               "source_kind": "quest",
-              "source": "Earthen Arise"
+              "source": "A Frightened Request"
             },
             "hands": {
               "item_id": 5970,
@@ -13410,9 +13446,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 23173,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Sever"
+              "item_id": 253937,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 4320,
@@ -13462,10 +13498,10 @@
             12998,
             4311,
             253901,
-            16981,
+            251486,
             5970,
             253925,
-            23173,
+            253937,
             4320,
             20426,
             286535,
@@ -13475,11 +13511,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.229,
-          "crit": 0.084,
-          "hit": 0.254,
-          "spell_haste": 0.494,
-          "arcane_power": 0.432
+          "intellect": 0.271,
+          "crit": 0.077,
+          "hit": 0.233,
+          "spell_haste": 0.356,
+          "arcane_power": 0.461
         }
       },
       {
@@ -13678,10 +13714,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.318,
-          "crit": 0.084,
-          "hit": 0.244,
-          "arcane_power": 0.645
+          "intellect": 0.349,
+          "crit": 0.064,
+          "hit": 0.183,
+          "arcane_power": 0.915
         }
       },
       {
@@ -13865,10 +13901,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.555,
-          "crit": 0.169,
-          "hit": 0.303,
-          "arcane_power": 0.916
+          "intellect": 0.583,
+          "crit": 0.174,
+          "hit": 0.298,
+          "arcane_power": 0.918
         }
       },
       {
@@ -14075,9 +14111,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.701,
-          "crit": 0.277,
-          "hit": 0.464,
+          "intellect": 0.714,
+          "crit": 0.276,
+          "hit": 0.463,
           "arcane_power": 0.92
         }
       },
@@ -14289,10 +14325,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.815,
+          "intellect": 0.852,
           "crit": 0.443,
           "hit": 0.718,
-          "spell_haste": 3.805,
+          "spell_haste": 3.49,
           "arcane_power": 0.914
         }
       }
@@ -15501,9 +15537,9 @@
               "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
-              "item_id": 270029,
+              "item_id": 9609,
               "source_kind": "quest",
-              "source": "Crime and Punishment"
+              "source": "Gyrodrillmatic Excavationators"
             },
             "waist": {
               "item_id": 20099,
@@ -15578,9 +15614,9 @@
               "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
-              "item_id": 10654,
-              "source_kind": "quest",
-              "source": "Horde Presence"
+              "item_id": 5970,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             },
             "waist": {
               "item_id": 20164,
@@ -15632,7 +15668,7 @@
             3719,
             7065,
             9448,
-            270029,
+            9609,
             20099,
             6903,
             254001,
@@ -15649,7 +15685,6 @@
             3719,
             7065,
             9448,
-            10654,
             20164,
             6903,
             254001,
@@ -15662,9 +15697,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.359,
-          "crit": 0.11,
-          "hit": 0.199,
+          "intellect": 0.137,
+          "crit": 0.098,
+          "hit": 0.207,
           "frost_power": 1.0
         }
       },
@@ -15708,9 +15743,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 20098,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 10771,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "legs": {
               "item_id": 10009,
@@ -15770,9 +15805,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 9448,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Electrocutioner 6000"
+              "item_id": 4545,
+              "source_kind": "quest",
+              "source": "Foul Magics"
             },
             "hands": {
               "item_id": 10019,
@@ -15780,9 +15815,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 20166,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 10771,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "legs": {
               "item_id": 10009,
@@ -15824,7 +15859,7 @@
             1716,
             4744,
             10019,
-            20098,
+            10771,
             10009,
             254013,
             281635,
@@ -15837,8 +15872,9 @@
             19507,
             23178,
             1716,
+            4545,
             10019,
-            20166,
+            10771,
             10009,
             254013,
             281635,
@@ -15849,9 +15885,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.569,
-          "crit": 0.18,
-          "hit": 0.331,
+          "intellect": 0.638,
+          "crit": 0.179,
+          "hit": 0.347,
           "frost_power": 1.0
         }
       },
@@ -15895,9 +15931,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 17755,
+              "item_id": 12466,
               "source_kind": "dungeon",
-              "source": "Maraudon: Lord Vyletongue"
+              "source": "Sunken Temple: Morphaz"
             },
             "legs": {
               "item_id": 9484,
@@ -15930,9 +15966,9 @@
               "source": "The Pariah's Instructions"
             },
             "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 17780,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "ranged": {
               "item_id": 11748,
@@ -15967,9 +16003,9 @@
               "source": "Twisted Evils"
             },
             "wrist": {
-              "item_id": 254061,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 12546,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anvilrage Overseer"
             },
             "hands": {
               "item_id": 226930,
@@ -15977,9 +16013,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 17755,
+              "item_id": 12466,
               "source_kind": "dungeon",
-              "source": "Maraudon: Lord Vyletongue"
+              "source": "Sunken Temple: Morphaz"
             },
             "legs": {
               "item_id": 9484,
@@ -16006,15 +16042,10 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
             "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 17780,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "ranged": {
               "item_id": 11748,
@@ -16032,12 +16063,12 @@
             17775,
             254061,
             226930,
-            17755,
+            12466,
             9484,
             11824,
             249469,
             17774,
-            812,
+            17780,
             11748
           ],
           "horde": [
@@ -16046,23 +16077,22 @@
             17732,
             19121,
             17775,
-            254061,
+            12546,
             226930,
-            17755,
+            12466,
             9484,
             11824,
             249469,
-            19120,
-            812,
+            17780,
             11748
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.835,
-          "crit": 0.269,
-          "hit": 0.569,
-          "spell_haste": 11.366,
+          "intellect": 0.924,
+          "crit": 0.279,
+          "hit": 0.655,
+          "spell_haste": 5.8,
           "frost_power": 1.0
         }
       },
@@ -16101,9 +16131,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 13253,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Quartermaster Zigris"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -16183,9 +16213,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 20716,
+              "item_id": 22066,
               "source_kind": "quest",
-              "source": "Armaments of War"
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -16213,14 +16243,14 @@
               "source": "The Path of the Invoker"
             },
             "trinket1": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
+            },
+            "trinket2": {
               "item_id": 22678,
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "trinket2": {
-              "item_id": 12930,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
             },
             "main_hand": {
               "item_id": 20654,
@@ -16242,7 +16272,7 @@
             272411,
             14152,
             19595,
-            13253,
+            22066,
             228190,
             237815,
             22064,
@@ -16260,24 +16290,24 @@
             272411,
             14152,
             19595,
-            20716,
+            22066,
             228190,
             237815,
             22064,
             20682,
             21206,
+            11832,
             22678,
-            12930,
             20654,
             279246
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.661,
-          "crit": 0.385,
-          "hit": 0.791,
-          "spell_haste": 11.08,
+          "intellect": 0.747,
+          "crit": 0.365,
+          "hit": 0.922,
+          "spell_haste": 7.179,
           "frost_power": 1.0
         }
       }

@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:30:56Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:54:11Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -540,8 +540,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.447522856,
-      "verify_run_seconds": 0.99945633,
+      "weights_run_seconds": 2.361286794,
+      "verify_run_seconds": 0.986381187,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1154,8 +1154,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.447522856,
-      "verify_run_seconds": 0.915679694,
+      "weights_run_seconds": 2.361286794,
+      "verify_run_seconds": 0.927853587,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1801,8 +1801,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.535997966,
-      "verify_run_seconds": 1.004047195,
+      "weights_run_seconds": 2.579434778,
+      "verify_run_seconds": 0.958781389,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2483,8 +2483,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 2.535997966,
-      "verify_run_seconds": 1.1316977129999999,
+      "weights_run_seconds": 2.579434778,
+      "verify_run_seconds": 1.080364585,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3126,8 +3126,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.989636904,
-      "verify_run_seconds": 1.089468793,
+      "weights_run_seconds": 2.9713150600000002,
+      "verify_run_seconds": 1.1212420810000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3768,8 +3768,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.989636904,
-      "verify_run_seconds": 1.133276059,
+      "weights_run_seconds": 2.9713150600000002,
+      "verify_run_seconds": 1.158277475,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4440,8 +4440,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.111474431,
-      "verify_run_seconds": 1.286035798,
+      "weights_run_seconds": 3.02991197,
+      "verify_run_seconds": 1.2759188909999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5109,8 +5109,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.111474431,
-      "verify_run_seconds": 1.244805762,
+      "weights_run_seconds": 3.02991197,
+      "verify_run_seconds": 1.23286517,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5817,8 +5817,8 @@
         "main_hand: Crackling Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.040149455,
-      "verify_run_seconds": 1.2780536040000001,
+      "weights_run_seconds": 2.978207502,
+      "verify_run_seconds": 1.27041457,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5985,7 +5985,7 @@
           "item_name": "Coif of The Five Thunders",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 44.31216183856263,
+          "score": 44.31216183856264,
           "verified": true,
           "alternatives": [
             {
@@ -5993,21 +5993,21 @@
               "item_name": "Blue Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.07276556604993854
+              "dps_delta": -0.07276556604993925
             },
             {
               "item_id": 231663,
               "item_name": "Warlord's Mail Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.1802547570860489
+              "dps_delta": -0.18025475708604963
             },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5490795974803443
+              "dps_delta": -0.5490795974803451
             }
           ]
         },
@@ -6057,7 +6057,7 @@
               "item_name": "Warlord's Mail Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.5178370941821564
+              "dps_delta": -0.5178370941821572
             },
             {
               "item_id": 227003,
@@ -6082,7 +6082,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 26.9316006971539,
+          "score": 26.931600697153904,
           "verified": true,
           "alternatives": [
             {
@@ -6090,21 +6090,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.383137246128088
+              "dps_delta": -0.38313724612808836
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5229024240815645
+              "dps_delta": -0.5229024240815648
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -0.7963339664699315
+              "dps_delta": -0.7963339664699318
             }
           ]
         },
@@ -6531,8 +6531,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.040149455,
-      "verify_run_seconds": 1.163074025,
+      "weights_run_seconds": 2.978207502,
+      "verify_run_seconds": 1.130751611,
       "coverage": {
         "back": {
           "eligible": 451,

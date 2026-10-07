@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:35:07Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:58:16Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -598,8 +598,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.645649491,
-      "verify_run_seconds": 1.520412169,
+      "weights_run_seconds": 2.628039798,
+      "verify_run_seconds": 1.511305137,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1271,8 +1271,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.645649491,
-      "verify_run_seconds": 1.5471538950000001,
+      "weights_run_seconds": 2.628039798,
+      "verify_run_seconds": 1.4719205739999999,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1963,8 +1963,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.9343307100000002,
-      "verify_run_seconds": 1.620364671,
+      "weights_run_seconds": 2.906045911,
+      "verify_run_seconds": 1.575723252,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2662,8 +2662,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.9343307100000002,
-      "verify_run_seconds": 1.648193501,
+      "weights_run_seconds": 2.906045911,
+      "verify_run_seconds": 1.598854899,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3361,8 +3361,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.098058715,
-      "verify_run_seconds": 1.618432179,
+      "weights_run_seconds": 3.079239514,
+      "verify_run_seconds": 1.635579526,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4057,8 +4057,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.098058715,
-      "verify_run_seconds": 1.7214883859999999,
+      "weights_run_seconds": 3.079239514,
+      "verify_run_seconds": 1.699160112,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4225,14 +4225,14 @@
               "item_name": "Raging Berserker's Helm",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.17367008202108708
+              "dps_delta": -0.17367008202108658
             },
             {
               "item_id": 20521,
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -0.500720144299042
+              "dps_delta": -0.5007201442990415
             },
             {
               "item_id": 9479,
@@ -4765,8 +4765,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.318806819,
-      "verify_run_seconds": 2.265463287,
+      "weights_run_seconds": 3.318999709,
+      "verify_run_seconds": 2.239936932,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4939,7 +4939,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.2357566146793318
+              "dps_delta": -0.23575661467933132
             },
             {
               "item_id": 20521,
@@ -5480,8 +5480,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.318806819,
-      "verify_run_seconds": 2.286745249,
+      "weights_run_seconds": 3.318999709,
+      "verify_run_seconds": 2.26811336,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5782,14 +5782,14 @@
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.617179756858906
+              "dps_delta": -0.617179756858905
             },
             {
               "item_id": 14637,
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.5118666478932135
+              "dps_delta": -1.5118666478932123
             },
             {
               "item_id": 23087,
@@ -6234,8 +6234,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.448570957,
-      "verify_run_seconds": 2.167606365,
+      "weights_run_seconds": 3.420063343,
+      "verify_run_seconds": 2.146699602,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6530,14 +6530,14 @@
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.617179756858906
+              "dps_delta": -0.617179756858905
             },
             {
               "item_id": 14637,
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.5118666478932135
+              "dps_delta": -1.5118666478932123
             },
             {
               "item_id": 23087,
@@ -6981,8 +6981,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.448570957,
-      "verify_run_seconds": 2.248446985,
+      "weights_run_seconds": 3.420063343,
+      "verify_run_seconds": 2.220665067,
       "coverage": {
         "back": {
           "eligible": 450,

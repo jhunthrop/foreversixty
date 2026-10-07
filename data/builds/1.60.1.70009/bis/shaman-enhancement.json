@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:31:42Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:54:56Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -514,8 +514,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 2.2889322229999998,
-      "verify_run_seconds": 1.157765973,
+      "weights_run_seconds": 2.2953907940000002,
+      "verify_run_seconds": 1.07872485,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1101,8 +1101,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 2.2889322229999998,
-      "verify_run_seconds": 0.979735405,
+      "weights_run_seconds": 2.2953907940000002,
+      "verify_run_seconds": 0.978756428,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1746,8 +1746,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.3757185339999998,
-      "verify_run_seconds": 1.398353578,
+      "weights_run_seconds": 2.3159046119999998,
+      "verify_run_seconds": 1.359290909,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2395,8 +2395,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.3757185339999998,
-      "verify_run_seconds": 1.258533933,
+      "weights_run_seconds": 2.3159046119999998,
+      "verify_run_seconds": 1.209150495,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3014,8 +3014,8 @@
         "finger2: Assault Band",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.7707464269999997,
-      "verify_run_seconds": 1.180030203,
+      "weights_run_seconds": 2.742097289,
+      "verify_run_seconds": 1.157447856,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3636,8 +3636,8 @@
         "finger2: Assault Band",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.7707464269999997,
-      "verify_run_seconds": 1.304703058,
+      "weights_run_seconds": 2.742097289,
+      "verify_run_seconds": 1.250394536,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4291,8 +4291,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.823510566,
-      "verify_run_seconds": 1.5447336969999999,
+      "weights_run_seconds": 2.7250497,
+      "verify_run_seconds": 1.518016372,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4954,8 +4954,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.823510566,
-      "verify_run_seconds": 1.348527945,
+      "weights_run_seconds": 2.7250497,
+      "verify_run_seconds": 1.320146134,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5443,14 +5443,14 @@
               "item_name": "Band of the Ogre King",
               "source_kind": "dungeon",
               "source": "Dire Maul: King Gordok",
-              "dps_delta": -0.19635096451274614
+              "dps_delta": -0.19635096451274645
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.2900525990125607
+              "dps_delta": -0.290052599012561
             },
             {
               "item_id": 11669,
@@ -5651,8 +5651,8 @@
         "trinket2: Eye of the Beast",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.750812449,
-      "verify_run_seconds": 1.442032625,
+      "weights_run_seconds": 2.717388765,
+      "verify_run_seconds": 1.374461747,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6141,14 +6141,14 @@
               "item_name": "Band of the Ogre King",
               "source_kind": "dungeon",
               "source": "Dire Maul: King Gordok",
-              "dps_delta": -0.19635096451274614
+              "dps_delta": -0.19635096451274645
             },
             {
               "item_id": 17713,
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.2900525990125607
+              "dps_delta": -0.290052599012561
             },
             {
               "item_id": 11669,
@@ -6347,8 +6347,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.750812449,
-      "verify_run_seconds": 1.307752758,
+      "weights_run_seconds": 2.717388765,
+      "verify_run_seconds": 1.271971747,
       "coverage": {
         "back": {
           "eligible": 451,

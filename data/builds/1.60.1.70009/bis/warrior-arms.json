@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:34:19Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:57:28Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -545,8 +545,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.361395528,
-      "verify_run_seconds": 1.17765265,
+      "weights_run_seconds": 2.339302179,
+      "verify_run_seconds": 1.118894044,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1187,8 +1187,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 2.361395528,
-      "verify_run_seconds": 1.128108342,
+      "weights_run_seconds": 2.339302179,
+      "verify_run_seconds": 1.041538482,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.779828654,
-      "verify_run_seconds": 1.4346750830000001,
+      "weights_run_seconds": 2.695174044,
+      "verify_run_seconds": 1.398327551,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2529,8 +2529,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.779828654,
-      "verify_run_seconds": 1.427381239,
+      "weights_run_seconds": 2.695174044,
+      "verify_run_seconds": 1.410949251,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3208,8 +3208,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.992950641,
-      "verify_run_seconds": 1.361897722,
+      "weights_run_seconds": 2.9736456049999997,
+      "verify_run_seconds": 1.345183102,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3887,8 +3887,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.992950641,
-      "verify_run_seconds": 1.4117015419999999,
+      "weights_run_seconds": 2.9736456049999997,
+      "verify_run_seconds": 1.353822793,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4573,8 +4573,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.210154951,
-      "verify_run_seconds": 1.738255028,
+      "weights_run_seconds": 3.186194677,
+      "verify_run_seconds": 1.714139557,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5271,8 +5271,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.210154951,
-      "verify_run_seconds": 1.675384123,
+      "weights_run_seconds": 3.186194677,
+      "verify_run_seconds": 1.657707949,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5704,7 +5704,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.4878094953841995
+              "dps_delta": -0.4878094953841988
             },
             {
               "item_id": 231540,
@@ -5998,8 +5998,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.269741394,
-      "verify_run_seconds": 1.545466442,
+      "weights_run_seconds": 3.250724307,
+      "verify_run_seconds": 1.544695807,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6718,8 +6718,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 3.269741394,
-      "verify_run_seconds": 1.568614051,
+      "weights_run_seconds": 3.250724307,
+      "verify_run_seconds": 1.5390860370000001,
       "coverage": {
         "back": {
           "eligible": 450,
