@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "bebda865a",
-  "generated_at": "2026-10-06T23:34:05Z",
+  "generated_at": "2026-10-07T00:03:38Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -539,8 +539,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.974612977,
-      "verify_run_seconds": 1.194549534,
+      "weights_run_seconds": 2.773935037,
+      "verify_run_seconds": 1.15851815,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1168,8 +1168,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.974612977,
-      "verify_run_seconds": 1.191773628,
+      "weights_run_seconds": 2.773935037,
+      "verify_run_seconds": 1.073519936,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1820,8 +1820,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 3.301615228,
-      "verify_run_seconds": 1.231898924,
+      "weights_run_seconds": 3.085771967,
+      "verify_run_seconds": 1.17351719,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2471,8 +2471,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 3.301615228,
-      "verify_run_seconds": 1.0793139489999999,
+      "weights_run_seconds": 3.085771967,
+      "verify_run_seconds": 1.094935991,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3113,8 +3113,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.6762362619999998,
-      "verify_run_seconds": 1.39494747,
+      "weights_run_seconds": 3.4531711,
+      "verify_run_seconds": 1.312896428,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3754,8 +3754,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.6762362619999998,
-      "verify_run_seconds": 1.348096572,
+      "weights_run_seconds": 3.4531711,
+      "verify_run_seconds": 1.252929839,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4436,8 +4436,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.688888178,
-      "verify_run_seconds": 1.646447587,
+      "weights_run_seconds": 3.517590144,
+      "verify_run_seconds": 1.540304494,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5106,8 +5106,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.688888178,
-      "verify_run_seconds": 1.486648954,
+      "weights_run_seconds": 3.517590144,
+      "verify_run_seconds": 1.409589519,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5370,7 +5370,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 32.16011874074181,
+          "score": 32.1601187407418,
           "verified": true,
           "alternatives": [
             {
@@ -5378,21 +5378,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5423284685103661
+              "dps_delta": -0.5423284685103654
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6833520612108261
+              "dps_delta": -0.6833520612108255
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.01740129400048
+              "dps_delta": -1.0174012940004793
             }
           ]
         },
@@ -5501,7 +5501,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.2306721934080747
+              "dps_delta": -1.2306721934080753
             },
             {
               "item_id": 18504,
@@ -5541,7 +5541,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.9741365476650646
+              "dps_delta": -0.974136547665064
             },
             {
               "item_id": 237817,
@@ -5739,7 +5739,7 @@
               "item_name": "Grand Marshal's Demolisher",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": -0.9036247513148336
+              "dps_delta": -0.9036247513148342
             },
             {
               "item_id": 2243,
@@ -5799,8 +5799,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 3.698609035,
-      "verify_run_seconds": 1.467476384,
+      "weights_run_seconds": 3.586160044,
+      "verify_run_seconds": 1.381046587,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5967,7 +5967,7 @@
           "item_name": "Coif of The Five Thunders",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 57.91625150809901,
+          "score": 57.916251508099,
           "verified": true,
           "alternatives": [
             {
@@ -5975,21 +5975,21 @@
               "item_name": "Warlord's Mail Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.40331248335107245
+              "dps_delta": -0.40331248335107106
             },
             {
               "item_id": 252604,
               "item_name": "Blue Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.40857876369058016
+              "dps_delta": -0.4085787636905795
             },
             {
               "item_id": 252605,
               "item_name": "Black Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.4565630765286179
+              "dps_delta": -0.4565630765286172
             }
           ]
         },
@@ -6046,7 +6046,7 @@
               "item_name": "Warlord's Mail Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.4528174391621819
+              "dps_delta": -0.45281743916218264
             },
             {
               "item_id": 272103,
@@ -6498,8 +6498,8 @@
         "trinket2: Second Wind",
         "main_hand: Hammer of Divine Might"
       ],
-      "weights_run_seconds": 3.698609035,
-      "verify_run_seconds": 1.38538923,
+      "weights_run_seconds": 3.586160044,
+      "verify_run_seconds": 1.294350279,
       "coverage": {
         "back": {
           "eligible": 451,

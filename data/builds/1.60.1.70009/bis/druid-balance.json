@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "bebda865a",
-  "generated_at": "2026-10-06T23:25:10Z",
+  "generated_at": "2026-10-06T23:54:59Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -544,8 +544,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 2.737185874,
-      "verify_run_seconds": 0.930201955,
+      "weights_run_seconds": 2.580249354,
+      "verify_run_seconds": 0.921619926,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1172,8 +1172,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 2.737185874,
-      "verify_run_seconds": 0.922176466,
+      "weights_run_seconds": 2.580249354,
+      "verify_run_seconds": 0.952618003,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1834,8 +1834,8 @@
         "finger2: Minor Channeling Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 3.260538662,
-      "verify_run_seconds": 1.095412991,
+      "weights_run_seconds": 3.178291904,
+      "verify_run_seconds": 1.060858048,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2495,8 +2495,8 @@
         "finger2: Snake Hoop",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 3.260538662,
-      "verify_run_seconds": 1.1163566089999999,
+      "weights_run_seconds": 3.178291904,
+      "verify_run_seconds": 1.057108101,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3146,8 +3146,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.338817299,
-      "verify_run_seconds": 1.152800762,
+      "weights_run_seconds": 3.189130197,
+      "verify_run_seconds": 1.123371232,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3798,8 +3798,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.338817299,
-      "verify_run_seconds": 1.21003485,
+      "weights_run_seconds": 3.189130197,
+      "verify_run_seconds": 1.122975048,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4470,8 +4470,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.545249521,
-      "verify_run_seconds": 1.289673858,
+      "weights_run_seconds": 3.368390562,
+      "verify_run_seconds": 1.267913343,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4910,7 +4910,7 @@
               "item_name": "Stone Guard's Crackling Leather Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.5904011322305031
+              "dps_delta": -0.5904011322305026
             },
             {
               "item_id": 10009,
@@ -5140,8 +5140,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.545249521,
-      "verify_run_seconds": 1.378733361,
+      "weights_run_seconds": 3.368390562,
+      "verify_run_seconds": 1.221329103,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5561,7 +5561,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.7099625325331451
+              "dps_delta": -1.7099625325331442
             },
             {
               "item_id": 272401,
@@ -5920,8 +5920,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.572794376,
-      "verify_run_seconds": 1.299948178,
+      "weights_run_seconds": 3.451017688,
+      "verify_run_seconds": 1.226767842,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6359,7 +6359,7 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 61.25870791111606,
+          "score": 61.25870791111607,
           "verified": true,
           "alternatives": [
             {
@@ -6367,21 +6367,21 @@
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.3569495347433336
+              "dps_delta": -1.3569495347433345
             },
             {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.489756089856035
+              "dps_delta": -1.4897560898560358
             },
             {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.489756089856035
+              "dps_delta": -1.4897560898560358
             }
           ]
         },
@@ -6710,8 +6710,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.572794376,
-      "verify_run_seconds": 1.292567549,
+      "weights_run_seconds": 3.451017688,
+      "verify_run_seconds": 1.236524937,
       "coverage": {
         "back": {
           "eligible": 451,

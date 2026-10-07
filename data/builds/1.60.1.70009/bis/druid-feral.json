@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "bebda865a",
-  "generated_at": "2026-10-06T23:26:07Z",
+  "generated_at": "2026-10-06T23:55:55Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.501681653,
-      "verify_run_seconds": 1.6278003920000002,
+      "weights_run_seconds": 3.288217366,
+      "verify_run_seconds": 1.539091411,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1138,8 +1138,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 3.501681653,
-      "verify_run_seconds": 1.6262241,
+      "weights_run_seconds": 3.288217366,
+      "verify_run_seconds": 1.525611487,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1780,8 +1780,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.00002114,
-      "verify_run_seconds": 1.998372293,
+      "weights_run_seconds": 3.8373865990000002,
+      "verify_run_seconds": 1.898012292,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2423,8 +2423,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.00002114,
-      "verify_run_seconds": 2.009185948,
+      "weights_run_seconds": 3.8373865990000002,
+      "verify_run_seconds": 1.89998749,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3061,8 +3061,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 4.208417044,
-      "verify_run_seconds": 2.09125979,
+      "weights_run_seconds": 4.058798561,
+      "verify_run_seconds": 1.991007016,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3700,8 +3700,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 4.208417044,
-      "verify_run_seconds": 2.09255303,
+      "weights_run_seconds": 4.058798561,
+      "verify_run_seconds": 1.9923600700000001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4135,7 +4135,7 @@
               "item_name": "Knight's Leather Pants",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.3414618610446085
+              "dps_delta": -1.341461861044609
             },
             {
               "item_id": 9624,
@@ -4350,8 +4350,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.191955871,
-      "verify_run_seconds": 2.223739548,
+      "weights_run_seconds": 4.029556752,
+      "verify_run_seconds": 2.149098924,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5004,8 +5004,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.191955871,
-      "verify_run_seconds": 2.17456787,
+      "weights_run_seconds": 4.029556752,
+      "verify_run_seconds": 2.118647737,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5780,8 +5780,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 4.202206983,
-      "verify_run_seconds": 2.184381233,
+      "weights_run_seconds": 4.028932944,
+      "verify_run_seconds": 2.100817606,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6566,8 +6566,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 4.202206983,
-      "verify_run_seconds": 2.169636028,
+      "weights_run_seconds": 4.028932944,
+      "verify_run_seconds": 2.091906166,
       "coverage": {
         "back": {
           "eligible": 451,

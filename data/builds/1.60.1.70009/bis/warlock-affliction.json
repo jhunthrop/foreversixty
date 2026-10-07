@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "bebda865a",
-  "generated_at": "2026-10-06T23:35:32Z",
+  "generated_at": "2026-10-07T00:05:01Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.273705732,
-      "verify_run_seconds": 1.18728176,
+      "weights_run_seconds": 2.131784895,
+      "verify_run_seconds": 1.090044892,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.273705732,
-      "verify_run_seconds": 1.177244859,
+      "weights_run_seconds": 2.131784895,
+      "verify_run_seconds": 1.10671828,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.246394168,
-      "verify_run_seconds": 1.235879177,
+      "weights_run_seconds": 2.114234054,
+      "verify_run_seconds": 1.181565218,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2591,8 +2591,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.246394168,
-      "verify_run_seconds": 1.231670875,
+      "weights_run_seconds": 2.114234054,
+      "verify_run_seconds": 1.167756452,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3268,8 +3268,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.757355205,
-      "verify_run_seconds": 1.092396242,
+      "weights_run_seconds": 1.6527208230000001,
+      "verify_run_seconds": 1.026328331,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3938,8 +3938,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.757355205,
-      "verify_run_seconds": 1.079069031,
+      "weights_run_seconds": 1.6527208230000001,
+      "verify_run_seconds": 1.039325327,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4640,8 +4640,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.002963054,
-      "verify_run_seconds": 1.371968653,
+      "weights_run_seconds": 1.908995033,
+      "verify_run_seconds": 1.324929802,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5113,7 +5113,7 @@
               "item_name": "First Sergeant's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
-              "dps_delta": -2.4914301837218824
+              "dps_delta": -2.491430183721882
             },
             {
               "item_id": 10026,
@@ -5346,8 +5346,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.002963054,
-      "verify_run_seconds": 1.3477483719999999,
+      "weights_run_seconds": 1.908995033,
+      "verify_run_seconds": 1.289584888,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6079,8 +6079,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.009675806,
-      "verify_run_seconds": 1.286809722,
+      "weights_run_seconds": 1.924013336,
+      "verify_run_seconds": 1.237733115,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6814,8 +6814,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.009675806,
-      "verify_run_seconds": 1.354131104,
+      "weights_run_seconds": 1.924013336,
+      "verify_run_seconds": 1.284415951,
       "coverage": {
         "back": {
           "eligible": 450,

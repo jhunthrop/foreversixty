@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "bebda865a",
-  "generated_at": "2026-10-06T23:32:27Z",
+  "generated_at": "2026-10-07T00:02:05Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -566,8 +566,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.32491124,
-      "verify_run_seconds": 1.466766102,
+      "weights_run_seconds": 2.180217376,
+      "verify_run_seconds": 1.34226057,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1214,8 +1214,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.32491124,
-      "verify_run_seconds": 1.349442724,
+      "weights_run_seconds": 2.180217376,
+      "verify_run_seconds": 1.2808272,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1897,8 +1897,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.326059049,
-      "verify_run_seconds": 1.38666743,
+      "weights_run_seconds": 2.188765475,
+      "verify_run_seconds": 1.298788844,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2586,8 +2586,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.326059049,
-      "verify_run_seconds": 1.405221735,
+      "weights_run_seconds": 2.188765475,
+      "verify_run_seconds": 1.300536623,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3276,8 +3276,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.434421697,
-      "verify_run_seconds": 1.471794774,
+      "weights_run_seconds": 2.29271326,
+      "verify_run_seconds": 1.372035069,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3974,8 +3974,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.434421697,
-      "verify_run_seconds": 1.454035226,
+      "weights_run_seconds": 2.29271326,
+      "verify_run_seconds": 1.409979201,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4414,7 +4414,7 @@
               "item_name": "Knight's Leather Pants",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.40062686964307487
+              "dps_delta": -0.40062686964307465
             }
           ]
         },
@@ -4682,8 +4682,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.481050119,
-      "verify_run_seconds": 1.80834047,
+      "weights_run_seconds": 2.369894314,
+      "verify_run_seconds": 1.7389263879999999,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5101,7 +5101,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.3566576735544752
+              "dps_delta": -0.35665767355447503
             },
             {
               "item_id": 1718,
@@ -5393,8 +5393,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.481050119,
-      "verify_run_seconds": 1.802527371,
+      "weights_run_seconds": 2.369894314,
+      "verify_run_seconds": 1.7405250620000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5884,7 +5884,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.11459171616199837
+              "dps_delta": -0.11459171616199856
             },
             {
               "item_id": 17713,
@@ -5916,7 +5916,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.03125586586051574
+              "dps_delta": -0.03125586586051594
             },
             {
               "item_id": 17713,
@@ -6133,8 +6133,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.493051744,
-      "verify_run_seconds": 1.8425672180000001,
+      "weights_run_seconds": 2.345909422,
+      "verify_run_seconds": 1.7726245569999999,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6873,8 +6873,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.493051744,
-      "verify_run_seconds": 1.889764972,
+      "weights_run_seconds": 2.345909422,
+      "verify_run_seconds": 1.777328944,
       "coverage": {
         "back": {
           "eligible": 451,
