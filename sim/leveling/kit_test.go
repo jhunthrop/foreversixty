@@ -2,6 +2,25 @@ package leveling
 
 import "testing"
 
+// TestKitConsumesRogueCarriesDeadlyInTheMainHandFromThirty pins the
+// arrangement to the 2026-10-07 rogue-parity measurement
+// (design/reviews/2026-10-07-rogue-parity.md): for every rogue spec, from
+// the level Deadly Poison is learned, Deadly in the main hand and Instant in
+// the off hand beats two Instants (Combat 551.0 against 530.0 in the raid
+// preset at 60, 10 percent at bands 30 to 50) and beats the mirror
+// arrangement (544.5), except Subtlety at 60 where the mirror is 0.9
+// percent ahead and is not taken, to keep one rule.
+func TestKitConsumesRogueCarriesDeadlyInTheMainHandFromThirty(t *testing.T) {
+	for _, spec := range []string{"rogue-assassination", "rogue-combat", "rogue-subtlety"} {
+		for _, level := range []int{30, 45, 60} {
+			got := KitConsumes(spec, level)
+			if len(got) != 2 || got[0] != "main_hand_imbue:deadly_poison" || got[1] != "off_hand_imbue:instant_poison" {
+				t.Errorf("%s at %d = %v, want Deadly Poison main hand and Instant Poison off hand", spec, level, got)
+			}
+		}
+	}
+}
+
 func TestKitConsumesIsRoguePoisonsFromTwenty(t *testing.T) {
 	if got := KitConsumes("rogue", 19); got != nil {
 		t.Fatalf("rogue at 19 = %v, want nothing (the poison quest is level 20)", got)
@@ -17,8 +36,8 @@ func TestKitConsumesIsRoguePoisonsFromTwenty(t *testing.T) {
 	if got := KitConsumes("rogue-assassination", 30); len(got) != 2 || got[0] != "main_hand_imbue:deadly_poison" || got[1] != "off_hand_imbue:instant_poison" {
 		t.Fatalf("rogue-assassination at 30 = %v, want Deadly Poison main hand and Instant Poison off hand", got)
 	}
-	if got := KitConsumes("rogue-combat", 60); got[0] != "main_hand_imbue:instant_poison" {
-		t.Fatalf("rogue-combat at 60 = %v, want Instant Poison on both weapons", got)
+	if got := KitConsumes("rogue-combat", 29); got[0] != "main_hand_imbue:instant_poison" || got[1] != "off_hand_imbue:instant_poison" {
+		t.Fatalf("rogue-combat at 29 = %v, want Instant Poison on both weapons (Deadly is not learned yet)", got)
 	}
 	if got := KitConsumes("rogue-combat", 19); got != nil {
 		t.Fatalf("rogue-combat at 19 = %v, want nothing", got)

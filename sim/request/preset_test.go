@@ -6,8 +6,10 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -86,7 +88,7 @@ func TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes(t *testing.T
 		"arcane_brilliance", "gift_of_the_wild", "power_word_fortitude", "divine_spirit",
 		"blessing_of_might", "blessing_of_wisdom", "battle_shout", "trueshot_aura",
 		"leader_of_the_pack", "sanctity_aura", "strength_of_earth_totem", "grace_of_air_totem",
-		"mana_spring_totem", "curse_of_elements", "sunder_armor", "faerie_fire",
+		"mana_spring_totem", "windfury_totem", "curse_of_elements", "sunder_armor", "faerie_fire",
 		"judgement_of_wisdom", "judgement_of_light", "hunters_mark", "curse_of_recklessness",
 	} {
 		if !slices.Contains(have, want) {
@@ -130,6 +132,67 @@ func TestRaidPresetConsumesFollowTheRole(t *testing.T) {
 			if slices.Contains(got, w) {
 				t.Errorf("%s: consumes %v carry %q", c.spec, got, w)
 			}
+		}
+	}
+}
+
+// In the client Windfury Totem is an aura on the player, not a weapon
+// enchant, so the preset carries it as a buff and never as an imbue: a
+// rogue keeps both poisons and still receives it, and a dual wielder has
+// both hands free for stones.
+func TestRaidPresetCarriesWindfuryTotemAsABuffNotAnImbue(t *testing.T) {
+	presets := loadRealPresets(t)
+	for _, spec := range specs.All {
+		resolved, err := presets.Resolve(RaidPreset, spec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Contains(buffAndDebuffIDs(resolved), "windfury_totem") {
+			t.Errorf("%s: the raid preset lacks the Windfury Totem buff", spec.Spec)
+		}
+		if slices.Contains(entryIDs(resolved.Consumes), "main_hand_imbue:windfury") {
+			t.Errorf("%s: the raid preset still spells the totem as a main-hand imbue", spec.Spec)
+		}
+	}
+}
+
+func TestRaidPresetLeavesARogueBothPoisonsAndTheTotem(t *testing.T) {
+	presets := loadRealPresets(t)
+	for _, name := range []string{"rogue-assassination", "rogue-combat", "rogue-subtlety"} {
+		resolved, err := presets.Resolve(RaidPreset, specs.ByKey[name])
+		if err != nil {
+			t.Fatal(err)
+		}
+		buffs, consumeIDs := resolved.Layer(nil, leveling.KitConsumes(name, 60))
+		if !slices.Contains(buffs, "windfury_totem") {
+			t.Errorf("%s: no Windfury Totem in %v", name, buffs)
+		}
+		for _, hand := range []string{"main_hand_imbue:", "off_hand_imbue:"} {
+			held := 0
+			for _, id := range consumeIDs {
+				if strings.HasPrefix(id, hand) && strings.Contains(id, "poison") {
+					held++
+				}
+				if strings.HasPrefix(id, hand) && strings.Contains(id, "sharpening_stone") {
+					t.Errorf("%s: a stone displaced a poison: %v", name, consumeIDs)
+				}
+			}
+			if held != 1 {
+				t.Errorf("%s: %s holds %d poisons in %v, want 1", name, hand, held, consumeIDs)
+			}
+		}
+	}
+}
+
+func TestRaidPresetGivesDualWieldersAStoneInEachHand(t *testing.T) {
+	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["warrior-fury"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := entryIDs(resolved.Consumes)
+	for _, want := range []string{"main_hand_imbue:dense_sharpening_stone", "off_hand_imbue:elemental_sharpening_stone"} {
+		if !slices.Contains(got, want) {
+			t.Errorf("warrior-fury: consumes %v lack %q", got, want)
 		}
 	}
 }
@@ -184,8 +247,8 @@ func TestLayerKeepsTheKitOnTopOfThePreset(t *testing.T) {
 	if got := countOf(buffs, "blessing_of_might"); got != 1 {
 		t.Errorf("blessing_of_might appears %d times in %v, want once", got, buffs)
 	}
-	if slices.Contains(consumeIDs, "main_hand_imbue:windfury") {
-		t.Errorf("the preset's Windfury imbue displaced the kit's Windfury Weapon: %v", consumeIDs)
+	if !slices.Contains(buffs, "windfury_totem") {
+		t.Errorf("the raid's Windfury Totem is missing from %v", buffs)
 	}
 	if !slices.Contains(consumeIDs, "main_hand_imbue:windfury_weapon") {
 		t.Errorf("the kit's imbue is missing: %v", consumeIDs)
