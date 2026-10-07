@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:33:37Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:56:47Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -561,8 +561,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.439392543,
-      "verify_run_seconds": 1.11664187,
+      "weights_run_seconds": 2.41453091,
+      "verify_run_seconds": 1.085795871,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1202,8 +1202,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.439392543,
-      "verify_run_seconds": 1.185717172,
+      "weights_run_seconds": 2.41453091,
+      "verify_run_seconds": 1.135336592,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1922,8 +1922,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.48670181,
-      "verify_run_seconds": 1.23973543,
+      "weights_run_seconds": 2.460641954,
+      "verify_run_seconds": 1.22811409,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2641,8 +2641,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.48670181,
-      "verify_run_seconds": 1.231062862,
+      "weights_run_seconds": 2.460641954,
+      "verify_run_seconds": 1.215694675,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3329,8 +3329,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 2.190927112,
-      "verify_run_seconds": 1.217481057,
+      "weights_run_seconds": 2.05423513,
+      "verify_run_seconds": 1.152282708,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4011,8 +4011,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.190927112,
-      "verify_run_seconds": 1.154998047,
+      "weights_run_seconds": 2.05423513,
+      "verify_run_seconds": 1.066197552,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4725,8 +4725,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 9.107332615,
-      "verify_run_seconds": 1.2927494259999999,
+      "weights_run_seconds": 8.330007105,
+      "verify_run_seconds": 1.266394314,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5448,8 +5448,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 9.107332615,
-      "verify_run_seconds": 1.302478935,
+      "weights_run_seconds": 8.330007105,
+      "verify_run_seconds": 1.268337223,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6191,8 +6191,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.196277125,
-      "verify_run_seconds": 1.34521641,
+      "weights_run_seconds": 2.159561186,
+      "verify_run_seconds": 1.304117825,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6604,7 +6604,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 38.332960528437575,
+          "score": 38.33296052843757,
           "verified": true,
           "alternatives": [
             {
@@ -6620,14 +6620,14 @@
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -8.004298164391734
+              "dps_delta": -8.00429816439173
             },
             {
               "item_id": 20163,
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -9.86384720921056
+              "dps_delta": -9.863847209210558
             }
           ]
         },
@@ -6932,8 +6932,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.196277125,
-      "verify_run_seconds": 1.342623606,
+      "weights_run_seconds": 2.159561186,
+      "verify_run_seconds": 1.309047079,
       "coverage": {
         "back": {
           "eligible": 450,

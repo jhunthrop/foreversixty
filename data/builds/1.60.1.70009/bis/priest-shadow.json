@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:27:44Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:51:02Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -548,8 +548,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.966509733,
-      "verify_run_seconds": 0.690942482,
+      "weights_run_seconds": 0.8861884,
+      "verify_run_seconds": 0.676618433,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1180,8 +1180,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.966509733,
-      "verify_run_seconds": 0.745680872,
+      "weights_run_seconds": 0.8861884,
+      "verify_run_seconds": 0.723725757,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.955742673,
-      "verify_run_seconds": 0.758489678,
+      "weights_run_seconds": 0.927686542,
+      "verify_run_seconds": 0.729104492,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2588,8 +2588,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.955742673,
-      "verify_run_seconds": 0.74820626,
+      "weights_run_seconds": 0.927686542,
+      "verify_run_seconds": 0.723107547,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3259,8 +3259,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.974157645,
-      "verify_run_seconds": 0.673824271,
+      "weights_run_seconds": 0.942458952,
+      "verify_run_seconds": 0.64042231,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3924,8 +3924,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.974157645,
-      "verify_run_seconds": 0.658481621,
+      "weights_run_seconds": 0.942458952,
+      "verify_run_seconds": 0.695272595,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4616,8 +4616,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.982122676,
-      "verify_run_seconds": 0.796881457,
+      "weights_run_seconds": 0.965710568,
+      "verify_run_seconds": 0.795947989,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5307,8 +5307,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.982122676,
-      "verify_run_seconds": 0.844419506,
+      "weights_run_seconds": 0.965710568,
+      "verify_run_seconds": 0.795397483,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5703,7 +5703,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 58.36119060527541,
+          "score": 58.36119060527542,
           "verified": true,
           "alternatives": [
             {
@@ -5711,14 +5711,14 @@
               "item_name": "Magister's Belt",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Smolderthorn Mystic",
-              "dps_delta": -4.020322747303252
+              "dps_delta": -4.020322747303253
             },
             {
               "item_id": 12589,
               "item_name": "Dustfeather Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Solakar Flamewreath",
-              "dps_delta": -4.2496130962706005
+              "dps_delta": -4.249613096270601
             },
             {
               "item_id": 18405,
@@ -6037,8 +6037,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.054664243,
-      "verify_run_seconds": 0.766223598,
+      "weights_run_seconds": 1.071190766,
+      "verify_run_seconds": 0.753548162,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6770,8 +6770,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.054664243,
-      "verify_run_seconds": 0.785344272,
+      "weights_run_seconds": 1.071190766,
+      "verify_run_seconds": 0.781095628,
       "coverage": {
         "back": {
           "eligible": 450,

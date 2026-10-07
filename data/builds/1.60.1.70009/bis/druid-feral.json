@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:22:55Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:46:16Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -530,8 +530,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.26626912,
-      "verify_run_seconds": 1.529230174,
+      "weights_run_seconds": 3.221198905,
+      "verify_run_seconds": 1.522091015,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1135,8 +1135,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 3.26626912,
-      "verify_run_seconds": 1.5045567100000001,
+      "weights_run_seconds": 3.221198905,
+      "verify_run_seconds": 1.491040611,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1777,8 +1777,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.7647127190000003,
-      "verify_run_seconds": 1.852892607,
+      "weights_run_seconds": 3.735080291,
+      "verify_run_seconds": 1.825545636,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2420,8 +2420,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.7647127190000003,
-      "verify_run_seconds": 1.868232259,
+      "weights_run_seconds": 3.735080291,
+      "verify_run_seconds": 1.824681311,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3059,8 +3059,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.995672915,
-      "verify_run_seconds": 1.850383485,
+      "weights_run_seconds": 3.961448523,
+      "verify_run_seconds": 1.840103563,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3697,8 +3697,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.995672915,
-      "verify_run_seconds": 1.840328086,
+      "weights_run_seconds": 3.961448523,
+      "verify_run_seconds": 1.822844057,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3880,7 +3880,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.3664357916124805
+              "dps_delta": -1.366435791612481
             },
             {
               "item_id": 14658,
@@ -4348,8 +4348,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.025050731,
-      "verify_run_seconds": 2.068689333,
+      "weights_run_seconds": 4.072504892,
+      "verify_run_seconds": 2.063627597,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5001,8 +5001,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.025050731,
-      "verify_run_seconds": 1.9980338309999999,
+      "weights_run_seconds": 4.072504892,
+      "verify_run_seconds": 1.964958822,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5420,7 +5420,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -2.206361587431655
+              "dps_delta": -2.2063615874316547
             }
           ]
         },
@@ -5716,8 +5716,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.919356649,
-      "verify_run_seconds": 2.02223692,
+      "weights_run_seconds": 3.9215376539999998,
+      "verify_run_seconds": 2.018215429,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6153,7 +6153,7 @@
               "item_name": "General's Dragonhide Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.4184202560190869
+              "dps_delta": -0.4184202560190858
             },
             {
               "item_id": 237818,
@@ -6432,8 +6432,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.919356649,
-      "verify_run_seconds": 2.017764528,
+      "weights_run_seconds": 3.9215376539999998,
+      "verify_run_seconds": 1.999825774,
       "coverage": {
         "back": {
           "eligible": 451,

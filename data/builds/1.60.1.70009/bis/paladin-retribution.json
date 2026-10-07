@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "d1af3529f",
-  "generated_at": "2026-10-07T19:27:23Z",
+  "engine_version": "46b96501b",
+  "generated_at": "2026-10-07T19:50:42Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -540,8 +540,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 2.441848021,
-      "verify_run_seconds": 1.103718655,
+      "weights_run_seconds": 2.397700691,
+      "verify_run_seconds": 1.111228059,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1150,8 +1150,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.441848021,
-      "verify_run_seconds": 1.171455216,
+      "weights_run_seconds": 2.397700691,
+      "verify_run_seconds": 1.135604866,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1793,8 +1793,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.343919954,
-      "verify_run_seconds": 1.3529407500000001,
+      "weights_run_seconds": 2.314134304,
+      "verify_run_seconds": 1.357887467,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2439,8 +2439,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.343919954,
-      "verify_run_seconds": 1.387987458,
+      "weights_run_seconds": 2.314134304,
+      "verify_run_seconds": 1.3524300710000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3062,8 +3062,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.37346781,
-      "verify_run_seconds": 1.189386718,
+      "weights_run_seconds": 2.344815671,
+      "verify_run_seconds": 1.181633478,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3685,8 +3685,8 @@
         "finger1: Mark of Kern",
         "finger2: Assault Band"
       ],
-      "weights_run_seconds": 2.37346781,
-      "verify_run_seconds": 1.2046526100000001,
+      "weights_run_seconds": 2.344815671,
+      "verify_run_seconds": 1.170908046,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3843,7 +3843,7 @@
           "item_name": "Knight-Lieutenant's Plate Helm",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 51.193958051358706,
+          "score": 51.19395805135871,
           "verified": true,
           "alternatives": [
             {
@@ -3851,14 +3851,14 @@
               "item_name": "Raging Berserker's Helm",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -0.2810413175989898
+              "dps_delta": -0.28104131759899015
             },
             {
               "item_id": 14849,
               "item_name": "Sunscale Helmet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5135413676063371
+              "dps_delta": -0.5135413676063374
             },
             {
               "item_id": 9479,
@@ -4342,8 +4342,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.547782602,
-      "verify_run_seconds": 1.217024491,
+      "weights_run_seconds": 2.451789562,
+      "verify_run_seconds": 1.181705514,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4990,8 +4990,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.547782602,
-      "verify_run_seconds": 1.214688712,
+      "weights_run_seconds": 2.451789562,
+      "verify_run_seconds": 1.19372249,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5679,8 +5679,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.478176452,
-      "verify_run_seconds": 1.331106712,
+      "weights_run_seconds": 2.4338683039999998,
+      "verify_run_seconds": 1.264241322,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5981,7 +5981,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.3867767375136852
+              "dps_delta": -1.3867767375136861
             },
             {
               "item_id": 23087,
@@ -6374,8 +6374,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.478176452,
-      "verify_run_seconds": 1.237156265,
+      "weights_run_seconds": 2.4338683039999998,
+      "verify_run_seconds": 1.240607426,
       "coverage": {
         "back": {
           "eligible": 449,
