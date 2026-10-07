@@ -90,25 +90,29 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 22.7 | 6 | other:attack/1=70.3, spell:3606=68.1, spell:8050=15.4, spell:3599=5.8, spell:8044=2.5 | {SpellID: 17364} |
-| 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 32.3 | 6 | other:attack/1=121.6, spell:6350=66.7, spell:8052=14.3, spell:6363=4.9, spell:20572=2.0 | {SpellID: 17364} |
-| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:4066 | 57.7 | 6 | other:attack/1=79.2, spell:6351=65.6, spell:8053=11.8, spell:6364=4.3, spell:20572=2.0 | {SpellID: 17364} |
-| 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:868 off_hand:4652 | 63.6 | 8 | other:attack/1=91.5, spell:6351=60.1, spell:17364=11.7, spell:6364=3.9, spell:8053=3.2 | - |
-| 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:2164 off_hand:4652 | 68.5 | 10 | other:attack/1=112.6, spell:6352=45.1, spell:17364=12.7, spell:18107=4.2, spell:6365=2.6 | - |
-| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 84.4 | 9 | other:attack/1=96.9, spell:10435=20.0, spell:17364=16.0, spell:10447=3.4, spell:20572=2.0 | - |
-| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:22802 off_hand:22819 | 125.1 | 9 | other:attack/1=115.4, spell:10436=22.0, spell:17364=19.5, spell:29228=3.1, spell:20572=2.0 | - |
+| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 19.0 | 4 | other:attack/1=70.3, spell:3606=69.6, spell:3599=5.9, spell:20572=2.0, spell:8075=2.0 | {SpellID: 17364} |
+| 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 25.8 | 4 | other:attack/1=121.6, spell:6350=69.5, spell:6363=5.1, spell:20572=2.0, spell:8075=2.0 | {SpellID: 17364} |
+| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:4066 | 47.7 | 4 | other:attack/1=79.3, spell:6351=70.1, spell:6364=4.5, spell:20572=2.0, spell:8160=2.0 | {SpellID: 17364} |
+| 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:868 off_hand:4652 | 62.3 | 6 | other:attack/1=91.8, spell:6351=64.6, spell:17364=16.5, spell:6364=4.2, spell:20572=2.0 | - |
+| 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:2164 off_hand:4652 | 67.9 | 8 | other:attack/1=112.8, spell:6352=65.4, spell:17364=16.7, spell:18107=4.2, spell:6365=3.7 | - |
+| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 88.3 | 7 | other:attack/1=97.2, spell:10435=59.7, spell:17364=20.8, spell:10437=3.0, spell:20572=2.0 | - |
+| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:22802 off_hand:22819 | 127.8 | 7 | other:attack/1=115.3, spell:10436=64.2, spell:17364=22.6, spell:10438=3.0, spell:10614=2.0 | - |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
+- Earth Shock (spell 8044)
+- Flame Shock (spell 8050)
 - Flametongue Attack (spell 10444)
 - Lightning Bolt (spell 529)
 - Stormstrike (spell 410156)
 
 ### Level 20
 
+- Earth Shock (spell 8045)
+- Flame Shock (spell 8052)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8034)
@@ -117,6 +121,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
+- Earth Shock (spell 8046)
+- Flame Shock (spell 8053)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8037)
@@ -126,6 +132,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 38
 
 - Chain Lightning (spell 421)
+- Earth Shock (spell 10412)
+- Flame Shock (spell 8053)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
@@ -135,6 +143,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 40
 
 - Chain Lightning (spell 930)
+- Earth Shock (spell 10412)
+- Flame Shock (spell 10447)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
@@ -145,6 +155,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 50
 
 - Chain Lightning (spell 2860)
+- Earth Shock (spell 10413)
+- Flame Shock (spell 10447)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
@@ -155,6 +167,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Chain Lightning (spell 10605)
+- Earth Shock (spell 10414)
+- Flame Shock (spell 29228)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
