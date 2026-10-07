@@ -189,6 +189,15 @@ func auraIsActiveCondition(id, rank int) action {
 	return action{"auraIsActive": map[string]any{"auraId": buildActionID(id, rank)}}
 }
 
+// targetAuraIsActiveCondition is auraIsActive on the current target's own aura:
+// a debuff the caster lands, which the caster's own aura list does not carry.
+func targetAuraIsActiveCondition(id, rank int) action {
+	return action{"auraIsActive": map[string]any{
+		"sourceUnit": map[string]any{"type": "CurrentTarget"},
+		"auraId":     buildActionID(id, rank),
+	}}
+}
+
 func notCondition(inner action) action {
 	return action{"not": map[string]any{"val": inner}}
 }

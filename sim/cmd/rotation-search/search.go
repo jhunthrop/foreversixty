@@ -195,6 +195,7 @@ func allMutations(current rotation, candidates []learnedCandidate, ticks map[int
 	out = append(out, swapAdjacentMutations(current, names)...)
 	out = append(out, removeActionMutations(current, names)...)
 	out = append(out, insertCandidateMutations(current, candidates)...)
+	out = append(out, replaceMaintenanceMutations(current, candidates, names)...)
 	out = append(out, refreshConditionMutations(current, ticks, names)...)
 	out = append(out, resourceGateMutations(current, names)...)
 	out = append(out, toggleExecuteGateMutations(current, names)...)

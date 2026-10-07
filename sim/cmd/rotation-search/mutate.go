@@ -20,6 +20,12 @@ type learnedCandidate struct {
 	ConditionLabel string
 }
 
+// isMaintenance is a candidate kept up on the target (a dot or a debuff), the
+// kind that can stand in for a maintenance line already in the rotation.
+func (c learnedCandidate) isMaintenance() bool {
+	return c.ConditionLabel == string(condDOT) || c.ConditionLabel == string(condDebuff)
+}
+
 // ---------------------------------------------------------------------
 // List-level mutators: swap, remove, insert. Each returns a brand new
 // rotation; base is never modified.
@@ -81,6 +87,37 @@ func insertCandidateMutations(base rotation, candidates []learnedCandidate) []mu
 			next = append(next, cloneEntries(list[i:])...)
 			out = append(out, mutation{
 				Label:    fmt.Sprintf("insert %s at position %d", c.Name, i+1),
+				Rotation: base.withPriorityList(next),
+			})
+		}
+	}
+	return out
+}
+
+// replaceMaintenanceMutations is one mutation per (maintenance line,
+// maintenance candidate) pair: the line's entry becomes the candidate's own
+// cast entry, at the same position. A one-per-target pair (Immolate and
+// Unstable Affliction, or two curses) is only reachable this way: inserting
+// the newcomer beside the incumbent makes them recast over each other, and
+// removing the incumbent first loses a line, so neither half-step ever beats
+// the base.
+func replaceMaintenanceMutations(base rotation, candidates []learnedCandidate, names map[int]string) []mutation {
+	var out []mutation
+	for i, e := range base.PriorityList {
+		if _, _, found := findNotActive(e.Action); !found {
+			continue
+		}
+		if _, ok := castSpellID(e.Action); !ok {
+			continue
+		}
+		for _, c := range candidates {
+			if !c.isMaintenance() {
+				continue
+			}
+			next := cloneEntries(base.PriorityList)
+			next[i] = cloneEntries([]entry{buildCastEntry(fmt.Sprintf("rotation-search: %s replaces the line it displaced, default condition (%s)", c.Name, c.ConditionLabel), c.ID, c.Rank, c.Condition)})[0]
+			out = append(out, mutation{
+				Label:    fmt.Sprintf("replace #%d (%s) with %s", i+1, entryActionLabel(e.Action, names), c.Name),
 				Rotation: base.withPriorityList(next),
 			})
 		}
@@ -184,6 +221,11 @@ func findNotActive(node any) (kind string, id actionID, found bool) {
 			if val, ok := notV["val"].(map[string]any); ok {
 				for _, k := range []string{"dotIsActive", "auraIsActive"} {
 					if inner, ok := val[k].(map[string]any); ok {
+						if _, onTarget := inner["sourceUnit"]; onTarget {
+							// a target-aura gate: the refresh mutators build
+							// self-aura conditions and would rewrite it wrongly.
+							continue
+						}
 						idKey := "spellId"
 						if k == "auraIsActive" {
 							idKey = "auraId"

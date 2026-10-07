@@ -103,3 +103,31 @@ func TestIsProbeWorthy(t *testing.T) {
 		})
 	}
 }
+
+// TestTargetDebuffCurseIsProbedWithATargetAuraGate is a damage-taken debuff
+// the caster lands on the target (Curse of the Elements): not damage and not a
+// toggle, but a learned line worth probing, kept up while the target lacks it.
+func TestTargetDebuffCurseIsProbedWithATargetAuraGate(t *testing.T) {
+	curse := request.LearnedAbility{Name: "Curse of the Elements", IDs: []int{1311680}, Rank: 4, DurationMS: 300000, RaisesDamageTaken: true, GCDMS: 1500}
+	if !isProbeWorthy(curse) {
+		t.Fatal("a damage-taken debuff with a GCD is not probe-worthy")
+	}
+	cond, kind := defaultCondition(curse)
+	if kind != condDebuff {
+		t.Errorf("kind = %v, want %v", kind, condDebuff)
+	}
+	_, id, found := findNotActive(cond)
+	if found {
+		t.Errorf("the refresh mutators would rewrite this gate (found %+v): it names a target aura and they build self-aura conditions", id)
+	}
+	not, _ := cond["not"].(map[string]any)
+	val, _ := not["val"].(map[string]any)
+	gate, _ := val["auraIsActive"].(map[string]any)
+	source, _ := gate["sourceUnit"].(map[string]any)
+	if source["type"] != "CurrentTarget" {
+		t.Errorf("gate = %v, want an auraIsActive on the CurrentTarget", gate)
+	}
+	if got, ok := readActionID(gate["auraId"]); !ok || got.SpellID != 1311680 {
+		t.Errorf("gate aura = %v, want spell 1311680", gate["auraId"])
+	}
+}
