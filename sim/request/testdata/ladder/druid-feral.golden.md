@@ -91,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:1933 | 7.9 | 4 | spell:5177=40.9, other:attack/1=33.1, spell:8924=4.7, spell:58984=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
-| 20 | 0000000000000000-54200000000000000000-0000000000000000 | bare | 50.7 | 4 | other:attack/1=182.1, spell:1082=46.5, spell:1079=8.6, spell:58984=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
-| 30 | 0000000000000000-54232212000000000000-0000000000000000 | bare | 65.8 | 6 | other:attack/1=182.1, spell:6800=21.3, spell:1822=21.2, spell:9492=7.6, spell:5217=6.6 | {SpellID: 1322605} |
-| 38 | 0000000000000000-54232212120032000000-0000000000000000 | bare | 82.1 | 7 | other:attack/1=182.1, spell:1823=21.2, spell:8992=19.9, spell:9493=8.0, spell:5217=6.6 | {SpellID: 1322605} |
-| 40 | 0000000000000000-54232212120032010001-0000000000000000 | bare | 87.6 | 8 | other:attack/1=182.1, spell:1823=21.1, spell:8992=19.5, spell:9493=8.8, spell:5217=6.6 | {SpellID: 1322605} |
-| 50 | 0000000000000000-54232212120032010001-5500000000000000 | bare | 106.7 | 8 | other:attack/1=182.1, spell:1824=21.0, spell:9829=19.5, spell:9752=8.8, spell:5217=6.6 | {SpellID: 1322605} |
-| 60 | 0000000000000000-54232212120032010001-5553200000000000 | bare | 147.6 | 8 | other:attack/1=182.1, spell:9904=21.0, spell:9830=19.5, spell:9896=8.8, spell:5217=6.6 | {SpellID: 1322605} |
+| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 50.9 | 4 | other:attack/1=182.1, spell:1082=46.5, spell:1079=8.6, spell:58984=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
+| 30 | 0000000000000000-55232220000000000000-0000000000000000 | bare | 67.2 | 6 | other:attack/1=182.1, spell:6800=23.8, spell:1822=20.6, spell:9492=8.1, spell:5217=6.6 | {SpellID: 1322605} |
+| 38 | 0000000000000000-55232232121010000000-0000000000000000 | bare | 95.0 | 8 | other:attack/1=182.1, spell:8992=33.6, spell:1823=20.1, spell:9493=9.8, spell:1322605=8.0 | - |
+| 40 | 0000000000000000-55232232121030000000-0000000000000000 | bare | 98.1 | 8 | other:attack/1=182.1, spell:8992=33.3, spell:1823=20.0, spell:9493=9.9, spell:1322605=7.9 | - |
+| 50 | 0100000000000000-55232232121032012001-3000000000000000 | bare | 130.8 | 10 | other:attack/1=182.1, spell:9829=31.7, spell:1824=20.4, spell:9752=11.3, spell:1322605=7.5 | - |
+| 60 | 0100000000000000-55232232121032012001-5053000000000000 | bare | 181.7 | 9 | other:attack/1=182.1, spell:9830=31.8, spell:9904=20.5, spell:9896=11.3, spell:1322605=7.5 | - |
 
 ## Learned but unused (informational)
 
@@ -159,7 +159,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9849)
 - Entangling Roots (spell 9852)
-- Ferocious Bite (spell 22828)
 - Hurricane (spell 17401)
 - Insect Swarm (spell 24976)
 - Lacerate (spell 1235826)

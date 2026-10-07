@@ -43,6 +43,61 @@ func (mage *Mage) applyDeclarativeTalents() {
 	}
 }
 
+// TestModeledGoNamesCountsAChainedRead is the druid Furor bug: a read
+// through the Talents field itself (druid.Talents.Furor) is a read, and the
+// aliased-receiver pattern alone consumed "druid.Talents" and never saw it.
+func TestModeledGoNamesCountsAChainedRead(t *testing.T) {
+	dir := t.TempDir()
+	writeEngineFile(t, dir, "druid", "talents.go", `package druid
+
+func (druid *Druid) applyFuror() {
+	if druid.Talents.Furor == 0 {
+		return
+	}
+	cost := 100 - 10*druid.Talents.NaturalShapeshifter
+	_ = cost
+	_ = druid.Talents.NaturesFocus
+	_, _ = druid.Talents.FeralCharge, druid.Talents.PrimalBite
+}
+`)
+	names, err := modeledGoNames(dir, "druid")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, n := range []string{"Furor", "NaturalShapeshifter"} {
+		if !names[n] {
+			t.Errorf("names[%q] = false, want it read through druid.Talents", n)
+		}
+	}
+	// Only the discarded `_ = druid.Talents.X` acknowledgements stay out.
+	for _, n := range []string{"NaturesFocus", "FeralCharge", "PrimalBite"} {
+		if names[n] {
+			t.Errorf("names[%q] = true, want a blank-assigned acknowledgement not to count as modeling", n)
+		}
+	}
+}
+
+// TestModeledGoNamesSkipsUncompiledFiles: the go tool ignores files and
+// directories that start with "_", so code parked there models nothing.
+func TestModeledGoNamesSkipsUncompiledFiles(t *testing.T) {
+	dir := t.TempDir()
+	writeEngineFile(t, dir, "druid", "_maul.go", "package druid\n\nfunc retired() { _ = druid.Talents.RendAndTear * 2 }\n")
+	writeEngineFile(t, dir, "druid/_tank", "retired.go", "package tank\n\nfunc retired() { x := druid.Talents.KingOfTheJungle; use(x) }\n")
+	writeEngineFile(t, dir, "druid", "live.go", "package druid\n\nfunc live() { use(druid.Talents.Furor) }\n")
+	names, err := modeledGoNames(dir, "druid")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !names["Furor"] {
+		t.Error("names[Furor] = false, want the compiled file read")
+	}
+	for _, n := range []string{"RendAndTear", "KingOfTheJungle"} {
+		if names[n] {
+			t.Errorf("names[%q] = true, want the uncompiled file skipped", n)
+		}
+	}
+}
+
 // TestModeledGoNamesStillSkipsCommentsTestsAndGenerated checks the
 // generalized regex did not widen what counts as a read: a name that
 // only appears in a comment, a _test.go file or a _auto_gen.go file is

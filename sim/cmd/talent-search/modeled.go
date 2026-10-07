@@ -12,23 +12,37 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/enginetalents"
 )
 
-// talentRefRE is how engine code reads a talent field: any identifier
-// holding (or aliasing) a Talents proto, followed by a dot and the
-// field's Go name - paladin.Talents.Vengeance,
-// hunter.Talents.GetSurefooted(), or an alias such as mage's own
-// applyDeclarativeTalents, which does `t := mage.Talents` and then
-// reads `t.FirePower`. A scan anchored on the literal receiver name
-// "Talents" misses every field read through such an alias, so this
-// matches any identifier before the dot, not just "Talents" itself;
-// modeledTalents only keeps the names that are actually a talent's
-// Go name, so an unrelated "x.FirePower" on some other struct would
-// have to collide with a real talent's generated name to misfire.
-var talentRefRE = regexp.MustCompile(`\b\w+\.(?:Get)?([A-Z][A-Za-z0-9]*)\b`)
+// talentRefRE is how engine code reads a talent field, in two shapes.
+// Chained: any selector chain that ends in Talents and then names the
+// field - druid.Talents.Furor, hunter.Talents.GetSurefooted(),
+// c.Character.Talents.Subtlety. Aliased: an identifier holding a Talents
+// proto, such as mage's own applyDeclarativeTalents, which does
+// `t := mage.Talents` and then reads `t.FirePower`.
+//
+// The two are separate patterns because one Go regexp cannot see both: the
+// aliased pattern consumes "druid.Talents" in `druid.Talents.Furor` and
+// leaves no receiver for ".Furor", which is how every chained read went
+// uncounted and the report called Furor and Natural Shapeshifter unmodeled
+// while the cat rotation reads them. modeledTalents only keeps the names
+// that are actually a talent's Go name, so an unrelated "x.FirePower" on
+// some other struct would have to collide with a real talent's generated
+// name to misfire.
+var talentRefREs = []*regexp.Regexp{
+	regexp.MustCompile(`\bTalents\.(?:Get)?([A-Z][A-Za-z0-9]*)\b`),
+	regexp.MustCompile(`\b\w+\.(?:Get)?([A-Z][A-Za-z0-9]*)\b`),
+}
 
-// skipEngineFile is generated or test code, which reads talents
-// without modeling them.
+// ignoredByGoTool is a file or directory the go tool never compiles: a
+// name starting with "_" or ".". The fork parks retired druid code in
+// _maul.go and _tank/, which still mention talents.
+func ignoredByGoTool(name string) bool {
+	return strings.HasPrefix(name, "_") || strings.HasPrefix(name, ".")
+}
+
+// skipEngineFile is generated, test or uncompiled code, which reads
+// talents without modeling them.
 func skipEngineFile(name string) bool {
-	return !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") ||
+	return ignoredByGoTool(name) || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") ||
 		strings.HasSuffix(name, ".pb.go") || strings.HasSuffix(name, "_auto_gen.go")
 }
 
@@ -44,6 +58,13 @@ func stripLineComments(src string) string {
 	return strings.Join(lines, "\n")
 }
 
+// blankAssignRE is a statement that only discards its values: `_ = x` or
+// `_, _ = x, y`. The fork's engine writes `_ = druid.Talents.Subtlety`
+// beside a comment saying why the talent changes nothing here; that read
+// acknowledges the field for the compiler and models nothing, so it must
+// not count as the engine reading the talent.
+var blankAssignRE = regexp.MustCompile(`(?m)^\s*_(?:\s*,\s*_)*\s*=.*$`)
+
 // modeledGoNames is every talent Go field name the engine's class
 // package (and its spec sub-packages) reads outside comments, tests
 // and generated code. A talent nothing reads sims as zero whatever
@@ -55,15 +76,24 @@ func modeledGoNames(engineDir, class string) (map[string]bool, error) {
 		if err != nil {
 			return err
 		}
-		if d.IsDir() || skipEngineFile(d.Name()) {
+		if d.IsDir() {
+			if path != root && ignoredByGoTool(d.Name()) {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if skipEngineFile(d.Name()) {
 			return nil
 		}
 		b, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}
-		for _, m := range talentRefRE.FindAllStringSubmatch(stripLineComments(string(b)), -1) {
-			out[m[1]] = true
+		src := blankAssignRE.ReplaceAllString(stripLineComments(string(b)), "")
+		for _, re := range talentRefREs {
+			for _, m := range re.FindAllStringSubmatch(src, -1) {
+				out[m[1]] = true
+			}
 		}
 		return nil
 	})
