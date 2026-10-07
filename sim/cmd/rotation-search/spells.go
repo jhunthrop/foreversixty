@@ -12,12 +12,24 @@ import (
 type conditionKind string
 
 const (
-	condPlain      conditionKind = "no condition (cooldown/plain damage)"
-	condDOT        conditionKind = "dot: not active"
-	condExecute    conditionKind = "execute-only: isExecutePhase"
-	condBuffOrForm conditionKind = "buff/form/seal: not active"
-	condDebuff     conditionKind = "target debuff: not active on the target"
+	condPlain       conditionKind = "no condition (cooldown/plain damage)"
+	condDOT         conditionKind = "dot: not active"
+	condExecute     conditionKind = "execute-only: isExecutePhase"
+	condBuffOrForm  conditionKind = "buff/form/seal: not active"
+	condDebuff      conditionKind = "target debuff: not active on the target"
+	condChargeGated conditionKind = "charge-gated: only while its enabling aura is active"
 )
+
+// fingersOfFrostAuraID is the buff Fingers of Frost grants (client spell
+// 400669): "Your next spells treat the target as if it were Frozen."
+const fingersOfFrostAuraID = 400669
+
+// chargeGatedSpells maps a spell name to the aura id that must be up
+// for the spell to be worth casting at all. Ice Lance does three times
+// its damage only on a Frozen target, which on a raid boss means only on
+// a Fingers of Frost charge, so an ungated insertion would measure the
+// spell at its unfrozen, near-worthless damage.
+var chargeGatedSpells = map[string]int{"Ice Lance": fingersOfFrostAuraID}
 
 // defaultCondition picks the sensible default condition the task
 // calls for, from the shape request.LearnedAbilities already read off
@@ -31,6 +43,8 @@ const (
 func defaultCondition(a request.LearnedAbility) (action, conditionKind) {
 	id, rank := a.IDs[0], a.Rank
 	switch {
+	case chargeGatedSpells[a.Name] != 0:
+		return auraIsActiveCondition(chargeGatedSpells[a.Name], 0), condChargeGated
 	case a.IsDOT:
 		return notCondition(dotIsActiveCondition(id, rank)), condDOT
 	case isExecuteName(a.Name):

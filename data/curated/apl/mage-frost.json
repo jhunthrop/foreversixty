@@ -10,7 +10,7 @@
       "reason": "Arcane Blast costs no mana and sits ahead of the wand line, so once Frostbolt is unaffordable the character casts Arcane Blast and never reaches the wand; the rotation search measured this as the best use of those globals."
     }
   ],
-  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 77 percent of top casts) on this bare, no-consumes, no-buffs ladder character. Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last). 2026-10-07: the Arcane Blast line is gone - it was adopted while the engine registered the spell free; the client charges 15% of base mana per cast, and on that engine the line measures no effect at all.",
+  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 77 percent of top casts) on this bare, no-consumes, no-buffs ladder character. Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last). 2026-10-07: the Arcane Blast line is gone - it was adopted while the engine registered the spell free; the client charges 15% of base mana per cast, and on that engine the line measures no effect at all. 2026-10-07: Fingers of Frost is implemented (15 percent per Chill application, 1 or 2 charges for 15 sec, the next damaging cast counts as Frozen), so Ice Lance is cast on a charge; with the Fingers of Frost build the rotation search measured it as a missing line beyond the combined error, see design/reviews/2026-10-07-frost-fingers-of-frost.md.",
   "sources": [
     {
       "label": "wowsims/classic default Mage priority list",
@@ -37,7 +37,25 @@
         }
       },
       {
-        "notes": "Frostbolt is the whole rotation.",
+        "notes": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies. Only fires with the Fingers of Frost talent; without it the buff never appears and the line stays idle.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1240047,
+              "rank": 6
+            }
+          },
+          "condition": {
+            "auraIsActive": {
+              "auraId": {
+                "spellId": 400669
+              }
+            }
+          }
+        }
+      },
+      {
+        "notes": "Frostbolt is the filler between Fingers of Frost charges.",
         "action": {
           "castSpell": {
             "spellId": {
