@@ -22,18 +22,30 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
+// carriesEffect reports whether c has an on-hit/on-use/proc/equip-behaviour
+// effect that no item stat holds: the item's own effect_text names one, or
+// the client's effect tables do (clienteffects_generated.go). The second
+// half matters because effect_text is empty whenever the client spell has no
+// readable description - Lord General's Sword, Kindling Stave and Iceblade
+// Hacker are chance-on-hit weapons with a blank text - and a pick judged by
+// effect_text alone was neither ranked as a proc item nor flagged as an
+// unsimulated one. Every effect predicate below reads this one.
+func carriesEffect(c candidate) bool {
+	return c.EffectText != "" || clientEffectItemIDs[c.ID]
+}
+
 // hasImplementedEffect reports whether c carries an on-hit/on-use/proc
 // effect the engine's source claims to implement (effectids_generated.go).
-// A candidate with no effect_text at all (most gear) is never
-// "implemented" in this sense -- it has nothing for a verify pass to
-// value beyond what score() already sees in its Stats. This is the
+// A candidate with no effect at all (most gear) is never "implemented" in
+// this sense -- it has nothing for a verify pass to value beyond what
+// score() already sees in its Stats. This is the
 // GATING predicate: it decides whether a candidate is worth spending a
 // real sim on (trinketShortlist, slotsNeedingEffectVerification,
 // rankSlotWithEffects's own candidate pool below) -- it does not by
 // itself mean a sim of c actually measured that effect; see
 // effectVerifiedInSim for that stricter question.
 func hasImplementedEffect(c candidate) bool {
-	return c.EffectText != "" && effectImplemented(c.ID)
+	return carriesEffect(c) && effectImplemented(c.ID)
 }
 
 // effectVerifiedInSim reports whether a real sim of c can actually be
@@ -113,6 +125,15 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	current := picks[slot]
 	if current.Item == nil {
 		return out, nil
+	}
+
+	// A relic is ranked by measured gain over an empty slot (relics.go), not
+	// by this tournament's margin rule: its score-picked incumbent is
+	// arbitrary (a relic scores nothing) and is usually an effect the engine
+	// does not model, so protecting it would keep every modelled relic out
+	// whenever its gain is under the margin.
+	if isRelicCandidate(current.Item.candidate) {
+		return rankRelicSlot(runner, spec, race, classSlug, level, talents, picks, bySlot, slot)
 	}
 
 	var mateID int

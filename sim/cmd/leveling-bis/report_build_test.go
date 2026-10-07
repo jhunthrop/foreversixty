@@ -2719,7 +2719,10 @@ func TestBuildReportNeverPublishesAPositiveDPSDeltaOnAnAlternative(t *testing.T)
 // this fix.
 func TestBuildReportEmptiesATrinketWhoseGainDoesNotClearTwiceItsError(t *testing.T) {
 	picks := map[string]slotPick{
-		"trinket1": {Item: &scored{candidate: candidate{ID: 20036, Name: "Fire Ruby"}, MeasuredDPS: 233.6139, MeasuredGainDPS: 0.773, MeasuredGainStdErr: 0.7125, GainMeasured: true}},
+		// Fire Ruby's own numbers on an effect-free stand-in: the real Fire Ruby
+		// carries an effect (client spell 24389), which exempts a trinket from
+		// this gate, so the test needs an id the client gives no effect.
+		"trinket1": {Item: &scored{candidate: candidate{ID: 424242, Name: "Fire Ruby (effect-free stand-in)"}, MeasuredDPS: 233.6139, MeasuredGainDPS: 0.773, MeasuredGainStdErr: 0.7125, GainMeasured: true}},
 	}
 	r := buildReport(reportSpec(), 50, "alliance", "dwarf", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
 	var row slotRow

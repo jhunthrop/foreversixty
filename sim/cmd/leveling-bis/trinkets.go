@@ -206,18 +206,18 @@ func trinketShortlist(list []scored, excludeID int, excludeName string, weights 
 
 // trinketEffectUnmodelled reports whether c's own effect is exactly the
 // case report.go's EffectUnmodelled flag publishes: a real, named
-// on-hit/on-use/proc effect (EffectText non-empty) this tournament's
+// on-hit/on-use/proc effect (rank.go's carriesEffect) this tournament's
 // own sim could not actually verify (rank.go's effectVerifiedInSim) -
 // either because the engine does not implement it at all (Serenity
 // Field's own Spirit self-buff, for one) or because it does, but this
 // build's own simdb silently stripped the item before the sim ever ran
 // (rank.go's effectVerifiedInSim doc: Hand of Justice 11815). A
-// candidate with no effect at all (EffectText == "") is NOT unmodelled
+// candidate with no effect at all (carriesEffect false) is NOT unmodelled
 // in this sense: its whole value is stats, which this tournament's own
 // real sim already measures exactly as faithfully as any other
 // stat-only trinket.
 func trinketEffectUnmodelled(c candidate) bool {
-	return c.EffectText != "" && !effectVerifiedInSim(c)
+	return carriesEffect(c) && !effectVerifiedInSim(c)
 }
 
 // rankTrinketSlot replaces picks[slot] with the engine-verified best of
@@ -250,6 +250,22 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	candidates := trinketShortlist(bySlot[slot], mateID, mateName, weights)
 	if len(candidates) == 0 {
 		return out, nil
+	}
+	return rankByMeasuredGain(runner, spec, race, classSlug, level, talents, picks, slot, candidates)
+}
+
+// rankByMeasuredGain is rankTrinketSlot's tournament, for any slot whose
+// candidates carry no scorable stats worth ranking by: every candidate is
+// equipped in turn alongside the rest of picks and run through a real DPS
+// sim, the highest measured becomes picks[slot] (the next its runner-up),
+// and the winner's gain over the empty slot is measured at escalating
+// precision (trinketAdaptiveGain) for report.go's low-gain gate. The
+// trinket slots and the relic slot (relics.go) share it; it returns a new
+// map rather than mutating picks.
+func rankByMeasuredGain(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, slot string, candidates []scored) (map[string]slotPick, []string) {
+	out := make(map[string]slotPick, len(picks))
+	for k, v := range picks {
+		out[k] = v
 	}
 
 	type measured struct {

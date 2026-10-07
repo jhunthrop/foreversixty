@@ -24,7 +24,7 @@ package main
 // scored total, only for whether a slot's pick gets an engine-verified
 // run (see rank.go's hasImplementedEffect) and whether report.go's
 // effect_unmodelled flag is set.
-// Generated from wowsims-forever 90f9325b0 by sim/scripts/effectids.py.
+// Generated from wowsims-forever 912a458f7 by sim/scripts/effectids.py.
 var engineImplementedEffectItemIDs = map[int]bool{
 	647: true, 754: true, 809: true, 810: true, 870: true, 871: true, 1168: true, 1728: true, 1982: true, 2163: true,
 	2164: true, 2243: true, 2825: true, 3854: true, 5616: true, 6622: true, 7717: true, 7959: true, 8190: true, 9423: true,
@@ -44,8 +44,9 @@ var engineImplementedEffectItemIDs = map[int]bool{
 	19963: true, 19991: true, 19992: true, 20130: true, 20512: true, 20578: true, 21180: true, 21190: true, 21473: true, 21625: true,
 	21670: true, 21679: true, 22268: true, 22321: true, 22395: true, 22397: true, 22678: true, 22691: true, 22862: true, 22954: true,
 	23027: true, 23040: true, 23041: true, 23046: true, 23078: true, 23081: true, 23082: true, 23084: true, 23085: true, 23087: true,
-	23088: true, 23089: true, 23090: true, 23091: true, 23092: true, 23093: true, 23197: true, 23198: true, 23199: true, 23206: true,
-	23207: true, 23221: true, 23279: true, 23570: true, 249469: true, 249470: true,
+	23088: true, 23089: true, 23090: true, 23091: true, 23092: true, 23093: true, 23197: true, 23198: true, 23199: true, 23203: true,
+	23206: true, 23207: true, 23221: true, 23279: true, 23570: true, 220606: true, 228176: true, 249441: true, 249442: true, 249469: true,
+	249470: true, 272427: true, 272432: true, 272433: true, 272435: true, 279248: true,
 }
 
 func effectImplemented(itemID int) bool {
