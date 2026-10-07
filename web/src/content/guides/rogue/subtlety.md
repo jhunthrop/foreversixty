@@ -3,7 +3,7 @@ title: Subtlety Rogue in Forever
 classSlug: rogue
 spec: subtlety
 role: dps
-build: 'FS1:1.60.1.70009:rogue:night-elf:005/325131/5322210310013011051:'
+build: 'FS1:1.60.1.70009:rogue:night-elf:005323101014/0/5323220310013011031:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Subtlety Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -32,7 +32,9 @@ Subtlety trades Combat's raw weapon damage and Assassination's poison uptime for
 
 In rough priority order: **Opportunity** raises the damage of Backstab, Ambush, and Mutilate, which matters even for a Hemorrhage-based build since Ambush remains the spec's stealth opener. **Initiative** adds a chance at an extra combo point when opening with Cheap Shot or a similar ability, accelerating the path to a finisher. **Ghostly Strike** is a cheap, high-damage-relative-to-cost filler that also applies its own attack power debuff. **Premeditation** (1 point) is a required pick, not an optional one — missing from an earlier draft of this guide's talent section — since this build's rotation opens with it for two free combo points before the first Ambush. **Serrated Blades** adds armor penetration and boosts finisher damage, a flat multiplier once you're spending combo points regularly. **Hemorrhage**, the tree's signature ability, replaces Sinister Strike as the combo builder and needs its bleed reapplied once its charges run out. **Cutthroat**, new to the tree in Forever, occasionally lets a Backstab set up your following Ambush so it lands without needing Stealth first — a build-around for repeated openers mid-fight, though it isn't verified in this site's simulated rotation (see Rotation below). **Thousand Cuts**, the tree's capstone, is the bottom-row talent this build reaches.
 
-Point allocation runs 31 points deep into Subtlety to reach Thousand Cuts at the bottom row, with the remaining 20 split as 15 in Combat for utility (Deflection, Lightning Reflexes, Improved Eviscerate, Improved Sinister Strike) and 5 in Assassination for Malice's crit. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+The build changed in the latest talent search, by about +18% in the search run. The 15 points that sat in Combat (Improved Eviscerate, Improved Sinister Strike, Lightning Reflexes, Puncturing Wounds, Deflection, Precision) were re-spent into Assassination: **Malice** stays at five, joined by **Ruthlessness**, **Murder**, **Improved Slice and Dice**, **Relentless Strikes**, **Lethality**, **Cold Blood** and four points of **Improved Poisons**, with the remaining points going to **Setup** and **Dirty Tricks**. Two points of **Cutthroat** were given up to pay for it. Ghostly Strike, Premeditation, Hemorrhage and Thousand Cuts are all kept, because the rotation casts them. The dropped Combat points were credited at zero damage by the simulation, so the cost of the move is whatever those utility and defence talents did for you in play, not damage.
+
+Point allocation now runs 31 points deep into Subtlety to reach Thousand Cuts at the bottom row, with the remaining 20 in Assassination. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
 
 ## Rotation and priority
 
