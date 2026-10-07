@@ -11087,9 +11087,9 @@
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 19991,
-              "source_kind": "quest",
-              "source": "The Green Drake"
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 250619,
@@ -11200,7 +11200,7 @@
             21201,
             272408,
             11832,
-            19991,
+            11819,
             250619,
             279273
           ],
@@ -11224,10 +11224,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.278,
-          "crit": 1.096,
-          "hit": 0.387,
-          "melee_haste": 13.446
+          "agility": 2.282,
+          "crit": 1.11,
+          "hit": 0.382,
+          "melee_haste": 12.602
         }
       }
     ],
@@ -11617,10 +11617,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.214,
-          "crit": 0.816,
-          "hit": 0.205,
-          "melee_haste": 8.226
+          "agility": 2.198,
+          "crit": 0.755,
+          "hit": 0.19,
+          "melee_haste": 7.796
         }
       },
       {
@@ -11819,10 +11819,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.247,
-          "crit": 0.913,
-          "hit": 0.231,
-          "melee_haste": 5.545
+          "agility": 2.235,
+          "crit": 0.869,
+          "hit": 0.22,
+          "melee_haste": 5.187
         }
       },
       {
@@ -12030,10 +12030,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.273,
-          "crit": 1.023,
-          "hit": 0.277,
-          "melee_haste": 11.693
+          "agility": 2.267,
+          "crit": 1.001,
+          "hit": 0.271,
+          "melee_haste": 11.444
         }
       },
       {
@@ -12076,9 +12076,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 227807,
+              "item_id": 272397,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Pix Xizzix"
             },
             "legs": {
               "item_id": 237819,
@@ -12213,7 +12213,7 @@
             252483,
             18375,
             272099,
-            227807,
+            272397,
             237819,
             275618,
             21201,
@@ -12243,10 +12243,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.347,
-          "crit": 1.387,
-          "hit": 0.389,
-          "melee_haste": 10.49
+          "agility": 2.365,
+          "crit": 1.439,
+          "hit": 0.396,
+          "melee_haste": 9.995
         }
       }
     ],
@@ -15192,9 +15192,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -15269,7 +15269,6 @@
             272411,
             14152,
             19595,
-            22066,
             228190,
             237815,
             22064,

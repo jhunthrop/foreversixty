@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:17:42Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:40:13Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -565,8 +565,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.855725188,
-      "verify_run_seconds": 1.317371744,
+      "weights_run_seconds": 2.50433903,
+      "verify_run_seconds": 1.779557832,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1210,8 +1210,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.855725188,
-      "verify_run_seconds": 1.329828838,
+      "weights_run_seconds": 2.50433903,
+      "verify_run_seconds": 1.763617407,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1891,8 +1891,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.9729039369999999,
-      "verify_run_seconds": 1.373989646,
+      "weights_run_seconds": 2.532448702,
+      "verify_run_seconds": 1.795486898,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.9729039369999999,
-      "verify_run_seconds": 1.3805188560000001,
+      "weights_run_seconds": 2.532448702,
+      "verify_run_seconds": 1.83327046,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3268,8 +3268,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.046959365,
-      "verify_run_seconds": 1.385353741,
+      "weights_run_seconds": 2.7022685749999997,
+      "verify_run_seconds": 1.823846437,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3965,8 +3965,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.046959365,
-      "verify_run_seconds": 1.384190759,
+      "weights_run_seconds": 2.7022685749999997,
+      "verify_run_seconds": 1.830063249,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4146,7 +4146,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.8996153024007749
+              "dps_delta": -0.8996153024007747
             }
           ]
         },
@@ -4674,8 +4674,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.037699892,
-      "verify_run_seconds": 1.686886065,
+      "weights_run_seconds": 2.674282452,
+      "verify_run_seconds": 2.219064635,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5378,8 +5378,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.037699892,
-      "verify_run_seconds": 1.7100172150000001,
+      "weights_run_seconds": 2.674282452,
+      "verify_run_seconds": 2.260394815,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6121,8 +6121,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.068402481,
-      "verify_run_seconds": 1.6974254260000001,
+      "weights_run_seconds": 2.714195041,
+      "verify_run_seconds": 2.199898701,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6643,14 +6643,14 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "quest",
               "source": "The Path of the Conqueror",
-              "dps_delta": -0.056552325663866025
+              "dps_delta": -0.05655232566386621
             },
             {
               "item_id": 11862,
               "item_name": "White Bone Band",
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons",
-              "dps_delta": -0.07463014633112779
+              "dps_delta": -0.07463014633112798
             },
             {
               "item_id": 11669,
@@ -6866,8 +6866,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.068402481,
-      "verify_run_seconds": 1.737402872,
+      "weights_run_seconds": 2.714195041,
+      "verify_run_seconds": 2.215735673,
       "coverage": {
         "back": {
           "eligible": 451,

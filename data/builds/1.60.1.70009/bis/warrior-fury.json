@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:22:08Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:45:57Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -598,8 +598,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.995244221,
-      "verify_run_seconds": 1.224229571,
+      "weights_run_seconds": 2.6236179870000003,
+      "verify_run_seconds": 1.500090181,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1271,8 +1271,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.995244221,
-      "verify_run_seconds": 1.196712602,
+      "weights_run_seconds": 2.6236179870000003,
+      "verify_run_seconds": 1.533337068,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1964,8 +1964,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.251869622,
-      "verify_run_seconds": 1.263220523,
+      "weights_run_seconds": 2.9613964680000002,
+      "verify_run_seconds": 1.614315323,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2663,8 +2663,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.251869622,
-      "verify_run_seconds": 1.32859447,
+      "weights_run_seconds": 2.9613964680000002,
+      "verify_run_seconds": 1.645907902,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3358,8 +3358,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.392127183,
-      "verify_run_seconds": 1.298923085,
+      "weights_run_seconds": 3.208598148,
+      "verify_run_seconds": 1.720976678,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4055,8 +4055,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.392127183,
-      "verify_run_seconds": 1.376127987,
+      "weights_run_seconds": 3.208598148,
+      "verify_run_seconds": 1.794772337,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4767,8 +4767,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.531341898,
-      "verify_run_seconds": 1.844773364,
+      "weights_run_seconds": 3.413894023,
+      "verify_run_seconds": 2.4135034,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5483,8 +5483,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.531341898,
-      "verify_run_seconds": 1.827754821,
+      "weights_run_seconds": 3.413894023,
+      "verify_run_seconds": 2.360467946,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5641,7 +5641,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 75.82668529818136,
+          "score": 75.82668529818135,
           "verified": true,
           "alternatives": [
             {
@@ -5649,14 +5649,14 @@
               "item_name": "Field Marshal's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.19035924266671797
+              "dps_delta": -0.19035924266671694
             },
             {
               "item_id": 23314,
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.9990667539903654
+              "dps_delta": -0.9990667539903644
             },
             {
               "item_id": 226860,
@@ -5918,7 +5918,7 @@
               "item_name": "Marshal's Plate Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.0052893045639784
+              "dps_delta": -1.0052893045639772
             },
             {
               "item_id": 14554,
@@ -6229,8 +6229,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.681534656,
-      "verify_run_seconds": 1.8373088499999999,
+      "weights_run_seconds": 3.5124910959999998,
+      "verify_run_seconds": 2.380075665,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6664,7 +6664,7 @@
               "item_name": "General's Plate Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.0052893045639784
+              "dps_delta": -1.0052893045639772
             },
             {
               "item_id": 14554,
@@ -6978,8 +6978,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.681534656,
-      "verify_run_seconds": 1.771080053,
+      "weights_run_seconds": 3.5124910959999998,
+      "verify_run_seconds": 2.312004917,
       "coverage": {
         "back": {
           "eligible": 450,

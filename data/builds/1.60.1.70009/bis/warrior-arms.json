@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:21:29Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:45:06Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -545,8 +545,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.822265943,
-      "verify_run_seconds": 0.982823252,
+      "weights_run_seconds": 2.346338147,
+      "verify_run_seconds": 1.1283780509999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1190,8 +1190,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.822265943,
-      "verify_run_seconds": 0.883223559,
+      "weights_run_seconds": 2.346338147,
+      "verify_run_seconds": 1.068717784,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1858,8 +1858,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.108292264,
-      "verify_run_seconds": 1.08903852,
+      "weights_run_seconds": 2.773864569,
+      "verify_run_seconds": 1.422834034,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2532,8 +2532,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.108292264,
-      "verify_run_seconds": 1.108123552,
+      "weights_run_seconds": 2.773864569,
+      "verify_run_seconds": 1.385077126,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3211,8 +3211,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.351434794,
-      "verify_run_seconds": 1.004585831,
+      "weights_run_seconds": 3.14217395,
+      "verify_run_seconds": 1.401903744,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3890,8 +3890,8 @@
         "main_hand: Pendulum of Doom",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.351434794,
-      "verify_run_seconds": 1.02914924,
+      "weights_run_seconds": 3.14217395,
+      "verify_run_seconds": 1.379858533,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4577,8 +4577,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.536548655,
-      "verify_run_seconds": 1.279706206,
+      "weights_run_seconds": 3.31470596,
+      "verify_run_seconds": 1.639627122,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5276,8 +5276,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.536548655,
-      "verify_run_seconds": 1.280593543,
+      "weights_run_seconds": 3.31470596,
+      "verify_run_seconds": 1.700869413,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6001,8 +6001,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.536178482,
-      "verify_run_seconds": 1.216836434,
+      "weights_run_seconds": 3.311683061,
+      "verify_run_seconds": 1.640375255,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6304,7 +6304,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.760885745261131
+              "dps_delta": -0.7608857452611303
             },
             {
               "item_id": 23087,
@@ -6722,8 +6722,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.536178482,
-      "verify_run_seconds": 1.183760851,
+      "weights_run_seconds": 3.311683061,
+      "verify_run_seconds": 1.5600885199999999,
       "coverage": {
         "back": {
           "eligible": 450,

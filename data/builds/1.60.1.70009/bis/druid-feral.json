@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "d629bfd0e",
-  "generated_at": "2026-10-07T17:12:43Z",
+  "engine_version": "c0c749361",
+  "generated_at": "2026-10-07T17:33:44Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -530,8 +530,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.445140861,
-      "verify_run_seconds": 1.177692112,
+      "weights_run_seconds": 3.250793623,
+      "verify_run_seconds": 1.501017032,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1135,8 +1135,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.445140861,
-      "verify_run_seconds": 1.165183418,
+      "weights_run_seconds": 3.250793623,
+      "verify_run_seconds": 1.5216921920000002,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1777,8 +1777,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.836821677,
-      "verify_run_seconds": 1.42481149,
+      "weights_run_seconds": 3.746852634,
+      "verify_run_seconds": 1.865076176,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2420,8 +2420,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.836821677,
-      "verify_run_seconds": 1.420186989,
+      "weights_run_seconds": 3.746852634,
+      "verify_run_seconds": 1.842424786,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3058,8 +3058,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.959547847,
-      "verify_run_seconds": 1.387427888,
+      "weights_run_seconds": 3.91425699,
+      "verify_run_seconds": 1.8024532309999999,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3696,8 +3696,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.959547847,
-      "verify_run_seconds": 1.3908707200000001,
+      "weights_run_seconds": 3.91425699,
+      "verify_run_seconds": 1.790564061,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3879,7 +3879,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.3664357916124805
+              "dps_delta": -1.366435791612481
             },
             {
               "item_id": 14658,
@@ -4347,8 +4347,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.013315586,
-      "verify_run_seconds": 1.568699479,
+      "weights_run_seconds": 4.030345476,
+      "verify_run_seconds": 2.060108744,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5000,8 +5000,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.013315586,
-      "verify_run_seconds": 1.5073055979999999,
+      "weights_run_seconds": 4.030345476,
+      "verify_run_seconds": 1.975473775,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5168,7 +5168,7 @@
           "item_name": "Feralheart Cap",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 87.37242837114613,
+          "score": 87.37242837114614,
           "verified": true,
           "alternatives": [
             {
@@ -5717,8 +5717,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.010559516,
-      "verify_run_seconds": 1.5862512899999999,
+      "weights_run_seconds": 3.998253729,
+      "verify_run_seconds": 2.059381072,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5885,7 +5885,7 @@
           "item_name": "Feralheart Cap",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 87.37242837114614,
+          "score": 87.37242837114613,
           "verified": true,
           "alternatives": [
             {
@@ -6194,7 +6194,7 @@
               "item_name": "Blood Guard's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.19147692400921532
+              "dps_delta": -0.19147692400921584
             },
             {
               "item_id": 22472,
@@ -6433,8 +6433,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.010559516,
-      "verify_run_seconds": 1.60463139,
+      "weights_run_seconds": 3.998253729,
+      "verify_run_seconds": 2.023214409,
       "coverage": {
         "back": {
           "eligible": 451,
