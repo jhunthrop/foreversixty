@@ -90,8 +90,9 @@ test('a band without the key shows no hit-to-cap line and keeps the table in pla
 
 test('below level 60 there is no control: bare only', async ({ page }) => {
   await page.goto('/bis/hunter/marksmanship#band-alliance-20');
-  await expect(page.getByTestId('bis-band-alliance-20')).toBeVisible();
-  await expect(page.locator('[data-preset-option]')).toHaveCount(0);
+  const band = page.getByTestId('bis-band-alliance-20');
+  await expect(band).toBeVisible();
+  await expect(band.locator('[data-preset-option]')).toHaveCount(0);
 });
 
 test('capture the preset control for the design review', async ({ page }, testInfo) => {
