@@ -1,15 +1,15 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
-  "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:43:59Z",
+  "engine_version": "8bc5b28c5",
+  "generated_at": "2026-10-07T14:04:25Z",
   "bands": [
     {
       "spec": "hunter-survival",
       "band": 20,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "0000000000000000-00000000000000000-500230100000000000",
+      "talents": "0000000000000000-0000000000000000-500230100000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -567,8 +567,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.6176602,
-      "verify_run_seconds": 1.385142792,
+      "weights_run_seconds": 3.415644617,
+      "verify_run_seconds": 1.838708643,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -650,7 +650,7 @@
       "band": 20,
       "faction": "horde",
       "race": "troll",
-      "talents": "0000000000000000-00000000000000000-500230100000000000",
+      "talents": "0000000000000000-0000000000000000-500230100000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -1213,8 +1213,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.6176602,
-      "verify_run_seconds": 1.33777112,
+      "weights_run_seconds": 3.415644617,
+      "verify_run_seconds": 1.80295243,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1296,7 +1296,7 @@
       "band": 30,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "0000000000000000-00000000000000000-500230131051000000",
+      "talents": "0000000000000000-0000000000000000-500230131051000000",
       "talent_points": 21,
       "weights": [
         {
@@ -1899,8 +1899,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.651087143,
-      "verify_run_seconds": 1.463305919,
+      "weights_run_seconds": 3.62240001,
+      "verify_run_seconds": 1.994846739,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1982,7 +1982,7 @@
       "band": 30,
       "faction": "horde",
       "race": "troll",
-      "talents": "0000000000000000-00000000000000000-500230131051000000",
+      "talents": "0000000000000000-0000000000000000-500230131051000000",
       "talent_points": 21,
       "weights": [
         {
@@ -2585,8 +2585,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.651087143,
-      "verify_run_seconds": 1.447836745,
+      "weights_run_seconds": 3.62240001,
+      "verify_run_seconds": 1.965936109,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2668,7 +2668,7 @@
       "band": 40,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "0000000000000000-00000000000000000-500230131051120151",
+      "talents": "0000000000000000-0000000000000000-500230131051120151",
       "talent_points": 31,
       "weights": [
         {
@@ -3277,8 +3277,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.823376357,
-      "verify_run_seconds": 1.526391542,
+      "weights_run_seconds": 3.886580687,
+      "verify_run_seconds": 2.086243338,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3360,7 +3360,7 @@
       "band": 40,
       "faction": "horde",
       "race": "troll",
-      "talents": "0000000000000000-00000000000000000-500230131051120151",
+      "talents": "0000000000000000-0000000000000000-500230131051120151",
       "talent_points": 31,
       "weights": [
         {
@@ -3976,8 +3976,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.823376357,
-      "verify_run_seconds": 1.51276498,
+      "weights_run_seconds": 3.886580687,
+      "verify_run_seconds": 2.059482669,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4059,7 +4059,7 @@
       "band": 50,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "0000000000000000-32005000000000000-500230131051120151",
+      "talents": "0000000000000000-3200500000000000-500230131051120151",
       "talent_points": 41,
       "weights": [
         {
@@ -4686,8 +4686,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.908020468,
-      "verify_run_seconds": 1.694571196,
+      "weights_run_seconds": 3.919697179,
+      "verify_run_seconds": 2.325169042,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4769,7 +4769,7 @@
       "band": 50,
       "faction": "horde",
       "race": "troll",
-      "talents": "0000000000000000-32005000000000000-500230131051120151",
+      "talents": "0000000000000000-3200500000000000-500230131051120151",
       "talent_points": 41,
       "weights": [
         {
@@ -5404,8 +5404,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.908020468,
-      "verify_run_seconds": 1.775356025,
+      "weights_run_seconds": 3.919697179,
+      "verify_run_seconds": 2.387585287,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5487,7 +5487,7 @@
       "band": 60,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "0000000000000000-32005500005000000-500230131051120151",
+      "talents": "0000000000000000-3200550000500000-500230131051120151",
       "talent_points": 51,
       "weights": [
         {
@@ -5708,7 +5708,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.3077566305093237
+              "dps_delta": -0.307756630509323
             },
             {
               "item_id": 23089,
@@ -6152,8 +6152,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.909012855,
-      "verify_run_seconds": 1.724540789,
+      "weights_run_seconds": 3.968194425,
+      "verify_run_seconds": 2.32779144,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6235,7 +6235,7 @@
       "band": 60,
       "faction": "horde",
       "race": "troll",
-      "talents": "0000000000000000-32005500005000000-500230131051120151",
+      "talents": "0000000000000000-3200550000500000-500230131051120151",
       "talent_points": 51,
       "weights": [
         {
@@ -6457,7 +6457,7 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.3077566305093237
+              "dps_delta": -0.307756630509323
             },
             {
               "item_id": 23089,
@@ -6571,7 +6571,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 61.862103249793215,
+          "score": 61.86210324979321,
           "verified": true,
           "alternatives": [
             {
@@ -6586,7 +6586,7 @@
               "item_name": "Legionnaire's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.20907612196133013
+              "dps_delta": -0.20907612196132974
             },
             {
               "item_id": 15062,
@@ -6895,8 +6895,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.909012855,
-      "verify_run_seconds": 1.7621004729999998,
+      "weights_run_seconds": 3.968194425,
+      "verify_run_seconds": 2.386048987,
       "coverage": {
         "back": {
           "eligible": 450,

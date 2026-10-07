@@ -6,9 +6,9 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ## Alliance
 
-### Band 20 (dwarf, 0000000000000000-00000000000000000-500230100000000000)
+### Band 20 (dwarf, 0000000000000000-0000000000000000-500230100000000000)
 
-Set DPS (verified): 62.4. Weights run: 2.6s. Verify run: 1.4s. 220 eligible items had no known source.
+Set DPS (verified): 62.4. Weights run: 3.4s. Verify run: 1.8s. 220 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.033 ± 0.001, strength=1.000 ± 0.001, crit=0.120 ± 0.003 per rating point (14 rating = 1%, 1.675 per %), hit=0.040 ± 0.001 per rating point (10 rating = 1%, 0.395 per %), melee_haste=not significant (1.750 ± 0.546)
 
@@ -36,9 +36,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 220, see the JSON for more): 1189 Overseer's Ring; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5255 Quilboar Tomahawk; 5748 Centaur Longbow; 5821 Darkstalker Boots
 
-### Band 30 (dwarf, 0000000000000000-00000000000000000-500230131051000000)
+### Band 30 (dwarf, 0000000000000000-0000000000000000-500230131051000000)
 
-Set DPS (verified): 93.3. Weights run: 2.7s. Verify run: 1.5s. 366 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 3.6s. Verify run: 2.0s. 366 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.053 ± 0.002, strength=1.000 ± 0.001, crit=0.200 ± 0.005 per rating point (14 rating = 1%, 2.801 per %), hit=0.060 ± 0.001 per rating point (10 rating = 1%, 0.596 per %), melee_haste=not significant (1.421 ± 0.553)
 
@@ -66,9 +66,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 366, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
-### Band 40 (dwarf, 0000000000000000-00000000000000000-500230131051120151)
+### Band 40 (dwarf, 0000000000000000-0000000000000000-500230131051120151)
 
-Set DPS (verified): 129.1. Weights run: 2.8s. Verify run: 1.5s. 597 eligible items had no known source.
+Set DPS (verified): 129.1. Weights run: 3.9s. Verify run: 2.1s. 597 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.178 ± 0.003, strength=1.000 ± 0.001, crit=0.260 ± 0.006 per rating point (14 rating = 1%, 3.643 per %), hit=0.074 ± 0.002 per rating point (10 rating = 1%, 0.738 per %), melee_haste=not significant (1.140 ± 0.585)
 
@@ -96,9 +96,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 597, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 
-### Band 50 (dwarf, 0000000000000000-32005000000000000-500230131051120151)
+### Band 50 (dwarf, 0000000000000000-3200500000000000-500230131051120151)
 
-Set DPS (verified): 174.2. Weights run: 2.9s. Verify run: 1.7s. 754 eligible items had no known source.
+Set DPS (verified): 174.2. Weights run: 3.9s. Verify run: 2.3s. 754 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.207 ± 0.004, strength=1.000 ± 0.001, crit=0.362 ± 0.009 per rating point (14 rating = 1%, 5.069 per %), hit=0.098 ± 0.003 per rating point (10 rating = 1%, 0.976 per %), melee_haste=not significant (0.226 ± 0.731)
 
@@ -126,9 +126,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 754, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 
-### Band 60 (dwarf, 0000000000000000-32005500005000000-500230131051120151)
+### Band 60 (dwarf, 0000000000000000-3200550000500000-500230131051120151)
 
-Set DPS (verified): 251.9. Weights run: 2.9s. Verify run: 1.7s. 1670 eligible items had no known source.
+Set DPS (verified): 251.9. Weights run: 4.0s. Verify run: 2.3s. 1670 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.263 ± 0.007, strength=1.000 ± 0.001, crit=0.577 ± 0.015 per rating point (14 rating = 1%, 8.084 per %), hit=0.148 ± 0.005 per rating point (10 rating = 1%, 1.481 per %), melee_haste=not significant (3.456 ± 1.135)
 
@@ -158,9 +158,9 @@ No-known-source sample (15 of 1670, see the JSON for more): 913 Huge Ogre Sword;
 
 ## Horde
 
-### Band 20 (troll, 0000000000000000-00000000000000000-500230100000000000)
+### Band 20 (troll, 0000000000000000-0000000000000000-500230100000000000)
 
-Set DPS (verified): 62.8. Weights run: 2.6s. Verify run: 1.3s. 209 eligible items had no known source.
+Set DPS (verified): 62.8. Weights run: 3.4s. Verify run: 1.8s. 209 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.033 ± 0.001, strength=1.000 ± 0.001, crit=0.120 ± 0.003 per rating point (14 rating = 1%, 1.675 per %), hit=0.040 ± 0.001 per rating point (10 rating = 1%, 0.395 per %), melee_haste=not significant (1.750 ± 0.546)
 
@@ -188,9 +188,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 209, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5255 Quilboar Tomahawk; 5748 Centaur Longbow; 5821 Darkstalker Boots; 5968 Rugged Boots; 6478 Rat Stompers; 7187 VanCleef's Boots
 
-### Band 30 (troll, 0000000000000000-00000000000000000-500230131051000000)
+### Band 30 (troll, 0000000000000000-0000000000000000-500230131051000000)
 
-Set DPS (verified): 93.6. Weights run: 2.7s. Verify run: 1.4s. 352 eligible items had no known source.
+Set DPS (verified): 93.6. Weights run: 3.6s. Verify run: 2.0s. 352 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.053 ± 0.002, strength=1.000 ± 0.001, crit=0.200 ± 0.005 per rating point (14 rating = 1%, 2.801 per %), hit=0.060 ± 0.001 per rating point (10 rating = 1%, 0.596 per %), melee_haste=not significant (1.421 ± 0.553)
 
@@ -218,9 +218,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 352, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
-### Band 40 (troll, 0000000000000000-00000000000000000-500230131051120151)
+### Band 40 (troll, 0000000000000000-0000000000000000-500230131051120151)
 
-Set DPS (verified): 126.7. Weights run: 2.8s. Verify run: 1.5s. 563 eligible items had no known source.
+Set DPS (verified): 126.7. Weights run: 3.9s. Verify run: 2.1s. 563 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.178 ± 0.003, strength=1.000 ± 0.001, crit=0.260 ± 0.006 per rating point (14 rating = 1%, 3.643 per %), hit=0.074 ± 0.002 per rating point (10 rating = 1%, 0.738 per %), melee_haste=not significant (1.140 ± 0.585)
 
@@ -248,9 +248,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 563, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 
-### Band 50 (troll, 0000000000000000-32005000000000000-500230131051120151)
+### Band 50 (troll, 0000000000000000-3200500000000000-500230131051120151)
 
-Set DPS (verified): 176.9. Weights run: 2.9s. Verify run: 1.8s. 713 eligible items had no known source.
+Set DPS (verified): 176.9. Weights run: 3.9s. Verify run: 2.4s. 713 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.207 ± 0.004, strength=1.000 ± 0.001, crit=0.362 ± 0.009 per rating point (14 rating = 1%, 5.069 per %), hit=0.098 ± 0.003 per rating point (10 rating = 1%, 0.976 per %), melee_haste=not significant (0.226 ± 0.731)
 
@@ -278,9 +278,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 713, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 
-### Band 60 (troll, 0000000000000000-32005500005000000-500230131051120151)
+### Band 60 (troll, 0000000000000000-3200550000500000-500230131051120151)
 
-Set DPS (verified): 258.5. Weights run: 2.9s. Verify run: 1.8s. 1650 eligible items had no known source.
+Set DPS (verified): 258.5. Weights run: 4.0s. Verify run: 2.4s. 1650 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.263 ± 0.007, strength=1.000 ± 0.001, crit=0.577 ± 0.015 per rating point (14 rating = 1%, 8.084 per %), hit=0.148 ± 0.005 per rating point (10 rating = 1%, 1.481 per %), melee_haste=not significant (3.456 ± 1.135)
 

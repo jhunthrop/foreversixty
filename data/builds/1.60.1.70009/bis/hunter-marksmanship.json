@@ -1,15 +1,15 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:43:18Z",
+  "engine_version": "8bc5b28c5",
+  "generated_at": "2026-10-07T14:03:30Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
       "band": 20,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "0000000000000000-00505100000000000-000000000000000000",
+      "talents": "0000000000000000-0050510000000000-000000000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -539,8 +539,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.037568891,
-      "verify_run_seconds": 1.27138196,
+      "weights_run_seconds": 2.683751211,
+      "verify_run_seconds": 1.718484295,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -622,7 +622,7 @@
       "band": 20,
       "faction": "horde",
       "race": "troll",
-      "talents": "0000000000000000-00505100000000000-000000000000000000",
+      "talents": "0000000000000000-0050510000000000-000000000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -1172,8 +1172,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.037568891,
-      "verify_run_seconds": 1.228508121,
+      "weights_run_seconds": 2.683751211,
+      "verify_run_seconds": 1.676801095,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1255,7 +1255,7 @@
       "band": 30,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "0000000000000000-00505500114000000-000000000000000000",
+      "talents": "0000000000000000-0050550011400000-000000000000000000",
       "talent_points": 21,
       "weights": [
         {
@@ -1895,8 +1895,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.117753091,
-      "verify_run_seconds": 1.427916599,
+      "weights_run_seconds": 2.946235684,
+      "verify_run_seconds": 1.896828228,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1978,7 +1978,7 @@
       "band": 30,
       "faction": "horde",
       "race": "troll",
-      "talents": "0000000000000000-00505500114000000-000000000000000000",
+      "talents": "0000000000000000-0050550011400000-000000000000000000",
       "talent_points": 21,
       "weights": [
         {
@@ -2608,8 +2608,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.117753091,
-      "verify_run_seconds": 1.3901421219999999,
+      "weights_run_seconds": 2.946235684,
+      "verify_run_seconds": 1.877497107,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2691,7 +2691,7 @@
       "band": 40,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "1000000000000000-00505500115003050-000000000000000000",
+      "talents": "1000000000000000-0050550011503050-000000000000000000",
       "talent_points": 31,
       "weights": [
         {
@@ -3275,8 +3275,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.145080359,
-      "verify_run_seconds": 1.424514307,
+      "weights_run_seconds": 2.95451854,
+      "verify_run_seconds": 1.978847367,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3358,7 +3358,7 @@
       "band": 40,
       "faction": "horde",
       "race": "troll",
-      "talents": "1000000000000000-00505500115003050-000000000000000000",
+      "talents": "1000000000000000-0050550011503050-000000000000000000",
       "talent_points": 31,
       "weights": [
         {
@@ -3952,8 +3952,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.145080359,
-      "verify_run_seconds": 1.4048144630000001,
+      "weights_run_seconds": 2.95451854,
+      "verify_run_seconds": 1.896389787,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4035,7 +4035,7 @@
       "band": 50,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5510000000000000-00505500115003050-000000000000000000",
+      "talents": "5510000000000000-0050550011503050-000000000000000000",
       "talent_points": 41,
       "weights": [
         {
@@ -4626,8 +4626,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.204702983,
-      "verify_run_seconds": 1.5358113599999998,
+      "weights_run_seconds": 3.02581572,
+      "verify_run_seconds": 2.061022578,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4709,7 +4709,7 @@
       "band": 50,
       "faction": "horde",
       "race": "troll",
-      "talents": "5510000000000000-00505500115003050-000000000000000000",
+      "talents": "5510000000000000-0050550011503050-000000000000000000",
       "talent_points": 41,
       "weights": [
         {
@@ -5313,8 +5313,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.204702983,
-      "verify_run_seconds": 1.486436715,
+      "weights_run_seconds": 3.02581572,
+      "verify_run_seconds": 2.018239779,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5396,7 +5396,7 @@
       "band": 60,
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5520000400000000-00505500115003050-500000000000000000",
+      "talents": "5520000400000000-0050550011503050-500000000000000000",
       "talent_points": 51,
       "weights": [
         {
@@ -6021,8 +6021,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.150200817,
-      "verify_run_seconds": 1.602820366,
+      "weights_run_seconds": 2.973474576,
+      "verify_run_seconds": 2.206998059,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6104,7 +6104,7 @@
       "band": 60,
       "faction": "horde",
       "race": "troll",
-      "talents": "5520000400000000-00505500115003050-500000000000000000",
+      "talents": "5520000400000000-0050550011503050-500000000000000000",
       "talent_points": 51,
       "weights": [
         {
@@ -6540,14 +6540,14 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.24822420736545345
+              "dps_delta": -0.24822420736545397
             },
             {
               "item_id": 18500,
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -0.3418193982927344
+              "dps_delta": -0.34181939829273494
             },
             {
               "item_id": 11669,
@@ -6731,8 +6731,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.150200817,
-      "verify_run_seconds": 1.559222334,
+      "weights_run_seconds": 2.973474576,
+      "verify_run_seconds": 2.10740256,
       "coverage": {
         "back": {
           "eligible": 450,
