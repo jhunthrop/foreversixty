@@ -23,7 +23,7 @@ Warlock is a pure spellcaster built around damage-over-time effects, life-draini
 
 The three specs:
 
-- **Affliction** layers Bane of Agony, Corruption, and (once available) Wrack onto a target and lets them run, filling any spare globals with Shadow Bolt.
+- **Affliction** layers Bane of Doom, Corruption, and (once available) Wrack onto a target and lets them run, filling any spare globals with Shadow Bolt.
 - **Demonology** casts Corruption and Soul Fire around its pet, with talents that shape which demon you summon and what it does for you.
 - **Destruction** keeps Immolate up so Conflagrate and Incinerate have something to consume, finishing low-health targets with Shadowburn.
 

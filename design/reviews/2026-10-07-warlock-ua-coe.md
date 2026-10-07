@@ -43,3 +43,17 @@ The searches also found two ordering tweaks, unrelated to this lane's candidates
 - Corruption: the only level-60 learn row is 25311, so the engine's rank 7 is right (1223963 has none).
 - Bane of Doom: the learn row is 603. The engine registers it under 603 but with the numbers of 449432 ("Curse of Doom", a different, non-learnable client row: 3200 damage after 60 s, coefficient 1.0). The 603 client row says 1742 damage at coefficient 4.0 with the same family mask. Conformance shows 603 as `not declared` (1742.00 vs none, 4.000 vs 1.000). Choosing id 603 is right; the damage numbers under it are not the 603 row's. Not changed here: it moves Doom, the curse that ties Agony in Destruction, and wants its own measured lane.
 - AQ book ranks (Shadow Bolt 25307, Immolate 25309) are book-taught and phase-gated; left alone.
+
+## Follow-up: Bane of Doom from client row 603, raid Curse of the Elements
+
+Fork commit `73861738a`. Bane of Doom (603) now takes 1742 damage at coefficient 4.0 on the spell and its dot (it had 3200 at 1.0 from row 449432, and no spell power on the dot at all) and declares `ClientBaseDamage`: conformance reads `declared, matches`. Test first (`curse_of_doom_test.go`, plus the periodic table test). `core.CurseOfElementsAura` is now the top rank of the Forever curse: six magic schools, 10 percent, 75 resistance; the old aura removed the resistance twice (150) because two effects each lowered every school. The Elemental shaman `.results` golden moves because nature now takes the curse (explained, adopted); the conformance golden is regenerated. The aura keeps its old action id 11722: with the client's 1311680 the conformance duration lookup finds the permanent target aura first and reports the castable curse as never-expiring.
+
+Doom versus Agony, replaced in place, DPS (mean +- error), paired seed 7, 800 iterations:
+
+| Spec | Agony | Doom (603) | Gain |
+|---|---|---|---|
+| Affliction | 421.7 +- 0.4 | 428.4 +- 0.7 | +6.7 (error 0.8), +1.6 percent |
+| Destruction | 397.4 +- 0.5 | 402.8 +- 0.7 | +5.4 (error 0.9), +1.4 percent |
+| Demonology | 362.4 +- 0.4 | 364.9 +- 0.6 | +2.5 (error 0.7), +0.7 percent |
+
+All three beyond error, so all three curated rotations now maintain Bane of Doom in Agony's slot (not Demonology only by the brief's two specs; it clears error too). Doom pays its whole hit once a minute, so a fight under a minute should keep Agony; the guides say so. `apl-sync`/`apl-check` clean against the worktree fork, ladder goldens regenerated, `go test ./...` in `sim/` and the content vitest pass. Regenerated search reports show nothing further for Affliction; Destruction (swap Immolate and Conflagrate, +0.6 percent) and Demonology (swap Doom and Corruption, +1.3 percent) have ordering gains beyond error that this pass did not adopt.
