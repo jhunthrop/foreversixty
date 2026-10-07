@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:23:46Z",
+  "generated_at": "2026-10-07T13:44:39Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -549,8 +549,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.785016023,
-      "verify_run_seconds": 0.586896107,
+      "weights_run_seconds": 0.900730339,
+      "verify_run_seconds": 0.580930834,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.785016023,
-      "verify_run_seconds": 0.606802524,
+      "weights_run_seconds": 0.900730339,
+      "verify_run_seconds": 0.603279666,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.867944433,
-      "verify_run_seconds": 0.614402267,
+      "weights_run_seconds": 0.941247681,
+      "verify_run_seconds": 0.623344325,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2546,8 +2546,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.867944433,
-      "verify_run_seconds": 0.618515518,
+      "weights_run_seconds": 0.941247681,
+      "verify_run_seconds": 0.614450217,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3206,8 +3206,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.891047101,
-      "verify_run_seconds": 0.561038609,
+      "weights_run_seconds": 0.92377789,
+      "verify_run_seconds": 0.572548777,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3864,8 +3864,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.891047101,
-      "verify_run_seconds": 0.573360334,
+      "weights_run_seconds": 0.92377789,
+      "verify_run_seconds": 0.557539116,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4554,8 +4554,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.882044192,
-      "verify_run_seconds": 0.687235153,
+      "weights_run_seconds": 0.889609209,
+      "verify_run_seconds": 0.667798024,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5236,8 +5236,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.882044192,
-      "verify_run_seconds": 0.664222209,
+      "weights_run_seconds": 0.889609209,
+      "verify_run_seconds": 0.652644062,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5404,7 +5404,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 58.787165831541294,
+          "score": 58.7871658315413,
           "verified": true,
           "alternatives": [
             {
@@ -5419,14 +5419,14 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.9540114292454722
+              "dps_delta": -1.9540114292454738
             },
             {
               "item_id": 16686,
               "item_name": "Magister's Crown",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -2.8326515822460623
+              "dps_delta": -2.832651582246064
             }
           ]
         },
@@ -5966,8 +5966,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.993926179,
-      "verify_run_seconds": 0.682505393,
+      "weights_run_seconds": 1.024943259,
+      "verify_run_seconds": 0.692698217,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6695,8 +6695,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.993926179,
-      "verify_run_seconds": 0.666603779,
+      "weights_run_seconds": 1.024943259,
+      "verify_run_seconds": 0.696660975,
       "coverage": {
         "back": {
           "eligible": 450,

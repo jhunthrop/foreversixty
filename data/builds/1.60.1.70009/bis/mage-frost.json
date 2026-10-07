@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "f39303113",
-  "generated_at": "2026-10-07T13:24:03Z",
+  "generated_at": "2026-10-07T13:44:56Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.701347134,
-      "verify_run_seconds": 0.507428993,
+      "weights_run_seconds": 0.757748562,
+      "verify_run_seconds": 0.508925477,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.701347134,
-      "verify_run_seconds": 0.563187107,
+      "weights_run_seconds": 0.757748562,
+      "verify_run_seconds": 0.543708763,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.704458502,
-      "verify_run_seconds": 0.544241283,
+      "weights_run_seconds": 0.697662131,
+      "verify_run_seconds": 0.518404891,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2584,8 +2584,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.704458502,
-      "verify_run_seconds": 0.553313351,
+      "weights_run_seconds": 0.697662131,
+      "verify_run_seconds": 0.530980293,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3253,8 +3253,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.748111542,
-      "verify_run_seconds": 0.505280909,
+      "weights_run_seconds": 0.776497708,
+      "verify_run_seconds": 0.4852503,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3917,8 +3917,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.748111542,
-      "verify_run_seconds": 0.50717507,
+      "weights_run_seconds": 0.776497708,
+      "verify_run_seconds": 0.494507776,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4100,7 +4100,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.4908955047533694
+              "dps_delta": -1.4908955047533687
             },
             {
               "item_id": 15999,
@@ -4609,8 +4609,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 0.715236497,
-      "verify_run_seconds": 0.622562923,
+      "weights_run_seconds": 0.701336185,
+      "verify_run_seconds": 0.572872699,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4857,7 +4857,7 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.6624104205979409
+              "dps_delta": -1.6624104205979415
             },
             {
               "item_id": 10029,
@@ -5288,8 +5288,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.715236497,
-      "verify_run_seconds": 0.601940608,
+      "weights_run_seconds": 0.701336185,
+      "verify_run_seconds": 0.56127109,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6027,8 +6027,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.758274772,
-      "verify_run_seconds": 0.580873721,
+      "weights_run_seconds": 0.759816746,
+      "verify_run_seconds": 0.529737364,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6210,7 +6210,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.3062011010638224
+              "dps_delta": -1.3062011010638237
             },
             {
               "item_id": 16686,
@@ -6763,8 +6763,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.758274772,
-      "verify_run_seconds": 0.577691567,
+      "weights_run_seconds": 0.759816746,
+      "verify_run_seconds": 0.573243275,
       "coverage": {
         "back": {
           "eligible": 450,
