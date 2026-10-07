@@ -96,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 00000000000000000-35051105050010300-000000000000000000 | main_hand:868 off_hand:6829 | 67.2 | 7 | other:rage_gain=115.4, other:attack/2=85.6, other:attack/1=66.6, spell:11564/1=23.3, spell:11564=23.1 | {SpellID: 23894} |
 | 40 | 00000000000000000-35051105050010500-000000000000000000 | main_hand:2164 off_hand:9359 | 75.0 | 8 | other:rage_gain=120.0, other:attack/2=83.6, other:attack/1=82.5, spell:11565/1=24.5, spell:11565=24.3 | {SpellID: 23881} |
 | 50 | 35100000000000000-35051105050010501-000000000000000000 | main_hand:810 off_hand:2163 | 107.2 | 9 | other:attack/2=139.2, other:rage_gain=135.2, other:attack/1=86.1, spell:23892=19.0, spell:20661=15.8 | - |
-| 60 | 35311103002000000-35051105050010501-000000000000000000 | main_hand:22736 off_hand:23054 | 255.6 | 9 | other:rage_gain=101.7, other:attack/2=73.0, other:attack/1=63.9, spell:23894=19.2, spell:20662=14.6 | - |
+| 60 | 35311103002000000-35051105050010501-000000000000000000 | main_hand:22736 off_hand:23054 | 251.0 | 9 | other:rage_gain=101.7, other:attack/2=73.0, other:attack/1=63.9, spell:23894=19.2, spell:20662=14.6 | - |
 
 ## Learned but unused (informational)
 
@@ -185,4 +185,5 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- warrior-fury level=60 kind=zero_casts spell="Battle Shout" id=25289 authored=11551
+- warrior-fury level=60 kind=zero_casts spell="Heroic Strike" id=25286 authored=11567

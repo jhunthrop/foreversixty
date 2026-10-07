@@ -96,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 32500000551501020-00000000000000000-0000000000000000000 | main_hand:6831 off_hand:10761 | 65.2 | 6 | other:attack/2=132.4, other:attack/1=132.4, spell:8621=40.7, spell:5171/4=4.8, spell:8623/4=4.1 | {SpellID: 1241584}, {SpellID: 1310703} |
 | 40 | 32500000551501040-00000000000000000-0000000000000000000 | main_hand:2164 off_hand:274753 | 76.6 | 5 | other:attack/1=114.8, other:attack/2=108.8, spell:399956=25.7, spell:5171/4=7.7, spell:8624/4=5.2 | {SpellID: 1310703} |
 | 50 | 32500000551501051-32300000000000000-0000000000000000000 | main_hand:2163 off_hand:6660 | 111.8 | 5 | other:attack/2=159.6, other:attack/1=148.3, spell:1241582=25.7, spell:11299/4=5.2, spell:6774/4=5.0 | - |
-| 60 | 32500000551501051-32520000000000000-5100000000000000000 | main_hand:22802 off_hand:21126 | 182.9 | 5 | other:attack/1=115.3, other:attack/2=115.3, spell:1241584=25.7, spell:31016/4=5.3, spell:6774/4=4.9 | - |
+| 60 | 32500000551501051-32520000000000000-5100000000000000000 | main_hand:22802 off_hand:21126 | 170.6 | 5 | other:attack/1=115.3, other:attack/2=115.3, spell:1241584=25.7, spell:11300/4=5.3, spell:6774/4=4.9 | - |
 
 ## Learned but unused (informational)
 
@@ -163,6 +163,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 11269)
 - Backstab (spell 25300)
+- Eviscerate (spell 31016)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
@@ -174,4 +175,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-assassination level=60 kind=zero_casts spell="Eviscerate" id=31016 authored=11300

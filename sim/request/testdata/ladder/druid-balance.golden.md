@@ -96,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 5222211015401030-00000000000000000000-0000000000000000 | main_hand:9604 | 35.0 | 5 | other:attack/1=40.7, spell:8950=18.6, spell:24974=15.0, spell:58984=1.5, spell:6780=1.5 | - |
 | 40 | 5222211015401050-00000000000000000000-0000000000000000 | main_hand:9604 | 38.5 | 5 | other:attack/1=41.1, spell:8950=18.5, spell:24975=14.8, spell:58984=1.5, spell:6780=1.5 | - |
 | 50 | 5222211015401051-00000000000000000000-5400000000000000 | main_hand:812 | 56.8 | 5 | other:attack/1=39.9, spell:9875=15.8, spell:24976=15.1, spell:58984=1.5, spell:8905=1.5 | - |
-| 60 | 5222211015401051-00000000000000000000-5533300000000000 | main_hand:22799 | 104.5 | 5 | other:attack/1=40.6, spell:24977=15.7, spell:25298=14.1, spell:9912=1.6, spell:58984=1.5 | - |
+| 60 | 5222211015401051-00000000000000000000-5533300000000000 | main_hand:22799 | 103.3 | 5 | other:attack/1=39.4, spell:24977=15.5, spell:9876=15.2, spell:9912=1.6, spell:58984=1.5 | - |
 
 ## Learned but unused (informational)
 
@@ -186,9 +186,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Ravage (spell 9867)
 - Rip (spell 9896)
 - Shred (spell 9830)
+- Starfire (spell 25298)
 - Swipe (spell 9908)
 - Test Maul (spell 24042)
 
 ## Violations found in this run
 
-None.
+- druid-balance level=60 kind=zero_casts spell="Starfire" id=25298 authored=9876

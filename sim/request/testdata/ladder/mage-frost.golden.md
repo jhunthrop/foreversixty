@@ -96,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:1664 ranged:13064 | 44.0 | 3 | spell:5019=68.7, spell:8408=28.3, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
 | 40 | 100000000000000000-00000000000000000-2535111300000301050 | main_hand:1664 ranged:5216 | 44.7 | 3 | spell:5019=73.5, spell:8408=28.1, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
 | 50 | 203005000100000000-00000000000000000-2535111300000301050 | main_hand:812 ranged:249232 | 86.6 | 3 | spell:10180=41.7, spell:5019=38.2, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
-| 60 | 203005000100000000-11302300000000000-2535111300000301050 | main_hand:22589 ranged:22821 | 185.4 | 3 | spell:5019=53.9, spell:25304=40.0, other:mana_gain=2.0, spell:12472=1.0, item:5514=1.0 | - |
+| 60 | 203005000100000000-11302300000000000-2535111300000301050 | main_hand:22589 ranged:22821 | 173.7 | 3 | spell:5019=48.4, spell:10181=43.2, other:mana_gain=2.0, item:5514=1.0, spell:12472=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -206,6 +206,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fireball (spell 25306)
 - Flamestrike (spell 10216)
 - Frost Nova (spell 10230)
+- Frostbolt (spell 25304)
 - Frostfire Bolt (spell 1237313)
 - Ice Lance (spell 1240047)
 - Pyroblast (spell 18809)
@@ -213,4 +214,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- mage-frost level=60 kind=zero_casts spell="Frostbolt" id=25304 authored=10181

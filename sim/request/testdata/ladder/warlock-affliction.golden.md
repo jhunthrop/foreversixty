@@ -96,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 25552000130201030-0000000000000000000-0000000000000000 | main_hand:1664 ranged:13064 | 55.7 | 7 | spell:5019=55.1, other:mana_gain=26.3, spell:11687=26.3, spell:7641=24.0, spell:2941=10.8 | {OtherID: 13} |
 | 40 | 25552000130201050-0000000000000000000-0000000000000000 | main_hand:1664 ranged:5216 | 78.6 | 7 | spell:5019=57.4, other:mana_gain=28.3, spell:11687=28.3, spell:7641=25.0, spell:11665=10.6 | {OtherID: 13}, {SpellID: 1316697} |
 | 50 | 25552000130201051-2340000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 125.3 | 8 | spell:5019=65.2, other:mana_gain=27.3, spell:11688=27.3, spell:1316697=23.6, spell:11671=10.6 | {OtherID: 13} |
-| 60 | 25552000130201051-2355220000000000000-0000000000000000 | main_hand:22630 ranged:22821 | 316.5 | 8 | spell:5019=70.8, spell:1316697=27.5, other:mana_gain=23.3, spell:11689=23.3, spell:25307=17.5 | {OtherID: 13} |
+| 60 | 25552000130201051-2355220000000000000-0000000000000000 | main_hand:22630 ranged:22821 | 309.6 | 8 | spell:5019=69.6, spell:1316697=27.4, other:mana_gain=22.6, spell:11689=22.6, spell:11661=17.9 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -185,16 +185,19 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Conflagrate (spell 18932)
+- Corruption (spell 25311)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
 - Haunt (spell 1293694)
 - Health Funnel (spell 11695)
 - Hellfire (spell 11684)
 - Hellfire Effect (spell 11682)
+- Immolate (spell 25309)
 - Incinerate (spell 1293813)
 - Lash of Pain (spell 11780)
 - Rain of Fire (spell 11678)
 - Searing Pain (spell 17923)
+- Shadow Bolt (spell 25307)
 - Shadow Cleave (spell 403852)
 - Shadowburn (spell 18871)
 - Soul Fire (spell 17924)
@@ -203,4 +206,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- warlock-affliction level=60 kind=zero_casts spell="Corruption" id=25311 authored=11672
+- warlock-affliction level=60 kind=zero_casts spell="Immolate" id=25309 authored=11668
+- warlock-affliction level=60 kind=zero_casts spell="Shadow Bolt" id=25307 authored=11661

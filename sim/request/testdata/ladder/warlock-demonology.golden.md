@@ -96,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 00000000000000000-2352113101200001340-0000000000000000 | main_hand:1664 ranged:13064 | 62.4 | 6 | spell:5019=38.7, other:mana_gain=28.4, spell:11687=28.4, spell:7641=23.9, spell:2941=12.4 | {OtherID: 13} |
 | 40 | 00000000000000000-2352113101200001351-0000000000000000 | main_hand:1664 ranged:5216 | 90.7 | 6 | spell:5019=43.3, other:mana_gain=29.6, spell:11687=29.6, spell:7641=23.0, spell:11665=12.2 | {OtherID: 13} |
 | 50 | 25300000000000000-2352113101200001351-0000000000000000 | main_hand:812 ranged:249232 | 117.0 | 6 | spell:5019=38.4, other:mana_gain=23.2, spell:11688=23.2, spell:11659=22.9, spell:11667=12.4 | {OtherID: 13} |
-| 60 | 25532300000000000-2352113101200001351-0000000000000000 | main_hand:22630 ranged:22821 | 282.2 | 6 | spell:5019=42.8, spell:25307=28.7, other:mana_gain=20.9, spell:11689=20.9, spell:25309=13.5 | {OtherID: 13} |
+| 60 | 25532300000000000-2352113101200001351-0000000000000000 | main_hand:22630 ranged:22821 | 276.2 | 6 | spell:5019=37.7, spell:11661=31.1, other:mana_gain=21.2, spell:11689=21.2, spell:11668=13.7 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -186,16 +186,19 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Conflagrate (spell 18932)
+- Corruption (spell 25311)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
 - Haunt (spell 1293694)
 - Health Funnel (spell 11695)
 - Hellfire (spell 11684)
 - Hellfire Effect (spell 11682)
+- Immolate (spell 25309)
 - Incinerate (spell 1293813)
 - Lash of Pain (spell 11780)
 - Rain of Fire (spell 11678)
 - Searing Pain (spell 17923)
+- Shadow Bolt (spell 25307)
 - Shadow Cleave (spell 403852)
 - Shadowburn (spell 18871)
 - Soul Fire (spell 17924)
@@ -205,4 +208,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- warlock-demonology level=60 kind=zero_casts spell="Corruption" id=25311 authored=11672
+- warlock-demonology level=60 kind=zero_casts spell="Immolate" id=25309 authored=11668
+- warlock-demonology level=60 kind=zero_casts spell="Shadow Bolt" id=25307 authored=11661

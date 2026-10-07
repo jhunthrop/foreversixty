@@ -96,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 000000000000000000-23552100130103030-0000000000000000000 | main_hand:1664 ranged:13064 | 43.1 | 5 | spell:5019=80.7, spell:8445=17.5, spell:8413=6.9, spell:8402=6.9, other:mana_gain=2.0 | {SpellID: 11129} |
 | 40 | 000000000000000000-23552100130103050-0000000000000000000 | main_hand:1664 ranged:5216 | 43.7 | 5 | spell:5019=88.0, spell:8446=17.2, spell:8413=6.5, spell:8402=6.1, other:mana_gain=2.0 | {SpellID: 11129} |
 | 50 | 205011000000000000-23552100130103051-0000000000000000000 | main_hand:812 ranged:249232 | 75.2 | 6 | spell:5019=61.9, spell:10205=17.9, spell:10149=7.8, spell:10197=7.5, other:mana_gain=2.0 | - |
-| 60 | 205015100000000000-23552100130103051-0050000000000000000 | main_hand:22589 ranged:22821 | 220.3 | 6 | spell:5019=60.5, spell:10207=20.6, spell:25306=15.5, spell:10199=11.7, other:mana_gain=2.0 | - |
+| 60 | 205015100000000000-23552100130103051-0050000000000000000 | main_hand:22589 ranged:22821 | 212.6 | 6 | spell:5019=61.1, spell:10207=20.6, spell:10151=15.2, spell:10199=11.4, other:mana_gain=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -189,6 +189,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chill (spell 1308651)
 - Cone of Cold (spell 10161)
 - Debug Frost Spell (spell 29607)
+- Fireball (spell 25306)
 - Flamestrike (spell 10216)
 - Frost Nova (spell 10230)
 - Frostbolt (spell 25304)
@@ -197,4 +198,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- mage-fire level=60 kind=zero_casts spell="Fireball" id=25306 authored=10151
