@@ -95,11 +95,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-10000000000000000-0000000000000000000 | main_hand:263937 ranged:263430 | 7.9 | 3 | spell:5019=96.8, spell:2136=19.5, spell:143=10.7 | {SpellID: 11129}, {SpellID: 12873} |
 | 20 | 000000000000000000-23510000000000000-0000000000000000000 | main_hand:890 ranged:5243 | 18.5 | 3 | spell:5019=91.9, spell:2137=17.7, spell:3140=8.0 | {SpellID: 11129}, {SpellID: 11366}, {SpellID: 12873}, {SpellID: 400625} |
-| 30 | 000000000000000000-23552100120000000-0000000000000000000 | main_hand:249392 ranged:5213 | 25.5 | 4 | spell:5019=98.7, spell:8444=21.6, spell:8401=5.4, spell:8412=4.6, item:5514=1.0 | {SpellID: 11129}, {SpellID: 400625} |
-| 38 | 000000000000000000-23552100130103030-0000000000000000000 | main_hand:1664 ranged:13064 | 41.3 | 5 | spell:5019=80.9, spell:8445=17.4, spell:8402=6.8, spell:8413=6.0, other:mana_gain=2.0 | {SpellID: 11129} |
-| 40 | 000000000000000000-23552100130103050-0000000000000000000 | main_hand:1664 ranged:5216 | 42.6 | 5 | spell:5019=90.7, spell:8446=17.2, spell:8413=6.5, spell:8402=5.3, other:mana_gain=2.0 | {SpellID: 11129} |
-| 50 | 205011000000000000-23552100130103051-0000000000000000000 | main_hand:812 ranged:249232 | 73.8 | 6 | spell:5019=61.6, spell:10205=18.4, spell:10149=7.8, spell:10197=7.0, other:mana_gain=2.0 | - |
-| 60 | 205015100000000000-23552100130103051-0050000000000000000 | main_hand:22589 ranged:22821 | 212.6 | 6 | spell:5019=61.1, spell:10207=20.6, spell:10151=15.2, spell:10199=11.4, other:mana_gain=2.0 | - |
+| 30 | 000000000000000000-23552100120000000-0000000000000000000 | main_hand:249392 ranged:5213 | 25.2 | 3 | spell:5019=93.9, spell:8444=35.7, spell:8412=4.5, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 11129}, {SpellID: 400625} |
+| 38 | 000000000000000000-23552100130103030-0000000000000000000 | main_hand:1664 ranged:13064 | 41.0 | 4 | spell:5019=74.8, spell:8445=36.1, spell:8413=5.1, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 11129} |
+| 40 | 000000000000000000-23552100130103050-0000000000000000000 | main_hand:1664 ranged:5216 | 41.8 | 4 | spell:5019=86.8, spell:8446=30.0, spell:8413=4.8, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 11129} |
+| 50 | 205011000000000000-23552100130103051-0000000000000000000 | main_hand:812 ranged:249232 | 75.4 | 5 | spell:5019=57.4, spell:10205=37.7, spell:10197=7.6, other:mana_gain=2.0, spell:12525=1.4 | - |
+| 60 | 205015100000000000-23552100130103051-0050000000000000000 | main_hand:22589 ranged:22821 | 251.1 | 5 | spell:10207=61.5, spell:5019=41.7, spell:10199=18.8, spell:18809=3.8, other:mana_gain=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -132,6 +132,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blizzard (spell 6141)
 - Chill (spell 1308651)
 - Cone of Cold (spell 120)
+- Fireball (spell 8401)
 - Flamestrike (spell 2121)
 - Frost Nova (spell 865)
 - Frostbolt (spell 8406)
@@ -147,6 +148,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blizzard (spell 8427)
 - Chill (spell 1308651)
 - Cone of Cold (spell 8492)
+- Fireball (spell 8402)
 - Flamestrike (spell 8422)
 - Frost Nova (spell 865)
 - Frostbolt (spell 8408)
@@ -161,6 +163,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blizzard (spell 8427)
 - Chill (spell 1308651)
 - Cone of Cold (spell 8492)
+- Fireball (spell 8402)
 - Flamestrike (spell 8423)
 - Frost Nova (spell 6131)
 - Frostbolt (spell 8408)
@@ -176,6 +179,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blizzard (spell 10185)
 - Chill (spell 1308651)
 - Cone of Cold (spell 10160)
+- Fireball (spell 10149)
 - Flamestrike (spell 10215)
 - Frost Nova (spell 6131)
 - Frostbolt (spell 10180)
@@ -192,6 +196,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chill (spell 1308651)
 - Cone of Cold (spell 10161)
 - Debug Frost Spell (spell 29607)
+- Fireball (spell 10151)
 - Flamestrike (spell 10216)
 - Frost Nova (spell 10230)
 - Frostbolt (spell 10181)
