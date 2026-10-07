@@ -155,10 +155,11 @@ func TestLadderMeleeWeaponsArmsTheWeightsCharacterForMelee(t *testing.T) {
 		{ID: 3, RequiredLevel: 10, DPS: 30, TwoHand: true, Slots: []string{"main_hand"}},
 		{ID: 4, RequiredLevel: 60, DPS: 99, Slots: []string{"main_hand", "off_hand"}},
 		{ID: 5, RequiredLevel: 10, DPS: 5, Slots: []string{"ranged"}},
+		{ID: 6, RequiredLevel: 10, DPS: 28, Slots: []string{"main_hand"}},
 	}
 	pair := ladderMeleeWeapons(items, 30, "warrior-fury")
-	if len(pair) != 2 || pair[0].ItemID != 2 || pair[1].ItemID != 1 {
-		t.Fatalf("fury at 30 = %+v, want the two best one-handers 2 and 1", pair)
+	if len(pair) != 2 || pair[0].ItemID != 6 || pair[1].ItemID != 2 {
+		t.Fatalf("fury at 30 = %+v, want the main-hand-only 6 in the main hand and the best off-hand-capable 2 in the off hand", pair)
 	}
 	single := ladderMeleeWeapons(items, 30, "warrior-arms")
 	if len(single) != 1 || single[0].ItemID != 3 {

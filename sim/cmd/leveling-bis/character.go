@@ -64,7 +64,12 @@ func ladderMeleeWeapons(items []candidate, level int, spec string) []api.GearSlo
 	if leveling.NoMeleeAutoAttackSpecs[spec] {
 		return nil
 	}
-	var bestOne, secondOne, bestTwo *candidate
+	// bestOne is the strongest main-hand-capable one-hander; bestOff the
+	// strongest off-hand-capable one-hander that is not bestOne (an item
+	// the engine marks main-hand-only, such as Andonisus, would overwrite
+	// the main hand instead of pairing with it: the 2026-10-07 ratings
+	// review found the Fury weights character swinging one weapon).
+	var bestOne, bestOff, bestTwo *candidate
 	for i := range items {
 		c := items[i]
 		if c.RequiredLevel > level || c.DPS <= 0 {
@@ -88,14 +93,29 @@ func ladderMeleeWeapons(items []candidate, level int, spec string) []api.GearSlo
 			}
 			continue
 		}
-		if bestOne == nil || c.DPS > bestOne.DPS {
-			secondOne, bestOne = bestOne, &c
-		} else if secondOne == nil || c.DPS > secondOne.DPS {
-			secondOne = &c
+		if main && (bestOne == nil || c.DPS > bestOne.DPS) {
+			bestOne = &c
 		}
 	}
-	if leveling.DualWieldSpecs[spec] && bestOne != nil && secondOne != nil {
-		return []api.GearSlot{{Slot: "main_hand", ItemID: bestOne.ID}, {Slot: "off_hand", ItemID: secondOne.ID}}
+	if leveling.DualWieldSpecs[spec] && bestOne != nil {
+		for i := range items {
+			c := items[i]
+			if c.ID == bestOne.ID || c.RequiredLevel > level || c.DPS <= 0 || c.TwoHand {
+				continue
+			}
+			off := false
+			for _, s := range c.Slots {
+				if s == "off_hand" {
+					off = true
+				}
+			}
+			if off && (bestOff == nil || c.DPS > bestOff.DPS) {
+				bestOff = &c
+			}
+		}
+		if bestOff != nil {
+			return []api.GearSlot{{Slot: "main_hand", ItemID: bestOne.ID}, {Slot: "off_hand", ItemID: bestOff.ID}}
+		}
 	}
 	best := bestOne
 	if bestTwo != nil && (best == nil || bestTwo.DPS > best.DPS) {
