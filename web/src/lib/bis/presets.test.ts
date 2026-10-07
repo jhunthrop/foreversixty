@@ -17,7 +17,7 @@ function band(level: number, faction: Faction, setDps: number, preset?: 'bare' |
     set_dps: setDps,
     no_source_count: 0,
     ...(preset === undefined ? {} : { preset }),
-  } as BisBand;
+  } as unknown as BisBand;
 }
 
 const RAID_META: BisPresetMeta = {
