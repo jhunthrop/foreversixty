@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
-  "engine_version": "1d9f97983",
-  "generated_at": "2026-10-07T22:21:05Z",
+  "engine_version": "642871a9c",
+  "generated_at": "2026-10-07T22:46:16Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -549,8 +549,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.748171797,
-      "verify_run_seconds": 0.561997562,
+      "weights_run_seconds": 0.950633151,
+      "verify_run_seconds": 0.691063013,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.748171797,
-      "verify_run_seconds": 0.596527548,
+      "weights_run_seconds": 0.950633151,
+      "verify_run_seconds": 0.75624517,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1886,8 +1886,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.704327062,
-      "verify_run_seconds": 0.608952363,
+      "weights_run_seconds": 0.948638108,
+      "verify_run_seconds": 0.749776705,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2592,8 +2592,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.704327062,
-      "verify_run_seconds": 0.600115217,
+      "weights_run_seconds": 0.948638108,
+      "verify_run_seconds": 0.77313299,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3264,8 +3264,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.752601834,
-      "verify_run_seconds": 0.52125841,
+      "weights_run_seconds": 0.944592998,
+      "verify_run_seconds": 0.707896969,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3930,8 +3930,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.752601834,
-      "verify_run_seconds": 0.55080393,
+      "weights_run_seconds": 0.944592998,
+      "verify_run_seconds": 0.70457003,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4623,8 +4623,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.758051622,
-      "verify_run_seconds": 0.63117759,
+      "weights_run_seconds": 0.962120807,
+      "verify_run_seconds": 0.811804868,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5315,8 +5315,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.758051622,
-      "verify_run_seconds": 0.631431684,
+      "weights_run_seconds": 0.962120807,
+      "verify_run_seconds": 0.859947369,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5581,7 +5581,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 35.25970709131822,
+          "score": 35.25970709131821,
           "verified": true,
           "alternatives": [
             {
@@ -5589,21 +5589,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.4329263437648592
+              "dps_delta": -1.4329263437648583
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.5903734269008685
+              "dps_delta": -1.5903734269008674
             },
             {
               "item_id": 22330,
               "item_name": "Shroud of Arcane Mastery",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Arena Spoils",
-              "dps_delta": -1.8786449546234723
+              "dps_delta": -1.8786449546234711
             }
           ]
         },
@@ -5958,7 +5958,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.413877077023271
+              "dps_delta": -0.4138770770232699
             },
             {
               "item_id": 2243,
@@ -6046,8 +6046,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.816319091,
-      "verify_run_seconds": 0.571533469,
+      "weights_run_seconds": 1.080392579,
+      "verify_run_seconds": 0.761097991,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6312,7 +6312,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 35.25970709131822,
+          "score": 35.25970709131821,
           "verified": true,
           "alternatives": [
             {
@@ -6320,21 +6320,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.4329263437648592
+              "dps_delta": -1.4329263437648583
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.5903734269008685
+              "dps_delta": -1.5903734269008674
             },
             {
               "item_id": 22330,
               "item_name": "Shroud of Arcane Mastery",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Arena Spoils",
-              "dps_delta": -1.8786449546234723
+              "dps_delta": -1.8786449546234711
             }
           ]
         },
@@ -6778,8 +6778,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.816319091,
-      "verify_run_seconds": 0.57048132,
+      "weights_run_seconds": 1.080392579,
+      "verify_run_seconds": 0.815915515,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7045,7 +7045,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 28.81303326679038,
+          "score": 28.813033266790384,
           "verified": true,
           "alternatives": [
             {
@@ -7061,14 +7061,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.6362999344372984
+              "dps_delta": -2.6362999344372997
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -3.6805972618161396
+              "dps_delta": -3.680597261816141
             }
           ]
         },
@@ -7510,8 +7510,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.894093806,
-      "verify_run_seconds": 0.680421252,
+      "weights_run_seconds": 1.171620027,
+      "verify_run_seconds": 0.883778673,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8241,8 +8241,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.894093806,
-      "verify_run_seconds": 0.683456815,
+      "weights_run_seconds": 1.171620027,
+      "verify_run_seconds": 0.905831287,
       "coverage": {
         "back": {
           "eligible": 450,

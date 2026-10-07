@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "1d9f97983",
-  "generated_at": "2026-10-07T22:25:03Z",
+  "engine_version": "642871a9c",
+  "generated_at": "2026-10-07T22:51:30Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -515,8 +515,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.32904443,
-      "verify_run_seconds": 0.840040008,
+      "weights_run_seconds": 1.773766768,
+      "verify_run_seconds": 1.129415181,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1107,8 +1107,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.32904443,
-      "verify_run_seconds": 0.772131212,
+      "weights_run_seconds": 1.773766768,
+      "verify_run_seconds": 1.010871746,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1746,8 +1746,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.410267191,
-      "verify_run_seconds": 1.007669072,
+      "weights_run_seconds": 1.833651712,
+      "verify_run_seconds": 1.311920649,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2385,8 +2385,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.410267191,
-      "verify_run_seconds": 0.957470029,
+      "weights_run_seconds": 1.833651712,
+      "verify_run_seconds": 1.244013288,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3027,8 +3027,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.618865293,
-      "verify_run_seconds": 1.009302457,
+      "weights_run_seconds": 2.199902729,
+      "verify_run_seconds": 1.3547137550000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3668,8 +3668,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.618865293,
-      "verify_run_seconds": 0.89894128,
+      "weights_run_seconds": 2.199902729,
+      "verify_run_seconds": 1.2122234139999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4329,8 +4329,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.62003654,
-      "verify_run_seconds": 1.174725208,
+      "weights_run_seconds": 2.118587423,
+      "verify_run_seconds": 1.550872984,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4990,8 +4990,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.62003654,
-      "verify_run_seconds": 1.012234285,
+      "weights_run_seconds": 2.118587423,
+      "verify_run_seconds": 1.361619734,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5696,8 +5696,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.6182949309999999,
-      "verify_run_seconds": 1.136074312,
+      "weights_run_seconds": 2.178957196,
+      "verify_run_seconds": 1.520972338,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6401,8 +6401,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.6182949309999999,
-      "verify_run_seconds": 1.0349885109999999,
+      "weights_run_seconds": 2.178957196,
+      "verify_run_seconds": 1.424711963,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7103,8 +7103,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.84515898,
-      "verify_run_seconds": 1.231507429,
+      "weights_run_seconds": 2.610977465,
+      "verify_run_seconds": 1.6101102109999998,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7410,7 +7410,7 @@
               "item_name": "Legionnaire's Mail Hauberk",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -2.985977031744164
+              "dps_delta": -2.985977031744166
             },
             {
               "item_id": 23089,
@@ -7804,8 +7804,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.84515898,
-      "verify_run_seconds": 1.217661605,
+      "weights_run_seconds": 2.610977465,
+      "verify_run_seconds": 1.590634071,
       "coverage": {
         "back": {
           "eligible": 451,
