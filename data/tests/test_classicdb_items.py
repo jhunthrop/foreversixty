@@ -738,3 +738,18 @@ def test_honor_ranks_by_title_for_untitled_items_fills_only_the_gap():
         231562: 17,
         231578: 16,
     }
+
+
+def test_to_gear_item_records_equip_hit_and_crit_as_percent_stats_not_ratings():
+    """classic-db's raw_stats are rating points; an on-equip aura is a literal
+    percent. `percent_stats` names the aura-sourced share so the ranker never
+    divides it by a rating factor."""
+    item = _item(
+        id=13965,
+        raw_stats={31: 20},  # ITEM_MOD_HIT_RATING
+        spells=[_slot(7598, trigger=TRIGGER_ON_EQUIP, classic_db_name="Increased Critical 2")],
+    )
+    spells = {7598: _spell(7598, _effect(AURA_MOD_CRIT_PERCENT, 1, 1))}
+    gear = to_gear_item(item, _FakeSpellText({}), spells, fork_icons={}, wowhead_icons={})
+    assert gear.stats == {"hit": 20, "crit": 2}
+    assert gear.percent_stats == {"crit": 2}
