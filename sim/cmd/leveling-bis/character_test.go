@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
@@ -128,5 +129,21 @@ func TestPlainRequestCarriesGivenCharacterAndIterations(t *testing.T) {
 	}
 	if req.Weights != nil {
 		t.Error("plainRequest.Weights is set, want nil for a plain (non-weights) request")
+	}
+}
+
+// The DPS runs and the stat-weight sweep both carry the class kit, so the
+// published weights come from the same buffed character the picks are
+// scored on.
+func TestPlainAndWeightsRequestsCarryTheSelfBuffKit(t *testing.T) {
+	spec := specInfo{Spec: "paladin-retribution", ClassSlug: "paladin"}
+	ch := bandCharacter("verify", "human", "paladin", spec.Spec, 60, "", nil)
+	for name, req := range map[string]api.SimRequest{
+		"plain":   plainRequest(spec, ch, 10, 1),
+		"weights": weightsRequest(spec, ch, 10, 1),
+	} {
+		if got := req.Character.Buffs; len(got) != 1 || got[0] != "blessing_of_might" {
+			t.Errorf("%s request buffs = %v, want blessing_of_might", name, got)
+		}
 	}
 }

@@ -222,6 +222,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 				Talents:  engineTalents,
 				Gear:     gear,
 				Consumes: ladderKitConsumes(spec.Spec, level),
+				Buffs:    ladderKitBuffs(spec.Spec, level),
 			},
 			Encounter:  api.DefaultEncounter(),
 			Iterations: ladderIterations,

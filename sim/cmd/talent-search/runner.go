@@ -34,6 +34,7 @@ func (s simSetup) character(talents string) api.CharacterSpec {
 		Talents:  talents,
 		Gear:     s.band.gear(),
 		Consumes: leveling.KitConsumes(s.spec.Spec, s.level),
+		Buffs:    leveling.KitBuffs(s.spec.Spec, s.level),
 	}
 	if leveling.NoMeleeAutoAttackSpecs[s.spec.Spec] {
 		ch.DistanceFromTarget = leveling.CasterDistanceFromTarget

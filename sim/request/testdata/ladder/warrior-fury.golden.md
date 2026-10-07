@@ -39,7 +39,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   check is replaced by that icon check rather than dropped), so
   OtherActionShoot/wand lines have something to resolve against.
   Every other slot is bare. Consumables: none (see the potion rule
-  below).
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
   are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
@@ -90,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-10000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.7 | 5 | other:attack/2=107.1, other:attack/1=56.2, other:rage_gain=38.1, spell:1680=18.1, spell:284/1=14.2 | {SpellID: 12328}, {SpellID: 23894} |
-| 20 | 00000000000000000-35030000000000000-000000000000000000 | main_hand:1482 off_hand:2236 | 25.9 | 5 | other:attack/2=121.3, other:rage_gain=87.1, other:attack/1=49.4, spell:285/1=18.5, spell:285=18.2 | {SpellID: 12328}, {SpellID: 23894} |
-| 30 | 00000000000000000-35051105010000000-000000000000000000 | main_hand:6692 off_hand:9457 | 45.2 | 6 | other:rage_gain=105.1, other:attack/2=79.3, other:attack/1=55.9, spell:1608/1=20.4, spell:1608=20.2 | {SpellID: 12328}, {SpellID: 23894} |
-| 38 | 00000000000000000-35051105050010300-000000000000000000 | main_hand:868 off_hand:6829 | 67.2 | 7 | other:rage_gain=115.4, other:attack/2=85.6, other:attack/1=66.6, spell:11564/1=23.3, spell:11564=23.1 | {SpellID: 23894} |
-| 40 | 00000000000000000-35051105050010500-000000000000000000 | main_hand:2164 off_hand:9359 | 75.0 | 8 | other:rage_gain=120.0, other:attack/2=83.6, other:attack/1=82.5, spell:11565/1=24.5, spell:11565=24.3 | {SpellID: 23881} |
-| 50 | 35100000000000000-35051105050010501-000000000000000000 | main_hand:810 off_hand:2163 | 107.2 | 9 | other:attack/2=139.2, other:rage_gain=135.2, other:attack/1=86.1, spell:23892=19.0, spell:20661=15.8 | - |
-| 60 | 35311103002000000-35051105050010501-000000000000000000 | main_hand:22736 off_hand:23054 | 255.6 | 9 | other:rage_gain=101.7, other:attack/2=73.0, other:attack/1=63.9, spell:23894=19.2, spell:20662=14.6 | - |
+| 10 | 00000000000000000-10000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.2 | 5 | other:attack/2=107.1, other:attack/1=56.2, other:rage_gain=38.1, spell:1680=18.1, spell:284/1=14.2 | {SpellID: 12328}, {SpellID: 23894} |
+| 20 | 00000000000000000-35030000000000000-000000000000000000 | main_hand:1482 off_hand:2236 | 24.9 | 5 | other:attack/2=121.3, other:rage_gain=87.1, other:attack/1=49.4, spell:285/1=18.5, spell:285=18.2 | {SpellID: 12328}, {SpellID: 23894} |
+| 30 | 00000000000000000-35051105010000000-000000000000000000 | main_hand:6692 off_hand:9457 | 44.0 | 6 | other:rage_gain=105.1, other:attack/2=79.3, other:attack/1=55.9, spell:1608/1=20.4, spell:1608=20.2 | {SpellID: 12328}, {SpellID: 23894} |
+| 38 | 00000000000000000-35051105050010300-000000000000000000 | main_hand:868 off_hand:6829 | 64.7 | 7 | other:rage_gain=115.4, other:attack/2=85.6, other:attack/1=66.6, spell:11564/1=23.3, spell:11564=23.1 | {SpellID: 23894} |
+| 40 | 00000000000000000-35051105050010500-000000000000000000 | main_hand:2164 off_hand:9359 | 72.7 | 8 | other:rage_gain=120.0, other:attack/2=83.6, other:attack/1=82.5, spell:11565/1=24.5, spell:11565=24.3 | {SpellID: 23881} |
+| 50 | 35100000000000000-35051105050010501-000000000000000000 | main_hand:810 off_hand:2163 | 102.3 | 9 | other:attack/2=139.2, other:rage_gain=135.2, other:attack/1=86.1, spell:23892=19.0, spell:20661=15.8 | - |
+| 60 | 35311103002000000-35051105050010501-000000000000000000 | main_hand:22736 off_hand:23054 | 246.0 | 9 | other:rage_gain=101.7, other:attack/2=73.0, other:attack/1=63.9, spell:23894=19.2, spell:20662=14.6 | - |
 
 ## Learned but unused (informational)
 

@@ -60,10 +60,69 @@ func KitConsumes(spec string, level int) []string {
 // deadlyPoisonLevel is the level Deadly Poison's first rank is learned.
 const deadlyPoisonLevel = 30
 
+// Buff lines of the self-buff kit, in the request vocabulary
+// (sim/request/buffs.go).
+const (
+	arcaneBrillianceBuff = "arcane_brilliance"
+	giftOfTheWildBuff    = "gift_of_the_wild"
+	blessingOfMightBuff  = "blessing_of_might"
+)
+
+// blessingOfMightLevel is the level Blessing of Might's first rank is
+// learned. Arcane Intellect and Mark of the Wild are rank 1 at level 1.
+const blessingOfMightLevel = 4
+
+// KitBuffs is the buff counterpart of KitConsumes: the self-cast buffs a
+// class carries on every real run. A leveling character is "bare" - no
+// raid buffs - but the engine models three class spells as raid buffs
+// rather than castable spells, so a mage, a druid and a paladin would
+// otherwise sim without their own Arcane Intellect, Mark of the Wild
+// and Blessing of Might, a character no real player runs (a Retribution
+// number without Blessing of Might above all). Like KitConsumes it
+// takes the full spec slug and decides by spec, and the ladder, the
+// leveling BiS ranker (its stat weights included), rotation-search and
+// talent-search all read it so their numbers agree. The engine applies
+// the highest rank the character's level can learn.
+//
+//   - Any mage spec, from level 1: Arcane Intellect (arcane_brilliance
+//     is the engine's field for it; Improved Arcane Intellect does not
+//     exist in Forever's Arcane tree, so there is no improved form).
+//   - Any druid spec, from level 1: Mark of the Wild (gift_of_the_wild).
+//     The ":improved" form is carried by a spec only when its guide build
+//     takes Improved Mark of the Wild. Forever's Restoration tree has no
+//     such talent (it became a baseline passive, of a rank the client
+//     tables do not state) and neither the Feral nor the Balance build
+//     can take it, so every druid spec carries the plain buff.
+//   - Any paladin spec, from level 4 (Blessing of Might's first rank):
+//     Blessing of Might. Forever's Holy tree has no Improved Blessing of
+//     Might, so no ":improved" form.
+//
+// Priest Power Word: Fortitude is stamina and Divine Spirit a
+// Discipline talent, so priests carry nothing; Inner Fire (armor only)
+// and Lightning Shield (reactive) are not modelled as buffs.
+func KitBuffs(spec string, level int) []string {
+	switch {
+	case isClassSpec(spec, "mage"):
+		return []string{arcaneBrillianceBuff}
+	case isClassSpec(spec, "druid"):
+		return []string{giftOfTheWildBuff}
+	case isClassSpec(spec, "paladin"):
+		if level < blessingOfMightLevel {
+			return nil
+		}
+		return []string{blessingOfMightBuff}
+	default:
+		return nil
+	}
+}
+
 // isRogueSpec matches the bare class ("rogue", used where a caller has
 // no spec to name) as well as any of its three specs.
-func isRogueSpec(spec string) bool {
-	return spec == "rogue" || strings.HasPrefix(spec, "rogue-")
+func isRogueSpec(spec string) bool { return isClassSpec(spec, "rogue") }
+
+// isClassSpec matches the bare class slug as well as any of its specs.
+func isClassSpec(spec, class string) bool {
+	return spec == class || strings.HasPrefix(spec, class+"-")
 }
 
 // DualWieldSpecs names the specs whose off hand holds a WEAPON: for them
