@@ -3,13 +3,21 @@ import json
 from pathlib import Path
 
 MANIFEST = "manifest.json"
+MANIFEST_CORE_KEYS = frozenset({"build", "product", "fetched_at", "files"})
 
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def write_manifest(build_dir: Path, build: str, product: str, fetched_at: str) -> dict:
+def write_manifest(
+    build_dir: Path,
+    build: str,
+    product: str,
+    fetched_at: str,
+    extra: dict | None = None,
+) -> dict:
+    """Hash the build directory into manifest.json; `extra` keys are recorded verbatim."""
     files: dict[str, str] = {}
     for path in sorted(build_dir.rglob("*")):
         if not path.is_file():
@@ -18,7 +26,13 @@ def write_manifest(build_dir: Path, build: str, product: str, fetched_at: str) -
         if name == MANIFEST or name.startswith("raw/"):
             continue
         files[name] = _sha256(path)
-    m = {"build": build, "product": product, "fetched_at": fetched_at, "files": files}
+    m = {
+        "build": build,
+        "product": product,
+        "fetched_at": fetched_at,
+        "files": files,
+        **(extra or {}),
+    }
     (build_dir / MANIFEST).write_text(json.dumps(m, indent=2) + "\n", encoding="utf-8")
     return m
 
@@ -53,6 +67,7 @@ def refresh_manifest(build_dir: Path) -> dict:
         build=existing["build"],
         product=existing["product"],
         fetched_at=existing["fetched_at"],
+        extra={k: v for k, v in existing.items() if k not in MANIFEST_CORE_KEYS},
     )
 
 

@@ -127,7 +127,7 @@
             },
             {
               "spell_id": 16040,
-              "description": "Reduces the cooldown of your Shock spells by 1 sec."
+              "description": "Reduces the cooldown of your Shock spells by 1.0 sec."
             }
           ],
           "spell_id": 16040
@@ -219,7 +219,7 @@
             },
             {
               "spell_id": 16578,
-              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.5 sec."
+              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.50 sec."
             }
           ],
           "spell_id": 16578
@@ -320,15 +320,15 @@
           "ranks": [
             {
               "spell_id": 408438,
-              "description": "Gives your Lightning Bolt and Chain Lightning spells a 3% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.\r\n"
+              "description": "Gives your Lightning Bolt and Chain Lightning spells a 3% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat."
             },
             {
               "spell_id": 408438,
-              "description": "Gives your Lightning Bolt and Chain Lightning spells a 7% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.\r\n"
+              "description": "Gives your Lightning Bolt and Chain Lightning spells a 7% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat."
             },
             {
               "spell_id": 408438,
-              "description": "Gives your Lightning Bolt and Chain Lightning spells a 10% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.\r\n"
+              "description": "Gives your Lightning Bolt and Chain Lightning spells a 10% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat."
             }
           ],
           "spell_id": 408438
@@ -395,7 +395,7 @@
           "ranks": [
             {
               "spell_id": 408490,
-              "description": "You hurl molten lava at the target, dealing 164 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage."
+              "description": "You hurl molten lava at the target, dealing 150 to 192 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage."
             }
           ],
           "spell_id": 408490
@@ -554,11 +554,11 @@
           "ranks": [
             {
               "spell_id": 16262,
-              "description": "Reduces the cast time of your Ghost Wolf spell by 1 sec, and Ghost Wolf may be used indoors."
+              "description": "Reduces the cast time of your Ghost Wolf spell by 1.0 sec, and Ghost Wolf may be used indoors."
             },
             {
               "spell_id": 16262,
-              "description": "Reduces the cast time of your Ghost Wolf spell by 3 sec, and Ghost Wolf may be used indoors."
+              "description": "Reduces the cast time of your Ghost Wolf spell by 3.0 sec, and Ghost Wolf may be used indoors."
             }
           ],
           "spell_id": 16262
@@ -1088,7 +1088,7 @@
           "ranks": [
             {
               "spell_id": 408510,
-              "description": "The caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's healing spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds.  Lasts 10 min.\r\n\r\nOnly one Elemental Shield can be active on the Shaman at any one time."
+              "description": "The caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's healing spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds.  Lasts 10 min.\n\nOnly one Elemental Shield can be active on the Shaman at any one time."
             }
           ],
           "spell_id": 408510
@@ -1171,7 +1171,7 @@
           "ranks": [
             {
               "spell_id": 16190,
-              "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 88 mana every 3 seconds to group members within 30 yards."
+              "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores 88 mana every 3 seconds to group members within 30 yards."
             }
           ],
           "spell_id": 16190
@@ -1263,7 +1263,7 @@
           "ranks": [
             {
               "spell_id": 408521,
-              "description": "Heals a friendly target for 480, an additional 445 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%."
+              "description": "Heals a friendly target for 486 to 534, an additional 445 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%."
             }
           ],
           "spell_id": 408521

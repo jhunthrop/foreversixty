@@ -249,7 +249,7 @@
           "ranks": [
             {
               "spell_id": 400574,
-              "description": "Blasts the target with energy, dealing 54 Arcane damage. Each time you cast Arcane Blast, the damage of all your other spells is increased by 10% and the mana cost of Arcane Blast is increased by 175%. Effect stacks up to 4 times and lasts 8 sec or until any other damage spell is cast."
+              "description": "Blasts the target with energy, dealing 57 to 65 Arcane damage. Each time you cast Arcane Blast, the damage of all your other spells is increased by 10% and the mana cost of Arcane Blast is increased by 175%. Effect stacks up to 4 times and lasts 8 sec or until any other damage spell is cast."
             }
           ],
           "spell_id": 400574
@@ -659,7 +659,7 @@
           "ranks": [
             {
               "spell_id": 11366,
-              "description": "Hurls an immense fiery boulder that causes 110 Fire damage and an additional 44 Fire damage over 12 sec."
+              "description": "Hurls an immense fiery boulder that causes 101 to 131 Fire damage and an additional 44 Fire damage over 12 sec."
             }
           ],
           "spell_id": 11366
@@ -712,8 +712,8 @@
         },
         {
           "id": 105786,
-          "name": "Hot Streak",
-          "icon": "ability_mage_hotstreak",
+          "name": "Heating Up",
+          "icon": "spell_fire_firebolt",
           "max_rank": 1,
           "tier": 3,
           "column": 2,
@@ -722,7 +722,7 @@
           "ranks": [
             {
               "spell_id": 400624,
-              "description": "Your non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch grant Hot Streak for 20 sec. Hot Streak reduces the cast time of Pyroblast by 25%, stacking up to 3 times."
+              "description": "Non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch reduce the cast time of your next Pyroblast cast within 20 sec by 25%, stacking up to 3 times."
             }
           ],
           "spell_id": 400624
@@ -789,7 +789,7 @@
           "ranks": [
             {
               "spell_id": 11113,
-              "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 163 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec."
+              "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 154 to 184 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec."
             }
           ],
           "spell_id": 11113
@@ -839,7 +839,7 @@
           "ranks": [
             {
               "spell_id": 11129,
-              "description": "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%.  This effect lasts until you have caused 4 non-periodic critical strikes with Fire spells."
+              "description": "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%.  This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells."
             }
           ],
           "spell_id": 11129
@@ -1106,7 +1106,7 @@
           "ranks": [
             {
               "spell_id": 1312002,
-              "description": "Deals 28 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets."
+              "description": "Deals 28 to 32 Frost damage to an enemy target. Deals 300% increased damage to Frozen targets."
             }
           ],
           "spell_id": 1312002
@@ -1307,7 +1307,7 @@
           "ranks": [
             {
               "spell_id": 11426,
-              "description": "Instantly shields you, absorbing 431 damage. Lasts 1 min. While the shield holds, your spellcasts will not be interrupted or delayed from taking damage.\r\n"
+              "description": "Instantly shields you, absorbing 448 damage. Lasts 1 min. While the shield holds, your spellcasts will not be interrupted or delayed from taking damage."
             }
           ],
           "spell_id": 11426

@@ -152,6 +152,12 @@ def normalize_build(
         merge_items,
         merge_sets,
     )
+    from pipeline.normalize.wowhead_overlay import (
+        OVERLAY_PROVENANCE,
+        OVERLAY_SOURCE_FILE,
+        load_overlay_payload,
+        overlay_wowhead_talents,
+    )
     from pipeline.normalize.zones import normalize_zones
     from pipeline.spelltext import ExtraRows, load_spell_text
 
@@ -305,6 +311,15 @@ def normalize_build(
             talent_rows, tab_rows, class_rows, spell_names, spell_text, icons, build
         )
         flat = normalize_talents(talent_rows, tab_rows)
+    overlay_payload = load_overlay_payload(build_dir)
+    if overlay_payload is not None:
+        talent_records = overlay_wowhead_talents(talent_records, overlay_payload, set(spell_names))
+        flat = flat_talents(talent_records)
+        logger.info("talent trees taken from %s (hotfix-aware)", OVERLAY_SOURCE_FILE)
+    talent_manifest_extra = {
+        "provenance": {"talents.json": OVERLAY_PROVENANCE, "talents/": OVERLAY_PROVENANCE},
+        "talent_source": OVERLAY_SOURCE_FILE,
+    }
     write_json(flat, build_dir / "talents.json")
     shutil.rmtree(build_dir / "talents", ignore_errors=True)
     for record in talent_records:
@@ -427,6 +442,10 @@ def normalize_build(
 
     meta = json.loads((raw / "_meta.json").read_text(encoding="utf-8"))
     write_manifest(
-        build_dir, build=meta["build"], product=meta["product"], fetched_at=meta["fetched_at"]
+        build_dir,
+        build=meta["build"],
+        product=meta["product"],
+        fetched_at=meta["fetched_at"],
+        extra=talent_manifest_extra if overlay_payload is not None else None,
     )
     return NormalizeResult(build_dir=build_dir, skipped=tuple(skipped))

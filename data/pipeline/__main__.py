@@ -17,6 +17,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     fw.add_argument("--build", required=True, help="the build whose raw/ receives the payload")
 
+    fwt = sub.add_parser(
+        "fetch-wowhead-talents",
+        help="download wowhead's live Forever talent payload, which carries the hotfixed "
+        "talent changes the client's DB2 tables lack; normalize overlays it onto the trees",
+    )
+    fwt.add_argument("--build", required=True, help="the build whose raw/ receives the payload")
+
     fcq = sub.add_parser(
         "fetch-classic-quest-levels",
         help="ONE-TIME (or occasional, when SOURCE_COMMIT is repinned): download "
@@ -293,6 +300,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_items import fetch_wowhead
 
         fetch_wowhead(args.build)
+    elif args.command == "fetch-wowhead-talents":
+        from pipeline.wowhead_talents import fetch_wowhead_talents
+
+        fetch_wowhead_talents(args.build)
     elif args.command == "fetch-classic-quest-levels":
         from pipeline.quest_levels import merge_classic_db
 
