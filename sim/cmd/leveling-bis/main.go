@@ -499,7 +499,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			talentPoints := talentPointsSpent(talents)
 
 			weapon := ladderWeapon(items, band)
-			ladderCh := ladderCharacter(guide.AllianceRace, specInfo.ClassSlug, band, engineTalents, weapon)
+			ladderCh := ladderCharacter(guide.AllianceRace, specInfo.ClassSlug, band, engineTalents, weapon, ladderMeleeWeapons(items, band, specInfo.Spec)...)
 
 			weightsStart := time.Now()
 			wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)

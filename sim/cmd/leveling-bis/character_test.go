@@ -147,3 +147,27 @@ func TestPlainAndWeightsRequestsCarryTheSelfBuffKit(t *testing.T) {
 		}
 	}
 }
+
+func TestLadderMeleeWeaponsArmsTheWeightsCharacterForMelee(t *testing.T) {
+	items := []candidate{
+		{ID: 1, RequiredLevel: 10, DPS: 20, Slots: []string{"main_hand", "off_hand"}},
+		{ID: 2, RequiredLevel: 10, DPS: 25, Slots: []string{"main_hand", "off_hand"}},
+		{ID: 3, RequiredLevel: 10, DPS: 30, TwoHand: true, Slots: []string{"main_hand"}},
+		{ID: 4, RequiredLevel: 60, DPS: 99, Slots: []string{"main_hand", "off_hand"}},
+		{ID: 5, RequiredLevel: 10, DPS: 5, Slots: []string{"ranged"}},
+	}
+	pair := ladderMeleeWeapons(items, 30, "warrior-fury")
+	if len(pair) != 2 || pair[0].ItemID != 2 || pair[1].ItemID != 1 {
+		t.Fatalf("fury at 30 = %+v, want the two best one-handers 2 and 1", pair)
+	}
+	single := ladderMeleeWeapons(items, 30, "warrior-arms")
+	if len(single) != 1 || single[0].ItemID != 3 {
+		t.Fatalf("arms at 30 = %+v, want the two-hander 3", single)
+	}
+	if got := ladderMeleeWeapons(items, 30, "shaman-enhancement"); len(got) != 1 {
+		t.Fatalf("enhancement = %+v, want one weapon (shamans never dual wield)", got)
+	}
+	if got := ladderMeleeWeapons(items, 30, "mage-frost"); got != nil {
+		t.Fatalf("a caster = %+v, want no melee weapon", got)
+	}
+}

@@ -50,6 +50,63 @@ func ladderWeapon(items []candidate, level int) *candidate {
 	return best
 }
 
+// ladderMeleeWeapons arms the weights character for melee the way
+// ladderWeapon arms it for ranged: the best melee weapons this level
+// allows, by weapon DPS, so crit, haste and hit are weighed on real
+// swings instead of fists (the 2026-10-07 survival-raid review found the
+// fist-swinging character's 1.0 s swing stepping on Raptor Strike's
+// 6 s cooldown, which made melee haste weigh NEGATIVE for Survival).
+// Dual-wield specs get a one-hand pair; a two-hander wins the main hand
+// only where no pair is offered; shamans and the rest take the single
+// strongest weapon. Casters (leveling.NoMeleeAutoAttackSpecs) never swing,
+// so they stay unarmed in melee.
+func ladderMeleeWeapons(items []candidate, level int, spec string) []api.GearSlot {
+	if leveling.NoMeleeAutoAttackSpecs[spec] {
+		return nil
+	}
+	var bestOne, secondOne, bestTwo *candidate
+	for i := range items {
+		c := items[i]
+		if c.RequiredLevel > level || c.DPS <= 0 {
+			continue
+		}
+		main, off := false, false
+		for _, s := range c.Slots {
+			switch s {
+			case "main_hand":
+				main = true
+			case "off_hand":
+				off = true
+			}
+		}
+		if !main && !off {
+			continue
+		}
+		if c.TwoHand {
+			if bestTwo == nil || c.DPS > bestTwo.DPS {
+				bestTwo = &c
+			}
+			continue
+		}
+		if bestOne == nil || c.DPS > bestOne.DPS {
+			secondOne, bestOne = bestOne, &c
+		} else if secondOne == nil || c.DPS > secondOne.DPS {
+			secondOne = &c
+		}
+	}
+	if leveling.DualWieldSpecs[spec] && bestOne != nil && secondOne != nil {
+		return []api.GearSlot{{Slot: "main_hand", ItemID: bestOne.ID}, {Slot: "off_hand", ItemID: secondOne.ID}}
+	}
+	best := bestOne
+	if bestTwo != nil && (best == nil || bestTwo.DPS > best.DPS) {
+		best = bestTwo
+	}
+	if best == nil {
+		return nil
+	}
+	return []api.GearSlot{{Slot: "main_hand", ItemID: best.ID}}
+}
+
 // ladderCharacter is the bare-but-armed character the weights run
 // measures: no armor, the truncated talent build, and the best
 // ranged weapon this level and faction allow (see ladderWeapon).
@@ -61,11 +118,12 @@ func ladderWeapon(items []candidate, level int) *candidate {
 // separate, much larger-blast-radius concern (every score() weight for
 // every item in the band reads it) this lane did not verify by hand.
 // specSlug "" is bandCharacter's own signal for "not applicable".
-func ladderCharacter(race, classSlug string, level int, talents string, weapon *candidate) api.CharacterSpec {
+func ladderCharacter(race, classSlug string, level int, talents string, weapon *candidate, melee ...api.GearSlot) api.CharacterSpec {
 	var gear []api.GearSlot
 	if weapon != nil {
 		gear = []api.GearSlot{{Slot: "ranged", ItemID: weapon.ID}}
 	}
+	gear = append(gear, melee...)
 	return bandCharacter("ladder", race, classSlug, "", level, talents, gear)
 }
 
