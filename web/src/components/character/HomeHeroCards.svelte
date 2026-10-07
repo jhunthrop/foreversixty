@@ -31,6 +31,7 @@
   import { upgradesFor } from '../../lib/home/upgrades';
   import { talentDeltaFor } from '../../lib/home/talent-delta';
   import { bisCopy } from '../../lib/bis/copy';
+  import { presetLabelFor } from '../../lib/bis/presets';
 
   let { hero }: { hero: MeCharacter } = $props();
 
@@ -189,7 +190,7 @@
         {simCardLine(latestSim)}
       </span>
       {#if ctx !== null}
-        <span class="text-muted font-mono text-[12px]"
+        <span class="text-muted font-mono text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
           >{homeHeroCardsCopy.simulatorBandSuffix(ctx.band.set_dps)}</span
         >
       {/if}

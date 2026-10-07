@@ -22,10 +22,9 @@ import Base from '../../../layouts/Base.astro';
 import ArtPanel from '../../../components/ArtPanel.astro';
 import ClassHeader from '../../../components/ClassHeader.astro';
 import CharacterCard from '../../../components/CharacterCard.svelte';
-import ThisSetPanel from '../../../components/bis/ThisSetPanel.astro';
-import StatWeightsPanel from '../../../components/bis/StatWeightsPanel.astro';
-import PlayItPanel from '../../../components/bis/PlayItPanel.astro';
-import GearRow from '../../../components/bis/GearRow.astro';
+import BandPanelBody from '../../../components/bis/BandPanelBody.astro';
+import PresetControl from '../../../components/bis/PresetControl.astro';
+import PresetCaption from '../../../components/bis/PresetCaption.astro';
 import GlyphSheet from '../../../components/bis/GlyphSheet.astro';
 import BisTooltipHost from '../../../components/BisTooltipHost.svelte';
 import { readItemTooltipModel } from '../../../lib/items/lookup';
@@ -51,7 +50,9 @@ import {
 } from '../../../lib/bis/rotation-view';
 import { specTabIcon } from '../../../lib/bis/spec-icon';
 import { classRows, racesForClass } from '../../../lib/planner/reference';
-import type { Faction } from '../../../lib/bis/types';
+import { bandPresets, BARE_PRESET, presetMeta, RAID_PRESET } from '../../../lib/bis/presets';
+import type { BandView } from '../../../lib/bis/band-view';
+import type { BisPresetId, Faction } from '../../../lib/bis/types';
 
 export async function getStaticPaths() {
   return readSpecCatalog().map((spec) => ({
@@ -79,20 +80,34 @@ function tooltipFor(itemId: number): ItemTooltipModel | undefined {
   return readItemTooltipModel(build, specEntry.class_slug, itemId) ?? undefined;
 }
 
-function bandInfosForFaction(faction: Faction): BandInfo[] {
+// `preset` undefined is the headline view (raid-ready where a band has it, bare otherwise);
+// 'bare' is the alternative a level-60 panel offers beside it.
+function bandInfosForFaction(faction: Faction, preset?: BisPresetId): BandInfo[] {
   if (file === null) return [];
-  return bandInfosFor(file, bands, faction, { itemDetails: details, loot, tooltipFor, spec: specEntry.spec });
+  return bandInfosFor(file, bands, faction, {
+    itemDetails: details,
+    loot,
+    tooltipFor,
+    spec: specEntry.spec,
+    preset,
+  });
 }
 
 const bandInfosByFaction: Readonly<Record<Faction, BandInfo[]>> = {
   alliance: bandInfosForFaction('alliance'),
   horde: bandInfosForFaction('horde'),
 };
+const bareBandInfosByFaction: Readonly<Record<Faction, BandInfo[]>> = {
+  alliance: bandInfosForFaction('alliance', BARE_PRESET),
+  horde: bandInfosForFaction('horde', BARE_PRESET),
+};
 
 const tooltipModels = new Map<number, ItemTooltipModel>();
 if (file !== null) {
   collectModelsInto(tooltipModels, bandInfosByFaction.alliance, tooltipFor);
   collectModelsInto(tooltipModels, bandInfosByFaction.horde, tooltipFor);
+  collectModelsInto(tooltipModels, bareBandInfosByFaction.alliance, tooltipFor);
+  collectModelsInto(tooltipModels, bareBandInfosByFaction.horde, tooltipFor);
 }
 const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).replace(/</g, '\\u003c');
 
@@ -117,29 +132,14 @@ function raceOptionsFor(faction: Faction): { slug: string; name: string }[] {
   return racesForThisClass.filter((r) => r.faction === faction).map((r) => ({ slug: r.slug, name: r.name }));
 }
 
-interface BandView {
-  band: number;
-  bandIndex: number;
-  bandLabel: string;
-  info: BandInfo;
-  simHref: string;
-  plannerHref: string;
-  generatedAtDate: string;
-  rotationLines: ReturnType<typeof rotationLinesFor>;
-  sourceGroups: ReturnType<typeof sourceGroupsFor>;
-  newAtBand: ReturnType<typeof newAtBandLinesFor>;
-  nextBandLabel: string | undefined;
-  nextBand: number | undefined;
-}
-
-function bandViewsFor(faction: Faction): BandView[] {
+function bandViewsFor(faction: Faction, infos: readonly BandInfo[], preset?: BisPresetId): BandView[] {
   if (file === null) return [];
   return bands.map((band, bandIndex): BandView => {
-    const info = bandInfosByFaction[faction][bandIndex]!;
-    const rawBand = bandEntry(file, band, faction);
+    const info = infos[bandIndex]!;
+    const rawBand = bandEntry(file, band, faction, preset);
     const nextBand = bandIndex + 1 < bands.length ? bands[bandIndex + 1] : undefined;
-    const nextInfo = nextBand === undefined ? undefined : bandInfosByFaction[faction][bandIndex + 1];
-    const nextRawBand = nextBand === undefined ? undefined : bandEntry(file, nextBand, faction);
+    const nextInfo = nextBand === undefined ? undefined : infos[bandIndex + 1];
+    const nextRawBand = nextBand === undefined ? undefined : bandEntry(file, nextBand, faction, preset);
     const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(band));
     return {
       band,
@@ -167,9 +167,19 @@ function bandViewsFor(faction: Faction): BandView[] {
 }
 
 const bandViewsByFaction: Readonly<Record<Faction, BandView[]>> = {
-  alliance: bandViewsFor('alliance'),
-  horde: bandViewsFor('horde'),
+  alliance: bandViewsFor('alliance', bandInfosByFaction.alliance),
+  horde: bandViewsFor('horde', bandInfosByFaction.horde),
 };
+const bareBandViewsByFaction: Readonly<Record<Faction, BandView[]>> = {
+  alliance: bandViewsFor('alliance', bareBandInfosByFaction.alliance, BARE_PRESET),
+  horde: bandViewsFor('horde', bareBandInfosByFaction.horde, BARE_PRESET),
+};
+
+/** Whether this band + faction publishes both presets, so its panel carries the control. */
+function offersPresetChoice(faction: Faction, band: number): boolean {
+  return file !== null && bandPresets(file, band, faction).length > 1;
+}
+const raidMeta = file === null ? undefined : presetMeta(file, RAID_PRESET);
 
 /**
  * CSS that must NOT go through Astro's own scoped `<style>` (hence `set:html` below, raw
@@ -287,119 +297,53 @@ const crossScopeCss =
           {factions.map((faction) => (
             <div class={`faction-content ${faction}`} data-testid={`bis-faction-panel-${faction}`}>
               <div class="band-panels" id={`bands-${faction}`}>
-                {bandViewsByFaction[faction].map((view) => (
+                {bandViewsByFaction[faction].map((view, viewIndex) => (
                   <div
                     id={`band-${faction}-${view.band}`}
                     class:list={['band-panel', view.bandIndex === 0 && 'band-panel-default']}
                     data-testid={`bis-band-${faction}-${view.band}`}
                   >
-                    <section class="three-panel-row">
-                      <ThisSetPanel
-                        setDps={view.info.setDps}
-                        characterLevel={bandTopLevel(view.band)}
-                        race={view.info.race}
-                        talentPoints={view.info.talentPoints}
-                        generatedAtDate={view.generatedAtDate}
-                        simHref={view.simHref}
-                        plannerHref={view.plannerHref}
-                      />
-                      <StatWeightsPanel
-                        bandLabel={view.bandLabel}
-                        scaleRows={view.info.scaleRows}
-                        scaleNoteLine={view.info.scaleNoteLine}
-                        hasteCaptionLine={view.info.hasteCaptionLine}
-                        testId={`bis-weights-${faction}-${view.band}`}
-                      />
-                      <PlayItPanel
-                        bandLabel={view.bandLabel}
-                        lines={view.rotationLines}
+                    {offersPresetChoice(faction, view.band) ? (
+                      <Fragment>
+                        <PresetControl testId={`bis-preset-${faction}-${view.band}`} />
+                        <div class="preset-view" data-preset-view={RAID_PRESET}>
+                          <PresetCaption
+                            preset={RAID_PRESET}
+                            meta={raidMeta}
+                            testId={`bis-preset-caption-${faction}-${view.band}-${RAID_PRESET}`}
+                          />
+                          <BandPanelBody
+                            view={view}
+                            faction={faction}
+                            specName={specEntry.name}
+                            guideHref={guideHref}
+                            build={build}
+                          />
+                        </div>
+                        <div class="preset-view" data-preset-view={BARE_PRESET}>
+                          <PresetCaption
+                            preset={BARE_PRESET}
+                            testId={`bis-preset-caption-${faction}-${view.band}-${BARE_PRESET}`}
+                          />
+                          <BandPanelBody
+                            view={bareBandViewsByFaction[faction][viewIndex]!}
+                            faction={faction}
+                            specName={specEntry.name}
+                            guideHref={guideHref}
+                            build={build}
+                            testSuffix={`-${BARE_PRESET}`}
+                          />
+                        </div>
+                      </Fragment>
+                    ) : (
+                      <BandPanelBody
+                        view={view}
+                        faction={faction}
                         specName={specEntry.name}
                         guideHref={guideHref}
                         build={build}
                       />
-                    </section>
-
-                    <section class="the-list-section">
-                      <div class="the-list-heading-row">
-                        <h2 class="section-title">{bisCopy.theListHeading}</h2>
-                        <span class="text-muted text-[12px]">{bisCopy.hoverOrTapCaption}</span>
-                      </div>
-                      <div class="panel-box the-list-panel">
-                        {/* No `role="row"` here (a11y fix, 2026-09-30): the rows below are a
-                            plain `<ul>` of `<li>` cards (`GearRow.astro`), never ARIA
-                            `row`/`cell`s -- a lone `role="row"` with no table/rowgroup
-                            ancestor and no sibling row structure is exactly the broken
-                            half-pattern axe's `aria-required-parent`/`aria-required-children`
-                            flag, and the mobile breakpoint collapses this into a single
-                            stacked column anyway, so a real ARIA table here would describe
-                            a structure that stops existing at 1024px. The three column
-                            labels stay plain, visible text -- sighted users lose nothing. */}
-                        <div class="the-list-header">
-                          <span class="label">{bisCopy.slotHeaderLabel}</span>
-                          <span class="label">{bisCopy.pickHeaderLabel}</span>
-                          <span class="label">{bisCopy.runnersUpHeaderLabel}</span>
-                        </div>
-                        <ul class="the-list-rows" data-testid={`bis-list-${faction}-${view.band}`}>
-                          {view.info.rows.map((row) => (
-                            <GearRow
-                              row={row}
-                              isNew={view.info.newSlots.has(row.slot)}
-                              build={build}
-                              faction={faction}
-                              slotTestId={`bis-slot-${faction}-${view.band}-${row.slot}`}
-                            />
-                          ))}
-                        </ul>
-                      </div>
-                    </section>
-
-                    <section class="footer-row">
-                      <div class="footer-col">
-                        <h2 class="section-title">{bisCopy.whereToGetItHeading}</h2>
-                        <div
-                          class="panel-box footer-groups-panel"
-                          data-testid={`bis-source-groups-${faction}-${view.band}`}
-                        >
-                          {view.sourceGroups.map((group) => (
-                            <div class="footer-group">
-                              <span class="footer-group-name">
-                                {group.label}{' '}
-                                <span class="font-mono tabular footer-group-count">
-                                  {bisCopy.groupCountSuffix(group.items.length)}
-                                </span>
-                              </span>
-                              <span class="footer-group-items">
-                                {group.items.map((item) => (
-                                  <span
-                                    class="footer-group-item"
-                                    data-bis-item={item.itemId}
-                                    tabindex="0"
-                                    role="button"
-                                    aria-haspopup="true"
-                                  >
-                                    {item.itemName}
-                                  </span>
-                                ))}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div class="footer-col">
-                        <h2 class="section-title">{bisCopy.newAtThisBandHeading}</h2>
-                        <div class="new-at-band-card" data-testid={`bis-new-at-band-${faction}-${view.band}`}>
-                          <p class="new-at-band-line">{view.newAtBand.sentence1}</p>
-                          {view.newAtBand.sentence2 !== undefined && (
-                            <p class="text-muted new-at-band-line">{view.newAtBand.sentence2}</p>
-                          )}
-                          {view.nextBand !== undefined && (
-                            <a class="new-at-band-see-link" href={`#band-${faction}-${view.nextBand}`}>
-                              {bisCopy.seeBandLink(view.nextBandLabel!)}
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </section>
+                    )}
                   </div>
                 ))}
               </div>
@@ -446,6 +390,10 @@ const crossScopeCss =
   #faction-horde:checked ~ .page-body .horde {
     display: block;
   }
+  .page-body:not([data-preset='bare']) .preset-view[data-preset-view='bare'],
+  .page-body[data-preset='bare'] .preset-view[data-preset-view='raid'] {
+    display: none;
+  }
   .band-panel {
     display: none;
   }
@@ -456,133 +404,10 @@ const crossScopeCss =
     display: block;
   }
 
-  .three-panel-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
-    padding: 28px 48px 0 48px;
-  }
-
-  .the-list-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 28px 48px 0 48px;
-  }
-  .the-list-heading-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-  .panel-box {
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
-  .the-list-panel {
-    padding: 4px 20px 6px 20px;
-  }
-  .the-list-header {
-    display: grid;
-    grid-template-columns: 90px 1fr 1fr;
-    gap: 16px;
-    padding: 12px 0 6px 0;
-    border-bottom: 1px solid var(--color-line);
-  }
-  .the-list-rows {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .footer-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
-    align-items: start;
-    padding: 28px 48px 28px 48px;
-  }
-  .footer-col {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .footer-groups-panel {
-    display: flex;
-    flex-direction: column;
-    padding: 4px 20px 8px 20px;
-  }
-  .footer-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--color-line-soft);
-  }
-  .footer-group:last-child {
-    border-bottom: none;
-  }
-  .footer-group-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-strong);
-  }
-  .footer-group-count {
-    color: var(--color-muted);
-    font-weight: 500;
-  }
-  .footer-group-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .footer-group-item {
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .new-at-band-card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px 18px;
-    background: var(--color-card-top);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
-  .new-at-band-line {
-    margin: 0;
-    font-size: 13px;
-    color: var(--color-nav);
-  }
-  .new-at-band-see-link {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
   @media (max-width: 1023px) {
     .header-row {
       grid-template-columns: 1fr;
       padding: 22px 18px 18px 18px;
-    }
-    .three-panel-row {
-      grid-template-columns: 1fr;
-      padding: 22px 18px 0 18px;
-      gap: 22px;
-    }
-    .the-list-section,
-    .footer-row {
-      padding: 22px 18px 0 18px;
-    }
-    .footer-row {
-      grid-template-columns: 1fr;
-      gap: 22px;
-      padding-bottom: 22px;
-    }
-    .the-list-header {
-      display: none;
     }
   }
 </style>
@@ -597,6 +422,32 @@ const crossScopeCss =
       const input = document.getElementById('faction-horde');
       if (input) input.checked = true;
     }
+  })();
+
+  // Preset choice (level 60's "Raid-ready · Bare" control): the page-body's data-preset
+  // attribute drives which variant shows (CSS above), `?preset=` carries the choice in the
+  // URL, and every copy of the control follows the one value. No parameter means the
+  // default, raid-ready where a band has it.
+  (function () {
+    const body = document.querySelector('.page-body');
+    if (!body) return;
+    function apply(preset) {
+      body.setAttribute('data-preset', preset);
+      document.querySelectorAll('[data-preset-option]').forEach(function (button) {
+        button.setAttribute('aria-checked', String(button.getAttribute('data-preset-option') === preset));
+      });
+    }
+    const initial = new URLSearchParams(window.location.search).get('preset');
+    apply(initial === 'bare' ? 'bare' : 'raid');
+    document.querySelectorAll('[data-preset-option]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        const preset = button.getAttribute('data-preset-option');
+        apply(preset);
+        const url = new URL(window.location.href);
+        url.searchParams.set('preset', preset);
+        window.history.replaceState(null, '', url);
+      });
+    });
   })();
 
   // Arrow-key band navigation: focus never leaves the band strip's own links, and moving

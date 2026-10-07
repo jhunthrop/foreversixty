@@ -151,7 +151,28 @@ export interface BisCoverage {
   sourced: number;
 }
 
+/** `bare`: a naked character (no raid buffs, debuffs or consumables). `raid`: the Phase 1
+ *  raid-ready preset. */
+export type BisPresetId = 'bare' | 'raid';
+
+/** One buff, debuff or consumable a preset applies. */
+export interface BisPresetEffect {
+  id: number;
+  label: string;
+}
+
+/** `BisFile.presets[<id>]`: what a non-bare preset puts on the simulated character. */
+export interface BisPresetMeta {
+  label: string;
+  buffs: BisPresetEffect[];
+  debuffs: BisPresetEffect[];
+  consumes: BisPresetEffect[];
+  notes?: string;
+}
+
 export interface BisBand {
+  /** Absent on a file published before presets: such an entry is bare. */
+  preset?: BisPresetId;
   spec: string;
   band: number;
   faction: Faction;
@@ -240,6 +261,8 @@ export interface BisFile {
   engine_version: string;
   generated_at: string;
   bands: BisBand[];
+  /** Absent on a file published before presets. */
+  presets?: Partial<Record<BisPresetId, BisPresetMeta>>;
 }
 
 /** data/curated/specs.json's own shape -- the master list of written specs, one row per

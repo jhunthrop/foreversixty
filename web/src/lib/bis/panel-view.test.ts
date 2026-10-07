@@ -986,3 +986,23 @@ describe('bandInfosFor: totalSlots (spec §4.B/§4.E denominator)', () => {
     expect(infos[0].totalSlots).toBe(14);
   });
 });
+
+describe('bandInfosFor: presets', () => {
+  const file = fileWith([
+    band({ band: 50, set_dps: 100 }),
+    band({ band: 60, set_dps: 200 }),
+    band({ band: 60, set_dps: 300, preset: 'raid' }),
+  ]);
+
+  it('reads the raid entry by default and the bare entry on request', () => {
+    expect(bandInfosFor(file, [50, 60], 'alliance', depsWith())[1].setDps).toBe(300);
+    expect(bandInfosFor(file, [50, 60], 'alliance', depsWith({ preset: 'bare' }))[1].setDps).toBe(200);
+  });
+
+  it('only reports a DPS delta against the previous band when both are the same preset', () => {
+    const raid = bandInfosFor(file, [50, 60], 'alliance', depsWith())[1];
+    const bare = bandInfosFor(file, [50, 60], 'alliance', depsWith({ preset: 'bare' }))[1];
+    expect(raid.dpsDelta).toBeUndefined();
+    expect(bare.dpsDelta).toBe(100);
+  });
+});

@@ -1,0 +1,73 @@
+---
+// web/src/components/bis/PresetCaption.astro
+// The one-line caption naming what a preset includes, with the full buff/debuff/consumable
+// lists in a disclosure rather than inline. `meta` is the file's `presets[<id>]` block;
+// absent means the bare character.
+import { bisCopy } from '../../lib/bis/copy';
+import { BARE_PRESET } from '../../lib/bis/presets';
+import { effectGroupsFor, raidCaptionFor } from '../../lib/bis/preset-caption';
+import type { BisPresetId, BisPresetMeta } from '../../lib/bis/types';
+
+interface Props {
+  preset: BisPresetId;
+  meta?: BisPresetMeta;
+  testId: string;
+}
+
+const { preset, meta, testId } = Astro.props;
+const captionLine =
+  preset === BARE_PRESET
+    ? bisCopy.presetBareCaption
+    : meta === undefined
+      ? bisCopy.presetOptionRaid
+      : raidCaptionFor(meta);
+const groups = meta === undefined ? [] : effectGroupsFor(meta);
+---
+
+<div class="preset-caption" data-testid={testId}>
+  <p class="text-muted preset-caption-line">{captionLine}</p>
+  {meta !== undefined && preset !== BARE_PRESET && (groups.length > 0 || meta.notes !== undefined) && (
+    <details class="preset-details">
+      <summary>{bisCopy.presetDetailsSummary}</summary>
+      {groups.map((group) => (
+        <p class="preset-group">
+          <span class="preset-group-heading">{group.heading}</span> {group.labels.join(', ')}
+        </p>
+      ))}
+      {meta.notes !== undefined && <p class="text-muted preset-group">{meta.notes}</p>}
+    </details>
+  )}
+</div>
+
+<style>
+  .preset-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 48px 0 48px;
+  }
+  .preset-caption-line {
+    margin: 0;
+    font-size: 12px;
+  }
+  .preset-details {
+    font-size: 12px;
+  }
+  .preset-details summary {
+    cursor: pointer;
+    color: var(--color-nav);
+  }
+  .preset-group {
+    margin: 6px 0 0 0;
+    max-width: 90ch;
+  }
+  .preset-group-heading {
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  @media (max-width: 1023px) {
+    .preset-caption {
+      padding: 8px 18px 0 18px;
+    }
+  }
+</style>

@@ -17,6 +17,8 @@ export interface BisClassCardSpec {
   /** `bandEntry(file, 60, 'alliance')?.set_dps` -- undefined when the spec has no file yet,
    *  or (rare) no level-60 alliance band. */
   band60Dps?: number;
+  /** The preset `band60Dps` was measured under, as the file labels it (shown as a tooltip). */
+  band60PresetLabel?: string;
 }
 
 interface Props {
@@ -41,6 +43,7 @@ const { name, slug, specs } = Astro.props;
           {spec.hasData && spec.band60Dps !== undefined ? (
             <span
               class="tabular text-muted text-[12px]"
+              title={spec.band60PresetLabel}
               data-testid={`bis-index-dps-${spec.class_slug}-${spec.spec_slug}`}
             >
               {bisCopy.indexSpecDps60(spec.band60Dps)}

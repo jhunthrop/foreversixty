@@ -1,0 +1,75 @@
+---
+// web/src/components/bis/PresetControl.astro
+// "Raid-ready · Bare" segmented control above a band's numbers. Rendered without a
+// selection: the page's inline script owns `aria-checked` (from `?preset=` on load, from a
+// click afterwards) so every copy of the control on the page stays in step.
+import { bisCopy } from '../../lib/bis/copy';
+import { BARE_PRESET, RAID_PRESET } from '../../lib/bis/presets';
+
+interface Props {
+  testId: string;
+}
+
+const { testId } = Astro.props;
+const options = [
+  { preset: RAID_PRESET, label: bisCopy.presetOptionRaid },
+  { preset: BARE_PRESET, label: bisCopy.presetOptionBare },
+];
+---
+
+<div class="preset-control-row">
+  <span class="label">{bisCopy.presetControlLabel}</span>
+  <div class="preset-control" role="radiogroup" aria-label={bisCopy.presetControlLabel} data-testid={testId}>
+    {options.map((option) => (
+      <button
+        type="button"
+        role="radio"
+        aria-checked={option.preset === RAID_PRESET ? 'true' : 'false'}
+        data-preset-option={option.preset}
+        data-testid={`${testId}-${option.preset}`}
+      >
+        {option.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .preset-control-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 48px 0 48px;
+  }
+  .preset-control {
+    display: inline-flex;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    overflow: hidden;
+  }
+  .preset-control button {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-muted);
+    background: var(--color-raised);
+    border: 0;
+    cursor: pointer;
+  }
+  .preset-control button + button {
+    border-left: 1px solid var(--color-line);
+  }
+  .preset-control button[aria-checked='true'] {
+    color: var(--color-strong);
+    background: var(--color-card-top);
+  }
+  .preset-control button:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
+  }
+  @media (max-width: 1023px) {
+    .preset-control-row {
+      padding: 18px 18px 0 18px;
+    }
+  }
+</style>

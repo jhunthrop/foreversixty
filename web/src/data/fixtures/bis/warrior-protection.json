@@ -427,6 +427,464 @@
       "verify_run_seconds": 1.0,
       "reference_dps_per_point": 0.0556,
       "score_unit": "reference_stat_points"
+    },
+    {
+      "spec": "warrior-protection",
+      "band": 60,
+      "faction": "alliance",
+      "race": "human",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1.1,
+          "error": 0.011
+        },
+        {
+          "stat": "strength",
+          "weight": 1.98,
+          "error": 0.055
+        },
+        {
+          "stat": "agility",
+          "weight": 0.55,
+          "error": 0.033
+        },
+        {
+          "stat": "crit",
+          "weight": 1.584,
+          "error": 0.077,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 22.176
+        },
+        {
+          "stat": "hit",
+          "weight": 0.066,
+          "error": 0.33,
+          "insignificant": true,
+          "unit": "rating",
+          "rating_factor": 10,
+          "weight_per_percent": 0.66
+        },
+        {
+          "stat": "melee_haste",
+          "weight": 3.3,
+          "error": 0.22
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 900001,
+          "item_name": "Bulwark of the Ladder (head)",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 40.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 900002,
+          "item_name": "Bulwark of the Ladder (neck)",
+          "source": "Vendor: Ironforge Quartermaster",
+          "source_kind": "vendor",
+          "score": 40.7,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 900003,
+          "item_name": "Bulwark of the Ladder (shoulder)",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 41.4,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 900004,
+          "item_name": "Bulwark of the Ladder (back)",
+          "source": "Blackrock Depths",
+          "source_kind": "dungeon",
+          "score": 42.1,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 900005,
+          "item_name": "Bulwark of the Ladder (chest)",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 42.8,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 900006,
+          "item_name": "Bulwark of the Ladder (wrist)",
+          "source": "Rep: Ironforge \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 43.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 900007,
+          "item_name": "Bulwark of the Ladder (hands)",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 44.2,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 900008,
+          "item_name": "Bulwark of the Ladder (waist)",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 44.9,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 900009,
+          "item_name": "Bulwark of the Ladder (legs)",
+          "source": "Vendor: Ironforge Quartermaster",
+          "source_kind": "vendor",
+          "score": 45.6,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 900010,
+          "item_name": "Bulwark of the Ladder (feet)",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 46.3,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 900011,
+          "item_name": "Bulwark of the Ladder (finger1)",
+          "source": "Blackrock Depths",
+          "source_kind": "dungeon",
+          "score": 47.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 900012,
+          "item_name": "Bulwark of the Ladder (finger2)",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 47.7,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 900013,
+          "item_name": "Bulwark of the Ladder (trinket1)",
+          "source": "Rep: Ironforge \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 48.4,
+          "verified": false,
+          "sim_status": "not_in_sim"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 900014,
+          "item_name": "Bulwark of the Ladder (trinket2)",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 49.1,
+          "verified": false,
+          "sim_status": "not_in_sim",
+          "effect_unmodelled": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 900015,
+          "item_name": "Bulwark of the Ladder (main_hand)",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 49.8,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 900016,
+          "item_name": "Bulwark of the Ladder (off_hand)",
+          "source": "Vendor: Ironforge Quartermaster",
+          "source_kind": "vendor",
+          "score": 50.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 900017,
+          "item_name": "Bulwark of the Ladder (ranged)",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 51.2,
+          "verified": true
+        }
+      ],
+      "set_dps": 260.0,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "coverage": {},
+      "weights_run_seconds": 1.0,
+      "verify_run_seconds": 1.0,
+      "reference_dps_per_point": 0.0556,
+      "score_unit": "reference_stat_points",
+      "set_dps_partial": true,
+      "preset": "raid"
+    },
+    {
+      "spec": "warrior-protection",
+      "band": 60,
+      "faction": "horde",
+      "race": "orc",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1.1,
+          "error": 0.011
+        },
+        {
+          "stat": "strength",
+          "weight": 1.98,
+          "error": 0.055
+        },
+        {
+          "stat": "agility",
+          "weight": 0.55,
+          "error": 0.033
+        },
+        {
+          "stat": "crit",
+          "weight": 1.584,
+          "error": 0.077,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 22.176
+        },
+        {
+          "stat": "hit",
+          "weight": 0.066,
+          "error": 0.33,
+          "insignificant": true,
+          "unit": "rating",
+          "rating_factor": 10,
+          "weight_per_percent": 0.66
+        },
+        {
+          "stat": "melee_haste",
+          "weight": 3.3,
+          "error": 0.22
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 900101,
+          "item_name": "Bulwark of the Ladder (head)",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 40.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 900102,
+          "item_name": "Bulwark of the Ladder (neck)",
+          "source": "Vendor: Ironforge Quartermaster",
+          "source_kind": "vendor",
+          "score": 40.7,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 900103,
+          "item_name": "Bulwark of the Ladder (shoulder)",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 41.4,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 900104,
+          "item_name": "Bulwark of the Ladder (back)",
+          "source": "Blackrock Depths",
+          "source_kind": "dungeon",
+          "score": 42.1,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 900105,
+          "item_name": "Bulwark of the Ladder (chest)",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 42.8,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 900106,
+          "item_name": "Bulwark of the Ladder (wrist)",
+          "source": "Rep: Ironforge \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 43.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 900107,
+          "item_name": "Bulwark of the Ladder (hands)",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 44.2,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 900108,
+          "item_name": "Bulwark of the Ladder (waist)",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 44.9,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 900109,
+          "item_name": "Bulwark of the Ladder (legs)",
+          "source": "Vendor: Ironforge Quartermaster",
+          "source_kind": "vendor",
+          "score": 45.6,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 900110,
+          "item_name": "Bulwark of the Ladder (feet)",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 46.3,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 900111,
+          "item_name": "Bulwark of the Ladder (finger1)",
+          "source": "Blackrock Depths",
+          "source_kind": "dungeon",
+          "score": 47.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 900112,
+          "item_name": "Bulwark of the Ladder (finger2)",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 47.7,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 900113,
+          "item_name": "Bulwark of the Ladder (trinket1)",
+          "source": "Rep: Ironforge \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 48.4,
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 900114,
+          "item_name": "Bulwark of the Ladder (trinket2)",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 49.1,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 900115,
+          "item_name": "Bulwark of the Ladder (main_hand)",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 49.8,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 900116,
+          "item_name": "Bulwark of the Ladder (off_hand)",
+          "source": "Vendor: Ironforge Quartermaster",
+          "source_kind": "vendor",
+          "score": 50.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 900117,
+          "item_name": "Bulwark of the Ladder (ranged)",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 51.2,
+          "verified": true
+        }
+      ],
+      "set_dps": 260.0,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "coverage": {},
+      "weights_run_seconds": 1.0,
+      "verify_run_seconds": 1.0,
+      "reference_dps_per_point": 0.0556,
+      "score_unit": "reference_stat_points",
+      "preset": "raid"
     }
-  ]
+  ],
+  "presets": {
+    "raid": {
+      "label": "Raid-ready, Phase 1",
+      "buffs": [
+        {
+          "id": 1,
+          "label": "Fixture Buff A"
+        },
+        {
+          "id": 2,
+          "label": "Fixture Buff B"
+        }
+      ],
+      "debuffs": [
+        {
+          "id": 3,
+          "label": "Fixture Debuff"
+        }
+      ],
+      "consumes": [
+        {
+          "id": 4,
+          "label": "Fixture Flask"
+        },
+        {
+          "id": 5,
+          "label": "Fixture Elixir"
+        }
+      ],
+      "notes": "Fixture preset: every figure is invented for the e2e."
+    }
+  }
 }

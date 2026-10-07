@@ -297,6 +297,16 @@ export const bisCopy = {
    *  "this ability's icon isn't resolved yet"; ux-designer review round 1). */
   iconNotAvailableYet: 'Icon not available yet',
   openGuideLink: (specName: string): string => `Open the ${specName} guide`,
+  presetControlLabel: 'Conditions',
+  presetOptionRaid: 'Raid-ready',
+  presetOptionBare: 'Bare',
+  presetRaidCaption: (label: string, buffs: number, debuffs: number, consumes: number): string =>
+    `${label}: ${buffs} buffs, ${debuffs} debuffs and ${consumes} consumables.`,
+  presetBareCaption: 'Bare character: no raid buffs, debuffs or consumables.',
+  presetDetailsSummary: 'What is included',
+  presetBuffsHeading: 'Buffs',
+  presetDebuffsHeading: 'Debuffs',
+  presetConsumesHeading: 'Consumables',
   theListHeading: 'The list',
   hoverOrTapCaption: 'Hover or tap an item for its stats',
   slotHeaderLabel: 'Slot',

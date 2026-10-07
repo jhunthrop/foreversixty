@@ -62,7 +62,7 @@ const updated = band60 === undefined ? undefined : formatDate(new Date(band60.ge
     </table>
     {updated !== undefined && (
       <p class="text-muted text-[12px]" data-testid="guide-stat-table-updated">
-        Updated {updated}
+        Updated {updated} · {band60?.presetLabel}
       </p>
     )}
   </div>

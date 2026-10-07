@@ -10,6 +10,7 @@
 // lookups load.ts also has (band levels, a band's entry) against the same BisFile shape
 // (./types) rather than pulling node:fs into the island.
 import { specRow } from '../sim/spec-label';
+import { selectBand } from './presets';
 import type { BisBand, BisFile, BisSlot, Faction } from './types';
 
 /** Bands run 20..60 in steps of 10 (sim/cmd/leveling-bis's own defaultBandsFlag). */
@@ -38,9 +39,9 @@ export function bandLevelsFor(file: BisFile): number[] {
   return [...new Set(file.bands.map((band) => band.band))].sort((a, b) => a - b);
 }
 
-/** load.ts's own `bandEntry`, copied for the same reason. */
+/** load.ts's own `bandEntry`: both go through presets.ts's one selection rule. */
 export function bandEntryFor(file: BisFile, band: number, faction: Faction): BisBand | undefined {
-  return file.bands.find((entry) => entry.band === band && entry.faction === faction);
+  return selectBand(file, band, faction);
 }
 
 export interface SlotBandPick {

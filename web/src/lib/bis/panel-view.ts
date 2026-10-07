@@ -19,8 +19,10 @@ import {
   sourceBadgeLabel,
   type SlotRow,
 } from './load';
+import { presetOf } from './presets';
 import { describeSourceCell, hasKnownSource, resolveSourceCell, type SourceCell } from './source-cell';
 import type {
+  BisPresetId,
   BisAlternative,
   BisFile,
   BisSlot,
@@ -568,6 +570,9 @@ export interface PanelViewDeps {
   loot: LootFile & Partial<LootQuestsFile>;
   tooltipFor: (itemId: number) => ItemTooltipModel | undefined;
   spec: string;
+  /** Which preset's band entries to read for the bands that offer one; omitted means the
+   *  shared default (`presets.ts`'s `selectBand`). */
+  preset?: BisPresetId;
 }
 
 /** Every band this file covers for `faction`, in `bands`' own order -- the page's one call
@@ -579,9 +584,9 @@ export function bandInfosFor(
   deps: PanelViewDeps,
 ): BandInfo[] {
   return bands.flatMap((band, bandIndex): BandInfo[] => {
-    const bandData = bandEntry(file, band, faction);
+    const bandData = bandEntry(file, band, faction, deps.preset);
     if (bandData === undefined) return [];
-    const changed = changedSinceBand(file, band, faction);
+    const changed = changedSinceBand(file, band, faction, deps.preset);
     const replacedBySlot = new Map<string, string | undefined>(
       (changed ?? [])
         .filter((entry) => entry.after !== undefined)
@@ -641,8 +646,14 @@ export function bandInfosFor(
         : (changed ?? []).filter((entry) => entry.after !== undefined).map((entry) => entry.slot),
     );
     const previousBand = previousBandLevel(file, band);
+    // Like with like only: a raid band's DPS against the previous band's bare DPS would
+    // credit the buffs to the new gear.
+    const previousBandData =
+      previousBand === undefined ? undefined : bandEntry(file, previousBand, faction, deps.preset);
     const previousSetDps =
-      previousBand === undefined ? undefined : bandEntry(file, previousBand, faction)?.set_dps;
+      previousBandData !== undefined && presetOf(previousBandData) === presetOf(bandData)
+        ? previousBandData.set_dps
+        : undefined;
     const referenceDpsPerPoint = bandData.reference_dps_per_point ?? null;
     const weightsReason = bandData.weights_reason ?? null;
     const { byStat, anchorStat } =

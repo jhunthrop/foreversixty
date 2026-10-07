@@ -12,6 +12,7 @@ import activeBuild from '../../data/active-build.json';
 import { latest } from '../../lib/dates';
 import { bisCopy } from '../../lib/bis/copy';
 import { bandEntry, groupByClass, loadBisFile, readSpecCatalog } from '../../lib/bis/load';
+import { presetLabelFor } from '../../lib/bis/presets';
 
 const catalog = readSpecCatalog();
 const grouped = groupByClass(catalog);
@@ -25,12 +26,14 @@ const classesWithSpecs = classes
     ...c,
     specs: (grouped.find((g) => g.classSlug === c.slug)?.specs ?? []).map((spec): BisClassCardSpec => {
       const file = loadBisFile(spec.spec, activeBuild.build);
+      const band60 = file === null ? undefined : bandEntry(file, 60, 'alliance');
       return {
         class_slug: spec.class_slug,
         spec_slug: spec.spec_slug,
         name: spec.name,
         hasData: file !== null,
-        band60Dps: file === null ? undefined : bandEntry(file, 60, 'alliance')?.set_dps,
+        band60Dps: band60?.set_dps,
+        band60PresetLabel: file === null || band60 === undefined ? undefined : presetLabelFor(file, band60),
       };
     }),
   }))

@@ -17,10 +17,12 @@ import { fileURLToPath } from 'node:url';
 import { SLOTS, type Slot } from '../planner/types';
 import { LOOT_KINDS, SOURCE_KIND_LABELS, type LootFile, type LootKind } from '../sim/loot';
 import { bisCopy } from './copy';
+import { selectBand } from './presets';
 import { hasKnownSource } from './source-cell';
 import type {
   BisBand,
   BisFile,
+  BisPresetId,
   BisSlot,
   ChangedSlot,
   Faction,
@@ -139,8 +141,15 @@ export function bandLevels(file: BisFile): number[] {
   return [...new Set(file.bands.map((band) => band.band))].sort((a, b) => a - b);
 }
 
-export function bandEntry(file: BisFile, band: number, faction: Faction): BisBand | undefined {
-  return file.bands.find((entry) => entry.band === band && entry.faction === faction);
+/** A band's entry through the shared preset rule (`presets.ts`'s `selectBand`): the raid
+ *  entry unless `preset` says otherwise, bare when the file has no raid entry there. */
+export function bandEntry(
+  file: BisFile,
+  band: number,
+  faction: Faction,
+  preset?: BisPresetId,
+): BisBand | undefined {
+  return selectBand(file, band, faction, preset);
 }
 
 export type SlotRow = BisSlot | { slot: Slot; missing: true };
@@ -269,10 +278,15 @@ export function previousBandLevel(file: BisFile, band: number): number | undefin
  * band's own table marks "new". Undefined at the file's first band -- nothing to have
  * changed since.
  */
-export function changedSinceBand(file: BisFile, band: number, faction: Faction): ChangedSlot[] | undefined {
+export function changedSinceBand(
+  file: BisFile,
+  band: number,
+  faction: Faction,
+  preset?: BisPresetId,
+): ChangedSlot[] | undefined {
   const previousBand = previousBandLevel(file, band);
   if (previousBand === undefined) return undefined;
-  const current = bandEntry(file, band, faction);
+  const current = bandEntry(file, band, faction, preset);
   const previous = bandEntry(file, previousBand, faction);
   if (current === undefined) return [];
   const currentBySlot = new Map(current.slots.map((slot) => [slot.slot, slot]));
