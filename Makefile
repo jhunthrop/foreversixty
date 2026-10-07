@@ -242,7 +242,7 @@ artifacts: simdb
 #	No -ldflags -X: both mains import sim/enginever, so the pin is
 #	compiled in and a plain `go build ./cmd/forever-sim` produces a
 #	binary that knows its own engine rather than one stamped "dev".
-	@(cd sim && GOOS=js GOARCH=wasm go build -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
+	@(cd sim && GOOS=js GOARCH=wasm go build -trimpath -ldflags="-s -w" -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
 	  (cd sim && go build -ldflags="-s -w" -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim)
 #	install, not cp: wasm_exec.js is read-only inside GOROOT, so a plain
 #	cp copies the mode too and the NEXT `make artifacts` dies with
