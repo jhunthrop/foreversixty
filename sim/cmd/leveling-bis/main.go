@@ -816,7 +816,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				if err != nil {
 					return fmt.Errorf("band %d hit profile: %w", band, err)
 				}
-				report.HitToCap = hitToCapFromProfile(profile)
+				report.HitToCap = hitToCapFor(specInfo.Spec, profile)
 				reports = append(reports, report)
 				if pass.name == presetBare {
 					previous[f.name] = picks

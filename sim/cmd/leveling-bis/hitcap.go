@@ -1,6 +1,9 @@
 package main
 
-import "github.com/wowsims/classic/sim/core"
+import (
+	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/wowsims/classic/sim/core"
+)
 
 // hitToCap is how far a band's weights character is from the miss-table
 // caps, in engine percent (one point is one percent of hit chance, the unit
@@ -33,4 +36,16 @@ func hitToCapFromProfile(profile core.HitProfile) *hitToCap {
 		out.White = &white
 	}
 	return out
+}
+
+// hitToCapFor is hitToCapFromProfile with the site's own caster rule in
+// front of it: a caster spec (leveling.NoMeleeAutoAttackSpecs) never
+// stands in melee, so its physical miss table is beside the point even
+// when the engine's profile reports one for the weapon it holds. Its
+// spell-hit cap is a different figure, not yet published.
+func hitToCapFor(spec string, profile core.HitProfile) *hitToCap {
+	if leveling.NoMeleeAutoAttackSpecs[spec] {
+		return nil
+	}
+	return hitToCapFromProfile(profile)
 }

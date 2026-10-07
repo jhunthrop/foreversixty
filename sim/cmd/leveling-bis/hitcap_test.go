@@ -76,3 +76,16 @@ func TestRunSpecPublishesHitToCapFromTheEngine(t *testing.T) {
 		}
 	}
 }
+
+func TestHitToCapOfACasterSpecIsAbsentEvenWithAWeapon(t *testing.T) {
+	physical := core.HitProfile{Physical: true, Hit: 1}
+	if got := hitToCapFor("druid-balance", physical); got != nil {
+		t.Fatalf("druid-balance never stands in melee, got %+v", got)
+	}
+	if got := hitToCapFor("shaman-elemental", physical); got != nil {
+		t.Fatalf("shaman-elemental never stands in melee, got %+v", got)
+	}
+	if got := hitToCapFor("warrior-fury", physical); got == nil {
+		t.Fatal("a melee spec keeps its figure")
+	}
+}
