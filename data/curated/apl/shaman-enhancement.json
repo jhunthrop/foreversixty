@@ -1,7 +1,7 @@
 {
   "spec": "shaman-enhancement",
   "state": "written",
-  "notes": "Vanilla Enhancement at 60: totems dropped before the pull, Stormstrike on cooldown, Searing Totem refreshed -- the rotation search dropped Flame Shock and Earth Shock, which cost more than they returned (the community guide's order is 'totems > Stormstrike > Flame Shock (dot) > Frost/Earth Shock' summary). The fork's enhancement_shaman/apls/default.apl.json is the starting point. Rotation-accuracy program, unused-ability pass (2026-09-28): Flame Shock was named in this very notes paragraph as part of the intended priority but was never actually in the priority list below -- added it as a dot-maintenance line ahead of Searing Totem and Earth Shock, sharing Earth Shock's own 6s shock cooldown (sim/shaman/shocks.go) rather than costing an extra global. Measured on this pinned engine's own ladder (FOREVER_UPDATE_GOLDEN, 300 iterations, seed 1, bare gear/no consumes): level 10 23.1->23.6, 20 38.2->40.0, 30 53.3->56.3, 38 54.2->57.3, 40 61.6->62.4, 50 82.5->86.9, 60 105.4->108.3 DPS -- a gain at every rung, kept per the program's own rule. The one cost: Earth Shock goes idle at level 60 on mana, see expected_idle above. Fix round 1 (CRITICAL, replaces the first pass here): the first pass recast Windfury Totem on `not(auraIsActive({spellId: 10614}))`, reasoning it mirrored Strength of Earth's and Grace of Air's self-referential aura checks. That reasoning was wrong for all three: sim/shaman/air_totems.go registers Windfury's actual buff through a 'trigger dummy' aura with no ActionID set at all, plus a separately-tracked proc aura at SpellID 10611 (a buff-only id, never itself cast, so it does not appear in spellconst) -- no aura on the shaman is ever registered with ActionID.SpellID == 10614, so the old condition resolved to a nil APLValue, which APLAction.IsReady treats as unconditionally true, and Windfury would have been recast on every free GCD forever, starving everything below it in the priority list. Re-checking the same way turned up the identical bug one level deeper: sim/core/buffs.go's StrengthOfEarthTotemAura() and GraceOfAirTotemAura() helpers pick their buff aura's ActionID from IncludeAQ (sim/core/config.go: `const IncludeAQ = true` in this fork) rather than from whatever rank was actually cast -- IncludeAQ forces rank 5 (SpellID 25361) for Strength of Earth and rank 3 (SpellID 25359) for Grace of Air, always, regardless of which rank's totem spell triggered them. Checking auraIsActive against 10442 or 10627, as the preset and the first pass here both did, would have hit the exact same nil-condition bug. Fixed all three by switching to the engine's dedicated primitive for this, sim/shaman/apl_values.go's totemRemainingTime(totemType), which reads shaman.TotemExpirations directly and needs no aura or spell id at all: Strength of Earth against totemRemainingTime(Earth), Windfury against totemRemainingTime(Air). Also dropped Grace of Air Totem entirely rather than 'fix' it in place: it occupies the same Air totem slot as Windfury (sim/shaman/air_totems.go's setActiveAirTotem deactivates whichever air totem was previously active), so with Windfury correctly maintained ahead of it in priority, Grace of Air could now never actually fire -- dead code, not a rotation choice, and the guide's own totem summary calls Windfury 'typically' the air totem for Enhancement anyway. Now that Strength of Earth's buff is confirmed to key off rank 5 (25361), cast that rank directly instead of rank 4 (10442): same totem slot, better stats, no reason to downrank. Also re-verified Searing Totem's dotIsActive(10438) check: sim/shaman/fire_totems.go attaches its Dot directly to the same spell object as its own ActionID (no separate buff-aura helper, unlike the air totems), so that condition was already correct and is unchanged. Stormstrike's rank label was also wrong in the preset -- it cast rank 1, but this build's spellconst has 17364 at rank 0 -- so the rank is dropped entirely here, the same way a rankless spell like Tiger's Fury is written. Reordered autocastOtherCooldowns to be the first priority entry, matching the convention every other spec in this lane follows, instead of after the totem drops as the preset had it.",
+  "notes": "Vanilla Enhancement at 60: totems dropped before the pull, Stormstrike on cooldown, Searing Totem refreshed -- the rotation search dropped Flame Shock and Earth Shock, which cost more than they returned (the community guide's order is 'totems > Stormstrike > Flame Shock (dot) > Frost/Earth Shock' summary). The fork's enhancement_shaman/apls/default.apl.json is the starting point. Rotation-accuracy program, unused-ability pass (2026-09-28): Flame Shock was named in this very notes paragraph as part of the intended priority but was never actually in the priority list below -- added it as a dot-maintenance line ahead of Searing Totem and Earth Shock, sharing Earth Shock's own 6s shock cooldown (sim/shaman/shocks.go) rather than costing an extra global. Measured on this pinned engine's own ladder (FOREVER_UPDATE_GOLDEN, 300 iterations, seed 1, bare gear/no consumes): level 10 23.1->23.6, 20 38.2->40.0, 30 53.3->56.3, 38 54.2->57.3, 40 61.6->62.4, 50 82.5->86.9, 60 105.4->108.3 DPS -- a gain at every rung, kept per the program's own rule. The one cost: Earth Shock goes idle at level 60 on mana, see expected_idle above. Fix round 1 (CRITICAL, replaces the first pass here): the first pass recast Windfury Totem on `not(auraIsActive({spellId: 10614}))`, reasoning it mirrored Strength of Earth's and Grace of Air's self-referential aura checks. That reasoning was wrong for all three: sim/shaman/air_totems.go registers Windfury's actual buff through a 'trigger dummy' aura with no ActionID set at all, plus a separately-tracked proc aura at SpellID 10611 (a buff-only id, never itself cast, so it does not appear in spellconst) -- no aura on the shaman is ever registered with ActionID.SpellID == 10614, so the old condition resolved to a nil APLValue, which APLAction.IsReady treats as unconditionally true, and Windfury would have been recast on every free GCD forever, starving everything below it in the priority list. Re-checking the same way turned up the identical bug one level deeper: sim/core/buffs.go's StrengthOfEarthTotemAura() and GraceOfAirTotemAura() helpers pick their buff aura's ActionID from IncludeAQ (sim/core/config.go: `const IncludeAQ = true` in this fork) rather than from whatever rank was actually cast -- IncludeAQ forces rank 5 (SpellID 25361) for Strength of Earth and rank 3 (SpellID 25359) for Grace of Air, always, regardless of which rank's totem spell triggered them. Checking auraIsActive against 10442 or 10627, as the preset and the first pass here both did, would have hit the exact same nil-condition bug. Fixed all three by switching to the engine's dedicated primitive for this, sim/shaman/apl_values.go's totemRemainingTime(totemType), which reads shaman.TotemExpirations directly and needs no aura or spell id at all: Strength of Earth against totemRemainingTime(Earth), Windfury against totemRemainingTime(Air). Also dropped Grace of Air Totem entirely rather than 'fix' it in place: it occupies the same Air totem slot as Windfury (sim/shaman/air_totems.go's setActiveAirTotem deactivates whichever air totem was previously active), so with Windfury correctly maintained ahead of it in priority, Grace of Air could now never actually fire -- dead code, not a rotation choice, and the guide's own totem summary calls Windfury 'typically' the air totem for Enhancement anyway. Now that Strength of Earth's buff is confirmed to key off rank 5 (25361), cast that rank directly instead of rank 4 (10442): same totem slot, better stats, no reason to downrank. Also re-verified Searing Totem's dotIsActive(10438) check: sim/shaman/fire_totems.go attaches its Dot directly to the same spell object as its own ActionID (no separate buff-aura helper, unlike the air totems), so that condition was already correct and is unchanged. Stormstrike's rank label was also wrong in the preset -- it cast rank 1, but this build's spellconst has 17364 at rank 0 -- so the rank is dropped entirely here, the same way a rankless spell like Tiger's Fury is written. Reordered autocastOtherCooldowns to be the first priority entry, matching the convention every other spec in this lane follows, instead of after the totem drops as the preset had it. Fire Nova / Mana Spring lane (2026-10-07): Forever Fire Nova was swept after Searing Totem at no gate and 20/40/60/80% mana gates: it lost DPS at every gate short of 80% and tied at 80% (the gate never opens), so no Fire Nova line. Mana Spring Totem (10497, now a real five-minute MP5 aura in the engine) is dropped first in the prepull and kept refreshed by a totemRemainingTime line; it beat the previous rotation beyond error. Windfury Totem stays: the search's solo removal gain is the solo-sim group-buff artifact.",
   "engineering_notes": {
     "1": "Gated on totemRemainingTime, the engine's own primitive for 'does this totem slot need refreshing.'"
   },
@@ -20,6 +20,21 @@
   "rotation": {
     "type": "TypeAPL",
     "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10497,
+              "rank": 4
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-4.5s"
+          }
+        }
+      },
       {
         "action": {
           "castSpell": {
@@ -105,6 +120,32 @@
             "spellId": {
               "spellId": 10614,
               "rank": 3
+            }
+          }
+        }
+      },
+      {
+        "notes": "Mana Spring Totem restores the shaman's own mana for five minutes; the water slot is otherwise empty.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10497,
+              "rank": 4
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "totemRemainingTime": {
+                  "totemType": "Water"
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "1.5"
+                }
+              }
             }
           }
         }
