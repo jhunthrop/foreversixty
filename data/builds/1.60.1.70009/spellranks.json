@@ -772,6 +772,7 @@
           "rank": 4
         },
         {
+          "book": true,
           "id": 31018,
           "level": 60,
           "rank": 5
@@ -872,6 +873,7 @@
           "rank": 1
         },
         {
+          "book": true,
           "id": 21850,
           "level": 60,
           "rank": 2
@@ -953,6 +955,7 @@
           "rank": 10
         },
         {
+          "book": true,
           "id": 25297,
           "level": 60,
           "rank": 11
@@ -1971,11 +1974,13 @@
           "rank": 10
         },
         {
+          "book": true,
           "id": 25299,
           "level": 60,
           "rank": 11
         },
         {
+          "book": true,
           "id": 417068,
           "level": 60,
           "rank": 11
@@ -2488,6 +2493,7 @@
           "rank": 6
         },
         {
+          "book": true,
           "id": 25298,
           "level": 60,
           "rank": 7
@@ -3198,6 +3204,7 @@
           "rank": 6
         },
         {
+          "book": true,
           "id": 25296,
           "level": 60,
           "rank": 7
@@ -5297,6 +5304,7 @@
           "rank": 8
         },
         {
+          "book": true,
           "id": 25295,
           "level": 60,
           "rank": 9
@@ -7336,6 +7344,7 @@
           "rank": 11
         },
         {
+          "book": true,
           "id": 25306,
           "level": 60,
           "rank": 12
@@ -7666,6 +7675,7 @@
           "rank": 10
         },
         {
+          "book": true,
           "id": 25304,
           "level": 60,
           "rank": 11
@@ -9657,6 +9667,7 @@
           "rank": 6
         },
         {
+          "book": true,
           "id": 25291,
           "level": 60,
           "rank": 7
@@ -9725,6 +9736,7 @@
           "rank": 5
         },
         {
+          "book": true,
           "id": 25290,
           "level": 60,
           "rank": 6
@@ -10125,6 +10137,7 @@
           "rank": 1
         },
         {
+          "book": true,
           "id": 25916,
           "level": 60,
           "rank": 2
@@ -10144,6 +10157,7 @@
           "rank": 1
         },
         {
+          "book": true,
           "id": 25918,
           "level": 60,
           "rank": 2
@@ -10307,6 +10321,7 @@
           "rank": 8
         },
         {
+          "book": true,
           "id": 25292,
           "level": 60,
           "rank": 9
@@ -12618,6 +12633,7 @@
           "rank": 4
         },
         {
+          "book": true,
           "id": 25314,
           "level": 60,
           "rank": 5
@@ -13393,6 +13409,7 @@
           "rank": 4
         },
         {
+          "book": true,
           "id": 25316,
           "level": 60,
           "rank": 5
@@ -13594,11 +13611,13 @@
           "rank": 9
         },
         {
+          "book": true,
           "id": 25315,
           "level": 60,
           "rank": 10
         },
         {
+          "book": true,
           "id": 425277,
           "level": 60,
           "rank": 10
@@ -14463,11 +14482,13 @@
           "rank": 8
         },
         {
+          "book": true,
           "id": 25300,
           "level": 60,
           "rank": 9
         },
         {
+          "book": true,
           "id": 462717,
           "level": 60,
           "rank": 9
@@ -14762,11 +14783,13 @@
       ],
       "Deadly Poison V": [
         {
+          "book": true,
           "id": 25347,
           "level": 60,
           "rank": 5
         },
         {
+          "book": true,
           "id": 25351,
           "level": 60,
           "rank": 5
@@ -14914,6 +14937,7 @@
           "rank": 8
         },
         {
+          "book": true,
           "id": 31016,
           "level": 60,
           "rank": 9
@@ -14990,6 +15014,7 @@
           "rank": 4
         },
         {
+          "book": true,
           "id": 25302,
           "level": 60,
           "rank": 5
@@ -17150,6 +17175,7 @@
           "rank": 2
         },
         {
+          "book": true,
           "id": 25360,
           "level": 60,
           "rank": 3
@@ -17167,6 +17193,7 @@
           "rank": 2
         },
         {
+          "book": true,
           "id": 25359,
           "level": 60,
           "rank": 3
@@ -17332,6 +17359,7 @@
           "rank": 9
         },
         {
+          "book": true,
           "id": 25357,
           "level": 60,
           "rank": 10
@@ -18517,6 +18545,7 @@
           "rank": 4
         },
         {
+          "book": true,
           "id": 25362,
           "level": 60,
           "rank": 5
@@ -18544,6 +18573,7 @@
           "rank": 4
         },
         {
+          "book": true,
           "id": 25361,
           "level": 60,
           "rank": 5
@@ -19191,6 +19221,7 @@
           "rank": 6
         },
         {
+          "book": true,
           "id": 25311,
           "level": 60,
           "rank": 7
@@ -20188,6 +20219,7 @@
           "rank": 7
         },
         {
+          "book": true,
           "id": 25309,
           "level": 60,
           "rank": 8
@@ -21142,6 +21174,7 @@
           "rank": 9
         },
         {
+          "book": true,
           "id": 25307,
           "level": 60,
           "rank": 10
@@ -21874,6 +21907,7 @@
           "rank": 6
         },
         {
+          "book": true,
           "id": 25289,
           "level": 60,
           "rank": 7
@@ -22643,6 +22677,7 @@
           "rank": 8
         },
         {
+          "book": true,
           "id": 25286,
           "level": 60,
           "rank": 9
@@ -23348,6 +23383,7 @@
           "rank": 5
         },
         {
+          "book": true,
           "id": 25288,
           "level": 60,
           "rank": 6

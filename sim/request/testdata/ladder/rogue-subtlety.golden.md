@@ -154,8 +154,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Backstab (spell 25300)
-- Eviscerate (spell 31016)
+- Backstab (spell 11281)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
@@ -168,4 +167,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - rogue-subtlety level=20 kind=zero_casts spell="Eviscerate" id=6761 authored=11300
 - rogue-subtlety level=30 kind=zero_casts spell="Eviscerate" id=6762 authored=11300
-- rogue-subtlety level=60 kind=zero_casts spell="Eviscerate" id=31016 authored=11300

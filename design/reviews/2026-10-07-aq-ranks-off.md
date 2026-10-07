@@ -59,12 +59,21 @@ Levels below 60 are untouched. Fork suite goldens: mage P1 -1.6% to -9.0% (media
 - Fork: `sim/core/config.go`, four `.results` goldens, the conformance goldens and SUMMARY (the level-60 rank rows for the changed spells leave the tables, because the trainer ranks are below level 60), and the reference APLs under `ui/*/apls` (spell ids moved from book to trainer ranks; `forever_*` files come from `make apl-sync`).
 - Site: the 15 curated rotations that named a book id (id and rank number), `sim/request/apl/*` (synced copies), and the ladder goldens. No guide names a book rank, so no guide changed.
 
-## Follow-ups for other lanes (not done here)
+## Round 2: class-package tests and the book-rank flag
 
-- Class-package tests still hardcode book ranks and fail: `sim/hunter` spellconst checks (Aspect of the Hawk 25296, Serpent Sting 25295), `sim/warlock` Corruption rank 7, `sim/rogue` Deadly Poison rank 5, `sim/mage` Frostfire Bolt resist test (indexes `Frostbolt[FrostboltRanks]`), `sim/druid/balance` Moonglow test (indexes `Starfire[7]`).
-- `sim/core/spellconst/gen/generated_test.go` and `ui/core/components/inputs/buffs_debuffs.ts` (Blessing of Might 25291, Battle Shout 25289) and `ui/core/components/detailed_results/timeline.tsx` (Heroic Strike 25286) name book ids.
-- `data/builds/*/spellranks.json` still lists the book ranks as learned at level 60, so `sim/request` `TestRewriteRotationRanksAtMaxLevelIsUnchanged` and `TestRotationAtMaxLevelParsesTheEmbedDirectly` fail: their premise, that a rotation names the highest data rank, no longer holds. `rotation()` skips the rewrite at level 60, so runtime is unaffected. The proper fix is a book-rank flag in the spell-rank data.
-- Battle Shout rank 6 is id 11551 in `core.BattleShoutSpellId` but 27578 in the class-package generated table (a dedup artifact); the APLs use 11551, which is what the engine registers.
+Fork:
+- `core.MaxTrainerRank(totalRanks)` (sim/core/config.go) is the one place that says "the last rank is a book rank". The mage, druid balance, rogue, hunter and warlock rank tests use it or `core.TernaryInt32(core.IncludeAQ, book, trainer)`, so they pass with the constant either way. With `IncludeAQ = true` the hunter, warlock, rogue, mage and druid suites pass; the P1 mage golden and the warrior Heroic Strike test then fail only because the reference APLs name trainer ids, which is the intended pairing.
+- `buffs_debuffs.ts` now shows Blessing of Might 19838 and Battle Shout 11551. `timeline.tsx` already listed every Heroic Strike rank, so it needed nothing.
+- Battle Shout rank 6 is 11551 in `core` and 27578 in the warrior package's generated table (a dedup artifact the warrior lane noted); the engine registers the core id, so rotations and the UI use 11551.
+
+Site:
+- `data/curated/book-ranks.json` lists 36 book ids, each with a basis: `engine` (the fork gates it on IncludeAQ), `vanilla` (the vanilla 1.9 book list, not gated by the fork), `owner` (named in the brief: Greater Blessing of Might 25916 and Gift of the Wild 21850, whose book status I could not confirm; 21850 is the trainer's level-60 rank in vanilla, so check it), `copy` (a Forever copy of a book rank: Rejuvenation 417068, Renew 425277, Backstab 462717). It is a floor: an id missing from it is treated as a trainer rank.
+- The `spellranks` emitter writes `book: true` for those ids (only when true) and `data/builds/1.60.1.70009/spellranks.json` carries 36 flags. `manifest.json` was not regenerated, so its spellranks.json hash is stale until the nightly refreshes it.
+- `sim/internal/spellranks` and the ladder skip book rows unless `core.IncludeAQ` is on, through one function (`spellranks.RankAvailable`) that reads the engine's constant. `TestRewriteRotationRanksAtMaxLevelIsUnchanged` and `TestRotationAtMaxLevelParsesTheEmbedDirectly` pass unchanged: the highest learnable rank at 60 is the trainer rank the rotations name.
+- Shaman Enhancement named Strength of Earth 25361 (a book rank that the engine's IncludeAQ switched on); it now names 10442, rank 4.
+- Ladder goldens regenerated: the learned lists lose the book ranks and the level-60 violation rows that the first pass produced are gone, except Ferocious Bite (feral), Backstab (combat) and Shadow Bolt (destruction), which the ladder rotations do not cast at 60 under any id (the same rows exist at lower levels).
+
+Still red: `data` `test_every_spell_the_rotations_name_exists_with_that_rank` fails because the curated druid-feral rotation names Lacerate 1322605, which the 1.60.1.70009 spell table lacks; it fails on main too and is unrelated to this change. `sim/web` still fails to build on the missing `binary_dist` import.
 
 ## Open question
 

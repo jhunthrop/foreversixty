@@ -189,13 +189,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chill (spell 1308651)
 - Cone of Cold (spell 10161)
 - Debug Frost Spell (spell 29607)
-- Fireball (spell 25306)
 - Flamestrike (spell 10216)
 - Frost Nova (spell 10230)
-- Frostbolt (spell 25304)
+- Frostbolt (spell 10181)
 - Frostfire Bolt (spell 1237313)
 - Ice Lance (spell 1240047)
 
 ## Violations found in this run
 
-- mage-fire level=60 kind=zero_casts spell="Fireball" id=25306 authored=10151
+None.

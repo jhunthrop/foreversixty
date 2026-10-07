@@ -162,8 +162,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Ambush (spell 11269)
-- Backstab (spell 25300)
-- Eviscerate (spell 31016)
+- Backstab (spell 11281)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
@@ -175,4 +174,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- rogue-assassination level=60 kind=zero_casts spell="Eviscerate" id=31016 authored=11300
+None.

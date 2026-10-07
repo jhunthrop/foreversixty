@@ -176,7 +176,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Pummel (spell 6554)
 - Recycle (spell 458882)
 - Rend (spell 11574)
-- Revenge (spell 25288)
+- Revenge (spell 11601)
 - Shield Bash (spell 1672)
 - Shield Slam (spell 23925)
 - Test Strike W35 (spell 23850)
@@ -185,5 +185,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warrior-fury level=60 kind=zero_casts spell="Battle Shout" id=25289 authored=11551
-- warrior-fury level=60 kind=zero_casts spell="Heroic Strike" id=25286 authored=11567
+None.

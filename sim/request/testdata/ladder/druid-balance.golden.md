@@ -176,7 +176,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9850)
 - Entangling Roots (spell 9853)
-- Ferocious Bite (spell 31018)
+- Ferocious Bite (spell 22829)
 - Hurricane (spell 17402)
 - Lacerate (spell 1235827)
 - Maul (spell 9881)
@@ -186,10 +186,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Ravage (spell 9867)
 - Rip (spell 9896)
 - Shred (spell 9830)
-- Starfire (spell 25298)
 - Swipe (spell 9908)
 - Test Maul (spell 24042)
 
 ## Violations found in this run
 
-- druid-balance level=60 kind=zero_casts spell="Starfire" id=25298 authored=9876
+None.

@@ -186,19 +186,16 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Conflagrate (spell 18932)
-- Corruption (spell 25311)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
 - Haunt (spell 1293694)
 - Health Funnel (spell 11695)
 - Hellfire (spell 11684)
 - Hellfire Effect (spell 11682)
-- Immolate (spell 25309)
 - Incinerate (spell 1293813)
 - Lash of Pain (spell 11780)
 - Rain of Fire (spell 11678)
 - Searing Pain (spell 17923)
-- Shadow Bolt (spell 25307)
 - Shadow Cleave (spell 403852)
 - Shadowburn (spell 18871)
 - Soul Fire (spell 17924)
@@ -208,6 +205,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warlock-demonology level=60 kind=zero_casts spell="Corruption" id=25311 authored=11672
-- warlock-demonology level=60 kind=zero_casts spell="Immolate" id=25309 authored=11668
-- warlock-demonology level=60 kind=zero_casts spell="Shadow Bolt" id=25307 authored=11661
+None.

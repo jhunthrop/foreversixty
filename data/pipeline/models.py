@@ -946,6 +946,8 @@ class SpellRank(BaseModel):
     id: int
     rank: int
     level: int
+    #: An Ahn'Qiraj book rank (curated/book-ranks.json). Written only when true.
+    book: bool = False
 
 
 class SpellRanksFile(BaseModel):

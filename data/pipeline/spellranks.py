@@ -25,6 +25,7 @@ level 0, need neither a rewrite nor a level gate and are left out entirely.
 
 from __future__ import annotations
 
+import json
 import logging
 from collections import defaultdict
 from pathlib import Path
@@ -37,6 +38,14 @@ from pipeline.simconst import SPELLCONST
 logger = logging.getLogger(__name__)
 
 SPELLRANKS_FILE = "spellranks.json"
+
+#: The curated statement of which spell ids are Ahn'Qiraj book ranks; a rank whose
+#: id is listed is written `book: true`, and nothing reads it as learnable unless
+#: the engine's `core.IncludeAQ` is on.
+BOOK_RANKS_FILE = "book-ranks.json"
+
+#: data/curated, found from this file rather than the working directory.
+CURATED_DIR = Path(__file__).resolve().parent.parent / "curated"
 
 #: One spell entry as (id, rank, level, castable), the minimal shape this module
 #: works in before it becomes a `SpellRank`. `castable` is whether the client
@@ -107,34 +116,51 @@ def _rank_chain(entries: list[_Entry]) -> list[_Entry]:
     return sorted(entries, key=lambda entry: entry[0])
 
 
-def _spell_ranks_for_class(spells: dict[str, SpellConstant]) -> dict[str, list[SpellRank]]:
+def load_book_ids(curated: Path) -> frozenset[int]:
+    """The ids `curated/book-ranks.json` names as Ahn'Qiraj book ranks."""
+    path = curated / BOOK_RANKS_FILE
+    if not path.exists():
+        raise SystemExit(f"no {path}; the spellranks emitter marks book ranks from it")
+    books = json.loads(path.read_text(encoding="utf-8"))["books"]
+    return frozenset(int(book["id"]) for book in books)
+
+
+def _spell_ranks_for_class(
+    spells: dict[str, SpellConstant], book_ids: frozenset[int] = frozenset()
+) -> dict[str, list[SpellRank]]:
     names: dict[str, list[SpellRank]] = {}
     for name, entries in sorted(_entries_by_name(spells).items()):
         chain = _rank_chain(entries)
         if len(chain) <= 1 and all(level == 0 for _id, _rank, level, _castable in chain):
             continue
-        names[name] = [SpellRank(id=i, rank=r, level=lvl) for i, r, lvl, _castable in chain]
+        names[name] = [
+            SpellRank(id=i, rank=r, level=lvl, book=i in book_ids) for i, r, lvl, _castable in chain
+        ]
     return names
 
 
-def build_spell_ranks(build: str, records: list[ClassSpellConstants]) -> SpellRanksFile:
+def build_spell_ranks(
+    build: str, records: list[ClassSpellConstants], book_ids: frozenset[int] = frozenset()
+) -> SpellRanksFile:
     """The pure transform: every class's spell constants, no file I/O."""
     classes = {
-        record.class_slug: _spell_ranks_for_class(record.spells)
+        record.class_slug: _spell_ranks_for_class(record.spells, book_ids)
         for record in sorted(records, key=lambda r: r.class_slug)
     }
     return SpellRanksFile(build=build, classes=classes)
 
 
-def write_spell_ranks(build: str, root: Path = Path("builds")) -> Path:
+def write_spell_ranks(
+    build: str, root: Path = Path("builds"), curated: Path = CURATED_DIR
+) -> Path:
     build_dir = root / build
     spellconst_dir = build_dir / SPELLCONST
     if not spellconst_dir.exists():
         raise SystemExit(f"no {spellconst_dir}; run `python -m pipeline simconst` first")
     records = load_class_spell_constants(spellconst_dir)
-    result = build_spell_ranks(build, records)
+    result = build_spell_ranks(build, records, load_book_ids(curated))
     path = build_dir / SPELLRANKS_FILE
-    _write(result.model_dump(), path, sort_keys=True)
+    _write(result.model_dump(exclude_defaults=True), path, sort_keys=True)
     refresh_manifest(build_dir)
     total = sum(len(names) for names in result.classes.values())
     logger.info(

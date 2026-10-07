@@ -264,7 +264,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14266)
 - Savage Rend (spell 1265069)
 - Scorpid Poison (spell 24587)
-- Serpent Sting (spell 25295)
 - Sniper Shot (spell 1310786)
 - Sonic Blast (spell 1264482)
 - Strider Kick (spell 1317257)
@@ -281,5 +280,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - hunter-marksmanship level=50 kind=zero_casts spell="Arcane Shot" id=14285 authored=14287
-- hunter-marksmanship level=60 kind=zero_casts spell="Aspect of the Hawk" id=25296 authored=14322
-- hunter-marksmanship level=60 kind=zero_casts spell="Serpent Sting" id=25295 authored=13555

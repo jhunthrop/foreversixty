@@ -1,6 +1,7 @@
 package spellranks
 
 import (
+	"github.com/wowsims/classic/sim/core"
 	"os"
 	"testing"
 )
@@ -170,5 +171,39 @@ func TestATierWithSeveralIDsStaysInTheRotationsBand(t *testing.T) {
 	}
 	if got := sameBandOrFirst([]int32{408688}, 10414); got != 408688 {
 		t.Errorf("no classic candidate: got %d, want the first id", got)
+	}
+}
+
+// bookRankExcerpt is Aspect of the Hawk's top two ranks: the trainer's rank 6
+// (14322, level 58) and the Ahn'Qiraj book's rank 7 (25296, flagged book).
+const bookRankExcerpt = `{"build":"x","classes":{"hunter":{"Aspect of the Hawk":[
+  {"id":14321,"rank":5,"level":50},
+  {"id":14322,"rank":6,"level":58},
+  {"id":25296,"rank":7,"level":60,"book":true}]}}}`
+
+// A book rank is learnable exactly when the engine's own IncludeAQ says so:
+// the resolved id at level 60 is the book rank with it on, the trainer rank
+// without it, never a disagreement with what the engine registers.
+func TestBookRanksAreLearnedOnlyWhileTheEngineIncludesThem(t *testing.T) {
+	table, err := parseSpellRanks([]byte(bookRankExcerpt))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := int32(14322)
+	if core.IncludeAQ {
+		want = 25296
+	}
+	got, ok := highestLearnedIn(table["hunter"], 14322, 60)
+	if !ok || got != want {
+		t.Errorf("Aspect of the Hawk at level 60 resolves to %d (ok=%v), want %d for IncludeAQ=%v", got, ok, want, core.IncludeAQ)
+	}
+}
+
+func TestRankAvailableFollowsTheEnginesConstant(t *testing.T) {
+	if !RankAvailable(false) {
+		t.Error("a trainer rank must always be available")
+	}
+	if RankAvailable(true) != core.IncludeAQ {
+		t.Errorf("a book rank is available = %v, want core.IncludeAQ = %v", RankAvailable(true), core.IncludeAQ)
 	}
 }

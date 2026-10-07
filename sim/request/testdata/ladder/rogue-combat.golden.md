@@ -160,8 +160,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Ambush (spell 11269)
-- Backstab (spell 25300)
-- Eviscerate (spell 31016)
+- Backstab (spell 11281)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
@@ -178,5 +177,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - rogue-combat level=38 kind=zero_casts spell="Backstab" id=8721 authored=11281
 - rogue-combat level=40 kind=zero_casts spell="Backstab" id=8721 authored=11281
 - rogue-combat level=50 kind=zero_casts spell="Backstab" id=11279 authored=11281
-- rogue-combat level=60 kind=zero_casts spell="Backstab" id=25300 authored=11281
-- rogue-combat level=60 kind=zero_casts spell="Eviscerate" id=31016 authored=11300
+- rogue-combat level=60 kind=zero_casts spell="Backstab" id=11281 authored=11281

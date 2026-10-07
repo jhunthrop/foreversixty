@@ -43,6 +43,8 @@ import (
 	"slices"
 	"sort"
 	"sync"
+
+	"github.com/wowsims/classic/sim/core"
 )
 
 //go:embed spellranks.json
@@ -53,6 +55,17 @@ type spellRankRow struct {
 	ID    int32 `json:"id"`
 	Rank  int   `json:"rank"`
 	Level int   `json:"level"`
+	// Book marks an Ahn'Qiraj book rank (data/curated/book-ranks.json): a
+	// rank no trainer teaches, learnable only while core.IncludeAQ is on.
+	Book bool `json:"book"`
+}
+
+// RankAvailable reports whether a spellranks.json row is a rank a level-60
+// character can learn: every trainer rank, and a book rank only while the
+// engine's own core.IncludeAQ is on. Reading the engine's constant (not a
+// copy) is what keeps this table and the engine's spellbook from disagreeing.
+func RankAvailable(book bool) bool {
+	return !book || core.IncludeAQ
 }
 
 // spellRanksFile is the whole embedded table.
@@ -124,7 +137,7 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 	idsByRank := make(map[int][]int32)
 	var ranks []int
 	for _, row := range rows {
-		if row.Rank <= 0 {
+		if row.Rank <= 0 || !RankAvailable(row.Book) {
 			continue
 		}
 		if _, seen := levelByRank[row.Rank]; !seen {
