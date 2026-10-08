@@ -504,7 +504,10 @@
 
 {#if status === 'missing'}
   <h1 class="sr-only">Guild</h1>
-  <p class="text-[14px]" data-testid="guild-missing">
+  <!-- Keeps the loading skeleton's height: this branch replaces it on the client (an address
+       that does not parse never fetches), and a footer that jumps up the page by the
+       skeleton's height is the layout shift the guild Lighthouse row measured. -->
+  <p class="text-[14px] {GUILD_LOADING.home.minHeight}" data-testid="guild-missing">
     That is not a guild address. They look like <code class="font-mono">/guild/eu/normal/the-last-watch</code
     >.
   </p>

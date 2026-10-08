@@ -12,6 +12,7 @@ import { simCopy } from '../../src/lib/sim/copy';
 import { SPECS } from '../../src/lib/sim/specs';
 
 const dpsSpecCount = SPECS.filter((spec) => spec.role === 'dps').length;
+const unsimulatedSpecCount = SPECS.length - dpsSpecCount;
 
 // Read as JSON rather than imported as an ES module: Playwright's own Node runtime needs an
 // import attribute this repo's other e2e specs do not carry for a plain `.json` import, so
@@ -48,7 +49,7 @@ test.describe('/sim/specs', () => {
     await stubSpecs(page);
     await page.goto('/sim/specs');
 
-    // Scoped to the simulated grid (task-2-brief.md's second group, the 7 healer/tank
+    // Scoped to the simulated grid (task-2-brief.md's second group, the healer/tank
     // "not simulated yet" cards, lives in its own `specs-grid-unsimulated` container below
     // and is asserted separately) -- otherwise this locator's own `^="spec-"` prefix would
     // also match `spec-unsimulated-<slug>`.
@@ -88,7 +89,7 @@ test.describe('/sim/specs', () => {
   // task-2-brief.md: the 7 healer/tank specs, grouped under their own heading below the 20
   // simulated ones -- never missing (the reviewers' own complaint), never interleaved, and
   // visibly a different kind of card.
-  test('groups the 7 healer/tank specs under their own heading, with no fidelity pill, engine stamp or link', async ({
+  test('groups the healer and tank specs under their own heading, with no fidelity pill, engine stamp or link', async ({
     page,
   }) => {
     await stubSpecs(page);
@@ -99,7 +100,7 @@ test.describe('/sim/specs', () => {
 
     const unsimulated = page.getByTestId('specs-grid-unsimulated');
     const cards = unsimulated.locator('[data-testid^="spec-unsimulated-"]');
-    await expect(cards).toHaveCount(7);
+    await expect(cards).toHaveCount(unsimulatedSpecCount);
 
     const protectionWarrior = page.getByTestId('spec-unsimulated-warrior-protection');
     await expect(protectionWarrior).toContainText('Protection Warrior');
