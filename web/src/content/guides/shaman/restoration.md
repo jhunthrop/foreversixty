@@ -30,7 +30,7 @@ Restoration is Shaman's dedicated healing tree, centered on Healing Wave and tot
 
 ## Talents and builds
 
-The build is nearly all Restoration, with the rest in Elemental where the points cost a healer nothing. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build is nearly all Restoration, with the rest in Elemental where the points cost a healer nothing. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 - **Improved Healing Wave** shortens Healing Wave, and **Healing Way** strengthens it; **Purification** is a flat multiplier on every heal.
 - **Tidal Focus** makes the healing spells cheaper (and adds hit, which a healer does not use), **Mindfulness** keeps part of your regeneration running while you cast, and **Tidal Mastery** adds critical chance.
@@ -49,7 +49,7 @@ Under the profile the shaman's mana lasts the whole fight at raid-ready gear, so
 
 In simulator-derived order, per point of stat: **MP5** first, then **Intellect**, **Spirit** after it, **healing power** and **critical strike** behind. The shaman's mana lasts the whole fight at raid-ready gear, so extra throughput is what turns into healing; before that gear the same order holds because regeneration is what keeps the casts coming. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
 
-Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 

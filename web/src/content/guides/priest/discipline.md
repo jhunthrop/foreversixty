@@ -30,7 +30,7 @@ Discipline is the shield-and-mitigation healing tree, leaning on Power Word: Shi
 
 ## Talents and builds
 
-The build spends its deep points in Discipline and fills Holy with the points that make the heals cast faster and cheaper. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build spends its deep points in Discipline and fills Holy with the points that make the heals cast faster and cheaper. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 - **Twin Disciplines, Improved Power Word: Shield and Mental Agility** are the early rows: instant spells heal more, the shield absorbs more, and instants cost less.
 - **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** lifts Intellect; **Inner Focus** is a free, extra-critical heal on demand.
@@ -49,7 +49,7 @@ The shield, the filler and Prayer of Healing are paced against your mana the way
 
 In simulator-derived order, per point of stat: **MP5** first, then **Spirit**, **healing power** and **Intellect** close together, with **critical strike** last and measured with less certainty. The fight is mana-bound, so regeneration and the pool matter more than a point of throughput. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
 
-Spell power adds nothing to a heal; it is the damage side of a healing item. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+Spell power adds nothing to a heal; it is the damage side of a healing item. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 

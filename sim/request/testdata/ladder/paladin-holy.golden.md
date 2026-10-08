@@ -95,11 +95,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 01000000000000000-0000000000000000-00000000000000000 | main_hand:277247 | 0.0 | 0 | - | {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
 | 20 | 05320001000000000-0000000000000000-00000000000000000 | main_hand:6953 | 9.6 | 1 | spell:19750=54.0 | {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
-| 30 | 05320003224000000-0000000000000000-00000000000000000 | main_hand:267369 | 16.3 | 1 | spell:19939=59.0, other:mana_gain=3.4 | {SpellID: 1311606}, {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
-| 38 | 05320003225111040-0000000000000000-00000000000000000 | main_hand:267369 | 22.8 | 2 | spell:19940=52.5, other:mana_gain=8.6, spell:20216=3.0 | {SpellID: 25292}, {SpellID: 25890} |
-| 40 | 05320003225111051-0000000000000000-00000000000000000 | main_hand:7723 | 24.6 | 4 | spell:19940=55.7, other:mana_gain=9.8, spell:20216=3.0, spell:20473=0.0, spell:25914=0.0 | {SpellID: 25292}, {SpellID: 25890} |
-| 50 | 05320003225111051-5500000000000000-00000000000000000 | main_hand:7723 | 38.9 | 2 | spell:19942=42.8, other:mana_gain=7.8, spell:20216=2.9 | {SpellID: 25292}, {SpellID: 25890} |
-| 60 | 05320003225111051-5532500000000000-00000000000000000 | main_hand:23455 | 55.0 | 4 | spell:19941=29.5, spell:19943=20.8, other:mana_gain=8.5, spell:20216=2.1, spell:25890=1.0 | - |
+| 30 | 05320003224000000-0000000000000000-00000000000000000 | main_hand:267369 | 16.3 | 1 | spell:19939=59.1, other:mana_gain=3.4 | {SpellID: 1311606}, {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
+| 38 | 05320003225111040-0000000000000000-00000000000000000 | main_hand:267369 | 22.8 | 4 | spell:19940=52.5, other:mana_gain=8.6, spell:20216=3.0, spell:1311605=0.0, spell:1311606=0.0 | {SpellID: 25292}, {SpellID: 25890} |
+| 40 | 05320003225111051-0000000000000000-00000000000000000 | main_hand:7723 | 24.6 | 4 | spell:19940=55.6, other:mana_gain=9.7, spell:20216=3.0, spell:20473=0.0, spell:25914=0.0 | {SpellID: 25292}, {SpellID: 25890} |
+| 50 | 05320003225111051-5500000000000000-00000000000000000 | main_hand:7723 | 39.4 | 4 | spell:19942=43.1, other:mana_gain=8.4, spell:20216=3.0, spell:20929=0.0, spell:25913=0.0 | {SpellID: 25292}, {SpellID: 25890} |
+| 60 | 05320003225111051-5532500000000000-00000000000000000 | main_hand:23455 | 60.7 | 5 | spell:19941=30.2, spell:19943=17.9, other:mana_gain=9.4, spell:20216=3.0, spell:25890=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -178,11 +178,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - paladin-holy level=30 kind=unresolved_id action={SpellID: 25890}
 - paladin-holy level=38 kind=unresolved_id action={SpellID: 25292}
 - paladin-holy level=38 kind=unresolved_id action={SpellID: 25890}
-- paladin-holy level=38 kind=zero_casts spell="Holy Shock" id=1311606 authored=1311606
 - paladin-holy level=40 kind=unresolved_id action={SpellID: 25292}
 - paladin-holy level=40 kind=unresolved_id action={SpellID: 25890}
 - paladin-holy level=50 kind=unresolved_id action={SpellID: 25292}
 - paladin-holy level=50 kind=unresolved_id action={SpellID: 25890}
-- paladin-holy level=50 kind=zero_casts spell="Holy Shock" id=20929 authored=1311606
-- paladin-holy level=60 kind=zero_casts id=25292 authored=25292 (untracked ability; not in spellranks.json's rank chains)
 - paladin-holy level=60 kind=zero_casts spell="Holy Shock" id=20930 authored=1311606

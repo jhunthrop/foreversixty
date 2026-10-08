@@ -30,7 +30,7 @@ Holy is the throughput healing tree for Priest, leaning on efficient direct and 
 
 ## Talents and builds
 
-The build spends its deep points in Holy and fills Discipline with the mana and spell-cost talents a healer wants. Chosen by simming candidate builds on the same gear against the same fight, not by recollection. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build spends its deep points in Holy and fills Discipline with the mana and spell-cost talents a healer wants. Chosen by simming candidate builds on the same gear against the same fight, not by recollection. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 - **Holy Specialization, Divine Fury and Improved Renew** open the tree: more critical heals, Heal and Greater Heal cast faster, and a stronger Renew.
 - **Improved Healing** makes the direct heals cheaper, and **Litany of Light** pays mana back when you switch heals instead of repeating one.
@@ -50,7 +50,7 @@ The filler and Prayer of Healing are paced against your mana: they only fire at 
 
 In simulator-derived order, per point of stat, the mana stats outrank raw healing: **MP5** and **Spirit** buy more healing over the fight than a point of anything else, then **Intellect**, then **healing power**, with **critical strike** last. That order follows from the fight being mana-bound: a healer who runs dry stops healing, so a point of regeneration is worth more than a point of throughput. Items still trade many points of one for few of another, so read the list as "which stat is cheap to give up", not "which stat to hunt".
 
-Spell power, the damage side of a healing item, adds nothing to a heal. Forever puts a third of every healing bonus on an item as spell damage; it is the healing number that heals. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+Spell power, the damage side of a healing item, adds nothing to a heal. Forever puts a third of every healing bonus on an item as spell damage; it is the healing number that heals. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 
