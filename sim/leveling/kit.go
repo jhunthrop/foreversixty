@@ -72,6 +72,7 @@ const (
 	arcaneBrillianceBuff = "arcane_brilliance"
 	giftOfTheWildBuff    = "gift_of_the_wild"
 	blessingOfMightBuff  = "blessing_of_might"
+	devotionAuraBuff     = "devotion_aura"
 	huntersMarkBuff      = "hunters_mark"
 )
 
@@ -110,6 +111,13 @@ const huntersMarkLevel = 6
 //     Blessing of Might. Forever's Holy tree has no Improved Blessing of
 //     Might, so no ":improved" form.
 //
+//   - paladin-protection, from level 1: Devotion Aura, the armor aura a
+//     Protection paladin runs (client spell 465, rank 1). Blessing of
+//     Sanctuary, the vanilla tank blessing, is not in this client, so the
+//     aura is the one defensive buff a paladin brings itself. The engine
+//     applies the rank the character's level can learn
+//     (core.DevotionAuraRanks).
+//
 //   - hunter-survival, from level 6 (Hunter's Mark's first rank): Hunter's
 //     Mark, a target debuff the engine takes as a request buff. Expose
 //     Prey (2026-10-07, design/reviews/2026-10-07-mongoose-bite.md) opens
@@ -125,11 +133,10 @@ func KitBuffs(spec string, level int) []string {
 		return []string{arcaneBrillianceBuff}
 	case isClassSpec(spec, "druid"):
 		return []string{giftOfTheWildBuff}
+	case spec == "paladin-protection":
+		return paladinKitBuffs(level, devotionAuraBuff)
 	case isClassSpec(spec, "paladin"):
-		if level < blessingOfMightLevel {
-			return nil
-		}
-		return []string{blessingOfMightBuff}
+		return paladinKitBuffs(level)
 	case spec == "hunter-survival":
 		if level < huntersMarkLevel {
 			return nil
@@ -138,6 +145,17 @@ func KitBuffs(spec string, level int) []string {
 	default:
 		return nil
 	}
+}
+
+// paladinKitBuffs is Blessing of Might from the level it is learned, then
+// the spec's own aura buffs, which Devotion Aura learns at level 1.
+func paladinKitBuffs(level int, auras ...string) []string {
+	var buffs []string
+	if level >= blessingOfMightLevel {
+		buffs = append(buffs, blessingOfMightBuff)
+	}
+	buffs = append(buffs, auras...)
+	return buffs
 }
 
 // isRogueSpec matches the bare class ("rogue", used where a caller has

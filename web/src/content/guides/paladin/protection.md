@@ -3,7 +3,7 @@ title: Protection Paladin in Forever
 classSlug: paladin
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70009:paladin:dwarf:55313003/5530513301301001/0:'
+build: 'FS1:1.60.1.70009:paladin:dwarf:50003/5530513321301051/5:'
 recommendedRaces: [dwarf, undead]
 statPriority:
   [
@@ -47,7 +47,7 @@ Protection is Forever's Paladin tanking tree, built around Seal of Fury for thre
 
 ## Talents and builds
 
-This build spends 31 points in Protection to reach Holy Shield and 20 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text.
+This build spends 38 points in Protection, 5 in Retribution and 8 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text. The first draft of it put the points past Holy Shield into the Holy tree's healing talents; pricing each choice in the simulator moved the paladin's chance of death in the tank fight from about one fight in seven to about one in a hundred, which is why the list below spends them where it does.
 
 **Protection**, in roughly the order you would take them:
 
@@ -58,14 +58,18 @@ This build spends 31 points in Protection to reach Holy Shield and 20 in Holy, a
 - **Improved Seal of Fury** — when Seal of Fury's shield is spent, you get mana back; it is the talent that makes the shield a mana source.
 - **Improved Righteous Fury** — while Righteous Fury is on, all damage you take is reduced. In Forever it is a mitigation talent, not a threat one.
 - **Shield Specialization** — a stronger shield absorb and mana back on a Block, no more than once every few seconds.
+- **Sacred Duty** — more total Stamina, and shorter cooldowns on your three emergency defensives.
 - **Swift Judgement** — finishes Judgement's cooldown and makes the next one free.
 - **One-Handed Weapon Specialization** — more damage with the one-hander you tank with.
 - **Templar's Bulwark** — an activated absorb shield worth a large share of your health, followed by Forbearance. It is one point because Holy Shield requires it.
+- **Iron Creed** — more threat on Holy Strike, and while Righteous Fury is on, Holy Strike also cuts the damage you take for a few seconds. With Holy Strike on its ten second cooldown that is a damage cut about half the time, the largest single mitigation gain left after the 31 points.
 - **Holy Shield** — the 31-point talent: more Block for a short window, Holy damage on every Block, and a little extra threat on that damage.
 
-**Holy**, the twenty that remain: Divine Strength and Divine Intellect for the raw stats, Improved Seals for more Seal of Fury and Judgement damage, Reverence for mana while you fight, and the tier gates they stand on.
+**Retribution**: all five points in **Deflection**, five percent more Parry. It is the only parry a paladin can get from a talent, and it sits in the Retribution tree.
 
-Left out to fit the budget: Reckoning (an extra attack after you block or are critically hit), Iron Creed (more threat on Holy Strike, and less damage taken after it while Righteous Fury is on) and Sacred Duty (more stamina and shorter defensive cooldowns). Each is worth a look as you gain points; the simulator can price them in the planner. Blessing of Sanctuary is not in this build of the game, so the Protection tree gives a paladin no blessing of its own.
+**Holy**, the eight that remain: Divine Strength for the raw Strength, and Improved Seals for more Seal of Fury and Judgement damage.
+
+Left out to fit the budget: Reckoning (an extra attack after you block or are critically hit; priced in the simulator it adds threat but no survival), Guardian's Favor and Improved Hammer of Justice (utility). Blessing of Sanctuary is not in this build of the game, so the Protection tree gives a paladin no blessing of its own; the paladin's own contribution to its armor is Devotion Aura, which the simulator keeps on.
 
 Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
