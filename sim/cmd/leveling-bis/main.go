@@ -609,6 +609,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// is otherwise "NOT checked here" at all.
 				bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
 				bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
+				bySlot["main_hand"] = restrictTankMainHand(specInfo, bySlot["main_hand"])
 				bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
 				if requiresDagger {
 					// weapon_requirements.go's own doc: a mace or sword is a

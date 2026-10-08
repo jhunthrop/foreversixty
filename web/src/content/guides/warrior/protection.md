@@ -3,7 +3,7 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70009:warrior:dwarf:0/5525003/255513121310001001:'
+build: 'FS1:1.60.1.70009:warrior:dwarf:35305013/0/050533120330001311:'
 recommendedRaces: [dwarf, tauren]
 statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, tanking priority, stat priority, and race picks for Protection Warrior in Forever, with beta-versus-projection called out.'

@@ -22,8 +22,8 @@
       "reason": "One melee swing every 2.0 seconds, the cadence of most Classic raid melee bosses. A faster boss favours block value and avoidance streaks less than a slower, harder-hitting one; 2.0 s sits between."
     },
     "min_base_damage": {
-      "value": 1900,
-      "reason": "The least a swing rolls before armor at the reference level. The engine rolls the minimum up to (1 + damage spread) times it, so the mean unmitigated swing is about 2,200 at level 60, the order of a Molten Core boss's hit on an unmitigated cloth wearer divided down to a plate tank's. Chosen so a raid-ready level 60 tank takes several hundred damage per second and a bare one cannot be healed through: the range in which armor, avoidance and health all move the result."
+      "value": 2500,
+      "reason": "The least a swing rolls before armor at the reference level. The engine rolls the minimum up to (1 + damage spread) times it, so the mean unmitigated swing is about 2,900 at level 60. Chosen so a raid-ready level 60 tank takes a few hundred damage per second and is rarely killed, while a bare one is killed in a real share of fights: the range in which armor, avoidance and health all move the result."
     },
     "damage_spread": {
       "value": 0.33,
@@ -41,7 +41,7 @@
   "healers": {
     "hps": {
       "value": 440,
-      "reason": "Healing per second the tank receives at level 60, the output of the healers the raid assigns to the main tank. The healers are assumed, not simulated: they heal in a steady cadence regardless of the tank's health, so chance of death measures how often the tank's health runs out between heals and total damage taken cannot be undone by a fast heal. Set below the damage a raid-ready tank takes per second so a poorly mitigated set dies and a well mitigated one does not."
+      "reason": "Healing per second the tank receives at level 60, the output of the healers the raid assigns to the main tank. The healers are assumed, not simulated: they heal in a steady cadence regardless of the tank's health, so chance of death measures how often the tank's health runs out between heals and total damage taken cannot be undone by a fast heal. Set so that a poorly mitigated set dies in a real share of fights, because the healers cannot catch up with its spikes, and a well mitigated one rarely does."
     },
     "cadence_sec": {
       "value": 2.0,

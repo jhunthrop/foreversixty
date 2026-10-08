@@ -47,13 +47,13 @@ func tankLadderCharacter(spec specInfo, items []candidate, level int, ch api.Cha
 	if spec.Role != roleTank {
 		return ch
 	}
-	worn := make(map[string]bool, len(ch.Gear))
-	taken := make(map[int]bool, len(ch.Gear))
-	for _, g := range ch.Gear {
+	gear := oneHandedWeaponForShield(spec, items, level, ch.Gear)
+	worn := make(map[string]bool, len(gear))
+	taken := make(map[int]bool, len(gear))
+	for _, g := range gear {
 		worn[g.Slot] = true
 		taken[g.ItemID] = true
 	}
-	gear := append([]api.GearSlot(nil), ch.Gear...)
 	for _, slot := range tankBaselineSlots {
 		if worn[slot] {
 			continue
@@ -65,6 +65,76 @@ func tankLadderCharacter(spec specInfo, items []candidate, level int, ch api.Cha
 	}
 	ch.Gear = gear
 	return ch
+}
+
+// shieldClasses are the tank classes that fight with a shield, and so with
+// a one-handed weapon. A bear holds no shield and swings whatever its
+// paw is, so it has no such rule.
+var shieldClasses = map[string]bool{"warrior": true, "paladin": true}
+
+func wearsShield(spec specInfo) bool {
+	return spec.Role == roleTank && shieldClasses[spec.ClassSlug]
+}
+
+// restrictTankMainHand drops the two-handers from a shield tank's main
+// hand: Shield Slam, Shield Block and the block talents all need the
+// shield, and the shield needs the other hand free.
+func restrictTankMainHand(spec specInfo, list []scored) []scored {
+	if !wearsShield(spec) {
+		return list
+	}
+	out := make([]scored, 0, len(list))
+	for _, c := range list {
+		if !c.TwoHand {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+
+// oneHandedWeaponForShield is gear with a shield tank's main hand made a
+// one-hander: the ladder arms the weights character with the strongest
+// weapon, which is a two-hander for most levels, and a tank swept on one
+// would have no shield to block with. The strongest one-hander replaces
+// it. Gear for any other spec is returned as it came.
+func oneHandedWeaponForShield(spec specInfo, items []candidate, level int, gear []api.GearSlot) []api.GearSlot {
+	out := append([]api.GearSlot(nil), gear...)
+	if !wearsShield(spec) {
+		return out
+	}
+	twoHanded := make(map[int]bool)
+	for _, c := range items {
+		if c.TwoHand {
+			twoHanded[c.ID] = true
+		}
+	}
+	kept := out[:0]
+	for _, g := range out {
+		if g.Slot == "main_hand" && twoHanded[g.ItemID] {
+			continue
+		}
+		kept = append(kept, g)
+	}
+	out = kept
+	for _, g := range out {
+		if g.Slot == "main_hand" {
+			return out
+		}
+	}
+	var best *candidate
+	for i := range items {
+		c := &items[i]
+		if c.TwoHand || c.DPS <= 0 || c.RequiredLevel > level || !offersSlot(*c, "main_hand") {
+			continue
+		}
+		if best == nil || c.DPS > best.DPS {
+			best = c
+		}
+	}
+	if best != nil {
+		out = append(out, api.GearSlot{Slot: "main_hand", ItemID: best.ID})
+	}
+	return out
 }
 
 // tankBaselinePick is the representative piece for one slot, or nil.
