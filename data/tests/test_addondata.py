@@ -9,7 +9,7 @@ import pytest
 from pipeline.addondata import AddonDataError, build_addon_data, check_addon_data, write_addon_data
 from pipeline.addonlua import render_lua, write_lua
 
-BUILD = "1.60.1.70009"
+BUILD = "1.60.1.70291"
 
 
 def test_every_class_has_three_tabs_in_position_order():

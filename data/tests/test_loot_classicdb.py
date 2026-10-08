@@ -35,7 +35,7 @@ from pipeline.loot.sources import item_factions
 from pipeline.normalize.gear import SLOT_BY_INVENTORY_TYPE
 from pipeline.quest_levels import load_quest_levels
 
-BUILD = "1.60.1.70009"
+BUILD = "1.60.1.70291"
 BUILD_DIR = Path("builds") / BUILD
 
 

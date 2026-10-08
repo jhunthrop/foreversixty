@@ -9,7 +9,7 @@ import pytest
 
 from pipeline.normalize.gear import RATING_FAMILY_STAT_KEYS
 
-BUILD = Path(__file__).parent.parent / "builds" / "1.60.1.70009"
+BUILD = Path(__file__).parent.parent / "builds" / "1.60.1.70291"
 LIONHEART_HELM = 12640  # 20 hit / 28 crit rating points
 FURY_VISOR = 20521  # on-equip aura: a literal 1% hit / 1% crit
 
@@ -17,7 +17,7 @@ FURY_VISOR = 20521  # on-equip aura: a literal 1% hit / 1% crit
 def _warrior_items() -> dict[int, dict]:
     path = BUILD / "items" / "warrior.json"
     if not path.exists():
-        pytest.skip("build 1.60.1.70009 is not committed here")
+        pytest.skip("build 1.60.1.70291 is not committed here")
     return {item["id"]: item for item in json.loads(path.read_text())["items"]}
 
 

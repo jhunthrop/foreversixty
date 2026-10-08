@@ -13,7 +13,7 @@ import json
 from functools import cache
 from pathlib import Path
 
-BUILD = "1.60.1.70009"
+BUILD = "1.60.1.70291"
 BUILD_DIR = Path("builds") / BUILD
 
 

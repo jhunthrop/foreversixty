@@ -13,7 +13,7 @@ from pipeline.addonlua import lua_has_drifted
 from pipeline.audit import check_addon
 from pipeline.audit.context import AuditContext
 
-BUILD = "1.60.1.70009"
+BUILD = "1.60.1.70291"
 
 
 def test_clean_build_has_no_drift_findings():
@@ -36,7 +36,8 @@ def test_drifted_addon_data_is_a_blocker(tmp_path):
     import shutil
 
     shutil.copytree(real / "talents", build_dir / "talents")
-    shutil.copytree(real / "bis", build_dir / "bis")
+    if (real / "bis").exists():  # a build the nightly has not ranked yet has none
+        shutil.copytree(real / "bis", build_dir / "bis")
     # Corrupt the committed copy so it disagrees with what build_addon_data
     # would regenerate from the same talents/bis inputs.
     data = json.loads((build_dir / "addon-data.json").read_text(encoding="utf-8"))

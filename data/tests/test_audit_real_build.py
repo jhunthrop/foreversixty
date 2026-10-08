@@ -12,7 +12,7 @@ from pipeline.audit import run_audit
 from pipeline.audit.findings import SEVERITIES
 from pipeline.audit.report import summary_line
 
-BUILD = "1.60.1.70009"
+BUILD = "1.60.1.70291"
 
 pytestmark = pytest.mark.skipif(
     os.environ.get("FOREVER_AUDIT_REAL") != "1",

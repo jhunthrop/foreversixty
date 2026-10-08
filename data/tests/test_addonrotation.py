@@ -13,7 +13,7 @@ from pipeline.addonrotation import (
     build_rotations,
 )
 
-BUILD = "1.60.1.70009"
+BUILD = "1.60.1.70291"
 
 SPELLRANKS = {
     "build": BUILD,
