@@ -102,18 +102,42 @@ func ParseBuildCode(code string) (build string, trees [3]string, err error) {
 	return m[1], [3]string{m[4], m[5], m[6]}, nil
 }
 
+// raidBuildRe pulls the raid build's FS1 code out of a guide's frontmatter:
+// raidBuild: 'FS1:...'. It is anchored to the line start so it never
+// matches the leveling build's own `build:` line, and vice versa.
+var raidBuildRe = regexp.MustCompile(`(?m)^raidBuild:\s*'FS1:([^:]+):([^:]+):([^:]+):([^/]+)/([^/]+)/([^:]+):'`)
+
 // GuideBuildTalents reads a spec's guide and returns the client build its
 // FS1 code names and the three trees' digit strings, in the code's own
 // order.
 func GuideBuildTalents(repoRoot, class, specSlug string) (build string, trees [3]string, err error) {
+	return readGuideBuild(repoRoot, class, specSlug, guideBuildRe)
+}
+
+// GuideRaidBuildTalents is GuideBuildTalents for the guide's raid build
+// (the `raidBuild:` frontmatter line): the build the raid-ready preset's
+// level-60 entry is simmed on. A guide without one has no separate raid
+// build, so the leveling build is the raid build and is returned instead.
+func GuideRaidBuildTalents(repoRoot, class, specSlug string) (build string, trees [3]string, err error) {
+	build, trees, err = readGuideBuild(repoRoot, class, specSlug, raidBuildRe)
+	if errors.Is(err, errNoBuildLine) {
+		return GuideBuildTalents(repoRoot, class, specSlug)
+	}
+	return build, trees, err
+}
+
+// errNoBuildLine marks a guide that exists but has no matching build line.
+var errNoBuildLine = errors.New("no matching build line")
+
+func readGuideBuild(repoRoot, class, specSlug string, re *regexp.Regexp) (build string, trees [3]string, err error) {
 	path := filepath.Join(repoRoot, "web", "src", "content", "guides", class, specSlug+".md")
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return "", trees, fmt.Errorf("leveling: reading %s: %w", path, err)
 	}
-	m := guideBuildRe.FindSubmatch(b)
+	m := re.FindSubmatch(b)
 	if m == nil {
-		return "", trees, fmt.Errorf("leveling: %s has no FS1 build line", path)
+		return "", trees, fmt.Errorf("leveling: %s has no matching FS1 build line: %w", path, errNoBuildLine)
 	}
 	return string(m[1]), [3]string{string(m[4]), string(m[5]), string(m[6])}, nil
 }

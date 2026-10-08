@@ -49,11 +49,11 @@ func main() {
 
 // options is one search's parameters.
 type options struct {
-	repoRoot, spec, faction, preset, build, out, engineSrc string
-	level                                                  int
-	probeIters, screenIters, finalIters                    int
-	top, limit, refineTop                                  int
-	seed                                                   int64
+	repoRoot, spec, faction, preset, build, out, engineSrc, keep string
+	level                                                        int
+	probeIters, screenIters, finalIters                          int
+	top, limit, refineTop                                        int
+	seed                                                         int64
 }
 
 func parseOptions(args []string) (options, error) {
@@ -73,6 +73,7 @@ func parseOptions(args []string) (options, error) {
 	fs.IntVar(&o.refineTop, "refine", 3, "swap refinements kept per structural build")
 	fs.Int64Var(&o.seed, "seed", 7, "one seed for every sim (paired comparisons)")
 	fs.StringVar(&o.out, "out", "", "report directory; defaults to design/reviews/talent-search under -repo-root")
+	fs.StringVar(&o.keep, "keep", "", "comma-separated talent names no candidate may take a point from (a raid search protects what the rotation casts, the raid-wide auras, threat reduction and survivability cooldowns)")
 	fs.StringVar(&o.engineSrc, "engine-src", "", "engine module source directory; defaults to go list -m's")
 	if err := fs.Parse(args); err != nil {
 		return o, err
@@ -104,7 +105,7 @@ func run(args []string) error {
 	if err != nil {
 		return err
 	}
-	pool := generate(in.setup.trees, in.guide, credits, in.modeled, o.level-9, o.refineTop)
+	pool := generate(in.setup.trees, in.guide, credits, in.modeled, in.keep, o.level-9, o.refineTop)
 	cands := capCandidates(pool, o.limit)
 	log.Printf("talent-search: %s: %d candidates generated, %d screened", o.spec, len(pool), len(cands))
 	clean := func(b build) bool { return len(removedUnmodeled(in, credits, b)) == 0 }
@@ -144,6 +145,7 @@ type inputs struct {
 	guideCode   string // the guide frontmatter's own trees and client build
 	guideIssue  string // why the guide is not a legal active-build build, if it is not
 	modeled     map[int]bool
+	keep        map[int]bool // talents no candidate may take a point from (-keep)
 }
 
 func prepare(o options) (inputs, error) {
@@ -206,7 +208,10 @@ func prepare(o options) (inputs, error) {
 	if err != nil {
 		return inputs{}, err
 	}
-	in.modeled, err = modeledTalents(trees, layout, names)
+	if in.modeled, err = modeledTalents(trees, layout, names); err != nil {
+		return inputs{}, err
+	}
+	in.keep, err = resolveKeep(trees, splitKeep(o.keep))
 	return in, err
 }
 

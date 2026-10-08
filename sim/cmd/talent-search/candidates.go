@@ -41,11 +41,11 @@ func sortedIDs[V any](m map[int]V) []int {
 // swaps is every legal build one group move away from base: 1..5
 // points out of a talent the engine does not credit with damage and
 // into one it does, in any tree, at the same total.
-func swaps(t talentTrees, base build, credits map[int]credit, labelPrefix string) []candidate {
+func swaps(t talentTrees, base build, credits map[int]credit, keep map[int]bool, labelPrefix string) []candidate {
 	total := base.points()
 	var out []candidate
 	for _, src := range sortedIDs(base) {
-		if credits[src].Damage {
+		if credits[src].Damage || keep[src] {
 			continue
 		}
 		for k := 1; k <= base[src] && k <= maxSwapPoints; k++ {
@@ -201,12 +201,17 @@ func strip(t talentTrees, b build, removable func(id int) bool) build {
 // the talents the engine's code reads: the guide re-spent twice, once
 // moving every non-damage point and once moving only modeled ones -
 // a talent the engine never reads sims as zero, so moving it is the
-// engine's blind spot rather than a finding.
-func generate(t talentTrees, guide build, credits map[int]credit, modeled map[int]bool, total, refineTop int) []candidate {
+// engine's blind spot rather than a finding. keep is the talents no
+// candidate may take a point from (see resolveKeep): they are never a
+// swap source or a re-spent point, the deep archetypes start from the
+// guide stripped to them, and a candidate that still ends below the
+// guide's rank in one is dropped.
+func generate(t talentTrees, guide build, credits map[int]credit, modeled, keep map[int]bool, total, refineTop int) []candidate {
 	var pool []candidate
 	s := scorer{credits: credits, prefer: guide}
-	nonDamage := func(id int) bool { return !credits[id].Damage }
-	modeledNonDamage := func(id int) bool { return modeled[id] && !credits[id].Damage }
+	nonDamage := func(id int) bool { return !credits[id].Damage && !keep[id] }
+	modeledNonDamage := func(id int) bool { return modeled[id] && !credits[id].Damage && !keep[id] }
+	deepSeed := deepArchetypeSeed(t, guide, keep)
 	structural := []candidate{{
 		Label:      "guide, modeled non-damage points re-spent",
 		Build:      s.fill(t, strip(t, guide, modeledNonDamage), total, -1),
@@ -219,13 +224,13 @@ func generate(t talentTrees, guide build, credits map[int]credit, modeled map[in
 	for ti, tree := range t.trees {
 		structural = append(structural, candidate{
 			Label:      fmt.Sprintf("deep %s", tree.Name),
-			Build:      s.fill(t, build{}, total, ti),
+			Build:      s.fill(t, deepSeed, total, ti),
 			Structural: true,
 		})
 	}
 	for _, st := range structural {
 		pool = append(pool, st)
-		refined := swaps(t, st.Build, credits, st.Label+" + ")
+		refined := swaps(t, st.Build, credits, keep, st.Label+" + ")
 		for i := range refined {
 			refined[i].Estimate = estimateGain(st.Build, refined[i].Build, credits)
 		}
@@ -235,11 +240,43 @@ func generate(t talentTrees, guide build, credits map[int]credit, modeled map[in
 		}
 		pool = append(pool, refined...)
 	}
-	pool = append(pool, swaps(t, guide, credits, "guide: ")...)
+	pool = append(pool, swaps(t, guide, credits, keep, "guide: ")...)
 	for i := range pool {
 		pool[i].Estimate = estimateGain(guide, pool[i].Build, credits)
 	}
-	return dedupe(t, guide, pool)
+	return dedupe(t, guide, withoutBelowGuide(pool, guide, keep))
+}
+
+// deepArchetypeSeed is where a deep archetype starts: nothing, or with
+// a keep list the guide stripped down to the kept talents (and whatever
+// they need beneath them), so the archetype still holds them.
+func deepArchetypeSeed(t talentTrees, guide build, keep map[int]bool) build {
+	if len(keep) == 0 {
+		return build{}
+	}
+	return strip(t, guide, func(id int) bool { return !keep[id] })
+}
+
+// withoutBelowGuide drops the candidates that hold a kept talent below
+// the guide's rank.
+func withoutBelowGuide(pool []candidate, guide build, keep map[int]bool) []candidate {
+	var out []candidate
+	for _, c := range pool {
+		if holdsKept(c.Build, guide, keep) {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+
+// holdsKept reports whether b holds every kept talent at the guide's rank or more.
+func holdsKept(b, guide build, keep map[int]bool) bool {
+	for id := range keep {
+		if b[id] < guide[id] {
+			return false
+		}
+	}
+	return true
 }
 
 // dedupe drops candidates equal to the guide or to an earlier one.
