@@ -1,8 +1,6 @@
 """The merge-only night keeps the committed buff names and names a new engine id."""
 
-import pytest
-
-from pipeline.loot.buffs import BuffError, merge_simbuffs, normalise
+from pipeline.loot.buffs import merge_simbuffs, normalise
 from pipeline.models import BuffOverride, SimBuffEntry
 
 FORK = {normalise("Windfury Totem"): ("Windfury Totem", "spell_nature_windfury")}
@@ -30,6 +28,7 @@ def test_an_override_names_the_fork_row_when_no_entry_is_committed():
     assert out.entries["windfury_totem:improved"].name == "Windfury Totem"
 
 
-def test_a_new_id_with_no_name_anywhere_is_a_hard_error():
-    with pytest.raises(BuffError, match="new since the last full loot rebuild"):
-        merge_simbuffs(["eureka"], [FORK], KEPT, {})
+def test_a_new_id_with_no_name_anywhere_is_left_out_with_a_warning(caplog):
+    out = merge_simbuffs(["battle_shout", "eureka"], [FORK], KEPT, {})
+    assert list(out.entries) == ["battle_shout"]
+    assert "eureka" in caplog.text and "new since the last full loot rebuild" in caplog.text

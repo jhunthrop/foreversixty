@@ -22,6 +22,7 @@ build that refuses to emit.
 from __future__ import annotations
 
 import json
+import logging
 import re
 from collections.abc import Callable
 from pathlib import Path
@@ -33,6 +34,8 @@ from pipeline.icons import icon_names, resolve_icon
 from pipeline.models import BuffOverride, SimBuffEntry, SimBuffsFile
 
 SIMBUFFS = "simbuffs.json"
+logger = logging.getLogger(__name__)
+
 IDS_MD = Path("../sim/request/IDS.md")
 
 #: Normalised name -> (display name, icon).
@@ -99,6 +102,10 @@ def _table_from(rows: tuple[dict, ...]) -> NameTable:
 
 #: (item_id, spell_id) -> the icon the build ships for whichever is set.
 type IconFor = Callable[[int, int], str]
+
+
+#: The raw tables `client_tables` reads; a merge-only night may lack them.
+CLIENT_NAME_TABLES = ("ManifestInterfaceData.csv", "SpellMisc.csv", "Item.csv")
 
 
 def client_tables(build_dir: Path, raw: Path) -> tuple[list[NameTable], IconFor]:
@@ -214,9 +221,12 @@ def merge_simbuffs(
     """The merge-only night's `simbuffs.json`: every id IDS.md lists, kept
     as the committed file names it, with a new id (an engine buff the
     fork gained since the last full rebuild) named from the fork's own
-    tables. An override whose icon needs a client row keeps the committed
-    entry when there is one; a new id with no name anywhere is the same
-    hard error as the full build's. An id IDS.md dropped is dropped."""
+    tables, or the client's when the raw tables are on disk. An override
+    whose icon needs a client row keeps the committed entry when there
+    is one. A new id nothing names is left out with a warning, and the
+    build's own test (every IDS.md id is named) says so on the next run:
+    the merge night must not fail over a name the full rebuild supplies.
+    An id IDS.md dropped is dropped."""
     entries: dict[str, SimBuffEntry] = {}
     unresolved: list[str] = []
     for buff_id in ids:
@@ -240,10 +250,11 @@ def merge_simbuffs(
             continue
         entries[buff_id] = SimBuffEntry(name=found[0], icon=found[1])
     if unresolved:
-        raise BuffError(
-            f"{len(unresolved)} IDS.md id(s) are new since the last full loot rebuild and "
-            f"have no name in the fork database: {', '.join(unresolved)}. Run the full "
-            f"`pipeline loot`, or add each to data/curated/simbuffs.json with a source."
+        logger.warning(
+            "simbuffs merge: %d IDS.md id(s) are new since the last full loot rebuild and "
+            "have no name in the tables on disk, left unnamed until it runs: %s",
+            len(unresolved),
+            ", ".join(unresolved),
         )
     return SimBuffsFile(entries=dict(sorted(entries.items())))
 
