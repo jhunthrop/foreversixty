@@ -14,14 +14,20 @@ import "strings"
 // three share the shaman class.
 //
 //   - Any rogue spec, from level 20 (the poison quest): Instant
-//     Poison on both weapons. Assassination's whole design (Mutilate's
-//     bonus on a poisoned target, Venom) assumes them - and Mutilate's
-//     "+20% against poisoned targets" counts only a poison that lingers
-//     (Deadly or Wound), not Instant, so Assassination carries Deadly
-//     Poison on the main hand from level 30, when its first rank is
-//     learned (2026-10-07; the rogue curation lane measured the Deadly
-//     main hand about 17% above two Instants with the same ranking).
-//     The off hand stays Instant.
+//     Poison on both weapons, and from level 30, when Deadly Poison's
+//     first rank is learned, Deadly Poison on the main hand and Instant
+//     Poison on the off hand. Mutilate's "+20% against poisoned targets"
+//     counts only a poison that lingers (Deadly or Wound), not Instant,
+//     so Assassination needs a Deadly hand (2026-10-07; the rogue
+//     curation lane measured the Deadly main hand about 17% above two
+//     Instants). The rogue-parity lane measured the four arrangements for
+//     all three specs (design/reviews/2026-10-07-rogue-parity.md): one
+//     Deadly beats two Instants by 4 to 10 percent, two Deadlys lose
+//     most of that, and the main hand is the stronger Deadly hand for
+//     Assassination and Combat at every band and for Subtlety below 60
+//     (at 60 Subtlety's mirror is 0.9 percent ahead; one rule is kept).
+//     Windfury Totem is a raid-buff aura, not an imbue, so a rogue's
+//     poisons never compete with it.
 //   - Shaman-enhancement: ONE weapon imbue, on the main hand only -
 //     Rockbiter Weapon from level 1 (its earliest rank is learnable at
 //     level 1, well before Windfury Weapon exists), replaced by
@@ -43,7 +49,7 @@ func KitConsumes(spec string, level int) []string {
 		if level < 20 {
 			return nil
 		}
-		if spec == "rogue-assassination" && level >= deadlyPoisonLevel {
+		if level >= deadlyPoisonLevel {
 			return []string{"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison"}
 		}
 		return []string{"main_hand_imbue:instant_poison", "off_hand_imbue:instant_poison"}

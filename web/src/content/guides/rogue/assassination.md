@@ -50,7 +50,7 @@ Look for agility and attack power first, then the merged hit and crit ratings th
 
 ## Enchants and consumables
 
-Target agility and attack power on weapon and glove enchants; **Enchant Gloves - Superior Agility** and **Enchant Weapon - Agility** both exist in this build's enchant data. For consumables, **Elixir of the Mongoose** (agility) is a verified option in this build's consumable list. Beyond naming those two, specific best-in-slot consumable stacking is not something this site can confirm yet at level 30.
+Target agility and attack power on weapon and glove enchants; **Enchant Gloves - Superior Agility** and **Enchant Weapon - Agility** both exist in this build's enchant data. For consumables, **Elixir of the Mongoose** (agility) is a verified option in this build's consumable list. Beyond naming those two, specific best-in-slot consumable stacking is not something this site can confirm yet at level 30. A raid shaman's **Windfury Totem** is an aura on you, not a weapon enchant, so it stacks with your poisons; this site's raid-preset numbers include it.
 
 ## Races
 

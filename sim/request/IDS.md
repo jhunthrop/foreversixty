@@ -110,6 +110,7 @@ not graded has no `:improved` form and naming one is an error.
 | `thunder_clap:improved` | Debuffs |
 | `thunderfury` | Debuffs |
 | `trueshot_aura` | RaidBuffs |
+| `windfury_totem` | RaidBuffs |
 | `winters_chill` | Debuffs |
 
 ## Consumables
