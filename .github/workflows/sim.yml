@@ -134,8 +134,9 @@ jobs:
           bytes=$(gzip -9 -c artifacts/sim.wasm | wc -c)
           mb=$(awk -v b="$bytes" 'BEGIN { printf "%.2f", b/1048576 }')
           echo "sim.wasm gzipped: ${mb} MB"
-          awk -v b="$bytes" 'BEGIN { exit (b <= 4*1048576) ? 0 : 1 }' || {
-            echo "sim.wasm is ${mb} MB gzipped, over the 4 MB budget"; exit 1; }
+          budget=$(sed -n 's/^WASM_BUDGET_MB = //p' Makefile)
+          awk -v b="$bytes" -v m="$budget" 'BEGIN { exit (b <= m*1048576) ? 0 : 1 }' || {
+            echo "sim.wasm is ${mb} MB gzipped, over the ${budget} MB budget"; exit 1; }
       # Pinned, because the smoke test below is the only end-to-end gate
       # on the browser artifact and a runner-image bump would otherwise
       # silently change the host it is proved against.
