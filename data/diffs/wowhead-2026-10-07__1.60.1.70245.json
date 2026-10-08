@@ -1,0 +1,254 @@
+{
+  "snapshot": "data/raw-forever/wowhead-talents-2026-10-07.json",
+  "build": "1.60.1.70245",
+  "totals": {
+    "snapshot": 466,
+    "build": 468
+  },
+  "trees": [
+    {
+      "tree_id": 164,
+      "tree": "Fury",
+      "added": [
+        {
+          "cell": [
+            2,
+            3
+          ],
+          "name": "Boundless Rage",
+          "ranks": 3
+        },
+        {
+          "cell": [
+            4,
+            0
+          ],
+          "name": "Precision",
+          "ranks": 3
+        }
+      ],
+      "removed": [
+        {
+          "cell": [
+            5,
+            2
+          ],
+          "name": "Gore Drinker",
+          "ranks": 2
+        }
+      ],
+      "renamed": [
+        {
+          "cell": [
+            1,
+            1
+          ],
+          "snapshot": "Lingering Rage",
+          "build": "Iron Will"
+        },
+        {
+          "cell": [
+            2,
+            0
+          ],
+          "snapshot": "Furious Precision",
+          "build": "Improved Cleave"
+        }
+      ],
+      "moved": [
+        {
+          "name": "Flurry",
+          "snapshot": [
+            5,
+            1
+          ],
+          "build": [
+            5,
+            2
+          ]
+        },
+        {
+          "name": "Improved Berserker Rage",
+          "snapshot": [
+            4,
+            0
+          ],
+          "build": [
+            5,
+            0
+          ]
+        }
+      ],
+      "rank_changes": [],
+      "prerequisite_changes": [
+        {
+          "name": "Bloodthirst",
+          "snapshot": null,
+          "build": [
+            "Death Wish",
+            1
+          ]
+        },
+        {
+          "name": "Flurry",
+          "snapshot": [
+            "Death Wish",
+            1
+          ],
+          "build": [
+            "Enrage",
+            5
+          ]
+        }
+      ],
+      "class_slug": "warrior"
+    },
+    {
+      "tree_id": 163,
+      "tree": "Protection",
+      "added": [
+        {
+          "cell": [
+            1,
+            2
+          ],
+          "name": "Toughness",
+          "ranks": 5
+        }
+      ],
+      "removed": [
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "name": "Iron Will",
+          "ranks": 5
+        }
+      ],
+      "renamed": [],
+      "moved": [
+        {
+          "name": "Anticipation",
+          "snapshot": [
+            1,
+            0
+          ],
+          "build": [
+            0,
+            2
+          ]
+        },
+        {
+          "name": "Bastion",
+          "snapshot": [
+            5,
+            2
+          ],
+          "build": [
+            4,
+            3
+          ]
+        },
+        {
+          "name": "Focused Rage",
+          "snapshot": [
+            4,
+            2
+          ],
+          "build": [
+            5,
+            2
+          ]
+        },
+        {
+          "name": "Improved Bloodrage",
+          "snapshot": [
+            0,
+            0
+          ],
+          "build": [
+            1,
+            0
+          ]
+        },
+        {
+          "name": "Improved Disarm",
+          "snapshot": [
+            2,
+            2
+          ],
+          "build": [
+            3,
+            1
+          ]
+        },
+        {
+          "name": "Improved Revenge",
+          "snapshot": [
+            1,
+            2
+          ],
+          "build": [
+            2,
+            2
+          ]
+        },
+        {
+          "name": "Improved Shield Bash",
+          "snapshot": [
+            3,
+            2
+          ],
+          "build": [
+            4,
+            2
+          ]
+        },
+        {
+          "name": "Vanguard",
+          "snapshot": [
+            3,
+            1
+          ],
+          "build": [
+            3,
+            2
+          ]
+        }
+      ],
+      "rank_changes": [],
+      "prerequisite_changes": [
+        {
+          "name": "Last Stand",
+          "snapshot": null,
+          "build": [
+            "Improved Bloodrage",
+            2
+          ]
+        }
+      ],
+      "class_slug": "warrior"
+    },
+    {
+      "tree_id": 363,
+      "tree": "Marksmanship",
+      "added": [
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "name": "Improved Serpent Sting",
+          "ranks": 5
+        }
+      ],
+      "removed": [],
+      "renamed": [],
+      "moved": [],
+      "rank_changes": [],
+      "prerequisite_changes": [],
+      "class_slug": "hunter"
+    }
+  ]
+}
