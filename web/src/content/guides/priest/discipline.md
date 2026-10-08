@@ -3,11 +3,11 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70009:priest:human:52533310130010103/33554/0:'
+build: 'FS1:1.60.1.70009:priest:human:02500303130510152/035050030301/0:'
 recommendedRaces: [human, undead]
-statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
+statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Discipline Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-09-24
+updated: 2026-10-07
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -30,21 +30,30 @@ Discipline is the shield-and-mitigation healing tree, leaning on Power Word: Shi
 
 ## Talents and builds
 
-In rough priority order: **Improved Power Word: Shield** raises the amount absorbed, a direct multiplier on the tree's signature spell. **Meditation** now allows 17% of mana regeneration to continue while casting, up sharply from Classic's 5%, which is the single biggest quality-of-life change in the tree and makes sustained casting far less punishing on mana. **Inner Focus** gives one free, empowered cast on demand, useful for an emergency Power Word: Shield or Penance. **Soul Warding** reduces Power Word: Shield's cooldown and mana cost, compounding with Improved Power Word: Shield. **Penance**, new to the tree, channels either a burst of healing into a friendly target or a burst of holy damage into an enemy, giving Discipline both a strong single-target heal and a usable damage option to fill downtime. **Divine Aegis**, also new, turns critical heals into a protective absorb shield, adding incidental mitigation on top of every crit.
+The build spends its deep points in Discipline and fills Holy with the points that make the heals cast faster and cheaper. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-Point allocation runs deep into Discipline to reach Penance and Divine Aegis, with the remainder split as a handful of points in Holy for survivability and utility talents. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
+- **Twin Disciplines, Improved Power Word: Shield and Mental Agility** are the early rows: instant spells heal more, the shield absorbs more, and instants cost less.
+- **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** lifts Intellect; **Inner Focus** is a free, extra-critical heal on demand.
+- **Penance**, **Renewed Hope** and **Divine Aegis** are the deep payoff: a channelled heal, a bigger critical chance on a target that carries Weakened Soul, and a shield from your critical heals.
+- In Holy, **Holy Specialization, Divine Fury and Improved Healing** give critical chance, faster Heal and Greater Heal, and cheaper direct heals; **Inspiration**, **Improved Renew** and **Binding Heal** fill the remaining points.
+
+Open the planner at [/planner?class=priest](/planner?class=priest) to adjust it.
 
 ## Rotation and priority
 
-There's no curated rotation data for Discipline in this build — it's a healing spec, not a DPS one this site's simulator models. Based on general Classic-era Discipline practice plus what's changed for Forever: keep Power Word: Shield on cooldown against a tank or focus target ahead of expected damage, since Soul Warding shortens its cooldown enough to lean on it more than in vanilla 1.12. Use Penance as the primary direct heal once talented, since it's both mana-efficient and can double as filler damage during downtime. Fall back to Flash Heal or Greater Heal for burst healing outside Power Word: Shield's cooldown, and use Inner Focus to cover an emergency cast when mana is tight. This is this site's own inference from 1.12 healing conventions and the demo talent data, not a tested rotation.
+The curated rotation leads with **Penance** whenever it is ready, and keeps **Power Word: Shield** on a tank who is taking damage and is not under Weakened Soul. **Renew** and **Prayer of Mending** go on the tank; **Flash Heal** is the emergency button for a nearly dead tank or member; **Prayer of Healing** answers several party members being hurt together; **Heal** is the efficient filler.
+
+The shield, the filler and Prayer of Healing are paced against your mana the way Holy's are: they fire at their normal thresholds only while your mana is keeping up with the share of the fight that is left. Discipline lasts longer on its mana than Holy does under the same fight, which is why the shield is worth pacing rather than dropping.
 
 ## Stat priority
 
-In simulator-derived priority order: **healing power** first, the direct multiplier on every heal cast. **Spell power** next, since Forever's itemization change lets bonus healing gear also carry a fraction of spell damage. **Spirit** feeds mana regeneration, which matters more for a spec casting Power Word: Shield and Penance repeatedly through a fight. **Mp5** provides flat regeneration independent of Spirit-based formulas. **Intellect** adds mana pool and a small crit chance. **Crit** last, both for direct heal size and for triggering Divine Aegis's absorb shield if talented.
+In simulator-derived order, per point of stat: **MP5** first, then **Spirit**, **healing power** and **Intellect** close together, with **critical strike** last and measured with less certainty. The fight is mana-bound, so regeneration and the pool matter more than a point of throughput. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
+
+Spell power adds nothing to a heal; it is the damage side of a healing item. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 
-Prioritize healing power and spell power first, then spirit and mp5 for sustain, then intellect and crit. Because Meditation now lets a much larger share of mana regeneration continue while casting, spirit is somewhat less punishing to undervalue than in 1.12, but it's still the tree's main sustain stat. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
+Follow the stat priority above: regeneration first, then healing power, Spirit and Intellect close together; spell power on a healing item adds nothing to a heal. Because Meditation now lets a much larger share of mana regeneration continue while casting, spirit is somewhat less punishing to undervalue than in 1.12, but it's still the tree's main sustain stat. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
 
 ## Enchants and consumables
 
