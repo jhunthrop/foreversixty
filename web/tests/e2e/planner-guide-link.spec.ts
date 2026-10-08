@@ -9,7 +9,7 @@ import { meAddonFixture } from '../../src/fixtures/me-addon';
 // The fixture data build ships a trimmed warrior and hunter talent file, so this is the suite's
 // known-good fixture Fury Warrior code (current-character.spec.ts), not a live guide's own
 // code; the signed-in fixture's main is a Hunter, which reproduces the class mismatch.
-const CODE = 'FS1:1.60.1.70009:warrior:orc:0/5530515/0:';
+const CODE = 'FS1:1.60.1.70291:warrior:orc:0/5530515/0:';
 
 for (const signedIn of [false, true]) {
   test(`a guide build code loads its own class and talents ${signedIn ? 'signed in with a Hunter main' : 'signed out'}`, async ({

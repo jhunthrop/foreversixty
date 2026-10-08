@@ -92,7 +92,11 @@ test('the healer weights and runners-up read in HPS', async ({ page }) => {
   await expect(weights).toContainText('HPS per point');
   await expect(weights.getByTestId('bis-weight-row-healing_power')).toContainText(/\d\.\d{3} HPS/);
   await expect(raidView(page).locator('.the-list-header')).toContainText('Runners-up · HPS vs the pick');
-  await expect(raidView(page).getByTestId('bis-row-evidence').first()).toContainText(/\+\d+\.\d HPS/);
+  // Which rows carry a sim-checked runner-up is the nightly's call (possibly none at this
+  // band); every one that does reads in HPS.
+  for (const evidence of await raidView(page).getByTestId('bis-row-evidence').all()) {
+    await expect(evidence).toContainText(/\+\d+\.\d HPS/);
+  }
 });
 
 test('the class index lists a healer spec in HPS, beside no ranking of specs', async ({ page }) => {

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { readItemTooltipModel } from './lookup';
 
-const BUILD = '1.60.1.70009';
+const BUILD = '1.60.1.70291';
 
 describe('readItemTooltipModel', () => {
   it('reads a plain armor row straight off the real build files', () => {
@@ -13,7 +13,7 @@ describe('readItemTooltipModel', () => {
   });
 
   it('joins the item to its set name via set_id', () => {
-    const model = readItemTooltipModel(BUILD, 'warrior', 226857);
+    const model = readItemTooltipModel(BUILD, 'warrior', 21995);
     expect(model?.setName).toBe('Battlegear of Heroism');
   });
 
@@ -30,6 +30,6 @@ describe('readItemTooltipModel', () => {
     const second = readItemTooltipModel(BUILD, 'warrior', 20143);
     expect(second).toEqual(first);
     // A different item in the same class file still resolves correctly off the cached array.
-    expect(readItemTooltipModel(BUILD, 'warrior', 226857)?.name).toBe('Battleboots of Heroism');
+    expect(readItemTooltipModel(BUILD, 'warrior', 21995)?.name).toBe('Boots of Heroism');
   });
 });

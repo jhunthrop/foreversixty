@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { bandEntry, loadBisFile } from '../bis/load';
 import { band60Weights, classLandingSetDps, factionForFirstRace } from './class-dps';
 
-const BUILD = '1.60.1.70009';
+const BUILD = '1.60.1.70291';
 
 describe('factionForFirstRace', () => {
   it('resolves the faction of the guide’s own first recommended race', () => {

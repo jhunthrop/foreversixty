@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { decodeBandTalents, decodeBuildTrees, litTalents, primaryTree } from './build-tree';
 import { bandEntry, loadBisFile } from '../bis/load';
 
-const BUILD = '1.60.1.70009';
+const BUILD = '1.60.1.70291';
 
 function frontmatterBuildCode(): string {
   const path = fileURLToPath(new URL('../../content/guides/warrior/fury.md', import.meta.url));

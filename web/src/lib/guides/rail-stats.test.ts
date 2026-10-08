@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { railStatRows } from './rail-stats';
 import { bandEntry, loadBisFile } from '../bis/load';
 
-const BUILD = '1.60.1.70009';
+const BUILD = '1.60.1.70291';
 const STAT_PRIORITY = ['Attack power', 'Strength', 'Agility', 'Critical strike', 'Hit', 'Melee haste'];
 
 describe('railStatRows', () => {

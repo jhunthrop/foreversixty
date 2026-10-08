@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { guideBuildBlocks } from './guide-builds';
 
-const LEVELING = 'FS1:1.60.1.70009:rogue:night-elf:32502110551501001/302303/512:';
-const RAID = 'FS1:1.60.1.70009:rogue:night-elf:01532310421501/315303000015/002:';
+const LEVELING = 'FS1:1.60.1.70291:rogue:night-elf:32502110551501001/302303/512:';
+const RAID = 'FS1:1.60.1.70291:rogue:night-elf:01532310421501/315303000015/002:';
 
 describe('guideBuildBlocks', () => {
   it('shows the leveling and the raid build as two labelled blocks when they differ', () => {
