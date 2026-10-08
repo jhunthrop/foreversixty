@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
-  "engine_version": "37347ac0f",
-  "generated_at": "2026-10-08T00:24:10Z",
+  "engine_version": "aa3e0be44",
+  "generated_at": "2026-10-08T02:05:38Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -566,8 +566,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.366726507,
-      "verify_run_seconds": 1.515835466,
+      "weights_run_seconds": 2.534469076,
+      "verify_run_seconds": 1.648154479,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1217,8 +1217,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.366726507,
-      "verify_run_seconds": 1.53554931,
+      "weights_run_seconds": 2.534469076,
+      "verify_run_seconds": 1.687111244,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1902,8 +1902,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.573105735,
-      "verify_run_seconds": 1.723102349,
+      "weights_run_seconds": 2.7755915079999998,
+      "verify_run_seconds": 1.845741536,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.573105735,
-      "verify_run_seconds": 1.7104436939999998,
+      "weights_run_seconds": 2.7755915079999998,
+      "verify_run_seconds": 1.837757184,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3287,8 +3287,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.907114892,
-      "verify_run_seconds": 1.787898701,
+      "weights_run_seconds": 3.042425448,
+      "verify_run_seconds": 1.929873457,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3988,8 +3988,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.907114892,
-      "verify_run_seconds": 1.838471643,
+      "weights_run_seconds": 3.042425448,
+      "verify_run_seconds": 1.966434385,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4698,8 +4698,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.350729165,
-      "verify_run_seconds": 2.171872027,
+      "weights_run_seconds": 3.539556608,
+      "verify_run_seconds": 2.32365817,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5409,8 +5409,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.350729165,
-      "verify_run_seconds": 2.210235283,
+      "weights_run_seconds": 3.539556608,
+      "verify_run_seconds": 2.332051697,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6154,8 +6154,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.186644699,
-      "verify_run_seconds": 2.291891429,
+      "weights_run_seconds": 3.426572652,
+      "verify_run_seconds": 2.441739612,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6906,8 +6906,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.186644699,
-      "verify_run_seconds": 2.294034635,
+      "weights_run_seconds": 3.426572652,
+      "verify_run_seconds": 2.497204382,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7652,8 +7652,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.432468326,
-      "verify_run_seconds": 2.422831603,
+      "weights_run_seconds": 3.602844511,
+      "verify_run_seconds": 2.566515786,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8402,8 +8402,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.432468326,
-      "verify_run_seconds": 2.455357894,
+      "weights_run_seconds": 3.602844511,
+      "verify_run_seconds": 2.619100187,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8619,7 +8619,7 @@
           "label": "Dense Sharpening Stone"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want."
     }
   }
 }
