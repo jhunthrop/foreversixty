@@ -277,7 +277,7 @@ func TestAShieldCarriesBlockValueAndNoBlockChance(t *testing.T) {
 		if it.Id != immovableObject {
 			continue
 		}
-		if it.Stats[proto.Stat_StatBlockValue] == 0 && it.Stats[proto.Stat_StatBlock] > 0 {
+		if len(it.Stats) <= int(proto.Stat_StatBlockValue) || (it.Stats[proto.Stat_StatBlockValue] == 0 && it.Stats[proto.Stat_StatBlock] > 0) {
 			t.Skip("simdb.bin predates the block value split; the nightly regeneration refreshes it")
 		}
 		if got := it.Stats[proto.Stat_StatBlockValue]; got != 27 {
