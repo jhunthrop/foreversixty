@@ -42,6 +42,8 @@ read_globals = {
 	-- companion and only ever read here; ForeverSixtyDB is the addon's own
 	-- and Export.save writes it, so it is a global, not a read_global.
 	"ForeverSixtyInbox",
+	-- The measurement recorder (Recorder.lua). Its other client calls go through `try`.
+	"GetTime", "CombatLogGetCurrentEventInfo",
 	-- `unpack` is a Lua 5.1 global (5.4 only has `table.unpack`); std =
 	-- lua51 already declares it standard, so it needs no entry here.
 	-- Codec.lua binds whichever of the two exists -- see the narrow

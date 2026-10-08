@@ -23,13 +23,45 @@ uv run python -m pipeline specs
 uv run python -m pipeline specs --check                               # CI's drift gate; writes nothing
 uv run python -m pipeline diff --from <build> --to <build>
 uv run python -m pipeline simproto --engine "$FOREVER_ENGINE_PATH"    # only when the engine's protos change
+uv run python -m pipeline recorder <WTF/Account/NAME/SavedVariables/ForeverSixty.lua>   # fits the addon recorder's measurements
 uv run ruff check . && uv run pytest
 ```
 
 `fetch`, `icons`, `tree-art` and `gametables` are the only commands that use the network.
-`normalize`, `diff`, `simdb`, `simconst`, `levels`, `phases` and `specs` are offline and
+`normalize`, `diff`, `simdb`, `simconst`, `levels`, `phases`, `specs` and `recorder` are offline and
 fully unit-tested against the fixtures in `tests/fixtures/`. `simproto` and `loot` read a
 local engine checkout and are the only commands that need one.
+
+## Recorder report
+
+`recorder` reads what the addon's measurement recorder (`/fs record on`, see
+`addon/README.md`, "Measuring for the simulator") stored under `ForeverSixtyDB.recorder` in
+the SavedVariables file, and prints the fits the simulator cannot read from the client
+tables. The Lua reader is `pipeline/savedvars.py` (the subset of Lua a SavedVariables file
+uses), the statistics (Wilson intervals, least squares with standard errors) are in
+`pipeline/recorder_stats.py`, and the fits are in `pipeline/recorder.py`. The record's
+schema version is `SCHEMA` there and `Recorder.SCHEMA` in `addon/ForeverSixty/Recorder.lua`;
+bump both together. The report:
+
+- **Energy**: the commonest uncapped gain (the tick amount) and the median interval between
+  consecutive ticks of that amount.
+- **White swings**: outcome rates with Wilson 95% intervals by hand and target level minus
+  player level, and the mean glancing damage over the mean plain-hit damage.
+- **Yellow attacks**: plain Eviscerate hits fitted as `base + points*per_point +
+  attack_power*points*ap_term`, each coefficient with its standard error. It needs points
+  and attack power to vary; otherwise it says so. Damage is post-mitigation, so fight one
+  armor class of mob.
+- **Windfury**: weapon procs by unit (player, pet) and the event kind that preceded them
+  (`swing_main`, `swing_off`, `special`, `none`), each with the proc rate over that unit's
+  counted events, and totem auras applied by unit. A proc logged before its swing is
+  reported as `after` and has no rate.
+- **Mana**: per (session, five-second-rule state) the commonest gain and its interval, then
+  `per tick = a + b*spirit` across sessions, outside and inside the rule. It needs sessions
+  at two different spirit values (food, buffs or gear).
+- **Shadowfiend**: returns per spell, mean amount and median gap between returns.
+
+Tests (`tests/test_recorder*.py`) run each fit on a synthetic record written the way the
+addon writes it.
 
 ## Layout
 ```

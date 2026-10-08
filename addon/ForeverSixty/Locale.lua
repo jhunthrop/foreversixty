@@ -8,7 +8,7 @@ ns = type(ns) == "table" and ns or {}
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
-	slashHint = "/fs, /fs export, /fs follow <code>, /fs gear, /fs settings, /fs inbox, /fs diag",
+	slashHint = "/fs, /fs export, /fs follow <code>, /fs gear, /fs settings, /fs inbox, /fs record, /fs diag",
 	dataBuild = "Data build: %s",
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
 	-- How a printed line is prefixed with the addon's name.
@@ -194,6 +194,19 @@ local L = {
 	-- Inbox
 	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",
 	inboxCount = "%d build(s) waiting from the site.",
+
+	-- Measurement recorder (/fs record)
+	recorderHelp = "/fs record on | off | status | clear -- records energy, swings, Windfury and mana "
+		.. "for the simulator; /reload after off writes it to disk",
+	recorderStarted = "Recording. Nothing prints while it runs; /fs record off when done.",
+	recorderStopped = "Stopped. %d events kept; /reload or log out writes them to SavedVariables.",
+	recorderStatusOn = "Recording: %d of %d events kept, %d session(s).",
+	recorderStatusOff = "Not recording: %d of %d events kept, %d session(s).",
+	recorderCleared = "Recording cleared.",
+	recorderAlreadyOn = "Already recording.",
+	recorderNotOn = "Not recording.",
+	recorderNoApi = "This client has no %s; nothing is recorded.",
+	recorderSchema = "The saved record is schema %s, this addon writes %s. /fs record clear discards it.",
 
 	-- Minimap
 	minimapLeftClick = "Left-click: open Forever Sixty",
