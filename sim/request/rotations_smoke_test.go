@@ -152,7 +152,6 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 18807}": "Mind Flay is gated on its talent (sim/priest/mind_flay.go); this build takes none.",
 	},
 	"rogue-assassination": {
-		"{SpellID: 1310703}": "Venom is a talent (sim/rogue/venom.go, Forever's tree); this build takes none.",
 		"{SpellID: 1241584}": "Mutilate is a talent (sim/rogue/mutilate.go, Forever's tree); this build takes none.",
 		"{SpellID: 14177}":   "Cold Blood is a talent (sim/rogue/talents.go); this build takes none.",
 	},

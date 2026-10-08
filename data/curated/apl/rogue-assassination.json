@@ -1,15 +1,18 @@
 {
   "spec": "rogue-assassination",
   "state": "written",
-  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md). Mutilate builds, and combo points are spent from four: Eviscerate first (with Cold Blood ahead of it), then Slice and Dice and Venom as the cheaper finishers on the beats where there is not yet 35 energy for Eviscerate, each refreshed only when it has lapsed. Without the Mutilate or Venom talents the corresponding lines fall through to Sinister Strike and the other finishers. Every rank named here is checked against this build's own spellconst.",
+  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md) and re-searched at the raid build (design/reviews/2026-10-07-raid-builds.md). Mutilate builds, and combo points are spent from three: Cold Blood and Eviscerate, with Slice and Dice ahead of it whenever it has lapsed. Venom is not cast: the engine models it to the client's numbers, over-credits it against Vile Poisons (the client adds the two bonuses, the engine multiplies them), and still measures dropping the line as a gain, so it stays a talent the rotation does not use. Without the Mutilate talent the Mutilate line falls through to Sinister Strike. Every rank named here is checked against this build's own spellconst.",
   "expected_idle": [
     {
       "id": 11294,
       "reason": "Sinister Strike is the builder only for a rogue without Mutilate (its line is gated on Mutilate being unknown); from the rung where the talent is taken, Mutilate builds every combo point and Sinister Strike is idle by design."
+    },
+    {
+      "id": 11300,
+      "reason": "Slice and Dice sits ahead of Eviscerate at four or more combo points, and below level 40 its short ranks lapse often enough to take every such set, so Eviscerate goes uncast on the ladder's low rungs; from level 40 on, with the talents and gear of the later rungs, Eviscerate fires. The ladder DPS at levels 10 to 38 is unchanged by the order."
     }
   ],
   "engineering_notes": {
-    "2": "sim/rogue/venom.go: an untalented rogue has no Venom spell registered.",
     "5": "sim/rogue/mutilate.go: an untalented rogue has no Mutilate spell registered.",
     "3": "Previously starved entirely: Slice and Dice used to sit ahead of this line instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
   },
@@ -60,30 +63,6 @@
           }
         },
         "notes": "Cold Blood right before the finisher, for a guaranteed crit on the next Eviscerate. It costs no combo points and no global cooldown, so it is checked first and simply waits for the finisher below."
-      },
-      {
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 11300,
-              "rank": 8
-            }
-          },
-          "condition": {
-            "cmp": {
-              "op": "OpGe",
-              "lhs": {
-                "currentComboPoints": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "4"
-                }
-              }
-            }
-          }
-        },
-        "notes": "Eviscerate at four or more combo points, whenever its 35 energy is there. Mutilate gives two combo points a cast, so combo points arrive in steps of two; waiting for a fifth wastes one of them and a Mutilate on top."
       },
       {
         "action": {
@@ -149,70 +128,31 @@
             }
           }
         },
-        "notes": "Slice and Dice when Eviscerate is out of reach on energy: opened when it is down and refreshed under 3 seconds remaining. At 25 energy it is the cheaper finisher, so it picks up the combo points on the beats where there is not yet 35 energy for Eviscerate."
+        "notes": "Slice and Dice ahead of Eviscerate, opened when it is down and refreshed under 3 seconds remaining, at four or more combo points. At 25 energy it is the cheaper finisher; keeping it up is worth more than the Eviscerate it delays by a beat."
       },
       {
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 1310703
+              "spellId": 11300,
+              "rank": 8
             }
           },
           "condition": {
-            "and": {
-              "vals": [
-                {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentComboPoints": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "4"
-                      }
-                    }
-                  }
-                },
-                {
-                  "or": {
-                    "vals": [
-                      {
-                        "not": {
-                          "val": {
-                            "auraIsActive": {
-                              "auraId": {
-                                "spellId": 1310703
-                              }
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "cmp": {
-                          "op": "OpLt",
-                          "lhs": {
-                            "auraRemainingTime": {
-                              "auraId": {
-                                "spellId": 1310703
-                              }
-                            }
-                          },
-                          "rhs": {
-                            "const": {
-                              "val": "0.5"
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "currentComboPoints": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "4"
                 }
-              ]
+              }
             }
           }
         },
-        "notes": "Venom, this tree's poison finisher, kept up the same way: cast when it has lapsed and Eviscerate is not affordable. It raises poison damage by 30% and poison proc chance by 10 points while it lasts."
+        "notes": "Eviscerate at four or more combo points, whenever its 35 energy is there. Mutilate gives two combo points a cast, so combo points arrive in steps of two; waiting for a fifth wastes one of them and a Mutilate on top."
       },
       {
         "action": {

@@ -112,6 +112,14 @@ ENGINE_AURA_IDS: dict[int, str] = {
         "for 5 seconds; it is not a hunter class spell, so spellconst never "
         "carries it, and the Survival rotation only gates on it"
     ),
+    10610: (
+        "Windfury Totem's attack power buff, rank 3 (sim/core/buffs.go's "
+        "CreateExtraAttackAuraCommon registers it for a character the raid's "
+        "totem reaches, and only then): a real client spell, but a shaman "
+        "one, so the hunter and warrior spellconst never carry it. The Survival "
+        "and Arms rotations gate their Wing Clip and Hamstring lines on "
+        "auraIsKnown(10610) and never cast it"
+    ),
 }
 
 
