@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "f5002980c",
-  "generated_at": "2026-10-08T12:03:33Z",
+  "engine_version": "c789dacc2",
+  "generated_at": "2026-10-08T13:04:23Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.7918379089999998,
-      "verify_run_seconds": 1.108906372,
+      "weights_run_seconds": 1.737958938,
+      "verify_run_seconds": 1.024363309,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1185,8 +1185,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.7918379089999998,
-      "verify_run_seconds": 1.2123552260000001,
+      "weights_run_seconds": 1.737958938,
+      "verify_run_seconds": 1.056350047,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1848,8 +1848,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.9707697149999999,
-      "verify_run_seconds": 1.182518375,
+      "weights_run_seconds": 2.125462893,
+      "verify_run_seconds": 1.112383808,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2554,8 +2554,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 1.9707697149999999,
-      "verify_run_seconds": 1.214104513,
+      "weights_run_seconds": 2.125462893,
+      "verify_run_seconds": 1.145011674,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3219,8 +3219,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.112560598,
-      "verify_run_seconds": 1.279675133,
+      "weights_run_seconds": 2.119561904,
+      "verify_run_seconds": 1.211472269,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3885,8 +3885,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.112560598,
-      "verify_run_seconds": 1.255753455,
+      "weights_run_seconds": 2.119561904,
+      "verify_run_seconds": 1.245871587,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4388,7 +4388,7 @@
               "item_name": "Sergeant Major's Crackling Leather Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -1.0449345532969674
+              "dps_delta": -1.0449345532969667
             },
             {
               "item_id": 252532,
@@ -4556,8 +4556,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.230849202,
-      "verify_run_seconds": 1.655240886,
+      "weights_run_seconds": 2.321822487,
+      "verify_run_seconds": 1.661915017,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5050,7 +5050,7 @@
               "item_name": "First Sergeant's Crackling Leather Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
-              "dps_delta": -1.0449345532969674
+              "dps_delta": -1.0449345532969667
             },
             {
               "item_id": 252532,
@@ -5229,8 +5229,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.230849202,
-      "verify_run_seconds": 1.5066997629999999,
+      "weights_run_seconds": 2.321822487,
+      "verify_run_seconds": 1.461016172,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5421,7 +5421,7 @@
           "item_name": "Feralheart Cowl",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 40.024766673275295,
+          "score": 40.0247666732753,
           "verified": true,
           "alternatives": [
             {
@@ -5429,21 +5429,21 @@
               "item_name": "Field Marshal's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.3359161956716014
+              "dps_delta": -0.3359161956716028
             },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6115865684929822
+              "dps_delta": -0.6115865684929837
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -0.9458779939147155
+              "dps_delta": -0.9458779939147169
             }
           ]
         },
@@ -5692,7 +5692,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8711062160021226
+              "dps_delta": -1.871106216002124
             },
             {
               "item_id": 22752,
@@ -5951,8 +5951,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 2.263454957,
-      "verify_run_seconds": 4.764317708,
+      "weights_run_seconds": 2.323825616,
+      "verify_run_seconds": 4.469303863,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6421,7 +6421,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8711062160021226
+              "dps_delta": -1.871106216002124
             },
             {
               "item_id": 22747,
@@ -6691,8 +6691,8 @@
         "trinket2: Second Wind",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 2.263454957,
-      "verify_run_seconds": 5.506623024,
+      "weights_run_seconds": 2.323825616,
+      "verify_run_seconds": 5.140398298,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7157,15 +7157,15 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -2.290114117514648
-            },
-            {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -2.2901141175146513
+            },
+            {
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -2.2901141175146513
@@ -7439,8 +7439,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.362381982,
-      "verify_run_seconds": 5.357643293,
+      "weights_run_seconds": 1.331241424,
+      "verify_run_seconds": 4.893505007,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7899,15 +7899,15 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -2.290114117514648
-            },
-            {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -2.2901141175146513
+            },
+            {
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -2.2901141175146513
@@ -8173,8 +8173,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.362381982,
-      "verify_run_seconds": 4.304094703,
+      "weights_run_seconds": 1.331241424,
+      "verify_run_seconds": 3.922774382,
       "coverage": {
         "back": {
           "eligible": 451,

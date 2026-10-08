@@ -5025,16 +5025,16 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13550,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
             "icon": "ability_upgrademoonglaive"
+          },
+          {
+            "spell_id": 13550,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 14282,
@@ -5060,16 +5060,16 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13551,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
             "icon": "ability_upgrademoonglaive"
+          },
+          {
+            "spell_id": 13551,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 14283,
@@ -5095,16 +5095,16 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13552,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
             "icon": "ability_upgrademoonglaive"
+          },
+          {
+            "spell_id": 13552,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 14284,
@@ -5136,16 +5136,16 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13552,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
             "icon": "ability_upgrademoonglaive"
+          },
+          {
+            "spell_id": 13552,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 14284,
@@ -5177,16 +5177,16 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13554,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
             "icon": "ability_upgrademoonglaive"
+          },
+          {
+            "spell_id": 13554,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 14285,
@@ -5218,16 +5218,16 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 25295,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
             "icon": "ability_upgrademoonglaive"
+          },
+          {
+            "spell_id": 25295,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 14287,
@@ -5242,12 +5242,6 @@
       {
         "level": 10,
         "lines": [
-          {
-            "spell_id": 13549,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready.",
-            "icon": "ability_hunter_quickshot"
-          },
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
@@ -5266,12 +5260,6 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13550,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
@@ -5299,12 +5287,6 @@
             "name": "Aimed Shot",
             "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.",
             "icon": "inv_spear_07"
-          },
-          {
-            "spell_id": 13551,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready.",
-            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 2643,
@@ -5336,12 +5318,6 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13552,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
@@ -5369,12 +5345,6 @@
             "name": "Aimed Shot",
             "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.",
             "icon": "inv_spear_07"
-          },
-          {
-            "spell_id": 13552,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready.",
-            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 2643,
@@ -5406,12 +5376,6 @@
             "icon": "inv_spear_07"
           },
           {
-            "spell_id": 13554,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready.",
-            "icon": "ability_hunter_quickshot"
-          },
-          {
             "spell_id": 2643,
             "name": "Multi-Shot",
             "condition": "Multi-Shot as the filler between Aimed Shots.",
@@ -5439,12 +5403,6 @@
             "name": "Aimed Shot",
             "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.",
             "icon": "inv_spear_07"
-          },
-          {
-            "spell_id": 25295,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready.",
-            "icon": "ability_hunter_quickshot"
           },
           {
             "spell_id": 2643,
@@ -7251,6 +7209,12 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
             "icon": "classicon_paladin"
+          },
+          {
+            "spell_id": 26573,
+            "name": "Consecration",
+            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "icon": "inv_misc_questionmark"
           }
         ]
       },
@@ -7274,6 +7238,12 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
             "icon": "classicon_paladin"
+          },
+          {
+            "spell_id": 20116,
+            "name": "Consecration",
+            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "icon": "inv_misc_questionmark"
           }
         ]
       },
@@ -7297,6 +7267,12 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
             "icon": "classicon_paladin"
+          },
+          {
+            "spell_id": 20116,
+            "name": "Consecration",
+            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "icon": "inv_misc_questionmark"
           }
         ]
       },
@@ -7320,6 +7296,12 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
             "icon": "classicon_paladin"
+          },
+          {
+            "spell_id": 20922,
+            "name": "Consecration",
+            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "icon": "inv_misc_questionmark"
           }
         ]
       },
@@ -7349,6 +7331,12 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
             "icon": "classicon_paladin"
+          },
+          {
+            "spell_id": 20923,
+            "name": "Consecration",
+            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "icon": "inv_misc_questionmark"
           }
         ]
       },
@@ -7378,6 +7366,12 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
             "icon": "classicon_paladin"
+          },
+          {
+            "spell_id": 20924,
+            "name": "Consecration",
+            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "icon": "inv_misc_questionmark"
           }
         ]
       }
@@ -10170,6 +10164,12 @@
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
             "icon": "spell_fire_searingtotem"
+          },
+          {
+            "spell_id": 1220746,
+            "name": "Earth Shock",
+            "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
+            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10187,6 +10187,12 @@
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
             "icon": "spell_fire_searingtotem"
+          },
+          {
+            "spell_id": 1220747,
+            "name": "Earth Shock",
+            "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
+            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10204,6 +10210,12 @@
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
             "icon": "spell_fire_searingtotem"
+          },
+          {
+            "spell_id": 1220748,
+            "name": "Earth Shock",
+            "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
+            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10227,6 +10239,12 @@
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
             "icon": "spell_fire_searingtotem"
+          },
+          {
+            "spell_id": 1220749,
+            "name": "Earth Shock",
+            "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
+            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10250,6 +10268,12 @@
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
             "icon": "spell_fire_searingtotem"
+          },
+          {
+            "spell_id": 1220749,
+            "name": "Earth Shock",
+            "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
+            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10273,6 +10297,12 @@
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
             "icon": "spell_fire_searingtotem"
+          },
+          {
+            "spell_id": 1220750,
+            "name": "Earth Shock",
+            "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
+            "icon": "spell_nature_earthshock"
           }
         ]
       },
@@ -10296,6 +10326,12 @@
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
             "icon": "spell_fire_searingtotem"
+          },
+          {
+            "spell_id": 1220751,
+            "name": "Earth Shock",
+            "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
+            "icon": "spell_nature_earthshock"
           }
         ]
       }
@@ -11993,16 +12029,16 @@
             "icon": "ability_warrior_battleshout"
           },
           {
-            "spell_id": 462891,
-            "name": "Whirlwind",
-            "condition": "Whirlwind while Bloodthirst is down.",
-            "icon": "ability_whirlwind"
-          },
-          {
             "spell_id": 20658,
             "name": "Execute",
             "condition": "Execute below 20 percent.",
             "icon": "inv_sword_48"
+          },
+          {
+            "spell_id": 462891,
+            "name": "Whirlwind",
+            "condition": "Whirlwind while Bloodthirst is down.",
+            "icon": "ability_whirlwind"
           },
           {
             "spell_id": 11564,
@@ -12034,6 +12070,12 @@
             "icon": "ability_warrior_battleshout"
           },
           {
+            "spell_id": 20660,
+            "name": "Execute",
+            "condition": "Execute below 20 percent.",
+            "icon": "inv_sword_48"
+          },
+          {
             "spell_id": 23881,
             "name": "Bloodthirst",
             "condition": "Bloodthirst is the highest damage per rage button and comes off a six second cooldown.",
@@ -12044,12 +12086,6 @@
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
-          },
-          {
-            "spell_id": 20660,
-            "name": "Execute",
-            "condition": "Execute below 20 percent.",
-            "icon": "inv_sword_48"
           },
           {
             "spell_id": 11565,
@@ -12081,6 +12117,12 @@
             "icon": "ability_warrior_battleshout"
           },
           {
+            "spell_id": 20661,
+            "name": "Execute",
+            "condition": "Execute below 20 percent.",
+            "icon": "inv_sword_48"
+          },
+          {
             "spell_id": 23892,
             "name": "Bloodthirst",
             "condition": "Bloodthirst is the highest damage per rage button and comes off a six second cooldown.",
@@ -12091,12 +12133,6 @@
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
-          },
-          {
-            "spell_id": 20661,
-            "name": "Execute",
-            "condition": "Execute below 20 percent.",
-            "icon": "inv_sword_48"
           },
           {
             "spell_id": 11566,
@@ -12128,6 +12164,12 @@
             "icon": "ability_warrior_battleshout"
           },
           {
+            "spell_id": 20662,
+            "name": "Execute",
+            "condition": "Execute below 20 percent.",
+            "icon": "inv_sword_48"
+          },
+          {
             "spell_id": 23894,
             "name": "Bloodthirst",
             "condition": "Bloodthirst is the highest damage per rage button and comes off a six second cooldown.",
@@ -12138,12 +12180,6 @@
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
-          },
-          {
-            "spell_id": 20662,
-            "name": "Execute",
-            "condition": "Execute below 20 percent.",
-            "icon": "inv_sword_48"
           },
           {
             "spell_id": 25286,
@@ -16507,9 +16543,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 5970,
+              "item_id": 10413,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Serpentis"
+              "source": "Wailing Caverns: Druid of the Fang"
             },
             "waist": {
               "item_id": 10403,
@@ -16594,9 +16630,9 @@
               "source": "Wailing Caverns: Lord Cobrahn"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10411,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             },
             "finger1": {
               "item_id": 285330,
@@ -16628,7 +16664,7 @@
             6449,
             2041,
             3202,
-            5970,
+            10413,
             10403,
             10410,
             1121,
@@ -16647,7 +16683,7 @@
             10413,
             10403,
             10410,
-            1121,
+            10411,
             285330,
             20429,
             250603,
@@ -16656,10 +16692,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.147,
-          "crit": 0.497,
-          "hit": 0.846,
-          "melee_haste": 7.211
+          "agility": 2.148,
+          "crit": 0.502,
+          "hit": 0.867,
+          "melee_haste": 6.773
         }
       },
       {
@@ -16858,10 +16894,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.158,
-          "crit": 0.598,
-          "hit": 0.95,
-          "melee_haste": 8.215
+          "agility": 2.162,
+          "crit": 0.604,
+          "hit": 0.968,
+          "melee_haste": 8.765
         }
       },
       {
@@ -17060,10 +17096,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.174,
+          "agility": 2.171,
           "crit": 0.645,
-          "hit": 0.965,
-          "melee_haste": 9.641
+          "hit": 1.026,
+          "melee_haste": 10.582
         }
       },
       {
@@ -17121,14 +17157,14 @@
               "source": "Maraudon: Rotgrip"
             },
             "finger1": {
-              "item_id": 17713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
-            },
-            "finger2": {
               "item_id": 9533,
               "source_kind": "quest",
               "source": "Divino-matic Rod"
+            },
+            "finger2": {
+              "item_id": 17713,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "trinket1": {
               "item_id": 19991,
@@ -17203,14 +17239,14 @@
               "source": "Maraudon: Rotgrip"
             },
             "finger1": {
-              "item_id": 17713,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
-            },
-            "finger2": {
               "item_id": 9533,
               "source_kind": "quest",
               "source": "Divino-matic Rod"
+            },
+            "finger2": {
+              "item_id": 17713,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "trinket1": {
               "item_id": 19120,
@@ -17245,8 +17281,8 @@
             272100,
             274757,
             17728,
-            17713,
             9533,
+            17713,
             19991,
             249469,
             9480,
@@ -17261,8 +17297,8 @@
             272100,
             274757,
             17728,
-            17713,
             9533,
+            17713,
             19120,
             19991,
             9480,
@@ -17271,10 +17307,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.186,
-          "crit": 0.737,
-          "hit": 1.33,
-          "melee_haste": 12.523
+          "agility": 2.192,
+          "crit": 0.705,
+          "hit": 1.019,
+          "melee_haste": 8.585
         }
       },
       {
@@ -17424,14 +17460,14 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
-            },
-            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village"
+            },
+            "trinket2": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 250619,
@@ -17478,17 +17514,16 @@
             21201,
             19325,
             11832,
-            19120,
             250619,
             279273
           ]
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.404,
-          "crit": 1.488,
-          "hit": 2.941,
-          "melee_haste": 17.269
+          "agility": 2.392,
+          "crit": 1.489,
+          "hit": 2.86,
+          "melee_haste": 17.222
         }
       }
     ],
@@ -17508,9 +17543,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 5404,
+              "item_id": 6461,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lady Anacondra"
+              "source": "Wailing Caverns: Mutanus the Devourer"
             },
             "back": {
               "item_id": 6449,
@@ -17558,9 +17593,9 @@
               "source": "Silverwing Sentinels"
             },
             "main_hand": {
-              "item_id": 250603,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 5200,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "ranged": {
               "item_id": 3021,
@@ -17580,9 +17615,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 6461,
+              "item_id": 5404,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Mutanus the Devourer"
+              "source": "Wailing Caverns: Lady Anacondra"
             },
             "back": {
               "item_id": 6449,
@@ -17590,7 +17625,7 @@
               "source": "Wailing Caverns: Skum"
             },
             "chest": {
-              "item_id": 252490,
+              "item_id": 252491,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -17615,9 +17650,9 @@
               "source": "Wailing Caverns: Lord Cobrahn"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10411,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             },
             "finger1": {
               "item_id": 285330,
@@ -17630,9 +17665,9 @@
               "source": "Warsong Outriders"
             },
             "main_hand": {
-              "item_id": 250603,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 5200,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "ranged": {
               "item_id": 3021,
@@ -17645,7 +17680,7 @@
           "alliance": [
             252504,
             20444,
-            5404,
+            6461,
             6449,
             2041,
             3202,
@@ -17655,31 +17690,31 @@
             10411,
             285330,
             20439,
-            250603,
+            5200,
             3021
           ],
           "horde": [
             252504,
             20442,
-            6461,
+            5404,
             6449,
-            252490,
+            252491,
             3202,
             10413,
             10403,
             10410,
-            1121,
+            10411,
             285330,
             20429,
-            250603,
+            5200,
             3021
           ]
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.144,
-          "crit": 0.538,
-          "hit": 0.819
+          "agility": 2.143,
+          "crit": 0.545,
+          "hit": 0.84
         }
       },
       {
@@ -17878,9 +17913,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.201,
-          "crit": 0.737,
-          "hit": 1.025
+          "agility": 2.192,
+          "crit": 0.734,
+          "hit": 0.941,
+          "melee_haste": 4.953
         }
       },
       {
@@ -17918,9 +17954,9 @@
               "source": "Scarlet Monastery: High Inquisitor Fairbanks"
             },
             "hands": {
-              "item_id": 7724,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Scarlet Commander Mograine"
+              "item_id": 867,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "waist": {
               "item_id": 20116,
@@ -17995,9 +18031,9 @@
               "source": "Scarlet Monastery: High Inquisitor Fairbanks"
             },
             "hands": {
-              "item_id": 7724,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Scarlet Commander Mograine"
+              "item_id": 867,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "waist": {
               "item_id": 20192,
@@ -18049,7 +18085,7 @@
             5257,
             10583,
             19508,
-            7724,
+            867,
             20116,
             1718,
             2276,
@@ -18066,7 +18102,7 @@
             5257,
             10583,
             19508,
-            7724,
+            867,
             20192,
             1718,
             2276,
@@ -18079,10 +18115,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.236,
-          "crit": 0.843,
-          "hit": 1.047,
-          "melee_haste": 5.185
+          "agility": 2.235,
+          "crit": 0.858,
+          "hit": 1.191,
+          "melee_haste": 7.263
         }
       },
       {
@@ -18192,9 +18228,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 220827,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 17742,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Meshlok the Harvester"
             },
             "wrist": {
               "item_id": 13120,
@@ -18212,14 +18248,14 @@
               "source": "Zippie Fizzbolt"
             },
             "legs": {
-              "item_id": 220833,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 1718,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "feet": {
-              "item_id": 220836,
-              "source_kind": "vendor",
-              "source": "PvP rank 9 · First Sergeant · Horde"
+              "item_id": 17728,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Rotgrip"
             },
             "finger1": {
               "item_id": 17713,
@@ -18276,12 +18312,11 @@
             8348,
             13089,
             13122,
-            220827,
+            17742,
             13120,
             272100,
             274757,
-            220833,
-            220836,
+            17728,
             17713,
             9533,
             19120,
@@ -18292,10 +18327,10 @@
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.265,
-          "crit": 1.019,
-          "hit": 1.211,
-          "melee_haste": 11.487
+          "agility": 2.267,
+          "crit": 0.997,
+          "hit": 1.307,
+          "melee_haste": 8.625
         }
       },
       {
@@ -18333,9 +18368,9 @@
               "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 16676,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: War Master Voone"
+              "item_id": 13963,
+              "source_kind": "quest",
+              "source": "Maxwell's Mission"
             },
             "waist": {
               "item_id": 226888,
@@ -18368,9 +18403,9 @@
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "trinket2": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise"
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 250619,
@@ -18450,9 +18485,9 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 11819,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach"
+              "item_id": 13965,
+              "source_kind": "quest",
+              "source": "For The Horde!"
             },
             "main_hand": {
               "item_id": 250619,
@@ -18474,14 +18509,14 @@
             13340,
             252483,
             226885,
-            16676,
+            13963,
             226888,
             237819,
             226881,
             21201,
             19325,
             11832,
-            13965,
+            11819,
             250619,
             279273
           ],
@@ -18498,17 +18533,17 @@
             226881,
             21201,
             19325,
-            11819,
+            13965,
             250619,
             279273
           ]
         },
         "weights": {
           "ranged_attack_power": 1.0,
-          "agility": 2.52,
-          "crit": 1.943,
-          "hit": 2.986,
-          "melee_haste": 13.844
+          "agility": 2.523,
+          "crit": 1.912,
+          "hit": 2.727,
+          "melee_haste": 18.676
         }
       }
     ],
@@ -24768,9 +24803,9 @@
               "source": "Warsong Outriders"
             },
             "finger2": {
-              "item_id": 12054,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 281673,
+              "source_kind": "quest",
+              "source": "The Offering of Blood"
             },
             "main_hand": {
               "item_id": 270018,
@@ -24807,7 +24842,7 @@
             10400,
             10402,
             20429,
-            12054,
+            281673,
             270018
           ]
         },
@@ -24815,9 +24850,9 @@
           "attack_power": 1.0,
           "strength": 2.0,
           "agility": 0.646,
-          "crit": 0.911,
-          "hit": 1.407,
-          "melee_haste": 8.418
+          "crit": 0.912,
+          "hit": 1.399,
+          "melee_haste": 8.209
         }
       },
       {
@@ -24993,10 +25028,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 0.64,
-          "crit": 0.905,
-          "hit": 1.555,
-          "melee_haste": 8.455
+          "agility": 0.642,
+          "crit": 0.908,
+          "hit": 1.453,
+          "melee_haste": 7.729
         }
       },
       {
@@ -25049,9 +25084,9 @@
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 250546,
+              "item_id": 252465,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 19515,
@@ -25081,9 +25116,9 @@
               "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 274751,
-              "source_kind": "vendor",
-              "source": "Rettrick"
+              "item_id": 250539,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "back": {
               "item_id": 16340,
@@ -25111,14 +25146,14 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 10330,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 10010,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
-              "item_id": 250546,
+              "item_id": 252465,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 19512,
@@ -25148,21 +25183,21 @@
             10011,
             20116,
             10010,
-            250546,
+            252465,
             19515,
             2262
           ],
           "horde": [
             7719,
             17772,
-            274751,
+            250539,
             16340,
             10020,
             19508,
             10011,
             20192,
-            10330,
-            250546,
+            10010,
+            252465,
             19512,
             2262
           ]
@@ -25170,10 +25205,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.007,
-          "crit": 1.425,
-          "hit": 1.885,
-          "melee_haste": 11.05
+          "agility": 1.013,
+          "crit": 1.433,
+          "hit": 1.798,
+          "melee_haste": 9.269
         }
       },
       {
@@ -25263,9 +25298,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 10032,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "neck": {
               "item_id": 13089,
@@ -25273,9 +25308,9 @@
               "source": "World drop"
             },
             "shoulder": {
-              "item_id": 250576,
+              "item_id": 10038,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Tailoring"
             },
             "back": {
               "item_id": 11626,
@@ -25283,9 +25318,9 @@
               "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "chest": {
-              "item_id": 220801,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 10020,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 250581,
@@ -25293,9 +25328,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 272096,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 10011,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 20205,
@@ -25303,14 +25338,14 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 220798,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 10010,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
-              "item_id": 12555,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anvilrage Overseer"
+              "item_id": 10039,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 17713,
@@ -25336,11 +25371,6 @@
               "item_id": 250613,
               "source_kind": "crafted",
               "source": "Blacksmithing"
-            },
-            "ranged": {
-              "item_id": 249442,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             }
           }
         },
@@ -25363,15 +25393,13 @@
             250613
           ],
           "horde": [
+            10032,
             13089,
-            250576,
+            10038,
             11626,
-            220801,
             250581,
-            272096,
             20205,
-            220798,
-            12555,
+            10039,
             17713,
             19511,
             19120,
@@ -25382,10 +25410,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.382,
-          "crit": 1.947,
-          "hit": 2.379,
-          "melee_haste": 12.733
+          "agility": 1.365,
+          "crit": 1.923,
+          "hit": 2.267,
+          "melee_haste": 11.669
         }
       },
       {
@@ -25443,9 +25471,9 @@
               "source": "Mokvar"
             },
             "finger1": {
-              "item_id": 19325,
-              "source_kind": "rep",
-              "source": "Stormpike Guard"
+              "item_id": 13392,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Postmaster Malown"
             },
             "finger2": {
               "item_id": 21201,
@@ -25453,14 +25481,14 @@
               "source": "The Path of the Conqueror"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 19323,
@@ -25495,9 +25523,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 11726,
+              "item_id": 13388,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish"
+              "source": "Stratholme: Postmaster Malown"
             },
             "wrist": {
               "item_id": 12936,
@@ -25520,14 +25548,14 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 11731,
+              "item_id": 13391,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anub'shiah"
+              "source": "Stratholme: Postmaster Malown"
             },
             "finger1": {
-              "item_id": 19325,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan"
+              "item_id": 13392,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Postmaster Malown"
             },
             "finger2": {
               "item_id": 21201,
@@ -25535,14 +25563,14 @@
               "source": "The Path of the Conqueror"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 19323,
@@ -25568,10 +25596,10 @@
             226971,
             237819,
             226991,
-            19325,
+            13392,
             21201,
-            22268,
-            19289,
+            22678,
+            11832,
             19323,
             272435
           ],
@@ -25580,16 +25608,16 @@
             15411,
             272105,
             272414,
-            11726,
+            13388,
             12936,
             11730,
             227814,
             237819,
-            11731,
-            19325,
+            13391,
+            13392,
             21201,
-            22268,
-            19289,
+            22678,
+            11832,
             19323,
             272435
           ]
@@ -25597,10 +25625,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.958,
-          "crit": 2.771,
-          "hit": 3.227,
-          "melee_haste": 19.069
+          "agility": 1.904,
+          "crit": 2.694,
+          "hit": 3.161,
+          "melee_haste": 19.759
         }
       }
     ],
@@ -32973,9 +33001,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 0.751,
-          "crit": 1.051,
-          "hit": 1.56,
+          "agility": 0.778,
+          "crit": 1.089,
+          "hit": 1.682,
           "melee_haste": 10.899
         }
       },
@@ -33150,9 +33178,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 0.967,
-          "crit": 1.355,
-          "hit": 1.975,
+          "agility": 0.989,
+          "crit": 1.385,
+          "hit": 2.098,
           "melee_haste": 10.824
         }
       },
@@ -33196,7 +33224,7 @@
               "source": "World drop"
             },
             "waist": {
-              "item_id": 20089,
+              "item_id": 20116,
               "source_kind": "rep",
               "source": "The League of Arathor"
             },
@@ -33263,7 +33291,7 @@
               "source": "World drop"
             },
             "waist": {
-              "item_id": 20153,
+              "item_id": 20192,
               "source_kind": "rep",
               "source": "The Defilers"
             },
@@ -33288,9 +33316,9 @@
               "source": "Scarlet Monastery: Houndmaster Loksey"
             },
             "main_hand": {
-              "item_id": 7717,
+              "item_id": 9425,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "source": "Uldaman: Shadowforge Relic Hunter"
             }
           }
         },
@@ -33303,7 +33331,7 @@
             10583,
             19508,
             867,
-            20089,
+            20116,
             10330,
             252465,
             19515,
@@ -33318,21 +33346,21 @@
             10583,
             19508,
             867,
-            20153,
+            20192,
             10330,
             252465,
             19512,
             2262,
-            7717
+            9425
           ]
         },
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.131,
-          "crit": 1.594,
-          "hit": 1.929,
-          "melee_haste": 9.901
+          "agility": 1.107,
+          "crit": 1.565,
+          "hit": 2.095,
+          "melee_haste": 9.272
         }
       },
       {
@@ -33365,9 +33393,9 @@
               "source": "Captain Dirgehammer"
             },
             "wrist": {
-              "item_id": 18711,
-              "source_kind": "world",
-              "source": "Arena Treasure Chest"
+              "item_id": 17714,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "hands": {
               "item_id": 223076,
@@ -33437,14 +33465,14 @@
               "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "chest": {
-              "item_id": 12793,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Plugger Spazzring"
+              "item_id": 220826,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "wrist": {
-              "item_id": 18711,
-              "source_kind": "world",
-              "source": "Arena Treasure Chest"
+              "item_id": 17714,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "hands": {
               "item_id": 272100,
@@ -33500,7 +33528,7 @@
             223073,
             11626,
             223078,
-            18711,
+            17714,
             223076,
             11686,
             223074,
@@ -33515,8 +33543,8 @@
             13089,
             252534,
             11626,
-            12793,
-            18711,
+            220826,
+            17714,
             272100,
             11686,
             220834,
@@ -33531,10 +33559,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.199,
-          "crit": 1.676,
-          "hit": 2.204,
-          "melee_haste": 10.681
+          "agility": 1.227,
+          "crit": 1.718,
+          "hit": 2.126,
+          "melee_haste": 9.94
         }
       },
       {
@@ -33542,9 +33570,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 12587,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand"
+              "item_id": 227021,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "neck": {
               "item_id": 22340,
@@ -33567,19 +33595,19 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 19587,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
+              "item_id": 227017,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "hands": {
-              "item_id": 14615,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lady Illucia Barov"
+              "item_id": 227022,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
-              "item_id": 14614,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lady Illucia Barov"
+              "item_id": 227018,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "legs": {
               "item_id": 237819,
@@ -33607,9 +33635,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 19323,
@@ -33629,9 +33657,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 12927,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Pyroguard Emberseer"
+              "item_id": 272105,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "back": {
               "item_id": 272414,
@@ -33639,24 +33667,24 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 11726,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish"
+              "item_id": 252483,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 19587,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 227017,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Warlord's Command"
+              "item_id": 227022,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
-              "item_id": 227805,
+              "item_id": 227018,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Mokvar"
             },
             "legs": {
               "item_id": 237819,
@@ -33664,9 +33692,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 11731,
+              "item_id": 14616,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anub'shiah"
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "finger1": {
               "item_id": 19325,
@@ -33679,14 +33707,14 @@
               "source": "The Path of the Conqueror"
             },
             "trinket1": {
+              "item_id": 19289,
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck"
+            },
+            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
-            "trinket2": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "For The Horde!"
             },
             "main_hand": {
               "item_id": 19323,
@@ -33697,46 +33725,47 @@
         },
         "new_at_band": {
           "alliance": [
-            12587,
+            227021,
             22340,
             12927,
             272414,
             252483,
-            19587,
-            14615,
-            14614,
+            227017,
+            227022,
+            227018,
             237819,
             14616,
             19325,
             21201,
             19289,
-            11815,
+            11819,
             19323
           ],
           "horde": [
             20134,
             22340,
-            12927,
+            272105,
             272414,
-            11726,
-            19587,
-            13963,
-            227805,
+            252483,
+            227017,
+            227022,
+            227018,
             237819,
-            11731,
+            14616,
             19325,
             21201,
-            13965,
+            19289,
+            19120,
             19323
           ]
         },
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.827,
-          "crit": 2.563,
-          "hit": 3.902,
-          "melee_haste": 15.373
+          "agility": 1.685,
+          "crit": 2.377,
+          "hit": 3.881,
+          "melee_haste": 11.635
         }
       }
     ],
@@ -39102,10 +39131,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 0.797,
-          "crit": 1.138,
-          "hit": 1.509,
-          "melee_haste": 10.645
+          "agility": 0.805,
+          "crit": 1.149,
+          "hit": 1.569,
+          "melee_haste": 10.95
         }
       },
       {
@@ -39305,10 +39334,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.193,
-          "crit": 1.705,
-          "hit": 1.552,
-          "melee_haste": 10.021
+          "agility": 1.217,
+          "crit": 1.738,
+          "hit": 1.646,
+          "melee_haste": 9.717
         }
       },
       {
@@ -39438,9 +39467,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 20151,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 11686,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Eviscerator"
             },
             "legs": {
               "item_id": 220798,
@@ -39517,7 +39546,7 @@
             220801,
             250581,
             272096,
-            20151,
+            11686,
             220798,
             12555,
             17713,
@@ -39532,10 +39561,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.303,
-          "crit": 1.861,
-          "hit": 1.651,
-          "melee_haste": 11.121
+          "agility": 1.289,
+          "crit": 1.841,
+          "hit": 1.696,
+          "melee_haste": 11.123
         }
       },
       {
@@ -39759,10 +39788,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 2.322,
-          "crit": 3.317,
-          "hit": 3.186,
-          "melee_haste": 20.104
+          "agility": 2.384,
+          "crit": 3.406,
+          "hit": 3.23,
+          "melee_haste": 20.783
         }
       }
     ],

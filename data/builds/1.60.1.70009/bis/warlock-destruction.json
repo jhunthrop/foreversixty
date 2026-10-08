@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
-  "engine_version": "f5002980c",
-  "generated_at": "2026-10-08T12:45:33Z",
+  "engine_version": "c789dacc2",
+  "generated_at": "2026-10-08T13:47:52Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -561,8 +561,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.189849544,
-      "verify_run_seconds": 1.215528663,
+      "weights_run_seconds": 2.253087864,
+      "verify_run_seconds": 1.1441987120000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1207,8 +1207,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.189849544,
-      "verify_run_seconds": 1.227796511,
+      "weights_run_seconds": 2.253087864,
+      "verify_run_seconds": 1.163341063,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1928,8 +1928,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.268677604,
-      "verify_run_seconds": 1.289387551,
+      "weights_run_seconds": 2.338930484,
+      "verify_run_seconds": 1.2531188819999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2652,8 +2652,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.268677604,
-      "verify_run_seconds": 1.297043138,
+      "weights_run_seconds": 2.338930484,
+      "verify_run_seconds": 1.261663476,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3348,8 +3348,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 1.986083221,
-      "verify_run_seconds": 1.292790992,
+      "weights_run_seconds": 1.9884469519999999,
+      "verify_run_seconds": 1.254545649,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4036,8 +4036,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.986083221,
-      "verify_run_seconds": 1.227899699,
+      "weights_run_seconds": 1.9884469519999999,
+      "verify_run_seconds": 1.136990538,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4738,8 +4738,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.9225479559999998,
-      "verify_run_seconds": 1.537358272,
+      "weights_run_seconds": 1.828616519,
+      "verify_run_seconds": 1.438610658,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5445,8 +5445,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.9225479559999998,
-      "verify_run_seconds": 1.488406202,
+      "weights_run_seconds": 1.828616519,
+      "verify_run_seconds": 1.4547129970000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5881,7 +5881,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.801298590320114
+              "dps_delta": -6.801298590320115
             },
             {
               "item_id": 19094,
@@ -6196,8 +6196,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.038074307,
-      "verify_run_seconds": 3.474425999,
+      "weights_run_seconds": 2.065119762,
+      "verify_run_seconds": 3.292935693,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6632,7 +6632,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.801298590320115
+              "dps_delta": -6.801298590320114
             },
             {
               "item_id": 19090,
@@ -6945,8 +6945,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.038074307,
-      "verify_run_seconds": 3.4714022350000002,
+      "weights_run_seconds": 2.065119762,
+      "verify_run_seconds": 3.256617513,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7397,7 +7397,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 40.920036405031965,
+          "score": 40.92003640503196,
           "verified": true,
           "alternatives": [
             {
@@ -7405,21 +7405,21 @@
               "item_name": "Marshal's Dreadweave Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.1915483042117108
+              "dps_delta": -1.191548304211707
             },
             {
               "item_id": 13170,
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -3.2684123802363487
+              "dps_delta": -3.2684123802363447
             },
             {
               "item_id": 227095,
               "item_name": "Knight-Captain's Dreadweave Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -6.190604081884905
+              "dps_delta": -6.190604081884901
             }
           ]
         },
@@ -7692,8 +7692,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.571984101,
-      "verify_run_seconds": 3.819524306,
+      "weights_run_seconds": 6.70057733,
+      "verify_run_seconds": 3.603227624,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8440,8 +8440,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.571984101,
-      "verify_run_seconds": 3.7387640060000003,
+      "weights_run_seconds": 6.70057733,
+      "verify_run_seconds": 3.547044263,
       "coverage": {
         "back": {
           "eligible": 450,
