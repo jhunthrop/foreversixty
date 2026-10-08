@@ -1,4 +1,4 @@
-# shaman-elemental rotation ladder
+# druid-restoration rotation ladder
 
 Rules this ladder runs under (Phase 1a,
 docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
@@ -93,84 +93,124 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.9 | 4 | spell:3606=65.4, other:attack/1=38.5, spell:529=30.8, spell:3599=5.9, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:277288 off_hand:4820 | 16.6 | 4 | spell:6350=62.8, other:attack/1=45.2, spell:915=25.5, spell:6363=4.9, spell:20572=2.0 | - |
-| 30 | 5532311100000000-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4066 | 27.2 | 5 | other:attack/1=77.0, spell:6351=66.4, spell:943=29.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 38 | 5532311300103020-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 38.0 | 5 | other:attack/1=86.9, spell:6351=67.0, spell:10391=25.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 40 | 5532311300103040-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 41.3 | 5 | other:attack/1=85.1, spell:6352=65.5, spell:10391=26.0, spell:6365=4.1, spell:20572=2.0 | - |
-| 50 | 5532311300103050-010000000000000000-5300000000000000 | main_hand:17710 off_hand:10195 | 48.6 | 5 | other:attack/1=79.5, spell:10435=65.7, spell:15207=25.2, spell:10437=3.7, spell:20572=2.0 | - |
-| 60 | 5532311300103050-010000000000000000-5533020000000000 | main_hand:19360 off_hand:22819 | 80.9 | 5 | spell:10436=70.2, other:attack/1=44.8, spell:15208=32.5, spell:10438=3.7, spell:20572=2.0 | - |
+| 10 | 0000000000000000-00000000000000000000-1000000000000000 | main_hand:263937 | 15.2 | 4 | spell:5186=32.0, spell:1058=24.0, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 20 | 0000000000000000-00000000000000000000-5330000000000000 | main_hand:890 | 20.5 | 5 | spell:1430=26.0, spell:8938=6.0, spell:5188=5.0, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 30 | 0000000000000000-00000000000000000000-5351115000000000 | main_hand:249392 | 38.2 | 6 | spell:2091=23.2, spell:8940=6.0, spell:1259799=2.0, spell:5189=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 38 | 0000000000000000-00000000000000000000-5351115103112000 | main_hand:7757 | 48.3 | 8 | spell:3627=23.3, spell:8941=5.2, spell:1259799=2.0, spell:17116=2.0, spell:8903=1.8 | - |
+| 40 | 0000000000000000-00000000000000000000-5351115103113001 | main_hand:7723 | 56.4 | 8 | spell:8910=21.8, spell:8941=5.1, spell:1259799=2.0, spell:17116=2.0, spell:8903=1.6 | - |
+| 50 | 5500000000000000-00000000000000000000-5351115103113001 | main_hand:812 | 82.5 | 8 | spell:9839=21.7, spell:9856=5.1, spell:1259799=2.0, spell:17116=2.0, spell:18562=1.0 | - |
+| 60 | 5532221000000000-00000000000000000000-5351115103113001 | main_hand:19355 | 120.4 | 8 | spell:9841=19.8, spell:9858=4.0, spell:1259799=2.0, spell:17116=2.0, spell:29166=1.0 | - |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Earth Shock (spell 8044)
-- Flame Shock (spell 8050)
-- Flametongue Attack (spell 10444)
-- Stormstrike (spell 410156)
+- Entangling Roots (spell 339)
+- Maul (spell 6807)
+- Moonfire (spell 8924)
+- Wrath (spell 5177)
 
 ### Level 20
 
-- Earth Shock (spell 8045)
-- Flame Shock (spell 8052)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8056)
-- Frostbrand Attack (spell 8034)
-- Stormstrike (spell 410156)
+- Claw (spell 1082)
+- Entangling Roots (spell 1062)
+- Insect Swarm (spell 5570)
+- Maul (spell 6808)
+- Moonfire (spell 8925)
+- Rip (spell 1079)
+- Starfire (spell 2912)
+- Swipe (spell 779)
+- Wrath (spell 5178)
 
 ### Level 30
 
-- Earth Shock (spell 8046)
-- Flame Shock (spell 8053)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8056)
-- Frostbrand Attack (spell 8037)
-- Stormstrike (spell 410156)
+- Claw (spell 3029)
+- Entangling Roots (spell 5195)
+- Insect Swarm (spell 24974)
+- Maul (spell 6809)
+- Moonfire (spell 8927)
+- Primal Bite (spell 407995)
+- Rake (spell 1822)
+- Rip (spell 9492)
+- Shred (spell 6800)
+- Starfire (spell 8949)
+- Swipe (spell 780)
+- Wrath (spell 5180)
 
 ### Level 38
 
-- Chain Lightning (spell 421)
-- Earth Shock (spell 10412)
-- Flame Shock (spell 8053)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8058)
-- Frostbrand Attack (spell 10458)
-- Stormstrike (spell 410156)
+- Claw (spell 5201)
+- Entangling Roots (spell 5196)
+- Ferocious Bite (spell 22568)
+- Insect Swarm (spell 24974)
+- Maul (spell 8972)
+- Moonfire (spell 8928)
+- Primal Bite (spell 1238069)
+- Rake (spell 1823)
+- Ravage (spell 6785)
+- Rip (spell 9493)
+- Shred (spell 8992)
+- Starfire (spell 8950)
+- Swipe (spell 769)
+- Wrath (spell 6780)
 
 ### Level 40
 
-- Chain Lightning (spell 930)
-- Earth Shock (spell 10412)
-- Flame Shock (spell 10447)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8058)
-- Frostbrand Attack (spell 10458)
-- Lava Burst (spell 408490)
-- Stormstrike (spell 410156)
+- Claw (spell 5201)
+- Entangling Roots (spell 5196)
+- Ferocious Bite (spell 22827)
+- Hurricane (spell 16914)
+- Insect Swarm (spell 24975)
+- Maul (spell 8972)
+- Moonfire (spell 8929)
+- Primal Bite (spell 1238069)
+- Rake (spell 1823)
+- Ravage (spell 6785)
+- Rip (spell 9493)
+- Shred (spell 8992)
+- Starfire (spell 8950)
+- Swipe (spell 769)
+- Wrath (spell 6780)
 
 ### Level 50
 
-- Chain Lightning (spell 2860)
-- Earth Shock (spell 10413)
-- Flame Shock (spell 10447)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 10472)
-- Frostbrand Attack (spell 16352)
-- Lava Burst (spell 1238299)
-- Stormstrike (spell 410156)
+- Claw (spell 9849)
+- Entangling Roots (spell 9852)
+- Ferocious Bite (spell 22828)
+- Hurricane (spell 17401)
+- Insect Swarm (spell 24976)
+- Lacerate (spell 1235826)
+- Maul (spell 9880)
+- Moonfire (spell 9833)
+- Primal Bite (spell 1238070)
+- Rake (spell 1824)
+- Ravage (spell 9866)
+- Rip (spell 9752)
+- Shred (spell 9829)
+- Starfire (spell 9875)
+- Swipe (spell 9754)
+- Wrath (spell 8905)
 
 ### Level 60
 
-- Chain Lightning (spell 10605)
-- Earth Shock (spell 10414)
-- Flame Shock (spell 29228)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 10473)
-- Frostbrand Attack (spell 16353)
-- Lava Burst (spell 1238300)
-- Stormstrike (spell 410156)
+- Claw (spell 9850)
+- Entangling Roots (spell 9853)
+- Ferocious Bite (spell 22829)
+- Hurricane (spell 17402)
+- Insect Swarm (spell 24977)
+- Lacerate (spell 1235827)
+- Maul (spell 9881)
+- Moonfire (spell 9835)
+- Primal Bite (spell 1238073)
+- Rake (spell 9904)
+- Ravage (spell 9867)
+- Rip (spell 9896)
+- Shred (spell 9830)
+- Starfire (spell 9876)
+- Swipe (spell 9908)
+- Test Maul (spell 24042)
+- Wrath (spell 9912)
 
 ## Violations found in this run
 

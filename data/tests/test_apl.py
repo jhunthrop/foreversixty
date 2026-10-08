@@ -80,15 +80,16 @@ def test_a_written_rotation_round_trips_unchanged():
         assert back == document.rotation, key
 
 
-def test_every_dps_spec_is_written_and_every_other_spec_is_not():
+def test_every_dps_and_healer_spec_is_written_and_every_other_spec_is_not():
     """The rotation lane ships one default APL per DPS spec (design section
-    2.4); tanks and healers have nothing to rotate through an APL yet. Roles
-    come from curated/specs.json, never a list typed into the test, so this
-    keeps working as more DPS specs land in other batches."""
+    2.4) and, since the healer lane, one per healer spec (it heals a fake raid
+    under the curated heal profile); tanks have nothing to rotate through an
+    APL yet. Roles come from curated/specs.json, never a list typed into the
+    test, so this keeps working as more specs land in other batches."""
     roles = {spec.spec: spec.role for spec in load_specs(Path("curated"))}
     states = {key: document.state for key, document in documents().items()}
-    dps_specs = {spec for spec, role in roles.items() if role == "dps"}
-    assert {key for key, state in states.items() if state == "written"} == dps_specs
+    rotating = {spec for spec, role in roles.items() if role in {"dps", "healer"}}
+    assert {key for key, state in states.items() if state == "written"} == rotating
     assert set(states.values()) <= APL_STATES
 
 

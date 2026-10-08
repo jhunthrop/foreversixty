@@ -1,4 +1,4 @@
-# shaman-elemental rotation ladder
+# priest-holy rotation ladder
 
 Rules this ladder runs under (Phase 1a,
 docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
@@ -93,85 +93,112 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.9 | 4 | spell:3606=65.4, other:attack/1=38.5, spell:529=30.8, spell:3599=5.9, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:277288 off_hand:4820 | 16.6 | 4 | spell:6350=62.8, other:attack/1=45.2, spell:915=25.5, spell:6363=4.9, spell:20572=2.0 | - |
-| 30 | 5532311100000000-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4066 | 27.2 | 5 | other:attack/1=77.0, spell:6351=66.4, spell:943=29.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 38 | 5532311300103020-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 38.0 | 5 | other:attack/1=86.9, spell:6351=67.0, spell:10391=25.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 40 | 5532311300103040-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 41.3 | 5 | other:attack/1=85.1, spell:6352=65.5, spell:10391=26.0, spell:6365=4.1, spell:20572=2.0 | - |
-| 50 | 5532311300103050-010000000000000000-5300000000000000 | main_hand:17710 off_hand:10195 | 48.6 | 5 | other:attack/1=79.5, spell:10435=65.7, spell:15207=25.2, spell:10437=3.7, spell:20572=2.0 | - |
-| 60 | 5532311300103050-010000000000000000-5533020000000000 | main_hand:19360 off_hand:22819 | 80.9 | 5 | spell:10436=70.2, other:attack/1=44.8, spell:15208=32.5, spell:10438=3.7, spell:20572=2.0 | - |
+| 10 | 000000000000000000-10000000000000000-000000000000000000 | main_hand:263937 | 0.0 | 0 | - | {SpellID: 25315}, {SpellID: 25316} |
+| 20 | 000000000000000000-33500000000000000-000000000000000000 | main_hand:890 | 19.7 | 3 | spell:2061=23.4, spell:2054=3.7, spell:7128=1.0 | {SpellID: 25315}, {SpellID: 25316} |
+| 30 | 000000000000000000-33554100000000000-000000000000000000 | main_hand:249392 | 27.2 | 3 | spell:9472=20.5, spell:6063=4.7, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
+| 38 | 000000000000000000-33554100030021020-000000000000000000 | main_hand:7757 | 41.1 | 3 | spell:9474=17.5, spell:6064=6.5, other:mana_gain=1.0, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
+| 40 | 000000000000000000-33554100030021031-000000000000000000 | main_hand:7757 | 16.4 | 4 | spell:401859=25.0, spell:6064=5.6, other:mana_gain=4.4, spell:1006=1.0, spell:9474=0.4 | {SpellID: 25315}, {SpellID: 25316} |
+| 50 | 523000000000000000-33554100030021031-000000000000000000 | main_hand:812 | 21.0 | 4 | spell:1240826=21.8, spell:6064=6.5, other:mana_gain=4.6, spell:10951=1.0, spell:10916=0.8 | {SpellID: 25315}, {SpellID: 25316} |
+| 60 | 525223100000000000-33554100030021031-000000000000000000 | main_hand:19355 | 88.8 | 6 | spell:6064=27.8, other:mana_gain=6.1, spell:1240827=2.0, spell:25315=1.9, spell:10952=1.0 | - |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Earth Shock (spell 8044)
-- Flame Shock (spell 8050)
-- Flametongue Attack (spell 10444)
-- Stormstrike (spell 410156)
+- Mind Blast (spell 8092)
+- Shadow Word: Pain (spell 594)
+- Smite (spell 591)
+- Starshards (spell 10797)
 
 ### Level 20
 
-- Earth Shock (spell 8045)
-- Flame Shock (spell 8052)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8056)
-- Frostbrand Attack (spell 8034)
-- Stormstrike (spell 410156)
+- Chastise (spell 1277331)
+- Dark Sacrifice (spell 1277324)
+- Holy Fire (spell 14914)
+- Holy Nova (spell 15237)
+- Mind Blast (spell 8102)
+- Mind Flay (spell 15407)
+- Shadow Word: Pain (spell 970)
+- Smite (spell 598)
+- Starshards (spell 19296)
 
 ### Level 30
 
-- Earth Shock (spell 8046)
-- Flame Shock (spell 8053)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8056)
-- Frostbrand Attack (spell 8037)
-- Stormstrike (spell 410156)
+- Chastise (spell 1277332)
+- Dark Sacrifice (spell 1277325)
+- Holy Fire (spell 15263)
+- Holy Nova (spell 15430)
+- Mind Blast (spell 8104)
+- Mind Flay (spell 17311)
+- Shadow Word: Pain (spell 992)
+- Smite (spell 1004)
+- Starshards (spell 19299)
 
 ### Level 38
 
-- Chain Lightning (spell 421)
-- Earth Shock (spell 10412)
-- Flame Shock (spell 8053)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8058)
-- Frostbrand Attack (spell 10458)
-- Stormstrike (spell 410156)
+- Chastise (spell 1277332)
+- Dark Sacrifice (spell 1277325)
+- Holy Fire (spell 15264)
+- Holy Nova (spell 15431)
+- Mind Blast (spell 8105)
+- Mind Flay (spell 17312)
+- Shadow Word: Death (spell 1309595)
+- Shadow Word: Pain (spell 2767)
+- Smite (spell 6060)
+- Starshards (spell 19302)
 
 ### Level 40
 
-- Chain Lightning (spell 930)
-- Earth Shock (spell 10412)
-- Flame Shock (spell 10447)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8058)
-- Frostbrand Attack (spell 10458)
-- Lava Burst (spell 408490)
-- Stormstrike (spell 410156)
+- Chastise (spell 1277333)
+- Dark Sacrifice (spell 1277326)
+- Holy Fire (spell 15264)
+- Holy Nova (spell 15431)
+- Mind Blast (spell 8106)
+- Mind Flay (spell 17312)
+- Shadow Word: Death (spell 1309633)
+- Shadow Word: Pain (spell 2767)
+- Smite (spell 6060)
+- Starshards (spell 19302)
 
 ### Level 50
 
-- Chain Lightning (spell 2860)
-- Earth Shock (spell 10413)
-- Flame Shock (spell 10447)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 10472)
-- Frostbrand Attack (spell 16352)
-- Lava Burst (spell 1238299)
-- Stormstrike (spell 410156)
+- Chastise (spell 1277334)
+- Dark Sacrifice (spell 1277327)
+- Holy Fire (spell 15266)
+- Holy Nova (spell 27799)
+- Mind Blast (spell 10945)
+- Mind Flay (spell 17313)
+- Shadow Word: Death (spell 1309635)
+- Shadow Word: Pain (spell 10893)
+- Smite (spell 10933)
+- Starshards (spell 19304)
 
 ### Level 60
 
-- Chain Lightning (spell 10605)
-- Earth Shock (spell 10414)
-- Flame Shock (spell 29228)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 10473)
-- Frostbrand Attack (spell 16353)
-- Lava Burst (spell 1238300)
-- Stormstrike (spell 410156)
+- Chastise (spell 1277335)
+- Dark Sacrifice (spell 1277328)
+- Holy Fire (spell 15261)
+- Holy Nova (spell 27801)
+- Mind Blast (spell 10947)
+- Mind Flay (spell 18807)
+- Shadow Word: Death (spell 1309636)
+- Shadow Word: Pain (spell 10894)
+- Smite (spell 10934)
+- Starshards (spell 19305)
 
 ## Violations found in this run
 
-None.
+- priest-holy level=10 kind=unresolved_id action={SpellID: 25315}
+- priest-holy level=10 kind=unresolved_id action={SpellID: 25316}
+- priest-holy level=20 kind=unresolved_id action={SpellID: 25315}
+- priest-holy level=20 kind=unresolved_id action={SpellID: 25316}
+- priest-holy level=30 kind=unresolved_id action={SpellID: 25315}
+- priest-holy level=30 kind=unresolved_id action={SpellID: 25316}
+- priest-holy level=38 kind=unresolved_id action={SpellID: 25315}
+- priest-holy level=38 kind=unresolved_id action={SpellID: 25316}
+- priest-holy level=40 kind=dps_regression dps=16.4 prev_dps=41.1
+- priest-holy level=40 kind=unresolved_id action={SpellID: 25315}
+- priest-holy level=40 kind=unresolved_id action={SpellID: 25316}
+- priest-holy level=50 kind=unresolved_id action={SpellID: 25315}
+- priest-holy level=50 kind=unresolved_id action={SpellID: 25316}

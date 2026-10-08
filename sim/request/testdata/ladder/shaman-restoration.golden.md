@@ -1,4 +1,4 @@
-# shaman-elemental rotation ladder
+# shaman-restoration rotation ladder
 
 Rules this ladder runs under (Phase 1a,
 docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
@@ -93,54 +93,63 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.9 | 4 | spell:3606=65.4, other:attack/1=38.5, spell:529=30.8, spell:3599=5.9, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:277288 off_hand:4820 | 16.6 | 4 | spell:6350=62.8, other:attack/1=45.2, spell:915=25.5, spell:6363=4.9, spell:20572=2.0 | - |
-| 30 | 5532311100000000-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4066 | 27.2 | 5 | other:attack/1=77.0, spell:6351=66.4, spell:943=29.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 38 | 5532311300103020-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 38.0 | 5 | other:attack/1=86.9, spell:6351=67.0, spell:10391=25.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 40 | 5532311300103040-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 41.3 | 5 | other:attack/1=85.1, spell:6352=65.5, spell:10391=26.0, spell:6365=4.1, spell:20572=2.0 | - |
-| 50 | 5532311300103050-010000000000000000-5300000000000000 | main_hand:17710 off_hand:10195 | 48.6 | 5 | other:attack/1=79.5, spell:10435=65.7, spell:15207=25.2, spell:10437=3.7, spell:20572=2.0 | - |
-| 60 | 5532311300103050-010000000000000000-5533020000000000 | main_hand:19360 off_hand:22819 | 80.9 | 5 | spell:10436=70.2, other:attack/1=44.8, spell:15208=32.5, spell:10438=3.7, spell:20572=2.0 | - |
+| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 0.0 | 0 | - | {SpellID: 16188}, {SpellID: 25357}, {SpellID: 408510} |
+| 20 | 0000000000000000-000000000000000000-5321000000000000 | main_hand:890 | 14.9 | 2 | spell:8004=28.3, spell:5394=1.7 | {SpellID: 16188}, {SpellID: 25357}, {SpellID: 408510} |
+| 30 | 0000000000000000-000000000000000000-5322521010000000 | main_hand:249392 | 21.9 | 3 | spell:8008=28.0, spell:6375=1.8, other:mana_gain=1.4, spell:408510=1.1 | {SpellID: 16188}, {SpellID: 25357} |
+| 38 | 0000000000000000-000000000000000000-5322521010512000 | main_hand:7757 | 27.7 | 3 | spell:8010=26.1, spell:6375=1.9, other:mana_gain=1.4, spell:408510=1.1 | {SpellID: 16188}, {SpellID: 25357} |
+| 40 | 0000000000000000-000000000000000000-5322521010513001 | main_hand:7723 | 33.0 | 6 | spell:8010=27.1, other:mana_gain=5.6, spell:6377=2.0, spell:408510=1.2, spell:16190=1.0 | {SpellID: 16188}, {SpellID: 25357} |
+| 50 | 0000000000000000-253000000000000000-5322521010513001 | main_hand:812 | 49.9 | 6 | spell:10466=28.6, other:mana_gain=6.6, spell:10462=2.0, spell:408510=1.5, spell:1239242=1.0 | {SpellID: 16188}, {SpellID: 25357} |
+| 60 | 0000000000000000-255222200000000000-5322521010513001 | main_hand:19355 | 93.1 | 7 | spell:10468=12.2, other:mana_gain=6.4, spell:25357=4.9, spell:1239243=2.9, spell:10463=2.0 | {SpellID: 16188} |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
+- Attack (spell 3606)
 - Earth Shock (spell 8044)
 - Flame Shock (spell 8050)
 - Flametongue Attack (spell 10444)
+- Lightning Bolt (spell 529)
 - Stormstrike (spell 410156)
 
 ### Level 20
 
+- Attack (spell 6350)
 - Earth Shock (spell 8045)
 - Flame Shock (spell 8052)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8034)
+- Lightning Bolt (spell 915)
 - Stormstrike (spell 410156)
 
 ### Level 30
 
+- Attack (spell 6351)
 - Earth Shock (spell 8046)
 - Flame Shock (spell 8053)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8037)
+- Lightning Bolt (spell 943)
 - Stormstrike (spell 410156)
 
 ### Level 38
 
+- Attack (spell 6351)
 - Chain Lightning (spell 421)
 - Earth Shock (spell 10412)
 - Flame Shock (spell 8053)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
+- Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
 ### Level 40
 
+- Attack (spell 6352)
 - Chain Lightning (spell 930)
 - Earth Shock (spell 10412)
 - Flame Shock (spell 10447)
@@ -148,10 +157,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
 - Lava Burst (spell 408490)
+- Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
 ### Level 50
 
+- Attack (spell 10435)
 - Chain Lightning (spell 2860)
 - Earth Shock (spell 10413)
 - Flame Shock (spell 10447)
@@ -159,10 +170,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
 - Lava Burst (spell 1238299)
+- Lightning Bolt (spell 15207)
 - Stormstrike (spell 410156)
 
 ### Level 60
 
+- Attack (spell 10436)
 - Chain Lightning (spell 10605)
 - Earth Shock (spell 10414)
 - Flame Shock (spell 29228)
@@ -170,8 +183,14 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
 - Lava Burst (spell 1238300)
+- Lightning Bolt (spell 15208)
 - Stormstrike (spell 410156)
 
 ## Violations found in this run
 
-None.
+- shaman-restoration level=10 kind=unresolved_id action={SpellID: 25357}
+- shaman-restoration level=20 kind=unresolved_id action={SpellID: 25357}
+- shaman-restoration level=30 kind=unresolved_id action={SpellID: 25357}
+- shaman-restoration level=38 kind=unresolved_id action={SpellID: 25357}
+- shaman-restoration level=40 kind=unresolved_id action={SpellID: 25357}
+- shaman-restoration level=50 kind=unresolved_id action={SpellID: 25357}

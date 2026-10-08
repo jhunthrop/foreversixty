@@ -1,4 +1,4 @@
-# shaman-elemental rotation ladder
+# paladin-holy rotation ladder
 
 Rules this ladder runs under (Phase 1a,
 docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
@@ -93,85 +93,94 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.9 | 4 | spell:3606=65.4, other:attack/1=38.5, spell:529=30.8, spell:3599=5.9, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:277288 off_hand:4820 | 16.6 | 4 | spell:6350=62.8, other:attack/1=45.2, spell:915=25.5, spell:6363=4.9, spell:20572=2.0 | - |
-| 30 | 5532311100000000-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4066 | 27.2 | 5 | other:attack/1=77.0, spell:6351=66.4, spell:943=29.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 38 | 5532311300103020-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 38.0 | 5 | other:attack/1=86.9, spell:6351=67.0, spell:10391=25.7, spell:6364=4.6, spell:20572=2.0 | - |
-| 40 | 5532311300103040-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 41.3 | 5 | other:attack/1=85.1, spell:6352=65.5, spell:10391=26.0, spell:6365=4.1, spell:20572=2.0 | - |
-| 50 | 5532311300103050-010000000000000000-5300000000000000 | main_hand:17710 off_hand:10195 | 48.6 | 5 | other:attack/1=79.5, spell:10435=65.7, spell:15207=25.2, spell:10437=3.7, spell:20572=2.0 | - |
-| 60 | 5532311300103050-010000000000000000-5533020000000000 | main_hand:19360 off_hand:22819 | 80.9 | 5 | spell:10436=70.2, other:attack/1=44.8, spell:15208=32.5, spell:10438=3.7, spell:20572=2.0 | - |
+| 10 | 10000000000000000-0000000000000000-00000000000000000 | main_hand:277247 | 0.0 | 0 | - | {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
+| 20 | 55100000000000000-0000000000000000-00000000000000000 | main_hand:6953 | 8.4 | 1 | spell:19750=51.0 | {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
+| 30 | 55222113000000000-0000000000000000-00000000000000000 | main_hand:267369 | 15.4 | 1 | spell:19939=57.9 | {SpellID: 1311606}, {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
+| 38 | 55222113025100000-0000000000000000-00000000000000000 | main_hand:267369 | 21.3 | 2 | spell:19940=51.9, other:mana_gain=6.7, spell:20216=3.0 | {SpellID: 1311606}, {SpellID: 25292}, {SpellID: 25890} |
+| 40 | 55222113025101001-0000000000000000-00000000000000000 | main_hand:7723 | 22.8 | 4 | spell:19940=54.6, other:mana_gain=7.0, spell:20216=3.0, spell:20473=0.0, spell:25914=0.0 | {SpellID: 25292}, {SpellID: 25890} |
+| 50 | 55222113025101001-5500000000000000-00000000000000000 | main_hand:7723 | 36.4 | 2 | spell:19942=42.2, other:mana_gain=6.2, spell:20216=3.0 | {SpellID: 25292}, {SpellID: 25890} |
+| 60 | 55222113025101001-5532500000000000-00000000000000000 | main_hand:23455 | 64.3 | 4 | spell:19943=39.2, other:mana_gain=6.4, spell:20216=3.0, spell:25292=1.1, spell:25890=1.0 | - |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Earth Shock (spell 8044)
-- Flame Shock (spell 8050)
-- Flametongue Attack (spell 10444)
-- Stormstrike (spell 410156)
+- Holy Strike (spell 679)
+- Judgement of Fury (spell 1311650)
+- Judgement of Righteousness (spell 20280)
 
 ### Level 20
 
-- Earth Shock (spell 8045)
-- Flame Shock (spell 8052)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8056)
-- Frostbrand Attack (spell 8034)
-- Stormstrike (spell 410156)
+- Consecration (spell 26573)
+- Exorcism (spell 879)
+- Holy Strike (spell 1866)
+- Judgement of Command (spell 20425)
+- Judgement of Fury (spell 1311655)
+- Judgement of Righteousness (spell 20281)
 
 ### Level 30
 
-- Earth Shock (spell 8046)
-- Flame Shock (spell 8053)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8056)
-- Frostbrand Attack (spell 8037)
-- Stormstrike (spell 410156)
+- Consecration (spell 20116)
+- Exorcism (spell 5614)
+- Holy Strike (spell 680)
+- Judgement of Command (spell 20962)
+- Judgement of Fury (spell 20183)
+- Judgement of Righteousness (spell 20282)
 
 ### Level 38
 
-- Chain Lightning (spell 421)
-- Earth Shock (spell 10412)
-- Flame Shock (spell 8053)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8058)
-- Frostbrand Attack (spell 10458)
-- Stormstrike (spell 410156)
+- Consecration (spell 20116)
+- Exorcism (spell 5615)
+- Holy Strike (spell 2495)
+- Judgement of Command (spell 20962)
+- Judgement of Fury (spell 20411)
+- Judgement of Righteousness (spell 20283)
 
 ### Level 40
 
-- Chain Lightning (spell 930)
-- Earth Shock (spell 10412)
-- Flame Shock (spell 10447)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 8058)
-- Frostbrand Attack (spell 10458)
-- Lava Burst (spell 408490)
-- Stormstrike (spell 410156)
+- Consecration (spell 20922)
+- Exorcism (spell 5615)
+- Holy Strike (spell 2495)
+- Judgement of Command (spell 20961)
+- Judgement of Fury (spell 20411)
+- Judgement of Righteousness (spell 20283)
 
 ### Level 50
 
-- Chain Lightning (spell 2860)
-- Earth Shock (spell 10413)
-- Flame Shock (spell 10447)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 10472)
-- Frostbrand Attack (spell 16352)
-- Lava Burst (spell 1238299)
-- Stormstrike (spell 410156)
+- Consecration (spell 20923)
+- Exorcism (spell 10312)
+- Hammer of Wrath (spell 24275)
+- Holy Strike (spell 5569)
+- Holy Wrath (spell 2812)
+- Judgement of Command (spell 20965)
+- Judgement of Fury (spell 20413)
+- Judgement of Righteousness (spell 20285)
 
 ### Level 60
 
-- Chain Lightning (spell 10605)
-- Earth Shock (spell 10414)
-- Flame Shock (spell 29228)
-- Flametongue Attack (spell 10444)
-- Frost Shock (spell 10473)
-- Frostbrand Attack (spell 16353)
-- Lava Burst (spell 1238300)
-- Stormstrike (spell 410156)
+- Consecration (spell 20924)
+- Exorcism (spell 10314)
+- Hammer of Wrath (spell 24239)
+- Holy Strike (spell 10333)
+- Holy Wrath (spell 10318)
+- Judgement of Command (spell 20966)
+- Judgement of Fury (spell 20414)
+- Judgement of Righteousness (spell 20286)
 
 ## Violations found in this run
 
-None.
+- paladin-holy level=10 kind=unresolved_id action={SpellID: 25292}
+- paladin-holy level=10 kind=unresolved_id action={SpellID: 25890}
+- paladin-holy level=20 kind=unresolved_id action={SpellID: 25292}
+- paladin-holy level=20 kind=unresolved_id action={SpellID: 25890}
+- paladin-holy level=30 kind=unresolved_id action={SpellID: 25292}
+- paladin-holy level=30 kind=unresolved_id action={SpellID: 25890}
+- paladin-holy level=38 kind=unresolved_id action={SpellID: 25292}
+- paladin-holy level=38 kind=unresolved_id action={SpellID: 25890}
+- paladin-holy level=40 kind=unresolved_id action={SpellID: 25292}
+- paladin-holy level=40 kind=unresolved_id action={SpellID: 25890}
+- paladin-holy level=50 kind=unresolved_id action={SpellID: 25292}
+- paladin-holy level=50 kind=unresolved_id action={SpellID: 25890}
+- paladin-holy level=50 kind=zero_casts spell="Holy Shock" id=20929 authored=20930
+- paladin-holy level=60 kind=zero_casts spell="Holy Shock" id=20930 authored=20930

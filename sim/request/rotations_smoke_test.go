@@ -146,6 +146,27 @@ var smokeBuildWarnings = map[string]map[string]string{
 			"global under this one build, the same shape as the hunters' zero-SwingSpeed auto-shot " +
 			"loop: a real artifact of this bare build, not a defect in the gate.",
 	},
+	"druid-restoration": {
+		"{SpellID: 1238215}": "Wild Growth is a talent (sim/druid/wild_growth.go); this build takes none.",
+		"{SpellID: 17116}":   "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
+		"{SpellID: 18562}":   "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
+	},
+	"paladin-holy": {
+		"{SpellID: 20216}": "Divine Favor is a talent (sim/paladin/divine_favor.go); this build takes none.",
+		"{SpellID: 20930}": "Holy Shock is a talent (sim/paladin/holy_shock.go); this build takes none.",
+	},
+	"priest-discipline": {
+		"{SpellID: 1316995}": "Penance is a talent (sim/priest/penance.go); this build takes none.",
+	},
+	"priest-holy": {
+		"{SpellID: 1240827}": "Prayer of Mending is a talent (sim/priest/prayer_of_mending.go); this build takes none.",
+	},
+	"shaman-restoration": {
+		"{SpellID: 1239243}": "Riptide is a talent (sim/shaman/riptide.go); this build takes none.",
+		"{SpellID: 16188}":   "Nature's Swiftness is a talent (sim/shaman/talents.go); this build takes none.",
+		"{SpellID: 17359}":   "Mana Tide Totem is a talent (sim/shaman/mana_tide_totem.go); this build takes none.",
+		"{SpellID: 408510}":  "Water Shield is a talent (sim/shaman/talents.go); this build takes none.",
+	},
 	"priest-shadow": {
 		"{SpellID: 15473}": "Shadowform is a talent (sim/priest/talents.go); this build takes none.",
 		"{SpellID: 14751}": "Inner Focus is a talent (sim/priest/talents.go); this build takes none.",
@@ -213,6 +234,7 @@ func TestEveryWrittenRotationRunsInTheEngine(t *testing.T) {
 			if err != nil {
 				t.Fatalf("building the request: %v", err)
 			}
+			attachSmokeHealProfile(t, rot.spec, stats)
 			warned := warnedActions(t, stats)
 			want := expectedWarnings(rot)
 			if !slices.Equal(warned, want) {
@@ -226,6 +248,7 @@ func TestEveryWrittenRotationRunsInTheEngine(t *testing.T) {
 			if err != nil {
 				t.Fatalf("building the request: %v", err)
 			}
+			attachSmokeHealProfile(t, rot.spec, engineReq)
 			res := core.RunRaidSim(engineReq)
 			if err := adapter.ResultError(res); err != nil {
 				t.Fatalf("the sim failed: %v", err)
@@ -234,9 +257,9 @@ func TestEveryWrittenRotationRunsInTheEngine(t *testing.T) {
 			if err != nil {
 				t.Fatalf("reading the player's metrics: %v", err)
 			}
-			dps := player.Dps.GetAvg()
+			dps := ladderOutput(player, isHealerSpec(rot.spec))
 			if dps <= 0 {
-				t.Errorf("DPS = %v; a rotation that deals no damage is not a rotation", dps)
+				t.Errorf("output = %v; a rotation that deals no damage (or heals nothing) is not a rotation", dps)
 			}
 			cast := castSet(player)
 			if len(cast) == 0 {
@@ -273,6 +296,7 @@ func TestEveryWrittenRotationRunsInTheEngineBelowTheCap(t *testing.T) {
 			if got := engineReq.Raid.Parties[0].Players[0].Level; got != level {
 				t.Fatalf("the engine's player is level %d, want %d", got, level)
 			}
+			attachSmokeHealProfile(t, rot.spec, engineReq)
 			res := core.RunRaidSim(engineReq)
 			if err := adapter.ResultError(res); err != nil {
 				t.Fatalf("the sim failed at level %d: %v", level, err)
@@ -281,10 +305,11 @@ func TestEveryWrittenRotationRunsInTheEngineBelowTheCap(t *testing.T) {
 			if err != nil {
 				t.Fatalf("reading the player's metrics: %v", err)
 			}
-			if dps := player.Dps.GetAvg(); dps <= 0 {
-				t.Errorf("DPS = %v at level %d; a rotation that deals no damage is not a rotation", dps, level)
+			output := ladderOutput(player, isHealerSpec(rot.spec))
+			if output <= 0 {
+				t.Errorf("output = %v at level %d; a rotation that deals no damage (or heals nothing) is not a rotation", output, level)
 			}
-			t.Logf("SMOKE38\t%s\tdps=%.1f\ttop=%s", rot.spec, player.Dps.GetAvg(), top(castSet(player), 3))
+			t.Logf("SMOKE38\t%s\tdps=%.1f\ttop=%s", rot.spec, output, top(castSet(player), 3))
 		})
 	}
 }
@@ -593,4 +618,21 @@ func readBuildJSON(t *testing.T, build, name string, into any) {
 	if err := json.Unmarshal(b, into); err != nil {
 		t.Fatalf("parsing %s: %v", path, err)
 	}
+}
+
+// isHealerSpec reports whether spec is a healer on the canonical list.
+func isHealerSpec(spec string) bool { return specs.ByKey[spec].Role == "healer" }
+
+// attachSmokeHealProfile gives a healer's smoke request the fake raid its
+// rotation heals; any other spec's request is left alone.
+func attachSmokeHealProfile(t *testing.T, spec string, req *proto.RaidSimRequest) {
+	t.Helper()
+	if !isHealerSpec(spec) {
+		return
+	}
+	profile, err := LoadHealProfile(filepath.Join(repoRoot, "data", "curated", "heal-profile.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	profile.Attach(req)
 }

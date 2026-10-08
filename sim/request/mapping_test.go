@@ -172,14 +172,21 @@ func TestEverySpecAttachesOptionsAndARotation(t *testing.T) {
 // "not yet", the second is "never".
 func TestBuildRejectsASpecItDoesNotCarry(t *testing.T) {
 	req := fury()
-	// A healer: the fork registers no agent for one, and the rotation
-	// lane has written no priority list for one either.
-	req.Spec = "priest-holy"
-	req.Character.Class = "priest"
-	req.Character.Talents = ""
-	req.Character.Gear = nil
-	if _, err := Build(req); !errors.Is(err, ErrUnsupportedSpec) {
-		t.Fatalf("Build with an unsupported spec returned %v, want ErrUnsupportedSpec", err)
+	// Whatever spec on the canonical list the builder does not carry yet:
+	// the fork registers no agent for it and the rotation lane has
+	// written no priority list for it either.
+	for _, known := range specs.All {
+		if _, carried := specOptions[known.Spec]; carried {
+			continue
+		}
+		req.Spec = known.Spec
+		req.Character.Class = known.ClassSlug
+		req.Character.Talents = ""
+		req.Character.Gear = nil
+		if _, err := Build(req); !errors.Is(err, ErrUnsupportedSpec) {
+			t.Fatalf("Build with the unsupported spec %s returned %v, want ErrUnsupportedSpec", known.Spec, err)
+		}
+		break
 	}
 
 	req = fury()
