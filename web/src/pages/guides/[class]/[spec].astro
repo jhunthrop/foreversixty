@@ -132,7 +132,10 @@ const levelingRows: LevelingBandRow[] =
   ranked === undefined || faction === undefined
     ? []
     : [...ranked.bands]
-        .filter((b) => b.faction === faction)
+        // The strip is the leveling journey: one row per band, the bare entry.
+        // Level 60 also carries a raid-ready entry whose talents are the raid
+        // build; it belongs to the Talents section, not the strip.
+        .filter((b) => b.faction === faction && (b.preset === undefined || b.preset === 'bare'))
         .sort((a, b) => a.band - b.band)
         .map((b) => ({
           bandLabel: bisCopy.bandRangeLabel(b.band),
