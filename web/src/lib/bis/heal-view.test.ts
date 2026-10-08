@@ -1,6 +1,6 @@
 // web/src/lib/bis/heal-view.test.ts
 import { describe, expect, it } from 'vitest';
-import { clockLabel, healerSetViewFor, rateUnitOf } from './heal-view';
+import { clockLabel, healerSetViewFor, rateUnitForRole, rateUnitOf } from './heal-view';
 import type { BisBand, BisHealMetrics, BisHealProfile } from './types';
 
 const PROFILE: BisHealProfile = {
@@ -51,6 +51,14 @@ describe('rateUnitOf', () => {
   it('reads HPS for a healer band and DPS for anything else', () => {
     expect(rateUnitOf(healerBand())).toBe('HPS');
     expect(rateUnitOf(healerBand({ role: undefined }))).toBe('DPS');
+  });
+});
+
+describe('rateUnitForRole', () => {
+  it('maps the catalogue role to a unit', () => {
+    expect(rateUnitForRole('healer')).toBe('HPS');
+    expect(rateUnitForRole('tank')).toBe('DPS');
+    expect(rateUnitForRole(undefined)).toBe('DPS');
   });
 });
 

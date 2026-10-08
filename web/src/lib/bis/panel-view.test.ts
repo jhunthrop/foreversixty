@@ -1100,6 +1100,19 @@ describe('bandInfosFor: healer hook and unit threading', () => {
     );
   });
 
+  it('words a healer no_sourced_item row in healing, a damage band in damage', () => {
+    const empty = { ...missingSlot('trinket1'), empty_reason: 'no_sourced_item' } as BisSlot;
+    const healer = bandInfosFor(
+      fileWith([band({ ...healerFields, slots: [empty] })]),
+      [20],
+      'alliance',
+      depsWith(),
+    );
+    expect(healer[0]!.rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toContain('raises your healing.');
+    const damage = bandInfosFor(fileWith([band({ slots: [empty] })]), [20], 'alliance', depsWith());
+    expect(damage[0]!.rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toContain('raises your damage.');
+  });
+
   it('names a sim-verified pick with no swap note in HPS', () => {
     const file = fileWith([band({ ...healerFields, slots: [slot({ sim_dps: 281.3 })] })]);
     const [info] = bandInfosFor(file, [20], 'alliance', depsWith({ spec: 'priest-holy' }));

@@ -52,17 +52,19 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
   {healer.disclosure !== undefined && (
     <details class="this-set-profile" data-testid="bis-healer-profile">
       <summary>{healer.disclosure.summary}</summary>
-      <p class="this-set-profile-summary">{healer.disclosure.profileSummary}</p>
-      <dl class="this-set-profile-rows">
-        {healer.disclosure.rows.map((row) => (
-          <div class="this-set-profile-row">
-            <dt>{row.heading}</dt>
-            <dd>{row.figures}</dd>
-            {row.reason !== '' && <dd class="text-muted">{row.reason}</dd>}
-          </div>
-        ))}
-      </dl>
-      <p class="text-muted this-set-profile-notes">{healer.disclosure.notes}</p>
+      <div class="this-set-profile-body" tabindex="0">
+        <p class="this-set-profile-summary">{healer.disclosure.profileSummary}</p>
+        <dl class="this-set-profile-rows">
+          {healer.disclosure.rows.map((row) => (
+            <div class="this-set-profile-row">
+              <dt>{row.heading}</dt>
+              <dd>{row.figures}</dd>
+              {row.reason !== '' && <dd class="text-muted">{row.reason}</dd>}
+            </div>
+          ))}
+        </dl>
+        <p class="text-muted this-set-profile-notes">{healer.disclosure.notes}</p>
+      </div>
     </details>
   )}
   <span class="this-set-simmed text-muted">{bisCopy.simmedLine(generatedAtDate)}</span>
@@ -107,7 +109,7 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
   }
   .this-set-metrics {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
     gap: 8px;
     margin: 0;
   }
@@ -125,6 +127,7 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
     margin: 0;
   }
   .this-set-metric dd:not(.sr-only) {
+    margin-top: auto;
     font-size: 14px;
     color: var(--color-strong);
     overflow-wrap: anywhere;
@@ -135,6 +138,13 @@ const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref
   .this-set-profile summary {
     cursor: pointer;
     color: var(--color-nav);
+  }
+  /* The reasons are long; scroll inside the disclosure so opening it never stretches the
+     three-panel row (and the two panels beside this one) to the length of the profile. */
+  .this-set-profile-body {
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
   }
   .this-set-profile-summary,
   .this-set-profile-notes {

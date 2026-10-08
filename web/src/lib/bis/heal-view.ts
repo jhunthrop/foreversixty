@@ -7,7 +7,12 @@ import type { BisBand, BisHealMetrics, BisHealProfile, RateUnit } from './types'
 
 /** `HPS` for a healer band, `DPS` for every other band. */
 export function rateUnitOf(band: BisBand): RateUnit {
-  return band.role === 'healer' ? 'HPS' : 'DPS';
+  return rateUnitForRole(band.role);
+}
+
+/** The same rule from a role string (the spec catalogue's `role`, a band's `role`). */
+export function rateUnitForRole(role: string | undefined): RateUnit {
+  return role === 'healer' ? 'HPS' : 'DPS';
 }
 
 /** The ranker caps `mana_lasts_sec` here; it is the only "never ran out" signal when the

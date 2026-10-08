@@ -15,6 +15,11 @@ function countOf(count: number, noun: string): string {
   return `${count} ${noun}${count === 1 ? '' : 's'}`;
 }
 
+/** What the unit measures, in a sentence: damage for DPS, healing for HPS. */
+function outcomeNoun(unit: RateUnit): string {
+  return unit === 'HPS' ? 'healing' : 'damage';
+}
+
 export const bisCopy = {
   navLabel: 'Leveling BiS',
   indexTitle: 'Leveling BiS',
@@ -292,10 +297,10 @@ export const bisCopy = {
   /** The header's one summary sentence (spec §4.A) -- `bandHigh` is `undefined` only for
    *  the plain-60 band, which drops the whole "from X to Y" clause rather than say "at 60
    *  to 60" or invent a range the contract does not have. */
-  headerSummary: (bandLow: number, bandHigh: number | undefined): string =>
+  headerSummary: (bandLow: number, bandHigh: number | undefined, unit: RateUnit = 'DPS'): string =>
     bandHigh === undefined
-      ? `The gear that raises your damage most at ${bandLow}, ranked by the simulator with every item equipped, and where each piece comes from.`
-      : `The gear that raises your damage most from ${bandLow} to ${bandHigh}, ranked by the simulator with every item equipped, and where each piece comes from.`,
+      ? `The gear that raises your ${outcomeNoun(unit)} most at ${bandLow}, ranked by the simulator with every item equipped, and where each piece comes from.`
+      : `The gear that raises your ${outcomeNoun(unit)} most from ${bandLow} to ${bandHigh}, ranked by the simulator with every item equipped, and where each piece comes from.`,
   thisSetLabel: 'This set',
   /** "DPS on the training dummy, level 29 Troll, 11 talent points" -- `characterLevel` is
    *  the band's own training-dummy level (never a signed-in character's real level, spec
@@ -374,10 +379,15 @@ export const bisCopy = {
    *  trinket you can get at 20 to 29 raises your damage. The first that does comes at
    *  30."): the band this sentence is ABOUT gets the range, the band a bare "comes at"
    *  points to does not. */
-  noSourcedItemFirst: (slotLower: string, bandLabel: string, nextRealBand: number | undefined): string =>
+  noSourcedItemFirst: (
+    slotLower: string,
+    bandLabel: string,
+    nextRealBand: number | undefined,
+    unit: RateUnit = 'DPS',
+  ): string =>
     nextRealBand === undefined
-      ? `No ${slotLower} you can get at ${bandLabel} raises your damage.`
-      : `No ${slotLower} you can get at ${bandLabel} raises your damage. The first that does comes at ${nextRealBand}.`,
+      ? `No ${slotLower} you can get at ${bandLabel} raises your ${outcomeNoun(unit)}.`
+      : `No ${slotLower} you can get at ${bandLabel} raises your ${outcomeNoun(unit)}. The first that does comes at ${nextRealBand}.`,
   /** `no_sourced_item`, a LATER empty band for a slot this file's already named once (spec
    *  §4.D) -- `undefined` the same way `noSourcedItemFirst`'s own clause is: no later band
    *  ever sources it either. Same plain-band-number rule as above (mock: "Nothing here

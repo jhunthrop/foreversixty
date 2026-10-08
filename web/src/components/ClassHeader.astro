@@ -19,7 +19,7 @@ import ClassCrest from './ClassCrest.astro';
 import FactionMark from './FactionMark.astro';
 import { bisCopy } from '../lib/bis/copy';
 import { classColorVar } from '../lib/report/format';
-import type { Faction } from '../lib/bis/types';
+import type { Faction, RateUnit } from '../lib/bis/types';
 
 export interface SpecTabEntry {
   specSlug: string;
@@ -55,6 +55,8 @@ interface Props {
    *  `FactionToggle`, race select) are dropped -- there is no band to name, no faction to
    *  toggle, and no list to jump around in. */
   minimal?: boolean;
+  /** `HPS` on a healer's page: the summary sentence then says healing, not damage. */
+  unit?: RateUnit;
   /** The guide rebuild's own third render mode (spec §4.C): `minimal` (no band/faction
    *  suffix, no controls row -- a guide is not banded or factioned content) PLUS this one
    *  caller-supplied summary sentence, which `minimal` alone always drops. A guide's own h1
@@ -86,6 +88,7 @@ const {
   raceOptions = [],
   build,
   minimal = false,
+  unit = 'DPS',
   summaryOverride,
   eyebrow = bisCopy.headerEyebrow,
   titleOverride,
@@ -104,7 +107,7 @@ const factionLabel =
 const bandTextVariants = bands.map((band) => ({
   band,
   bandLabel: bisCopy.bandRangeLabel(band),
-  summary: bisCopy.headerSummary(band, band === 60 ? undefined : band + 9),
+  summary: bisCopy.headerSummary(band, band === 60 ? undefined : band + 9, unit),
 }));
 ---
 

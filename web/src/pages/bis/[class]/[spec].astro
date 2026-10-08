@@ -41,6 +41,7 @@ import {
   readSpecCatalog,
 } from '../../../lib/bis/load';
 import { bandInfosFor, collectModelsInto, type BandInfo } from '../../../lib/bis/panel-view';
+import { rateUnitForRole } from '../../../lib/bis/heal-view';
 import { newAtBandLinesFor, sourceGroupsFor } from '../../../lib/bis/footer-view';
 import {
   bandTopLevel,
@@ -68,6 +69,7 @@ const description = bisCopy.metaDescription(specEntry.name, className);
 const path = `/bis/${specEntry.class_slug}/${specEntry.spec_slug}`;
 const guideHref = `/guides/${specEntry.class_slug}/${specEntry.spec_slug}`;
 const build = activeBuild.build;
+const unit = rateUnitForRole(specEntry.role);
 
 const file = loadBisFile(specEntry.spec, build);
 const bands = file ? bandLevels(file) : [];
@@ -281,6 +283,7 @@ const crossScopeCss =
                       href: tab.active ? `${tab.href}?faction=${faction}` : tab.href,
                     }))}
                     bands={bands}
+                    unit={unit}
                     faction={faction}
                     race={raceOptionsFor(faction)[0]?.slug ?? ''}
                     raceOptions={raceOptionsFor(faction)}

@@ -40,6 +40,12 @@ describe('unit-aware wording', () => {
     expect(bisCopy.youGainOverWorn(2.5, 'Old Ring', 'HPS')).toBe('+2.5 HPS over your Old Ring');
     expect(bisCopy.setDpsDelta(3, 'HPS')).toBe('+3.0 HPS since the last band');
     expect(bisCopy.lowValueTitle('HPS')).toContain('adds HPS');
+    expect(bisCopy.headerSummary(60, undefined)).toContain('raises your damage most at 60');
+    expect(bisCopy.headerSummary(50, 59, 'HPS')).toContain('raises your healing most from 50 to 59');
+    expect(bisCopy.noSourcedItemFirst('trinket', '20 to 29', 30)).toContain('raises your damage. The first');
+    expect(bisCopy.noSourcedItemFirst('trinket', '20 to 29', undefined, 'HPS')).toBe(
+      'No trinket you can get at 20 to 29 raises your healing.',
+    );
   });
 });
 

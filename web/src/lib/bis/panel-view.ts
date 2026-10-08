@@ -181,6 +181,7 @@ function noSourcedItemCopyFor(
   slot: string,
   band: number,
   isFirstInGroupThisBand: boolean,
+  unit: RateUnit,
 ): string {
   const index = bands.indexOf(band);
   const previousBand = index <= 0 ? undefined : bands[index - 1];
@@ -192,6 +193,7 @@ function noSourcedItemCopyFor(
         (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot).toLowerCase(),
         bisCopy.bandRangeLabel(band),
         nextRealBand,
+        unit,
       )
     : bisCopy.noSourcedItemLater(nextRealBand);
 }
@@ -215,7 +217,7 @@ function emptyReasonLabel(
 ): string {
   switch (reason) {
     case 'no_sourced_item':
-      return noSourcedItemCopyFor(file, bands, faction, slot, band, isFirstInGroupThisBand);
+      return noSourcedItemCopyFor(file, bands, faction, slot, band, isFirstInGroupThisBand, unit);
     case 'no_dps_value':
       return bisCopy.emptyReasonNoDpsValue(unit);
     case 'effect_not_modelled':
