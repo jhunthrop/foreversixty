@@ -5,8 +5,7 @@ package main
 // A healer's published set must never be worse than the set the site
 // already published for the same band, preset and faction, when both are
 // measured under the harness the new set was ranked with. The ranker picks
-// slot by slot and the guarded score (score_heal.go) is a noisy, nonlinear
-// number, so a long chain of locally better picks can still end below a set
+// slot by slot on noisy short sims, so a long chain of locally better picks can still end below a set
 // it could have kept. After the last pass the previous published set is
 // read back from the committed report, measured under the final harness
 // next to the new set, and kept when it beats the new set beyond the two
@@ -69,7 +68,7 @@ func loadIncumbentSets(path string) (incumbentSets, error) {
 }
 
 // keptIncumbent is the published note of a band that kept its previous set:
-// both sets' guarded scores under the final harness, with their errors, and
+// both sets' effective healing per second under the final harness, with their errors, and
 // the slots where they differ.
 type keptIncumbent struct {
 	IncumbentScore float64  `json:"incumbent_score"`

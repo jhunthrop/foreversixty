@@ -146,74 +146,32 @@ func TestLoadIncumbentSetsReadsTheCommittedReport(t *testing.T) {
 	}
 }
 
-// The mana-lasts term's noise reaches the guarded error: a set that lasts
-// 280 s of a 300 s fight, 17 s of spread per iteration, 300 iterations.
-func TestGuardedErrorCarriesTheManaLastsNoise(t *testing.T) {
-	const (
-		fightSec = 300.0
-		lasts    = 280.0
-		healing  = 600.0
-	)
-	fight := testHealProfile(t).Duration()
-	result := inproc.HealingResult{
-		Effective:      api.Estimate{Mean: healing, Error: 0.8},
-		ManaLastsSec:   lasts,
-		ManaLastsError: 17 / math.Sqrt(300),
-	}
-	slope := 2 * lasts / (fightSec * fightSec)
-	want := math.Hypot(0.8*(lasts/fightSec)*(lasts/fightSec), healing*slope*result.ManaLastsError)
-	if got := guardedError(result, fight); math.Abs(got-want) > 1e-9 {
-		t.Errorf("guarded error = %v, want %v", got, want)
-	}
-	result.ManaLastsSec = fightSec + 50
-	if got := guardedError(result, fight); math.Abs(got-0.8) > 1e-9 {
-		t.Errorf("a set that lasts the fight has error %v, want the healing's own 0.8", got)
-	}
-	result.ManaLastsSec = 0
-	if got := guardedError(result, fight); got != 0 {
-		t.Errorf("a set that is empty at once has error %v, want 0", got)
-	}
-}
-
-// noisyBackend answers like the engine: the healing and mana-lasts errors
-// shrink with the square root of the iterations asked for.
+// noisyBackend answers like the engine: the healing's error shrinks with
+// the square root of the iterations asked for.
 type noisyBackend struct{ fakeHealing }
 
 func (b *noisyBackend) Run(req api.SimRequest, _ request.HealProfile) (inproc.HealingResult, error) {
-	root := math.Sqrt(float64(req.Iterations))
+	b.requests = append(b.requests, req)
 	return inproc.HealingResult{
-		Effective:      api.Estimate{Mean: 600, Error: 14 / root},
-		Raw:            api.Estimate{Mean: 620},
-		ManaLastsSec:   280,
-		ManaLastsError: 17 / root,
+		Effective:    api.Estimate{Mean: 600, Error: 14 / math.Sqrt(float64(req.Iterations))},
+		Raw:          api.Estimate{Mean: 620},
+		ManaLastsSec: 280,
 	}, nil
 }
 
-// The brief: the guarded score's error is below the adoption margin. At
-// the damage specs' 300 iterations it is not; a healer's engine scales the
-// iterations until it is.
+// The score's error at the healer verification harness is well below the
+// adoption margin, and the iterations asked for are scaled.
 func TestHealerVerificationErrorIsBelowTheAdoptionMargin(t *testing.T) {
-	engine := healEngine{backend: &noisyBackend{}, profile: testHealProfile(t)}
+	backend := &noisyBackend{}
+	engine := healEngine{backend: backend, profile: testHealProfile(t)}
 	score, stdErr, err := engine.RunPlainDPSWithError(api.SimRequest{Iterations: verifyIterations})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if relative := stdErr / score; relative >= swapMargin/2 {
-		t.Errorf("guarded error at the verification harness is %.2f%% of the score, want under half the %.0f%% margin", 100*relative, 100*swapMargin)
+		t.Errorf("error at the verification harness is %.2f%% of the score, want under half the %.0f%% margin", 100*relative, 100*swapMargin)
 	}
-	unscaled := (&noisyBackend{}).fakeHealingRun(t, verifyIterations, engine)
-	if unscaled/score < swapMargin/2 {
-		t.Errorf("the test is vacuous: 300 iterations already gives %.2f%%", 100*unscaled/score)
+	if got := backend.requests[0].Iterations; got != verifyIterations*healIterationScale {
+		t.Errorf("ran %d iterations, want %d", got, verifyIterations*healIterationScale)
 	}
-}
-
-// fakeHealingRun is the guarded relative error one backend run gives at the
-// given iterations, without the healer engine's scaling.
-func (b *noisyBackend) fakeHealingRun(t *testing.T, iterations int, engine healEngine) float64 {
-	t.Helper()
-	result, err := b.Run(api.SimRequest{Iterations: iterations}, engine.profile)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return guardedError(result, engine.profile.Duration())
 }

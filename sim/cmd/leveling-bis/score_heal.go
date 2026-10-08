@@ -8,18 +8,19 @@ package main
 // sweeps all go through an engineRunner that speaks damage; healEngine is
 // the engineRunner that speaks healing, so none of that code changes:
 //
-//   - RunPlainDPS and RunPlainDPSWithError return the set's GUARDED
-//     effective healing per second (healingScore).
+//   - RunPlainDPS and RunPlainDPSWithError return the set's effective
+//     healing per second over the whole profile fight, with its error.
 //   - RunWeights returns weights per point of effective healing per
 //     second, normalised to the spec's reference stat (healing power).
 //
-// The guard is mana longevity. A healer that runs out of mana before the
-// fight ends has stopped healing for the rest of it, and the average over
-// the fight already pays for that, but a set that front-loads its mana
-// into a burst and then idles should not out-rank a set that lasts, so a
-// set that empties early is scored by the share of the fight it lasted,
-// squared (healingScore). A set whose mana lasts the fight is scored by
-// its effective healing per second alone.
+// Mana is not a second term. A healer that runs out of mana stops healing
+// for the rest of the fight, and the average over the fight already pays
+// for exactly that, so scoring by the share of the fight the mana lasted
+// as well counted it twice and let the ranker prefer a set that heals
+// less (restoration druid, 2026-10-08). The profile is retuned so that
+// mana is a live constraint for every healer, which is what makes the
+// plain average the right objective. mana_lasts_sec, overheal and
+// healing per mana are published beside it as metrics, not ranked on.
 //
 // The profile is retuned by one rule, so the ranking keeps its signal.
 // Once healing meets the incoming damage, more healing power changes
@@ -43,7 +44,6 @@ import (
 	"fmt"
 	"math"
 	"path/filepath"
-	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -66,13 +66,12 @@ const (
 	// healMetricsSeed is the seed of that run, so a report is reproducible.
 	healMetricsSeed = 11
 	// healIterationScale multiplies every ranking run's iteration count for
-	// a healer. The guard multiplies healing by a function of the mean time
-	// to empty, and that time varies far more from iteration to iteration
-	// (about 17 s) than healing does (about 1 percent), so at the damage
-	// specs' 300 iterations the guarded score carried about 0.8 percent of
-	// noise, of the order of the 1 percent adoption margin. At seven times
-	// the iterations it is about 0.3 percent, below the margin by a wide
-	// one. The ratio between a screen (100) and a verification (300) is kept.
+	// a healer: the healer engine speaks a longer fight than a damage
+	// spec's, and a verification or adoption decision should rest on a
+	// score whose error is well under the 1 percent adoption margin. At
+	// seven times the iterations (300 becomes 2100) the error is about
+	// 0.1 percent of the score. The ratio between a screen (100) and a
+	// verification (300) is kept.
 	healIterationScale = 7
 	// maxManaLastsSec caps the published "mana lasts" figure; the engine
 	// projects a time past the fight for a set that never ran out, and an
@@ -152,23 +151,22 @@ func (h healEngine) measure(req api.SimRequest) (inproc.HealingResult, error) {
 	return h.backend.Run(h.forProfile(req), h.profile)
 }
 
-// RunPlainDPS is the set's guarded effective healing per second.
+// RunPlainDPS is the set's effective healing per second.
 func (h healEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
 	score, _, err := h.RunPlainDPSWithError(req)
 	return score, err
 }
 
-// RunPlainDPSWithError is RunPlainDPS with the score's standard error,
-// which carries the noise of the mana-lasts term as well as of the healing
-// (guardedError). A healer's ranking runs use healIterationScale times the
-// iterations the caller asked for.
+// RunPlainDPSWithError is RunPlainDPS with the score's standard error. A
+// healer's ranking runs use healIterationScale times the iterations the
+// caller asked for.
 func (h healEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64, error) {
 	req.Iterations *= healIterationScale
 	result, err := h.measure(req)
 	if err != nil {
 		return 0, 0, err
 	}
-	return healingScore(result, h.profile.Duration()), guardedError(result, h.profile.Duration()), nil
+	return result.Effective.Mean, result.Effective.Error, nil
 }
 
 // RunWeights sweeps the spec's weight stats over the profile's fake raid.
@@ -179,39 +177,6 @@ func (h healEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, f
 // HitProfileFor is empty: a healer has no miss table to cap against.
 func (healEngine) HitProfileFor(api.SimRequest) (core.HitProfile, error) {
 	return core.HitProfile{}, nil
-}
-
-// lastingFactor is the share of the fight a set's mana lasted, squared,
-// capped at one: 1 for a set that never runs dry, 0.64 for one that runs
-// out at four fifths of the fight.
-func lastingFactor(manaLastsSec float64, fight time.Duration) float64 {
-	if fight <= 0 || manaLastsSec >= fight.Seconds() {
-		return 1
-	}
-	share := math.Max(manaLastsSec, 0) / fight.Seconds()
-	return share * share
-}
-
-// guardedError is the standard error of healingScore: the healing's own
-// error through the guard, and the mana-lasts error through the guard's
-// slope (the delta method; the two are treated as independent, which
-// leaves out their covariance).
-// Above the fight length the guard is flat and the second term is zero.
-func guardedError(result inproc.HealingResult, fight time.Duration) float64 {
-	factor := lastingFactor(result.ManaLastsSec, fight)
-	healing := result.Effective.Error * factor
-	if fight <= 0 || result.ManaLastsSec >= fight.Seconds() || result.ManaLastsSec <= 0 {
-		return healing
-	}
-	slope := 2 * result.ManaLastsSec / (fight.Seconds() * fight.Seconds())
-	lasting := result.Effective.Mean * slope * result.ManaLastsError
-	return math.Hypot(healing, lasting)
-}
-
-// healingScore is the number a healing set ranks on: effective healing per
-// second, scaled by lastingFactor.
-func healingScore(result inproc.HealingResult, fight time.Duration) float64 {
-	return result.Effective.Mean * lastingFactor(result.ManaLastsSec, fight)
 }
 
 // metricsFor is the contract's metrics block for one run.

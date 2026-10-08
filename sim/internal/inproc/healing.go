@@ -24,10 +24,6 @@ type HealingResult struct {
 	// would have, projected from its mana left (the engine's own
 	// convention), so a value past the fight's length means mana to spare.
 	ManaLastsSec float64
-	// ManaLastsError is the standard error of ManaLastsSec: the spread of
-	// the per-iteration time to empty over the square root of the
-	// iterations. Zero when the engine reports no spread.
-	ManaLastsError float64
 	// ManaSpent and EffectiveHealed are totals over every iteration, so
 	// their ratio is healing per mana without a per-iteration rounding.
 	ManaSpent       float64
@@ -81,11 +77,10 @@ func HealingRun(req api.SimRequest, profile request.HealProfile) (HealingResult,
 
 func healingResultOf(player *proto.UnitMetrics, iterations int32, durationSec float64) HealingResult {
 	out := HealingResult{
-		Effective:      estimateOf(player.EffectiveHps, iterations),
-		Raw:            estimateOf(player.Hps, iterations),
-		ManaLastsSec:   player.GetTto().GetAvg(),
-		ManaLastsError: estimateOf(player.GetTto(), iterations).Error,
-		ManaSpent:      manaSpent(player.Resources),
+		Effective:    estimateOf(player.EffectiveHps, iterations),
+		Raw:          estimateOf(player.Hps, iterations),
+		ManaLastsSec: player.GetTto().GetAvg(),
+		ManaSpent:    manaSpent(player.Resources),
 	}
 	out.EffectiveHealed = out.Effective.Mean * durationSec * float64(iterations)
 	return out
