@@ -1,0 +1,4391 @@
+{
+  "spec": "priest-holy",
+  "build": "fixture",
+  "engine_version": "fixture",
+  "generated_at": "2026-10-07T00:00:00Z",
+  "presets": {
+    "raid": {
+      "label": "Raid-ready, Phase 1",
+      "buffs": [
+        {
+          "id": 10938,
+          "label": "Power Word: Fortitude"
+        },
+        {
+          "id": 10157,
+          "label": "Arcane Intellect"
+        },
+        {
+          "id": 25894,
+          "label": "Greater Blessing of Wisdom"
+        }
+      ],
+      "debuffs": [],
+      "consumes": [
+        {
+          "id": 17627,
+          "label": "Flask of Distilled Wisdom"
+        },
+        {
+          "id": 24363,
+          "label": "Mageblood Potion"
+        }
+      ],
+      "notes": "Fixture preset: every figure on this fixture is invented for the e2e."
+    }
+  },
+  "heal_profile": {
+    "id": "onyxia-sized",
+    "label": "Onyxia-sized tank hits and raid pulses",
+    "summary": "One healer's share of a Phase 1 boss fight: a tank taking big melee hits, raid-wide damage in regular pulses, and four more raid members to look after.",
+    "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption sized to a Phase 1 raid boss; the first raid tier (9 December) is Onyxia, Barrow Deeps and Hyjal Summit. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights.",
+    "duration_sec": 300,
+    "damage_spread": 0.25,
+    "tank": {
+      "health": 9500,
+      "hit_damage": 1150,
+      "swing_seconds": 2.0,
+      "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. An Onyxia-sized boss hits a mitigated tank for about 1,150 every other second once misses, dodges and parries are averaged in; each hit rolls 25 percent either side."
+    },
+    "members": {
+      "health": 5000,
+      "reason": "A raid member that is not the tank has about 5,000 health: a plate or mail wearer sits above it and a cloth wearer below."
+    },
+    "pulse": {
+      "damage": 450,
+      "interval_seconds": 4.0,
+      "members": 3,
+      "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every four seconds three of the four raid members take 450, which is about 340 damage a second spread over the group the healer stands in."
+    },
+    "sources": [
+      {
+        "label": "Blizzard, World of Warcraft Forever Deep Dive panel recap: first raid tier opens 9 December",
+        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+        "kind": "blizzard"
+      },
+      {
+        "label": "This site, data/curated/loot/forever-raid-phases.json: Barrow Deeps, Hyjal Summit and Onyxia open on 9 December",
+        "url": "https://foreversixty.gg/data/1.60.1.70009/loot.json",
+        "kind": "site"
+      }
+    ]
+  },
+  "bands": [
+    {
+      "spec": "priest-holy",
+      "band": 50,
+      "faction": "alliance",
+      "race": "human",
+      "talents": "0000000000000000000000000",
+      "talent_points": 41,
+      "role": "healer",
+      "profile": "onyxia-sized",
+      "metrics": {
+        "hps": 214.6,
+        "raw_hps": 243.9,
+        "overheal_pct": 0.12,
+        "mana_lasts_sec": 241,
+        "hpm": 2.9
+      },
+      "weights": [
+        {
+          "stat": "healing_power",
+          "weight": 1.0,
+          "error": 0.012
+        },
+        {
+          "stat": "mp5",
+          "weight": 1.62,
+          "error": 0.05
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.516,
+          "error": 0.018
+        },
+        {
+          "stat": "spirit",
+          "weight": 0.408,
+          "error": 0.02
+        },
+        {
+          "stat": "crit",
+          "weight": 0.18,
+          "error": 0.03,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 2.52
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.9,
+          "error": 0.06
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 220896,
+          "item_name": "Knight-Lieutenant's Satin Cover",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 51.9,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 220899,
+              "item_name": "Blood Guard's Satin Cover",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 13102,
+              "item_name": "Cassandra's Grace",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": false
+            },
+            {
+              "item_id": 9431,
+              "item_name": "Papal Fez",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Blood Guard's Satin Cover (id 220899): kept the pick, 214.6 vs 214.5 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 19303,
+          "item_name": "Darkmoon Necklace",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 19.8,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 13085,
+              "item_name": "Horizon Choker",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 272185,
+              "item_name": "Amulet of Forgiveness",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 17707,
+              "item_name": "Gemshard Heart",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Horizon Choker (id 13085): kept the pick, 214.6 vs 212.6 set DPS"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 220894,
+          "item_name": "Knight-Lieutenant's Satin Pads",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 40.0,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 220901,
+              "item_name": "Blood Guard's Satin Pads",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 254049,
+              "item_name": "Nethergeld Shoulders",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            },
+            {
+              "item_id": 11624,
+              "item_name": "Kentic Amice",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Blood Guard's Satin Pads (id 220901): kept the pick, 214.6 vs 214.5 set DPS"
+        },
+        {
+          "slot": "back",
+          "item_id": 19527,
+          "item_name": "Battle Healer's Cloak",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 25.0,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 19531,
+              "item_name": "Caretaker's Cape",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 20218,
+              "item_name": "Faded Hakkari Cloak",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": false
+            },
+            {
+              "item_id": 19528,
+              "item_name": "Battle Healer's Cloak",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Caretaker's Cape (id 19531): kept the pick, 214.6 vs 214.5 set DPS"
+        },
+        {
+          "slot": "chest",
+          "item_id": 220892,
+          "item_name": "Knight's Satin Armor",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 46.1,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 220903,
+              "item_name": "Stone Guard's Satin Armor",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 6682,
+              "item_name": "Death Speaker Robes",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.4,
+              "verified": false
+            },
+            {
+              "item_id": 12462,
+              "item_name": "Embrace of the Wind Serpent",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Stone Guard's Satin Armor (id 220903): kept the pick, 214.6 vs 214.5 set DPS"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 254061,
+          "item_name": "Nethergeld Cuffs",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 28.1,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 12546,
+              "item_name": "Aristocratic Cuffs",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.1,
+              "verified": true
+            },
+            {
+              "item_id": 1974,
+              "item_name": "Mindthrust Bracers",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.1,
+              "verified": false
+            },
+            {
+              "item_id": 9433,
+              "item_name": "Forgotten Wraps",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 4.1,
+          "swap_note": "confirmed by the sim against Aristocratic Cuffs (id 12546): kept the pick, 214.6 vs 210.5 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 226950,
+          "item_name": "Virtuous Mitts",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 41.8,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 254095,
+              "item_name": "Gilded Gloves",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.2,
+              "verified": true
+            },
+            {
+              "item_id": 271946,
+              "item_name": "Theramore Handwraps",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            },
+            {
+              "item_id": 272098,
+              "item_name": "Raider Handwraps",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.2,
+          "swap_note": "confirmed by the sim against Gilded Gloves (id 254095): kept the pick, 214.6 vs 214.4 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 254081,
+          "item_name": "Gilded Waistcord",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 36.2,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 254037,
+              "item_name": "Gilded Cord",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.5,
+              "verified": true
+            },
+            {
+              "item_id": 11662,
+              "item_name": "Ban'thok Sash",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.8,
+              "verified": false
+            },
+            {
+              "item_id": 12466,
+              "item_name": "Dawnspire Cord",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -6.5,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.5,
+          "swap_note": "confirmed by the sim against Gilded Cord (id 254037): kept the pick, 214.6 vs 213.1 set DPS"
+        },
+        {
+          "slot": "legs",
+          "item_id": 220893,
+          "item_name": "Knight's Satin Leggings",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 46.1,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 220902,
+              "item_name": "Stone Guard's Satin Leggings",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 9484,
+              "item_name": "Spellshock Leggings",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            },
+            {
+              "item_id": 253987,
+              "item_name": "Pristine Leggings",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Stone Guard's Satin Leggings (id 220902): kept the pick, 214.6 vs 214.5 set DPS"
+        },
+        {
+          "slot": "feet",
+          "item_id": 254107,
+          "item_name": "Gilded Sandals",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 38.2,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 220895,
+              "item_name": "Sergeant Major's Satin Boots",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.7,
+              "verified": true
+            },
+            {
+              "item_id": 220900,
+              "item_name": "First Sergeant's Satin Boots",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.7,
+              "verified": false
+            },
+            {
+              "item_id": 254001,
+              "item_name": "Gilded Slippers",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.3,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.7,
+          "swap_note": "confirmed by the sim against Sergeant Major's Satin Boots (id 220895): kept the pick, 214.6 vs 211.9 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 272069,
+          "item_name": "Darkspear Signet",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 17.5,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 11824,
+              "item_name": "Cyclopean Band",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.3,
+              "verified": true
+            },
+            {
+              "item_id": 272070,
+              "item_name": "Darkspear Signet",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.8,
+              "verified": false
+            },
+            {
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.3,
+          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, 214.6 vs 214.3 set DPS"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 11824,
+          "item_name": "Cyclopean Band",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 16.6,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 272070,
+              "item_name": "Darkspear Signet",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.5,
+              "verified": true
+            },
+            {
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            },
+            {
+              "item_id": 5266,
+              "item_name": "Eye of Adaegus",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.5,
+          "swap_note": "confirmed by the sim against Darkspear Signet (id 272070): kept the pick, 214.6 vs 214.1 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 271903,
+          "item_name": "Enriched Seal",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 271905,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            },
+            {
+              "item_id": 272059,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, 214.6 vs 214.5 set DPS"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 272061,
+          "item_name": "Darkspear Voodoo Seal",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 271905,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": true
+            },
+            {
+              "item_id": 272059,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            },
+            {
+              "item_id": 11302,
+              "item_name": "Uther's Strength",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -6.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 4.7,
+          "swap_note": "confirmed by the sim against Enriched Seal (id 271905): kept the pick, 214.6 vs 209.9 set DPS"
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 2816,
+          "item_name": "Death Speaker Scepter",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 17710,
+              "item_name": "Charstone Dirk",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -16.8,
+              "verified": true
+            },
+            {
+              "item_id": 271929,
+              "item_name": "Clever Expeditionary's Spellblade",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -18.0,
+              "verified": false
+            },
+            {
+              "item_id": 272084,
+              "item_name": "Darkspear Insurgent's Spellblade",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -18.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 16.8,
+          "swap_note": "confirmed by the sim against Charstone Dirk (id 17710): kept the pick, 214.6 vs 197.8 set DPS"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 9393,
+          "item_name": "Beacon of Hope",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 24.0,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 249456,
+              "item_name": "Twisting Essence Jar",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.3,
+              "verified": true
+            },
+            {
+              "item_id": 249395,
+              "item_name": "Orb of Souls",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.5,
+              "verified": false
+            },
+            {
+              "item_id": 11625,
+              "item_name": "Enthralled Sphere",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.3,
+          "swap_note": "confirmed by the sim against Twisting Essence Jar (id 249456): kept the pick, 214.6 vs 214.3 set DPS"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 274655,
+          "item_name": "Peacekeeper Wand",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 7.5,
+          "verified": true,
+          "sim_dps": 214.6,
+          "alternatives": [
+            {
+              "item_id": 13064,
+              "item_name": "Jaina's Firestarter",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.4,
+              "verified": true
+            },
+            {
+              "item_id": 13063,
+              "item_name": "Starfaller",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.3,
+              "verified": false
+            },
+            {
+              "item_id": 7001,
+              "item_name": "Gravestone Scepter",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.4,
+          "swap_note": "confirmed by the sim against Jaina's Firestarter (id 13064): kept the pick, 214.6 vs 214.2 set DPS"
+        }
+      ],
+      "set_dps": 214.6,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 41.2,
+      "verify_run_seconds": 96.5,
+      "reference_dps_per_point": 0.31,
+      "haste_on_items": true,
+      "preset": "bare"
+    },
+    {
+      "spec": "priest-holy",
+      "band": 60,
+      "faction": "alliance",
+      "race": "human",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "role": "healer",
+      "profile": "onyxia-sized",
+      "metrics": {
+        "hps": 386.7,
+        "raw_hps": 489.5,
+        "overheal_pct": 0.21,
+        "mana_lasts_sec": 3600,
+        "hpm": 3.8
+      },
+      "weights": [
+        {
+          "stat": "healing_power",
+          "weight": 1.0,
+          "error": 0.012
+        },
+        {
+          "stat": "mp5",
+          "weight": 1.35,
+          "error": 0.05
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.43,
+          "error": 0.018
+        },
+        {
+          "stat": "spirit",
+          "weight": 0.34,
+          "error": 0.02
+        },
+        {
+          "stat": "crit",
+          "weight": 0.18,
+          "error": 0.03,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 2.52
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.9,
+          "error": 0.06
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 19132,
+          "item_name": "Crystal Adorned Crown",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 109.7,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 22720,
+              "item_name": "Zulian Headdress",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.1,
+              "verified": true
+            },
+            {
+              "item_id": 260212,
+              "item_name": "Bad Hat",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.7,
+              "verified": false
+            },
+            {
+              "item_id": 14140,
+              "item_name": "Mooncloth Circlet",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 11.1,
+          "swap_note": "confirmed by the sim against Zulian Headdress (id 22720): kept the pick, 386.7 vs 375.6 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 19885,
+          "item_name": "Jin'do's Evil Eye",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 55.8,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 20685,
+              "item_name": "Wavefront Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.2,
+              "verified": true
+            },
+            {
+              "item_id": 18723,
+              "item_name": "Animated Chain Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 17109,
+              "item_name": "Choker of Enlightenment",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -7.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.2,
+          "swap_note": "confirmed by the sim against Wavefront Necklace (id 20685): kept the pick, 386.7 vs 384.5 set DPS"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 227888,
+          "item_name": "Argent Elite Shoulders",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 79.0,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 19841,
+              "item_name": "Zandalar Confessor's Mantle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -9.4,
+              "verified": true
+            },
+            {
+              "item_id": 14139,
+              "item_name": "Mooncloth Shoulders",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.3,
+              "verified": false
+            },
+            {
+              "item_id": 220894,
+              "item_name": "Knight-Lieutenant's Satin Pads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -12.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 9.4,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Mantle (id 19841): kept the pick, 386.7 vs 377.3 set DPS"
+        },
+        {
+          "slot": "back",
+          "item_id": 18510,
+          "item_name": "Hide of the Wild",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 50.0,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 18208,
+              "item_name": "Drape of Benediction",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272413,
+              "item_name": "Drape of Recovery",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.8,
+              "verified": false
+            },
+            {
+              "item_id": 21412,
+              "item_name": "Shroud of Infinite Wisdom",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Drape of Benediction (id 18208): kept the pick, 386.7 vs 385.3 set DPS"
+        },
+        {
+          "slot": "chest",
+          "item_id": 14154,
+          "item_name": "Truefaith Vestments",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 81.0,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 13346,
+              "item_name": "Robes of the Exalted",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": true
+            },
+            {
+              "item_id": 227122,
+              "item_name": "Knight-Captain's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            },
+            {
+              "item_id": 227124,
+              "item_name": "Legionnaire's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.1,
+          "swap_note": "confirmed by the sim against Robes of the Exalted (id 13346): kept the pick, 386.7 vs 385.6 set DPS"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 16819,
+          "item_name": "Vambraces of Prophecy",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 45.2,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 19843,
+              "item_name": "Zandalar Confessor's Wraps",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 22667,
+              "item_name": "Bracers of Hope",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.8,
+              "verified": false
+            },
+            {
+              "item_id": 23129,
+              "item_name": "Bracers of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Wraps (id 19843): kept the pick, 386.7 vs 384.7 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20717,
+          "item_name": "Desert Bloom Gloves",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 57.5,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 16812,
+              "item_name": "Gloves of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 12554,
+              "item_name": "Hands of the Exalted Herald",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.5,
+              "verified": false
+            },
+            {
+              "item_id": 18409,
+              "item_name": "Mooncloth Gloves",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Gloves of Prophecy (id 16812): kept the pick, 386.7 vs 385.1 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 18327,
+          "item_name": "Whipvine Cord",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 53.2,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 19842,
+              "item_name": "Zandalar Confessor's Bindings",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 19047,
+              "item_name": "Wisdom of the Timbermaw",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": false
+            },
+            {
+              "item_id": 16817,
+              "item_name": "Girdle of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Bindings (id 19842): kept the pick, 386.7 vs 385.1 set DPS"
+        },
+        {
+          "slot": "legs",
+          "item_id": 18386,
+          "item_name": "Padre's Trousers",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 73.0,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 16814,
+              "item_name": "Pants of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.1,
+              "verified": true
+            },
+            {
+              "item_id": 227123,
+              "item_name": "Legionnaire's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            },
+            {
+              "item_id": 227125,
+              "item_name": "Knight-Captain's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.1,
+          "swap_note": "confirmed by the sim against Pants of Prophecy (id 16814): kept the pick, 386.7 vs 384.6 set DPS"
+        },
+        {
+          "slot": "feet",
+          "item_id": 227862,
+          "item_name": "Incandescent Mooncloth Boots",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 62.2,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 19897,
+              "item_name": "Betrayer's Boots",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.1,
+              "verified": true
+            },
+            {
+              "item_id": 226952,
+              "item_name": "Virtuous Sandals",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.2,
+              "verified": false
+            },
+            {
+              "item_id": 275609,
+              "item_name": "Swarmtender's Footpads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 5.1,
+          "swap_note": "confirmed by the sim against Betrayer's Boots (id 19897): kept the pick, 386.7 vs 381.6 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 275983,
+          "item_name": "Vigilant Watcher's Signet",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 44.0,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 234023,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": true
+            },
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.8,
+              "verified": false
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.7,
+          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (id 234023): kept the pick, 386.7 vs 386.0 set DPS"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 234023,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 41.9,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.1,
+              "verified": true
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.6,
+              "verified": false
+            },
+            {
+              "item_id": 22334,
+              "item_name": "Band of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Rosewine Circle (id 13178): kept the pick, 386.7 vs 386.6 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 42.0,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 271903,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Enriched Seal (id 271903): kept the pick, 386.7 vs 385.3 set DPS"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 271903,
+          "item_name": "Enriched Seal",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 18371,
+              "item_name": "Mindtap Talisman",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, 386.7 vs 386.6 set DPS"
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 2816,
+          "item_name": "Death Speaker Scepter",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 19890,
+              "item_name": "Jin'do's Hexxer",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.0,
+              "verified": true
+            },
+            {
+              "item_id": 19903,
+              "item_name": "Fang of Venoxis",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 19965,
+              "item_name": "Wushoolay's Poker",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 3.0,
+          "swap_note": "confirmed by the sim against Jin'do's Hexxer (id 19890): kept the pick, 386.7 vs 383.7 set DPS"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 52.5,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 21185,
+              "item_name": "Earthcalm Orb",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 272686,
+              "item_name": "Premier High Warlord's Tome of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            },
+            {
+              "item_id": 278157,
+              "item_name": "Premier Grand Marshal's Tome of Restoration",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Earthcalm Orb (id 21185): kept the pick, 386.7 vs 384.7 set DPS"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 279246,
+          "item_name": "Torch of Light",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 22.5,
+          "verified": true,
+          "sim_dps": 386.7,
+          "alternatives": [
+            {
+              "item_id": 19861,
+              "item_name": "Touch of Chaos",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 13938,
+              "item_name": "Bonecreeper Stylus",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 19967,
+              "item_name": "Thoughtblighter",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Touch of Chaos (id 19861): kept the pick, 386.7 vs 385.3 set DPS"
+        }
+      ],
+      "set_dps": 386.7,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Crystal Adorned Crown",
+        "neck: Jin'do's Evil Eye",
+        "shoulder: Argent Elite Shoulders",
+        "back: Hide of the Wild",
+        "chest: Truefaith Vestments",
+        "wrist: Vambraces of Prophecy",
+        "hands: Desert Bloom Gloves",
+        "waist: Whipvine Cord",
+        "legs: Padre's Trousers",
+        "feet: Incandescent Mooncloth Boots",
+        "finger1: Vigilant Watcher's Signet",
+        "finger2: Signet Ring of the Bronze Dragonflight",
+        "trinket1: Serenity Field",
+        "trinket2: Enriched Seal",
+        "off_hand: Lei of the Lifegiver",
+        "ranged: Torch of Light"
+      ],
+      "weights_run_seconds": 41.2,
+      "verify_run_seconds": 96.5,
+      "reference_dps_per_point": 0.31,
+      "haste_on_items": true,
+      "preset": "raid"
+    },
+    {
+      "spec": "priest-holy",
+      "band": 60,
+      "faction": "alliance",
+      "race": "human",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "role": "healer",
+      "profile": "onyxia-sized",
+      "metrics": {
+        "hps": 301.4,
+        "raw_hps": 358.8,
+        "overheal_pct": 0.16,
+        "mana_lasts_sec": 192,
+        "hpm": 3.3
+      },
+      "weights": [
+        {
+          "stat": "healing_power",
+          "weight": 1.0,
+          "error": 0.012
+        },
+        {
+          "stat": "mp5",
+          "weight": 1.62,
+          "error": 0.05
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.516,
+          "error": 0.018
+        },
+        {
+          "stat": "spirit",
+          "weight": 0.408,
+          "error": 0.02
+        },
+        {
+          "stat": "crit",
+          "weight": 0.18,
+          "error": 0.03,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 2.52
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.9,
+          "error": 0.06
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 19132,
+          "item_name": "Crystal Adorned Crown",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 109.7,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 22720,
+              "item_name": "Zulian Headdress",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.1,
+              "verified": true
+            },
+            {
+              "item_id": 260212,
+              "item_name": "Bad Hat",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.7,
+              "verified": false
+            },
+            {
+              "item_id": 14140,
+              "item_name": "Mooncloth Circlet",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 11.1,
+          "swap_note": "confirmed by the sim against Zulian Headdress (id 22720): kept the pick, 301.4 vs 290.3 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 19885,
+          "item_name": "Jin'do's Evil Eye",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 55.8,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 20685,
+              "item_name": "Wavefront Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.2,
+              "verified": true
+            },
+            {
+              "item_id": 18723,
+              "item_name": "Animated Chain Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 17109,
+              "item_name": "Choker of Enlightenment",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -7.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.2,
+          "swap_note": "confirmed by the sim against Wavefront Necklace (id 20685): kept the pick, 301.4 vs 299.2 set DPS"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 227888,
+          "item_name": "Argent Elite Shoulders",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 79.0,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 19841,
+              "item_name": "Zandalar Confessor's Mantle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -9.4,
+              "verified": true
+            },
+            {
+              "item_id": 14139,
+              "item_name": "Mooncloth Shoulders",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.3,
+              "verified": false
+            },
+            {
+              "item_id": 220894,
+              "item_name": "Knight-Lieutenant's Satin Pads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -12.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 9.4,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Mantle (id 19841): kept the pick, 301.4 vs 292.0 set DPS"
+        },
+        {
+          "slot": "back",
+          "item_id": 18510,
+          "item_name": "Hide of the Wild",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 50.0,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 18208,
+              "item_name": "Drape of Benediction",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272413,
+              "item_name": "Drape of Recovery",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.8,
+              "verified": false
+            },
+            {
+              "item_id": 21412,
+              "item_name": "Shroud of Infinite Wisdom",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Drape of Benediction (id 18208): kept the pick, 301.4 vs 300.0 set DPS"
+        },
+        {
+          "slot": "chest",
+          "item_id": 14154,
+          "item_name": "Truefaith Vestments",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 81.0,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 13346,
+              "item_name": "Robes of the Exalted",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": true
+            },
+            {
+              "item_id": 227122,
+              "item_name": "Knight-Captain's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            },
+            {
+              "item_id": 227124,
+              "item_name": "Legionnaire's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.1,
+          "swap_note": "confirmed by the sim against Robes of the Exalted (id 13346): kept the pick, 301.4 vs 300.3 set DPS"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 16819,
+          "item_name": "Vambraces of Prophecy",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 45.2,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 19843,
+              "item_name": "Zandalar Confessor's Wraps",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 22667,
+              "item_name": "Bracers of Hope",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.8,
+              "verified": false
+            },
+            {
+              "item_id": 23129,
+              "item_name": "Bracers of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Wraps (id 19843): kept the pick, 301.4 vs 299.4 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20717,
+          "item_name": "Desert Bloom Gloves",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 57.5,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 16812,
+              "item_name": "Gloves of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 12554,
+              "item_name": "Hands of the Exalted Herald",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.5,
+              "verified": false
+            },
+            {
+              "item_id": 18409,
+              "item_name": "Mooncloth Gloves",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Gloves of Prophecy (id 16812): kept the pick, 301.4 vs 299.8 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 18327,
+          "item_name": "Whipvine Cord",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 53.2,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 19842,
+              "item_name": "Zandalar Confessor's Bindings",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 19047,
+              "item_name": "Wisdom of the Timbermaw",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": false
+            },
+            {
+              "item_id": 16817,
+              "item_name": "Girdle of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Bindings (id 19842): kept the pick, 301.4 vs 299.8 set DPS"
+        },
+        {
+          "slot": "legs",
+          "item_id": 18386,
+          "item_name": "Padre's Trousers",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 73.0,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 16814,
+              "item_name": "Pants of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.1,
+              "verified": true
+            },
+            {
+              "item_id": 227123,
+              "item_name": "Legionnaire's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            },
+            {
+              "item_id": 227125,
+              "item_name": "Knight-Captain's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.1,
+          "swap_note": "confirmed by the sim against Pants of Prophecy (id 16814): kept the pick, 301.4 vs 299.3 set DPS"
+        },
+        {
+          "slot": "feet",
+          "item_id": 227862,
+          "item_name": "Incandescent Mooncloth Boots",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 62.2,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 19897,
+              "item_name": "Betrayer's Boots",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.1,
+              "verified": true
+            },
+            {
+              "item_id": 226952,
+              "item_name": "Virtuous Sandals",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.2,
+              "verified": false
+            },
+            {
+              "item_id": 275609,
+              "item_name": "Swarmtender's Footpads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 5.1,
+          "swap_note": "confirmed by the sim against Betrayer's Boots (id 19897): kept the pick, 301.4 vs 296.3 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 275983,
+          "item_name": "Vigilant Watcher's Signet",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 44.0,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 234023,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": true
+            },
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.8,
+              "verified": false
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.7,
+          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (id 234023): kept the pick, 301.4 vs 300.7 set DPS"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 234023,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 41.9,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.1,
+              "verified": true
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.6,
+              "verified": false
+            },
+            {
+              "item_id": 22334,
+              "item_name": "Band of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Rosewine Circle (id 13178): kept the pick, 301.4 vs 301.3 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 42.0,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 271903,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Enriched Seal (id 271903): kept the pick, 301.4 vs 300.0 set DPS"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 271903,
+          "item_name": "Enriched Seal",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 18371,
+              "item_name": "Mindtap Talisman",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, 301.4 vs 301.3 set DPS"
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 2816,
+          "item_name": "Death Speaker Scepter",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 19890,
+              "item_name": "Jin'do's Hexxer",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.0,
+              "verified": true
+            },
+            {
+              "item_id": 19903,
+              "item_name": "Fang of Venoxis",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 19965,
+              "item_name": "Wushoolay's Poker",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 3.0,
+          "swap_note": "confirmed by the sim against Jin'do's Hexxer (id 19890): kept the pick, 301.4 vs 298.4 set DPS"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 52.5,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 21185,
+              "item_name": "Earthcalm Orb",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 272686,
+              "item_name": "Premier High Warlord's Tome of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            },
+            {
+              "item_id": 278157,
+              "item_name": "Premier Grand Marshal's Tome of Restoration",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Earthcalm Orb (id 21185): kept the pick, 301.4 vs 299.4 set DPS"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 279246,
+          "item_name": "Torch of Light",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 22.5,
+          "verified": true,
+          "sim_dps": 301.4,
+          "alternatives": [
+            {
+              "item_id": 19861,
+              "item_name": "Touch of Chaos",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 13938,
+              "item_name": "Bonecreeper Stylus",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 19967,
+              "item_name": "Thoughtblighter",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Touch of Chaos (id 19861): kept the pick, 301.4 vs 300.0 set DPS"
+        }
+      ],
+      "set_dps": 301.4,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Crystal Adorned Crown",
+        "neck: Jin'do's Evil Eye",
+        "shoulder: Argent Elite Shoulders",
+        "back: Hide of the Wild",
+        "chest: Truefaith Vestments",
+        "wrist: Vambraces of Prophecy",
+        "hands: Desert Bloom Gloves",
+        "waist: Whipvine Cord",
+        "legs: Padre's Trousers",
+        "feet: Incandescent Mooncloth Boots",
+        "finger1: Vigilant Watcher's Signet",
+        "finger2: Signet Ring of the Bronze Dragonflight",
+        "trinket1: Serenity Field",
+        "trinket2: Enriched Seal",
+        "off_hand: Lei of the Lifegiver",
+        "ranged: Torch of Light"
+      ],
+      "weights_run_seconds": 41.2,
+      "verify_run_seconds": 96.5,
+      "reference_dps_per_point": 0.31,
+      "haste_on_items": true,
+      "preset": "bare"
+    },
+    {
+      "spec": "priest-holy",
+      "band": 50,
+      "faction": "horde",
+      "race": "undead",
+      "talents": "0000000000000000000000000",
+      "talent_points": 41,
+      "role": "healer",
+      "profile": "onyxia-sized",
+      "metrics": {
+        "hps": 221.0,
+        "raw_hps": 251.1,
+        "overheal_pct": 0.12,
+        "mana_lasts_sec": 241,
+        "hpm": 2.9
+      },
+      "weights": [
+        {
+          "stat": "healing_power",
+          "weight": 1.0,
+          "error": 0.012
+        },
+        {
+          "stat": "mp5",
+          "weight": 1.62,
+          "error": 0.05
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.516,
+          "error": 0.018
+        },
+        {
+          "stat": "spirit",
+          "weight": 0.408,
+          "error": 0.02
+        },
+        {
+          "stat": "crit",
+          "weight": 0.18,
+          "error": 0.03,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 2.52
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.9,
+          "error": 0.06
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 220896,
+          "item_name": "Knight-Lieutenant's Satin Cover",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 51.9,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 220899,
+              "item_name": "Blood Guard's Satin Cover",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 13102,
+              "item_name": "Cassandra's Grace",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": false
+            },
+            {
+              "item_id": 9431,
+              "item_name": "Papal Fez",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Blood Guard's Satin Cover (id 220899): kept the pick, 221.0 vs 220.9 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 19303,
+          "item_name": "Darkmoon Necklace",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 19.8,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 13085,
+              "item_name": "Horizon Choker",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 272185,
+              "item_name": "Amulet of Forgiveness",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 17707,
+              "item_name": "Gemshard Heart",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Horizon Choker (id 13085): kept the pick, 221.0 vs 219.0 set DPS"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 220894,
+          "item_name": "Knight-Lieutenant's Satin Pads",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 40.0,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 220901,
+              "item_name": "Blood Guard's Satin Pads",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 254049,
+              "item_name": "Nethergeld Shoulders",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            },
+            {
+              "item_id": 11624,
+              "item_name": "Kentic Amice",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Blood Guard's Satin Pads (id 220901): kept the pick, 221.0 vs 220.9 set DPS"
+        },
+        {
+          "slot": "back",
+          "item_id": 19527,
+          "item_name": "Battle Healer's Cloak",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 25.0,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 19531,
+              "item_name": "Caretaker's Cape",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 20218,
+              "item_name": "Faded Hakkari Cloak",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": false
+            },
+            {
+              "item_id": 19528,
+              "item_name": "Battle Healer's Cloak",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Caretaker's Cape (id 19531): kept the pick, 221.0 vs 220.9 set DPS"
+        },
+        {
+          "slot": "chest",
+          "item_id": 220892,
+          "item_name": "Knight's Satin Armor",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 46.1,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 220903,
+              "item_name": "Stone Guard's Satin Armor",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 6682,
+              "item_name": "Death Speaker Robes",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.4,
+              "verified": false
+            },
+            {
+              "item_id": 12462,
+              "item_name": "Embrace of the Wind Serpent",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Stone Guard's Satin Armor (id 220903): kept the pick, 221.0 vs 220.9 set DPS"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 254061,
+          "item_name": "Nethergeld Cuffs",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 28.1,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 12546,
+              "item_name": "Aristocratic Cuffs",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.1,
+              "verified": true
+            },
+            {
+              "item_id": 1974,
+              "item_name": "Mindthrust Bracers",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.1,
+              "verified": false
+            },
+            {
+              "item_id": 9433,
+              "item_name": "Forgotten Wraps",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 4.1,
+          "swap_note": "confirmed by the sim against Aristocratic Cuffs (id 12546): kept the pick, 221.0 vs 216.9 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 226950,
+          "item_name": "Virtuous Mitts",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 41.8,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 254095,
+              "item_name": "Gilded Gloves",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.2,
+              "verified": true
+            },
+            {
+              "item_id": 271946,
+              "item_name": "Theramore Handwraps",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            },
+            {
+              "item_id": 272098,
+              "item_name": "Raider Handwraps",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.2,
+          "swap_note": "confirmed by the sim against Gilded Gloves (id 254095): kept the pick, 221.0 vs 220.8 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 254081,
+          "item_name": "Gilded Waistcord",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 36.2,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 254037,
+              "item_name": "Gilded Cord",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.5,
+              "verified": true
+            },
+            {
+              "item_id": 11662,
+              "item_name": "Ban'thok Sash",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.8,
+              "verified": false
+            },
+            {
+              "item_id": 12466,
+              "item_name": "Dawnspire Cord",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -6.5,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.5,
+          "swap_note": "confirmed by the sim against Gilded Cord (id 254037): kept the pick, 221.0 vs 219.5 set DPS"
+        },
+        {
+          "slot": "legs",
+          "item_id": 220893,
+          "item_name": "Knight's Satin Leggings",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 46.1,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 220902,
+              "item_name": "Stone Guard's Satin Leggings",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 9484,
+              "item_name": "Spellshock Leggings",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            },
+            {
+              "item_id": 253987,
+              "item_name": "Pristine Leggings",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -5.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Stone Guard's Satin Leggings (id 220902): kept the pick, 221.0 vs 220.9 set DPS"
+        },
+        {
+          "slot": "feet",
+          "item_id": 254107,
+          "item_name": "Gilded Sandals",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 38.2,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 220895,
+              "item_name": "Sergeant Major's Satin Boots",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.7,
+              "verified": true
+            },
+            {
+              "item_id": 220900,
+              "item_name": "First Sergeant's Satin Boots",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.7,
+              "verified": false
+            },
+            {
+              "item_id": 254001,
+              "item_name": "Gilded Slippers",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.3,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.7,
+          "swap_note": "confirmed by the sim against Sergeant Major's Satin Boots (id 220895): kept the pick, 221.0 vs 218.3 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 272069,
+          "item_name": "Darkspear Signet",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 17.5,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 11824,
+              "item_name": "Cyclopean Band",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.3,
+              "verified": true
+            },
+            {
+              "item_id": 272070,
+              "item_name": "Darkspear Signet",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.8,
+              "verified": false
+            },
+            {
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.3,
+          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, 221.0 vs 220.7 set DPS"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 11824,
+          "item_name": "Cyclopean Band",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 16.6,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 272070,
+              "item_name": "Darkspear Signet",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.5,
+              "verified": true
+            },
+            {
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            },
+            {
+              "item_id": 5266,
+              "item_name": "Eye of Adaegus",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.5,
+          "swap_note": "confirmed by the sim against Darkspear Signet (id 272070): kept the pick, 221.0 vs 220.5 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 271903,
+          "item_name": "Enriched Seal",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 271905,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            },
+            {
+              "item_id": 272059,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, 221.0 vs 220.9 set DPS"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 272061,
+          "item_name": "Darkspear Voodoo Seal",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 271905,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": true
+            },
+            {
+              "item_id": 272059,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -4.7,
+              "verified": false
+            },
+            {
+              "item_id": 11302,
+              "item_name": "Uther's Strength",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -6.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 4.7,
+          "swap_note": "confirmed by the sim against Enriched Seal (id 271905): kept the pick, 221.0 vs 216.3 set DPS"
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 2816,
+          "item_name": "Death Speaker Scepter",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 17710,
+              "item_name": "Charstone Dirk",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -16.8,
+              "verified": true
+            },
+            {
+              "item_id": 271929,
+              "item_name": "Clever Expeditionary's Spellblade",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -18.0,
+              "verified": false
+            },
+            {
+              "item_id": 272084,
+              "item_name": "Darkspear Insurgent's Spellblade",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -18.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 16.8,
+          "swap_note": "confirmed by the sim against Charstone Dirk (id 17710): kept the pick, 221.0 vs 204.2 set DPS"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 9393,
+          "item_name": "Beacon of Hope",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 24.0,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 249456,
+              "item_name": "Twisting Essence Jar",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.3,
+              "verified": true
+            },
+            {
+              "item_id": 249395,
+              "item_name": "Orb of Souls",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -2.5,
+              "verified": false
+            },
+            {
+              "item_id": 11625,
+              "item_name": "Enthralled Sphere",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -3.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.3,
+          "swap_note": "confirmed by the sim against Twisting Essence Jar (id 249456): kept the pick, 221.0 vs 220.7 set DPS"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 274655,
+          "item_name": "Peacekeeper Wand",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 7.5,
+          "verified": true,
+          "sim_dps": 221.0,
+          "alternatives": [
+            {
+              "item_id": 13064,
+              "item_name": "Jaina's Firestarter",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -0.4,
+              "verified": true
+            },
+            {
+              "item_id": 13063,
+              "item_name": "Starfaller",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.3,
+              "verified": false
+            },
+            {
+              "item_id": 7001,
+              "item_name": "Gravestone Scepter",
+              "source": "Drops in the leveling zone (level 50)",
+              "source_kind": "zone",
+              "dps_delta": -1.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.4,
+          "swap_note": "confirmed by the sim against Jaina's Firestarter (id 13064): kept the pick, 221.0 vs 220.6 set DPS"
+        }
+      ],
+      "set_dps": 221.0,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 41.2,
+      "verify_run_seconds": 96.5,
+      "reference_dps_per_point": 0.31,
+      "haste_on_items": true,
+      "preset": "bare"
+    },
+    {
+      "spec": "priest-holy",
+      "band": 60,
+      "faction": "horde",
+      "race": "undead",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "role": "healer",
+      "profile": "onyxia-sized",
+      "metrics": {
+        "hps": 393.1,
+        "raw_hps": 497.6,
+        "overheal_pct": 0.21,
+        "mana_lasts_sec": 3600,
+        "hpm": 3.8
+      },
+      "weights": [
+        {
+          "stat": "healing_power",
+          "weight": 1.0,
+          "error": 0.012
+        },
+        {
+          "stat": "mp5",
+          "weight": 1.35,
+          "error": 0.05
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.43,
+          "error": 0.018
+        },
+        {
+          "stat": "spirit",
+          "weight": 0.34,
+          "error": 0.02
+        },
+        {
+          "stat": "crit",
+          "weight": 0.18,
+          "error": 0.03,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 2.52
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.9,
+          "error": 0.06
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 19132,
+          "item_name": "Crystal Adorned Crown",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 109.7,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 22720,
+              "item_name": "Zulian Headdress",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.1,
+              "verified": true
+            },
+            {
+              "item_id": 260212,
+              "item_name": "Bad Hat",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.7,
+              "verified": false
+            },
+            {
+              "item_id": 14140,
+              "item_name": "Mooncloth Circlet",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 11.1,
+          "swap_note": "confirmed by the sim against Zulian Headdress (id 22720): kept the pick, 393.1 vs 382.0 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 19885,
+          "item_name": "Jin'do's Evil Eye",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 55.8,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 20685,
+              "item_name": "Wavefront Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.2,
+              "verified": true
+            },
+            {
+              "item_id": 18723,
+              "item_name": "Animated Chain Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 17109,
+              "item_name": "Choker of Enlightenment",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -7.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.2,
+          "swap_note": "confirmed by the sim against Wavefront Necklace (id 20685): kept the pick, 393.1 vs 390.9 set DPS"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 227888,
+          "item_name": "Argent Elite Shoulders",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 79.0,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 19841,
+              "item_name": "Zandalar Confessor's Mantle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -9.4,
+              "verified": true
+            },
+            {
+              "item_id": 14139,
+              "item_name": "Mooncloth Shoulders",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.3,
+              "verified": false
+            },
+            {
+              "item_id": 220894,
+              "item_name": "Knight-Lieutenant's Satin Pads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -12.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 9.4,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Mantle (id 19841): kept the pick, 393.1 vs 383.7 set DPS"
+        },
+        {
+          "slot": "back",
+          "item_id": 18510,
+          "item_name": "Hide of the Wild",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 50.0,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 18208,
+              "item_name": "Drape of Benediction",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272413,
+              "item_name": "Drape of Recovery",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.8,
+              "verified": false
+            },
+            {
+              "item_id": 21412,
+              "item_name": "Shroud of Infinite Wisdom",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Drape of Benediction (id 18208): kept the pick, 393.1 vs 391.7 set DPS"
+        },
+        {
+          "slot": "chest",
+          "item_id": 14154,
+          "item_name": "Truefaith Vestments",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 81.0,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 13346,
+              "item_name": "Robes of the Exalted",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": true
+            },
+            {
+              "item_id": 227122,
+              "item_name": "Knight-Captain's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            },
+            {
+              "item_id": 227124,
+              "item_name": "Legionnaire's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.1,
+          "swap_note": "confirmed by the sim against Robes of the Exalted (id 13346): kept the pick, 393.1 vs 392.0 set DPS"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 16819,
+          "item_name": "Vambraces of Prophecy",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 45.2,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 19843,
+              "item_name": "Zandalar Confessor's Wraps",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 22667,
+              "item_name": "Bracers of Hope",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.8,
+              "verified": false
+            },
+            {
+              "item_id": 23129,
+              "item_name": "Bracers of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Wraps (id 19843): kept the pick, 393.1 vs 391.1 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20717,
+          "item_name": "Desert Bloom Gloves",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 57.5,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 16812,
+              "item_name": "Gloves of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 12554,
+              "item_name": "Hands of the Exalted Herald",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.5,
+              "verified": false
+            },
+            {
+              "item_id": 18409,
+              "item_name": "Mooncloth Gloves",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Gloves of Prophecy (id 16812): kept the pick, 393.1 vs 391.5 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 18327,
+          "item_name": "Whipvine Cord",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 53.2,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 19842,
+              "item_name": "Zandalar Confessor's Bindings",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 19047,
+              "item_name": "Wisdom of the Timbermaw",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": false
+            },
+            {
+              "item_id": 16817,
+              "item_name": "Girdle of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Bindings (id 19842): kept the pick, 393.1 vs 391.5 set DPS"
+        },
+        {
+          "slot": "legs",
+          "item_id": 18386,
+          "item_name": "Padre's Trousers",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 73.0,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 16814,
+              "item_name": "Pants of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.1,
+              "verified": true
+            },
+            {
+              "item_id": 227123,
+              "item_name": "Legionnaire's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            },
+            {
+              "item_id": 227125,
+              "item_name": "Knight-Captain's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.1,
+          "swap_note": "confirmed by the sim against Pants of Prophecy (id 16814): kept the pick, 393.1 vs 391.0 set DPS"
+        },
+        {
+          "slot": "feet",
+          "item_id": 227862,
+          "item_name": "Incandescent Mooncloth Boots",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 62.2,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 19897,
+              "item_name": "Betrayer's Boots",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.1,
+              "verified": true
+            },
+            {
+              "item_id": 226952,
+              "item_name": "Virtuous Sandals",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.2,
+              "verified": false
+            },
+            {
+              "item_id": 275609,
+              "item_name": "Swarmtender's Footpads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 5.1,
+          "swap_note": "confirmed by the sim against Betrayer's Boots (id 19897): kept the pick, 393.1 vs 388.0 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 275983,
+          "item_name": "Vigilant Watcher's Signet",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 44.0,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 234023,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": true
+            },
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.8,
+              "verified": false
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.7,
+          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (id 234023): kept the pick, 393.1 vs 392.4 set DPS"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 234023,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 41.9,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.1,
+              "verified": true
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.6,
+              "verified": false
+            },
+            {
+              "item_id": 22334,
+              "item_name": "Band of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Rosewine Circle (id 13178): kept the pick, 393.1 vs 393.0 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 42.0,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 271903,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Enriched Seal (id 271903): kept the pick, 393.1 vs 391.7 set DPS"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 271903,
+          "item_name": "Enriched Seal",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 18371,
+              "item_name": "Mindtap Talisman",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, 393.1 vs 393.0 set DPS"
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 2816,
+          "item_name": "Death Speaker Scepter",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 19890,
+              "item_name": "Jin'do's Hexxer",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.0,
+              "verified": true
+            },
+            {
+              "item_id": 19903,
+              "item_name": "Fang of Venoxis",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 19965,
+              "item_name": "Wushoolay's Poker",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 3.0,
+          "swap_note": "confirmed by the sim against Jin'do's Hexxer (id 19890): kept the pick, 393.1 vs 390.1 set DPS"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 52.5,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 21185,
+              "item_name": "Earthcalm Orb",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 272686,
+              "item_name": "Premier High Warlord's Tome of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            },
+            {
+              "item_id": 278157,
+              "item_name": "Premier Grand Marshal's Tome of Restoration",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Earthcalm Orb (id 21185): kept the pick, 393.1 vs 391.1 set DPS"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 279246,
+          "item_name": "Torch of Light",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 22.5,
+          "verified": true,
+          "sim_dps": 393.1,
+          "alternatives": [
+            {
+              "item_id": 19861,
+              "item_name": "Touch of Chaos",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 13938,
+              "item_name": "Bonecreeper Stylus",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 19967,
+              "item_name": "Thoughtblighter",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Touch of Chaos (id 19861): kept the pick, 393.1 vs 391.7 set DPS"
+        }
+      ],
+      "set_dps": 393.1,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Crystal Adorned Crown",
+        "neck: Jin'do's Evil Eye",
+        "shoulder: Argent Elite Shoulders",
+        "back: Hide of the Wild",
+        "chest: Truefaith Vestments",
+        "wrist: Vambraces of Prophecy",
+        "hands: Desert Bloom Gloves",
+        "waist: Whipvine Cord",
+        "legs: Padre's Trousers",
+        "feet: Incandescent Mooncloth Boots",
+        "finger1: Vigilant Watcher's Signet",
+        "finger2: Signet Ring of the Bronze Dragonflight",
+        "trinket1: Serenity Field",
+        "trinket2: Enriched Seal",
+        "off_hand: Lei of the Lifegiver",
+        "ranged: Torch of Light"
+      ],
+      "weights_run_seconds": 41.2,
+      "verify_run_seconds": 96.5,
+      "reference_dps_per_point": 0.31,
+      "haste_on_items": true,
+      "preset": "raid"
+    },
+    {
+      "spec": "priest-holy",
+      "band": 60,
+      "faction": "horde",
+      "race": "undead",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "role": "healer",
+      "profile": "onyxia-sized",
+      "metrics": {
+        "hps": 307.8,
+        "raw_hps": 366.4,
+        "overheal_pct": 0.16,
+        "mana_lasts_sec": 192,
+        "hpm": 3.3
+      },
+      "weights": [
+        {
+          "stat": "healing_power",
+          "weight": 1.0,
+          "error": 0.012
+        },
+        {
+          "stat": "mp5",
+          "weight": 1.62,
+          "error": 0.05
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.516,
+          "error": 0.018
+        },
+        {
+          "stat": "spirit",
+          "weight": 0.408,
+          "error": 0.02
+        },
+        {
+          "stat": "crit",
+          "weight": 0.18,
+          "error": 0.03,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 2.52
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.9,
+          "error": 0.06
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 19132,
+          "item_name": "Crystal Adorned Crown",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 109.7,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 22720,
+              "item_name": "Zulian Headdress",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.1,
+              "verified": true
+            },
+            {
+              "item_id": 260212,
+              "item_name": "Bad Hat",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.7,
+              "verified": false
+            },
+            {
+              "item_id": 14140,
+              "item_name": "Mooncloth Circlet",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -15.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 11.1,
+          "swap_note": "confirmed by the sim against Zulian Headdress (id 22720): kept the pick, 307.8 vs 296.7 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 19885,
+          "item_name": "Jin'do's Evil Eye",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 55.8,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 20685,
+              "item_name": "Wavefront Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.2,
+              "verified": true
+            },
+            {
+              "item_id": 18723,
+              "item_name": "Animated Chain Necklace",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 17109,
+              "item_name": "Choker of Enlightenment",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -7.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.2,
+          "swap_note": "confirmed by the sim against Wavefront Necklace (id 20685): kept the pick, 307.8 vs 305.6 set DPS"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 227888,
+          "item_name": "Argent Elite Shoulders",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 79.0,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 19841,
+              "item_name": "Zandalar Confessor's Mantle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -9.4,
+              "verified": true
+            },
+            {
+              "item_id": 14139,
+              "item_name": "Mooncloth Shoulders",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -11.3,
+              "verified": false
+            },
+            {
+              "item_id": 220894,
+              "item_name": "Knight-Lieutenant's Satin Pads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -12.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 9.4,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Mantle (id 19841): kept the pick, 307.8 vs 298.4 set DPS"
+        },
+        {
+          "slot": "back",
+          "item_id": 18510,
+          "item_name": "Hide of the Wild",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 50.0,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 18208,
+              "item_name": "Drape of Benediction",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272413,
+              "item_name": "Drape of Recovery",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.8,
+              "verified": false
+            },
+            {
+              "item_id": 21412,
+              "item_name": "Shroud of Infinite Wisdom",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.9,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Drape of Benediction (id 18208): kept the pick, 307.8 vs 306.4 set DPS"
+        },
+        {
+          "slot": "chest",
+          "item_id": 14154,
+          "item_name": "Truefaith Vestments",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 81.0,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 13346,
+              "item_name": "Robes of the Exalted",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.1,
+              "verified": true
+            },
+            {
+              "item_id": 227122,
+              "item_name": "Knight-Captain's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            },
+            {
+              "item_id": 227124,
+              "item_name": "Legionnaire's Satin Tunic",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.1,
+          "swap_note": "confirmed by the sim against Robes of the Exalted (id 13346): kept the pick, 307.8 vs 306.7 set DPS"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 16819,
+          "item_name": "Vambraces of Prophecy",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 45.2,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 19843,
+              "item_name": "Zandalar Confessor's Wraps",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 22667,
+              "item_name": "Bracers of Hope",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.8,
+              "verified": false
+            },
+            {
+              "item_id": 23129,
+              "item_name": "Bracers of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Wraps (id 19843): kept the pick, 307.8 vs 305.8 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20717,
+          "item_name": "Desert Bloom Gloves",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 57.5,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 16812,
+              "item_name": "Gloves of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 12554,
+              "item_name": "Hands of the Exalted Herald",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.5,
+              "verified": false
+            },
+            {
+              "item_id": 18409,
+              "item_name": "Mooncloth Gloves",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Gloves of Prophecy (id 16812): kept the pick, 307.8 vs 306.2 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 18327,
+          "item_name": "Whipvine Cord",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 53.2,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 19842,
+              "item_name": "Zandalar Confessor's Bindings",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.6,
+              "verified": true
+            },
+            {
+              "item_id": 19047,
+              "item_name": "Wisdom of the Timbermaw",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": false
+            },
+            {
+              "item_id": 16817,
+              "item_name": "Girdle of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.6,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.6,
+          "swap_note": "confirmed by the sim against Zandalar Confessor's Bindings (id 19842): kept the pick, 307.8 vs 306.2 set DPS"
+        },
+        {
+          "slot": "legs",
+          "item_id": 18386,
+          "item_name": "Padre's Trousers",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 73.0,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 16814,
+              "item_name": "Pants of Prophecy",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.1,
+              "verified": true
+            },
+            {
+              "item_id": 227123,
+              "item_name": "Legionnaire's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            },
+            {
+              "item_id": 227125,
+              "item_name": "Knight-Captain's Satin Legguards",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.3,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.1,
+          "swap_note": "confirmed by the sim against Pants of Prophecy (id 16814): kept the pick, 307.8 vs 305.7 set DPS"
+        },
+        {
+          "slot": "feet",
+          "item_id": 227862,
+          "item_name": "Incandescent Mooncloth Boots",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 62.2,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 19897,
+              "item_name": "Betrayer's Boots",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.1,
+              "verified": true
+            },
+            {
+              "item_id": 226952,
+              "item_name": "Virtuous Sandals",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -5.2,
+              "verified": false
+            },
+            {
+              "item_id": 275609,
+              "item_name": "Swarmtender's Footpads",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 5.1,
+          "swap_note": "confirmed by the sim against Betrayer's Boots (id 19897): kept the pick, 307.8 vs 302.7 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 275983,
+          "item_name": "Vigilant Watcher's Signet",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 44.0,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 234023,
+              "item_name": "Signet Ring of the Bronze Dragonflight",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": true
+            },
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.8,
+              "verified": false
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.2,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.7,
+          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (id 234023): kept the pick, 307.8 vs 307.1 set DPS"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 234023,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 41.9,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.1,
+              "verified": true
+            },
+            {
+              "item_id": 22681,
+              "item_name": "Band of Piety",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.6,
+              "verified": false
+            },
+            {
+              "item_id": 22334,
+              "item_name": "Band of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.7,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Rosewine Circle (id 13178): kept the pick, 307.8 vs 307.7 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 42.0,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 271903,
+              "item_name": "Enriched Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": false
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -4.0,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Enriched Seal (id 271903): kept the pick, 307.8 vs 306.4 set DPS"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 271903,
+          "item_name": "Enriched Seal",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 37.5,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 272061,
+              "item_name": "Darkspear Voodoo Seal",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -0.0,
+              "verified": true
+            },
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 18371,
+              "item_name": "Mindtap Talisman",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 0.1,
+          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, 307.8 vs 307.7 set DPS"
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 2816,
+          "item_name": "Death Speaker Scepter",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 19890,
+              "item_name": "Jin'do's Hexxer",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.0,
+              "verified": true
+            },
+            {
+              "item_id": 19903,
+              "item_name": "Fang of Venoxis",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.1,
+              "verified": false
+            },
+            {
+              "item_id": 19965,
+              "item_name": "Wushoolay's Poker",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -6.8,
+              "verified": false
+            }
+          ],
+          "dps_delta": 3.0,
+          "swap_note": "confirmed by the sim against Jin'do's Hexxer (id 19890): kept the pick, 307.8 vs 304.8 set DPS"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 52.5,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 21185,
+              "item_name": "Earthcalm Orb",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.0,
+              "verified": true
+            },
+            {
+              "item_id": 272686,
+              "item_name": "Premier High Warlord's Tome of Mending",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            },
+            {
+              "item_id": 278157,
+              "item_name": "Premier Grand Marshal's Tome of Restoration",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.4,
+              "verified": false
+            }
+          ],
+          "dps_delta": 2.0,
+          "swap_note": "confirmed by the sim against Earthcalm Orb (id 21185): kept the pick, 307.8 vs 305.8 set DPS"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 279246,
+          "item_name": "Torch of Light",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 22.5,
+          "verified": true,
+          "sim_dps": 307.8,
+          "alternatives": [
+            {
+              "item_id": 19861,
+              "item_name": "Touch of Chaos",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -1.4,
+              "verified": true
+            },
+            {
+              "item_id": 13938,
+              "item_name": "Bonecreeper Stylus",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -2.6,
+              "verified": false
+            },
+            {
+              "item_id": 19967,
+              "item_name": "Thoughtblighter",
+              "source": "Drops in the leveling zone (level 60)",
+              "source_kind": "zone",
+              "dps_delta": -3.1,
+              "verified": false
+            }
+          ],
+          "dps_delta": 1.4,
+          "swap_note": "confirmed by the sim against Touch of Chaos (id 19861): kept the pick, 307.8 vs 306.4 set DPS"
+        }
+      ],
+      "set_dps": 307.8,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Crystal Adorned Crown",
+        "neck: Jin'do's Evil Eye",
+        "shoulder: Argent Elite Shoulders",
+        "back: Hide of the Wild",
+        "chest: Truefaith Vestments",
+        "wrist: Vambraces of Prophecy",
+        "hands: Desert Bloom Gloves",
+        "waist: Whipvine Cord",
+        "legs: Padre's Trousers",
+        "feet: Incandescent Mooncloth Boots",
+        "finger1: Vigilant Watcher's Signet",
+        "finger2: Signet Ring of the Bronze Dragonflight",
+        "trinket1: Serenity Field",
+        "trinket2: Enriched Seal",
+        "off_hand: Lei of the Lifegiver",
+        "ranged: Torch of Light"
+      ],
+      "weights_run_seconds": 41.2,
+      "verify_run_seconds": 96.5,
+      "reference_dps_per_point": 0.31,
+      "haste_on_items": true,
+      "preset": "bare"
+    }
+  ]
+}
