@@ -94,12 +94,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-0000000000000000-01000000000000000 | main_hand:263407 | 14.3 | 5 | other:attack/1=61.0, spell:25740=52.3, spell:20271=18.6, spell:20280=18.6, spell:679=18.6 | - |
-| 20 | 00000000000000000-0000000000000000-05024000000000000 | main_hand:6953 | 30.8 | 5 | other:attack/1=57.3, spell:25739=48.9, spell:1866=18.6, spell:20271=18.6, spell:20281=18.6 | - |
-| 30 | 00000000000000000-0000000000000000-05025331001100000 | main_hand:13045 | 48.4 | 5 | other:attack/1=63.1, spell:25738=54.0, other:mana_gain=18.6, spell:20271=18.6, spell:20282=18.6 | - |
-| 38 | 00000000000000000-0000000000000000-05025331001330300 | main_hand:10758 | 71.6 | 5 | other:attack/1=55.5, spell:25737=47.5, other:mana_gain=18.6, spell:20271=18.6, spell:20283=18.6 | - |
-| 40 | 00000000000000000-0000000000000000-05025331001330311 | main_hand:1982 | 81.0 | 5 | other:attack/1=65.3, spell:25737=55.8, other:mana_gain=18.6, spell:20271=18.6, spell:20283=18.6 | - |
-| 50 | 52003000000000000-0000000000000000-05025331001330311 | main_hand:2915 | 117.2 | 6 | other:attack/1=79.3, spell:25735=67.7, other:mana_gain=18.6, spell:20271=18.6, spell:20285=18.6 | - |
-| 60 | 52003003000000000-0520000000000000-05025331001330311 | main_hand:22798 | 197.6 | 6 | other:attack/1=48.2, spell:25713=41.5, other:mana_gain=18.6, spell:20271=18.6, spell:20286=18.6 | - |
+| 20 | 00000000000000000-0000000000000000-05024000000000000 | main_hand:6953 | 31.9 | 6 | other:attack/1=57.3, spell:25739=49.1, spell:1866=18.5, spell:20271=18.5, spell:20281=18.5 | - |
+| 30 | 00000000000000000-0000000000000000-05025331001100000 | main_hand:13045 | 50.3 | 6 | other:attack/1=63.1, spell:25738=54.1, other:mana_gain=18.5, spell:20271=18.5, spell:20282=18.5 | - |
+| 38 | 00000000000000000-0000000000000000-05025331001330300 | main_hand:10758 | 75.0 | 6 | other:attack/1=55.5, spell:25737=47.4, other:mana_gain=18.6, spell:20271=18.6, spell:20283=18.6 | - |
+| 40 | 00000000000000000-0000000000000000-05025331001330311 | main_hand:1982 | 85.2 | 6 | other:attack/1=65.3, spell:25737=56.0, other:mana_gain=18.5, spell:20271=18.5, spell:20283=18.5 | - |
+| 50 | 52003000000000000-0000000000000000-05025331001330311 | main_hand:2915 | 119.5 | 7 | other:attack/1=79.3, spell:25735=66.7, spell:5569=18.4, other:mana_gain=17.8, spell:20271=17.8 | - |
+| 60 | 52003003000000000-0520000000000000-05025331001330311 | main_hand:22798 | 198.4 | 7 | other:attack/1=48.3, spell:25713=41.0, spell:10333=18.4, other:mana_gain=17.5, spell:20271=17.5 | - |
 
 ## Learned but unused (informational)
 
@@ -110,35 +110,30 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 20
 
-- Consecration (spell 26573)
 - Exorcism (spell 879)
 - Judgement of Command (spell 20425)
 - Judgement of Fury (spell 1311655)
 
 ### Level 30
 
-- Consecration (spell 20116)
 - Exorcism (spell 5614)
 - Judgement of Command (spell 20962)
 - Judgement of Fury (spell 20183)
 
 ### Level 38
 
-- Consecration (spell 20116)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20962)
 - Judgement of Fury (spell 20411)
 
 ### Level 40
 
-- Consecration (spell 20922)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20961)
 - Judgement of Fury (spell 20411)
 
 ### Level 50
 
-- Consecration (spell 20923)
 - Exorcism (spell 10312)
 - Holy Wrath (spell 2812)
 - Judgement of Command (spell 20965)
@@ -146,7 +141,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Consecration (spell 20924)
 - Exorcism (spell 10314)
 - Holy Wrath (spell 10318)
 - Judgement of Command (spell 20966)

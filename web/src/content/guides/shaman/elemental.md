@@ -4,7 +4,7 @@ classSlug: shaman
 spec: elemental
 role: dps
 build: 'FS1:1.60.1.70009:shaman:dwarf:553031130010305/03/553302:'
-raidBuild: 'FS1:1.60.1.70009:shaman:dwarf:5530311300103051/052/053302:'
+raidBuild: 'FS1:1.60.1.70009:shaman:dwarf:5530311300103051/02/053352:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -35,7 +35,7 @@ In rough priority order: **Concussion** raises the damage of Lightning Bolt, Cha
 
 Point allocation runs deep into Elemental (30 points: Convection, Concussion, Elemental Warding, Call of Flame, Elemental Devastation, Elemental Focus, Elemental Alacrity, Call of Thunder, Lightning Overload and Elemental Fury, with Convection, Concussion, Lightning Overload and Elemental Fury maxed), with 3 points in Enhancement for Thundering Strikes and the remaining 18 in Restoration for Improved Healing Wave and Totemic Focus (both maxed), Mindfulness, Natural Grace, and Improved Reincarnation. This replaces the 32/1/18 build. The talent search re-run on the current engine, once with the bare character and once under the Phase 1 raid context, found one change that keeps every talent the engine does not yet model, stays Elemental-majority and drops nothing the loop casts: Reverberation's two points go to Thundering Strikes. It came out about 1.5% ahead in both runs, beyond the run's error. Reverberation shortens the shock cooldown and the loop casts no shock, so the points were doing nothing. The capstone is the other question. Lava Burst needs a point and the loop below casts it on every cooldown when it is known, but the point gains about a quarter of a percent, which is less than a Thundering Strikes point is worth, so it stays out of the build; take it when you have a spare point. Every talent the engine does not yet model (Elemental Warding, Mindfulness, Natural Grace, Improved Healing Wave, Improved Reincarnation) stays as before, since the search cannot judge it. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
 
-**Raid build.** For a raid the search found about +3% over the leveling build above in the raid-ready run: it moves the five Improved Healing Wave points, a self-heal for solo play, into Thundering Strikes, Ancestral Knowledge and the second rank of Lava Burst. Elemental Warding, Natural Grace (less threat), Mindfulness and Improved Reincarnation stay.
+**Raid build.** For a raid the search found about +4% over the previous raid build in the raid-ready run. It takes **Tidal Focus** at 5/5, a Restoration talent whose healing-cost cut does nothing here but whose five percent spell hit the engine counts in full, and it pays for it with the Thundering Strikes and Ancestral Knowledge points the previous raid build spent. Against the leveling build above the raid build moves the five Improved Healing Wave points, a self-heal for solo play, and one Thundering Strikes point into Tidal Focus and the Lava Burst capstone. Elemental Warding, Natural Grace (less threat), Mindfulness and Improved Reincarnation stay.
 
 ## Rotation and priority
 
