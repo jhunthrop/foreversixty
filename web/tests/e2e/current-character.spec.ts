@@ -54,7 +54,7 @@ test.describe('current character', () => {
 
   test('every paste box links to /setup', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('sim-get-addon')).toHaveAttribute('href', '/setup');
+    await expect(page.getByTestId('sim-cold-paste-setup')).toHaveAttribute('href', '/setup');
 
     await page.goto('/planner');
     await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', '/setup');

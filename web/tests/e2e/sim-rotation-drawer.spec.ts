@@ -19,6 +19,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { simCopy } from '../../src/lib/sim/copy';
+import { curatedRotationNotes } from './support/rotation-notes';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -108,9 +109,10 @@ test('"what it does" opens the rotation in a drawer, without losing the characte
 
   const panel = settings.getByTestId('sim-rotation-drawer-panel');
   await expect(panel).toBeVisible();
-  await expect(panel.getByTestId('sim-rotation-drawer-steps')).toContainText(
-    'Frostbolt is the whole rotation.',
-  );
+  const steps = panel.getByTestId('sim-rotation-drawer-steps');
+  const notes = curatedRotationNotes('mage-frost');
+  expect(notes.length).toBeGreaterThan(0);
+  for (const note of notes) await expect(steps).toContainText(note);
 
   // The point of the fix: no navigation happened at all, so nothing was there to lose.
   expect(page.url()).toBe(url);
@@ -196,9 +198,8 @@ test('/sim/specs carries the same rotation prose on the mage-frost card', async 
   // Final whole-branch review, I2: suffixed with the spec so the 20 damage-spec cards on
   // this page never share one testid (or one unscoped accessible name) between them.
   await card.getByTestId('spec-rotation-trigger-mage-frost').click();
-  await expect(card.getByTestId('spec-rotation-steps-mage-frost')).toContainText(
-    'Frostbolt is the whole rotation.',
-  );
+  const steps = card.getByTestId('spec-rotation-steps-mage-frost');
+  for (const note of curatedRotationNotes('mage-frost')) await expect(steps).toContainText(note);
   // Same trigger text as RotationCard's own -- one voice for "what does this rotation do".
   await expect(card.getByTestId('spec-rotation-trigger-mage-frost')).toHaveText(simCopy.rotationLink);
 });

@@ -1,14 +1,16 @@
 // web/tests/e2e/bis-healer.spec.ts
-// The healer variant of the /bis "This set" panel. Hermetic: /bis/priest/holy has no published
-// file, so the page reads src/data/fixtures/bis/priest-holy.json (invented figures, real item
-// ids). Assertions are on shape, not on the fixture's numbers, so a published healer file
-// (which wins over the fixture) keeps the spec green.
+// The healer variant of the /bis "This set" panel. /bis/priest/holy reads the published
+// data/builds/<build>/bis/priest-holy.json (the committed fixture only when none exists).
+// Assertions are on shape, and the profile caption on the file's own heal_profile label, so
+// a re-rank or a retuned profile keeps the spec green.
 import { test, expect, type Page } from '@playwright/test';
+import { readBisFile } from './support/bis-file';
 
 const HEALER_PAGE = '/bis/priest/holy#band-alliance-60';
 // Either mana line: a set that lasts the fight, or the second the healer ran dry.
 const MANA_LINE = /Mana lasts the whole [\d:]+ fight|Out of mana at \d+:\d\d/;
-const PROFILE_LABEL = 'Onyxia-sized tank hits and raid pulses';
+// The caption names the profile the file was ranked under, so the label comes from the file.
+const PROFILE_LABEL = readBisFile('priest-holy').heal_profile?.label ?? '';
 
 const bandPanel = (page: Page) => page.getByTestId('bis-band-alliance-60');
 const raidView = (page: Page) => bandPanel(page).locator('[data-preset-view="raid"]');
@@ -22,6 +24,7 @@ test('the raid-ready healer panel shows HPS, overheal, mana, healing per mana an
   const panel = raidView(page).getByTestId('bis-this-set');
   await expect(panel.getByTestId('bis-healer-figure')).toHaveText(/^\d+\.\d$/);
   await expect(panel).toContainText('HPS');
+  expect(PROFILE_LABEL).not.toBe('');
   await expect(panel.getByTestId('bis-healer-caption')).toHaveText(
     `Effective healing per second under ${PROFILE_LABEL}`,
   );

@@ -338,6 +338,7 @@ const GUILD = {
         encounter_id: 9001,
         metric: 'hps',
         value: 1840,
+        execution_score: null,
         fought_at: '2026-12-09T22:10:00Z',
       },
     ],
@@ -378,7 +379,9 @@ test('a character page shows bests, history and the builds they were seen in', a
   ).toHaveAttribute('href', '/rankings/emeriss-dream');
 });
 
-test('a guild page leads with progression, pull counts and kill dates', async ({ page }) => {
+test('a guild page leads with the pull count and kills, and its Progression tab lists roster bests', async ({
+  page,
+}) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GUILD) }),
   );
@@ -386,18 +389,20 @@ test('a guild page leads with progression, pull counts and kill dates', async ({
   await page.goto('/guild/us/hardcore/the-last-watch');
 
   await expect(page.locator('h1')).toHaveText('The Last Watch');
+  // The public read's progression rows (one boss with kills, 14 + 31 pulls) feed the header.
   await expect(page.getByTestId('guild')).toContainText('1 bosses down · 45 pulls');
-  await expect(page.getByTestId('guild-progression')).toContainText('31 pulls');
-  await expect(page.getByTestId('guild-kill').nth(1)).toHaveText('not killed');
-  await expect(
-    page.getByTestId('guild-roster').getByRole('link', { name: 'Elyra Duskvale' }),
-  ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
-  await expect(page.getByTestId('guild-reports')).toContainText('Sanguine Depths, fixture night');
-  // UX review defect 2 (2026-09-28): renamed from the bare "Reports" so this public block
-  // reads as distinct from the member section's own "This week's reports" heading.
-  await expect(page.getByRole('heading', { name: 'All reports' })).toBeVisible();
-  // The same one derivation, for the same reason as on the character page.
-  await expect(
-    page.getByTestId('guild-progression').getByRole('link', { name: 'Emeriss (Dream)' }),
-  ).toHaveAttribute('href', '/rankings/emeriss-dream');
+  await expect(page.getByTestId('guild')).toContainText('Sanguine Depths, fixture night');
+
+  // The per-boss lists moved to the Progression tab, which reads the guild's own progression
+  // endpoint (guild-centre.spec.ts covers it); this fixture names no guild id, so the tab
+  // shows its empty line above the public read's roster bests.
+  await page.getByTestId('guild-tab-progression').click();
+  await expect(page.getByTestId('guild-progression-empty')).toBeVisible();
+  const best = page.getByTestId('guild-roster-best');
+  await expect(best.getByRole('link', { name: 'Elyra Duskvale' })).toHaveAttribute(
+    'href',
+    '/character/us/hardcore/elyra-duskvale',
+  );
+  await expect(best).toContainText('Warden Kelthas');
+  await expect(best).not.toContainText('NaN');
 });

@@ -81,21 +81,18 @@ test.describe('desktop', () => {
     await expect(page.getByTestId('guide-load-build')).toHaveAccessibleName('Load this build');
   });
 
-  test('/guides/warrior/protection omits the Stat priority and Rotation rail cards (no ranked BiS file, no rotation lines) and runs 1-up', async ({
+  test('/guides/warrior/protection shows the Build, Rotation and Stat priority rail cards and runs 3-up', async ({
     page,
   }) => {
-    // Ruling (round-1 fix): a card with nothing real to show is omitted, never rendered
-    // empty. Protection has no ranked band-60 BiS file (no Stat priority numbers) AND no
-    // rotation prose yet (every addon-data.json entry for warrior-protection carries zero
-    // lines) -- so its rail is Build-only, 1-up. A spec with real rotation data but no
-    // ranked file (none exist on current data) would be 2-up instead; see the build
-    // report's own round-1 note for the worked 1-up/2-up/3-up rule.
+    // The rail renders a card only when it has real data (a spec with nothing to show has it
+    // omitted and the rail narrows to 2-up or 1-up). Protection now publishes a ranked
+    // tank BiS file and a rotation, so it carries all three.
     await page.goto('/guides/warrior/protection');
     await expect(page.getByTestId('guide-rail-build')).toBeVisible();
-    await expect(page.getByTestId('guide-rail-rotation')).toHaveCount(0);
-    await expect(page.getByTestId('guide-rail-stat-priority')).toHaveCount(0);
+    await expect(page.getByTestId('guide-rail-rotation')).toBeVisible();
+    await expect(page.getByTestId('guide-rail-stat-priority')).toBeVisible();
     const rail = page.getByTestId('guide-action-rail');
-    await expect(rail).toHaveCSS('grid-template-columns', /^[\d.]+px$/);
+    await expect(rail).toHaveCSS('grid-template-columns', /^[\d.]+px [\d.]+px [\d.]+px$/);
   });
 
   test('the Leveling band strip has five rows, each Load in planner link carrying that band’s talent string', async ({

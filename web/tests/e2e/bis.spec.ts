@@ -29,6 +29,7 @@
 // rail's DPS-per-point line, and `druid/balance` (which never equips a ranged weapon) for
 // the ordinary empty-slot case. No fixture is committed for this page any more.
 import { test, expect } from '@playwright/test';
+import { unrankedBisRoute } from './support/bis-file';
 
 const TWO_HANDER_EMPTY_COPY = /is a two-hander; the off hand is taken\./;
 const ORDINARY_EMPTY_COPY =
@@ -132,10 +133,12 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
 });
 
 test('Leveling BiS: a spec with no ranked list yet shows the empty state, not a 404', async ({ page }) => {
-  // Healers have no written rotation, so the nightly ranks nothing for them (a dps spec
-  // gained a real file the night the nightly first ran, which is what this test once used).
-  // priest-holy carries a fixture (bis-healer.spec.ts), so this uses a healer without one.
-  await page.goto('/bis/priest/discipline');
+  // The empty state shows for a written spec the nightly has not ranked. Every spec has a
+  // published file at present, so there is none to visit and the test skips until a new
+  // spec is written ahead of its first ranking.
+  const route = unrankedBisRoute();
+  test.skip(route === undefined, 'every written spec has a published BiS file');
+  await page.goto(route!);
   await expect(page.getByTestId('bis-empty-state')).toBeVisible();
   await expect(page.getByTestId('bis-empty-state')).toContainText('No leveling BiS list yet');
 });
