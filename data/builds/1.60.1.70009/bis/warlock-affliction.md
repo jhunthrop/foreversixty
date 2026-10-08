@@ -38,7 +38,7 @@ No-known-source sample (15 of 150, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 25552200000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 66.1. Weights run: 2.0s. Verify run: 1.3s. 248 eligible items had no known source.
+Set DPS (verified): 66.1. Weights run: 2.0s. Verify run: 1.2s. 248 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.192 ± 0.005, crit=0.031 ± 0.001 per rating point (14 rating = 1%, 0.436 per %), hit=0.121 ± 0.005 per rating point (10 rating = 1%, 1.206 per %), spell_haste=not significant (0.246 ± 0.086), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.776 ± 0.001
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 248, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 25552300120201201-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 174.1. Weights run: 2.0s. Verify run: 1.3s. 330 eligible items had no known source.
+Set DPS (verified): 174.1. Weights run: 1.9s. Verify run: 1.3s. 330 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.713 ± 0.015, crit=0.026 ± 0.001 per rating point (14 rating = 1%, 0.370 per %), hit=0.192 ± 0.011 per rating point (10 rating = 1%, 1.918 per %), spell_haste=0.548 ± 0.135, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.872 ± 0.001
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 417, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 25552300120201351-2005220000000000000-0030000000000000)
 
-Set DPS (verified): 464.0. Weights run: 5.6s. Verify run: 3.5s. 1075 eligible items had no known source.
+Set DPS (verified): 464.0. Weights run: 5.4s. Verify run: 3.5s. 1075 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.089 ± 0.017, crit=0.068 ± 0.002 per rating point (14 rating = 1%, 0.954 per %), hit=0.394 ± 0.025 per rating point (10 rating = 1%, 3.943 per %), spell_haste=not significant (0.728 ± 0.263), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.900 ± 0.001
 
@@ -158,29 +158,29 @@ No-known-source sample (15 of 1075, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 25550300100201351-0005200000000000000-0550001000000000)
 
-Set DPS (verified): 912.6. Weights run: 6.6s. Verify run: 3.9s. 1075 eligible items had no known source.
+Set DPS (verified): 890.8. Weights run: 6.5s. Verify run: 3.7s. 1075 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.097 ± 0.028, crit=0.227 ± 0.009 per rating point (14 rating = 1%, 3.176 per %), hit=0.674 ± 0.054 per rating point (10 rating = 1%, 6.736 per %), spell_haste=not significant (1.792 ± 0.696), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.896 ± 0.002
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.094 ± 0.027, crit=0.208 ± 0.009 per rating point (14 rating = 1%, 2.913 per %), hit=0.668 ± 0.052 per rating point (10 rating = 1%, 6.684 per %), spell_haste=not significant (1.644 ± 0.684), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.895 ± 0.001
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Crimson Felt Hat (18727) | Stratholme: Magistrate Barthilas [dungeon] | 30.8 spell_power points (19.39 DPS) | yes | Field Marshal's Coronal (231584, +0.00 DPS) [pvp]; Spellpower Goggles Xtreme Plus (15999, -2.38 DPS) [crafted]; Deathmist Mask (226909, -10.02 DPS, sim-verified) [quest] |
-| neck | Chains of the Lich (23125) (or Orb of the Darkmoon (19426)) | Stratholme: Balzaphon [dungeon] | 22.0 spell_power points (13.86 DPS) | yes | Orb of the Darkmoon (19426, +0.00 DPS) [quest]; Diana's Pearl Necklace (22403, -3.46 DPS) [dungeon]; Amulet of the Dawn (22657, -3.62 DPS) [quest] |
-| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 31.6 spell_power points (19.93 DPS) | yes | Field Marshal's Dreadweave Shoulders (231583, -3.14 DPS) [pvp]; Burial Shawl (18681, -6.35 DPS) [dungeon]; Argent Shoulders (19059, -10.52 DPS, sim-verified) [crafted] |
-| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 23.5 spell_power points (14.82 DPS) | yes | Crystalline Threaded Cape (20697, -1.97 DPS) [world]; Amplifying Cloak (18350, -3.47 DPS) [dungeon]; Hide of the Wild (18510, -5.38 DPS) [crafted] |
-| chest | Robe of the Void (14153) | Tailoring [crafted] | 46.9 spell_power points (29.54 DPS) | yes | Field Marshal's Dreadweave Robe (231582, -7.91 DPS) [pvp]; Robe of Everlasting Night (18385, -8.17 DPS, sim-verified) [dungeon]; Knight-Captain's Dreadweave Tunic (227096, -12.56 DPS) [pvp] |
-| wrist | Dryad's Wrist Bindings (19595) | Silverwing Sentinels [rep] | 22.8 spell_power points (14.35 DPS) | yes | Sublime Wristguards (18497, -6.18 DPS) [dungeon]; Runecloth Cuffs (254123, -6.81 DPS) [crafted]; Arcane Runed Bracers (4744, -8.68 DPS) [quest] |
-| hands | Sandworm Skin Gloves (20716) | Armaments of War [quest] | 27.5 spell_power points (17.32 DPS) | yes | Hands of Power (13253, +0.00 DPS, sim-verified) [dungeon]; Marshal's Dreadweave Gloves (231586, +0.00 DPS) [pvp]; Earth Warder's Gloves (21318, -3.46 DPS) [quest] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 33.9 spell_power points (21.34 DPS) | yes | Belt of the Archmage (18405, -5.76 DPS) [crafted]; Ban'thok Sash (11662, -8.86 DPS) [dungeon]; Stormpike Cloth Girdle (19094, -9.39 DPS) [rep] |
-| legs | Sentinel's Silk Leggings (237815) | Illiyana Moonblaze [vendor] | 39.3 spell_power points (24.78 DPS) | yes | Marshal's Dreadweave Leggings (231587, -0.30 DPS) [pvp]; Skyshroud Leggings (13170, -2.86 DPS) [dungeon]; Knight-Captain's Dreadweave Legguards (227095, -6.34 DPS) [pvp] |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 spell_power points (15.12 DPS) | yes | Marshal's Dreadweave Boots (231585, +0.00 DPS) [pvp]; Venomspew Footpads (275606, -1.26 DPS) [crafted]; Omnicast Boots (11822, -1.79 DPS) [dungeon] |
-| finger1 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.87 DPS) [quest]; Maiden's Circle (13001, -2.76 DPS) [world_drop]; Naglering (11669, -16.04 DPS, sim-verified) [dungeon] |
-| finger2 | Rune Band of Wizardry (22339) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.67 DPS) [quest]; Maiden's Circle (13001, -2.56 DPS) [world_drop]; Naglering (11669, -18.75 DPS, sim-verified) [dungeon] |
-| trinket1 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-verified (+25.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Royal Seal of Eldre'Thalas (18467, -3.78 DPS) [quest]; Weakness Analyzer (272438, -4.41 DPS) [vendor]; Serenity Field (272439, -9.45 DPS) [vendor] |
+| head | Crimson Felt Hat (18727) | Stratholme: Magistrate Barthilas [dungeon] | 30.8 spell_power points (19.06 DPS) | yes | Field Marshal's Coronal (231584, +0.00 DPS) [pvp]; Deathmist Mask (226909, -2.36 DPS) [quest]; Spellpower Goggles Xtreme Plus (15999, -9.65 DPS, sim-verified) [crafted] |
+| neck | Chains of the Lich (23125) (or Orb of the Darkmoon (19426)) | Stratholme: Balzaphon [dungeon] | 22.0 spell_power points (13.63 DPS) | yes | Orb of the Darkmoon (19426, +0.00 DPS) [quest]; Diana's Pearl Necklace (22403, -3.45 DPS) [dungeon]; Amulet of the Dawn (22657, -3.58 DPS) [quest] |
+| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 31.3 spell_power points (19.41 DPS) | yes | Field Marshal's Dreadweave Shoulders (231583, -2.93 DPS) [pvp]; Burial Shawl (18681, -6.08 DPS) [dungeon]; Argent Shoulders (19059, -10.18 DPS, sim-verified) [crafted] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 23.4 spell_power points (14.52 DPS) | yes | Crystalline Threaded Cape (20697, -1.90 DPS) [world]; Amplifying Cloak (18350, -3.37 DPS) [dungeon]; Hide of the Wild (18510, -5.26 DPS) [crafted] |
+| chest | Robe of the Void (14153) | Tailoring [crafted] | 46.9 spell_power points (29.03 DPS) | yes | Field Marshal's Dreadweave Robe (231582, -7.80 DPS) [pvp]; Robe of Everlasting Night (18385, -8.59 DPS, sim-verified) [dungeon]; Knight-Captain's Dreadweave Tunic (227096, -12.37 DPS) [pvp] |
+| wrist | Dryad's Wrist Bindings (19595) | Silverwing Sentinels [rep] | 22.8 spell_power points (14.10 DPS) | yes | Sublime Wristguards (18497, -6.08 DPS) [dungeon]; Runecloth Cuffs (254123, -6.70 DPS) [crafted]; Arcane Runed Bracers (4744, -8.52 DPS) [quest] |
+| hands | Sandworm Skin Gloves (20716) | Armaments of War [quest] | 27.5 spell_power points (17.02 DPS) | yes | Hands of Power (13253, +0.00 DPS, sim-verified) [dungeon]; Marshal's Dreadweave Gloves (231586, +0.00 DPS) [pvp]; Earth Warder's Gloves (21318, -3.39 DPS) [quest] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 33.8 spell_power points (20.92 DPS) | yes | Belt of the Archmage (18405, -4.19 DPS, sim-verified) [crafted]; Ban'thok Sash (11662, -8.70 DPS) [dungeon]; Stormpike Cloth Girdle (19094, -9.18 DPS) [rep] |
+| legs | Sentinel's Silk Leggings (237815) | Illiyana Moonblaze [vendor] | 38.8 spell_power points (24.02 DPS) | yes | Marshal's Dreadweave Leggings (231587, +0.00 DPS) [pvp]; Skyshroud Leggings (13170, -2.49 DPS) [dungeon]; Knight-Captain's Dreadweave Legguards (227095, -5.91 DPS) [pvp] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 spell_power points (14.87 DPS) | yes | Marshal's Dreadweave Boots (231585, +0.00 DPS) [pvp]; Venomspew Footpads (275606, -1.24 DPS) [crafted]; Omnicast Boots (11822, -1.78 DPS) [dungeon] |
+| finger1 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.85 DPS) [quest]; Maiden's Circle (13001, -2.71 DPS) [world_drop]; Naglering (11669, -15.53 DPS, sim-verified) [dungeon] |
+| finger2 | Rune Band of Wizardry (22339) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.63 DPS) [quest]; Maiden's Circle (13001, -2.49 DPS) [world_drop]; Naglering (11669, -19.17 DPS, sim-verified) [dungeon] |
+| trinket1 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-verified (+24.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Royal Seal of Eldre'Thalas (18467, -3.72 DPS) [quest]; Weakness Analyzer (272438, -4.34 DPS) [vendor]; Serenity Field (272439, -9.29 DPS) [vendor] |
 | trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Royal Seal of Eldre'Thalas (18467, +0.00 DPS) [quest]; Draconic Infused Emblem (22268, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor] |
-| main_hand | Lord Valthalak's Staff of Command (22335) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Amethyst War Staff (20654, -1.79 DPS) [world]; Teebu's Blazing Longsword (1728, -31.31 DPS, sim-verified) [world_drop] |
+| main_hand | Lord Valthalak's Staff of Command (22335) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Amethyst War Staff (20654, -1.72 DPS) [world]; Teebu's Blazing Longsword (1728, -30.90 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (912.6 DPS) | yes | Bonecreeper Stylus (13938, -0.98 DPS) [dungeon]; Sparkling Crystal Wand (20672, -4.75 DPS) [world]; Torch of Light (279246, -49.77 DPS, sim-verified) [crafted] |
+| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (890.8 DPS) | yes | Bonecreeper Stylus (13938, -0.99 DPS) [dungeon]; Sparkling Crystal Wand (20672, -4.71 DPS) [world]; Torch of Light (279246, -46.28 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Crimson Felt Hat; neck: Chains of the Lich; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Robe of the Void; wrist: Dryad's Wrist Bindings; hands: Sandworm Skin Gloves; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; finger1: Elemental Focus Band; finger2: Rune Band of Wizardry; trinket1: Briarwood Reed; trinket2: Talisman of Ascendance; main_hand: Lord Valthalak's Staff of Command; ranged: Ritssyn's Wand of Bad Mojo
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 139, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 25552200000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 65.6. Weights run: 2.0s. Verify run: 1.3s. 231 eligible items had no known source.
+Set DPS (verified): 65.6. Weights run: 2.0s. Verify run: 1.2s. 231 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.192 ± 0.005, crit=0.031 ± 0.001 per rating point (14 rating = 1%, 0.436 per %), hit=0.121 ± 0.005 per rating point (10 rating = 1%, 1.206 per %), spell_haste=not significant (0.246 ± 0.086), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.776 ± 0.001
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 231, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 25552300120201201-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 172.0. Weights run: 2.0s. Verify run: 1.3s. 308 eligible items had no known source.
+Set DPS (verified): 172.0. Weights run: 1.9s. Verify run: 1.3s. 308 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.713 ± 0.015, crit=0.026 ± 0.001 per rating point (14 rating = 1%, 0.370 per %), hit=0.192 ± 0.011 per rating point (10 rating = 1%, 1.918 per %), spell_haste=0.548 ± 0.135, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.872 ± 0.001
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 308, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 25552300120201351-2002000000000000000-0000000000000000)
 
-Set DPS (verified): 233.3. Weights run: 5.1s. Verify run: 1.6s. 391 eligible items had no known source.
+Set DPS (verified): 233.3. Weights run: 5.1s. Verify run: 1.5s. 391 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.032 ± 0.008, crit=0.031 ± 0.001 per rating point (14 rating = 1%, 0.437 per %), hit=0.300 ± 0.013 per rating point (10 rating = 1%, 3.004 per %), spell_haste=not significant (-0.123 ± 0.108), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.880 ± 0.001
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 391, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 25552300120201351-2005220000000000000-0030000000000000)
 
-Set DPS (verified): 451.9. Weights run: 5.6s. Verify run: 3.5s. 1063 eligible items had no known source.
+Set DPS (verified): 451.9. Weights run: 5.4s. Verify run: 3.4s. 1063 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.089 ± 0.017, crit=0.068 ± 0.002 per rating point (14 rating = 1%, 0.954 per %), hit=0.394 ± 0.025 per rating point (10 rating = 1%, 3.943 per %), spell_haste=not significant (0.728 ± 0.263), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.900 ± 0.001
 
@@ -340,29 +340,29 @@ No-known-source sample (15 of 1063, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 25550300100201351-0005200000000000000-0550001000000000)
 
-Set DPS (verified): 905.6. Weights run: 6.6s. Verify run: 3.8s. 1063 eligible items had no known source.
+Set DPS (verified): 884.5. Weights run: 6.5s. Verify run: 3.7s. 1063 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.097 ± 0.028, crit=0.227 ± 0.009 per rating point (14 rating = 1%, 3.176 per %), hit=0.674 ± 0.054 per rating point (10 rating = 1%, 6.736 per %), spell_haste=not significant (1.792 ± 0.696), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.896 ± 0.002
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.094 ± 0.027, crit=0.208 ± 0.009 per rating point (14 rating = 1%, 2.913 per %), hit=0.668 ± 0.052 per rating point (10 rating = 1%, 6.684 per %), spell_haste=not significant (1.644 ± 0.684), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.895 ± 0.001
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Crimson Felt Hat (18727) | Stratholme: Magistrate Barthilas [dungeon] | 30.8 spell_power points (19.39 DPS) | yes | Warlord's Dreadweave Hood (231590, +0.00 DPS) [pvp]; Spellpower Goggles Xtreme Plus (15999, -2.38 DPS) [crafted]; Deathmist Mask (226909, -3.18 DPS, sim-verified) [quest] |
-| neck | Chains of the Lich (23125) (or Orb of the Darkmoon (19426)) | Stratholme: Balzaphon [dungeon] | 22.0 spell_power points (13.86 DPS) | yes | Orb of the Darkmoon (19426, +0.00 DPS) [quest]; Diana's Pearl Necklace (22403, -3.46 DPS) [dungeon]; Amulet of the Dawn (22657, -3.62 DPS) [quest] |
-| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 31.6 spell_power points (19.93 DPS) | yes | Warlord's Dreadweave Mantle (231592, -3.14 DPS) [pvp]; Burial Shawl (18681, -6.35 DPS) [dungeon]; Argent Shoulders (19059, -6.75 DPS, sim-verified) [crafted] |
-| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 23.5 spell_power points (14.82 DPS) | yes | Crystalline Threaded Cape (20697, -1.97 DPS) [world]; Amplifying Cloak (18350, -3.47 DPS) [dungeon]; Hide of the Wild (18510, -5.38 DPS) [crafted] |
-| chest | Robe of the Void (14153) | Tailoring [crafted] | 46.9 spell_power points (29.54 DPS) | yes | Robe of Everlasting Night (18385, -4.71 DPS, sim-verified) [dungeon]; Warlord's Dreadweave Robe (231591, -7.91 DPS) [pvp]; Legionnaire's Dreadweave Tunic (227094, -12.56 DPS) [pvp] |
-| wrist | Dryad's Wrist Bindings (19595) | Warsong Outriders [rep] | 22.8 spell_power points (14.35 DPS) | yes | Sublime Wristguards (18497, -6.18 DPS) [dungeon]; Runecloth Cuffs (254123, -6.81 DPS) [crafted]; Spidertank Oilrag (9448, -8.68 DPS) [dungeon] |
-| hands | Sandworm Skin Gloves (20716) | Armaments of War [quest] | 27.5 spell_power points (17.32 DPS) | yes | Hands of Power (13253, +0.00 DPS, sim-verified) [dungeon]; General's Dreadweave Gloves (231589, +0.00 DPS) [pvp]; Earth Warder's Gloves (21318, -3.46 DPS) [quest] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 33.9 spell_power points (21.34 DPS) | yes | Belt of the Archmage (18405, -6.22 DPS, sim-verified) [crafted]; Ban'thok Sash (11662, -8.86 DPS) [dungeon]; Frostwolf Cloth Belt (19090, -9.39 DPS) [rep] |
-| legs | Sentinel's Silk Leggings (237815) | Illiyana Moonblaze [vendor] | 39.3 spell_power points (24.78 DPS) | yes | General's Dreadweave Pants (231588, -0.30 DPS) [pvp]; Skyshroud Leggings (13170, -2.86 DPS) [dungeon]; Outrider's Silk Leggings (22747, -5.97 DPS) [rep] |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 spell_power points (15.12 DPS) | yes | General's Dreadweave Boots (231593, +0.00 DPS) [pvp]; Venomspew Footpads (275606, -1.26 DPS) [crafted]; Omnicast Boots (11822, -1.79 DPS) [dungeon] |
-| finger1 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.87 DPS) [quest]; Maiden's Circle (13001, -2.76 DPS) [world_drop]; Naglering (11669, -13.52 DPS, sim-verified) [dungeon] |
-| finger2 | Rune Band of Wizardry (22339) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.67 DPS) [quest]; Maiden's Circle (13001, -2.56 DPS) [world_drop]; Naglering (11669, -20.60 DPS, sim-verified) [dungeon] |
-| trinket1 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-verified (+25.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Royal Seal of Eldre'Thalas (18467, -3.78 DPS) [quest]; Weakness Analyzer (272438, -4.41 DPS) [vendor]; Serenity Field (272439, -9.45 DPS) [vendor] |
+| head | Crimson Felt Hat (18727) | Stratholme: Magistrate Barthilas [dungeon] | 30.8 spell_power points (19.06 DPS) | yes | Warlord's Dreadweave Hood (231590, +0.00 DPS) [pvp]; Deathmist Mask (226909, -2.36 DPS) [quest]; Spellpower Goggles Xtreme Plus (15999, -10.65 DPS, sim-verified) [crafted] |
+| neck | Chains of the Lich (23125) (or Orb of the Darkmoon (19426)) | Stratholme: Balzaphon [dungeon] | 22.0 spell_power points (13.63 DPS) | yes | Orb of the Darkmoon (19426, +0.00 DPS) [quest]; Diana's Pearl Necklace (22403, -3.45 DPS) [dungeon]; Amulet of the Dawn (22657, -3.58 DPS) [quest] |
+| shoulder | Rugged Mantle of the Timbermaw (227808) | Meilosh [vendor] | 31.3 spell_power points (19.41 DPS) | yes | Warlord's Dreadweave Mantle (231592, -2.93 DPS) [pvp]; Burial Shawl (18681, -6.08 DPS) [dungeon]; Argent Shoulders (19059, -6.89 DPS, sim-verified) [crafted] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 23.4 spell_power points (14.52 DPS) | yes | Crystalline Threaded Cape (20697, -1.90 DPS) [world]; Amplifying Cloak (18350, -3.37 DPS) [dungeon]; Hide of the Wild (18510, -5.26 DPS) [crafted] |
+| chest | Robe of the Void (14153) | Tailoring [crafted] | 46.9 spell_power points (29.03 DPS) | yes | Robe of Everlasting Night (18385, -5.52 DPS, sim-verified) [dungeon]; Warlord's Dreadweave Robe (231591, -7.80 DPS) [pvp]; Legionnaire's Dreadweave Tunic (227094, -12.37 DPS) [pvp] |
+| wrist | Dryad's Wrist Bindings (19595) | Warsong Outriders [rep] | 22.8 spell_power points (14.10 DPS) | yes | Sublime Wristguards (18497, -6.08 DPS) [dungeon]; Runecloth Cuffs (254123, -6.70 DPS) [crafted]; Spidertank Oilrag (9448, -8.52 DPS) [dungeon] |
+| hands | Sandworm Skin Gloves (20716) | Armaments of War [quest] | 27.5 spell_power points (17.02 DPS) | yes | Hands of Power (13253, +0.00 DPS, sim-verified) [dungeon]; General's Dreadweave Gloves (231589, +0.00 DPS) [pvp]; Earth Warder's Gloves (21318, -3.39 DPS) [quest] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 33.8 spell_power points (20.92 DPS) | yes | Belt of the Archmage (18405, -6.49 DPS, sim-verified) [crafted]; Ban'thok Sash (11662, -8.70 DPS) [dungeon]; Frostwolf Cloth Belt (19090, -9.18 DPS) [rep] |
+| legs | Sentinel's Silk Leggings (237815) | Illiyana Moonblaze [vendor] | 38.8 spell_power points (24.02 DPS) | yes | General's Dreadweave Pants (231588, +0.00 DPS) [pvp]; Skyshroud Leggings (13170, -2.49 DPS) [dungeon]; Outrider's Silk Leggings (22747, -5.56 DPS) [rep] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 spell_power points (14.87 DPS) | yes | General's Dreadweave Boots (231593, +0.00 DPS) [pvp]; Venomspew Footpads (275606, -1.24 DPS) [crafted]; Omnicast Boots (11822, -1.78 DPS) [dungeon] |
+| finger1 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.85 DPS) [quest]; Maiden's Circle (13001, -2.71 DPS) [world_drop]; Naglering (11669, -13.96 DPS, sim-verified) [dungeon] |
+| finger2 | Rune Band of Wizardry (22339) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Signet Ring of the Bronze Dragonflight (21206, -0.63 DPS) [quest]; Maiden's Circle (13001, -2.49 DPS) [world_drop]; Naglering (11669, -20.32 DPS, sim-verified) [dungeon] |
+| trinket1 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-verified (+24.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Royal Seal of Eldre'Thalas (18467, -3.72 DPS) [quest]; Weakness Analyzer (272438, -4.34 DPS) [vendor]; Serenity Field (272439, -9.29 DPS) [vendor] |
 | trinket2 | Draconic Infused Emblem (22268) | Blackrock Spire: General Drakkisath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Royal Seal of Eldre'Thalas (18467, +0.00 DPS) [quest]; Talisman of Ascendance (22678, +0.00 DPS) [quest]; Weakness Analyzer (272438, +0.00 DPS) [vendor] |
-| main_hand | Lord Valthalak's Staff of Command (22335) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Amethyst War Staff (20654, -1.79 DPS) [world]; Teebu's Blazing Longsword (1728, -32.78 DPS, sim-verified) [world_drop] |
+| main_hand | Lord Valthalak's Staff of Command (22335) | Blackrock Spire: Lord Valthalak [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Amethyst War Staff (20654, -1.72 DPS) [world]; Teebu's Blazing Longsword (1728, -33.18 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (905.6 DPS) | yes | Bonecreeper Stylus (13938, -0.98 DPS) [dungeon]; Sparkling Crystal Wand (20672, -4.75 DPS) [world]; Torch of Light (279246, -53.46 DPS, sim-verified) [crafted] |
+| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (884.5 DPS) | yes | Bonecreeper Stylus (13938, -0.99 DPS) [dungeon]; Sparkling Crystal Wand (20672, -4.71 DPS) [world]; Torch of Light (279246, -50.16 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Crimson Felt Hat; neck: Chains of the Lich; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Robe of the Void; wrist: Dryad's Wrist Bindings; hands: Sandworm Skin Gloves; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; finger1: Elemental Focus Band; finger2: Rune Band of Wizardry; trinket1: Briarwood Reed; trinket2: Draconic Infused Emblem; main_hand: Lord Valthalak's Staff of Command; ranged: Ritssyn's Wand of Bad Mojo
 

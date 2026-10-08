@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "f3a673d10",
-  "generated_at": "2026-10-08T18:18:05Z",
+  "engine_version": "6cc1e6fa2",
+  "generated_at": "2026-10-08T20:45:11Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.906383529,
-      "verify_run_seconds": 0.696308377,
+      "weights_run_seconds": 0.894556231,
+      "verify_run_seconds": 0.695722575,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.906383529,
-      "verify_run_seconds": 0.700187597,
+      "weights_run_seconds": 0.894556231,
+      "verify_run_seconds": 0.709107629,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1918,8 +1918,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.033657084,
-      "verify_run_seconds": 0.834209847,
+      "weights_run_seconds": 1.033835117,
+      "verify_run_seconds": 0.823526377,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2641,8 +2641,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.033657084,
-      "verify_run_seconds": 0.868746677,
+      "weights_run_seconds": 1.033835117,
+      "verify_run_seconds": 0.831722696,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3322,8 +3322,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.984322135,
-      "verify_run_seconds": 0.77173522,
+      "weights_run_seconds": 0.957984439,
+      "verify_run_seconds": 0.751955116,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4006,8 +4006,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.984322135,
-      "verify_run_seconds": 0.752973353,
+      "weights_run_seconds": 0.957984439,
+      "verify_run_seconds": 0.734804209,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4709,8 +4709,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.955763535,
-      "verify_run_seconds": 1.011767599,
+      "weights_run_seconds": 0.931780347,
+      "verify_run_seconds": 0.971793064,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5407,8 +5407,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.955763535,
-      "verify_run_seconds": 0.947116779,
+      "weights_run_seconds": 0.931780347,
+      "verify_run_seconds": 0.915572777,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6152,8 +6152,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.95256687,
-      "verify_run_seconds": 3.194606947,
+      "weights_run_seconds": 0.939630224,
+      "verify_run_seconds": 3.154429487,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6906,8 +6906,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.95256687,
-      "verify_run_seconds": 3.245577827,
+      "weights_run_seconds": 0.939630224,
+      "verify_run_seconds": 3.19165891,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7187,7 +7187,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 28.394904413313853,
+          "score": 28.39490441331385,
           "verified": true,
           "alternatives": [
             {
@@ -7195,21 +7195,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -3.0894834721833857
+              "dps_delta": -3.0894834721833844
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -4.341396807634074
+              "dps_delta": -4.341396807634073
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -4.970433147874461
+              "dps_delta": -4.970433147874459
             }
           ]
         },
@@ -7243,7 +7243,7 @@
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -7.414510896869177
+              "dps_delta": -7.414510896869176
             }
           ]
         },
@@ -7351,7 +7351,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 46.38286248627312,
+          "score": 46.382862486273126,
           "verified": true,
           "alternatives": [
             {
@@ -7366,14 +7366,14 @@
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -4.33842065238497
+              "dps_delta": -4.338420652384974
             },
             {
               "item_id": 226933,
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -5.426430047558942
+              "dps_delta": -5.426430047558945
             }
           ]
         },
@@ -7656,8 +7656,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.005331305,
-      "verify_run_seconds": 2.473407812,
+      "weights_run_seconds": 1.022453779,
+      "verify_run_seconds": 2.422171964,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7978,7 +7978,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.4027513250463657
+              "dps_delta": -2.4027513250463626
             },
             {
               "item_id": 18385,
@@ -8101,7 +8101,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 46.382862486273126,
+          "score": 46.38286248627312,
           "verified": true,
           "alternatives": [
             {
@@ -8109,21 +8109,21 @@
               "item_name": "General's Silk Trousers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.2764450170775863
+              "dps_delta": -2.2764450170775805
             },
             {
               "item_id": 13170,
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -4.338420652384974
+              "dps_delta": -4.33842065238497
             },
             {
               "item_id": 226933,
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -5.426430047558945
+              "dps_delta": -5.426430047558942
             }
           ]
         },
@@ -8406,8 +8406,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.005331305,
-      "verify_run_seconds": 2.415485716,
+      "weights_run_seconds": 1.022453779,
+      "verify_run_seconds": 2.397199041,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8555,10 +8555,6 @@
           "label": "Strength of Earth Totem"
         },
         {
-          "id": "grace_of_air_totem",
-          "label": "Grace of Air Totem"
-        },
-        {
           "id": "windfury_totem",
           "label": "Windfury Totem"
         },
@@ -8635,7 +8631,7 @@
           "label": "Elixir of Frost Power"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md)."
     }
   }
 }

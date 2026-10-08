@@ -15545,9 +15545,9 @@
               "source": "Silverwing Sentinels"
             },
             "chest": {
-              "item_id": 6473,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Pythas"
+              "item_id": 252493,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 1974,
@@ -15570,9 +15570,9 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 10411,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Serpentis"
+              "item_id": 252444,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 6332,
@@ -15580,9 +15580,9 @@
               "source": "Lady Vespira"
             },
             "finger2": {
-              "item_id": 6463,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Mutanus the Devourer"
+              "item_id": 12996,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 2042,
@@ -15597,9 +15597,9 @@
               "source": "Tailoring"
             },
             "neck": {
-              "item_id": 281265,
+              "item_id": 277203,
               "source_kind": "quest",
-              "source": "Watching the Roads"
+              "source": "Friend of the Library"
             },
             "shoulder": {
               "item_id": 12998,
@@ -15607,24 +15607,24 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 5969,
-              "source_kind": "world",
-              "source": "Ravenclaw Regent"
+              "item_id": 20427,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "chest": {
-              "item_id": 6465,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Cobrahn"
-            },
-            "wrist": {
-              "item_id": 12999,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "hands": {
-              "item_id": 252499,
+              "item_id": 252493,
               "source_kind": "crafted",
               "source": "Leatherworking"
+            },
+            "wrist": {
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
+            },
+            "hands": {
+              "item_id": 279877,
+              "source_kind": "quest",
+              "source": "The New Plague"
             },
             "waist": {
               "item_id": 253887,
@@ -15637,7 +15637,7 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 252424,
+              "item_id": 252444,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -15647,14 +15647,14 @@
               "source": "Lady Vespira"
             },
             "finger2": {
-              "item_id": 6463,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Mutanus the Devourer"
+              "item_id": 12996,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
-              "item_id": 2271,
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
+              "item_id": 15444,
+              "source_kind": "quest",
+              "source": "Hidden Enemies"
             }
           }
         },
@@ -15664,30 +15664,30 @@
             277203,
             12998,
             20428,
-            6473,
+            252493,
             1974,
             252499,
             253925,
             252503,
-            10411,
+            252444,
             6332,
-            6463,
+            12996,
             2042
           ],
           "horde": [
             253949,
-            281265,
+            277203,
             12998,
-            5969,
-            6465,
-            12999,
-            252499,
+            20427,
+            252493,
+            1974,
+            279877,
             253887,
             252503,
-            252424,
+            252444,
             6332,
-            6463,
-            2271
+            12996,
+            15444
           ]
         },
         "weights": {
@@ -15709,24 +15709,24 @@
               "source": "Razorfen Kraul: Earthcaller Halmgar"
             },
             "neck": {
-              "item_id": 4614,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Splinterbone Captain"
+              "item_id": 5180,
+              "source_kind": "world",
+              "source": "Singer"
             },
             "shoulder": {
-              "item_id": 6697,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Blind Hunter"
+              "item_id": 3560,
+              "source_kind": "quest",
+              "source": "Bride of the Embalmer"
             },
             "back": {
-              "item_id": 7004,
-              "source_kind": "quest",
-              "source": "Researching the Corruption"
+              "item_id": 6901,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps: Old Serra'kis"
             },
             "chest": {
-              "item_id": 253961,
+              "item_id": 252511,
               "source_kind": "crafted",
-              "source": "Tailoring"
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 1974,
@@ -15734,14 +15734,14 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 9609,
-              "source_kind": "quest",
-              "source": "Gyrodrillmatic Excavationators"
-            },
-            "waist": {
-              "item_id": 13011,
+              "item_id": 9395,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "waist": {
+              "item_id": 252523,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "legs": {
               "item_id": 252519,
@@ -15774,9 +15774,9 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             "off_hand": {
-              "item_id": 274743,
-              "source_kind": "vendor",
-              "source": "Winklespark"
+              "item_id": 249395,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -15791,9 +15791,9 @@
               "source": "Singer"
             },
             "shoulder": {
-              "item_id": 6697,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Blind Hunter"
+              "item_id": 3324,
+              "source_kind": "quest",
+              "source": "Deathstalkers in Shadowfang"
             },
             "back": {
               "item_id": 19529,
@@ -15816,9 +15816,9 @@
               "source": "World drop"
             },
             "waist": {
-              "item_id": 13011,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 252523,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "legs": {
               "item_id": 252519,
@@ -15836,9 +15836,9 @@
               "source": "Willix the Importer"
             },
             "finger2": {
-              "item_id": 6748,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
+              "item_id": 13094,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket1": {
               "item_id": 272059,
@@ -15860,33 +15860,32 @@
         "new_at_band": {
           "alliance": [
             6688,
-            4614,
-            6697,
-            7004,
-            253961,
-            9609,
-            13011,
+            5180,
+            3560,
+            6901,
+            252511,
+            9395,
+            252523,
             252519,
             254001,
             6750,
             13094,
             272059,
             2816,
-            274743
+            249395
           ],
           "horde": [
             6688,
             5180,
-            6697,
+            3324,
             19529,
             252511,
-            1974,
             9395,
-            13011,
+            252523,
             252519,
             254001,
             6750,
-            6748,
+            13094,
             272059,
             2816,
             249395
@@ -15911,14 +15910,14 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 7722,
+              "item_id": 10769,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "shoulder": {
-              "item_id": 13115,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 254033,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "back": {
               "item_id": 19532,
@@ -15998,9 +15997,9 @@
               "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "shoulder": {
-              "item_id": 13115,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 254033,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "back": {
               "item_id": 6832,
@@ -16018,9 +16017,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 9395,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10011,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 254037,
@@ -16028,9 +16027,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 7760,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey"
+              "item_id": 10010,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 252533,
@@ -16072,8 +16071,8 @@
         "new_at_band": {
           "alliance": [
             9431,
-            7722,
-            13115,
+            10769,
+            254033,
             19532,
             10020,
             13119,
@@ -16089,12 +16088,13 @@
           "horde": [
             9431,
             10769,
-            13115,
+            254033,
             6832,
             10020,
             13119,
+            10011,
             254037,
-            7760,
+            10010,
             252533,
             272070,
             6750,
@@ -16155,9 +16155,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 10807,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Jammal'an the Prophet"
+              "item_id": 13008,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "feet": {
               "item_id": 13111,
@@ -16197,12 +16197,12 @@
               "source": "The God Hakkar"
             },
             "neck": {
-              "item_id": 10769,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Mordresh Fire Eye"
+              "item_id": 1315,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
-              "item_id": 252538,
+              "item_id": 15061,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -16227,14 +16227,14 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 254037,
+              "item_id": 254077,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 10807,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Jammal'an the Prophet"
+              "item_id": 13008,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "feet": {
               "item_id": 13111,
@@ -16278,7 +16278,7 @@
             252543,
             226784,
             254077,
-            10807,
+            13008,
             13111,
             5266,
             6440,
@@ -16287,12 +16287,14 @@
           ],
           "horde": [
             10751,
-            252538,
+            1315,
+            15061,
             10843,
             12462,
             252543,
             226784,
-            10807,
+            254077,
+            13008,
             13111,
             5266,
             6440,
@@ -16391,14 +16393,14 @@
           },
           "horde": {
             "head": {
-              "item_id": 13390,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Postmaster Malown"
+              "item_id": 252561,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
-              "item_id": 14558,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20685,
+              "source_kind": "world",
+              "source": "Lord Skwol"
             },
             "shoulder": {
               "item_id": 226785,
@@ -16416,19 +16418,19 @@
               "source": "Avatar of Hakkar"
             },
             "wrist": {
-              "item_id": 16683,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Rage Talon Fire Tongue"
+              "item_id": 22667,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "hands": {
-              "item_id": 16684,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Doctor Theolen Krastinov"
-            },
-            "waist": {
-              "item_id": 226780,
+              "item_id": 226784,
               "source_kind": "vendor",
               "source": "Mokvar"
+            },
+            "waist": {
+              "item_id": 272398,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "legs": {
               "item_id": 12756,
@@ -16483,13 +16485,12 @@
             15854
           ],
           "horde": [
-            13390,
-            14558,
+            252561,
+            20685,
             226785,
             12968,
-            16683,
-            16684,
-            226780,
+            22667,
+            272398,
             12756,
             226781,
             13392,
@@ -22607,14 +22608,14 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 14376,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20428,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "chest": {
-              "item_id": 252493,
+              "item_id": 250491,
               "source_kind": "crafted",
-              "source": "Leatherworking"
+              "source": "Blacksmithing"
             },
             "wrist": {
               "item_id": 1974,
@@ -22647,9 +22648,9 @@
               "source": "The Deadmines: Gilnid"
             },
             "finger2": {
-              "item_id": 6332,
-              "source_kind": "world",
-              "source": "Lady Vespira"
+              "item_id": 20431,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "main_hand": {
               "item_id": 6953,
@@ -22674,9 +22675,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 14376,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20427,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "chest": {
               "item_id": 250491,
@@ -22730,22 +22731,22 @@
             250531,
             277203,
             12998,
-            14376,
-            252493,
+            20428,
+            250491,
             1974,
             250511,
             253925,
             250496,
             250506,
             1156,
-            6332,
+            20431,
             6953
           ],
           "horde": [
             250531,
             277203,
             12998,
-            14376,
+            20427,
             250491,
             1974,
             250511,
@@ -22791,9 +22792,9 @@
               "source": "Silverwing Sentinels"
             },
             "chest": {
-              "item_id": 6682,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Death Speaker Jargba"
+              "item_id": 250521,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "wrist": {
               "item_id": 1974,
@@ -22868,9 +22869,9 @@
               "source": "Warsong Outriders"
             },
             "chest": {
-              "item_id": 6682,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Death Speaker Jargba"
+              "item_id": 250521,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "wrist": {
               "item_id": 1974,
@@ -22930,7 +22931,7 @@
             23169,
             6697,
             19533,
-            6682,
+            250521,
             7049,
             250559,
             250526,
@@ -22946,7 +22947,7 @@
             23169,
             6697,
             19529,
-            6682,
+            250521,
             7049,
             250559,
             250526,
@@ -22977,19 +22978,19 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 7722,
+              "item_id": 10769,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "shoulder": {
-              "item_id": 13115,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 254033,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "back": {
-              "item_id": 23178,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Lady Falther'ess"
+              "item_id": 19532,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "chest": {
               "item_id": 10020,
@@ -23138,9 +23139,9 @@
         "new_at_band": {
           "alliance": [
             9431,
-            7722,
-            13115,
-            23178,
+            10769,
+            254033,
+            19532,
             10020,
             274750,
             252530,
@@ -23183,9 +23184,9 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 13085,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 19303,
+              "source_kind": "vendor",
+              "source": "Lhara"
             },
             "shoulder": {
               "item_id": 11842,
@@ -23218,9 +23219,9 @@
               "source": "Leatherworking"
             },
             "legs": {
-              "item_id": 10807,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Jammal'an the Prophet"
+              "item_id": 220809,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 252472,
@@ -23260,14 +23261,14 @@
           },
           "horde": {
             "head": {
-              "item_id": 10630,
+              "item_id": 9431,
               "source_kind": "dungeon",
-              "source": "Sunken Temple: Atal'ai Warrior"
+              "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 13085,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 19303,
+              "source_kind": "vendor",
+              "source": "Lhara"
             },
             "shoulder": {
               "item_id": 11842,
@@ -23280,9 +23281,9 @@
               "source": "Creeg Bothunk"
             },
             "chest": {
-              "item_id": 12462,
-              "source_kind": "world",
-              "source": "Avatar of Hakkar"
+              "item_id": 10020,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 252543,
@@ -23343,14 +23344,14 @@
         },
         "new_at_band": {
           "alliance": [
-            13085,
+            19303,
             11842,
             272076,
             12462,
             252543,
             272098,
             252477,
-            10807,
+            220809,
             252472,
             6440,
             272069,
@@ -23358,11 +23359,9 @@
             17718
           ],
           "horde": [
-            10630,
-            13085,
+            19303,
             11842,
             272076,
-            12462,
             252543,
             272098,
             252477,
@@ -23387,86 +23386,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 252605,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
-            },
-            "neck": {
-              "item_id": 20685,
-              "source_kind": "world",
-              "source": "Lord Skwol"
-            },
-            "shoulder": {
-              "item_id": 272103,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            "back": {
-              "item_id": 18510,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
-            },
-            "chest": {
-              "item_id": 227151,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
-            },
-            "wrist": {
-              "item_id": 18459,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Guard Fengus"
-            },
-            "hands": {
-              "item_id": 272097,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            "waist": {
-              "item_id": 20217,
+              "item_id": 21517,
               "source_kind": "quest",
-              "source": "A Collection of Heads"
-            },
-            "legs": {
-              "item_id": 18386,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Illyanna Ravenoak"
-            },
-            "feet": {
-              "item_id": 227153,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
-            },
-            "finger1": {
-              "item_id": 22681,
-              "source_kind": "quest",
-              "source": "Superior Armaments of Battle - Friend of the Dawn"
-            },
-            "finger2": {
-              "item_id": 13345,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
-            },
-            "trinket1": {
-              "item_id": 272439,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            "trinket2": {
-              "item_id": 272061,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            "main_hand": {
-              "item_id": 18717,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Balnazzar"
-            }
-          },
-          "horde": {
-            "head": {
-              "item_id": 252605,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "source": "The Only Prescription"
             },
             "neck": {
               "item_id": 20685,
@@ -23524,14 +23446,91 @@
               "source": "Stratholme: Baron Rivendare"
             },
             "trinket1": {
-              "item_id": 272439,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            "trinket2": {
               "item_id": 272061,
               "source_kind": "vendor",
               "source": "Creeg Bothunk"
+            },
+            "trinket2": {
+              "item_id": 18371,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Magister Kalendris"
+            },
+            "main_hand": {
+              "item_id": 18717,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar"
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 21517,
+              "source_kind": "quest",
+              "source": "The Only Prescription"
+            },
+            "neck": {
+              "item_id": 20685,
+              "source_kind": "world",
+              "source": "Lord Skwol"
+            },
+            "shoulder": {
+              "item_id": 272103,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "back": {
+              "item_id": 18510,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
+            },
+            "chest": {
+              "item_id": 250601,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
+            },
+            "wrist": {
+              "item_id": 18459,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Guard Fengus"
+            },
+            "hands": {
+              "item_id": 272097,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "waist": {
+              "item_id": 20217,
+              "source_kind": "quest",
+              "source": "A Collection of Heads"
+            },
+            "legs": {
+              "item_id": 18386,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Illyanna Ravenoak"
+            },
+            "feet": {
+              "item_id": 226983,
+              "source_kind": "vendor",
+              "source": "Mokvar"
+            },
+            "finger1": {
+              "item_id": 22681,
+              "source_kind": "quest",
+              "source": "Superior Armaments of Battle - Friend of the Dawn"
+            },
+            "finger2": {
+              "item_id": 13345,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
+            },
+            "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
+              "item_id": 18371,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Magister Kalendris"
             },
             "main_hand": {
               "item_id": 18717,
@@ -23542,24 +23541,7 @@
         },
         "new_at_band": {
           "alliance": [
-            252605,
-            20685,
-            272103,
-            18510,
-            227151,
-            18459,
-            272097,
-            20217,
-            18386,
-            227153,
-            22681,
-            13345,
-            272439,
-            272061,
-            18717
-          ],
-          "horde": [
-            252605,
+            21517,
             20685,
             272103,
             18510,
@@ -23571,8 +23553,23 @@
             226983,
             22681,
             13345,
-            272439,
-            272061,
+            18371,
+            18717
+          ],
+          "horde": [
+            21517,
+            20685,
+            272103,
+            18510,
+            250601,
+            18459,
+            272097,
+            20217,
+            18386,
+            226983,
+            22681,
+            13345,
+            18371,
             18717
           ]
         },
@@ -25660,9 +25657,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 14376,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20428,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "chest": {
               "item_id": 253901,
@@ -25680,9 +25677,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 2911,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 253925,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 253937,
@@ -25732,9 +25729,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 14376,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20427,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "chest": {
               "item_id": 253901,
@@ -25752,9 +25749,9 @@
               "source": "The New Plague"
             },
             "waist": {
-              "item_id": 2911,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 253925,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 253937,
@@ -25772,9 +25769,9 @@
               "source": "The Deadmines: Gilnid"
             },
             "finger2": {
-              "item_id": 281673,
-              "source_kind": "quest",
-              "source": "The Offering of Blood"
+              "item_id": 6332,
+              "source_kind": "world",
+              "source": "Lady Vespira"
             },
             "main_hand": {
               "item_id": 251534,
@@ -25793,11 +25790,11 @@
             4373,
             277203,
             12998,
-            14376,
+            20428,
             253901,
             1974,
             253913,
-            2911,
+            253925,
             253937,
             253889,
             1156,
@@ -25809,15 +25806,15 @@
             4373,
             277203,
             12998,
-            14376,
+            20427,
             253901,
             1974,
             279877,
-            2911,
+            253925,
             253937,
             253889,
             1156,
-            281673,
+            6332,
             251534,
             5252
           ]
@@ -26050,9 +26047,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 272077,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 23178,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Lady Falther'ess"
             },
             "chest": {
               "item_id": 10020,
@@ -26075,24 +26072,24 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 253987,
+              "item_id": 10010,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 13100,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 254001,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 274746,
-              "source_kind": "vendor",
-              "source": "Gezzy Gunkgear"
-            },
-            "finger2": {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
+            },
+            "finger2": {
+              "item_id": 274746,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
             },
             "trinket1": {
               "item_id": 272059,
@@ -26110,9 +26107,9 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             "off_hand": {
-              "item_id": 11262,
-              "source_kind": "quest",
-              "source": "In the Name of the Light"
+              "item_id": 9393,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "ranged": {
               "item_id": 13064,
@@ -26137,9 +26134,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 272077,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 23178,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Lady Falther'ess"
             },
             "chest": {
               "item_id": 10020,
@@ -26162,24 +26159,24 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 253987,
+              "item_id": 10010,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 13100,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 254001,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 274746,
-              "source_kind": "vendor",
-              "source": "Gezzy Gunkgear"
-            },
-            "finger2": {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
+            },
+            "finger2": {
+              "item_id": 274746,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
             },
             "trinket1": {
               "item_id": 272059,
@@ -26197,9 +26194,9 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             "off_hand": {
-              "item_id": 6803,
-              "source_kind": "quest",
-              "source": "Into The Scarlet Monastery"
+              "item_id": 9393,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "ranged": {
               "item_id": 13064,
@@ -26213,43 +26210,42 @@
             9431,
             17773,
             14432,
-            272077,
+            23178,
             10020,
             14429,
             10011,
             254037,
-            13100,
+            10010,
             274746,
-            6750,
             1713,
             2816,
-            11262,
+            9393,
             13064
           ],
           "horde": [
             9431,
             17773,
             14432,
-            272077,
+            23178,
             10020,
             14429,
             10011,
             254037,
-            13100,
+            10010,
             274746,
-            6750,
             1713,
             2816,
-            6803,
+            9393,
             13064
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.741,
-          "spirit": 0.595,
-          "mp5": 0.429,
-          "crit": 0.454
+          "intellect": 2.09,
+          "spirit": 0.746,
+          "mp5": 0.672,
+          "crit": 0.467,
+          "spell_haste": -2.645
         }
       },
       {
@@ -26369,9 +26365,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 12546,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anvilrage Overseer"
+              "item_id": 254061,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "hands": {
               "item_id": 272098,
@@ -26384,9 +26380,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 220902,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 9484,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
             },
             "feet": {
               "item_id": 254107,
@@ -26450,10 +26446,10 @@
             13085,
             254049,
             272076,
-            12546,
+            254061,
             272098,
             254081,
-            220902,
+            9484,
             254107,
             6440,
             11824,
@@ -26463,10 +26459,9 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.665,
-          "mp5": 1.735,
-          "crit": 0.662,
-          "spell_haste": 0.833
+          "intellect": 1.734,
+          "mp5": 1.779,
+          "crit": 0.662
         }
       },
       {
@@ -26474,9 +26469,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 21517,
+              "item_id": 226947,
               "source_kind": "quest",
-              "source": "The Only Prescription"
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 20685,
@@ -26484,9 +26479,9 @@
               "source": "Lord Skwol"
             },
             "shoulder": {
-              "item_id": 16695,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Solakar Flamewreath"
+              "item_id": 227888,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
             },
             "back": {
               "item_id": 18510,
@@ -26494,9 +26489,9 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 13346,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
+              "item_id": 226945,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "wrist": {
               "item_id": 22667,
@@ -26504,9 +26499,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "hands": {
-              "item_id": 272097,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 12554,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Princess Moira Bronzebeard "
             },
             "waist": {
               "item_id": 19047,
@@ -26519,19 +26514,101 @@
               "source": "Dire Maul: Illyanna Ravenoak"
             },
             "feet": {
-              "item_id": 15802,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226952,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 22681,
-              "source_kind": "quest",
-              "source": "Superior Armaments of Battle - Friend of the Dawn"
-            },
-            "finger2": {
               "item_id": 22334,
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar"
+            },
+            "finger2": {
+              "item_id": 16058,
+              "source_kind": "quest",
+              "source": "In Dreams"
+            },
+            "trinket1": {
+              "item_id": 18469,
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You"
+            },
+            "trinket2": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "main_hand": {
+              "item_id": 22406,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Cannon Master Willey"
+            },
+            "ranged": {
+              "item_id": 279246,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 226947,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
+            },
+            "neck": {
+              "item_id": 20685,
+              "source_kind": "world",
+              "source": "Lord Skwol"
+            },
+            "shoulder": {
+              "item_id": 227888,
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana"
+            },
+            "back": {
+              "item_id": 18510,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
+            },
+            "chest": {
+              "item_id": 14154,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            },
+            "wrist": {
+              "item_id": 22667,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "hands": {
+              "item_id": 272097,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "waist": {
+              "item_id": 226948,
+              "source_kind": "quest",
+              "source": "Just Compensation"
+            },
+            "legs": {
+              "item_id": 18386,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Illyanna Ravenoak"
+            },
+            "feet": {
+              "item_id": 226952,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
+            },
+            "finger1": {
+              "item_id": 22334,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar"
+            },
+            "finger2": {
+              "item_id": 16058,
+              "source_kind": "quest",
+              "source": "In Dreams"
             },
             "trinket1": {
               "item_id": 272061,
@@ -26544,142 +26621,62 @@
               "source": "Holy Bologna: What the Light Won't Tell You"
             },
             "main_hand": {
-              "item_id": 22394,
+              "item_id": 22406,
               "source_kind": "dungeon",
-              "source": "Scholomance: Jandice Barov"
+              "source": "Stratholme: Cannon Master Willey"
             },
             "ranged": {
-              "item_id": 20672,
-              "source_kind": "world",
-              "source": "The Duke of Shards"
-            }
-          },
-          "horde": {
-            "head": {
-              "item_id": 21517,
-              "source_kind": "quest",
-              "source": "The Only Prescription"
-            },
-            "neck": {
-              "item_id": 20685,
-              "source_kind": "world",
-              "source": "Lord Skwol"
-            },
-            "shoulder": {
-              "item_id": 16695,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Solakar Flamewreath"
-            },
-            "back": {
-              "item_id": 18510,
+              "item_id": 279246,
               "source_kind": "crafted",
-              "source": "Leatherworking"
-            },
-            "chest": {
-              "item_id": 13346,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
-            },
-            "wrist": {
-              "item_id": 22667,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "hands": {
-              "item_id": 272097,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            "waist": {
-              "item_id": 19047,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            "legs": {
-              "item_id": 18386,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Illyanna Ravenoak"
-            },
-            "feet": {
-              "item_id": 15802,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            "finger1": {
-              "item_id": 22681,
-              "source_kind": "quest",
-              "source": "Superior Armaments of Battle - Friend of the Dawn"
-            },
-            "finger2": {
-              "item_id": 22334,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Balnazzar"
-            },
-            "trinket1": {
-              "item_id": 272061,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            "trinket2": {
-              "item_id": 272439,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            "main_hand": {
-              "item_id": 22394,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Jandice Barov"
-            },
-            "ranged": {
-              "item_id": 20672,
-              "source_kind": "world",
-              "source": "The Duke of Shards"
+              "source": "Enchanting"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            21517,
+            226947,
             20685,
-            16695,
+            227888,
             18510,
-            13346,
+            226945,
             22667,
-            272097,
+            12554,
             19047,
             18386,
-            15802,
-            22681,
+            226952,
             22334,
+            16058,
             18469,
-            22394,
-            20672
+            272061,
+            22406,
+            279246
           ],
           "horde": [
-            21517,
+            226947,
             20685,
-            16695,
+            227888,
             18510,
-            13346,
+            14154,
             22667,
             272097,
-            19047,
+            226948,
             18386,
-            15802,
-            22681,
+            226952,
             22334,
+            16058,
             272061,
-            272439,
-            22394,
-            20672
+            18469,
+            22406,
+            279246
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 2.151,
-          "spirit": 0.337,
-          "mp5": 1.595,
-          "crit": 0.791
+          "intellect": 1.782,
+          "spirit": 0.888,
+          "mp5": 1.464,
+          "crit": 0.682,
+          "spell_haste": -9.207
         }
       }
     ],
@@ -26689,9 +26686,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 4373,
+              "item_id": 253949,
               "source_kind": "crafted",
-              "source": "Engineering"
+              "source": "Tailoring"
             },
             "neck": {
               "item_id": 277203,
@@ -26704,9 +26701,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 14376,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20428,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "chest": {
               "item_id": 253901,
@@ -26761,9 +26758,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 4373,
+              "item_id": 253949,
               "source_kind": "crafted",
-              "source": "Engineering"
+              "source": "Tailoring"
             },
             "neck": {
               "item_id": 277203,
@@ -26776,9 +26773,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 14376,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20427,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "chest": {
               "item_id": 253901,
@@ -26791,9 +26788,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 279877,
-              "source_kind": "quest",
-              "source": "The New Plague"
+              "item_id": 253913,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 253925,
@@ -26834,10 +26831,10 @@
         },
         "new_at_band": {
           "alliance": [
-            4373,
+            253949,
             277203,
             12998,
-            14376,
+            20428,
             253901,
             1974,
             253913,
@@ -26850,13 +26847,13 @@
             5326
           ],
           "horde": [
-            4373,
+            253949,
             277203,
             12998,
-            14376,
+            20427,
             253901,
             1974,
-            279877,
+            253913,
             253925,
             253937,
             253889,
@@ -26884,9 +26881,9 @@
               "source": "Tailoring"
             },
             "neck": {
-              "item_id": 23169,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Scorn"
+              "item_id": 13084,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 6697,
@@ -26904,9 +26901,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 13106,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 7049,
@@ -26944,9 +26941,14 @@
               "source": "Creeg Bothunk"
             },
             "main_hand": {
-              "item_id": 6689,
+              "item_id": 2816,
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Earthcaller Halmgar"
+              "source": "Razorfen Kraul: Death Speaker Jargba"
+            },
+            "off_hand": {
+              "item_id": 249395,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "ranged": {
               "item_id": 13063,
@@ -26961,9 +26963,9 @@
               "source": "Tailoring"
             },
             "neck": {
-              "item_id": 23169,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Scorn"
+              "item_id": 13084,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 6697,
@@ -26976,9 +26978,9 @@
               "source": "Warsong Outriders"
             },
             "chest": {
-              "item_id": 6682,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Death Speaker Jargba"
+              "item_id": 253961,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 1974,
@@ -26991,9 +26993,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 6780,
-              "source_kind": "quest",
-              "source": "Centaur Bounty"
+              "item_id": 253925,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 253987,
@@ -27021,9 +27023,14 @@
               "source": "Creeg Bothunk"
             },
             "main_hand": {
-              "item_id": 6689,
+              "item_id": 2816,
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Earthcaller Halmgar"
+              "source": "Razorfen Kraul: Death Speaker Jargba"
+            },
+            "off_hand": {
+              "item_id": 249395,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "ranged": {
               "item_id": 13063,
@@ -27035,34 +27042,34 @@
         "new_at_band": {
           "alliance": [
             253975,
-            23169,
+            13084,
             6697,
             19533,
             253961,
-            13106,
             7049,
             253987,
             254001,
             274746,
             6750,
             272059,
-            6689,
+            2816,
+            249395,
             13063
           ],
           "horde": [
             253975,
-            23169,
+            13084,
             6697,
             19529,
-            6682,
+            253961,
             7049,
-            6780,
             253987,
             254001,
             274746,
             6750,
             272059,
-            6689,
+            2816,
+            249395,
             13063
           ]
         },
@@ -27100,7 +27107,7 @@
               "source": "Creeg Bothunk"
             },
             "chest": {
-              "item_id": 10007,
+              "item_id": 10020,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -27115,12 +27122,12 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 10771,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Mordresh Fire Eye"
+              "item_id": 254037,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
-              "item_id": 253987,
+              "item_id": 10010,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -27155,9 +27162,9 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             "off_hand": {
-              "item_id": 11262,
-              "source_kind": "quest",
-              "source": "In the Name of the Light"
+              "item_id": 7610,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             "ranged": {
               "item_id": 13064,
@@ -27207,14 +27214,14 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 7062,
+              "item_id": 253987,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 9658,
-              "source_kind": "quest",
-              "source": "Gordunni Cobalt"
+              "item_id": 254001,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 6750,
@@ -27259,16 +27266,16 @@
             7722,
             14432,
             272077,
-            10007,
+            10020,
             14429,
             10011,
-            10771,
+            254037,
+            10010,
             13100,
             6750,
             1996,
             1713,
-            2816,
-            11262,
+            7610,
             13064
           ],
           "horde": [
@@ -27280,22 +27287,20 @@
             14429,
             10011,
             254037,
-            7062,
-            9658,
             6750,
             1996,
             1713,
-            2816,
             7610,
             13064
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 3.559,
-          "spirit": 0.357,
-          "mp5": 0.747,
-          "crit": 0.201
+          "intellect": 4.273,
+          "spirit": 0.653,
+          "mp5": 0.732,
+          "crit": 0.179,
+          "spell_haste": 7.255
         }
       },
       {
@@ -27502,11 +27507,11 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 3.195,
-          "spirit": 0.554,
-          "mp5": 0.522,
-          "crit": 0.27,
-          "spell_haste": 5.156
+          "intellect": 4.979,
+          "spirit": 0.227,
+          "mp5": 1.358,
+          "crit": 0.247,
+          "spell_haste": -25.611
         }
       },
       {
@@ -27715,10 +27720,11 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.043,
-          "spirit": 0.55,
-          "mp5": 0.486,
-          "crit": 0.275
+          "intellect": 1.148,
+          "spirit": 0.831,
+          "mp5": 0.598,
+          "crit": 0.187,
+          "spell_haste": -9.375
         }
       }
     ],
@@ -33811,9 +33817,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 12977,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 252499,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 253925,
@@ -33841,9 +33847,9 @@
               "source": "The Deadmines: Gilnid"
             },
             "main_hand": {
-              "item_id": 890,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 2042,
+              "source_kind": "quest",
+              "source": "The Defias Brotherhood"
             }
           },
           "horde": {
@@ -33908,9 +33914,9 @@
               "source": "The Deadmines: Gilnid"
             },
             "main_hand": {
-              "item_id": 251534,
+              "item_id": 15444,
               "source_kind": "quest",
-              "source": "The Wrath of Rath'mael"
+              "source": "Hidden Enemies"
             }
           }
         },
@@ -33922,13 +33928,13 @@
             20428,
             252493,
             1974,
-            12977,
+            252499,
             253925,
             252503,
             252444,
             6332,
             1156,
-            890
+            2042
           ],
           "horde": [
             4373,
@@ -33943,7 +33949,7 @@
             252444,
             6332,
             1156,
-            251534
+            15444
           ]
         },
         "weights": {
@@ -33989,14 +33995,14 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 9491,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Burrower"
-            },
-            "waist": {
-              "item_id": 13011,
+              "item_id": 9395,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            "waist": {
+              "item_id": 252523,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "legs": {
               "item_id": 252519,
@@ -34029,9 +34035,9 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             "off_hand": {
-              "item_id": 274743,
-              "source_kind": "vendor",
-              "source": "Winklespark"
+              "item_id": 249395,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -34119,15 +34125,15 @@
             6697,
             6901,
             252511,
-            9491,
-            13011,
+            9395,
+            252523,
             252519,
             254001,
             6750,
             272071,
             272059,
             2816,
-            274743
+            249395
           ],
           "horde": [
             3020,
@@ -34164,9 +34170,9 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 7722,
+              "item_id": 10769,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "shoulder": {
               "item_id": 13115,
@@ -34184,9 +34190,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "item_id": 13119,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 10765,
@@ -34246,9 +34252,9 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 7722,
+              "item_id": 10769,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "shoulder": {
               "item_id": 13115,
@@ -34266,9 +34272,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "item_id": 13119,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 10765,
@@ -34325,10 +34331,11 @@
         "new_at_band": {
           "alliance": [
             9431,
-            7722,
+            10769,
             13115,
             272077,
             10020,
+            13119,
             10765,
             254037,
             276201,
@@ -34340,10 +34347,11 @@
           ],
           "horde": [
             9431,
-            7722,
+            10769,
             13115,
             272077,
             10020,
+            13119,
             10765,
             254037,
             276201,
@@ -34444,9 +34452,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 11124,
-              "source_kind": "quest",
-              "source": "Jammal'an the Prophet"
+              "item_id": 10032,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "neck": {
               "item_id": 19303,
@@ -34454,19 +34462,19 @@
               "source": "Lhara"
             },
             "shoulder": {
-              "item_id": 15067,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 11842,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Fineous Darkvire"
             },
             "back": {
-              "item_id": 272076,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            "chest": {
-              "item_id": 12462,
+              "item_id": 10843,
               "source_kind": "world",
               "source": "Avatar of Hakkar"
+            },
+            "chest": {
+              "item_id": 10020,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 252543,
@@ -34484,9 +34492,9 @@
               "source": "World drop"
             },
             "legs": {
-              "item_id": 10807,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Jammal'an the Prophet"
+              "item_id": 10010,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 13111,
@@ -34499,9 +34507,9 @@
               "source": "Creeg Bothunk"
             },
             "finger2": {
-              "item_id": 6440,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+              "item_id": 5266,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket1": {
               "item_id": 272061,
@@ -34538,18 +34546,17 @@
             1607
           ],
           "horde": [
-            11124,
+            10032,
             19303,
-            15067,
-            272076,
-            12462,
+            11842,
+            10843,
             252543,
             227014,
             14803,
-            10807,
+            10010,
             13111,
             272069,
-            6440,
+            5266,
             272061,
             1607
           ]
@@ -34627,14 +34634,14 @@
               "source": "Superior Armaments of Battle - Friend of the Dawn"
             },
             "trinket1": {
-              "item_id": 272439,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            "trinket2": {
               "item_id": 272061,
               "source_kind": "vendor",
               "source": "Creeg Bothunk"
+            },
+            "trinket2": {
+              "item_id": 18371,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Magister Kalendris"
             },
             "main_hand": {
               "item_id": 13000,
@@ -34733,8 +34740,7 @@
             227015,
             18314,
             22681,
-            272439,
-            272061,
+            18371,
             13000
           ],
           "horde": [
@@ -34742,6 +34748,7 @@
             20685,
             16695,
             12968,
+            12462,
             22667,
             272097,
             20217,

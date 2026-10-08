@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 03323000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 26.8. Weights run: 1.7s. Verify run: 2.9s. 302 eligible items had no known source.
+Set DPS (verified): 26.8. Weights run: 1.7s. Verify run: 2.8s. 302 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000) per rating point (14 rating = 1%, 0.000 per %), hit=1.247 ± 0.074 per rating point (10 rating = 1%, 12.474 per %), melee_haste=9.069 ± 0.670
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 682, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 03325213032515001-05000000000000000-000000000000000000)
 
-Set DPS (verified): 180.5. Weights run: 2.3s. Verify run: 2.8s. 867 eligible items had no known source.
+Set DPS (verified): 180.5. Weights run: 2.3s. Verify run: 2.7s. 867 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.169 ± 0.049, crit=1.670 ± 0.071 per rating point (14 rating = 1%, 23.385 per %), hit=2.432 ± 0.185 per rating point (10 rating = 1%, 24.324 per %), melee_haste=12.497 ± 1.433
 
@@ -128,13 +128,13 @@ No-known-source sample (15 of 867, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (human, 03325213032515001-05050000000000000-005000000000000000)
 
-Set DPS (verified): 261.9. Weights run: 2.4s. Verify run: 10.9s. 1943 eligible items had no known source.
+Set DPS (verified): 261.9. Weights run: 2.4s. Verify run: 10.8s. 1943 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.559 ± 0.063, crit=2.228 ± 0.091 per rating point (14 rating = 1%, 31.186 per %), hit=3.715 ± 0.250 per rating point (10 rating = 1%, 37.149 per %), melee_haste=17.614 ± 2.015
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 172.7 attack_power points (14.65 DPS) | yes | Lieutenant Commander's Plate Helm (227044, -5.29 DPS) [vendor]; Mask of the Unforgiven (13404, -6.26 DPS, sim-verified) [dungeon] |
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 172.7 attack_power points (14.65 DPS) | yes | Lieutenant Commander's Plate Helm (23314, -5.29 DPS) [vendor]; Mask of the Unforgiven (13404, -6.26 DPS, sim-verified) [dungeon] |
 | neck | Beads of Ogre Might (22150) | Falrin's Vendetta [quest] | sim-verified (261.9 DPS) | yes | Rage of Mugamba (19577, +0.00 DPS) [quest]; Pendant of Celerity (22340, -0.05 DPS) [dungeon]; Mark of Fordring (15411, -0.34 DPS) [quest] |
 | shoulder | Spaulders of Heroism (226858) | Anthion's Parting Words [quest] | sim-verified (261.9 DPS) | yes | Wyrmhide Spaulders (12082, +0.00 DPS) [quest]; Field Marshal's Plate Shoulderguards (231537, +0.00 DPS) [pvp]; Truestrike Shoulders (12927, -5.28 DPS, sim-verified) [dungeon] |
 | back | Howler's Furs (272414) | Pix Xizzix [vendor] | 65.1 attack_power points (5.53 DPS) | yes | Cape of the Black Baron (13340, -1.85 DPS) [dungeon]; Cloak of the Honor Guard (20073, -1.98 DPS) [rep]; Windshear Cape (20691, -2.19 DPS) [world] |
@@ -158,29 +158,29 @@ No-known-source sample (15 of 1943, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (human, 02305213032515001-55050000001000000-200000000000000000)
 
-Set DPS (verified): 792.1. Weights run: 2.1s. Verify run: 10.2s. 1943 eligible items had no known source.
+Set DPS (verified): 770.9. Weights run: 2.1s. Verify run: 10.0s. 1943 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.901 ± 0.088, crit=2.440 ± 0.120 per rating point (14 rating = 1%, 34.162 per %), hit=4.420 ± 0.364 per rating point (10 rating = 1%, 44.203 per %), melee_haste=16.652 ± 2.739
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.863 ± 0.094, crit=2.475 ± 0.126 per rating point (14 rating = 1%, 34.645 per %), hit=4.251 ± 0.385 per rating point (10 rating = 1%, 42.508 per %), melee_haste=15.560 ± 2.924
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 196.3 attack_power points (35.16 DPS) | yes | Lieutenant Commander's Plate Helm (23314, -12.85 DPS) [vendor]; Mask of the Unforgiven (13404, -15.40 DPS, sim-verified) [dungeon] |
-| neck | Pendant of Celerity (22340) | Blackrock Spire: Lord Valthalak [dungeon] | sim-verified (792.1 DPS) | yes | Rage of Mugamba (19577, +0.00 DPS) [quest]; Beads of Ogre Might (22150, -0.81 DPS) [quest]; Mark of Fordring (15411, -2.25 DPS) [quest] |
-| shoulder | Highlander's Plate Spaulders (20057) | The League of Arathor [rep] | sim-verified (792.1 DPS) | yes | Wyrmhide Spaulders (12082, +0.00 DPS) [quest]; Field Marshal's Plate Shoulderguards (231537, +0.00 DPS) [pvp]; Truestrike Shoulders (12927, -14.51 DPS, sim-verified) [dungeon] |
-| back | Howler's Furs (272414) | Pix Xizzix [vendor] | 72.2 attack_power points (12.93 DPS) | yes | Cape of the Black Baron (13340, -4.24 DPS) [dungeon]; Windshear Cape (20691, -4.67 DPS) [world]; Stalwart Cloak (272415, -5.01 DPS) [vendor] |
-| chest | Savage Gladiator Chain (11726) | Blackrock Depths: Gorosh the Dervish [dungeon] | sim-verified (792.1 DPS) | yes | Breastplate of Heroism (226862, +0.00 DPS) [quest]; Timbermaw Tunic (252484, +0.00 DPS) [crafted]; Dawn Armor (252483, -4.56 DPS, sim-verified) [crafted] |
-| wrist | Battleborn Armbraces (12936) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-verified (792.1 DPS) | yes | Forest Stalker's Bracers (19587, -3.23 DPS) [rep]; Slashclaw Bracers (13211, -3.73 DPS) [dungeon]; Bracers of Undead Slaying (23090, -6.19 DPS, sim-verified) [world] |
-| hands | Savage Gladiator Grips (11730) | Blackrock Depths: Eviscerator [dungeon] | sim-verified (792.1 DPS) | yes | Voone's Vice Grips (13963, +0.00 DPS) [quest]; Stormshroud Gloves (21278, +0.00 DPS) [crafted]; Raider Gauntlets (272095, +0.00 DPS) [vendor] |
-| waist | Highlander's Plate Girdle (20041) | The League of Arathor [rep] | sim-verified (792.1 DPS) | yes | Ferocity of the Timbermaw (227805, +0.00 DPS) [vendor]; Radiant Girdle of the Dawn (227814, +0.00 DPS) [vendor]; Belt of Preserved Heads (20216, -9.59 DPS, sim-verified) [quest] |
-| legs | Titanic Leggings (22385) | Blacksmithing [crafted] | sim-verified (792.1 DPS) | yes | Sentinel's Chain Leggings (237819, -1.70 DPS) [vendor]; Sentinel's Plate Legguards (237825, -2.98 DPS) [vendor]; Cloudkeeper Legplates (14554, -10.45 DPS, sim-verified) [world_drop] |
-| feet | Highlander's Plate Greaves (20048) | The League of Arathor [rep] | sim-verified (792.1 DPS) | yes | Savage Gladiator Greaves (11731, +0.00 DPS) [dungeon]; Boots of Heroism (21995, +0.00 DPS) [quest]; Marshal's Plate Boots (231539, +0.00 DPS) [pvp] |
-| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (792.1 DPS) | yes | Tarnished Elven Ring (18500, -3.88 DPS) [dungeon]; Cutthroat's Signet (272408, -4.22 DPS) [vendor]; Naglering (11669, -10.04 DPS, sim-verified) [dungeon] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-verified (792.1 DPS) | yes | Tarnished Elven Ring (18500, -1.02 DPS) [dungeon]; Cutthroat's Signet (272408, -1.36 DPS) [vendor]; Naglering (11669, -6.13 DPS, sim-verified) [dungeon] |
-| trinket1 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-verified (792.1 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Diamond Flask (20130, -11.51 DPS, sim-verified) [quest] |
-| trinket2 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (792.1 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| main_hand | Blackblade of Shahram (12592) | Blackrock Spire: General Drakkisath [dungeon] | sim-verified (792.1 DPS) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Runeblade of Baron Rivendare (13505, -11.37 DPS, sim-verified) [dungeon] |
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 193.9 attack_power points (33.42 DPS) | yes | Lieutenant Commander's Plate Helm (23314, -12.16 DPS) [vendor]; Mask of the Unforgiven (13404, -14.67 DPS, sim-verified) [dungeon] |
+| neck | Pendant of Celerity (22340) | Blackrock Spire: Lord Valthalak [dungeon] | sim-verified (770.9 DPS) | yes | Rage of Mugamba (19577, +0.00 DPS) [quest]; Beads of Ogre Might (22150, -0.68 DPS) [quest]; Mark of Fordring (15411, -1.69 DPS) [quest] |
+| shoulder | Highlander's Plate Spaulders (20057) | The League of Arathor [rep] | sim-verified (770.9 DPS) | yes | Wyrmhide Spaulders (12082, +0.00 DPS) [quest]; Field Marshal's Plate Shoulderguards (231537, +0.00 DPS) [pvp]; Truestrike Shoulders (12927, -15.69 DPS, sim-verified) [dungeon] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | 70.5 attack_power points (12.15 DPS) | yes | Cape of the Black Baron (13340, -3.89 DPS) [dungeon]; Windshear Cape (20691, -4.30 DPS) [world]; Cloak of the Honor Guard (20073, -4.69 DPS) [rep] |
+| chest | Savage Gladiator Chain (11726) | Blackrock Depths: Gorosh the Dervish [dungeon] | sim-verified (770.9 DPS) | yes | Timbermaw Tunic (252484, +0.00 DPS) [crafted]; Breastplate of Heroism (226862, -0.06 DPS) [quest]; Dawn Armor (252483, -4.91 DPS, sim-verified) [crafted] |
+| wrist | Battleborn Armbraces (12936) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-verified (770.9 DPS) | yes | Forest Stalker's Bracers (19587, -3.03 DPS) [rep]; Berserker Bracers (19578, -3.52 DPS) [rep]; Bracers of Undead Slaying (23090, -5.47 DPS, sim-verified) [world] |
+| hands | Savage Gladiator Grips (11730) | Blackrock Depths: Eviscerator [dungeon] | sim-verified (770.9 DPS) | yes | Voone's Vice Grips (13963, +0.00 DPS) [quest]; Marshal's Plate Gauntlets (231541, +0.00 DPS) [pvp]; Raider Gauntlets (272095, +0.00 DPS) [vendor] |
+| waist | Highlander's Plate Girdle (20041) | The League of Arathor [rep] | sim-verified (770.9 DPS) | yes | Ferocity of the Timbermaw (227805, +0.00 DPS) [vendor]; Radiant Girdle of the Dawn (227814, +0.00 DPS) [vendor]; Belt of Preserved Heads (20216, -8.79 DPS, sim-verified) [quest] |
+| legs | Titanic Leggings (22385) | Blacksmithing [crafted] | sim-verified (770.9 DPS) | yes | Sentinel's Chain Leggings (237819, -1.49 DPS) [vendor]; Sentinel's Plate Legguards (237825, -2.49 DPS) [vendor]; Cloudkeeper Legplates (14554, -11.33 DPS, sim-verified) [world_drop] |
+| feet | Highlander's Plate Greaves (20048) | The League of Arathor [rep] | sim-verified (770.9 DPS) | yes | Savage Gladiator Greaves (11731, +0.00 DPS) [dungeon]; Boots of Heroism (21995, +0.00 DPS) [quest]; Marshal's Plate Boots (231539, +0.00 DPS) [pvp] |
+| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (770.9 DPS) | yes | Tarnished Elven Ring (18500, -3.91 DPS) [dungeon]; Cutthroat's Signet (272408, -4.23 DPS) [vendor]; Naglering (11669, -9.22 DPS, sim-verified) [dungeon] |
+| finger2 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-verified (770.9 DPS) | yes | Tarnished Elven Ring (18500, -0.96 DPS) [dungeon]; Cutthroat's Signet (272408, -1.28 DPS) [vendor]; Naglering (11669, -5.44 DPS, sim-verified) [dungeon] |
+| trinket1 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-verified (770.9 DPS) | yes | Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Blackhand's Breadth (13965, -12.29 DPS, sim-verified) [quest] |
+| trinket2 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (770.9 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Diamond Flask (20130, -4.95 DPS, sim-verified) [quest] |
+| main_hand | Blackblade of Shahram (12592) | Blackrock Spire: General Drakkisath [dungeon] | sim-verified (770.9 DPS) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Runeblade of Baron Rivendare (13505, -10.82 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Satyr's Bow (18323) | Dire Maul: Zevrim Thornhoof [dungeon] | sim-verified (792.1 DPS) | yes | Dark Iron Rifle (16004, +0.00 DPS) [crafted]; Blackcrow (12651, -0.79 DPS) [dungeon]; The Purifier (22656, -2.82 DPS) [quest] |
+| ranged | Satyr's Bow (18323) | Dire Maul: Zevrim Thornhoof [dungeon] | sim-verified (770.9 DPS) | yes | Dark Iron Rifle (16004, +0.00 DPS) [crafted]; Blackcrow (12651, -0.73 DPS) [dungeon]; The Purifier (22656, -2.32 DPS) [quest] |
 
 **New at 60:** head: Lionheart Helm; neck: Pendant of Celerity; shoulder: Highlander's Plate Spaulders; back: Howler's Furs; chest: Savage Gladiator Chain; wrist: Battleborn Armbraces; hands: Savage Gladiator Grips; waist: Highlander's Plate Girdle; legs: Titanic Leggings; feet: Highlander's Plate Greaves; finger1: Don Julio's Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Hand of Justice; trinket2: Darkmoon Card: Maelstrom; main_hand: Blackblade of Shahram; ranged: Satyr's Bow
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1943, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (orc, 03323000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 27.2. Weights run: 1.7s. Verify run: 2.9s. 272 eligible items had no known source.
+Set DPS (verified): 27.2. Weights run: 1.7s. Verify run: 2.8s. 272 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000) per rating point (14 rating = 1%, 0.000 per %), hit=1.247 ± 0.074 per rating point (10 rating = 1%, 12.474 per %), melee_haste=9.069 ± 0.670
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 811, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (orc, 03325213032515001-05050000000000000-005000000000000000)
 
-Set DPS (verified): 261.4. Weights run: 2.4s. Verify run: 11.0s. 1913 eligible items had no known source.
+Set DPS (verified): 261.4. Weights run: 2.4s. Verify run: 10.7s. 1913 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.559 ± 0.063, crit=2.228 ± 0.091 per rating point (14 rating = 1%, 31.186 per %), hit=3.715 ± 0.250 per rating point (10 rating = 1%, 37.149 per %), melee_haste=17.614 ± 2.015
 
@@ -340,31 +340,31 @@ No-known-source sample (15 of 1913, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (orc, 02305213032515001-55050000001000000-200000000000000000)
 
-Set DPS (verified): 790.0. Weights run: 2.1s. Verify run: 10.1s. 1913 eligible items had no known source.
+Set DPS (verified): 774.4. Weights run: 2.1s. Verify run: 10.2s. 1913 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.901 ± 0.088, crit=2.440 ± 0.120 per rating point (14 rating = 1%, 34.162 per %), hit=4.420 ± 0.364 per rating point (10 rating = 1%, 44.203 per %), melee_haste=16.652 ± 2.739
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.863 ± 0.094, crit=2.475 ± 0.126 per rating point (14 rating = 1%, 34.645 per %), hit=4.251 ± 0.385 per rating point (10 rating = 1%, 42.508 per %), melee_haste=15.560 ± 2.924
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 196.3 attack_power points (35.16 DPS) | yes | Champion's Plate Helm (227043, -12.85 DPS) [pvp]; Helm of the Executioner (22411, -13.81 DPS) [dungeon]; Mask of the Unforgiven (13404, -15.95 DPS, sim-verified) [dungeon] |
-| neck | Pendant of Celerity (22340) | Blackrock Spire: Lord Valthalak [dungeon] | sim-verified (790.0 DPS) | yes | Rage of Mugamba (19577, +0.00 DPS) [quest]; Beads of Ogre Might (22150, -0.81 DPS) [quest]; Mark of Fordring (15411, -2.25 DPS) [quest] |
-| shoulder | Truestrike Shoulders (12927) | Blackrock Spire: Pyroguard Emberseer [dungeon] | 112.4 attack_power points (20.13 DPS) | yes | Warlord's Plate Shoulders (231534, +0.00 DPS) [pvp]; Darkspear Pauldrons (272105, -4.82 DPS) [vendor]; Wyrmhide Spaulders (12082, -5.81 DPS, sim-verified) [quest] |
-| back | Howler's Furs (272414) | Pix Xizzix [vendor] | 72.2 attack_power points (12.93 DPS) | yes | Cape of the Black Baron (13340, -4.24 DPS) [dungeon]; Windshear Cape (20691, -4.67 DPS) [world]; Stalwart Cloak (272415, -5.01 DPS) [vendor] |
-| chest | Savage Gladiator Chain (11726) | Blackrock Depths: Gorosh the Dervish [dungeon] | sim-verified (790.0 DPS) | yes | Breastplate of Heroism (226862, +0.00 DPS) [quest]; Timbermaw Tunic (252484, +0.00 DPS) [crafted]; Dawn Armor (252483, -9.19 DPS, sim-verified) [crafted] |
-| wrist | Battleborn Armbraces (12936) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-verified (790.0 DPS) | yes | Forest Stalker's Bracers (19587, -3.23 DPS) [rep]; Slashclaw Bracers (13211, -3.73 DPS) [dungeon]; Bracers of Undead Slaying (23090, -6.13 DPS, sim-verified) [world] |
-| hands | Savage Gladiator Grips (11730) | Blackrock Depths: Eviscerator [dungeon] | sim-verified (790.0 DPS) | yes | Stormshroud Gloves (21278, +0.00 DPS) [crafted]; Raider Gauntlets (272095, +0.00 DPS) [vendor]; Voone's Vice Grips (13963, -7.36 DPS, sim-verified) [quest] |
-| waist | Radiant Girdle of the Dawn (227814) | Argent Quartermaster Hasana [vendor] | sim-verified (790.0 DPS) | yes | Ferocity of the Timbermaw (227805, -0.72 DPS) [vendor]; Marksman's Girdle (22232, -1.69 DPS) [dungeon]; Belt of Preserved Heads (20216, -7.37 DPS, sim-verified) [quest] |
-| legs | Titanic Leggings (22385) | Blacksmithing [crafted] | sim-verified (790.0 DPS) | yes | Cloudkeeper Legplates (14554, +0.00 DPS) [world_drop]; Sentinel's Chain Leggings (237819, -1.70 DPS) [vendor]; Sentinel's Plate Legguards (237825, -2.98 DPS) [vendor] |
-| feet | Savage Gladiator Greaves (11731) | Blackrock Depths: Anub'shiah [dungeon] | sim-verified (790.0 DPS) | yes | Battleboots of Heroism (226857, +0.00 DPS) [vendor]; General's Plate Boots (231531, +0.00 DPS) [pvp]; Boots of Heroism (21995, -3.78 DPS, sim-verified) [quest] |
-| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (790.0 DPS) | yes | Tarnished Elven Ring (18500, -3.88 DPS) [dungeon]; Cutthroat's Signet (272408, -4.22 DPS) [vendor]; Naglering (11669, -9.98 DPS, sim-verified) [dungeon] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-verified (790.0 DPS) | yes | Tarnished Elven Ring (18500, -1.02 DPS) [dungeon]; Cutthroat's Signet (272408, -1.36 DPS) [vendor]; Naglering (11669, -6.10 DPS, sim-verified) [dungeon] |
-| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (790.0 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-verified (790.0 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Diamond Flask (20130, -11.92 DPS, sim-verified) [quest] |
-| main_hand | Blackblade of Shahram (12592) | Blackrock Spire: General Drakkisath [dungeon] | sim-verified (790.0 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Runeblade of Baron Rivendare (13505, -14.70 DPS, sim-verified) [dungeon] |
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 193.9 attack_power points (33.42 DPS) | yes | Champion's Plate Helm (227043, -12.16 DPS) [pvp]; Fury Visor (20521, -13.30 DPS) [quest]; Mask of the Unforgiven (13404, -15.32 DPS, sim-verified) [dungeon] |
+| neck | Pendant of Celerity (22340) | Blackrock Spire: Lord Valthalak [dungeon] | sim-verified (774.4 DPS) | yes | Rage of Mugamba (19577, +0.00 DPS) [quest]; Beads of Ogre Might (22150, -0.68 DPS) [quest]; Mark of Fordring (15411, -1.69 DPS) [quest] |
+| shoulder | Spaulders of Heroism (226858) | Anthion's Parting Words [quest] | sim-verified (774.4 DPS) | yes | Wyrmhide Spaulders (12082, +0.00 DPS) [quest]; Warlord's Plate Shoulders (231534, +0.00 DPS) [pvp]; Truestrike Shoulders (12927, -17.76 DPS, sim-verified) [dungeon] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | 70.5 attack_power points (12.15 DPS) | yes | Cape of the Black Baron (13340, -3.89 DPS) [dungeon]; Windshear Cape (20691, -4.30 DPS) [world]; Deathguard's Cloak (20068, -4.69 DPS) [rep] |
+| chest | Breastplate of Heroism (226862) | Saving the Best for Last [quest] | sim-verified (774.4 DPS) | yes | Savage Gladiator Chain (11726, +0.00 DPS) [dungeon]; Dawn Armor (252483, +0.00 DPS) [crafted]; Timbermaw Tunic (252484, +0.00 DPS) [crafted] |
+| wrist | Bracers of Heroism (226863) | An Earnest Proposition [quest] | sim-verified (774.4 DPS) | yes | Berserker Bracers (19578, +0.00 DPS) [rep]; Forest Stalker's Bracers (19587, +0.00 DPS) [rep]; Battleborn Armbraces (12936, -11.24 DPS, sim-verified) [dungeon] |
+| hands | Gauntlets of Heroism (226861) | Just Compensation [quest] | sim-verified (774.4 DPS) | yes | Voone's Vice Grips (13963, +0.00 DPS) [quest]; Raider Gauntlets (272095, +0.00 DPS) [vendor]; Savage Gladiator Grips (11730, -19.54 DPS, sim-verified) [dungeon] |
+| waist | Belt of Heroism (226864) | Just Compensation [quest] | sim-verified (774.4 DPS) | yes | Belt of Preserved Heads (20216, +0.00 DPS) [quest]; Ferocity of the Timbermaw (227805, +0.00 DPS) [vendor]; Radiant Girdle of the Dawn (227814, +0.00 DPS) [vendor] |
+| legs | Titanic Leggings (22385) | Blacksmithing [crafted] | sim-verified (774.4 DPS) | yes | Cloudkeeper Legplates (14554, +0.00 DPS) [world_drop]; Sentinel's Chain Leggings (237819, -1.49 DPS) [vendor]; Sentinel's Plate Legguards (237825, -2.49 DPS) [vendor] |
+| feet | Battleboots of Heroism (226857) | Mokvar [vendor] | sim-verified (774.4 DPS) | yes | Boots of Heroism (21995, +0.00 DPS) [quest]; General's Plate Boots (231531, +0.00 DPS) [pvp]; Savage Gladiator Greaves (11731, -10.58 DPS, sim-verified) [dungeon] |
+| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (774.4 DPS) | yes | Tarnished Elven Ring (18500, -3.91 DPS) [dungeon]; Cutthroat's Signet (272408, -4.23 DPS) [vendor]; Naglering (11669, -10.09 DPS, sim-verified) [dungeon] |
+| finger2 | Signet Ring of the Bronze Dragonflight (21201) | The Path of the Conqueror [quest] | sim-verified (774.4 DPS) | yes | Tarnished Elven Ring (18500, -0.96 DPS) [dungeon]; Cutthroat's Signet (272408, -1.28 DPS) [vendor]; Naglering (11669, -6.34 DPS, sim-verified) [dungeon] |
+| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (774.4 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-verified (774.4 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Diamond Flask (20130, -14.29 DPS, sim-verified) [quest] |
+| main_hand | Blackblade of Shahram (12592) | Blackrock Spire: General Drakkisath [dungeon] | sim-verified (774.4 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Runeblade of Baron Rivendare (13505, -15.81 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Satyr's Bow (18323) | Dire Maul: Zevrim Thornhoof [dungeon] | sim-verified (790.0 DPS) | yes | Dark Iron Rifle (16004, +0.00 DPS) [crafted]; Blackcrow (12651, -0.79 DPS) [dungeon]; The Purifier (22656, -2.82 DPS) [quest] |
+| ranged | Satyr's Bow (18323) | Dire Maul: Zevrim Thornhoof [dungeon] | sim-verified (774.4 DPS) | yes | Dark Iron Rifle (16004, +0.00 DPS) [crafted]; Blackcrow (12651, -0.73 DPS) [dungeon]; The Purifier (22656, -2.32 DPS) [quest] |
 
-**New at 60:** head: Lionheart Helm; neck: Pendant of Celerity; shoulder: Truestrike Shoulders; back: Howler's Furs; chest: Savage Gladiator Chain; wrist: Battleborn Armbraces; hands: Savage Gladiator Grips; waist: Radiant Girdle of the Dawn; legs: Titanic Leggings; feet: Savage Gladiator Greaves; finger1: Don Julio's Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Darkmoon Card: Maelstrom; trinket2: Hand of Justice; main_hand: Blackblade of Shahram; ranged: Satyr's Bow
+**New at 60:** head: Lionheart Helm; neck: Pendant of Celerity; shoulder: Spaulders of Heroism; back: Howler's Furs; chest: Breastplate of Heroism; wrist: Bracers of Heroism; hands: Gauntlets of Heroism; waist: Belt of Heroism; legs: Titanic Leggings; feet: Battleboots of Heroism; finger1: Don Julio's Band; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Darkmoon Card: Maelstrom; trinket2: Hand of Justice; main_hand: Blackblade of Shahram; ranged: Satyr's Bow
 
 No-known-source sample (15 of 1913, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 

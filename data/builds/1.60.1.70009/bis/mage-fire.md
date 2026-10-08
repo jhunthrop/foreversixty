@@ -98,7 +98,7 @@ No-known-source sample (15 of 330, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 205011000000000000-23552100130103051-0000000000000000000)
 
-Set DPS (verified): 140.8. Weights run: 1.1s. Verify run: 1.2s. 424 eligible items had no known source.
+Set DPS (verified): 140.8. Weights run: 1.1s. Verify run: 1.1s. 424 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.005, intellect=0.899 ± 0.038, crit=0.292 ± 0.024 per rating point (14 rating = 1%, 4.083 per %), hit=0.670 ± 0.049 per rating point (10 rating = 1%, 6.700 per %), spell_haste=-3.760 ± 0.725, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 205015100000000000-23552100130103051-0050000000000000000)
 
-Set DPS (verified): 411.6. Weights run: 1.3s. Verify run: 3.9s. 1074 eligible items had no known source.
+Set DPS (verified): 411.6. Weights run: 1.2s. Verify run: 3.7s. 1074 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.008, intellect=0.878 ± 0.052, crit=0.591 ± 0.042 per rating point (14 rating = 1%, 8.276 per %), hit=1.203 ± 0.079 per rating point (10 rating = 1%, 12.028 per %), spell_haste=-8.814 ± 1.001, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.008
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 138, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 000000000000000000-23552100120000000-0000000000000000000)
 
-Set DPS (verified): 42.8. Weights run: 1.1s. Verify run: 0.9s. 230 eligible items had no known source.
+Set DPS (verified): 42.8. Weights run: 1.1s. Verify run: 0.8s. 230 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.657 ± 0.013, crit=0.176 ± 0.007 per rating point (14 rating = 1%, 2.468 per %), hit=0.353 ± 0.017 per rating point (10 rating = 1%, 3.530 per %), spell_haste=0.914 ± 0.214, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 307, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 205011000000000000-23552100130103051-0000000000000000000)
 
-Set DPS (verified): 135.3. Weights run: 1.1s. Verify run: 1.1s. 397 eligible items had no known source.
+Set DPS (verified): 135.3. Weights run: 1.1s. Verify run: 1.0s. 397 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.005, intellect=0.899 ± 0.038, crit=0.292 ± 0.024 per rating point (14 rating = 1%, 4.083 per %), hit=0.670 ± 0.049 per rating point (10 rating = 1%, 6.700 per %), spell_haste=-3.760 ± 0.725, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 397, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 205015100000000000-23552100130103051-0050000000000000000)
 
-Set DPS (verified): 397.9. Weights run: 1.3s. Verify run: 2.6s. 1062 eligible items had no known source.
+Set DPS (verified): 397.9. Weights run: 1.2s. Verify run: 2.5s. 1062 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.008, intellect=0.878 ± 0.052, crit=0.591 ± 0.042 per rating point (14 rating = 1%, 8.276 per %), hit=1.203 ± 0.079 per rating point (10 rating = 1%, 12.028 per %), spell_haste=-8.814 ± 1.001, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.008
 
@@ -322,7 +322,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 35.1 spell_power points (9.18 DPS) | yes | Hide of the Wild (18510, -3.21 DPS) [crafted]; Shroud of Arcane Mastery (22330, -3.50 DPS) [dungeon]; Crystalline Threaded Cape (20697, -6.80 DPS, sim-verified) [world] |
 | chest | Robe of the Archmage (14152) | Tailoring [crafted] | 58.8 spell_power points (15.40 DPS) | yes | Warlord's Silk Raiment (231596, -0.68 DPS) [pvp]; Legionnaire's Silk Tunic (227106, -3.82 DPS) [pvp]; Robe of Everlasting Night (18385, -10.17 DPS, sim-verified) [dungeon] |
 | wrist | Dryad's Wrist Bindings (19595) | Warsong Outriders [rep] | 29.0 spell_power points (7.60 DPS) | yes | Sublime Wristguards (18497, -2.16 DPS) [dungeon]; Runecloth Cuffs (254123, -2.42 DPS) [crafted]; General's Silk Cuffs (16538, -3.23 DPS) [pvp] |
-| hands | Sorcerer's Gloves (22066) (or Sorcerer's Gauntlets (226930)) | Just Compensation [quest] | 36.3 spell_power points (9.51 DPS) | yes | General's Silk Handguards (16540, +0.00 DPS) [vendor]; Sorcerer's Gauntlets (226930, +0.00 DPS) [vendor]; General's Silk Gauntlets (231599, +0.00 DPS) [vendor] |
+| hands | Sorcerer's Gloves (22066) | Just Compensation [quest] | 36.3 spell_power points (9.51 DPS) | yes | General's Silk Handguards (16540, +0.00 DPS) [vendor]; Sorcerer's Gauntlets (226930, +0.00 DPS) [vendor]; General's Silk Gauntlets (231599, +0.00 DPS) [vendor] |
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 56.4 spell_power points (14.75 DPS) | yes | Magician's Cord (272393, -4.26 DPS) [vendor]; Ban'thok Sash (11662, -5.93 DPS) [dungeon]; Belt of the Archmage (18405, -11.92 DPS, sim-verified) [crafted] |
 | legs | Sentinel's Silk Leggings (237815) | Illiyana Moonblaze [vendor] | 57.3 spell_power points (15.01 DPS) | yes | General's Silk Trousers (231595, -0.39 DPS) [pvp]; Outrider's Silk Leggings (22747, -3.31 DPS) [rep]; Sorcerer's Leggings (226933, -19.61 DPS, sim-verified) [quest] |
 | feet | Sorcerer's Boots (22064) (or Sorcerer's Sandals (226931)) | Anthion's Parting Words [quest] | 35.1 spell_power points (9.18 DPS) | yes | Sorcerer's Sandals (226931, +0.00 DPS) [vendor]; General's Silk Boots (231597, +0.00 DPS) [pvp]; Dragonrider Boots (18102, -0.79 DPS) [dungeon] |
