@@ -32,15 +32,27 @@ The BiS weight rail and the guide stat table say "Spell hit to cap: N% (school M
 | Spec | spell | school | Where the school figure comes from |
 | --- | --- | --- | --- |
 | mage-fire | 16 | 11 (Fire, Frost; hit 5) | Elemental Precision, 5 ranks x 1% (live text: 1% a rank) |
-| warlock-affliction | 16 | 6 (Shadow; hit 10) | Suppression as the engine models it, see open item |
+| warlock-affliction | 11 | none (baseline 5) | Suppression, 1% a rank on every spell; see the ruling below |
 | druid-balance | 16 | 12 (Arcane, Nature; hit 4) | Nature's Reach, 2 ranks x 2% (live text: 2% a rank) |
 | shaman-elemental | 16 | none | no hit talent on the elemental tree (Tidal Focus is restoration) |
 
 Sanity: the weights character is the bare ladder character (talents, buffs, one weapon, no armor), so its stat hit is 0 and the whole school figure is the talents. Every number equals the talent text times ranks, except warlock.
 
+### Warlock before and after the Suppression fix (band 60 raid, set DPS of the ranked set)
+
+Before is the engine at the first spell-hitcap commit (affliction-only, 2% a rank); after is the client's rows. All three builds take Suppression at 5 ranks.
+
+| Spec | hit_to_cap before | hit_to_cap after | set DPS before | set DPS after |
+| --- | --- | --- | --- | --- |
+| warlock-affliction | spell 16, school 6 (Shadow, hit 10) | spell 11, baseline 5, no school | 894.5 | 903.9 (+1.1%) |
+| warlock-demonology | spell 16, school 6 (Shadow, hit 10) | spell 11, baseline 5, no school | 793.0 | 826.0 (+4.2%) |
+| warlock-destruction | spell 16, school 6 (Shadow, hit 10) | spell 11, baseline 5, no school | 795.5 | 827.7 (+4.0%) |
+
+The set DPS also moves with the gear the changed hit weight picks, so it is the ranked set's figure, not the same gear before and after. Affliction gains little because it only lost the doubled bonus on its own spells while gaining Shadow Bolt and Searing Pain hit; the other two gain on every spell they cast.
+
 ## Open items for the owner
 
-1. **Suppression disagrees with the live text.** The client text (`data/builds/1.60.1.70009/talents/warlock.json`, node 105925) reads "Improves your chance to hit by 1% [per rank]", with no school named, 5 ranks. `sim/warlock/talents.go` `applySuppression` gives affliction spells only, at `2 * points`, vanilla's 2% a rank: 10% at 5 ranks, twice the live text. The warlock school figure (6) is the engine's model; with the live text it would be 11 (5% hit) and, if it applies to every spell, the general figure would be 11 too with no school split. This lane did not change the engine's warlock behaviour: it moves warlock DPS and weights, and the text may be a truncation. Needs a ruling.
+1. **Suppression (ruled: the client wins).** The client's rows for 18174 are aura 55 (spell hit) 5, aura 54 (hit) 5, both with spell class mask 0, and aura 10 (threat) -20 on misc 127 (all schools): 1% hit per rank on every spell, 4% less threat per rank on all schools. The engine had affliction spells only at 2% a rank. Fork `sim/warlock/talents.go` `applySuppression` now adds `stats.Hit` 1 per rank and multiplies `PseudoStats.ThreatMultiplier` by 1 - 0.04 per rank; tests `TestSuppressionAddsOnePercentSpellHitPerRankToEveryWarlockSpell` and `TestSuppressionReducesAllThreatFourPercentPerRank` were written first and failed against the old code. No `.results` or conformance golden moved: the committed DSRuin and SMRuin test builds do not take Suppression, and the conformance golden does not exercise it.
 2. Spells flagged `SpellFlagBinary` use a different miss formula in `SpellChanceToMiss` (resists fold into the hit roll); the figure is the non-binary cap, 16, which the profile applies to every spell.
 3. Debuffs that grant hit (applied as auras once a fight starts) are not in the profile, the same as for melee: it reads gear, talents and raid buffs at environment build.
 4. The school label in the data is by school, not by class mask: for a warlock "Shadow" covers Corruption and Curse of Agony (Suppression) but Shadow Bolt does not get the talent. The page copy says only "(school M%)", so it does not claim more.
