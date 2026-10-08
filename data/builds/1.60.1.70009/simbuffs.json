@@ -84,6 +84,10 @@
       "name": "Cerebral Cortex Compound",
       "icon": "inv_potion_32"
     },
+    "clerics_elixir": {
+      "name": "Cleric's Elixir",
+      "icon": "temp"
+    },
     "conjured_demonic_rune": {
       "name": "Demonic Rune",
       "icon": "inv_misc_rune_04"
@@ -208,6 +212,10 @@
       "name": "Elixir of Ogre Strength",
       "icon": "inv_potion_57"
     },
+    "elixir_of_sages": {
+      "name": "Elixir of Sages",
+      "icon": "temp"
+    },
     "elixir_of_shadow_power": {
       "name": "Elixir of Shadow Power",
       "icon": "inv_potion_46"
@@ -304,6 +312,10 @@
       "name": "Sagefish Delight",
       "icon": "spell_shadow_sealofkings"
     },
+    "food_sages_tea": {
+      "name": "Sage's Tea",
+      "icon": "spell_shadow_sealofkings"
+    },
     "food_smoked_desert_dumpling": {
       "name": "Smoked Desert Dumplings",
       "icon": "inv_misc_food_64"
@@ -356,6 +368,10 @@
       "name": "Greater Arcane Protection Potion",
       "icon": "temp"
     },
+    "greater_clerics_elixir": {
+      "name": "Greater Cleric's Elixir",
+      "icon": "temp"
+    },
     "greater_fire_protection_potion": {
       "name": "Greater Fire Protection Potion",
       "icon": "temp"
@@ -370,6 +386,10 @@
     },
     "greater_holy_protection_potion": {
       "name": "Greater Holy Protection Potion",
+      "icon": "temp"
+    },
+    "greater_mageblood_elixir": {
+      "name": "Greater Mageblood Elixir",
       "icon": "temp"
     },
     "greater_mana_potion": {

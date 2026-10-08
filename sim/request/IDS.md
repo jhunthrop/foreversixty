@@ -143,6 +143,7 @@ qualified by its field this way; only the ambiguous ones must be.
 | `arcane_elixir` | Consumes.spell_power_buff |
 | `bogling_root` | Consumes.bogling_root |
 | `cerebral_cortex_compound` | Consumes.zanza_buff |
+| `clerics_elixir` | Consumes.healing_power_buff |
 | `conjured_demonic_rune` | Consumes.default_conjured |
 | `conjured_greater_healthstone` | Consumes.default_conjured |
 | `conjured_healthstone` | Consumes.default_conjured |
@@ -165,6 +166,7 @@ qualified by its field this way; only the ambiguous ones must be.
 | `elixir_of_minor_defense` | Consumes.armor_elixir |
 | `elixir_of_minor_fortitude` | Consumes.health_elixir |
 | `elixir_of_ogres_strength` | Consumes.strength_buff |
+| `elixir_of_sages` | Consumes.spirit_elixir |
 | `elixir_of_shadow_power` | Consumes.shadow_power_buff |
 | `elixir_of_superior_defense` | Consumes.armor_elixir |
 | `elixir_of_the_mongoose` | Consumes.agility_elixir |
@@ -185,6 +187,7 @@ qualified by its field this way; only the ambiguous ones must be.
 | `food_nightfin_soup` | Consumes.food |
 | `food_runn_tum_tuber_surprise` | Consumes.food |
 | `food_sagefish_delight` | Consumes.food |
+| `food_sages_tea` | Consumes.food |
 | `food_smoked_desert_dumpling` | Consumes.food |
 | `food_smoked_sagefish` | Consumes.food |
 | `food_tender_wolf_steak` | Consumes.food |
@@ -192,10 +195,12 @@ qualified by its field this way; only the ambiguous ones must be.
 | `great_rage_potion` | Consumes.default_potion |
 | `greater_arcane_elixir` | Consumes.spell_power_buff |
 | `greater_arcane_protection_potion` | Consumes.default_potion |
+| `greater_clerics_elixir` | Consumes.healing_power_buff |
 | `greater_fire_protection_potion` | Consumes.default_potion |
 | `greater_frost_protection_potion` | Consumes.default_potion |
 | `greater_healing_potion` | Consumes.default_potion |
 | `greater_holy_protection_potion` | Consumes.default_potion |
+| `greater_mageblood_elixir` | Consumes.mana_regen_elixir |
 | `greater_mana_potion` | Consumes.default_potion |
 | `greater_nature_protection_potion` | Consumes.default_potion |
 | `greater_shadow_protection_potion` | Consumes.default_potion |
