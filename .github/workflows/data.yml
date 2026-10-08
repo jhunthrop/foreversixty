@@ -168,7 +168,7 @@ jobs:
       # different value must not be re-applied from an older dump.
       - name: Seed the fill-in caches from the previous build
         run: |
-          PREV=$(ls builds | grep -vx "$BUILD" | sort -V | tail -1)
+          PREV=$(ls builds | grep -E '^[0-9]+(\.[0-9]+)+$' | grep -vx "$BUILD" | sort -V | tail -1)
           [ -n "$PREV" ] || exit 0
           for rel in quests/quest-levels.json items/item-sources.json classicdb/*.json; do
             for src in builds/"$PREV"/raw/$rel; do
@@ -186,7 +186,7 @@ jobs:
       - run: uv run python -m pipeline simdb --build "$BUILD"
       - run: uv run python -m pipeline gametables --build "$BUILD"
       - run: |
-          PREV=$(ls builds | grep -vx "$BUILD" | sort -V | tail -1)
+          PREV=$(ls builds | grep -E '^[0-9]+(\.[0-9]+)+$' | grep -vx "$BUILD" | sort -V | tail -1)
           if [ -n "$PREV" ]; then uv run python -m pipeline diff --from "$PREV" --to "$BUILD"; fi
       - run: |
           git config user.name "forever-data-bot"
