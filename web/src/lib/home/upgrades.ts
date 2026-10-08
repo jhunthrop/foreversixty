@@ -16,6 +16,7 @@
 import type { MeCharacter } from '../account/api';
 import { scoreItem, type SpecWeights } from '../addon/score';
 import { hasKnownSource } from '../bis/source-cell';
+import { slotScoreUnitFor, type SlotScoreUnit } from '../bis/tank-view';
 import type { BisBand, BisSlot } from '../bis/types';
 import { SLOTS, type Item, type Slot } from '../planner/types';
 
@@ -79,6 +80,10 @@ export interface UpgradesResult {
   /** The sum of every known (non-null) `gainDps` across `upgrades` -- never includes a
    *  `notSimChecked` row. */
   totalGainDps: number;
+  /** The unit every gain here is measured in: real DPS for a damage band, the ranker's
+   *  tank score for a tank band. The card line and each row print it, so a tank never
+   *  reads a score as DPS. */
+  scoreUnit: SlotScoreUnit;
   /** How many `upgrades` are `notSimChecked` -- the card line's own "N slots not sim-checked"
    *  clause reads this count rather than re-deriving it. */
   notSimCheckedCount: number;
@@ -167,7 +172,7 @@ export function upgradesFor(
   }
 
   upgrades.sort((a, b) => (b.gainDps ?? Number.NEGATIVE_INFINITY) - (a.gainDps ?? Number.NEGATIVE_INFINITY));
-  return { upgrades, alreadyBis, totalGainDps, notSimCheckedCount };
+  return { upgrades, alreadyBis, totalGainDps, notSimCheckedCount, scoreUnit: slotScoreUnitFor(band) };
 }
 
 /** Rule (fix round 1): (a) a tie is filtered out before this runs; (b) a worn item listed in

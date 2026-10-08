@@ -17,6 +17,7 @@
   import type { Slot } from '../../lib/planner/types';
   import type { Item } from '../../lib/planner/types';
   import ItemHover from '../ItemHover.svelte';
+  import { scoreUnitWord, type SlotScoreUnit } from '../../lib/bis/tank-view';
 
   let {
     upgrade,
@@ -24,6 +25,7 @@
     pickItem,
     build,
     classSlug,
+    scoreUnit = 'dps',
   }: {
     upgrade: SlotUpgrade;
     /** `items.get(upgrade.wornItemId)` -- undefined when nothing is worn, or the id is
@@ -35,11 +37,15 @@
     pickItem: Item | undefined;
     build: string;
     classSlug: string;
+    /** The unit the gain is measured in; a tank band's rows read "score", never DPS. */
+    scoreUnit?: SlotScoreUnit;
   } = $props();
 
   const slotLabel = $derived(SLOT_DISPLAY_LABELS[upgrade.slot as Slot] ?? upgrade.slot);
   const pickSourceLine = $derived(slotSourceLine(upgrade.pick));
-  const gainLabel = $derived(upgrade.gainDps === null ? '' : `+${upgrade.gainDps.toFixed(1)} DPS`);
+  const gainLabel = $derived(
+    upgrade.gainDps === null ? '' : `+${upgrade.gainDps.toFixed(1)} ${scoreUnitWord(scoreUnit)}`,
+  );
 </script>
 
 <li class="upgrade-row" data-testid={`home-upgrade-row-${upgrade.slot}`}>

@@ -10,6 +10,7 @@
  *  the duplicate "Sign in with Battle.net" link the grid-overlay CLS trick leaves behind it
  *  is never focusable or announced. One id, exported once, so the producer (index.astro)
  *  and the consumer (HomeAccountPanel.svelte) can never drift apart. */
+import { scoreUnitWord, type SlotScoreUnit } from './bis/tank-view';
 export const HOME_SIGNED_OUT_ID = 'home-signed-out';
 
 export const homePanelCopy = {
@@ -73,8 +74,13 @@ export const homeHeroCardsCopy = {
    *  figure excludes (a weapon slot with no sim-verified alternative, `lib/home/upgrades.ts`'s
    *  own `notSimChecked`) -- said here rather than silently dropped, so the total always adds
    *  up to a number a player can audit against the table below it. */
-  bestInSlotUpgradesLine: (bandLabel: string, totalGainDps: number, notSimCheckedCount: number): string => {
-    const base = `in your band, ${bandLabel} · +${totalGainDps.toFixed(1)} DPS together`;
+  bestInSlotUpgradesLine: (
+    bandLabel: string,
+    totalGain: number,
+    notSimCheckedCount: number,
+    unit: SlotScoreUnit = 'dps',
+  ): string => {
+    const base = `in your band, ${bandLabel} · +${totalGain.toFixed(1)} ${scoreUnitWord(unit)} together`;
     if (notSimCheckedCount === 0) return base;
     const clause = notSimCheckedCount === 1 ? 'one slot' : `${notSimCheckedCount} slots`;
     return `${base}, ${clause} not sim-checked`;

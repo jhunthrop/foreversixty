@@ -274,3 +274,13 @@ describe('upgradesFor', () => {
     expect(result.upgrades.map((u) => u.slot)).toEqual(['neck', 'head', 'feet']);
   });
 });
+
+describe('scoreUnit', () => {
+  it('is DPS for a damage band and the tank score for a tank band', () => {
+    const base = band();
+    expect(upgradesFor({ build: undefined }, base, new Map()).scoreUnit).toBe('dps');
+    expect(upgradesFor({ build: undefined }, { ...base, role: 'tank' }, new Map()).scoreUnit).toBe(
+      'tank_score',
+    );
+  });
+});

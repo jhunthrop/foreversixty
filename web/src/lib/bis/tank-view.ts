@@ -51,6 +51,11 @@ export function slotScoreUnitFor(band: Pick<BisBand, 'role'>): SlotScoreUnit {
   return isTankBand(band) ? 'tank_score' : 'dps';
 }
 
+/** The word that follows a figure in this unit: "+4.2 DPS", "+4.2 score". */
+export function scoreUnitWord(unit: SlotScoreUnit): string {
+  return unit === 'tank_score' ? 'score' : 'DPS';
+}
+
 export function formatWholeNumber(value: number): string {
   return WHOLE_NUMBER.format(value);
 }

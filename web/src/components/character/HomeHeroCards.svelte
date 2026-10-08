@@ -152,6 +152,7 @@
             bandLabel,
             upgrades.totalGainDps,
             upgrades.notSimCheckedCount,
+            upgrades.scoreUnit,
           )}
         </span>
       {/if}

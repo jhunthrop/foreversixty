@@ -122,6 +122,7 @@
             pickItem={itemMap.get(upgrade.pick.item_id)}
             build={activeBuild.build}
             {classSlug}
+            scoreUnit={result.scoreUnit}
           />
         {/each}
       </ul>
