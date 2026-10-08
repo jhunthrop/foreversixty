@@ -3,7 +3,7 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.70009:hunter:dwarf:0/32500500005/500230131051120151:'
+build: 'FS1:1.60.1.70291:hunter:dwarf:0/32500500005/500230131051120151:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Survival Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -16,11 +16,11 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70009/talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70009/talents/hunter.json
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70291/talents/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70291/talents/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70009/spellconst/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70009/spellconst/hunter.json
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70291/spellconst/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70291/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, data/builds/1.60.1.69893/combos.json'
     url: https://foreversixty.gg/data/1.60.1.69893/combos.json

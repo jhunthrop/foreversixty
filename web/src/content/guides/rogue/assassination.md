@@ -3,8 +3,8 @@ title: Assassination Rogue in Forever
 classSlug: rogue
 spec: assassination
 role: dps
-build: 'FS1:1.60.1.70009:rogue:night-elf:32502110551501001/302303/512:'
-raidBuild: 'FS1:1.60.1.70009:rogue:night-elf:01532310421501/315303000015/002:'
+build: 'FS1:1.60.1.70291:rogue:night-elf:32502110551501001/302303/512:'
+raidBuild: 'FS1:1.60.1.70291:rogue:night-elf:01532310421501/315303000015/002:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Assassination Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'

@@ -3,7 +3,7 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70009:warrior:human:34320003002/05153105022011501/2:'
+build: 'FS1:1.60.1.70291:warrior:human:34320003002/05153105022011501/2:'
 recommendedRaces: [human, troll]
 statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
 description: 'Talents, rotation, stat priority, and race picks for Fury Warrior in Forever, with beta-versus-projection called out.'

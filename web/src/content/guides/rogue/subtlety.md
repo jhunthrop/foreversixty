@@ -3,7 +3,7 @@ title: Subtlety Rogue in Forever
 classSlug: rogue
 spec: subtlety
 role: dps
-build: 'FS1:1.60.1.70009:rogue:night-elf:005323101014/0/5323220310013011031:'
+build: 'FS1:1.60.1.70291:rogue:night-elf:005323101014/0/5323220310013011031:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Subtlety Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'

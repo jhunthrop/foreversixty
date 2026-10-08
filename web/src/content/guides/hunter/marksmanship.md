@@ -3,7 +3,7 @@ title: Marksmanship Hunter in Forever
 classSlug: hunter
 spec: marksmanship
 role: dps
-build: 'FS1:1.60.1.70009:hunter:dwarf:5320000501/005155000150305/5:'
+build: 'FS1:1.60.1.70291:hunter:dwarf:5320000501/005155000150305/5:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Agility, Critical strike, Ranged attack power, Hit, Melee haste]
 description: 'Marksmanship Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'

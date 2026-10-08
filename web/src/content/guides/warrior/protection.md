@@ -3,7 +3,7 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70009:warrior:dwarf:35305013/0/050533120330001311:'
+build: 'FS1:1.60.1.70291:warrior:dwarf:35305013/0/050533120330001311:'
 recommendedRaces: [dwarf, tauren]
 statPriority:
   [

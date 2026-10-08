@@ -3,7 +3,7 @@ title: Feral Bear Druid in Forever
 classSlug: druid
 spec: feral-bear
 role: tank
-build: 'FS1:1.60.1.70009:druid:night-elf:0/55230332020132012551/051:'
+build: 'FS1:1.60.1.70291:druid:night-elf:0/55230332020132012551/051:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Stamina, Armor, Defense, Dodge, Strength, Agility, Attack power, Hit, Critical strike, Expertise]

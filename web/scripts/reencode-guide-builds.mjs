@@ -229,6 +229,9 @@ function remapCode(code, toBuild) {
   };
 }
 
+/** The frontmatter keys that carry an FS1 code: the leveling build and the raid build. */
+const CODE_KEYS = ['build', 'raidBuild'];
+
 function findGuides() {
   const guides = [];
   for (const classDir of readdirSync(guidesRoot, { withFileTypes: true })) {
@@ -237,14 +240,16 @@ function findGuides() {
       if (!file.endsWith('.md')) continue;
       const path = join(guidesRoot, classDir.name, file);
       const raw = readFileSync(path, 'utf8');
-      const buildLineMatch = raw.match(/^build: '([^']*)'$/m);
-      if (!buildLineMatch) continue; // class landing pages carry no build:
-      guides.push({
-        id: `${classDir.name}/${file.slice(0, -'.md'.length)}`,
-        path,
-        raw,
-        oldCode: buildLineMatch[1],
-      });
+      for (const key of CODE_KEYS) {
+        const lineMatch = raw.match(new RegExp(`^${key}: '([^']*)'$`, 'm'));
+        if (!lineMatch) continue; // class landing pages carry no build:
+        guides.push({
+          id: `${classDir.name}/${file.slice(0, -'.md'.length)}#${key}`,
+          path,
+          key,
+          oldCode: lineMatch[1],
+        });
+      }
     }
   }
   return guides.sort((a, b) => a.id.localeCompare(b.id));
@@ -255,9 +260,11 @@ function main() {
   const report = [];
   for (const guide of guides) {
     const result = remapCode(guide.oldCode, ACTIVE_BUILD);
-    const newRaw = guide.raw.replace(/^build: '[^']*'$/m, `build: '${result.newCode}'`);
-    if (!newRaw.includes(`build: '${result.newCode}'`)) {
-      throw new Error(`${guide.id}: failed to rewrite build: line`);
+    const raw = readFileSync(guide.path, 'utf8'); // re-read: a guide has up to two codes
+    const line = new RegExp(`^${guide.key}: '[^']*'$`, 'm');
+    const newRaw = raw.replace(line, `${guide.key}: '${result.newCode}'`);
+    if (!newRaw.includes(`${guide.key}: '${result.newCode}'`)) {
+      throw new Error(`${guide.id}: failed to rewrite ${guide.key}: line`);
     }
     writeFileSync(guide.path, newRaw);
     report.push({ id: guide.id, ...result });

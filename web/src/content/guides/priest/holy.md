@@ -3,7 +3,7 @@ title: Holy Priest in Forever
 classSlug: priest
 spec: holy
 role: healer
-build: 'FS1:1.60.1.70009:priest:gnome:025003031303/03505003030121431/0:'
+build: 'FS1:1.60.1.70291:priest:gnome:025003031303/03505003030121431/0:'
 recommendedRaces: [gnome, troll]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Holy Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'

@@ -3,7 +3,7 @@ title: Restoration Druid in Forever
 classSlug: druid
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70009:druid:night-elf:45322001/0/50500351531132:'
+build: 'FS1:1.60.1.70291:druid:night-elf:45322001/0/50500351531132:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Talents, rotation, stats, and gear for Restoration Druid in Forever, and what is confirmed versus projected from the beta.'
