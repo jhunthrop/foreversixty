@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "aa3e0be44",
-  "generated_at": "2026-10-08T02:06:37Z",
+  "engine_version": "583668528",
+  "generated_at": "2026-10-08T02:52:55Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -541,8 +541,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.621310096,
-      "verify_run_seconds": 1.127121204,
+      "weights_run_seconds": 2.439383724,
+      "verify_run_seconds": 0.991214225,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1156,8 +1156,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.621310096,
-      "verify_run_seconds": 1.067764337,
+      "weights_run_seconds": 2.439383724,
+      "verify_run_seconds": 0.977679299,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1802,8 +1802,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.971106848,
-      "verify_run_seconds": 1.151827873,
+      "weights_run_seconds": 2.760117512,
+      "verify_run_seconds": 1.106602103,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2482,8 +2482,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 2.971106848,
-      "verify_run_seconds": 1.242810284,
+      "weights_run_seconds": 2.760117512,
+      "verify_run_seconds": 1.179123762,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3126,8 +3126,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 3.2372212559999998,
-      "verify_run_seconds": 1.205113442,
+      "weights_run_seconds": 3.01445928,
+      "verify_run_seconds": 1.095283981,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3768,8 +3768,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 3.2372212559999998,
-      "verify_run_seconds": 1.229943661,
+      "weights_run_seconds": 3.01445928,
+      "verify_run_seconds": 1.102868217,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4429,8 +4429,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.313880439,
-      "verify_run_seconds": 1.424224114,
+      "weights_run_seconds": 3.124498585,
+      "verify_run_seconds": 1.310417959,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4620,7 +4620,7 @@
               "item_name": "Blood Guard's Pulsing Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.8214684345055484
+              "dps_delta": -0.8214684345055481
             }
           ]
         },
@@ -5088,8 +5088,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.313880439,
-      "verify_run_seconds": 1.348928655,
+      "weights_run_seconds": 3.124498585,
+      "verify_run_seconds": 1.244061547,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5324,7 +5324,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 44.255301988906936,
+          "score": 44.25530198890693,
           "verified": true,
           "alternatives": [
             {
@@ -5332,21 +5332,21 @@
               "item_name": "Darkspear Shoulderguards",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.4509427427213506
+              "dps_delta": -0.45094274272134977
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.9071004145689635
+              "dps_delta": -0.9071004145689627
             },
             {
               "item_id": 272104,
               "item_name": "Darkspear Shoulders",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.9071004145689635
+              "dps_delta": -0.9071004145689627
             }
           ]
         },
@@ -5518,7 +5518,7 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 57.95541656328369,
+          "score": 57.9554165632837,
           "verified": true,
           "alternatives": [
             {
@@ -5526,21 +5526,21 @@
               "item_name": "Red Dragonscale Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.0439390054597535
+              "dps_delta": -1.0439390054597544
             },
             {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.0771680366411673
+              "dps_delta": -1.0771680366411682
             },
             {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.0771680366411673
+              "dps_delta": -1.0771680366411682
             }
           ]
         },
@@ -5795,8 +5795,8 @@
         "main_hand: Crackling Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.19818037,
-      "verify_run_seconds": 1.350441245,
+      "weights_run_seconds": 2.986965669,
+      "verify_run_seconds": 1.219642702,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5964,7 +5964,7 @@
           "item_name": "Coif of The Five Thunders",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 47.25568390349615,
+          "score": 47.25568390349614,
           "verified": true,
           "alternatives": [
             {
@@ -5972,21 +5972,21 @@
               "item_name": "Blue Dragonscale Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.12878583532392904
+              "dps_delta": -0.12878583532392823
             },
             {
               "item_id": 231663,
               "item_name": "Warlord's Mail Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.2851203215634914
+              "dps_delta": -0.2851203215634906
             },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6905082717445303
+              "dps_delta": -0.6905082717445294
             }
           ]
         },
@@ -6232,7 +6232,7 @@
               "item_name": "General's Mail Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.5245551906342771
+              "dps_delta": -0.5245551906342762
             },
             {
               "item_id": 252603,
@@ -6508,8 +6508,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.19818037,
-      "verify_run_seconds": 1.236627164,
+      "weights_run_seconds": 2.986965669,
+      "verify_run_seconds": 1.108285863,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6911,7 +6911,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.98384526760392,
+          "score": 40.983845267603925,
           "verified": true,
           "alternatives": [
             {
@@ -6919,14 +6919,14 @@
               "item_name": "Stormseeker's Girdle",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -5.8504159388641614
+              "dps_delta": -5.850415938864164
             },
             {
               "item_id": 18721,
               "item_name": "Barrage Girdle",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -5.873015766091732
+              "dps_delta": -5.873015766091735
             },
             {
               "item_id": 18405,
@@ -7232,8 +7232,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.920223391,
-      "verify_run_seconds": 0.990732145,
+      "weights_run_seconds": 1.7967353240000001,
+      "verify_run_seconds": 0.885936008,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7409,7 +7409,7 @@
               "item_name": "Warlord's Mail Helm",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.6657332783945178
+              "dps_delta": -1.6657332783945151
             },
             {
               "item_id": 227002,
@@ -7550,7 +7550,7 @@
               "item_name": "Legionnaire's Mail Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.3388138413318006
+              "dps_delta": -0.33881384133179926
             },
             {
               "item_id": 23089,
@@ -7634,7 +7634,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 40.98384526760392,
+          "score": 40.983845267603925,
           "verified": true,
           "alternatives": [
             {
@@ -7642,14 +7642,14 @@
               "item_name": "Stormseeker's Girdle",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -5.8504159388641614
+              "dps_delta": -5.850415938864164
             },
             {
               "item_id": 18721,
               "item_name": "Barrage Girdle",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -5.873015766091732
+              "dps_delta": -5.873015766091735
             },
             {
               "item_id": 18405,
@@ -7955,8 +7955,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.920223391,
-      "verify_run_seconds": 0.97554551,
+      "weights_run_seconds": 1.7967353240000001,
+      "verify_run_seconds": 0.890406207,
       "coverage": {
         "back": {
           "eligible": 451,

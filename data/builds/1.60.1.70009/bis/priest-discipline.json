@@ -1,8 +1,8 @@
 {
   "spec": "priest-discipline",
   "build": "1.60.1.70009",
-  "engine_version": "aa3e0be44",
-  "generated_at": "2026-10-08T01:58:37Z",
+  "engine_version": "583668528",
+  "generated_at": "2026-10-08T02:45:29Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -326,7 +326,7 @@
           "item_name": "Filigreed Pristine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 35.54257995618138,
+          "score": 35.54257995618137,
           "verified": true,
           "alternatives": [
             {
@@ -342,14 +342,14 @@
               "item_name": "Filigreed Silky Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.7346338869862751
+              "dps_delta": -0.7346338869862747
             },
             {
               "item_id": 253941,
               "item_name": "Filigreed Flame Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.7346338869862751
+              "dps_delta": -0.7346338869862747
             }
           ]
         },
@@ -574,8 +574,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.179168931,
-      "verify_run_seconds": 4.862967211,
+      "weights_run_seconds": 9.569534761,
+      "verify_run_seconds": 4.540345884,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1220,8 +1220,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.179168931,
-      "verify_run_seconds": 4.866584232,
+      "weights_run_seconds": 9.569534761,
+      "verify_run_seconds": 4.485241716,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1901,8 +1901,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 10.222147138,
-      "verify_run_seconds": 4.905050475,
+      "weights_run_seconds": 9.69960838,
+      "verify_run_seconds": 4.589495564,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2316,7 +2316,7 @@
               "item_name": "Novice Ardent's Sash",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.3073117999825649
+              "dps_delta": -0.30731179998256514
             },
             {
               "item_id": 253925,
@@ -2586,8 +2586,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 10.222147138,
-      "verify_run_seconds": 4.922219663,
+      "weights_run_seconds": 9.69960838,
+      "verify_run_seconds": 4.569297293,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3050,7 +3050,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 33.80118922548163,
+          "score": 33.80118922548162,
           "verified": true,
           "alternatives": [
             {
@@ -3066,14 +3066,14 @@
               "item_name": "Thoughtcast Boots",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Withered Warrior",
-              "dps_delta": -1.2870015010582487
+              "dps_delta": -1.2870015010582483
             },
             {
               "item_id": 6998,
               "item_name": "Nimbus Boots",
               "source_kind": "quest",
               "source": "Twilight Falls",
-              "dps_delta": -1.4774704936980354
+              "dps_delta": -1.4774704936980347
             }
           ]
         },
@@ -3296,8 +3296,8 @@
         "off_hand: Beacon of Hope",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 11.849379332,
-      "verify_run_seconds": 5.992646016,
+      "weights_run_seconds": 11.544046457,
+      "verify_run_seconds": 5.676826302,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3727,7 +3727,7 @@
           "item_name": "Pristine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 36.56767298925969,
+          "score": 36.5676729892597,
           "verified": true,
           "alternatives": [
             {
@@ -3743,14 +3743,14 @@
               "item_name": "Stormcloth Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8855767937892578
+              "dps_delta": -0.8855767937892585
             },
             {
               "item_id": 4044,
               "item_name": "Aurora Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.0581765473537015
+              "dps_delta": -1.0581765473537021
             }
           ]
         },
@@ -4009,8 +4009,8 @@
         "off_hand: Prophetic Cane",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 11.849379332,
-      "verify_run_seconds": 6.031377153,
+      "weights_run_seconds": 11.544046457,
+      "verify_run_seconds": 5.678450537,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4199,7 +4199,7 @@
               "item_name": "Stormcloth Headband",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.7118330503694049
+              "dps_delta": -0.7118330503694056
             }
           ]
         },
@@ -4259,14 +4259,14 @@
               "item_name": "Kentic Amice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -0.4772062550996251
+              "dps_delta": -0.47720625509962444
             },
             {
               "item_id": 17732,
               "item_name": "Rotgrip Mantle",
               "source_kind": "dungeon",
               "source": "Maraudon: Rotgrip",
-              "dps_delta": -1.2324213832423985
+              "dps_delta": -1.2324213832423978
             }
           ]
         },
@@ -4756,8 +4756,8 @@
         "finger2: Cyclopean Band",
         "trinket1: Darkspear Voodoo Seal"
       ],
-      "weights_run_seconds": 11.692312025,
-      "verify_run_seconds": 6.376149979,
+      "weights_run_seconds": 11.341327017,
+      "verify_run_seconds": 5.991384527,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4988,7 +4988,7 @@
           "item_name": "Nethergeld Shoulders",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 38.04836524038217,
+          "score": 38.04836524038216,
           "verified": true,
           "alternatives": [
             {
@@ -5011,7 +5011,7 @@
               "item_name": "Rotgrip Mantle",
               "source_kind": "dungeon",
               "source": "Maraudon: Rotgrip",
-              "dps_delta": -1.2324213832423985
+              "dps_delta": -1.2324213832423978
             }
           ]
         },
@@ -5513,8 +5513,8 @@
         "trinket2: Alchemists' Stone",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 11.692312025,
-      "verify_run_seconds": 6.039520378,
+      "weights_run_seconds": 11.341327017,
+      "verify_run_seconds": 5.731533739,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6269,8 +6269,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 11.887054787,
-      "verify_run_seconds": 5.632730464,
+      "weights_run_seconds": 11.576379914,
+      "verify_run_seconds": 5.375383649,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6690,7 +6690,7 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -1.1777974355217213
+              "dps_delta": -1.1777974355217204
             }
           ]
         },
@@ -7022,8 +7022,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 11.887054787,
-      "verify_run_seconds": 5.609745187,
+      "weights_run_seconds": 11.576379914,
+      "verify_run_seconds": 5.40015023,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7226,17 +7226,17 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19593,
-              "item_name": "The Eye of Zuldazar",
-              "source_kind": "quest",
-              "source": "The Eye of Zuldazar",
-              "dps_delta": -3.8097125844633717
-            },
-            {
               "item_id": 19594,
               "item_name": "The All-Seeing Eye of Zuldazar",
               "source_kind": "quest",
               "source": "The All-Seeing Eye of Zuldazar",
+              "dps_delta": -3.80971258446337
+            },
+            {
+              "item_id": 19593,
+              "item_name": "The Eye of Zuldazar",
+              "source_kind": "quest",
+              "source": "The Eye of Zuldazar",
               "dps_delta": -3.8097125844633717
             },
             {
@@ -7271,7 +7271,7 @@
               "item_name": "Virtuous Mantle",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -0.8698137936278167
+              "dps_delta": -0.8698137936278186
             },
             {
               "item_id": 227888,
@@ -7346,7 +7346,7 @@
               "item_name": "Virtuous Robe",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -5.324670478070772
+              "dps_delta": -5.324670478070768
             }
           ]
         },
@@ -7405,7 +7405,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.8948664795330747
+              "dps_delta": -1.8948664795330765
             },
             {
               "item_id": 254095,
@@ -7470,7 +7470,7 @@
               "item_name": "Marshal's Satin Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.7958370725642685
+              "dps_delta": -2.795837072564265
             },
             {
               "item_id": 226946,
@@ -7752,8 +7752,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 10.34644733,
-      "verify_run_seconds": 4.150190171,
+      "weights_run_seconds": 10.053523577,
+      "verify_run_seconds": 3.994602358,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8001,7 +8001,7 @@
               "item_name": "Virtuous Mantle",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -0.8698137936278186
+              "dps_delta": -0.8698137936278167
             },
             {
               "item_id": 227888,
@@ -8128,7 +8128,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.9807396800543694
+              "dps_delta": -0.9807396800543675
             },
             {
               "item_id": 20717,
@@ -8143,7 +8143,7 @@
               "item_name": "Gilded Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.892549451408053
+              "dps_delta": -2.892549451408051
             }
           ]
         },
@@ -8169,7 +8169,7 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -1.7099654725609217
+              "dps_delta": -1.7099654725609237
             },
             {
               "item_id": 272394,
@@ -8483,8 +8483,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 10.34644733,
-      "verify_run_seconds": 4.178387012,
+      "weights_run_seconds": 10.053523577,
+      "verify_run_seconds": 3.9581635029999997,
       "coverage": {
         "back": {
           "eligible": 450,
