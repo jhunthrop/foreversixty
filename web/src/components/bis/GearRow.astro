@@ -15,6 +15,7 @@ import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
 import type { Slot } from '../../lib/planner/types';
 import { SLOT_DISPLAY_LABELS } from '../../lib/bis/slot-display-labels';
 import type { Faction } from '../../lib/bis/types';
+import { gapLabelFor } from '../../lib/bis/tank-view';
 import FactionMark from '../FactionMark.astro';
 import SourceKindIcon from './SourceKindIcon.astro';
 import VerifiedGlyph from './VerifiedGlyph.astro';
@@ -189,7 +190,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                   tabindex="0"
                   role="button"
                   aria-haspopup="true"
-                  title={`${alt.itemName} · ${bisCopy.alternativeGapLabel(alt.dpsDelta)}`}
+                  title={`${alt.itemName} · ${gapLabelFor(alt.dpsDelta, alt.unit ?? 'dps')}`}
                 >
                   {hasRealIcon(alt.model?.icon) ? (
                     <img
@@ -239,7 +240,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                   </span>
                   <span class="gear-row-alt-gap text-muted">
                     {alt.verified && <VerifiedGlyph size={11} />}
-                    {bisCopy.alternativeGapLabel(alt.dpsDelta)}
+                    {gapLabelFor(alt.dpsDelta, alt.unit ?? 'dps')}
                   </span>
                   {alt.metaLabel && <span class="gear-row-alt-level text-muted">{alt.metaLabel}</span>}
                 </span>

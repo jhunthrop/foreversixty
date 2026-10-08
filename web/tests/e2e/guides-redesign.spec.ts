@@ -29,12 +29,12 @@ function guideDescription(classSlug: string, specSlug: string): string {
 test.describe('desktop', () => {
   test.use({ viewport: DESKTOP });
 
-  test('/guides renders nine class crests and 27 spec links', async ({ page }) => {
+  test('/guides renders nine class crests and 28 spec links', async ({ page }) => {
     await page.goto('/guides');
     const crests = page.locator('[data-testid^="class-crest-"]');
     await expect(crests).toHaveCount(9);
     const specLinks = page.locator('[data-testid="guides-class-picker"] a[href^="/guides/"]');
-    await expect(specLinks).toHaveCount(27);
+    await expect(specLinks).toHaveCount(28);
   });
 
   test('/guides/warrior shows three spec cards, DPS only on the ranked specs', async ({ page }) => {

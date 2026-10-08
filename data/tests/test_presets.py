@@ -44,11 +44,14 @@ REQUIRED_DEBUFFS = {
 #: self-buff now, and Blessing of Kings is not in the live paladin trees.
 FORBIDDEN = {"shadow_weaving", "blessing_of_kings", "songflower_serenade", "spirit_of_zandalar"}
 #: Consumables from Ahn'Qiraj or Naxxramas, or a world buff by another name.
+#: Flask of the Titans is NOT here: its recipe drops from General Drakkisath
+#: in Blackrock Spire, Phase 1 content. Dirge's chops need the Ahn'Qiraj
+#: scepter chain.
 FORBIDDEN_CONSUMES = {
     "spirit_of_zanza",
     "sheen_of_zanza",
     "swiftness_of_zanza",
-    "flask_of_the_titans",
+    "food_dirges_kick_chimaerok_chops",
 }
 
 

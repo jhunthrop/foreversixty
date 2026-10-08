@@ -187,7 +187,10 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 // would otherwise have masked it as "untracked, always learned".
 var singleTierLevelOverrides = map[string]map[int32]int{
 	"druid": {
-		5217: 24, // Tiger's Fury; sim/druid/tigers_fury.go: tigersFuryLearnLevels = []int{24}
+		5217:  24, // Tiger's Fury; sim/druid/tigers_fury.go: tigersFuryLearnLevels = []int{24}
+		5229:  12, // Enrage; sim/druid/enrage.go: registerEnrageSpell returns below enrageLearnLevel
+		22812: 44, // Barkskin; sim/druid/barkskin.go: registerBarkskinCD returns below barkskinLearnLevel
+		22842: 36, // Frenzied Regeneration; sim/druid/frenzied_regeneration.go: registerFrenziedRegenerationCD returns below its learn level
 	},
 	"hunter": {
 		2643: 18, // Multi-Shot rank 1; sim/hunter/multi_shot.go's rank table, RequiredLevel 18 (this build's spellranks.json never lists Multi-Shot's higher client ranks 14288/14289/14290/25294 at all, so 2643 is the only id this override, or this table's own callers, ever resolve it to)

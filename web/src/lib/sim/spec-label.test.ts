@@ -77,9 +77,9 @@ describe('dpsSpecs', () => {
 });
 
 describe('nonDpsSpecs', () => {
-  it('is every healer and tank spec, the seven launch scope excludes', () => {
+  it('is every healer and tank spec, the eight launch scope excludes', () => {
     const rows = nonDpsSpecs();
-    expect(rows).toHaveLength(7);
+    expect(rows).toHaveLength(8);
     expect(rows.every((row) => row.role !== 'dps')).toBe(true);
     expect(rows.map((row) => row.spec)).toContain('warrior-protection');
     expect(rows.map((row) => row.spec)).toContain('druid-restoration');
@@ -94,7 +94,7 @@ describe('nonDpsSpecs', () => {
 
 describe('isSimulatedSpec', () => {
   // Task 3: every rotation claim, run gate and engine-error translation reads this one
-  // predicate. Checked against all 27 canonical specs, not a handful, so a future data
+  // predicate. Checked against all 28 canonical specs, not a handful, so a future data
   // change that moves a spec's role cannot silently disagree with dpsSpecs()/nonDpsSpecs().
   it('is true for every dps spec and false for every healer or tank spec', () => {
     for (const row of dpsSpecs()) expect(isSimulatedSpec(row.spec)).toBe(true);

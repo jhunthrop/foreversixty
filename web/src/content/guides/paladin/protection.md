@@ -3,11 +3,25 @@ title: Protection Paladin in Forever
 classSlug: paladin
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70009:paladin:dwarf:55222103/5532311301001051/0:'
+build: 'FS1:1.60.1.70009:paladin:dwarf:55313003/5530513301301001/0:'
 recommendedRaces: [dwarf, undead]
-statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
+statPriority:
+  [
+    Stamina,
+    Armor,
+    Defense,
+    Dodge,
+    Parry,
+    Block,
+    Strength,
+    Agility,
+    Attack power,
+    Hit,
+    Critical strike,
+    Expertise,
+  ]
 description: 'Talents, rotation, stats, gear, races, and professions for Protection Paladin tanking in Forever.'
-updated: 2026-09-24
+updated: 2026-10-07
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -33,39 +47,56 @@ Protection is Forever's Paladin tanking tree, built around Seal of Fury for thre
 
 ## Talents and builds
 
-Verified against this build's own Paladin talent data:
+This build spends 31 points in Protection to reach Holy Shield and 20 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text.
 
-1. **Improved Seal of Fury** — when Seal of Fury's absorb shield is fully spent, it restores mana scaled by how far above your level the attacker is, which is Protection's core sustain tool given how often a tank eats big hits.
-2. **Shield Specialization** — increases the shield's absorb amount and gives blocks a chance to restore mana, stacking with Improved Seal of Fury for mana return on both sides of a hit.
-3. **Swift Judgement** — resets Judgement's cooldown and makes the next cast free, keeping the taunt and mana-return loop running without waiting out the full cooldown.
-4. **Templar's Bulwark** — an activated cooldown granting a large absorb shield at the cost of Forbearance for a minute, a panic button for a dangerous hit rather than something to lean on constantly.
-5. **Iron Creed** — Holy Strike generates more threat, and while Righteous Fury is active it also reduces damage taken for a few seconds after each cast, tying Protection's baseline attack directly into its survivability.
-6. **Holy Shield** — the tree's capstone talent; it raises block chance for a window and deals Holy damage on every block during it, which is both a mitigation cooldown and one of Protection's better threat tools.
+**Protection**, in roughly the order you would take them:
 
-This build puts 31 points in Protection to reach Holy Shield, with the remaining 20 in Holy for mana-sustain — Reverence maxed, then Divine Strength, Divine Intellect, Healing Light, Spiritual Focus, and Improved Seals for the rest of the budget — rather than spreading into Retribution as well: splitting the remainder across two trees each needing their own tier-2 buy-in doesn't fit inside 51 points at once, so this build picks Holy alone. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+- **Toughness** — more armor from your items.
+- **Redoubt** — a chance, whenever a melee attack damages you, to gain extra Block chance for a short window or until it has absorbed a few blocks.
+- **Precision** — hit, so the Judgement and Holy Strike that carry your threat land.
+- **Anticipation** — Defense Skill, which raises avoidance and lowers the chance to be critically hit.
+- **Improved Seal of Fury** — when Seal of Fury's shield is spent, you get mana back; it is the talent that makes the shield a mana source.
+- **Improved Righteous Fury** — while Righteous Fury is on, all damage you take is reduced. In Forever it is a mitigation talent, not a threat one.
+- **Shield Specialization** — a stronger shield absorb and mana back on a Block, no more than once every few seconds.
+- **Swift Judgement** — finishes Judgement's cooldown and makes the next one free.
+- **One-Handed Weapon Specialization** — more damage with the one-hander you tank with.
+- **Templar's Bulwark** — an activated absorb shield worth a large share of your health, followed by Forbearance. It is one point because Holy Shield requires it.
+- **Holy Shield** — the 31-point talent: more Block for a short window, Holy damage on every Block, and a little extra threat on that damage.
+
+**Holy**, the twenty that remain: Divine Strength and Divine Intellect for the raw stats, Improved Seals for more Seal of Fury and Judgement damage, Reverence for mana while you fight, and the tier gates they stand on.
+
+Left out to fit the budget: Reckoning (an extra attack after you block or are critically hit), Iron Creed (more threat on Holy Strike, and less damage taken after it while Righteous Fury is on) and Sacred Duty (more stamina and shorter defensive cooldowns). Each is worth a look as you gain points; the simulator can price them in the planner. Blessing of Sanctuary is not in this build of the game, so the Protection tree gives a paladin no blessing of its own.
+
+Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
 ## Rotation and priority
 
-This site's own rotation data for Protection Paladin is an unwritten stub as of this writing, so the following is written from general 1.12 Protection Paladin practice plus the baseline changes Forever confirmed, not from a simulated priority list. Open with Seal of Fury up before pulling, since its Judgement is both the taunt and the mana-return trigger. Judgement costs no mana in Forever (sim/paladin/judgement.go, matching the client's own spell data), but it still consumes whichever Seal is active the moment it fires, the same as 1.12 — recasting your Seal right after Judging is still part of the rotation, not an old cost this build removed. Fire Judgement on cooldown for the taunt range and the extra threat, then keep swinging while weaving in Holy Strike, which is baseline from level 6 and shares the global cooldown on its own separate ten-second cooldown. Consecration is baseline from level 20 and worth dropping under a pack for cleave threat, since it hits everything inside it lightly but the first few targets much harder, which keeps a Protection Paladin from accidentally pulling an entire room. Holy Shield is worth keeping active whenever the charges are available, both for the block chance and for the threat its damage generates, and Templar's Bulwark is best held for a hit that would otherwise be dangerous rather than used on cooldown, since it locks out Forbearance for a full minute afterward.
+This is the rotation the simulator runs. It was measured in the simulator's tank fight (a level 63 boss that swings at you every two seconds, healers assumed), and mana, not cooldowns, is what limits it, so the order below is also the order in which mana is spent.
+
+1. **Righteous Fury** is a setting, not a button: keep it on. It multiplies the threat of your Holy damage, and with Improved Righteous Fury it also lowers the damage you take. A Righteous-Fury-less rotation of the same gear makes far less threat.
+2. **Seal of Fury** up. Judgement no longer consumes your seal in Forever, so you recast the seal only when it runs out, not after every Judgement.
+3. **Holy Shield** on cooldown. It is both the best mitigation you have and the best use of your mana, so every other spell leaves its cost in the pool.
+4. **Hammer of the Righteous** and **Holy Strike** on their cooldowns, the first of which is the largest single threat gain in this list.
+5. **Judgement** on cooldown; with Swift Judgement the next one is free.
+6. **Consecration** only with spare mana, where it pays for itself in threat.
+
+Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are losing: the simulator uses them on low health, where they cut the chance of death on a harder boss, and they never fire on the standard fight. Divine Shield and Divine Protection put Forbearance on you, which shares a timer with Templar's Bulwark.
 
 ## Stat priority
 
-Ordered by this site's own simulator-derived weights:
+The table above is this band's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
 
-1. **Attack power** — the primary driver of Protection's melee and Seal of Fury damage, which in turn drives threat.
-2. **Strength** — converts directly into attack power and adds a small amount of block value.
-3. **Agility** — adds armor, crit, and dodge, all of which reduce incoming damage or add threat.
-4. **Crit** — feeds Reckoning's extra-attack chance and Holy Shield's damage-on-block, both threat tools.
-5. **Hit** — keeps Judgement and Holy Strike landing reliably, since a missed Judgement is a missed taunt.
-6. **Melee haste** — more swings per minute, which is a smaller factor than the stats above it once basic threat and survivability are covered.
+Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and health is a straight multiplier on effective health. Armor lowers every physical hit by a fraction that shrinks as you stack it. Defense Skill, Dodge and Parry take hits out entirely, and Defense also lowers the chance to be critically hit and crushed. Block takes a flat amount off the hits it catches and powers Holy Shield's damage and Redoubt. Strength adds threat and Block Value; Hit keeps Judgement and Holy Strike landing; Expertise lowers the boss's chance to dodge or parry you, which is threat, not survival, and no item carries it yet.
+
+Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so Block Value is not weighed apart from Block chance. And a stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this band's sample size, to tell its value apart from zero.
 
 ## Gear
 
-Look for pieces that lead with attack power and strength, backed by stamina and the defensive stats a shield tank needs, matching the stat priority above. Beyond that principle, this section cannot get specific yet: the beta caps at level 30, nothing raids until the first tier opens on 9 December, and this build's own item data has most raid loot tables only partially re-itemized or not itemized at all for Forever, so a real Protection pre-raid or first-raid gear list would be guessing. This section fills in once raid loot data lands.
+Follow the table above: health, then the avoidance stats and armor, with the threat stats behind them. This site's ranker builds the level 60 set for you in the BiS tab, scored on the same tank fight, in a shield and a one-handed weapon. Specific raid picks cannot be named honestly yet: nothing raids until 9 December, and this build's raid loot tables are only partly itemized for Forever, so the set is built from what the item tables do carry.
 
 ## Enchants and consumables
 
-Target strength and stamina on weapon, bracer, and glove enchants, matching the stat priority above. This build's enchant data confirms Strength options for both bracers and gloves and a dedicated Enchant Shield line for stamina, so a Protection Paladin has verified enchant slots to chase its top stats and survivability. For consumables, look for elixirs or flasks that boost defense, strength, or stamina over general-purpose ones; this build's consumable data lists defense- and strength-specific elixirs, though which one is strongest for Forever's tank itemization isn't something this site can state with confidence yet.
+Target stamina and the defensive stats on enchants where they are available. This build's enchant data confirms a dedicated Enchant Shield line for stamina. For consumables the BiS tab's Raid-ready set shows the tank's: armor and health elixirs, stamina food and drink, and strength and attack power for threat.
 
 ## Races
 

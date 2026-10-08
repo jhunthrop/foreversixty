@@ -9,6 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bandEntry, loadBisFile } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
+import { headlineDpsOf } from '../bis/tank-view';
 import { classRows, racesForClass } from '../planner/reference';
 import type { BisFile, BisHitToCap, BisStatWeight, Faction } from '../bis/types';
 
@@ -79,7 +80,8 @@ export function classLandingSetDps(
   if (file === undefined) return undefined;
   const faction = factionForFirstRace(classSlug, recommendedRaces);
   if (faction === undefined) return undefined;
-  return bandEntry(file, 60, faction)?.set_dps;
+  const band = bandEntry(file, 60, faction);
+  return band === undefined ? undefined : headlineDpsOf(band);
 }
 
 /** This spec's band-60 stat weights, plus the file-level timestamp they were published

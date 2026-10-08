@@ -1,0 +1,66 @@
+{
+  "sources": [
+    {
+      "label": "This site, build 1.60.1.70009's engine fork (sim/core target auto-attack, attack table and TMI)",
+      "url": "https://foreversixty.gg/sources",
+      "kind": "site"
+    },
+    {
+      "label": "Blizzard, Deep Dive panel recap (the Phase 1 raid is the level 60 content the beta does not yet reach)",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard"
+    }
+  ],
+  "notes": "The one statement of the fight every tank spec is simmed against: what a tank's BiS rows, stat weights and headline figures (effective health, damage taken per second, chance of death, threat per second) are measured on. Nothing public states a Forever raid boss's melee numbers (the beta stops at level 30 and no Phase 1 boss has been datamined), so this is a stand-in, built so every figure is a RELATIVE comparison between sets and none is a prediction of a named boss; the reasons below say what each number stands for and what would change it. The boss is the target the character already fights (level 63 at 60: api.DefaultTargetLevel), tanked by the character, hitting with one melee swing; crushing blows and critical hits come from the engine's own attack table for the three-level gap, not from a number here. The tank carries the Phase 1 raid buffs and tank consumables of data/curated/presets.json's raid preset when ranked raid-ready, and the class kit alone when ranked bare. Bands below 60 fight the same boss with its damage and the healers' output scaled by (character level over 60) to the power level_scaling.exponent (damage) and level_scaling.healing_exponent (healing), a stand-in for dungeon bosses at that level.",
+  "level_scaling": {
+    "reference_level": 60,
+    "exponent": {
+      "value": 2.0,
+      "reason": "Damage and healing scale as (character level over the reference level) to this power, because a tank's health grows faster than its level (a level 20 tank has roughly a seventh of a level 60 tank's health, not a third). Chosen so a decently geared tank of any band takes a boss of its own size in the same proportion to its health. A dungeon boss table would replace this; none is published."
+    },
+    "healing_exponent": {
+      "value": 1.5,
+      "reason": "Healing scales more gently than damage, because a healer's output at a low level is spell ranks and mana the damage does not shrink with: with the same exponent a low-level tank would take more than its healers could ever give back. A healing table by level would replace this; none is published."
+    }
+  },
+  "boss": {
+    "swing_speed_sec": {
+      "value": 2.0,
+      "reason": "One melee swing every 2.0 seconds, the cadence of most Classic raid melee bosses. A faster boss favours block value and avoidance streaks less than a slower, harder-hitting one; 2.0 s sits between."
+    },
+    "min_base_damage": {
+      "value": 2500,
+      "reason": "The least a swing rolls before armor at the reference level. The engine rolls the minimum up to (1 + damage spread) times it, so the mean unmitigated swing is about 2,900 at level 60. Chosen so a raid-ready level 60 tank takes a few hundred damage per second and is rarely killed, while a bare one is killed in a real share of fights: the range in which armor, avoidance and health all move the result."
+    },
+    "damage_spread": {
+      "value": 0.33,
+      "reason": "The engine's own enemy swing rule (sim/core/attack.go EnemyWeaponDamage): a swing rolls between the minimum and 133% of it, so the spread is 0.33. Kept as the engine states it."
+    },
+    "parry_haste": {
+      "value": true,
+      "reason": "A parried swing advances the boss's next swing, as in Classic. It makes parry worth less than the avoided damage alone suggests, which the weights should show."
+    },
+    "dual_wield": {
+      "value": false,
+      "reason": "A single melee swing. Raid bosses that dual wield are rare and would only double the table the tank rolls against."
+    }
+  },
+  "healers": {
+    "hps": {
+      "value": 440,
+      "reason": "Healing per second the tank receives at level 60, the output of the healers the raid assigns to the main tank. The healers are assumed, not simulated: they heal in a steady cadence regardless of the tank's health, so chance of death measures how often the tank's health runs out between heals and total damage taken cannot be undone by a fast heal. Set so that a poorly mitigated set dies in a real share of fights, because the healers cannot catch up with its spikes, and a well mitigated one rarely does."
+    },
+    "cadence_sec": {
+      "value": 2.0,
+      "reason": "The healers' median time between heals on the tank, the engine's default when unset."
+    },
+    "cadence_variation_sec": {
+      "value": 0.5,
+      "reason": "How far each heal lands from the median cadence. Real healing arrives unevenly; a variation of a quarter of the cadence keeps the chance-of-death figure from depending on one lucky run of heals."
+    },
+    "burst_window_sec": {
+      "value": 6,
+      "reason": "The TMI window. The engine's published TMI is the log-sum of damage in sliding windows of this length as a share of the tank's health, the standard 6 seconds, so spiky incoming damage is penalised the way a healer's reaction time would punish it."
+    }
+  }
+}

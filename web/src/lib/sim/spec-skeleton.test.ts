@@ -1,8 +1,8 @@
 // web/src/lib/sim/spec-skeleton.test.ts
 // spec-skeleton.ts is the one source both sim/specs.astro's static shell and
 // SpecGrid.svelte read for the specs grid's shape (see that module's own header comment),
-// so its two slot functions are the load-bearing contract for the "27 cards, 20 simulated
-// and 7 not" split task-2-brief.md calls for: a drift here is a CLS regression there.
+// so its two slot functions are the load-bearing contract for the "28 cards, 20 simulated
+// and 8 not" split task-2-brief.md calls for: a drift here is a CLS regression there.
 import { describe, expect, it } from 'vitest';
 import { simCopy } from './copy';
 import { dpsSpecs, nonDpsSpecs } from './spec-label';
@@ -26,12 +26,12 @@ describe('unsimulatedSpecSkeletonSlots', () => {
 });
 
 describe('the /sim/specs grid split', () => {
-  // The reviewers' repro: 27 specs total, 20 rendered as real cards, 7 rendered as a
+  // The reviewers' repro: 28 specs total, 20 rendered as real cards, 8 rendered as a
   // distinct "not simulated yet" card -- never fewer (a spec silently missing) and never
   // more (a spec counted twice).
-  it('is 27 cards total: 20 simulated, 7 not, and every spec appears exactly once', () => {
+  it('is 28 cards total: 20 simulated, 8 not, and every spec appears exactly once', () => {
     expect(dpsSpecs().length).toBe(20);
-    expect(nonDpsSpecs().length).toBe(7);
+    expect(nonDpsSpecs().length).toBe(8);
     expect(dpsSpecs().length + nonDpsSpecs().length).toBe(SPECS.length);
   });
 

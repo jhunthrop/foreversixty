@@ -183,7 +183,33 @@ export interface BisHitToCap {
   white?: number;
 }
 
+/** The role a band was ranked for. Absent on a file published before roles: `'dps'`
+ *  (`normaliseBisFile` defaults it). */
+export type BisRole = 'dps' | 'tank' | 'healer';
+
+/** `BisBand.metrics` on a tank band: the boss-profile figures the tank headline shows.
+ *  Within a tank band every slot's `sim_dps`/`dps_delta` and each alternative's `dps_delta`
+ *  are in tank-score points (mitigation, risk and threat combined), never damage. */
+export interface TankMetrics {
+  /** Damage taken per second at the boss profile. */
+  dtps: number;
+  /** Theck-Meloree Index: lower is better. */
+  tmi: number;
+  /** Chance of death over the fight, 0..1. */
+  chance_of_death: number;
+  /** Threat per second. */
+  tps: number;
+  /** Hit points against the boss profile. */
+  effective_health: number;
+  /** The tank's own damage per second (what `set_dps` carries on a tank band). */
+  dps: number;
+}
+
 export interface BisBand {
+  /** Absent on a file published before roles: `normaliseBisFile` defaults it to `'dps'`. */
+  role?: BisRole;
+  /** Present on a tank band only (`TankMetrics`); `normaliseBisFile` defaults it to `null`. */
+  metrics?: TankMetrics | null;
   /** Absent on a file published before presets: such an entry is bare. */
   preset?: BisPresetId;
   spec: string;

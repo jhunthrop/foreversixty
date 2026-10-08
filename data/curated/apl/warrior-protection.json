@@ -1,10 +1,273 @@
 {
   "spec": "warrior-protection",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Protection warrior at 60 in Defensive Stance with a shield: Shield Slam and Revenge on cooldown, Shield Block whenever its buff is down, Thunder Clap held on the boss, Sunder Armor as the global-cooldown filler and Heroic Strike with spare rage. Every priority was measured on the engine's tank harness (a level 63 boss, one 2 second melee swing, steady healing; sim/warrior/tank_warrior's TestRotationVariations records the figures): Shield Block cuts damage taken by about 18 percent, a Thunder Clap upkeep by another 16 percent for 6 percent of threat, Sunder Armor as the filler adds about 24 percent threat, and the Heroic Strike threshold moves nothing because a Forever tank is cooldown-limited, not rage-limited, at this gear. Last Stand and Shield Wall are gated on health: they never fire on a fight the healers hold and cut the chance of death on one they do not. Demoralizing Shout is not in the rotation: it takes attack power off the boss, and the curated tank boss has none to take. Every rank named here is checked against the spellconst of the newest client build.",
+  "expected_idle": [
+    {
+      "id": 2565,
+      "reason": "Shield Block needs a shield and the ladder's character carries none (its off hand is a weapon slot only for dual-wielding classes), so the engine refuses the cast at every level. A tank in the tank fight, shield on, casts it about 34 times in 180 seconds."
+    },
+    {
+      "id": 23925,
+      "reason": "Shield Slam needs a shield for the same reason (its cast condition is a shield in the off hand), so the shieldless ladder character never casts it. In the tank fight it lands on every cooldown, about 30 times in 180 seconds."
+    },
+    {
+      "id": 71,
+      "reason": "Defensive Stance is a stance-dance guard, not part of the cycle: the engine starts a tank warrior in it (sim/warrior/tank_warrior's tankStance) so the cast condition, not being in it, is never true."
+    },
+    {
+      "id": 871,
+      "reason": "Shield Wall is gated on health below 40 percent and on a shield; the ladder fight does not hurt the character, so it correctly never fires. The tank harness shows it cutting the chance of death on a boss the healers cannot hold."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Forever Sixty tank harness measurements (sim/warrior/tank_warrior/rotation_variations_test.go)",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    },
+    {
+      "label": "Talents Forever Deep Dive stream: Shield Block 2 charges and 7 s, Thunder Clap usable in Defensive Stance, Shield Wall 15 min / 60 percent for 12 s (single-source)",
+      "url": "https://www.youtube.com/@TalentsForever",
+      "kind": "community"
+    },
+    {
+      "label": "wowsims/classic default Protection priority list",
+      "url": "https://github.com/wowsims/classic/blob/master/ui/tank_warrior/apls",
+      "kind": "community"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [],
+    "priorityList": [
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Stay in Defensive Stance: the 30 percent threat, Revenge and Shield Wall all need it. The engine starts a tank in it, so this fires only after a stance dance.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 71
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 71
+            }
+          }
+        }
+      },
+      {
+        "notes": "Last Stand below 35 percent health: 30 percent of maximum health for 20 seconds, lost afterwards. Never fires on a fight the healers hold.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.35"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 12975
+            }
+          }
+        }
+      },
+      {
+        "notes": "Shield Wall below 40 percent health: 60 percent less damage taken for 12 seconds. Fifteen minute cooldown, so once a fight.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.4"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 871
+            }
+          }
+        }
+      },
+      {
+        "notes": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentRage": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "60"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 2687
+            }
+          }
+        }
+      },
+      {
+        "notes": "Shield Block whenever its buff is down: 75 percent more block for 7 seconds or two blocks. Recasting over a live buff wastes rage, and the measured damage taken is the same.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 2565
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 2565
+            }
+          }
+        }
+      },
+      {
+        "notes": "Revenge the moment it is available: it only lights after a dodge, parry or block, costs 5 rage (2 with Focused Rage 3) and is the most threat per rage on the bar.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 11601,
+              "rank": 5
+            }
+          }
+        }
+      },
+      {
+        "notes": "Shield Slam on cooldown: the biggest hit on the bar, damage plus block value and a very high amount of threat.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 23925,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Thunder Clap on the boss: the 20 percent attack speed slow is the largest cut to damage taken after Shield Block, and it lasts 30 seconds, so refresh inside the last 3.",
+        "action": {
+          "condition": {
+            "or": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "auraIsActive": {
+                        "auraId": {
+                          "spellId": 11581,
+                          "rank": 6
+                        },
+                        "sourceUnit": {
+                          "type": "CurrentTarget"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "auraRemainingTime": {
+                        "sourceUnit": {
+                          "type": "CurrentTarget"
+                        },
+                        "auraId": {
+                          "spellId": 11581,
+                          "rank": 6
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3s"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11581,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "Sunder Armor is the global-cooldown filler: flat threat on every cast and the armor it strips raises the tank's own damage.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 11597,
+              "rank": 5
+            }
+          }
+        }
+      },
+      {
+        "notes": "Heroic Strike with spare rage: the best threat per rage after Revenge, and it costs no global cooldown. Queued only above 40 rage so the cooldown buttons are never starved.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "currentRage": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "40"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11567,
+              "rank": 8,
+              "tag": 1
+            }
+          }
+        }
+      }
+    ]
   }
 }

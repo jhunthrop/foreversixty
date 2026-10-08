@@ -42,7 +42,7 @@
 
   const skeletonSlots = specSkeletonSlots();
   const grid = SPEC_GRID_CLASSES;
-  // The 7 healer/tank cards carry no fidelity data (they are never in `rows`, task-2-brief.md's
+  // The 8 healer/tank cards carry no fidelity data (they are never in `rows`, task-2-brief.md's
   // second group) so they need no loading state of their own -- derived once from the
   // canonical spec list and rendered immediately, the same way sim/specs.astro's static
   // shell reserves their height with unsimulatedSpecSkeletonSlots() before this island ever
@@ -65,8 +65,8 @@
 </script>
 
 <!-- Two groups, never interleaved (task-2-brief.md): the 20 damage specs the simulator
-     covers, then the 7 healers and tanks it does not, each under its own heading so the
-     page reads as "these 20 work, these 7 do not" rather than one undifferentiated 27-card
+     covers, then the 8 healers and tanks it does not, each under its own heading so the
+     page reads as "these 20 work, these 8 do not" rather than one undifferentiated 28-card
      grid. -->
 <div class="flex flex-col gap-6">
   <div class="flex flex-col gap-3">

@@ -8,7 +8,8 @@ import (
 )
 
 // physicalForbidden and casterForbidden are the two content rules task
-// 5(c) pins: a physical spec (ReferenceStat attack_power) is never
+// 5(c) pins: a physical spec (ReferenceStat attack_power, or any tank,
+// whose reference stat is stamina) is never
 // asked about a stat only a caster cares about, and a caster spec
 // (ReferenceStat spell_power) is never asked about a melee-only stat.
 // Named as tables, per spec, so the test states the rule rather than
@@ -19,6 +20,9 @@ var physicalForbidden = []string{
 	"spell_penetration", "arcane_power", "fire_power", "frost_power",
 	"holy_power", "nature_power", "shadow_power",
 }
+
+// roleTank is the role string data/curated/specs.json gives a tank.
+const roleTank = "tank"
 
 var casterForbidden = []string{"strength", "expertise", "armor_penetration", "feral_attack_power"}
 
@@ -56,7 +60,7 @@ func TestTheReferenceStatIsAlwaysInItsOwnWeightStats(t *testing.T) {
 func TestNoPhysicalSpecCarriesACasterStatAndNoCasterSpecCarriesAMeleeStat(t *testing.T) {
 	for _, spec := range All {
 		forbidden := casterForbidden
-		if spec.ReferenceStat == "attack_power" {
+		if spec.ReferenceStat == "attack_power" || spec.Role == roleTank {
 			forbidden = physicalForbidden
 		}
 		for _, stat := range spec.WeightStats {

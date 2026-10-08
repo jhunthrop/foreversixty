@@ -94,12 +94,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:1933 | 8.4 | 4 | spell:5177=44.2, other:attack/1=31.3, spell:8924=5.5, spell:1259799=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
-| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 52.1 | 4 | other:attack/1=182.1, spell:1082=46.5, spell:1079=8.6, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
-| 30 | 0000000000000000-55232031000000000000-0000000000000000 | bare | 72.7 | 6 | other:attack/1=182.1, spell:6800=27.1, spell:1822=20.1, spell:9492=8.7, spell:5217=6.6 | {SpellID: 1322605} |
-| 38 | 0000000000000000-55232032121030000000-0000000000000000 | bare | 100.4 | 8 | other:attack/1=182.1, spell:8992=33.9, spell:1823=20.2, spell:9493=9.9, spell:1322605=8.5 | - |
-| 40 | 0000000000000000-55232032121032000000-0000000000000000 | bare | 102.7 | 8 | other:attack/1=182.1, spell:8992=33.6, spell:1823=20.1, spell:9493=10.5, spell:1322605=8.5 | - |
-| 50 | 0100000000000000-55232032121032012001-5000000000000000 | bare | 135.9 | 10 | other:attack/1=182.1, spell:9829=32.4, spell:1824=20.5, spell:9752=11.4, spell:1322605=8.2 | - |
-| 60 | 0100000000000000-55232032121032012001-5053200000000000 | bare | 192.6 | 9 | other:attack/1=182.1, spell:9830=34.1, spell:9904=20.3, spell:9896=11.9, spell:1322605=10.0 | - |
+| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 51.6 | 4 | other:attack/1=182.1, spell:1082=46.5, spell:1079=8.6, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
+| 30 | 0000000000000000-55232031000000000000-0000000000000000 | bare | 71.7 | 6 | other:attack/1=182.1, spell:6800=27.1, spell:1822=20.1, spell:9492=8.7, spell:5217=6.6 | {SpellID: 1322605} |
+| 38 | 0000000000000000-55232032121030000000-0000000000000000 | bare | 99.9 | 8 | other:attack/1=182.1, spell:8992=33.8, spell:1823=20.2, spell:9493=9.9, spell:1322605=8.3 | - |
+| 40 | 0000000000000000-55232032121032000000-0000000000000000 | bare | 102.5 | 8 | other:attack/1=182.1, spell:8992=33.4, spell:1823=20.2, spell:9493=10.5, spell:1322605=8.3 | - |
+| 50 | 0100000000000000-55232032121032012001-5000000000000000 | bare | 135.1 | 10 | other:attack/1=182.1, spell:9829=32.1, spell:1824=20.3, spell:9752=11.6, spell:1322605=8.0 | - |
+| 60 | 0100000000000000-55232032121032012001-5053200000000000 | bare | 190.8 | 10 | other:attack/1=182.1, spell:9830=33.8, spell:9904=20.2, spell:9896=12.0, spell:1322605=9.8 | - |
 
 ## Learned but unused (informational)
 
@@ -176,7 +176,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9850)
 - Entangling Roots (spell 9853)
-- Ferocious Bite (spell 22829)
 - Hurricane (spell 17402)
 - Insect Swarm (spell 24977)
 - Lacerate (spell 1235827)
@@ -192,4 +191,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - druid-feral level=38 kind=zero_casts spell="Ferocious Bite" id=22568 authored=22829
 - druid-feral level=40 kind=zero_casts spell="Ferocious Bite" id=22827 authored=22829
-- druid-feral level=60 kind=zero_casts spell="Ferocious Bite" id=22829 authored=22829

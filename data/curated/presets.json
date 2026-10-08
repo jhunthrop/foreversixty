@@ -15,7 +15,7 @@
   "presets": {
     "raid": {
       "label": "Raid-ready, Phase 1",
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used.",
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want.",
       "buffs": [
         {
           "id": "arcane_brilliance",
@@ -254,6 +254,48 @@
                 "reason": "Attack power. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
               }
             ]
+          },
+          "tank": {
+            "reference_stats": [
+              "stamina"
+            ],
+            "ids": [
+              {
+                "id": "flask_of_the_titans",
+                "label": "Flask of the Titans",
+                "reason": "The tank flask: 1200 health for two hours. Its recipe drops from General Drakkisath in Blackrock Spire (data/builds/1.60.1.70009/loot.json), Phase 1 content, so unlike the Zanza potions it is available before Ahn'Qiraj."
+              },
+              {
+                "id": "elixir_of_greater_defense",
+                "label": "Elixir of Greater Defense",
+                "reason": "The tank's armor elixir; the Superior version is not in the 1.60 client's item table, and the Flask of the Titans is an Ahn'Qiraj-era consumable the preset does not use."
+              },
+              {
+                "id": "elixir_of_fortitude",
+                "label": "Elixir of Fortitude",
+                "reason": "Health, the engine's health elixir slot."
+              },
+              {
+                "id": "food_tender_wolf_steak",
+                "label": "Tender Wolf Steak",
+                "reason": "Stamina food a Phase 1 tank can cook: the recipe is a vendor book. Dirge's Kick Chimaerok Chops is left out: its recipe comes from the Ahn'Qiraj scepter chain, which is not on the roadmap."
+              },
+              {
+                "id": "alcohol_rumsey_rum_black_label",
+                "label": "Rumsey Rum Black Label",
+                "reason": "Stamina, the engine's alcohol slot."
+              },
+              {
+                "id": "juju_power",
+                "label": "Juju Power",
+                "reason": "Strength: attack power and, for the classes with block value from strength, block."
+              },
+              {
+                "id": "juju_might",
+                "label": "Juju Might",
+                "reason": "Attack power, the threat consumable; it takes the engine's attack-power slot."
+              }
+            ]
           }
         },
         "by_class": {
@@ -327,6 +369,13 @@
               "id": "elixir_of_shadow_power",
               "label": "Elixir of Shadow Power",
               "reason": "School power elixir."
+            }
+          ],
+          "druid-feral-bear": [
+            {
+              "id": "greater_stoneshield_potion",
+              "label": "Greater Stoneshield Potion",
+              "reason": "Armor for two minutes, the bear's potion: a druid has no rage potion in the preset and no mana to spend."
             }
           ]
         }

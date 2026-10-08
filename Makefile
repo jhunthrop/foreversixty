@@ -289,6 +289,15 @@ publish-wasm: artifacts
 CURATED_APL_DIR = data/curated/apl
 CURATED_SPECS_JSON = data/curated/specs.json
 
+.PHONY: tank-encounter-sync
+# tank-encounter-sync copies the curated tank fight (the boss and the
+# healers every tank spec is simmed against) to the file sim/request embeds,
+# the way apl-sync carries the rotations. data/curated/tank-encounter.json is
+# the single source; sim/request's TestTankEncounterCopyMatchesCurated fails
+# when the copy is stale.
+tank-encounter-sync:
+	cp data/curated/tank-encounter.json sim/request/tank-encounter.json
+
 .PHONY: apl-sync
 # apl-sync copies every WRITTEN curated rotation into the two places that
 # run one. data/curated/apl/<spec>.json's `rotation` block is the single

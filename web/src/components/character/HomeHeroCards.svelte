@@ -32,6 +32,7 @@
   import { talentDeltaFor } from '../../lib/home/talent-delta';
   import { bisCopy } from '../../lib/bis/copy';
   import { presetLabelFor } from '../../lib/bis/presets';
+  import { headlineDpsOf } from '../../lib/bis/tank-view';
 
   let { hero }: { hero: MeCharacter } = $props();
 
@@ -189,7 +190,7 @@
       <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
         {simCardLine(latestSim)}
       </span>
-      {#if ctx !== null}
+      {#if ctx !== null && headlineDpsOf(ctx.band) !== undefined}
         <span class="text-muted font-mono text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
           >{homeHeroCardsCopy.simulatorBandSuffix(ctx.band.set_dps)}</span
         >

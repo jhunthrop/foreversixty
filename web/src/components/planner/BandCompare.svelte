@@ -20,6 +20,7 @@
   import type { BisFile, Faction } from '../../lib/bis/types';
   import { diffAgainstBand, loadFromBand, type BandDiffView } from '../../lib/planner/band-compare';
   import { bandCompareCopy } from '../../lib/planner/copy';
+  import { tankHeadlineForBand } from '../../lib/bis/tank-view';
   import { levelReached } from '../../lib/planner/derive';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
@@ -83,6 +84,16 @@
   const bandEntry = $derived(
     file !== null && file !== undefined ? bandEntryFor(file, band, faction) : undefined,
   );
+
+  /** The band's headline: the set's DPS, or a tank band's first headline figure (its own
+   *  damage is not what a tank is judged on). */
+  const bandFigureLine = $derived.by(() => {
+    if (bandEntry === undefined) return '';
+    const tankFigure = tankHeadlineForBand(bandEntry)?.figures[0];
+    return tankFigure === undefined
+      ? `${bandEntry.set_dps.toFixed(1)} DPS`
+      : `${tankFigure.value} ${tankFigure.label.toLowerCase()}`;
+  });
 
   const diff = $derived.by(() => {
     if (store.talentIndex === null || bandEntry === undefined) return null;
@@ -176,7 +187,7 @@
   {:else if diff !== null}
     <div class="flex flex-col gap-1">
       <span class="tabular text-gold font-mono text-[22px]" data-testid="band-compare-set-dps">
-        {bandEntry.set_dps.toFixed(1)} DPS
+        {bandFigureLine}
       </span>
       <span class="text-muted text-[12px]">{bandCompareCopy.setDpsCaption(bandLabel)}</span>
     </div>

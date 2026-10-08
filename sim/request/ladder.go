@@ -1623,7 +1623,7 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 // a second copy of a grouping already computed elsewhere, not a live
 // dependency on it.
 var idLearnLevelOverrides = map[string]map[int]int{
-	"druid":  {5217: 24},
+	"druid":  {5217: 24, 5229: 12, 22812: 44, 22842: 36},
 	"hunter": {2643: 18, 3045: 26},
 }
 

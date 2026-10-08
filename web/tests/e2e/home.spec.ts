@@ -68,7 +68,7 @@ test('every class crest in the hero picker links to its class guide', async ({ p
   await page.goto('/');
   await expect(page.getByTestId('home-class-picker-warrior')).toHaveAttribute('href', '/guides/warrior');
   await expect(page.getByTestId('home-class-picker-hunter')).toHaveAttribute('href', '/guides/hunter');
-  await expect(page.getByRole('link', { name: 'All 27 specs' }).first()).toHaveAttribute('href', '/bis');
+  await expect(page.getByRole('link', { name: 'All 28 specs' }).first()).toHaveAttribute('href', '/bis');
 });
 
 test("content pages ship only the layout's account menu island", async ({ page }) => {

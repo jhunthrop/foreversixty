@@ -18,6 +18,7 @@ import { SLOTS, type Slot } from '../planner/types';
 import { LOOT_KINDS, SOURCE_KIND_LABELS, type LootFile, type LootKind } from '../sim/loot';
 import { bisCopy } from './copy';
 import { selectBand } from './presets';
+import { DEFAULT_BIS_ROLE, TANK_ROLE } from './tank-view';
 import { hasKnownSource } from './source-cell';
 import type {
   BisBand,
@@ -87,6 +88,18 @@ export function loadBisFile(spec: string, build: string): BisFile | null {
   return null;
 }
 
+/** `role` defaults to `'dps'` and `metrics` to `null` for a file published before roles. A
+ *  tank band without its metrics is a broken publish, so it fails here rather than render
+ *  a headline with nothing in it. */
+function normaliseRole(band: BisBand): Pick<BisBand, 'role' | 'metrics'> {
+  const role = band.role ?? DEFAULT_BIS_ROLE;
+  const metrics = band.metrics ?? null;
+  if (role === TANK_ROLE && metrics === null) {
+    throw new Error(`BiS band ${band.spec} ${band.faction} ${band.band} has role tank but no metrics`);
+  }
+  return { role, metrics };
+}
+
 /** The nightly's first files wrote `null` for an empty "new at this band" list (a Go nil
  *  slice); the contract is an array, so every band is read as one. Also defaults `coverage`
  *  (lane `rank-guardrails`' guardrail A, `report.go`'s own `Coverage` field) to `{}`: a file
@@ -108,6 +121,7 @@ export function normaliseBisFile(file: BisFile): BisFile {
     ...file,
     bands: file.bands.map((band) => ({
       ...band,
+      ...normaliseRole(band),
       new_at_band: band.new_at_band ?? [],
       coverage: band.coverage ?? {},
       reference_dps_per_point: band.reference_dps_per_point ?? null,

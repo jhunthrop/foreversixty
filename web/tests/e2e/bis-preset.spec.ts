@@ -1,13 +1,14 @@
 // web/tests/e2e/bis-preset.spec.ts
 // The level-60 "Raid-ready · Bare" control on the BiS page. Hermetic: /bis/warrior/protection
 // has no published file, so the page reads src/data/fixtures/bis/warrior-protection.json,
-// which carries both presets (bare set DPS 215, raid set DPS 260, invented). Below level 60
+// which is a tank file carrying both presets (bare effective health 8,420, raid 11,235,
+// invented). Below level 60
 // a real file (hunter/marksmanship band 20) proves the control is absent.
 import { test, expect, type Page } from '@playwright/test';
 
 const PRESET_PAGE = '/bis/warrior/protection#band-alliance-60';
-const BARE_DPS = '215.0';
-const RAID_DPS = '260.0';
+const BARE_FIGURE = '8,420';
+const RAID_FIGURE = '11,235';
 
 const raidView = (page: Page) =>
   page.locator('[data-testid="bis-band-alliance-60"] [data-preset-view="raid"]');
@@ -19,7 +20,7 @@ test('level 60 opens on the raid-ready preset with a caption naming what it incl
   await page.goto(PRESET_PAGE);
   await expect(option(page, 'raid')).toHaveAttribute('aria-checked', 'true');
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'false');
-  await expect(raidView(page).getByTestId('bis-this-set')).toContainText(RAID_DPS);
+  await expect(raidView(page).getByTestId('bis-this-set')).toContainText(RAID_FIGURE);
   await expect(bareView(page)).toBeHidden();
   const caption = page.getByTestId('bis-preset-caption-alliance-60-raid');
   await expect(caption).toContainText('Raid-ready, Phase 1');
@@ -52,19 +53,19 @@ test('choosing Bare swaps the numbers and writes ?preset=bare without a reload',
   await expect(page).toHaveURL(/[?&]preset=bare/);
   await expect(page).toHaveURL(/#band-alliance-60$/);
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'true');
-  await expect(bareView(page).getByTestId('bis-this-set')).toContainText(BARE_DPS);
+  await expect(bareView(page).getByTestId('bis-this-set')).toContainText(BARE_FIGURE);
   await expect(raidView(page)).toBeHidden();
   await expect(page.getByTestId('bis-preset-caption-alliance-60-bare')).toContainText('no raid buffs');
   expect(await page.evaluate(() => (window as unknown as { __marker?: boolean }).__marker)).toBe(true);
   await option(page, 'raid').click();
   await expect(page).toHaveURL(/[?&]preset=raid/);
-  await expect(raidView(page).getByTestId('bis-this-set')).toContainText(RAID_DPS);
+  await expect(raidView(page).getByTestId('bis-this-set')).toContainText(RAID_FIGURE);
 });
 
 test('a ?preset=bare link opens on the bare numbers, stat weights and list included', async ({ page }) => {
   await page.goto(`/bis/warrior/protection?preset=bare${PRESET_PAGE.slice(PRESET_PAGE.indexOf('#'))}`);
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'true');
-  await expect(bareView(page).getByTestId('bis-this-set')).toContainText(BARE_DPS);
+  await expect(bareView(page).getByTestId('bis-this-set')).toContainText(BARE_FIGURE);
   await expect(page.getByTestId('bis-weights-alliance-60-bare')).toBeVisible();
   await expect(page.getByTestId('bis-weights-alliance-60')).toBeHidden();
   await expect(page.getByTestId('bis-list-alliance-60-bare')).toBeVisible();

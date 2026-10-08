@@ -371,6 +371,8 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// ever publish as a final pick already carries the flag before any
 	// band's own eligible()/pick()/tournament pass runs.
 	items = markNotInSimDB(items)
+	// A tank is ranked on tank score, not damage (score_tank.go).
+	runner = roleRunner(runner, specInfo)
 	// itemFactionRestriction: item id -> its own client-stated
 	// faction_restriction, for correctedRepSource's general check
 	// (data.go's own doc: a mined rep source's Side is wrong for a real
@@ -500,6 +502,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 
 			weapon := ladderWeapon(items, band)
 			ladderCh := ladderCharacter(guide.AllianceRace, specInfo.ClassSlug, band, engineTalents, weapon, ladderMeleeWeapons(items, band, specInfo.Spec)...)
+			ladderCh = tankLadderCharacter(specInfo, items, band, ladderCh)
 
 			weightsStart := time.Now()
 			wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)
@@ -606,6 +609,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// is otherwise "NOT checked here" at all.
 				bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
 				bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
+				bySlot["main_hand"] = restrictTankMainHand(specInfo, bySlot["main_hand"])
 				bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
 				if requiresDagger {
 					// weapon_requirements.go's own doc: a mace or sword is a
@@ -817,6 +821,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 					return fmt.Errorf("band %d hit profile: %w", band, err)
 				}
 				report.HitToCap = hitToCapFor(specInfo.Spec, profile)
+				if err := annotateTankBand(runner, specInfo, f.race, band, engineTalents, picks, &report); err != nil {
+					return fmt.Errorf("band %d %s tank figures: %w", band, f.name, err)
+				}
 				reports = append(reports, report)
 				if pass.name == presetBare {
 					previous[f.name] = picks

@@ -17,6 +17,9 @@ export interface BisClassCardSpec {
   /** `bandEntry(file, 60, 'alliance')?.set_dps` -- undefined when the spec has no file yet,
    *  or (rare) no level-60 alliance band. */
   band60Dps?: number;
+  /** A tank spec's level-60 summary line, shown in place of `band60Dps` (a tank's own
+   *  damage is not its headline). */
+  band60TankSummary?: string;
   /** The preset `band60Dps` was measured under, as the file labels it (shown as a tooltip). */
   band60PresetLabel?: string;
 }
@@ -40,13 +43,13 @@ const { name, slug, specs } = Astro.props;
       {specs.map((spec) => (
         <li class="flex items-center justify-between gap-3">
           <a href={`/bis/${spec.class_slug}/${spec.spec_slug}`}>{spec.name}</a>
-          {spec.hasData && spec.band60Dps !== undefined ? (
+          {spec.hasData && (spec.band60Dps !== undefined || spec.band60TankSummary !== undefined) ? (
             <span
               class="tabular text-muted text-[12px]"
               title={spec.band60PresetLabel}
               data-testid={`bis-index-dps-${spec.class_slug}-${spec.spec_slug}`}
             >
-              {bisCopy.indexSpecDps60(spec.band60Dps)}
+              {spec.band60TankSummary ?? bisCopy.indexSpecDps60(spec.band60Dps ?? 0)}
             </span>
           ) : (
             <span class="text-muted text-[12px]">{bisCopy.noDataYet}</span>

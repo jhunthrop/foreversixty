@@ -5,8 +5,9 @@
 // (`sim/cmd/leveling-bis/leveling-bis` fixes it per band), never a signed-in character's
 // real level -- the two are unrelated facts that happen to coincide in the mock's own
 // worked example (spec's own explicit warning).
-import { bisCopy } from '../../lib/bis/copy';
+import { bisCopy, tankCopy } from '../../lib/bis/copy';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+import type { TankHeadline } from '../../lib/bis/tank-view';
 
 interface Props {
   setDps: number;
@@ -16,19 +17,39 @@ interface Props {
   generatedAtDate: string;
   simHref: string;
   plannerHref: string;
+  /** A tank band's headline: shown in place of the DPS figure when present. */
+  tank?: TankHeadline | undefined;
 }
 
-const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, plannerHref } = Astro.props;
+const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, plannerHref, tank } =
+  Astro.props;
 ---
 
 <div class="this-set-panel" data-testid="bis-this-set">
   <span class="label">{bisCopy.thisSetLabel}</span>
-  <span class="this-set-figure-row">
-    <span class="font-mono tabular this-set-figure">{setDps.toFixed(1)}</span>
-    <span class="this-set-figure-caption">
-      {bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
+  {tank === undefined ? (
+    <span class="this-set-figure-row">
+      <span class="font-mono tabular this-set-figure">{setDps.toFixed(1)}</span>
+      <span class="this-set-figure-caption">
+        {bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
+      </span>
     </span>
-  </span>
+  ) : (
+    <>
+      <span class="tank-figures">
+        {tank.figures.map((figure) => (
+          <span class="tank-figure" title={figure.title} data-testid={`bis-tank-figure-${figure.id}`}>
+            <span class="tank-figure-label">{figure.label}</span>
+            <span class="font-mono tabular tank-figure-value">{figure.value}</span>
+          </span>
+        ))}
+      </span>
+      <span class="this-set-figure-caption" title={tank.secondaryTitle} data-testid="bis-tank-secondary">
+        {tank.secondaryLine}
+      </span>
+      <span class="this-set-figure-caption">{tankCopy.figureLine(characterLevel, race, talentPoints)}</span>
+    </>
+  )}
   <span class="this-set-simmed text-muted">{bisCopy.simmedLine(generatedAtDate)}</span>
   <span class="this-set-actions">
     <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={simHref}>
@@ -62,6 +83,24 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
   .this-set-figure-caption {
     font-size: 13px;
     color: var(--color-muted);
+  }
+  .tank-figures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+  }
+  .tank-figure {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tank-figure-label {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .tank-figure-value {
+    font-size: 22px;
+    color: var(--color-strong);
   }
   .this-set-simmed {
     font-size: 12px;

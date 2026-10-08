@@ -217,13 +217,21 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		return nil, err
 	}
 
+	raid := &proto.Raid{
+		Parties: []*proto.Party{{Players: []*proto.Player{player}, Buffs: buffs.Party}},
+		Buffs:   buffs.Raid,
+		Debuffs: buffs.Debuffs,
+	}
+	enc := encounter(req.Encounter, ch.Level)
+	if IsTankSpec(req.Spec) {
+		if err := applyTankFight(player, raid, enc, req); err != nil {
+			return nil, err
+		}
+	}
+
 	return &proto.RaidSimRequest{
-		Raid: &proto.Raid{
-			Parties: []*proto.Party{{Players: []*proto.Player{player}, Buffs: buffs.Party}},
-			Buffs:   buffs.Raid,
-			Debuffs: buffs.Debuffs,
-		},
-		Encounter: encounter(req.Encounter, ch.Level),
+		Raid:      raid,
+		Encounter: enc,
 		SimOptions: &proto.SimOptions{
 			Iterations: int32(req.Iterations),
 			RandomSeed: req.RandomSeed,
@@ -563,12 +571,14 @@ var aplFS embed.FS
 var specOptions = map[string]func(*proto.Player){
 	"druid-balance":        balanceDruidOptions,
 	"druid-feral":          feralDruidOptions,
+	"druid-feral-bear":     feralBearDruidOptions,
 	"hunter-beast-mastery": hunterOptions,
 	"hunter-marksmanship":  hunterOptions,
 	"hunter-survival":      hunterOptions,
 	"mage-arcane":          mageOptions,
 	"mage-fire":            mageOptions,
 	"mage-frost":           mageOptions,
+	"paladin-protection":   protectionPaladinOptions,
 	"paladin-retribution":  retributionPaladinOptions,
 	"priest-shadow":        shadowPriestOptions,
 	"rogue-assassination":  rogueOptions,
@@ -581,6 +591,7 @@ var specOptions = map[string]func(*proto.Player){
 	"warlock-destruction":  warlockOptions,
 	"warrior-arms":         warriorOptions,
 	"warrior-fury":         warriorOptions,
+	"warrior-protection":   tankWarriorOptions,
 }
 
 func balanceDruidOptions(p *proto.Player) {
@@ -597,6 +608,18 @@ func feralDruidOptions(p *proto.Player) {
 		Options: &proto.FeralDruid_Options{
 			InnervateTarget: &proto.UnitReference{},
 			LatencyMs:       defaultLatencyMS,
+		},
+	}}
+}
+
+// feralBearDruidOptions is the bear tank: the tree is Feral Combat's, the
+// form is Bear. Nothing is innervated and the fight starts at no rage, the
+// engine's own tank preset.
+func feralBearDruidOptions(p *proto.Player) {
+	p.Spec = &proto.Player_FeralTankDruid{FeralTankDruid: &proto.FeralTankDruid{
+		Options: &proto.FeralTankDruid_Options{
+			InnervateTarget: &proto.UnitReference{},
+			StartingRage:    defaultStartingRage,
 		},
 	}}
 }
@@ -624,6 +647,18 @@ func retributionPaladinOptions(p *proto.Player) {
 		Options: &proto.PaladinOptions{
 			PrimarySeal: proto.PaladinSeal_Righteousness,
 			Aura:        proto.PaladinAura_SanctityAura,
+		},
+	}}
+}
+
+// protectionPaladinOptions is the tank paladin: Righteous Fury is on, as a
+// tank's always is, and the Righteousness seal until the rotation names
+// another.
+func protectionPaladinOptions(p *proto.Player) {
+	p.Spec = &proto.Player_ProtectionPaladin{ProtectionPaladin: &proto.ProtectionPaladin{
+		Options: &proto.PaladinOptions{
+			PrimarySeal:   proto.PaladinSeal_Righteousness,
+			RighteousFury: true,
 		},
 	}}
 }
@@ -664,6 +699,18 @@ func warriorOptions(p *proto.Player) {
 		Options: &proto.Warrior_Options{
 			StartingRage: defaultStartingRage,
 			Shout:        proto.WarriorShout_WarriorShoutBattle,
+		},
+	}}
+}
+
+// tankWarriorOptions is the Protection warrior: Defensive Stance from the
+// first swing, Commanding Shout for the health, no rage banked at the pull.
+func tankWarriorOptions(p *proto.Player) {
+	p.Spec = &proto.Player_TankWarrior{TankWarrior: &proto.TankWarrior{
+		Options: &proto.TankWarrior_Options{
+			StartingRage: defaultStartingRage,
+			Shout:        proto.WarriorShout_WarriorShoutCommanding,
+			Stance:       proto.WarriorStance_WarriorStanceDefensive,
 		},
 	}}
 }
