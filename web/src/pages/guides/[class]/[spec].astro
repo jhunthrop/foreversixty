@@ -15,9 +15,8 @@
 import { getCollection } from 'astro:content';
 import ArtPanel from '../../../components/ArtPanel.astro';
 import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.astro';
-import BuildActionButtons from '../../../components/guides/BuildActionButtons.astro';
 import GuideActionRail from '../../../components/guides/GuideActionRail.astro';
-import GuideBuildTree from '../../../components/guides/GuideBuildTree.svelte';
+import GuideBuilds from '../../../components/guides/GuideBuilds.astro';
 import GuideStatTable from '../../../components/guides/GuideStatTable.astro';
 import LevelingBandStrip, { type LevelingBandRow } from '../../../components/guides/LevelingBandStrip.astro';
 import RacePillRow from '../../../components/guides/RacePillRow.astro';
@@ -186,12 +185,7 @@ const levelingRows: LevelingBandRow[] =
   <SpecTableOfContents slot="aside" placement="rail" />
   <Fragment set:html={overviewHtml} />
   <Fragment set:html={talentsHtml} />
-  {buildCode !== undefined && (
-    <>
-      <GuideBuildTree client:visible code={buildCode} />
-      <BuildActionButtons code={buildCode} />
-    </>
-  )}
+  {buildCode !== undefined && <GuideBuilds levelingCode={buildCode} raidCode={entry.data.raidBuild} />}
   <Fragment set:html={rotationHtml} />
   <Fragment set:html={statPriorityHeadingHtml} />
   <GuideStatTable

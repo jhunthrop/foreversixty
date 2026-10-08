@@ -4,6 +4,7 @@ classSlug: paladin
 spec: retribution
 role: dps
 build: 'FS1:1.60.1.70009:paladin:human:52003003/052/05025331001330311:'
+raidBuild: 'FS1:1.60.1.70009:paladin:human:54003/053/0520533100133032:'
 recommendedRaces: [human, undead]
 statPriority: [Strength, Attack power, Critical strike, Hit, Agility, Melee haste]
 description: 'Talents, rotation, stats, gear, races, and professions for Retribution Paladin melee damage in Forever.'
@@ -42,6 +43,8 @@ Retribution is Forever's Paladin melee damage tree, built around keeping a Seal 
 A newer talent search against this build's own level-60 gear and engine moved this guide's spend deeper into Retribution, 31 points in the tree with 13 in Holy and 7 in Protection. It adds **Reverence** at 3/3 (an engine-measured damage talent in Holy) and **Twist of Light** at 1/1, the capstone of the Retribution tree, which the engine's per-talent probe credits as one of the largest single-point gains available. To pay for them, it drops **Divine Intellect** from 4 points to 2, **Precision** from 3 points to 2, and **Instrument of Law** from 2/2 to 1/2 (the probe measures that talent at zero damage, so the second point is the cheapest one to give up), and it moves the Protection points out of **Toughness** (3/5 → 0/5) and into **Redoubt** (2/5 → 5/5). Both are defensive talents the engine models and measures at zero damage, which is why the swap is free.
 
 **Improved Seals** (3/3), **Divine Strength** (5/5), **Champion of the Light** (3/3), **Vengeance**, **Two-Handed Weapon Specialization**, **Conviction**, **Benediction**, **Seal of Command**, **Vindication**, and **Sacred Arbiter** hold unchanged. **Sanctified Judgement**, held at 3/3 (a 33% chance for Judgement to refund 20% of the judged Seal's mana cost), is still the single largest damage contributor in this build's own probe, since sustaining more Judgements over a fight is worth real DPS even though the tooltip reads like a mana talent. **Holy Conduit**, held at 2/2 (20% less mana cost on Consecration, Holy Wrath, Exorcism, and Hammer of Wrath), is a real if smaller damage gain rather than pure sustain. The rotation casts exactly what it did before: no ability in the priority list goes idle at any level of the ladder. This build measures about +6% over the previous spend in our level-60 search run. This spend is still a projection — the beta cap of 30 has not let anyone test it live, only this site's own simulator. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+
+**Raid build.** For a raid the search found about +2% over the leveling build above in the raid-ready run: it moves Reverence, two Holy Conduit points and Twist of Light, which the simulator measures at no damage, into Divine Intellect, Precision, Improved Judgement and the second rank of Instrument of Law, which also takes the threat off. Seal of Command, Vindication and the first rank of Instrument of Law stay.
 
 ## Rotation and priority
 

@@ -1,0 +1,31 @@
+---
+// web/src/components/guides/GuideBuilds.astro
+// The embedded talent trees under a spec guide's "Talents and builds" prose: one block per
+// build from guideBuildBlocks -- the leveling build and the raid build, or a single
+// "Leveling and raid build" when they are the same -- each with the read-only tree and its
+// planner and sim links. This page owns talents; /bis only links here and to the planner.
+import { guideBuildBlocks } from '../../lib/guides/guide-builds';
+import BuildActionButtons from './BuildActionButtons.astro';
+import GuideBuildTree from './GuideBuildTree.svelte';
+
+interface Props {
+  levelingCode: string;
+  raidCode?: string;
+}
+const { levelingCode, raidCode } = Astro.props;
+const blocks = guideBuildBlocks(levelingCode, raidCode);
+---
+
+{blocks.map((block) => (
+  <section class="mt-6" data-testid={`guide-build-${block.kind}`}>
+    <h3 id={block.id}>{block.label}</h3>
+    <GuideBuildTree client:visible code={block.code} />
+    <BuildActionButtons
+      code={block.code}
+      loadTestId={block.kind === 'raid' ? 'guide-load-raid-build' : 'guide-load-build'}
+      simTestId={block.kind === 'raid' ? 'guide-sim-raid-build' : 'guide-sim-build'}
+      loadAriaLabel={block.loadAriaLabel}
+      simAriaLabel={block.simAriaLabel}
+    />
+  </section>
+))}

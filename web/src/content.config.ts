@@ -48,6 +48,11 @@ export const guideSchema = factSchema.extend({
    *  "Sim this build" links; `_sections.test.ts`'s own SSR test decodes every one and checks
    *  it names this guide's own class and stays legally reachable within 51 points. */
   build: z.string().optional(),
+  /** An FS1 code for the raid build (spec guides only): the build the raid-ready preset's
+   *  level-60 entry is simmed on, which the BiS ranker reads for that entry alone. Absent when
+   *  the raid search found nothing better than `build`, so the leveling build is also the
+   *  raid build. Same legality rules as `build`; `builds.test.ts` checks it the same way. */
+  raidBuild: z.string().optional(),
   /** Race slugs (races.json's own `slug`) this guide calls a strong pick, in the order the
    *  guide's own Races prose names them. RacePillRow.astro marks these among the class's
    *  full legal race list; an empty array (the default, and every class landing page's

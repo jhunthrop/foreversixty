@@ -4,6 +4,7 @@ classSlug: mage
 spec: fire
 role: dps
 build: 'FS1:1.60.1.70009:mage:gnome:2050151/23552100130103051/005:'
+raidBuild: 'FS1:1.60.1.70009:mage:gnome:2050151/23252100130133051/005:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -46,6 +47,8 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 This build spends 32 points in Fire to reach Combustion at the bottom, and two of them are Pyroblast and Heating Up. They come out of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measures the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. Taking those two points from Wake of Fire or Incineration instead measures the same within the sim's error, so that is a matter of taste if you would rather keep the mana refund.
 
 Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 5 points in Frost instead, all into **Elemental Precision** (5/5, 5% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+
+**Raid build.** For a raid the search found a small gain, about +1% over the leveling build above in the raid-ready run, from moving the three Improved Fireball points into Master of Elements. Improved Scorch, Combustion, Flame Throwing and Impact all stay.
 
 ## Rotation and priority
 

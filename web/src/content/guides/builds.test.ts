@@ -53,6 +53,9 @@ interface LoadedGuide {
   frontmatter: Record<string, unknown>;
 }
 
+/** Appended to a guide's id for the entry that checks its `raidBuild:` (carried as `build:`). */
+const RAID_SUFFIX = ' (raid build)';
+
 function loadSpecGuides(): LoadedGuide[] {
   const guides: LoadedGuide[] = [];
   for (const classDir of readdirSync(guidesRoot, { withFileTypes: true })) {
@@ -63,7 +66,16 @@ function loadSpecGuides(): LoadedGuide[] {
       const [, frontmatterBlock] = raw.split('---');
       const frontmatter = parseYaml(frontmatterBlock) as Record<string, unknown>;
       if (frontmatter.spec === undefined) continue; // class landing pages carry no build:
-      guides.push({ id: `${classDir.name}/${file.slice(0, -'.md'.length)}`, frontmatter });
+      const id = `${classDir.name}/${file.slice(0, -'.md'.length)}`;
+      guides.push({ id, frontmatter });
+      // A raid build must be as legal as the leveling build, so every check below runs on it
+      // too: the same frontmatter with `raidBuild:` read as the build under test.
+      if (typeof frontmatter.raidBuild === 'string') {
+        guides.push({
+          id: `${id}${RAID_SUFFIX}`,
+          frontmatter: { ...frontmatter, build: frontmatter.raidBuild },
+        });
+      }
     }
   }
   return guides;
@@ -124,7 +136,7 @@ const SIGNATURE_TALENTS: Record<string, string[]> = {
   'mage/fire': ['Combustion'],
   'paladin/retribution': ['Seal of Command'],
   'priest/shadow': ['Inner Focus', 'Shadowform'],
-  'rogue/assassination': ['Cold Blood', 'Mutilate', 'Venom'],
+  'rogue/assassination': ['Cold Blood', 'Mutilate'],
   'rogue/combat': ['Adrenaline Rush'],
   'rogue/subtlety': ['Ghostly Strike', 'Premeditation', 'Hemorrhage'],
   'hunter/survival': ['Counterattack', 'Strider Kick'],
@@ -260,27 +272,31 @@ describe('guide build codes decode to a legal, complete build on the active data
     ).toBe(true);
   });
 
-  it.each(Object.entries(SIGNATURE_TALENTS))(
-    '%s takes its rotation-required signature talents',
-    (id, names) => {
-      const guide = guides.find((g) => g.id === id);
-      expect(guide, `${id}: no such guide`).toBeDefined();
-      if (!guide) return;
-      const decoded = decodeFS1(guide.frontmatter.build as string);
-      if (!decoded.ok) return; // reported by the decode test above
-      const file = talentsFor(decoded.build.classSlug);
-      const trees = [...file.trees].sort((a, b) => a.position - b.position);
-      const rankOf = new Map<string, number>();
-      decoded.build.treeRanks.forEach((ranks, treeIndex) => {
-        trees[treeIndex]?.talents.forEach((talent, digitIndex) => {
-          rankOf.set(talent.name, Math.min(ranks[digitIndex] ?? 0, talent.max_rank));
-        });
-      });
-      const missing = names.filter((name) => (rankOf.get(name) ?? 0) <= 0);
-      expect(
-        missing,
-        `${id}: rotation needs ${missing.join(', ')} but the build: string does not take it`,
-      ).toEqual([]);
-    },
+  // The raid build of a guide that has one must keep the same rotation-required talents.
+  const signatureEntries = Object.entries(SIGNATURE_TALENTS).flatMap(([id, names]) =>
+    guides.some((g) => g.id === `${id}${RAID_SUFFIX}`)
+      ? [[id, names] as const, [`${id}${RAID_SUFFIX}`, names] as const]
+      : [[id, names] as const],
   );
+
+  it.each(signatureEntries)('%s takes its rotation-required signature talents', (id, names) => {
+    const guide = guides.find((g) => g.id === id);
+    expect(guide, `${id}: no such guide`).toBeDefined();
+    if (!guide) return;
+    const decoded = decodeFS1(guide.frontmatter.build as string);
+    if (!decoded.ok) return; // reported by the decode test above
+    const file = talentsFor(decoded.build.classSlug);
+    const trees = [...file.trees].sort((a, b) => a.position - b.position);
+    const rankOf = new Map<string, number>();
+    decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+      trees[treeIndex]?.talents.forEach((talent, digitIndex) => {
+        rankOf.set(talent.name, Math.min(ranks[digitIndex] ?? 0, talent.max_rank));
+      });
+    });
+    const missing = names.filter((name) => (rankOf.get(name) ?? 0) <= 0);
+    expect(
+      missing,
+      `${id}: rotation needs ${missing.join(', ')} but the build: string does not take it`,
+    ).toEqual([]);
+  });
 });

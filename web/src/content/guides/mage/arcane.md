@@ -4,6 +4,7 @@ classSlug: mage
 spec: arcane
 role: dps
 build: 'FS1:1.60.1.70009:mage:gnome:153005113100011531/032023/055:'
+raidBuild: 'FS1:1.60.1.70009:mage:gnome:153005113100011531/03/05450003:'
 recommendedRaces: [gnome, orc]
 statPriority: [Spell power, Arcane power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Arcane Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -46,6 +47,8 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 This build spends 31 points in Arcane, exactly the path to Arcane Power, and keeps every Arcane pick the sim measures as damage: **Arcane Impact** (3/3, 6% more Arcane critical strike chance) and **Arcane Instability** (3/3, 3% more spell damage and 3% more critical strike chance) stay maxed. The five points that earlier carried the Arcane tree past 31 (both ranks of **Arcane Subtlety**, both of **Magic Absorption**, one rank of **Wand Specialization**) came out because the sim measures none of them as damage for this rotation.
 
 The other 20 points split 10 and 10. Fire keeps **Incineration** (3/3), **Improved Fireball** at 2/5, **Flame Throwing** (2/2) and **Impact** (3/3); **Wake of Fire** and **Ignite** stay at 0, as before. Those picks are held on purpose: the sim does not model Flame Throwing or Impact, so it cannot show what they grant, and the guide keeps them rather than trade away a talent nobody has measured. Frost now takes 10 points instead of 5: **Elemental Precision** stays at 5/5 and **Improved Frostbolt** (5/5) is new, which lifts Frostbolt's damage in the two-Blast loop and is the single largest gain in this spend. This build measures about +1.9% over the previous spend in our level-60 search run, and every talent the engine cannot model (Improved Channeling, Arcane Resilience, Arcane Geometry, Flame Throwing, Impact) is still in it. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+
+**Raid build.** For a raid the search found about +1.5% over the leveling build above in the raid-ready run: it moves two points of Improved Fireball, one of Elemental Precision, the two Flame Throwing points (range on a school this rotation does not cast) and the three Impact points (a stun) into five of Ice Shards and three of Piercing Ice, which lift the Frostbolt in the two-Blast loop. The rotation's talents, Improved Channeling, Arcane Resilience and Arcane Geometry all stay.
 
 ## Rotation and priority
 
