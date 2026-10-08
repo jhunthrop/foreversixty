@@ -279,6 +279,10 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err != nil {
 		return err
 	}
+	runner, healProfile, err := withHealerEngine(runner, repoRoot, specInfo)
+	if err != nil {
+		return err
+	}
 	raidPreset, err := resolveRaidPreset(repoRoot, specInfo)
 	if err != nil {
 		return fmt.Errorf("resolving the %s preset for %s: %w", presetRaid, spec, err)
@@ -824,6 +828,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				if err := annotateTankBand(runner, specInfo, f.race, band, engineTalents, picks, &report); err != nil {
 					return fmt.Errorf("band %d %s tank figures: %w", band, f.name, err)
 				}
+				if err := attachHealerFields(&report, runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks); err != nil {
+					return fmt.Errorf("band %d %s: %w", band, f.name, err)
+				}
 				reports = append(reports, report)
 				if pass.name == presetBare {
 					previous[f.name] = picks
@@ -862,7 +869,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 
 	jsonPath := filepath.Join(outDir, spec+".json")
 	presets := map[string]request.ResolvedPreset{presetRaid: raidPreset}
-	if err := writeSpecReport(jsonPath, spec, activeBuild, reports, presets); err != nil {
+	if err := writeSpecReport(jsonPath, spec, activeBuild, reports, presets, withHealProfile(healProfile)); err != nil {
 		return fmt.Errorf("writing %s: %w", jsonPath, err)
 	}
 	mdPath := filepath.Join(outDir, spec+".md")

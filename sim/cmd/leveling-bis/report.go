@@ -1320,13 +1320,17 @@ type bandReport struct {
 	// does not render anything from this field yet (this lane's
 	// brief: "web shows nothing new yet").
 	WeightsLowConfidence bool `json:"weights_low_confidence,omitempty"`
-	// Role and Metrics are set for a tank band only (annotateTankBand,
-	// score_tank_report.go): Role is "tank", and Metrics the figures the
-	// site headlines in place of DPS. On such a band SetDPS is the tank's
-	// own damage, and every sim-decided figure (sim_dps, dps_delta) is in
-	// tank score, as ScoreUnit says.
-	Role    string             `json:"role,omitempty"`
-	Metrics *tankMetricsReport `json:"metrics,omitempty"`
+	// Role, Profile and Metrics are set for a tank or a healer band only.
+	// A tank band (annotateTankBand, score_tank_band.go) has Role "tank"
+	// and Metrics a *tankMetricsReport, the figures the site headlines in
+	// place of DPS; on it SetDPS is the tank's own damage and every
+	// sim-decided figure (sim_dps, dps_delta) is in tank score, as
+	// ScoreUnit says. A healer band (attachHealerFields, score_heal.go)
+	// has Role "healer", the heal Profile it was measured under and
+	// Metrics a *healingMetrics. A damage spec's entry carries none.
+	Role    string `json:"role,omitempty"`
+	Profile string `json:"profile,omitempty"`
+	Metrics any    `json:"metrics,omitempty"`
 }
 
 // scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value
@@ -2053,13 +2057,24 @@ type specReport struct {
 	// Presets states what each non-bare preset applied, by name: the
 	// request-vocabulary ids with a label per id.
 	Presets map[string]request.ResolvedPreset `json:"presets"`
+	// HealProfile is the incoming-damage profile every healer entry in the
+	// file was measured under, reasons included. Set only for a healer.
+	HealProfile *request.HealProfile `json:"heal_profile,omitempty"`
+}
+
+// specReportOption adds an optional block to a spec report.
+type specReportOption func(*specReport)
+
+// withHealProfile publishes the profile a healer's file was measured under.
+func withHealProfile(profile *request.HealProfile) specReportOption {
+	return func(r *specReport) { r.HealProfile = profile }
 }
 
 // writeSpecReport writes path per the specReport contract above.
 // GeneratedAt is RFC3339, in UTC so two runs on different machines (a
 // dev's laptop, the nightly workflow's runner) produce comparable
 // timestamps rather than each in its own local zone.
-func writeSpecReport(path, spec, build string, reports []bandReport, presets map[string]request.ResolvedPreset) error {
+func writeSpecReport(path, spec, build string, reports []bandReport, presets map[string]request.ResolvedPreset, options ...specReportOption) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
@@ -2070,6 +2085,9 @@ func writeSpecReport(path, spec, build string, reports []bandReport, presets map
 		GeneratedAt:   time.Now().UTC().Format(time.RFC3339),
 		Bands:         reports,
 		Presets:       presets,
+	}
+	for _, option := range options {
+		option(&out)
 	}
 	b, err := json.MarshalIndent(out, "", "  ")
 	if err != nil {

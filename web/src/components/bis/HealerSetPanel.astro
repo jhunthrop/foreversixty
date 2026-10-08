@@ -1,0 +1,171 @@
+---
+// web/src/components/bis/HealerSetPanel.astro
+// The healer variant of "This set" (ThisSetPanel.astro), in the same slot of the band's
+// three-panel row: the effective-healing figure with the incoming-damage profile it was
+// measured under beside it, three metrics, and a disclosure of what the profile assumes.
+// A healing sim ranks gear under a stated profile; it says nothing about one healer beating
+// another, so the figure never appears without the profile's name.
+//
+// No "Open in simulator" link: the simulator page refuses healer specs (it has no healing
+// model to run yet), so the link would only lead to an error.
+import { bisCopy } from '../../lib/bis/copy';
+import type { HealerSetView } from '../../lib/bis/heal-view';
+import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+
+interface Props {
+  healer: HealerSetView;
+  characterLevel: number;
+  race: string;
+  talentPoints: number;
+  generatedAtDate: string;
+  plannerHref: string;
+}
+
+const { healer, characterLevel, race, talentPoints, generatedAtDate, plannerHref } = Astro.props;
+---
+
+<div class="this-set-panel" data-testid="bis-this-set" data-role="healer">
+  <span class="label">{bisCopy.thisSetLabel}</span>
+  <span class="this-set-figure-row">
+    <span class="font-mono tabular this-set-figure" data-testid="bis-healer-figure">
+      {healer.figure}
+    </span>
+    <span class="font-mono this-set-unit">{healer.unit}</span>
+  </span>
+  <span class="this-set-caption" data-testid="bis-healer-caption">
+    {healer.caption}
+  </span>
+  <span class="this-set-build text-muted">
+    {bisCopy.levelLabel(characterLevel)} · {bisCopy.raceTalentsLine(race, talentPoints)}
+  </span>
+  {healer.metrics.length > 0 && (
+    <dl class="this-set-metrics" data-testid="bis-healer-metrics">
+      {healer.metrics.map((metric) => (
+        <div class="this-set-metric" title={metric.line} data-testid={`bis-healer-${metric.key}`}>
+          <dt class="label">{metric.label}</dt>
+          <dd class="font-mono tabular">{metric.value}</dd>
+          <dd class="sr-only">{metric.line}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
+  {healer.disclosure !== undefined && (
+    <details class="this-set-profile" data-testid="bis-healer-profile">
+      <summary>{healer.disclosure.summary}</summary>
+      <div class="this-set-profile-body" tabindex="0">
+        <p class="this-set-profile-summary">{healer.disclosure.profileSummary}</p>
+        <dl class="this-set-profile-rows">
+          {healer.disclosure.rows.map((row) => (
+            <div class="this-set-profile-row">
+              <dt>{row.heading}</dt>
+              <dd>{row.figures}</dd>
+              {row.reason !== '' && <dd class="text-muted">{row.reason}</dd>}
+            </div>
+          ))}
+        </dl>
+        <p class="text-muted this-set-profile-notes">{healer.disclosure.notes}</p>
+      </div>
+    </details>
+  )}
+  <span class="this-set-simmed text-muted">{bisCopy.simmedLine(generatedAtDate)}</span>
+  <span class="this-set-actions">
+    <a class={`${SECONDARY_BUTTON} border-line-warm text-text px-3`} href={plannerHref}>
+      {bisCopy.talentsInPlanner}
+    </a>
+  </span>
+</div>
+
+<style>
+  .this-set-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 20px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+    min-width: 0;
+  }
+  .this-set-figure-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .this-set-figure {
+    font-size: 28px;
+    color: var(--color-strong);
+  }
+  .this-set-unit {
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .this-set-caption {
+    font-size: 13px;
+    color: var(--color-nav);
+  }
+  .this-set-build,
+  .this-set-simmed {
+    font-size: 12px;
+  }
+  .this-set-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+    gap: 8px;
+    margin: 0;
+  }
+  .this-set-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    border: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-control);
+    min-width: 0;
+  }
+  .this-set-metric dt,
+  .this-set-metric dd {
+    margin: 0;
+  }
+  .this-set-metric dd:not(.sr-only) {
+    margin-top: auto;
+    font-size: 14px;
+    color: var(--color-strong);
+    overflow-wrap: anywhere;
+  }
+  .this-set-profile {
+    font-size: 12px;
+  }
+  .this-set-profile summary {
+    cursor: pointer;
+    color: var(--color-nav);
+  }
+  /* The reasons are long; scroll inside the disclosure so opening it never stretches the
+     three-panel row (and the two panels beside this one) to the length of the profile. */
+  .this-set-profile-body {
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+  .this-set-profile-summary,
+  .this-set-profile-notes {
+    margin: 8px 0 0;
+  }
+  .this-set-profile-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0 0;
+  }
+  .this-set-profile-row dt {
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .this-set-profile-row dd {
+    margin: 0;
+  }
+  .this-set-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+</style>

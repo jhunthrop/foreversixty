@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
+	"github.com/wowsims/classic/sim/core/proto"
 )
 
 // The rotation ladder (Phase 1a,
@@ -195,6 +196,18 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	var violations []string
 	prevDPS, havePrev := 0.0, false
 
+	// A healer's ladder runs against the heal profile's fake raid, and its
+	// "DPS" column is its effective healing per second: with nothing to
+	// heal its rotation would stand idle and the ladder would prove nothing.
+	var healProfile *HealProfile
+	if spec.Role == "healer" {
+		profile, err := LoadHealProfile(filepath.Join(repoRoot, "data", "curated", "heal-profile.json"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		healProfile = &profile
+	}
+
 	for _, level := range ladderLevels {
 		// talents is the published, active-build-positional string
 		// (ladderRow.Talents, below, reports it unconverted - that is
@@ -247,6 +260,9 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		if err := simdb.Attach(statsReq); err != nil {
 			t.Fatalf("%s level %d: attaching the item database: %v", spec.Spec, level, err)
 		}
+		if healProfile != nil {
+			healProfile.Attach(statsReq)
+		}
 		warned := warnedActions(t, statsReq)
 		warnedSet := map[string]bool{}
 		for _, w := range warned {
@@ -260,6 +276,9 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		if err := simdb.Attach(simReq); err != nil {
 			t.Fatalf("%s level %d: attaching the item database: %v", spec.Spec, level, err)
 		}
+		if healProfile != nil {
+			healProfile.Attach(simReq)
+		}
 		res := core.RunRaidSim(simReq)
 		if err := adapter.ResultError(res); err != nil {
 			t.Fatalf("%s level %d: the sim failed: %v", spec.Spec, level, err)
@@ -268,7 +287,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		if err != nil {
 			t.Fatalf("%s level %d: reading the player's metrics: %v", spec.Spec, level, err)
 		}
-		dps := player.Dps.GetAvg()
+		dps := ladderOutput(player, healProfile != nil)
 		tallies := ladderCastSet(player, ladderIterations)
 		castCounts := CastSpellCounts(player)
 
@@ -418,4 +437,13 @@ func compareOrWriteLadderGolden(t *testing.T, spec string, got []byte) {
 		t.Errorf("the ladder golden for %s differs from testdata/ladder/%s.golden.md; "+
 			"rerun with %s=1 and review the diff", spec, spec, ladderGoldenEnv)
 	}
+}
+
+// ladderOutput is the number a ladder rung reports: damage per second, or
+// for a healer the effective healing per second.
+func ladderOutput(player *proto.UnitMetrics, healer bool) float64 {
+	if healer {
+		return player.EffectiveHps.GetAvg()
+	}
+	return player.Dps.GetAvg()
 }

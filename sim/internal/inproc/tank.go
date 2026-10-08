@@ -67,16 +67,16 @@ func TankRun(req api.SimRequest) (TankRunResult, error) {
 	}
 	n := float64(res.IterationsDone)
 	return TankRunResult{
-		DPS:           estimateOf(player.GetDps(), n),
-		DTPS:          estimateOf(player.GetDtps(), n),
-		TPS:           estimateOf(player.GetThreat(), n),
-		TMI:           estimateOf(player.GetTmi(), n),
+		DPS:           tankEstimateOf(player.GetDps(), n),
+		DTPS:          tankEstimateOf(player.GetDtps(), n),
+		TPS:           tankEstimateOf(player.GetThreat(), n),
+		TMI:           tankEstimateOf(player.GetTmi(), n),
 		ChanceOfDeath: player.GetChanceOfDeath(),
 		Health:        health,
 	}, nil
 }
 
-func estimateOf(d *proto.DistributionMetrics, iterations float64) Estimate {
+func tankEstimateOf(d *proto.DistributionMetrics, iterations float64) Estimate {
 	if d == nil {
 		return Estimate{}
 	}

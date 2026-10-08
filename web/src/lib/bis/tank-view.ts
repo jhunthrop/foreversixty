@@ -3,14 +3,14 @@
 // shows, which unit a slot's figures are in, and how each tank number is written. Everything
 // here is pure -- the Astro components only render what they are handed.
 import { bisCopy, tankCopy } from './copy';
-import type { BisBand, BisRole, TankMetrics } from './types';
+import type { BisBand, BisHealMetrics, BisRole, RateUnit, TankMetrics } from './types';
 
 export const DEFAULT_BIS_ROLE: BisRole = 'dps';
 export const TANK_ROLE: BisRole = 'tank';
 
-/** The unit a slot's `sim_dps`/`dps_delta` figures are in: real damage, or a tank band's
- *  composite tank-score points. */
-export type SlotScoreUnit = 'dps' | 'tank_score';
+/** The unit a slot's `sim_dps`/`dps_delta` figures are in: real damage, effective healing
+ *  per second on a healer band, or a tank band's composite tank-score points. */
+export type SlotScoreUnit = 'dps' | 'hps' | 'tank_score';
 
 const NUMBER_LOCALE = 'en-US';
 const WHOLE_NUMBER = new Intl.NumberFormat(NUMBER_LOCALE, { maximumFractionDigits: 0 });
@@ -41,6 +41,14 @@ export interface TankHeadline {
   secondaryTitle: string;
 }
 
+/** `TankMetrics` is the shape with `effective_health`; a healer band's `BisHealMetrics` is
+ *  the other member of `BisBand.metrics`. */
+export function isTankMetrics(
+  metrics: TankMetrics | BisHealMetrics | null | undefined,
+): metrics is TankMetrics {
+  return metrics !== null && metrics !== undefined && 'effective_health' in metrics;
+}
+
 /** A band is a tank band when it says so; `normaliseBisFile` guarantees a tank band has
  *  its metrics. */
 export function isTankBand(band: Pick<BisBand, 'role'>): boolean {
@@ -48,12 +56,20 @@ export function isTankBand(band: Pick<BisBand, 'role'>): boolean {
 }
 
 export function slotScoreUnitFor(band: Pick<BisBand, 'role'>): SlotScoreUnit {
-  return isTankBand(band) ? 'tank_score' : 'dps';
+  if (isTankBand(band)) return 'tank_score';
+  return band.role === 'healer' ? 'hps' : 'dps';
 }
 
-/** The word that follows a figure in this unit: "+4.2 DPS", "+4.2 score". */
+/** The rate word the shared (damage and healing) copy takes for `unit`: `HPS` for a healer
+ *  band, `DPS` for every other. A tank band's figures are never written through the shared
+ *  copy; they take the `DPS` fallback only where a tank has no unit-specific line. */
+export function rateUnitFor(unit: SlotScoreUnit): RateUnit {
+  return unit === 'hps' ? 'HPS' : 'DPS';
+}
+
+/** The word that follows a figure in this unit: "+4.2 DPS", "+4.2 HPS", "+4.2 score". */
 export function scoreUnitWord(unit: SlotScoreUnit): string {
-  return unit === 'tank_score' ? 'score' : 'DPS';
+  return unit === 'tank_score' ? 'score' : rateUnitFor(unit);
 }
 
 export function formatWholeNumber(value: number): string {
@@ -107,7 +123,7 @@ export function tankHeadlineFor(metrics: TankMetrics): TankHeadline {
 /** The headline for `band`, or `undefined` for every non-tank band (which keeps the DPS
  *  figure). */
 export function tankHeadlineForBand(band: Pick<BisBand, 'role' | 'metrics'>): TankHeadline | undefined {
-  return isTankBand(band) && band.metrics ? tankHeadlineFor(band.metrics) : undefined;
+  return isTankBand(band) && isTankMetrics(band.metrics) ? tankHeadlineFor(band.metrics) : undefined;
 }
 
 /** The band's own damage figure when it is a true headline: `set_dps` for a DPS band,
@@ -118,12 +134,14 @@ export function headlineDpsOf(band: Pick<BisBand, 'role' | 'set_dps'>): number |
 
 /** A runner-up's gap-from-the-pick line in the band's unit. */
 export function gapLabelFor(delta: number, unit: SlotScoreUnit): string {
-  return unit === 'tank_score' ? tankCopy.alternativeGapLabel(delta) : bisCopy.alternativeGapLabel(delta);
+  return unit === 'tank_score'
+    ? tankCopy.alternativeGapLabel(delta)
+    : bisCopy.alternativeGapLabel(delta, rateUnitFor(unit));
 }
 
 /** One-line /bis index summary of a tank's level-60 set. */
 export function tankIndexSummaryOf(band: Pick<BisBand, 'role' | 'metrics'>): string | undefined {
-  return isTankBand(band) && band.metrics
+  return isTankBand(band) && isTankMetrics(band.metrics)
     ? tankCopy.indexSpecSummary(formatWholeNumber(band.metrics.effective_health))
     : undefined;
 }

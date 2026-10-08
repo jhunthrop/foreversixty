@@ -3,11 +3,11 @@ title: Holy Paladin in Forever
 classSlug: paladin
 spec: holy
 role: healer
-build: 'FS1:1.60.1.70009:paladin:human:55222113025101001/55325/0:'
+build: 'FS1:1.60.1.70009:paladin:human:05320003225111051/55325/0:'
 recommendedRaces: [human, undead]
-statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
+statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Talents, rotation, stats, gear, races, and professions for Holy Paladin healing in Forever.'
-updated: 2026-09-24
+updated: 2026-10-07
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -33,35 +33,30 @@ Holy is Forever's Paladin healing tree: single-target direct healing backed by H
 
 ## Talents and builds
 
-Verified against this build's own Paladin talent data:
+The build is nearly all Holy, with the remaining points in Protection where they cost nothing a healer uses. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-1. **Reverence** — lets a percentage of mana regeneration continue while casting, up to 30% at rank 3, which is the foundation of Holy's sustain since Paladins have no periodic heal to lean on between casts.
-2. **Illumination** — a critical heal has a chance, up to 100% at rank 5, to refund mana equal to half the spell's base cost, turning crit rate into a second mana stat.
-3. **Holy Shock** — an instant, short-cooldown heal or damage bolt, the tree's main tool for topping someone off without eating a global on a slow cast.
-4. **Infusion of Light** — a Holy Shock or Flash of Light crit shortens the cast time of the next Holy Light, letting a big heal come out faster right after a proc.
-5. **Divine Favor** — an activated cooldown that guarantees a critical effect on the next Flash of Light, Holy Light, or Holy Shock, useful for a spike heal or to bank a guaranteed Illumination proc.
-6. **Light's Vigil** — the tree's capstone talent; marking an ally with it drops the cooldown off your very next Holy Shock and turns that cast into a party-wide heal, a strong cooldown-neutral burst tool.
+- **Divine Intellect** lifts your mana pool, and **Reverence** keeps part of your regeneration running while you cast.
+- **Healing Light** strengthens Holy Light, Flash of Light and Holy Shock; **Spiritual Focus** protects those casts from damage pushback.
+- **Illumination** returns mana on a critical heal, **Infusion of Light** makes the next Holy Light faster after a Flash of Light or Holy Shock crit, and **Divine Favor** guarantees a critical heal on demand.
+- **Holy Shock** and **Holy Power** give the instant heal and the extra critical chance; **Light's Vigil** is the capstone.
 
-This build puts 31 points in Holy to reach Light's Vigil, with the remaining 20 toward Protection's early survivability talents — Toughness and Redoubt both maxed, then Anticipation, Precision, and Guardian's Favor for the rest of the budget — rather than Retribution, which has little to offer a pure healer build. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+The sim found any build that keeps that core scores the same, because the other Holy talents change nothing a healer casts. Open the planner at [/planner?class=paladin](/planner?class=paladin) to adjust it.
 
 ## Rotation and priority
 
-This site's own rotation data for Holy Paladin is an unwritten stub as of this writing, so the following is written from general 1.12 Holy Paladin practice plus the baseline changes Forever confirmed, not from a simulated priority list. Holy healing in Classic-style content is reactive rather than a fixed rotation: watch raid and tank health, cast Flash of Light for a fast partial heal or Holy Light for a slower full heal depending on how much damage needs covering, and use Holy Shock on cooldown when nobody needs it as free damage or, more often, to catch a spike before a slower cast would land. Light's Vigil is worth tagging a tank with early in a pull so its free Holy Shock is ready when damage picks up. In quiet moments, Judgement costs no mana (sim/paladin/judgement.go, matching the client's own spell data), so there is no reason not to fire it off cooldown for the threat reduction — it does still consume whichever Seal is active when it lands, the same as 1.12, so plan on recasting a Seal right after. Divine Favor is best saved for a heal you know needs to land, since its guaranteed crit also feeds Illumination.
+The curated rotation opens with **Greater Blessing of Light** before the pull and then leans on **Flash of Light** as the staple: it is the most efficient heal per mana for both the tank and the party. **Divine Favor** into **Holy Light** answers a tank who is nearly dead. **Holy Shock** and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left; a healer who is short on mana, which is the usual case, heals as a Flash of Light healer.
+
+**Light's Vigil** is in the engine but left out of the rotation: against the profile's pulses it cost more mana than it returned. The rotation does not downrank.
 
 ## Stat priority
 
-Ordered by this site's own simulator-derived weights:
+In simulator-derived order, per point of stat: **MP5** first, then **Intellect**, with **healing power** and **Spirit** close together behind and **critical strike** after them. Intellect feeds both your pool and Illumination's mana return. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
 
-1. **Healing power** — the direct multiplier on every heal this spec casts.
-2. **Spell power** — contributes to the same healing coefficient as healing power on Forever's itemization.
-3. **Spirit** — feeds mana regeneration directly, and Reverence extends some of that regen into the casting window itself.
-4. **MP5** — flat mana-per-five regeneration, useful once fights get long enough that burst healing power stops being the bottleneck.
-5. **Intellect** — more mana pool and a small amount of spell crit, which also feeds Illumination.
-6. **Crit** — increases Illumination procs and Infusion of Light windows, but ranks below the stats that raise raw throughput.
+Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 
-Look for pieces that lead with healing power, then spell power, spirit, and mp5, in that order, matching the stat priority above. Beyond that principle, this section cannot get specific yet: the beta caps at level 30, nothing raids until the first tier opens on 9 December, and this build's own item data has most raid loot tables only partially re-itemized or not itemized at all for Forever, so a real Holy pre-raid or first-raid gear list would be guessing. This section fills in once raid loot data lands.
+Look for pieces that lead with the stats at the top of the stat priority above; spell power on a healing item adds nothing to a heal. Beyond that principle, this section cannot get specific yet: the beta caps at level 30, nothing raids until the first tier opens on 9 December, and this build's own item data has most raid loot tables only partially re-itemized or not itemized at all for Forever, so a real Holy pre-raid or first-raid gear list would be guessing. This section fills in once raid loot data lands.
 
 ## Enchants and consumables
 

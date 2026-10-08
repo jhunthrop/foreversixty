@@ -8,6 +8,7 @@
 // scanning the index actually wants, not just a name.
 import ClassCrest from '../ClassCrest.astro';
 import { bisCopy } from '../../lib/bis/copy';
+import type { RateUnit } from '../../lib/bis/types';
 
 export interface BisClassCardSpec {
   class_slug: string;
@@ -22,6 +23,8 @@ export interface BisClassCardSpec {
   band60TankSummary?: string;
   /** The preset `band60Dps` was measured under, as the file labels it (shown as a tooltip). */
   band60PresetLabel?: string;
+  /** `HPS` for a healer row (never placed in a ranking of specs); `DPS` when absent. */
+  unit?: RateUnit;
 }
 
 interface Props {
@@ -49,7 +52,7 @@ const { name, slug, specs } = Astro.props;
               title={spec.band60PresetLabel}
               data-testid={`bis-index-dps-${spec.class_slug}-${spec.spec_slug}`}
             >
-              {spec.band60TankSummary ?? bisCopy.indexSpecDps60(spec.band60Dps ?? 0)}
+              {spec.band60TankSummary ?? bisCopy.indexSpecDps60(spec.band60Dps ?? 0, spec.unit)}
             </span>
           ) : (
             <span class="text-muted text-[12px]">{bisCopy.noDataYet}</span>

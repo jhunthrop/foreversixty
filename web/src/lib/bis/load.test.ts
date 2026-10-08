@@ -126,6 +126,18 @@ const baseBand: BisBand = {
 };
 
 describe('normaliseBisFile', () => {
+  it('carries a healer band role, profile and metrics, and the file heal_profile, through untouched', () => {
+    const metrics = { hps: 300, raw_hps: 360, overheal_pct: 0.16, mana_lasts_sec: 192, hpm: 3.3 };
+    const healBand = { ...baseBand, role: 'healer' as const, profile: 'onyxia-sized', metrics };
+    const profile = { id: 'onyxia-sized', label: 'Onyxia-sized tank hits and raid pulses' };
+    const file = { bands: [healBand, baseBand], heal_profile: profile } as unknown as BisFile;
+    const normalised = normaliseBisFile(file);
+    expect(normalised.heal_profile).toEqual(profile);
+    expect(normalised.bands[0]).toMatchObject({ role: 'healer', profile: 'onyxia-sized', metrics });
+    expect(normalised.bands[1]!.role).toBe('dps');
+    expect(normalised.bands[1]!.metrics).toBeNull();
+  });
+
   it('reads hit_to_cap through, and defaults an absent key to null', () => {
     const withKey = { ...baseBand, hit_to_cap: { baseline: 3, specials: 6, white: 25 } };
     const file = { bands: [withKey, baseBand] } as unknown as BisFile;

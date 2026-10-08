@@ -572,20 +572,25 @@ var specOptions = map[string]func(*proto.Player){
 	"druid-balance":        balanceDruidOptions,
 	"druid-feral":          feralDruidOptions,
 	"druid-feral-bear":     feralBearDruidOptions,
+	"druid-restoration":    restorationDruidOptions,
 	"hunter-beast-mastery": hunterOptions,
 	"hunter-marksmanship":  hunterOptions,
 	"hunter-survival":      hunterOptions,
 	"mage-arcane":          mageOptions,
 	"mage-fire":            mageOptions,
 	"mage-frost":           mageOptions,
+	"paladin-holy":         holyPaladinOptions,
 	"paladin-protection":   protectionPaladinOptions,
 	"paladin-retribution":  retributionPaladinOptions,
+	"priest-discipline":    healingPriestOptions,
+	"priest-holy":          healingPriestOptions,
 	"priest-shadow":        shadowPriestOptions,
 	"rogue-assassination":  rogueOptions,
 	"rogue-combat":         rogueOptions,
 	"rogue-subtlety":       rogueOptions,
 	"shaman-elemental":     elementalShamanOptions,
 	"shaman-enhancement":   enhancementShamanOptions,
+	"shaman-restoration":   restorationShamanOptions,
 	"warlock-affliction":   warlockOptions,
 	"warlock-demonology":   warlockOptions,
 	"warlock-destruction":  warlockOptions,
@@ -624,6 +629,13 @@ func feralBearDruidOptions(p *proto.Player) {
 	}}
 }
 
+func restorationDruidOptions(p *proto.Player) {
+	p.Spec = &proto.Player_RestorationDruid{RestorationDruid: &proto.RestorationDruid{
+		// As for the balance druid: the empty reference is self.
+		Options: &proto.RestorationDruid_Options{InnervateTarget: &proto.UnitReference{}},
+	}}
+}
+
 func hunterOptions(p *proto.Player) {
 	p.Spec = &proto.Player_Hunter{Hunter: &proto.Hunter{
 		Options: &proto.Hunter_Options{
@@ -639,6 +651,20 @@ func hunterOptions(p *proto.Player) {
 func mageOptions(p *proto.Player) {
 	p.Spec = &proto.Player_Mage{Mage: &proto.Mage{
 		Options: &proto.Mage_Options{Armor: proto.Mage_Options_MoltenArmor},
+	}}
+}
+
+func holyPaladinOptions(p *proto.Player) {
+	p.Spec = &proto.Player_HolyPaladin{HolyPaladin: &proto.HolyPaladin{
+		Options: &proto.PaladinOptions{Aura: proto.PaladinAura_ConcentrationAura},
+	}}
+}
+
+func healingPriestOptions(p *proto.Player) {
+	p.Spec = &proto.Player_HealingPriest{HealingPriest: &proto.HealingPriest{
+		// The reference is self: a healing priest's Power Infusion has no
+		// one else in a one-healer sim to go to.
+		Options: &proto.HealingPriest_Options{UseInnerFire: true, PowerInfusionTarget: &proto.UnitReference{}},
 	}}
 }
 
@@ -682,6 +708,12 @@ func elementalShamanOptions(p *proto.Player) {
 func enhancementShamanOptions(p *proto.Player) {
 	p.Spec = &proto.Player_EnhancementShaman{EnhancementShaman: &proto.EnhancementShaman{
 		Options: &proto.EnhancementShaman_Options{SyncType: proto.ShamanSyncType_Auto},
+	}}
+}
+
+func restorationShamanOptions(p *proto.Player) {
+	p.Spec = &proto.Player_RestorationShaman{RestorationShaman: &proto.RestorationShaman{
+		Options: &proto.RestorationShaman_Options{},
 	}}
 }
 

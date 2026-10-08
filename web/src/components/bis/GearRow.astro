@@ -14,7 +14,7 @@ import { dataUrl } from '../../lib/planner/load';
 import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
 import type { Slot } from '../../lib/planner/types';
 import { SLOT_DISPLAY_LABELS } from '../../lib/bis/slot-display-labels';
-import type { Faction } from '../../lib/bis/types';
+import type { Faction, RateUnit } from '../../lib/bis/types';
 import { gapLabelFor } from '../../lib/bis/tank-view';
 import FactionMark from '../FactionMark.astro';
 import SourceKindIcon from './SourceKindIcon.astro';
@@ -39,9 +39,11 @@ interface Props {
   /** `bis-slot-<faction>-<band>-<slot>` -- assembled by the caller, which alone knows the
    *  faction and band this row belongs to. */
   slotTestId: string;
+  /** `HPS` on a healer band; every figure the row words defaults to `DPS`. */
+  unit?: RateUnit;
 }
 
-const { row, isNew, build, you, faction, slotTestId } = Astro.props;
+const { row, isNew, build, you, faction, slotTestId, unit = 'DPS' } = Astro.props;
 
 // `inv_misc_questionmark` is the item pipeline's own placeholder for an id it has no real
 // icon for -- the client's literal red-bordered "?" texture, and the exact icon the owner's
@@ -153,7 +155,11 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                 </span>
               )}
               {row.lowValue && (
-                <span class="gear-row-flag-tag" data-testid="bis-row-low-value" title={bisCopy.lowValueTitle}>
+                <span
+                  class="gear-row-flag-tag"
+                  data-testid="bis-row-low-value"
+                  title={bisCopy.lowValueTitle(unit)}
+                >
                   {bisCopy.lowValueTag}
                 </span>
               )}
@@ -258,7 +264,9 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
               {bisCopy.equippedTickLabel}
             </span>
           ) : (
-            <span class="gear-row-you-delta">{bisCopy.youGainOverWorn(you.dpsDelta, you.wornItemName)}</span>
+            <span class="gear-row-you-delta">
+              {bisCopy.youGainOverWorn(you.dpsDelta, you.wornItemName, unit)}
+            </span>
           )}
         </div>
       )}

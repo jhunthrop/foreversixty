@@ -1,10 +1,907 @@
 {
   "spec": "shaman-restoration",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Written for the healing sim (sim/healsim in the engine fork) against its fixed test profile: a 9000 health tank taking 900 every 2 s and four members taking 400 from pulses every 5 s, with the healer the first raid member and the tank raid member 5. Water Shield and a Healing Stream Totem go up before the pull. In the fight, tank first: Riptide on the tank whenever it is off cooldown and the tank is under 90 percent (the cheapest heal per mana, and its heal over time lifts the Chain Heal that follows), Healing Wave below 60 percent, Lesser Healing Wave below 30 percent, and Nature's Swiftness into an instant Healing Wave below 25 percent. Chain Heal is cast on the tank, so Riptide's 25 percent bonus applies to it, and jumps to the two most injured members; it fires when any member is under 70 percent. Members are healed directly (Riptide under 50 percent, Lesser Healing Wave under 25 percent) only while mana is above 50 percent, so the healer keeps mana for the tank. Mana Tide Totem is used below 25 percent mana and replaces the Healing Stream Totem for its 13 seconds, after which the rotation drops Healing Stream again. Nothing here uses autocast: Nature's Swiftness is spent by hand, and mana consumables are the preset's. Thresholds came from a random search over this profile at 180 s scored on damage that landed on targets at zero health (counting the tank at half weight, members in full) plus a penalty for overhealing above 30 percent, then rounded; they were checked on a lighter profile (a 400-damage tank hit and 250-damage pulses) where the same rotation never lets anyone die and the shaman lasts past 300 s. Against the full profile one healer runs out of mana at about 130 s; the profile is sized for more than one healer, and the sim ranks gear, not fights.",
+  "engineering_notes": {
+    "chain_heal": "Chain Heal's jump count and falloff are not in the client spell constants; sim/shaman/chain_heal.go assumes two jumps at half the previous heal, to the most injured members. The rotation's Chain Heal is cast on the tank (player 5) for Riptide's bonus.",
+    "earth_shield": "Earth Shield (974) has no SkillLineAbility learn row and is not in the Restoration tree, so a Forever shaman cannot learn it and the rotation does not cast it."
+  },
+  "sources": [
+    {
+      "label": "This build's own client spell data: data/builds/1.60.1.70009/spellconst/shaman.json, trainables/shaman.json and talents/shaman.json (Restoration tree, tree index 2)",
+      "url": "https://foreversixty.gg/data/1.60.1.70009/spellconst/shaman.json",
+      "kind": "datamined"
+    },
+    {
+      "label": "Forever Sixty default rotation, unvalidated until the nightly job runs",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 408510
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-3s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10463,
+              "rank": 5
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-1.5s"
+          }
+        }
+      }
+    ],
+    "priorityList": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 17359,
+              "rank": 3
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentManaPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.25"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Mana Tide Totem once mana is low; it replaces the water totem for 13 s and the Healing Stream below is dropped again after."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 408510
+            }
+          },
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 408510
+                  }
+                }
+              }
+            }
+          }
+        },
+        "notes": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10463,
+              "rank": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "totemRemainingTime": {
+                  "totemType": "Water"
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "1s"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Healing Stream Totem heals the whole group every 2 s for its five-minute life."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 16188
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 5
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.25"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Nature's Swiftness turns the next Healing Wave into an instant heal when the tank is in danger."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 25357,
+              "rank": 10
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.25"
+                      }
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 16188
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "The instant Healing Wave."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10468,
+              "rank": 6
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 5
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.3"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Lesser Healing Wave is the fast heal for a tank that is falling."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10468,
+              "rank": 6
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 1
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.25"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10468,
+              "rank": 6
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 2
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.25"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10468,
+              "rank": 6
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 3
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.25"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10468,
+              "rank": 6
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 4
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.25"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239243,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 1239243,
+                          "rank": 3
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Riptide on the tank first: it is the most mana-efficient heal and lifts the Chain Heal below."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239243,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 1239243,
+                          "rank": 3
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 1
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239243,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 1239243,
+                          "rank": 3
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 2
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239243,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 1239243,
+                          "rank": 3
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 3
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 3
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239243,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 1239243,
+                          "rank": 3
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 4
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 4
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10623,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "or": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 2
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 3
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 4
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Chain Heal off the tank jumps to the two most hurt members when the group has taken damage."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 25357,
+              "rank": 10
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 5
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.6"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Healing Wave is the efficient tank heal."
+      }
+    ]
   }
 }

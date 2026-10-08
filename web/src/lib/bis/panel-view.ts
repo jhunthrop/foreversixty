@@ -10,6 +10,7 @@
 import type { LootFile } from '../sim/loot';
 import { statLabelForSpec } from '../sim/weights-display';
 import { bisCopy, tankCopy } from './copy';
+import { healerSetViewFor, rateUnitOf, type HealerSetView } from './heal-view';
 import {
   bandEntry,
   changedSinceBand,
@@ -31,12 +32,19 @@ import type {
   Faction,
   ItemDetail,
   LootQuestsFile,
+  RateUnit,
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { Slot } from '../planner/types';
 import { hitCapLine, type HitCapLine } from './hit-cap';
 import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
-import { slotScoreUnitFor, tankHeadlineForBand, type SlotScoreUnit, type TankHeadline } from './tank-view';
+import {
+  rateUnitFor,
+  slotScoreUnitFor,
+  tankHeadlineForBand,
+  type SlotScoreUnit,
+  type TankHeadline,
+} from './tank-view';
 
 /** The two ranker-own `swap_note` templates (`sim/cmd/leveling-bis/report.go`'s own
  *  `fmt.Sprintf` calls): "confirmed by the sim against X (id N): kept the pick, A vs B set
@@ -110,12 +118,13 @@ function evidenceLineFor(
   if (unit === 'tank_score') return tankEvidenceLineFor(swapNote, dpsDelta);
   if (dpsDelta !== undefined && dpsDelta !== null) {
     const runnerUpName = runnerUpNameFromSwapNote(swapNote);
-    if (runnerUpName !== undefined) return bisCopy.evidenceLineDelta(runnerUpName, dpsDelta);
+    if (runnerUpName !== undefined)
+      return bisCopy.evidenceLineDelta(runnerUpName, dpsDelta, rateUnitFor(unit));
   }
   const parsed = parseSwapNote(swapNote);
   return parsed === undefined
     ? swapNote
-    : bisCopy.evidenceLine(parsed.itemName, parsed.pickDps, parsed.altDps);
+    : bisCopy.evidenceLine(parsed.itemName, parsed.pickDps, parsed.altDps, rateUnitFor(unit));
 }
 
 /** A tank band's evidence line: score points only, from the row's own `dps_delta`. The
@@ -135,7 +144,7 @@ function verifiedGlyphTitleFor(row: BisSlot, unit: SlotScoreUnit): string | unde
   if (row.swap_note !== undefined || row.sim_dps === undefined) return undefined;
   return unit === 'tank_score'
     ? tankCopy.simScoreVerifiedTitle(row.sim_dps)
-    : bisCopy.simDpsVerifiedTitle(row.sim_dps);
+    : bisCopy.simDpsVerifiedTitle(row.sim_dps, rateUnitFor(unit));
 }
 
 /** This slot's row at `band` in `file`/`faction`, or `undefined` when the band itself has
@@ -191,6 +200,7 @@ function noSourcedItemCopyFor(
   slot: string,
   band: number,
   isFirstInGroupThisBand: boolean,
+  unit: RateUnit,
 ): string {
   const index = bands.indexOf(band);
   const previousBand = index <= 0 ? undefined : bands[index - 1];
@@ -202,6 +212,7 @@ function noSourcedItemCopyFor(
         (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot).toLowerCase(),
         bisCopy.bandRangeLabel(band),
         nextRealBand,
+        unit,
       )
     : bisCopy.noSourcedItemLater(nextRealBand);
 }
@@ -221,12 +232,13 @@ function emptyReasonLabel(
   slot: string,
   band: number,
   isFirstInGroupThisBand: boolean,
+  unit: RateUnit,
 ): string {
   switch (reason) {
     case 'no_sourced_item':
-      return noSourcedItemCopyFor(file, bands, faction, slot, band, isFirstInGroupThisBand);
+      return noSourcedItemCopyFor(file, bands, faction, slot, band, isFirstInGroupThisBand, unit);
     case 'no_dps_value':
-      return bisCopy.emptyReasonNoDpsValue;
+      return bisCopy.emptyReasonNoDpsValue(unit);
     case 'effect_not_modelled':
       return bisCopy.emptyReasonEffectNotModelled;
     default:
@@ -373,7 +385,16 @@ function buildRowView(
     const emptyCopy =
       row.slot === 'off_hand' && mainHandTwoHanded
         ? bisCopy.twoHanderEquippedNamed(mainHandItemName ?? bisCopy.noKnownSourceForSlot)
-        : emptyReasonLabel(emptyReason, file, bands, faction, row.slot, band, isFirstInGroupThisBand);
+        : emptyReasonLabel(
+            emptyReason,
+            file,
+            bands,
+            faction,
+            row.slot,
+            band,
+            isFirstInGroupThisBand,
+            rateUnitFor(unit),
+          );
     return { slot: row.slot, empty: true, emptyCopy };
   }
   const badgeLabel = sourceBadgeLabel(row, faction);
@@ -551,15 +572,15 @@ function hasteCaptionFor(
   return bisCopy.weightsHasteCaption(scaleFactor, !hasteOnItems);
 }
 
-const DPS_UNIT_WORD = 'DPS';
-
 function perPointUnitFor(unit: SlotScoreUnit): string {
-  return unit === 'tank_score' ? tankCopy.scoreWord : DPS_UNIT_WORD;
+  return unit === 'tank_score' ? tankCopy.scoreWord : rateUnitFor(unit);
 }
 
 /** The rail's first line, naming the unit a point of stat is worth in. */
 function scaleNoteFor(topLabel: string, unit: SlotScoreUnit): string {
-  return unit === 'tank_score' ? tankCopy.weightsScaleNote(topLabel) : bisCopy.weightsScaleNote(topLabel);
+  return unit === 'tank_score'
+    ? tankCopy.weightsScaleNote(topLabel)
+    : bisCopy.weightsScaleNote(topLabel, rateUnitFor(unit));
 }
 
 /** One band's worth of `.paperdoll` data: every row, the centre column's numbers, and the
@@ -573,6 +594,10 @@ export interface BandInfo {
   changed: ChangedSlot[] | undefined;
   previousBand: number | undefined;
   upgradesCount: number;
+  /** `HPS` for a healer band, `DPS` otherwise: the unit every figure of this band is in. */
+  unit: RateUnit;
+  /** The healer variant of the "This set" panel's data; undefined for every other band. */
+  healer: HealerSetView | undefined;
   setDps: number;
   dpsDelta: number | undefined;
   /** `BisBand.set_dps_partial` -- true when `setDps` excludes at least one pick's own
@@ -636,6 +661,7 @@ export function bandInfosFor(
         .filter((entry) => entry.after !== undefined)
         .map((entry) => [entry.slot, entry.before?.item_name]),
     );
+    const unit = rateUnitOf(bandData);
     const slotRows = filledSlots(bandData);
     const mainHandRow = slotRows.find((r) => r.slot === 'main_hand');
     const mainHandModel =
@@ -733,6 +759,8 @@ export function bandInfosFor(
         changed,
         previousBand,
         upgradesCount: changed?.length ?? 0,
+        unit,
+        healer: healerSetViewFor(bandData, file.heal_profile),
         setDps: bandData.set_dps,
         dpsDelta: previousSetDps === undefined ? undefined : bandData.set_dps - previousSetDps,
         setDpsPartial: bandData.set_dps_partial ?? false,

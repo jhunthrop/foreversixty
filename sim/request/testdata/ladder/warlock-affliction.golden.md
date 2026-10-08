@@ -99,7 +99,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 25552300120201100-0000000000000000000-0000000000000000 | main_hand:1664 ranged:13064 | 43.2 | 6 | spell:5019=51.1, spell:7641=26.6, other:mana_gain=26.5, spell:11687=26.5, spell:2941=11.2 | {OtherID: 13}, {SpellID: 603} |
 | 40 | 25552300120201300-0000000000000000000-0000000000000000 | main_hand:1664 ranged:5216 | 63.9 | 6 | spell:5019=58.4, other:mana_gain=26.9, spell:11687=26.9, spell:7641=25.1, spell:11665=10.7 | {OtherID: 13}, {SpellID: 1316697}, {SpellID: 603} |
 | 50 | 25552300120201351-2002000000000000000-0000000000000000 | main_hand:812 ranged:249232 | 128.0 | 7 | spell:5019=62.9, other:mana_gain=27.7, spell:11688=27.7, spell:1316697=27.7, spell:11659=11.1 | {OtherID: 13}, {SpellID: 603} |
-| 60 | 25552300120201351-2005220000000000000-0030000000000000 | main_hand:22630 ranged:22821 | 343.2 | 8 | spell:5019=68.1, spell:1316697=26.8, other:mana_gain=23.4, spell:11689=23.4, spell:11661=22.1 | {OtherID: 13} |
+| 60 | 25552300120201351-2005220000000000000-0030000000000000 | main_hand:22630 ranged:22821 | 355.7 | 8 | spell:5019=66.4, spell:1316697=26.6, other:mana_gain=23.3, spell:11689=23.3, spell:11661=23.0 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 

@@ -59,8 +59,10 @@ type presetEntry struct {
 }
 
 // consumeGroup is the consumables one role carries: every spec whose
-// class is listed, else whose reference stat is listed.
+// role is listed, else whose class is listed, else whose reference stat
+// is listed.
 type consumeGroup struct {
+	Roles          []string      `json:"roles"`
 	Classes        []string      `json:"classes"`
 	ReferenceStats []string      `json:"reference_stats"`
 	IDs            []presetEntry `json:"ids"`
@@ -250,6 +252,11 @@ func (c presetConsumes) groupFor(spec specs.Spec) (consumeGroup, error) {
 		names = append(names, name)
 	}
 	slices.Sort(names)
+	for _, name := range names {
+		if slices.Contains(c.Groups[name].Roles, spec.Role) {
+			return c.Groups[name], nil
+		}
+	}
 	for _, name := range names {
 		if slices.Contains(c.Groups[name].Classes, spec.ClassSlug) {
 			return c.Groups[name], nil

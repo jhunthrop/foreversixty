@@ -4,6 +4,12 @@ import { loadBisFile, normaliseBisFile } from './load';
 import { bandsOf, depsWithSpec, fileOf, tankBand } from './tank-test-support';
 import { bandInfosFor } from './panel-view';
 import { tankCopy } from './copy';
+import type { BisBand } from './types';
+import { isTankMetrics } from './tank-view';
+
+function effectiveHealthOf(band: BisBand | undefined): number | undefined {
+  return isTankMetrics(band?.metrics) ? band.metrics.effective_health : undefined;
+}
 
 describe('normaliseBisFile: role and metrics', () => {
   it('defaults an older file to role dps and metrics null', () => {
@@ -15,7 +21,7 @@ describe('normaliseBisFile: role and metrics', () => {
   it('keeps a tank band role and metrics as published', () => {
     const [band] = bandsOf(normaliseBisFile(fileOf([tankBand()])));
     expect(band?.role).toBe('tank');
-    expect(band?.metrics?.effective_health).toBe(11235);
+    expect(effectiveHealthOf(band)).toBe(11235);
   });
 
   it('fails fast on a tank band that carries no metrics', () => {
@@ -28,7 +34,7 @@ describe('the warrior-protection fixture', () => {
     const file = loadBisFile('warrior-protection', 'no-such-build');
     const bands = file?.bands.filter((band) => band.faction === 'alliance') ?? [];
     expect(bands.map((band) => band.role)).toEqual(['tank', 'tank']);
-    expect(new Set(bands.map((band) => band.metrics?.effective_health)).size).toBe(2);
+    expect(new Set(bands.map(effectiveHealthOf)).size).toBe(2);
     expect(file?.bands.every((band) => band.score_unit === 'tank_score')).toBe(true);
   });
 });

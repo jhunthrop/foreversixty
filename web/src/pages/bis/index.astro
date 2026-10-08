@@ -14,6 +14,7 @@ import { bisCopy } from '../../lib/bis/copy';
 import { bandEntry, groupByClass, loadBisFile, readSpecCatalog } from '../../lib/bis/load';
 import { presetLabelFor } from '../../lib/bis/presets';
 import { headlineDpsOf, tankIndexSummaryOf } from '../../lib/bis/tank-view';
+import { rateUnitOf } from '../../lib/bis/heal-view';
 
 const catalog = readSpecCatalog();
 const grouped = groupByClass(catalog);
@@ -35,6 +36,7 @@ const classesWithSpecs = classes
         hasData: file !== null,
         band60Dps: band60 === undefined ? undefined : headlineDpsOf(band60),
         band60TankSummary: band60 === undefined ? undefined : tankIndexSummaryOf(band60),
+        unit: band60 === undefined ? undefined : rateUnitOf(band60),
         band60PresetLabel: file === null || band60 === undefined ? undefined : presetLabelFor(file, band60),
       };
     }),

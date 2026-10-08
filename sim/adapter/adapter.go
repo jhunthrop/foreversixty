@@ -872,6 +872,19 @@ var ErrNoWeights = errors.New("adapter: the result carries no stat weights")
 // are easy to confuse; taking the raw weights and dividing is one
 // arithmetic, in one place, that cannot pick the wrong block.
 func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight, error) {
+	return weightsOf(res, req, (*proto.StatWeightsResult).GetDps)
+}
+
+// HealingWeights is Weights for a healer: the same arithmetic over the
+// engine's healing table, which a request carrying a raid damage model
+// measures per point of EFFECTIVE healing per second.
+func HealingWeights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight, error) {
+	return weightsOf(res, req, (*proto.StatWeightsResult).GetHps)
+}
+
+// weightsOf normalises one of the result's weight tables against the
+// request's reference stat.
+func weightsOf(res *proto.StatWeightsResult, req api.SimRequest, table func(*proto.StatWeightsResult) *proto.StatWeightValues) ([]api.StatWeight, error) {
 	if req.Weights == nil {
 		return nil, fmt.Errorf("%w: the request asked for none", ErrNoWeights)
 	}
@@ -881,7 +894,7 @@ func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight
 	if res.Error != nil && res.Error.Message != "" {
 		return nil, fmt.Errorf("%w: %s", ErrSimFailed, res.Error.Message)
 	}
-	values := res.GetDps()
+	values := table(res)
 	if values.GetWeights() == nil {
 		return nil, ErrNoWeights
 	}

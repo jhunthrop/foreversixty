@@ -1,0 +1,198 @@
+# priest-discipline rotation ladder
+
+Rules this ladder runs under (Phase 1a,
+docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
+
+- Levels: 10, 20, 30, 38, 40, 50, 60. 300 iterations, seed 1, the
+  default encounter (a stationary target three levels above the
+  character).
+- Talents: the guide's level-60 FS1 build code
+  (web/src/content/guides/<class>/<spec>.md), truncated to level-9
+  points (0 below level 10). Each talent's guide-assigned rank is read
+  by the talent's own stable id against the client build the guide
+  names, then re-resolved to that talent's row in the ACTIVE build
+  (data/builds/<active>/talents/<class>.json) - a talent the active
+  build no longer carries is dropped rather than misaligning every
+  digit after it. Points are spent walking the active build's trees
+  top row down, the spec's own tree first, then the other two in the
+  build code's own order (0, 1, 2, skipping the spec's own). A row the
+  budget runs out before reaching is simply left at 0. If the guide
+  build itself spends fewer than level-9 points, the remainder is left
+  unspent.
+- Gear: main_hand always, off_hand for the classes that dual-wield in
+  this build (rogue, warrior-fury, shaman-enhancement, hunter),
+  ranged for hunter only. Each slot picks the highest item_level
+  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  0, so an unfinished/placeholder weapon row this build's item table
+  still carries - equipping one hangs the engine mid-sim rather than
+  simulating a zero-damage weapon, see the report - is never picked)
+  with required_level <= the character's level, from
+  data/builds/<active>/items/<class>.json filtered to
+  data/builds/<active>/simitems.json's known ids, honoring the spec's
+  handedness (warrior-arms and paladin-retribution two-hand only;
+  warrior-fury, rogue and shaman-enhancement one-hand only for both
+  hands). druid-feral picks no weapon at all. Every caster spec
+  (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below). Buffs: only the class self-buff kit (ladderKitBuffs: a mage's
+  Arcane Intellect, a druid's Mark of the Wild, a paladin's Blessing of
+  Might from level 4), at the highest rank the level can learn; no
+  raid buffs.
+- DPS regression: each level's DPS is compared against the ladder's own
+  PREVIOUS rung (not literally level-10, since the ladder's own gaps
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve.
+  Anything else is a violation.
+- Zero casts: one of the curated rotation's own castSpell lines, resolved
+  to the id sim/internal/spellranks.HighestLearnedSpellID says the
+  engine's OWN rank rewrite actually casts at this level (not a second,
+  approximate copy of that resolution - this ladder calls the same
+  function sim/request's rewriteRotationRanks calls), that never fires
+  in the run - unless the engine could not resolve that id at all
+  (already counted as unresolved) or data/curated/apl/<spec>.json's
+  expected_idle array names the LINE'S AUTHORED id with a reason.
+  HighestLearnedSpellID returning "not learned" means the engine's own
+  rewrite already dropped the line before the request was built, which
+  is not a violation to report twice.
+- Learned but unused (informational, not a violation): every damage
+  ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
+  ladder.go's isDamageEffect) the class has learned by this level that
+  this level's cast set never touched, regardless of whether the
+  rotation names it at all. An ability whose spellranks.json rows are
+  ALL rank 0 (Bloodrage, Judgement - a single always-known ability, not
+  a rank progression) is not tracked by this rule at all, the same way
+  it is invisible to the engine's own rank rewrite. Heroic
+  Strike-shaped bonus-weapon-damage effects (type 17) are NOT covered
+  by the damage-effect rule and so never appear here even when
+  genuinely unused - see the report for specs where that matters.
+- Strict failures (FOREVER_LADDER_STRICT=1) are the four rules above;
+  see the run's own "Violations" section below for what this file's own
+  run found.
+
+## Ladder
+
+| Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
+|---|---|---|---|---|---|---|
+| 10 | 010000000000000000-00000000000000000-000000000000000000 | main_hand:263937 | 3.1 | 1 | spell:17=20.0 | {SpellID: 25316} |
+| 20 | 025003010000000000-00000000000000000-000000000000000000 | main_hand:890 | 19.2 | 4 | spell:2061=20.3, spell:2054=3.8, spell:600=3.4, spell:7128=1.0 | {SpellID: 25316} |
+| 30 | 025003031304000000-00000000000000000-000000000000000000 | main_hand:249392 | 33.4 | 4 | spell:9472=25.6, spell:6063=4.9, spell:6065=1.9, spell:602=1.0 | {SpellID: 25316}, {SpellID: 402174} |
+| 38 | 025003031305101500-00000000000000000-000000000000000000 | main_hand:7757 | 75.9 | 5 | spell:402174=23.4, spell:9474=10.7, spell:6064=5.1, spell:6066=2.9, spell:602=1.0 | {SpellID: 25316} |
+| 40 | 025003031305101520-00000000000000000-000000000000000000 | main_hand:7757 | 85.4 | 5 | spell:1240720=18.9, spell:9474=8.4, spell:6064=4.8, spell:6066=2.8, spell:1006=1.0 | {SpellID: 25316} |
+| 50 | 025003031305101520-03502000000000000-000000000000000000 | main_hand:812 | 143.5 | 5 | spell:1240721=22.2, spell:6064=8.4, spell:10899=1.9, spell:10951=1.0, spell:10916=1.0 | {SpellID: 25316} |
+| 60 | 025003031305101520-03505003030100000-000000000000000000 | main_hand:19355 | 174.1 | 5 | spell:6064=20.3, spell:1316995=15.5, spell:10901=1.5, spell:10952=1.0, spell:10917=0.6 | - |
+
+## Learned but unused (informational)
+
+
+### Level 10
+
+- Mind Blast (spell 8092)
+- Shadow Word: Pain (spell 594)
+- Smite (spell 591)
+- Starshards (spell 10797)
+
+### Level 20
+
+- Chastise (spell 1277331)
+- Dark Sacrifice (spell 1277324)
+- Holy Fire (spell 14914)
+- Holy Nova (spell 15237)
+- Mind Blast (spell 8102)
+- Mind Flay (spell 15407)
+- Shadow Word: Pain (spell 970)
+- Smite (spell 598)
+- Starshards (spell 19296)
+
+### Level 30
+
+- Chastise (spell 1277332)
+- Dark Sacrifice (spell 1277325)
+- Holy Fire (spell 15263)
+- Holy Nova (spell 15430)
+- Mind Blast (spell 8104)
+- Mind Flay (spell 17311)
+- Shadow Word: Pain (spell 992)
+- Smite (spell 1004)
+- Starshards (spell 19299)
+
+### Level 38
+
+- Chastise (spell 1277332)
+- Dark Sacrifice (spell 1277325)
+- Holy Fire (spell 15264)
+- Holy Nova (spell 15431)
+- Mind Blast (spell 8105)
+- Mind Flay (spell 17312)
+- Shadow Word: Death (spell 1309595)
+- Shadow Word: Pain (spell 2767)
+- Smite (spell 6060)
+- Starshards (spell 19302)
+
+### Level 40
+
+- Chastise (spell 1277333)
+- Dark Sacrifice (spell 1277326)
+- Holy Fire (spell 15264)
+- Holy Nova (spell 15431)
+- Mind Blast (spell 8106)
+- Mind Flay (spell 17312)
+- Shadow Word: Death (spell 1309633)
+- Shadow Word: Pain (spell 2767)
+- Smite (spell 6060)
+- Starshards (spell 19302)
+
+### Level 50
+
+- Chastise (spell 1277334)
+- Dark Sacrifice (spell 1277327)
+- Holy Fire (spell 15266)
+- Holy Nova (spell 27799)
+- Mind Blast (spell 10945)
+- Mind Flay (spell 17313)
+- Shadow Word: Death (spell 1309635)
+- Shadow Word: Pain (spell 10893)
+- Smite (spell 10933)
+- Starshards (spell 19304)
+
+### Level 60
+
+- Chastise (spell 1277335)
+- Dark Sacrifice (spell 1277328)
+- Holy Fire (spell 15261)
+- Holy Nova (spell 27801)
+- Mind Blast (spell 10947)
+- Mind Flay (spell 18807)
+- Shadow Word: Death (spell 1309636)
+- Shadow Word: Pain (spell 10894)
+- Smite (spell 10934)
+- Starshards (spell 19305)
+
+## Violations found in this run
+
+- priest-discipline level=10 kind=unresolved_id action={SpellID: 25316}
+- priest-discipline level=20 kind=unresolved_id action={SpellID: 25316}
+- priest-discipline level=30 kind=unresolved_id action={SpellID: 25316}
+- priest-discipline level=38 kind=unresolved_id action={SpellID: 25316}
+- priest-discipline level=40 kind=unresolved_id action={SpellID: 25316}
+- priest-discipline level=50 kind=unresolved_id action={SpellID: 25316}
+- priest-discipline level=60 kind=zero_casts id=25316 authored=25316 (untracked ability; not in spellranks.json's rank chains)

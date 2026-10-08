@@ -3,11 +3,11 @@ title: Restoration Shaman in Forever
 classSlug: shaman
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70009:shaman:dwarf:0/2552222/5322521010513001:'
+build: 'FS1:1.60.1.70009:shaman:dwarf:53/0/5032503315513151:'
 recommendedRaces: [dwarf, tauren]
-statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
+statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Restoration Shaman overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-09-24
+updated: 2026-10-07
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -30,21 +30,30 @@ Restoration is Shaman's dedicated healing tree, centered on Healing Wave and tot
 
 ## Talents and builds
 
-In rough priority order: **Improved Healing Wave** cuts Healing Wave's cast time, a direct throughput gain on the tree's main heal. **Tidal Focus** reduces the mana cost of healing spells and improves hit chance, an efficiency gain that compounds over a full fight. **Restorative Totems** increases the effect of Mana Spring Totem and Healing Stream Totem, raising the value of Restoration's group-support totems specifically. **Mana Tide Totem** is a dedicated raid mana-regeneration cooldown, valuable enough that most Restoration builds reach it. **Water Shield**, new to the tree, surrounds the caster with globes of water that restore mana when the Shaman is hit or lands a healing crit, adding a passive mana-sustain layer that didn't exist in 1.12. **Riptide**, the tree's new capstone, heals a target instantly and again over time while increasing the effectiveness of subsequent heals on that target, combining an instant heal with a HoT and a healing-taken buff in one cast.
+The build is nearly all Restoration, with the rest in Elemental where the points cost a healer nothing. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-Point allocation runs deep into Restoration to reach Riptide at the bottom of the tree (31 points), with the remaining 20 in Enhancement — Thundering Strikes and Ancestral Knowledge both maxed, then Earth's Grasp, Guardian Totems, Mental Dexterity, Improved Ghost Wolf, and Improved Lightning Shield for the rest of the budget. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
+- **Improved Healing Wave** shortens Healing Wave, and **Healing Way** strengthens it; **Purification** is a flat multiplier on every heal.
+- **Tidal Focus** makes the healing spells cheaper (and adds hit, which a healer does not use), **Mindfulness** keeps part of your regeneration running while you cast, and **Tidal Mastery** adds critical chance.
+- **Water Shield** returns mana on a critical heal, **Mana Tide Totem** refills the group, **Restorative Totems** strengthens Healing Stream and Mana Spring, and **Healing Focus** protects your casts from pushback.
+- **Nature's Swiftness** is the instant emergency heal, and **Riptide** is the capstone: a direct heal plus a heal over time, and a stronger Chain Heal on its target.
+
+The sim found any build that keeps that core scores the same, because the points that differ change nothing a healer casts. Open the planner at [/planner?class=shaman](/planner?class=shaman) to adjust it.
 
 ## Rotation and priority
 
-There's no curated rotation data for Restoration in this build — it's a healing spec, not a DPS one this site's simulator models. Based on general Classic-era Restoration practice plus what's changed for Forever: open with Riptide where talented, since it front-loads an instant heal before its HoT and healing-taken buff continue working. Use Healing Wave as the primary throughput heal, backed by Lesser Healing Wave for cheaper, faster top-offs. Keep totems appropriate to the group's needs down — Mana Spring Totem for sustained fights, Healing Stream Totem for spread raid damage — and use Mana Tide Totem as a group mana cooldown when the raid's casters are running low. This is this site's own inference from 1.12 healing conventions and the demo talent data, not a tested rotation.
+Water Shield and a Healing Stream Totem go up before the pull. In the fight the tank comes first: **Riptide** whenever it is ready and the tank is hurt, **Healing Wave** for a deeper hole, **Lesser Healing Wave** when it is serious, and **Nature's Swiftness** into an instant Healing Wave when the tank is nearly dead. **Chain Heal** is cast on the tank, so Riptide's bonus applies, and it jumps to the most injured party members. Members are healed directly only while your mana is healthy, so the tank keeps the mana. **Mana Tide Totem** goes down when you are low.
+
+Under the profile the shaman's mana lasts the whole fight at raid-ready gear, so the rotation spends the spare on members. It does not downrank.
 
 ## Stat priority
 
-In simulator-derived priority order: **healing power** first, the direct multiplier on every heal cast. **Spell power** next, since Forever's itemization change lets bonus healing gear also carry a fraction of spell damage. **Spirit** feeds mana regeneration, compounding with Water Shield's proc-based mana return. **Mp5** provides flat regeneration independent of Spirit-based formulas. **Intellect** adds mana pool and a small crit chance. **Crit** last, both for direct heal size and Tidal Mastery's bonus crit if talented.
+In simulator-derived order, per point of stat: **MP5** first, then **Intellect**, **Spirit** after it, **healing power** and **critical strike** behind. The shaman's mana lasts the whole fight at raid-ready gear, so extra throughput is what turns into healing; before that gear the same order holds because regeneration is what keeps the casts coming. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
+
+Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 
-Prioritize healing power and spell power first, then spirit and mp5 for sustain, then intellect and crit. Water Shield's proc-based mana return makes a slightly lower spirit floor more survivable than in 1.12, but spirit remains the tree's primary sustain stat. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
+Follow the stat priority above; spell power on a healing item adds nothing to a heal. Water Shield's proc-based mana return makes a slightly lower spirit floor more survivable than in 1.12, but spirit remains the tree's primary sustain stat. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
 
 ## Enchants and consumables
 

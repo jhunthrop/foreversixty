@@ -16,6 +16,8 @@ function bandInfo(overrides: Partial<BandInfo>): BandInfo {
     changed: undefined,
     previousBand: undefined,
     upgradesCount: 0,
+    unit: 'DPS',
+    healer: undefined,
     setDps: 100,
     dpsDelta: undefined,
     setDpsPartial: false,
