@@ -1,7 +1,7 @@
 {
   "spec": "priest-holy",
   "state": "written",
-  "notes": "Holy priest healer rotation, written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. Reference build: 35 points in Holy and 16 in Discipline (engine talent string 0052030312-33505003030121531: Improved Renew, Holy Specialization, Divine Fury 5, Inspiration, Improved Healing, Binding Heal, Litany of Light 2, Spirit of Redemption, Spiritual Guidance 5, Spiritual Healing, Prayer of Mending; Twin Disciplines 5, Improved Power Word: Shield, Silent Resolve 2, Mental Agility 3, Inner Focus, Meditation 2). The tank carries Prayer of Mending and Renew; everyone else is healed reactively by health share, with Heal as the filler and Flash Heal / Prayer of Healing for the moments that need them. Mana: the list opens with the autocast line, which is how the Major Mana Potion, the Demonic Rune and Inner Focus are used (each fires whenever it is ready and the bar has room for it; Inner Focus goes on whichever priest spell is cast next). Shadowfiend and Dark Sacrifice follow the autocast line, each behind a mana gate (Shadowfiend below half the bar, Dark Sacrifice below 70% with the healer's own health above 70%). Mana pacing: the non-emergency lines (Heal filler, Prayer of Healing) fire at their normal thresholds only while the mana bar is at least 90% of the share of the fight left (currentManaPercent against remainingTimePercent); behind that pace the filler waits for a tank under 50% and a member under 35%. Prayer of Mending, Renew on the tank and the emergency Flash Heals are never paced. Ranks follow one rule, stated in design/reviews/2026-10-08-healer-mana-audit.md: starting from the top ranks, a lower rank (never one learned below level 20) is taken for a spell when it raises the ranker's guarded score by more than two percent, the biggest gain first, the tank's casts and the party members' casts counted apart, and compared on the raid gear the ranker published for the list being tried. The engine states the client's own numbers for every rank with no downrank penalty, so a lower rank is a statement about this profile, not a measurement of the game. The site runs this list as written at band 60 and lifts every ranked spell to the highest rank learned below it. Here that is Renew on the tank at rank 3; every other spell keeps its top rank. The comparison is repeated on the gear each new list makes the ranker choose until no spell moves. The review lists what each rank returned. Shadowfiend: the engine does not summon the pet; it returns the client's mana per attack on a stated 1.5 second swing, an assumption recorded in design/reviews/2026-10-08-healer-kit.md.",
+  "notes": "Holy priest healer rotation, written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. Reference build: 35 points in Holy and 16 in Discipline (engine talent string 0052030312-33505003030121531: Improved Renew, Holy Specialization, Divine Fury 5, Inspiration, Improved Healing, Binding Heal, Litany of Light 2, Spirit of Redemption, Spiritual Guidance 5, Spiritual Healing, Prayer of Mending; Twin Disciplines 5, Improved Power Word: Shield, Silent Resolve 2, Mental Agility 3, Inner Focus, Meditation 2). The tank carries Prayer of Mending and Renew; everyone else is healed reactively by health share, with Heal as the filler and Flash Heal / Prayer of Healing for the moments that need them. Mana: the list opens with the autocast line, which is how the Major Mana Potion, the Demonic Rune and Inner Focus are used (each fires whenever it is ready and the bar has room for it; Inner Focus goes on whichever priest spell is cast next). Shadowfiend and Dark Sacrifice follow the autocast line, each behind a mana gate (Shadowfiend below half the bar, Dark Sacrifice below 70% with the healer's own health above 70%). Mana pacing: the non-emergency lines (Heal filler, Prayer of Healing) fire at their normal thresholds only while the mana bar is at least 90% of the share of the fight left (currentManaPercent against remainingTimePercent); behind that pace the filler waits for a tank under 50% and a member under 35%. Prayer of Mending, Renew on the tank and the emergency Flash Heals are never paced. Ranks follow one rule, stated in design/reviews/2026-10-08-healer-mana-audit.md: starting from the top ranks, a lower rank (never one learned below level 20) is taken for a spell when it raises the ranker's guarded score by more than two percent, the biggest gain first, the tank's casts and the party members' casts counted apart, and compared on the raid gear the ranker published for the list being tried. The engine states the client's own numbers for every rank with no downrank penalty, so a lower rank is a statement about this profile, not a measurement of the game. The site runs this list as written at band 60 and lifts every ranked spell to the highest rank learned below it. Here that is Renew on the tank at rank 3; every other spell keeps its top rank. The comparison is repeated on the gear each new list makes the ranker choose until no spell moves. The review lists what each rank returned. Shadowfiend: the engine does not summon the pet; it returns the client's mana per attack on a stated 1.5 second swing, an assumption recorded in design/reviews/2026-10-08-healer-kit.md. Lightwell is placed before the pull (a prepull cast, 365 mana at rank 3): the fake raid members the damage model hurts click it for a renew each, five charges, and its client rows are 320 health every 2 seconds for 10 seconds that being attacked cancels, so over the profile it returned about 0.4 percent more effective healing and 3.6 more seconds of mana than the same list without it (spec-breakdown -heal, 2026-10-08, design/reviews/2026-10-08-remaining-trainables.md).",
   "sources": [
     {
       "label": "This build's own client spell data: data/builds/1.60.1.70009/spellconst/priest.json, trainables/priest.json and talents/priest.json (Holy tree index 1, Discipline tree index 0)",
@@ -16,6 +16,23 @@
   ],
   "rotation": {
     "type": "TypeAPL",
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 27871,
+              "rank": 3
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-2.5s"
+          }
+        }
+      }
+    ],
     "priorityList": [
       {
         "action": {

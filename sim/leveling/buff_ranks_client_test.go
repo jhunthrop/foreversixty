@@ -142,3 +142,58 @@ func TestHeartOfTheLionMatchesTheClient(t *testing.T) {
 		}
 	}
 }
+
+// Flametongue Totem (fork sim/core/flametongue_totem.go): each rank's cast
+// spell is learned at the rank's level, and the proc spell it triggers
+// states the rank's amount as the base points of a dummy effect (effect 3,
+// no aura), which the engine multiplies by weapon speed over 100.
+func TestFlametongueTotemRanksMatchTheClient(t *testing.T) {
+	client := loadClass(t, "shaman")
+	for i, rank := range core.FlametongueTotemRanks {
+		cast, ok := client.ByID(rank.SpellID)
+		if !ok {
+			t.Fatalf("Flametongue Totem %d is not in the client table", rank.SpellID)
+		}
+		if cast.SpellLevel != rank.Level {
+			t.Errorf("Flametongue Totem %d: engine learns at %d, client at %d", rank.SpellID, rank.Level, cast.SpellLevel)
+		}
+		procID := core.FlametongueTotemProcSpellIDs[i]
+		proc, ok := client.ByID(procID)
+		if !ok {
+			t.Fatalf("Flametongue Totem proc %d is not in the client table", procID)
+		}
+		if amount := findEffect(proc, 0, 0).Amount; amount != rank.Amount {
+			t.Errorf("Flametongue Totem proc %d: engine amount %v, client %v", procID, rank.Amount, amount)
+		}
+	}
+}
+
+// Judgement of Light: each rank's judgement aura is learned at the rank's
+// level and the heal spell it names (20267 / 20341 / 20342 / 20343, effect
+// 10) states the amount. Judgement of Wisdom's mana spells (20268 / 20352 /
+// 20353, effect 30) sit outside the spellconst extract, so only the
+// judgement auras' levels are pinned here; the fork's judgement_ranks_test
+// quotes the energize rows.
+func TestJudgementRanksMatchTheClient(t *testing.T) {
+	client := loadClass(t, "paladin")
+	lightHeals := map[int32]int32{20185: 20267, 20344: 20341, 20345: 20342, 20346: 20343}
+	for _, rank := range core.JudgementOfLightRanks {
+		aura, ok := client.ByID(rank.SpellID)
+		if !ok || aura.SpellLevel != rank.Level {
+			t.Errorf("Judgement of Light %d: client level %d (found %v), engine %d", rank.SpellID, aura.SpellLevel, ok, rank.Level)
+		}
+		heal, ok := client.ByID(lightHeals[rank.SpellID])
+		if !ok {
+			t.Fatalf("Judgement of Light heal %d is not in the client table", lightHeals[rank.SpellID])
+		}
+		if amount := findEffect(heal, 0, 0).Amount; amount != rank.Amount {
+			t.Errorf("Judgement of Light heal %d: engine amount %v, client %v", heal.ID, rank.Amount, amount)
+		}
+	}
+	for _, rank := range core.JudgementOfWisdomRanks {
+		aura, ok := client.ByID(rank.SpellID)
+		if !ok || aura.SpellLevel != rank.Level {
+			t.Errorf("Judgement of Wisdom %d: client level %d (found %v), engine %d", rank.SpellID, aura.SpellLevel, ok, rank.Level)
+		}
+	}
+}
