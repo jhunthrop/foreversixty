@@ -19,6 +19,7 @@ local Tooltip = ns.Tooltip or require("Tooltip")
 local Toast = ns.Toast or require("Toast")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
+local Recorder = ns.Recorder or require("Recorder")
 local Theme = ns.Theme or require("Theme")
 local MinimapButton = ns.Minimap or require("Minimap")
 local SettingsView = ns.SettingsView or require("SettingsView")
@@ -145,6 +146,8 @@ function Options.handle(input)
 		-- options panel in this task, so the honest minimum is the same
 		-- header bare /fs already shows.
 		return Window.buildLines(data)
+	elseif command == "record" then
+		return Recorder.command(rest)
 	elseif command == "help" then
 		return { Options.colorGold(L.slashHint) }
 	elseif command == "diag" then

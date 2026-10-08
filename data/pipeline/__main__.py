@@ -268,6 +268,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="write nothing; exit non-zero if either emitted file has drifted",
     )
 
+    rc = sub.add_parser(
+        "recorder",
+        help="fit the addon recorder's measurements (/fs record on in game): energy tick, "
+        "white-hit rates, the Eviscerate attack-power term, Windfury procs, mana regeneration "
+        "and the Shadowfiend cadence, from the SavedVariables ForeverSixty.lua",
+    )
+    rc.add_argument("saved_variables", help="path to WTF/.../SavedVariables/ForeverSixty.lua")
+
     au = sub.add_parser(
         "audit",
         help="THE ACCURACY-AUDIT INSTRUMENT (tenet 8, docs/tenets.md): compare every "
@@ -577,6 +585,16 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_addon_data(args.build))
         print(write_lua(args.build))
+    elif args.command == "recorder":
+        from pathlib import Path
+
+        from pipeline.recorder import RecorderError, run
+
+        try:
+            print(run(Path(args.saved_variables)))
+        except (OSError, RecorderError) as error:
+            logging.getLogger("pipeline").error("recorder: %s", error)
+            return 1
     elif args.command == "audit":
         import tempfile
         from pathlib import Path

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added `/fs record on|off|status|clear`, a measurement recorder for the simulator: energy
+  ticks, white-swing outcomes, Eviscerate and other yellow hits with their combo points,
+  Windfury procs on you and your pet, mana regeneration and Shadowfiend returns, kept as
+  a capped ring buffer in SavedVariables. Off by default, silent, and free while off.
 - Fixed the Overview's build-arrived banner: the Load button could land past the window's
   own right edge because it duplicated Dismiss's own width-and-gap arithmetic against a
   frame width that could disagree with it; Load now anchors directly off Dismiss instead,

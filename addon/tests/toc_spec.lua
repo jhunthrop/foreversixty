@@ -15,7 +15,9 @@ describe("the TOC", function()
 		"views/GearView.lua", "views/GuildView.lua", "views/SettingsView.lua",
 		-- After Tracker: the Overview reads Tracker.model, and in game a module
 		-- that is not loaded yet is simply nil.
-		"Tracker.lua", "views/OverviewView.lua", "Minimap.lua", "Window.lua", "Toast.lua", "Options.lua",
+		"Tracker.lua", "views/OverviewView.lua", "Minimap.lua", "Window.lua", "Toast.lua",
+		-- The measurement recorder: Options routes /fs record to it.
+		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}
 
 	--- The file lines of the TOC, with the client's backslashes turned

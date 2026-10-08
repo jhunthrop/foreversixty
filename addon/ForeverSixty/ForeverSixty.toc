@@ -35,4 +35,6 @@ views\OverviewView.lua
 Minimap.lua
 Window.lua
 Toast.lua
+RecorderBuffer.lua
+Recorder.lua
 Options.lua

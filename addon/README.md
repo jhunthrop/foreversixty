@@ -111,6 +111,47 @@ Run on one character per role and tick here:
 Two screenshots close this lane: the window on Follow with a build loaded, and
 the tracker plus the talent glow with the talent window open.
 
+## Measuring for the simulator
+
+The simulator cannot read some mechanics from the client tables: the energy tick, the miss
+and glancing rates per level gap, the Eviscerate attack-power term, whether Windfury procs
+off specials and reaches pets, the mana regeneration formula and the Shadowfiend's cadence.
+The recorder writes the raw events for those so a play session on the beta or at launch
+settles them. It is off by default, costs nothing while off (no frame, no event), prints
+nothing while on, and writes only to `ForeverSixtyDB.recorder` in SavedVariables.
+
+| Command | Does |
+|---|---|
+| `/fs record on` | Starts a session (snapshots level, attack power, weapon skill, spirit, intellect, mp5) and starts recording |
+| `/fs record off` | Stops recording |
+| `/fs record status` | Says whether it is recording and how many events are kept |
+| `/fs record clear` | Discards the record |
+
+Only the newest 20,000 events are kept (a ring buffer) and the last 20 sessions' snapshots.
+Recording does not survive `/reload` or logout: switch it on again. The file is written when
+you `/reload` or log out, and lives at `WTF/Account/<ACCOUNT>/SavedVariables/ForeverSixty.lua`.
+
+What to do in game, as a rogue with a shaman's Windfury Totem up (a pet out as well, to see
+whether the totem reaches pets):
+
+1. `/fs record on`, then fight a mob of your own level for a few minutes, then a mob three
+   levels above you (target it, so the addon can read its level). Main hand and off hand
+   both count; a second session with a different weapon is welcome.
+2. Cast Eviscerate at 1, 2, 3, 4 and 5 combo points, a few times each, ideally at two
+   different attack powers (a buff on and off).
+3. Stand still out of combat for a minute for energy ticks, and as a mana user cast once and
+   stand still, then stand still for more than five seconds, at two different spirit values
+   (a food or spirit buff) for the regeneration fit.
+4. As a priest, summon the Shadowfiend for its mana returns.
+5. `/fs record off`, `/reload`, then from `data/`:
+   `uv run python -m pipeline recorder <path to ForeverSixty.lua>`.
+
+Spell names are matched in English (Eviscerate, Sinister Strike, Backstab, Mutilate,
+Windfury, Shadowfiend, Dark Sacrifice). Times are `GetTime()` seconds. The record's shape is
+documented at the top of `ForeverSixty/Recorder.lua`; the schema version is
+`ForeverSixtyDB.recorder.schema`, and a record of another schema is refused, not overwritten,
+until `/fs record clear`.
+
 ## Releasing
 
 Before tagging, replace the `## Unreleased` heading at the top of
