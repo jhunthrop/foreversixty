@@ -49,8 +49,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
-      - run: uv run python -m pipeline weights --build 1.60.1.70009 --check
-      - run: uv run python -m pipeline addon-data --build 1.60.1.70009 --check
+      - run: uv run python -m pipeline weights --build 1.60.1.70291 --check
+      - run: uv run python -m pipeline addon-data --build 1.60.1.70291 --check
 
   syntax-lua51:
     # luacheck's own parser accepts 5.4-only syntax (goto, ::label::,
