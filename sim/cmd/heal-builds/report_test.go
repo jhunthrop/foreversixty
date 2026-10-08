@@ -241,7 +241,7 @@ func TestRunSimsEachBuildAndRejectsIllegalOnes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	bis := filepath.Join(realRoot, "data", "builds", build, "bis", "priest-holy.json")
+	bis := filepath.Join(leveling.BisDir(filepath.Join(realRoot, "data", "builds", build)), "priest-holy.json")
 	buildsPath := filepath.Join(dir, "builds.json")
 	guide := guideBuildByName(t)
 	raw, _ := json.Marshal(map[string]map[string]int{"guide": guide})

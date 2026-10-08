@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // specInfo is what this command needs from data/curated/specs.json.
@@ -78,7 +79,7 @@ type bisBand struct {
 // loadBISBand is the committed BiS set for one band and faction - the
 // gear every candidate wears, so only the talents vary.
 func loadBISBand(buildDir, spec string, level int, faction, preset string) (bisBand, error) {
-	path := filepath.Join(buildDir, "bis", spec+".json")
+	path := filepath.Join(leveling.BisDir(buildDir), spec+".json")
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return bisBand{}, fmt.Errorf("reading %s: %w", path, err)

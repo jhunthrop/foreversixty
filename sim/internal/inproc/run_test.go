@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	"github.com/jhunthrop/foreversixty/sim/specs"
@@ -30,7 +31,7 @@ func bandRequest(t *testing.T, spec string) api.SimRequest {
 	if err != nil {
 		t.Fatal(err)
 	}
-	raw, err := os.ReadFile(filepath.Join(realRoot, "data", "builds", build, "bis", spec+".json"))
+	raw, err := os.ReadFile(filepath.Join(leveling.BisDir(filepath.Join(realRoot, "data", "builds", build)), spec+".json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +58,9 @@ func bandRequest(t *testing.T, spec string) api.SimRequest {
 		}
 		var gear []api.GearSlot
 		for _, s := range b.Slots {
-			if s.ItemID != 0 {
+			// Until the nightly ranks a new build the file is the previous build's, and
+			// an item the new build dropped would panic the engine instead of unequip.
+			if _, known := simdb.Lookup(s.ItemID); s.ItemID != 0 && known {
 				gear = append(gear, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID})
 			}
 		}
