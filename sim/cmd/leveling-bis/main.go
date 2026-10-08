@@ -423,6 +423,13 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	}
 	log.Printf("leveling-bis: %s: weapon proficiency source: %s", spec, weaponSubclassesSource)
 
+	// The previous published report is read before this run can overwrite it:
+	// a healer keeps its published set when the new one does not beat it.
+	incumbents, err := loadIncumbentSets(filepath.Join(buildDir, "bis", spec+".json"))
+	if err != nil {
+		return err
+	}
+
 	factions := []struct{ name, race string }{
 		{"alliance", guide.AllianceRace},
 		{"horde", guide.HordeRace},
@@ -748,6 +755,16 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				for _, n := range setNotes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
+				var kept *keptIncumbent
+				if isHealer(specInfo) {
+					verified, kept, err = keepIncumbent(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, incumbents[incumbentKey{Band: band, Preset: pass.name, Faction: f.name}], pickBySlot)
+					if err != nil {
+						return fmt.Errorf("band %d %s: %w", band, f.name, err)
+					}
+					if kept != nil {
+						log.Printf("leveling-bis: %s band %d %s %s: kept the previous published set (%.1f +/- %.1f beats the new set's %.1f +/- %.1f; differs in %v)", spec, band, f.name, pass.name, kept.IncumbentScore, kept.IncumbentError, kept.NewScore, kept.NewError, kept.DifferingSlots)
+					}
+				}
 				picks, setDPS, swaps, verifyErrors := verified.picks, verified.setDPS, verified.swaps, verified.errors
 				for _, e := range verifyErrors {
 					log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
@@ -762,6 +779,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// report the same way every other band-level field here is.
 				report.WeightsLowConfidence = weightsLowConfidence
 				report.Preset = pass.name
+				report.KeptIncumbent = kept
 				// "No primary stat ever published as 'not significant'"
 				// (this lane's brief, item 3) - clears Insignificant on
 				// exactly the anchor row, on an otherwise-trustworthy band

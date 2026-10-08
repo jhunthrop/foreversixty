@@ -1212,13 +1212,17 @@ type bandReport struct {
 	// the set, so this flag is the option chosen - set_dps stays
 	// published, exactly as the engine already computed it, with this
 	// flag naming what it is not a measurement of.
-	SetDPSPartial     bool     `json:"set_dps_partial,omitempty"`
-	NoSourceCount     int      `json:"no_source_count"`
-	NoSourceSample    []string `json:"no_source_sample,omitempty"`
-	NewAtBand         []string `json:"new_at_band"`
-	WeightsRunSeconds float64  `json:"weights_run_seconds"`
-	VerifyRunSeconds  float64  `json:"verify_run_seconds"`
-	VerifyErrors      []string `json:"verify_errors,omitempty"`
+	SetDPSPartial bool `json:"set_dps_partial,omitempty"`
+	// KeptIncumbent is present only on a healer band that kept the set the
+	// site published before, because that set beat the new pick beyond error
+	// under the final harness (incumbent.go).
+	KeptIncumbent     *keptIncumbent `json:"kept_incumbent,omitempty"`
+	NoSourceCount     int            `json:"no_source_count"`
+	NoSourceSample    []string       `json:"no_source_sample,omitempty"`
+	NewAtBand         []string       `json:"new_at_band"`
+	WeightsRunSeconds float64        `json:"weights_run_seconds"`
+	VerifyRunSeconds  float64        `json:"verify_run_seconds"`
+	VerifyErrors      []string       `json:"verify_errors,omitempty"`
 	// Coverage is band.go's buildBandPool own per-slot count (lane
 	// rank-guardrails' guardrail A): planner slot -> how many items
 	// eligible() passed for this band+faction, and how many of those

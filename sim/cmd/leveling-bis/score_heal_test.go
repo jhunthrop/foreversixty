@@ -5,7 +5,6 @@ import (
 	"math"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
@@ -57,43 +56,21 @@ func healingResult(effective, raw, manaLasts float64) inproc.HealingResult {
 	}
 }
 
-func TestLastingFactorIsTheSquaredShareOfTheFightManaLasted(t *testing.T) {
-	fight := 300 * time.Second
-	cases := []struct {
-		name  string
-		lasts float64
-		want  float64
-	}{
-		{"lasts the fight", 300, 1},
-		{"mana to spare", 900, 1},
-		{"four fifths of it", 240, 0.64},
-		{"half of it", 150, 0.25},
-		{"empties at once", 0, 0},
-		{"negative is clamped", -5, 0},
-	}
-	for _, c := range cases {
-		if got := lastingFactor(c.lasts, fight); math.Abs(got-c.want) > 1e-9 {
-			t.Errorf("%s: lastingFactor(%v) = %v, want %v", c.name, c.lasts, got, c.want)
-		}
-	}
-	if got := lastingFactor(10, 0); got != 1 {
-		t.Errorf("a fight of no length scores %v, want 1", got)
-	}
-}
-
-// The guard: a set whose mana empties before the fight ends ranks below a
-// set that lasts, even when its healing while it lasted was higher.
-func TestASetThatEmptiesRanksBelowOneThatLasts(t *testing.T) {
-	fight := 300 * time.Second
-	burst := healingResult(520, 600, 150)  // higher average, runs dry at half the fight
+// Mana is not a second term: a set that runs dry is ranked on the effective
+// healing per second it averaged over the whole fight, which already pays
+// for the seconds it did not heal.
+func TestASetIsRankedOnItsEffectiveHealingWhetherOrNotItRanDry(t *testing.T) {
+	dry := healingResult(520, 600, 150)    // higher average, runs dry at half the fight
 	steady := healingResult(380, 450, 300) // lower, lasts
-	if healingScore(burst, fight) >= healingScore(steady, fight) {
-		t.Errorf("the burst set scores %v, the lasting set %v: the one that empties must rank below",
-			healingScore(burst, fight), healingScore(steady, fight))
-	}
-	// And when both last, plain healing decides.
-	if healingScore(healingResult(420, 500, 400), fight) <= healingScore(steady, fight) {
-		t.Error("two sets that both last must rank by effective healing per second")
+	for name, result := range map[string]inproc.HealingResult{"dry": dry, "steady": steady} {
+		engine := healEngine{backend: &fakeHealing{result: result}, profile: testHealProfile(t)}
+		score, _, err := engine.RunPlainDPSWithError(api.SimRequest{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if score != result.Effective.Mean {
+			t.Errorf("%s: score = %v, want its effective healing %v", name, score, result.Effective.Mean)
+		}
 	}
 }
 
@@ -118,15 +95,18 @@ func TestHealEngineRunsEveryRequestOverTheProfilesFight(t *testing.T) {
 	}
 }
 
-func TestHealEngineScalesTheErrorByTheGuard(t *testing.T) {
+func TestHealEngineReturnsTheHealingsOwnErrorAndScalesIterations(t *testing.T) {
 	backend := &fakeHealing{result: healingResult(500, 600, 150)}
 	engine := healEngine{backend: backend, profile: testHealProfile(t)}
-	score, stdErr, err := engine.RunPlainDPSWithError(api.SimRequest{})
+	score, stdErr, err := engine.RunPlainDPSWithError(api.SimRequest{Iterations: 300})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if math.Abs(score-125) > 1e-9 || math.Abs(stdErr-2.5) > 1e-9 {
-		t.Errorf("score = %v +/- %v, want 125 +/- 2.5 (500 +/- 10 at a quarter)", score, stdErr)
+	if score != 500 || math.Abs(stdErr-10) > 1e-9 {
+		t.Errorf("score = %v +/- %v, want 500 +/- 10 whatever the mana did", score, stdErr)
+	}
+	if got := backend.requests[0].Iterations; got != 300*healIterationScale {
+		t.Errorf("ran %d iterations, want %d", got, 300*healIterationScale)
 	}
 }
 
