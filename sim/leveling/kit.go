@@ -171,3 +171,11 @@ var DualWieldSpecs = map[string]bool{
 	"hunter-marksmanship":  true,
 	"hunter-survival":      true,
 }
+
+// NoWeaponImbueSpecs fight in a shapeshift form, where a weapon imbue
+// (a stone, an oil, a poison) does nothing: the form's claws swing, not
+// the weapon. The preset resolver drops every imbue for them so a stone's
+// crit never reaches a cat.
+var NoWeaponImbueSpecs = map[string]bool{
+	"druid-feral": true,
+}

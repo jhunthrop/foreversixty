@@ -111,10 +111,10 @@ func TestRaidPresetConsumesFollowTheRole(t *testing.T) {
 	}{
 		{"mage-fire", []string{"flask_of_supreme_power", "greater_arcane_elixir", "elixir_of_firepower", "food_runn_tum_tuber_surprise", "main_hand_imbue:brilliant_wizard_oil", "major_mana_potion", "conjured_demonic_rune"}, []string{"elixir_of_the_mongoose"}},
 		{"warlock-affliction", []string{"elixir_of_shadow_power", "flask_of_supreme_power"}, []string{"elixir_of_firepower"}},
-		{"warrior-fury", []string{"elixir_of_the_mongoose", "juju_power", "r_o_i_d_s", "food_grilled_squid", "juju_might", "mighty_rage_potion", "off_hand_imbue:elemental_sharpening_stone"}, []string{"major_mana_potion", "flask_of_supreme_power"}},
-		{"warrior-arms", []string{"mighty_rage_potion"}, []string{"off_hand_imbue:elemental_sharpening_stone"}},
+		{"warrior-fury", []string{"elixir_of_the_mongoose", "juju_power", "r_o_i_d_s", "food_grilled_squid", "juju_might", "mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone", "off_hand_imbue:dense_sharpening_stone"}, []string{"major_mana_potion", "flask_of_supreme_power"}},
+		{"warrior-arms", []string{"mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone"}, []string{"off_hand_imbue:dense_sharpening_stone"}},
 		{"paladin-retribution", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"mighty_rage_potion", "conjured_demonic_rune"}},
-		{"hunter-marksmanship", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"off_hand_imbue:elemental_sharpening_stone", "flask_of_supreme_power"}},
+		{"hunter-marksmanship", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"off_hand_imbue:dense_sharpening_stone", "flask_of_supreme_power"}},
 		{"rogue-combat", []string{"elixir_of_the_mongoose"}, []string{"major_mana_potion", "mighty_rage_potion"}},
 	}
 	for _, c := range cases {
@@ -190,7 +190,7 @@ func TestRaidPresetGivesDualWieldersAStoneInEachHand(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := entryIDs(resolved.Consumes)
-	for _, want := range []string{"main_hand_imbue:dense_sharpening_stone", "off_hand_imbue:elemental_sharpening_stone"} {
+	for _, want := range []string{"main_hand_imbue:elemental_sharpening_stone", "off_hand_imbue:dense_sharpening_stone"} {
 		if !slices.Contains(got, want) {
 			t.Errorf("warrior-fury: consumes %v lack %q", got, want)
 		}
@@ -307,5 +307,20 @@ func TestResolveFromFileRaidCarriesTheRaidBuffs(t *testing.T) {
 func TestResolveFromFileUnknownPresetFails(t *testing.T) {
 	if _, err := ResolveFromFile(realPresetsPath, "nope", specs.Spec{Spec: "shaman-elemental", ClassSlug: "shaman", ReferenceStat: "spell_power"}); !errors.Is(err, ErrUnknownPreset) {
 		t.Fatalf("err = %v; want ErrUnknownPreset", err)
+	}
+}
+
+func TestRaidPresetGivesAShapeshifterNoImbue(t *testing.T) {
+	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["druid-feral"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range entryIDs(resolved.Consumes) {
+		if strings.Contains(id, "_imbue:") {
+			t.Errorf("druid-feral carries %q; a cat's claws take no stone", id)
+		}
+	}
+	if !slices.Contains(entryIDs(resolved.Consumes), "elixir_of_the_mongoose") {
+		t.Error("druid-feral lost its elixirs with the imbues")
 	}
 }

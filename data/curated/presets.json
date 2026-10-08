@@ -208,18 +208,18 @@
                 "id": "juju_might",
                 "label": "Juju Might",
                 "reason": "Attack power. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
+              },
+              {
+                "id": "main_hand_imbue:elemental_sharpening_stone",
+                "label": "Elemental Sharpening Stone",
+                "reason": "Main-hand stone for every melee weapon user, now that Windfury Totem is a raid buff and no longer holds the main-hand imbue slot. A rogue's poison or an enhancement shaman's Windfury Weapon still wins the slot. Elemental (crit) on the main hand because the engine adds its 2% crit to the whole character, so a second one would count twice."
               }
             ],
             "dual_wield_ids": [
               {
-                "id": "main_hand_imbue:dense_sharpening_stone",
+                "id": "off_hand_imbue:dense_sharpening_stone",
                 "label": "Dense Sharpening Stone",
-                "reason": "Main-hand stone for dual wielders, now that Windfury Totem is a raid buff and no longer holds the main-hand imbue slot. Dense (weapon damage) in the main hand and Elemental in the off hand, because the engine's Elemental stone adds its 2% crit to the whole character, so two of them would count twice."
-              },
-              {
-                "id": "off_hand_imbue:elemental_sharpening_stone",
-                "label": "Elemental Sharpening Stone",
-                "reason": "Off-hand stone for dual wielders."
+                "reason": "Off-hand stone for dual wielders: weapon damage, since the main hand already carries the one Elemental stone that counts."
               }
             ]
           },

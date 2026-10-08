@@ -228,13 +228,19 @@ func (p Presets) Resolve(name string, spec specs.Spec) (ResolvedPreset, error) {
 		Notes:    def.Notes,
 		slots:    make(map[string]string, len(entries)),
 	}
+	kept := entries[:0:0]
 	for _, entry := range entries {
 		slot, err := consumeSlot(entry.ID)
 		if err != nil {
 			return ResolvedPreset{}, err
 		}
+		if leveling.NoWeaponImbueSpecs[spec.Spec] && strings.HasSuffix(slot, "_imbue") {
+			continue
+		}
 		resolved.slots[entry.ID] = slot
+		kept = append(kept, entry)
 	}
+	resolved.Consumes = publicEntries(kept)
 	return resolved, nil
 }
 
