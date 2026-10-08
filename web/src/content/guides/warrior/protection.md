@@ -5,9 +5,23 @@ spec: protection
 role: tank
 build: 'FS1:1.60.1.70009:warrior:dwarf:35305013/0/050533120330001311:'
 recommendedRaces: [dwarf, tauren]
-statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
+statPriority:
+  [
+    Stamina,
+    Armor,
+    Defense,
+    Dodge,
+    Parry,
+    Block,
+    Strength,
+    Agility,
+    Attack power,
+    Hit,
+    Critical strike,
+    Expertise,
+  ]
 description: 'Talents, tanking priority, stat priority, and race picks for Protection Warrior in Forever, with beta-versus-projection called out.'
-updated: 2026-09-24
+updated: 2026-10-07
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -39,37 +53,53 @@ Protection is Forever's tanking spec, built around a one-handed weapon and shiel
 
 ## Talents and builds
 
-Verified against this build's talent data, in roughly the order you'd take them:
+This build spends 20 points in Arms and 31 in Protection, the shortest road to Shield Slam. It is the build this site's tank simulator is run on, so everything below is what the simulator models, taken from the client's own talent text.
 
-- **Shield Specialization** — up to 5% more Block chance and a guaranteed 5 Rage whenever you Block at max rank, a Rage-generation talent as much as a mitigation one.
-- **Anticipation** — up to 20 Defense Skill at max rank, which raises avoidance across Dodge, Parry, and Block together.
-- **Iron Will** — up to 15% shorter Stun and Fear durations at max rank. It replaced Toughness, which left the Protection tree in the 1 October 2026 rework, as the tree's defensive filler.
-- **Defiance** — up to 15% more threat generated in Defensive Stance while a shield is equipped, on top of the stance's own threat bonus.
-- **Concussion Blow** (one point, and the prerequisite for Shield Slam below) — a 5-second stun, useful crowd control on top of being a stepping stone.
-- **Shield Slam** (requires 1 point in Concussion Blow) — the capstone: a shield bash dealing damage that scales with Block Value and generating a very high amount of threat.
+**Protection**, in roughly the order you would take them:
 
-This build reaching Shield Slam spends 31 points in Protection, with the remaining 20 in Fury — Cruelty, Booming Voice and Unbridled Wrath all maxed (crit, Rage generation and Shout cost), with Blood Craze 3/3 for health back after a critical hit and 2 points in Lingering Rage — rather than Arms, since Fury alone covers the whole remainder inside 51 points. The five points Fury Iron Will used to hold are re-spent there because Iron Will moved to the Protection tree (where it replaces Toughness, so the Protection total stays at 31); Lingering Rage has no effect on a tank in combat and is a filler. Exact splits vary by preference and aren't fixed by anything confirmed for Forever. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+- **Shield Specialization** — more Block chance, and every Block pays Rage. A block is no longer only mitigation: it feeds the Rage that Shield Slam, Revenge and Heroic Strike spend.
+- **Anticipation** — Defense Skill, which raises avoidance and lowers the chance to be critically hit.
+- **Improved Revenge**, **Improved Thunder Clap** and **Improved Sunder Armor** — cheaper or harder-hitting versions of the three abilities that make most of a tank's threat.
+- **Last Stand** — a short burst of health, then it is lost again. An emergency button, not a damage-taken talent.
+- **Master of Defense** — Rage whenever you Dodge or Parry with a shield equipped, the avoidance counterpart of Shield Specialization.
+- **Defiance** — more threat in Defensive Stance while a shield is equipped, added on top of the stance's own threat bonus.
+- **Focused Rage** — cheaper offensive abilities, so the Rage the talents above produce goes further.
+- **Bastion** — more damage from everything you do while a shield is equipped; one point is enough to keep the budget for the rest.
+- **Concussion Blow** — one point, because Shield Slam requires it.
+- **Shield Slam** — the capstone: a shield hit that adds your Block Value, with very high threat.
+
+**Arms**, the cheapest useful twenty: Deflection for Parry, Improved Heroic Strike for cheaper Heroic Strikes, Improved Rend, Improved Tactical Mastery and Anger Management as the tier gates they are, and Deep Wounds with the points that are left.
+
+What is left out, and why. Improved Bloodrage, Iron Will, Improved Disarm, Vanguard and Improved Shield Bash change nothing against a boss that stays in front of you and neither stuns, fears, silences nor disarms, which is the fight this site simulates. Improved Shield Wall shortens a cooldown the simulated fight never needs to use. Devastate exists in the client's spell list but is not a learnable ability in this build, so no rotation and no talent here depends on it.
+
+Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
 ## Rotation and priority
 
-This site's rotation data for Protection is unwritten — unlike Arms and Fury, there is no simulator priority list built for this spec yet, so nothing in this section comes from this site's own engine. Carried over from 1.12 tanking convention rather than confirmed for Forever, the general priority opens by stacking Sunder Armor toward its cap for threat and armor reduction, keeps Shield Slam on cooldown as the single highest-threat button, uses Revenge whenever it's available (it only becomes castable right after you Dodge, Parry, or Block an attack), and spends leftover Rage on Heroic Strike or Cleave depending on whether there's one target or several. Thunder Clap and Demoralizing Shout add area threat and a damage-reduction debuff against multiple attackers. Treat this whole section as inferred 1.12 knowledge until this site builds and simulates its own Protection rotation.
+This is the rotation the simulator runs, and each line in it was kept because taking it out made the tank worse in the simulator's tank fight (a level 63 boss that swings at you every two seconds, with healers assumed). You stand in Defensive Stance with a shield for the whole fight.
+
+1. **Shield Slam** on cooldown. It is your highest-threat button and the one whose damage grows with Block Value.
+2. **Revenge** whenever it is available. It becomes castable after you dodge, parry or block, so the better your avoidance, the more often it is up.
+3. **Shield Block** whenever its buff is down. Of everything you press, it is the one whose removal costs the most damage taken.
+4. **Thunder Clap** held on the boss. Its attack-speed slow is worth the Rage for the damage it removes, at a small cost in threat.
+5. **Sunder Armor** as the filler for every other global cooldown. Stacking it is the biggest single source of threat outside Shield Slam and Revenge.
+6. **Heroic Strike** with spare Rage. At this gear a Forever tank is limited by cooldowns rather than Rage, so the exact threshold you queue it at barely matters.
+
+Last Stand and Shield Wall are for a fight the healers are losing; the simulator fires them on low health and they cut the chance of death on a harder boss, but they never fire on the standard fight. Demoralizing Shout is not in the list because it lowers the boss's attack power and the simulated boss has none to lower; against a real boss with attack power it earns its place. Taunt, Disarm and Concussion Blow do nothing in a fight with one stationary enemy and are left out.
+
+Rage comes from your swings (a fixed amount per landed swing from the weapon's speed, more on a critical strike), from the damage you take, and from Shield Specialization and Master of Defense, so a tank that is being hit and is avoiding well is never short of it.
 
 ## Stat priority
 
-This site's simulator weighting for Protection currently lists the same stats, in the same order, as the two DPS specs:
+The table above is this band's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
 
-1. **Attack power**
-2. **Strength**
-3. **Agility**
-4. **Critical strike**
-5. **Hit**
-6. **Melee haste**
+Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and health is a straight multiplier on effective health. Armor lowers every physical hit by a fraction that shrinks as you stack it. Defense Skill, Dodge and Parry take hits out entirely, and Defense also lowers the chance to be critically hit and crushed. Block takes a flat amount off the hits it catches, so it depends on your Block Value. Expertise lowers the boss's chance to dodge or parry you, which is threat and Rage, not survival; no item carries it yet, so it is a stat for the day one does. Strength and Attack Power add threat and, for Strength, Block Value.
 
-This is an offense-oriented list, not a tanking-specific one built around Stamina, Defense Skill, and Block Value — the kind of priority a level 60 tank actually wants. Treat it as what this site's simulator currently outputs for Protection rather than tested tank stat advice; a Stamina- and avoidance-led list is the likely outcome once tank-specific simulation exists for this spec.
+Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so a shield's Block Value is not weighed apart from its Block chance. And a stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this band's sample size, to tell its value apart from zero.
 
 ## Gear
 
-Because the stat priority above doesn't yet reflect tanking needs, the itemization principle for Protection right now is qualitative rather than list-driven: prioritize Stamina and Defense Skill to raise health and avoidance, then Block Value and Strength for threat and mitigation, ahead of the raw Attack Power lean the current weighting shows. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30, and this build's raid loot tables are themselves incomplete — nothing raids in-game until the first tier opens on 9 December 2026, and even then several of this client's raid item tables are missing most of what earlier sourcing expects. This section fills in once raid loot is itemized and tank-specific weighting exists.
+Follow the table above: health, then the avoidance stats and armor, with the threat stats behind them. This site's ranker builds the level 60 set for you in the BiS tab, scored on the same tank fight, in a shield and one-handed weapon. Specific raid picks cannot be named honestly yet: nothing raids until 9 December, and this build's raid loot tables are only partly itemized for Forever, so the set is built from what the item tables do carry.
 
 ## Enchants and consumables
 
