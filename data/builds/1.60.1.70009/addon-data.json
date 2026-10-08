@@ -10866,7 +10866,7 @@
           {
             "spell_id": 707,
             "name": "Immolate",
-            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
@@ -10895,7 +10895,7 @@
           {
             "spell_id": 1094,
             "name": "Immolate",
-            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
@@ -10924,7 +10924,7 @@
           {
             "spell_id": 2941,
             "name": "Immolate",
-            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
@@ -10953,7 +10953,7 @@
           {
             "spell_id": 2941,
             "name": "Immolate",
-            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
@@ -10988,7 +10988,7 @@
           {
             "spell_id": 11665,
             "name": "Immolate",
-            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
@@ -11023,7 +11023,7 @@
           {
             "spell_id": 11667,
             "name": "Immolate",
-            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
@@ -11064,7 +11064,7 @@
           {
             "spell_id": 25309,
             "name": "Immolate",
-            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global.",
+            "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
@@ -11124,7 +11124,7 @@
           {
             "spell_id": 5676,
             "name": "Searing Pain",
-            "condition": "Searing Pain is the filler between DoT refreshes.",
+            "condition": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
             "icon": "inv_misc_questionmark"
           }
         ]
@@ -11153,7 +11153,7 @@
           {
             "spell_id": 17919,
             "name": "Searing Pain",
-            "condition": "Searing Pain is the filler between DoT refreshes.",
+            "condition": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
             "icon": "inv_misc_questionmark"
           }
         ]
@@ -11182,7 +11182,7 @@
           {
             "spell_id": 17920,
             "name": "Searing Pain",
-            "condition": "Searing Pain is the filler between DoT refreshes.",
+            "condition": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
             "icon": "inv_misc_questionmark"
           }
         ]
@@ -11211,7 +11211,7 @@
           {
             "spell_id": 17920,
             "name": "Searing Pain",
-            "condition": "Searing Pain is the filler between DoT refreshes.",
+            "condition": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
             "icon": "inv_misc_questionmark"
           }
         ]
@@ -11246,7 +11246,7 @@
           {
             "spell_id": 17922,
             "name": "Searing Pain",
-            "condition": "Searing Pain is the filler between DoT refreshes.",
+            "condition": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
             "icon": "inv_misc_questionmark"
           }
         ]
@@ -11287,7 +11287,7 @@
           {
             "spell_id": 17923,
             "name": "Searing Pain",
-            "condition": "Searing Pain is the filler between DoT refreshes.",
+            "condition": "Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.",
             "icon": "inv_misc_questionmark"
           }
         ]
@@ -13297,9 +13297,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 252561,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 226773,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22657,
@@ -13439,9 +13439,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 12930,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "main_hand": {
               "item_id": 22335,
@@ -13452,7 +13452,7 @@
         },
         "new_at_band": {
           "alliance": [
-            252561,
+            226773,
             22657,
             227808,
             272411,
@@ -13480,7 +13480,7 @@
             20682,
             21206,
             22678,
-            12930,
+            11819,
             22335
           ]
         },
@@ -16288,9 +16288,9 @@
               "source": "Lord Skwol"
             },
             "shoulder": {
-              "item_id": 227888,
+              "item_id": 226785,
               "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana"
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 12968,
@@ -16313,9 +16313,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 272398,
+              "item_id": 226780,
               "source_kind": "vendor",
-              "source": "Pix Xizzix"
+              "source": "Mokvar"
             },
             "legs": {
               "item_id": 12756,
@@ -16365,9 +16365,9 @@
               "source": "World drop"
             },
             "shoulder": {
-              "item_id": 227888,
+              "item_id": 226785,
               "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana"
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 12968,
@@ -16390,9 +16390,9 @@
               "source": "Mokvar"
             },
             "waist": {
-              "item_id": 272398,
+              "item_id": 226780,
               "source_kind": "vendor",
-              "source": "Pix Xizzix"
+              "source": "Mokvar"
             },
             "legs": {
               "item_id": 12756,
@@ -16435,10 +16435,10 @@
           "alliance": [
             252561,
             20685,
-            227888,
+            226785,
             12968,
             22667,
-            272398,
+            226780,
             12756,
             226781,
             13392,
@@ -16449,10 +16449,10 @@
           "horde": [
             252561,
             14558,
-            227888,
+            226785,
             12968,
             22667,
-            272398,
+            226780,
             12756,
             226781,
             13392,
@@ -16578,9 +16578,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 5970,
+              "item_id": 10413,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Serpentis"
+              "source": "Wailing Caverns: Druid of the Fang"
             },
             "waist": {
               "item_id": 10403,
@@ -16643,7 +16643,7 @@
             6449,
             252490,
             3202,
-            5970,
+            10413,
             10403,
             10410,
             1121,
@@ -17527,9 +17527,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 5970,
+              "item_id": 10413,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Serpentis"
+              "source": "Wailing Caverns: Druid of the Fang"
             },
             "waist": {
               "item_id": 10403,
@@ -17542,9 +17542,9 @@
               "source": "Wailing Caverns: Lord Cobrahn"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10411,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             },
             "finger1": {
               "item_id": 285330,
@@ -17599,9 +17599,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 5970,
+              "item_id": 10413,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Serpentis"
+              "source": "Wailing Caverns: Druid of the Fang"
             },
             "waist": {
               "item_id": 10403,
@@ -17648,10 +17648,10 @@
             6449,
             2041,
             3202,
-            5970,
+            10413,
             10403,
             10410,
-            1121,
+            10411,
             285330,
             20439,
             250603,
@@ -17664,7 +17664,7 @@
             6449,
             252490,
             3202,
-            5970,
+            10413,
             10403,
             252500,
             1121,
@@ -21376,9 +21376,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -21421,9 +21421,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "ranged": {
-              "item_id": 279246,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 22408,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
             }
           },
           "horde": {
@@ -21458,9 +21458,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 226930,
-              "source_kind": "vendor",
-              "source": "Mokvar"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -21517,7 +21517,6 @@
             272411,
             14152,
             19595,
-            22066,
             228190,
             237815,
             22064,
@@ -21526,7 +21525,7 @@
             12930,
             11832,
             22335,
-            279246
+            22408
           ],
           "horde": [
             226935,
@@ -21535,6 +21534,7 @@
             272411,
             14152,
             19595,
+            22066,
             228190,
             237815,
             22064,
@@ -28486,9 +28486,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 226955,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 272411,
@@ -28506,9 +28506,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 272097,
+              "item_id": 226958,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -28541,9 +28541,9 @@
               "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "trinket2": {
-              "item_id": 11832,
+              "item_id": 22268,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 19102,
@@ -28568,9 +28568,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 227808,
+              "item_id": 226955,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 272411,
@@ -28588,9 +28588,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 272097,
+              "item_id": 226958,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -28618,14 +28618,14 @@
               "source": "The Path of the Invoker"
             },
             "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
-            },
-            "trinket2": {
               "item_id": 11819,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach"
+            },
+            "trinket2": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 22335,
@@ -28643,36 +28643,36 @@
           "alliance": [
             226957,
             22657,
-            227808,
+            226955,
             272411,
             226960,
             19595,
-            272097,
+            226958,
             228190,
             22752,
             226959,
             20682,
             21206,
             11819,
-            11832,
+            22268,
             19102,
             279246
           ],
           "horde": [
             226957,
             22657,
-            227808,
+            226955,
             272411,
             226960,
             19595,
-            272097,
+            226958,
             228190,
             22747,
             226959,
             20682,
             21206,
-            11832,
             11819,
+            11832,
             22335,
             279246
           ]
@@ -40763,14 +40763,14 @@
               "source": "Superior Armaments of Battle - Friend of the Dawn"
             },
             "trinket1": {
+              "item_id": 13966,
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise"
+            },
+            "trinket2": {
               "item_id": 18370,
               "source_kind": "dungeon",
               "source": "Dire Maul: Immol'thar"
-            },
-            "trinket2": {
-              "item_id": 20071,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
             },
             "main_hand": {
               "item_id": 21522,
@@ -40888,8 +40888,8 @@
             237825,
             21196,
             22680,
+            13966,
             18370,
-            20071,
             21522,
             20688,
             19562

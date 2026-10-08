@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:59:06Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:08:45Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.865737765,
-      "verify_run_seconds": 1.127311106,
+      "weights_run_seconds": 1.7823335550000001,
+      "verify_run_seconds": 1.113122796,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1158,8 +1158,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.865737765,
-      "verify_run_seconds": 1.146973031,
+      "weights_run_seconds": 1.7823335550000001,
+      "verify_run_seconds": 1.098342995,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1799,8 +1799,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.886453137,
-      "verify_run_seconds": 1.508871206,
+      "weights_run_seconds": 1.811662043,
+      "verify_run_seconds": 1.379186156,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2443,8 +2443,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.886453137,
-      "verify_run_seconds": 1.4824219570000001,
+      "weights_run_seconds": 1.811662043,
+      "verify_run_seconds": 1.383895642,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3086,8 +3086,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.899966015,
-      "verify_run_seconds": 1.349941218,
+      "weights_run_seconds": 1.8203202040000002,
+      "verify_run_seconds": 1.302231752,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3729,8 +3729,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.899966015,
-      "verify_run_seconds": 1.360432762,
+      "weights_run_seconds": 1.8203202040000002,
+      "verify_run_seconds": 1.315459785,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4380,8 +4380,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.964800259,
-      "verify_run_seconds": 1.25328155,
+      "weights_run_seconds": 1.8860836669999999,
+      "verify_run_seconds": 1.26301001,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5036,8 +5036,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.964800259,
-      "verify_run_seconds": 1.273870616,
+      "weights_run_seconds": 1.8860836669999999,
+      "verify_run_seconds": 1.201793395,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5473,7 +5473,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.5692680461391041
+              "dps_delta": -0.5692680461391023
             },
             {
               "item_id": 237825,
@@ -5754,8 +5754,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.9166473499999999,
-      "verify_run_seconds": 1.2975629450000001,
+      "weights_run_seconds": 1.878452871,
+      "verify_run_seconds": 1.302942098,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -5940,7 +5940,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -5.161482161583297
+              "dps_delta": -5.161482161583298
             }
           ]
         },
@@ -6191,7 +6191,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.5692680461391041
+              "dps_delta": -0.5692680461391023
             },
             {
               "item_id": 237825,
@@ -6471,8 +6471,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.9166473499999999,
-      "verify_run_seconds": 1.3374318299999999,
+      "weights_run_seconds": 1.878452871,
+      "verify_run_seconds": 1.304112594,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -6901,7 +6901,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.3653055415469801
+              "dps_delta": -1.365305541546984
             },
             {
               "item_id": 237819,
@@ -7175,8 +7175,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.26262979,
-      "verify_run_seconds": 1.56611046,
+      "weights_run_seconds": 2.200730994,
+      "verify_run_seconds": 1.531083948,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7629,7 +7629,7 @@
           "item_name": "Bloodmail Boots",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "score": 71.10583025571862,
+          "score": 71.1058302557186,
           "verified": true,
           "alternatives": [
             {
@@ -7637,14 +7637,14 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.8857330933515972
+              "dps_delta": -1.8857330933515954
             },
             {
               "item_id": 227815,
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -2.159931913805978
+              "dps_delta": -2.1599319138059756
             },
             {
               "item_id": 13967,
@@ -7879,8 +7879,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.26262979,
-      "verify_run_seconds": 1.598925294,
+      "weights_run_seconds": 2.200730994,
+      "verify_run_seconds": 1.4860333510000001,
       "coverage": {
         "back": {
           "eligible": 449,
