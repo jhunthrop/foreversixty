@@ -16,6 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SLOTS, type Slot } from '../planner/types';
 import { LOOT_KINDS, SOURCE_KIND_LABELS, type LootFile, type LootKind } from '../sim/loot';
+import { bisSourceBuild } from '../../../scripts/bis-source-build.mjs';
 import { bisCopy } from './copy';
 import { selectBand } from './presets';
 import { DEFAULT_BIS_ROLE, TANK_ROLE } from './tank-view';
@@ -67,8 +68,12 @@ export function groupByClass(catalog: readonly SpecCatalogEntry[]): ClassSpecs[]
   return order.map((classSlug) => ({ classSlug, specs: byClass.get(classSlug)! }));
 }
 
-function realBisPath(build: string, spec: string): string {
-  return path.join(REPO_ROOT, 'data/builds', build, 'bis', `${spec}.json`);
+/** The pipeline-published file for a spec. A build the nightly has not ranked yet reads the
+ *  newest ranked build's file instead (scripts/bis-source-build.mjs); that file's own
+ *  `build` field says which build it was ranked on. */
+export function realBisPath(build: string, spec: string): string {
+  const source = bisSourceBuild(REPO_ROOT, build);
+  return path.join(REPO_ROOT, 'data/builds', source, 'bis', `${spec}.json`);
 }
 
 function fixtureBisPath(spec: string): string {

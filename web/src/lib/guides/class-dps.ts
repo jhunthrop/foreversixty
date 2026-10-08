@@ -5,17 +5,11 @@
 // literal DPS number or a hardcoded race/faction table in this module (round-1 mock review
 // finding 1's own defect, closed by reading real reference data instead).
 import { existsSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { bandEntry, loadBisFile } from '../bis/load';
+import { bandEntry, loadBisFile, realBisPath } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import { headlineDpsOf } from '../bis/tank-view';
 import { classRows, racesForClass } from '../planner/reference';
 import type { BisFile, BisHitToCap, BisStatWeight, Faction } from '../bis/types';
-
-function repoRoot(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-}
 
 /**
  * Whether the real pipeline has published a BiS file for this spec -- `loadBisFile` (used
@@ -29,7 +23,7 @@ function repoRoot(): string {
  * real file's existence directly, never through the fixture-falling-back loader.
  */
 export function hasRealBisFile(build: string, spec: string): boolean {
-  return existsSync(path.join(repoRoot(), 'data/builds', build, 'bis', `${spec}.json`));
+  return existsSync(realBisPath(build, spec));
 }
 
 /**

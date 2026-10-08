@@ -29,6 +29,7 @@ import { access, cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/pro
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { bisDirFor, bisSourceBuild } from './bis-source-build.mjs';
 
 /** What gets copied into public/data/<build>/, in copy order. */
 export const SYNC_ENTRIES = [
@@ -484,6 +485,23 @@ async function publishBisFixtures({ webRoot, publicDir }) {
 }
 
 /**
+ * A real build the nightly has not ranked yet publishes the newest ranked build's bis/
+ * (scripts/bis-source-build.mjs), so the planner's hover popover and the home upgrades panel
+ * fetch the same files the static /bis pages read. Each file's own `build` field still names
+ * the build it was ranked on. A no-op when the build has its own bis/ or the source is the
+ * fixture.
+ * @param {{ repoRoot: string, build: string, sourceDir: string, publicDir: string }} options
+ * @returns {Promise<string[]>} `bis` when a fallback directory was copied
+ */
+async function publishFallbackBis({ repoRoot, build, sourceDir, publicDir }) {
+  if (sourceDir !== path.join(repoRoot, 'data/builds', build)) return [];
+  const source = bisSourceBuild(repoRoot, build);
+  if (source === build) return [];
+  await cp(bisDirFor(repoRoot, source), path.join(publicDir, 'bis'), { recursive: true });
+  return [`bis (ranked on ${source})`];
+}
+
+/**
  * Resets public/data/<build> and copies SYNC_ENTRIES from sourceDir into it, then derives
  * public/data/<build>/simnames/<class>.json from the same sourceDir (see `writeSimNames`)
  * and fills any remaining bis/<spec>.json gaps from this lane's own fixture (see
@@ -513,6 +531,7 @@ async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
   }
 
   copied.push(...(await writeSimNames(sourceDir, publicDir)));
+  copied.push(...(await publishFallbackBis({ repoRoot, build, sourceDir, publicDir })));
   copied.push(...(await publishBisFixtures({ webRoot, publicDir })));
 
   return copied;

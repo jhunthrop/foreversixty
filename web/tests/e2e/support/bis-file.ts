@@ -7,6 +7,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { bisSourceBuild } from '../../../scripts/bis-source-build.mjs';
 import { ACTIVE_BUILD } from './active-build';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -58,8 +59,15 @@ export interface BisFileData {
   heal_profile?: { label: string };
 }
 
+/** The published file for a spec, from the active build or, before the nightly has ranked
+ *  it, the newest ranked build (the page loader's own fallback). */
+function publishedBisPath(spec: string): string {
+  const source = bisSourceBuild(REPO_ROOT, ACTIVE_BUILD);
+  return path.join(REPO_ROOT, 'data/builds', source, 'bis', `${spec}.json`);
+}
+
 export function readBisFile(spec: string): BisFileData {
-  const published = path.join(REPO_ROOT, 'data/builds', ACTIVE_BUILD, 'bis', `${spec}.json`);
+  const published = publishedBisPath(spec);
   const fixture = path.join(WEB_ROOT, 'src/data/fixtures/bis', `${spec}.json`);
   const file = existsSync(published) ? published : fixture;
   return JSON.parse(readFileSync(file, 'utf8')) as BisFileData;
@@ -142,7 +150,7 @@ export function unrankedBisRoute(): string | undefined {
   ) as SpecCatalogRow[];
   const bare = catalog.find(
     ({ spec }) =>
-      !existsSync(path.join(REPO_ROOT, 'data/builds', ACTIVE_BUILD, 'bis', `${spec}.json`)) &&
+      !existsSync(publishedBisPath(spec)) &&
       !existsSync(path.join(WEB_ROOT, 'src/data/fixtures/bis', `${spec}.json`)),
   );
   return bare === undefined ? undefined : `/bis/${bare.class_slug}/${bare.spec_slug}`;
