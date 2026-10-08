@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -445,3 +446,17 @@ def test_an_unwritten_rotation_may_not_declare_an_inert_line(tmp_path: Path):
     )
     with pytest.raises(AplError, match="unwritten"):
         load_apl(path)
+
+
+def test_player_facing_step_notes_carry_no_iso_date():
+    """A step's `notes` is shown to players; engineering narrative with a
+    date belongs in the file-level notes (the web check rejects it too, but
+    lanes run this suite first)."""
+    dated = re.compile(r"\d{4}-\d{2}-\d{2}")
+    offenders = []
+    for path in sorted(APL_DIR.glob("*.json")):
+        document = json.loads(path.read_text(encoding="utf-8"))
+        for index, step in enumerate(document.get("rotation", {}).get("priorityList", [])):
+            if dated.search(step.get("notes", "")):
+                offenders.append(f"{path.name} step {index}")
+    assert not offenders, offenders
