@@ -2,7 +2,7 @@
   "spec": "paladin-holy",
   "build": "1.60.1.70009",
   "engine_version": "f5002980c",
-  "generated_at": "2026-10-08T06:05:37Z",
+  "generated_at": "2026-10-08T12:20:49Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -224,14 +224,14 @@
               "item_name": "Filigreed Pristine Gown",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.16585569000000056
+              "dps_delta": -0.16585569000000117
             },
             {
               "item_id": 6226,
               "item_name": "Bloody Apron",
               "source_kind": "dungeon",
               "source": "Shadowfang Keep: Razorclaw the Butcher",
-              "dps_delta": -0.5942875172753258
+              "dps_delta": -0.5942875172753261
             }
           ]
         },
@@ -561,8 +561,8 @@
         "finger2: Black Pearl Ring",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 4.097865431,
-      "verify_run_seconds": 1.9543627799999999,
+      "weights_run_seconds": 3.589472701,
+      "verify_run_seconds": 2.373310479,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -863,7 +863,7 @@
               "item_name": "Filigreed Pristine Gown",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.19364978785991668
+              "dps_delta": -0.19364978785991696
             },
             {
               "item_id": 6226,
@@ -1200,8 +1200,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 4.097865431,
-      "verify_run_seconds": 2.00342944,
+      "weights_run_seconds": 3.589472701,
+      "verify_run_seconds": 2.411258616,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1523,7 +1523,7 @@
               "item_name": "Wisdom's Leather Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3673572327326573
+              "dps_delta": -0.36735723273265763
             }
           ]
         },
@@ -1879,8 +1879,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.096436768,
-      "verify_run_seconds": 1.885399563,
+      "weights_run_seconds": 3.534895489,
+      "verify_run_seconds": 2.365711007,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2202,7 +2202,7 @@
               "item_name": "Wisdom's Leather Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3673572327326573
+              "dps_delta": -0.36735723273265763
             }
           ]
         },
@@ -2557,8 +2557,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.096436768,
-      "verify_run_seconds": 1.926471247,
+      "weights_run_seconds": 3.534895489,
+      "verify_run_seconds": 2.470914282,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3036,7 +3036,7 @@
               "item_name": "Gilded Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6590587239969948
+              "dps_delta": -0.6590587239969952
             }
           ]
         },
@@ -3230,8 +3230,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 7.273452645,
-      "verify_run_seconds": 3.278929359,
+      "weights_run_seconds": 6.114502414,
+      "verify_run_seconds": 4.155820568,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3677,7 +3677,7 @@
               "item_name": "Wisdom's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3910626706434244
+              "dps_delta": -0.3910626706434241
             }
           ]
         },
@@ -3903,8 +3903,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 7.273452645,
-      "verify_run_seconds": 3.229721124,
+      "weights_run_seconds": 6.114502414,
+      "verify_run_seconds": 4.137658489,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4405,8 +4405,8 @@
               "dps_delta": -0.04831113933221846
             },
             {
-              "item_id": 252565,
-              "item_name": "Mender's Mail Boots",
+              "item_id": 252533,
+              "item_name": "Mender's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.10349972994129539
@@ -4651,8 +4651,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.719273074,
-      "verify_run_seconds": 3.421210852,
+      "weights_run_seconds": 6.582796334,
+      "verify_run_seconds": 5.336614959,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5396,8 +5396,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.719273074,
-      "verify_run_seconds": 3.420787166,
+      "weights_run_seconds": 6.582796334,
+      "verify_run_seconds": 4.908525594,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5562,24 +5562,23 @@
           "item_name": "Black Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
+          "sim_dps": 11.230712309154637,
           "verified": true,
-          "swap_note": "beat the scored pick Gnomish Turban of Psychic Might (id 21517) in the sim: +0.6 DPS over it",
-          "dps_delta": 0.5755897317335403,
           "alternatives": [
+            {
+              "item_id": 21517,
+              "item_name": "Gnomish Turban of Psychic Might",
+              "source_kind": "quest",
+              "source": "The Only Prescription",
+              "dps_delta": -0.20716807839950135,
+              "verified": true
+            },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.4702356492136816
-            },
-            {
-              "item_id": 21517,
-              "item_name": "Gnomish Turban of Psychic Might",
-              "source_kind": "quest",
-              "source": "The Only Prescription",
-              "dps_delta": -0.5755897317335403,
-              "verified": true
             },
             {
               "item_id": 13216,
@@ -5596,9 +5595,8 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
+          "sim_dps": 11.230712309154637,
           "verified": true,
-          "swap_note": "beat the scored pick Lady Maye's Pendant (id 14558) in the sim: +0.4 DPS over it",
-          "dps_delta": 0.3607408517541799,
           "alternatives": [
             {
               "item_id": 1443,
@@ -5612,7 +5610,7 @@
               "item_name": "Lady Maye's Pendant",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.3607408517541799,
+              "dps_delta": -0.2792671690873725,
               "verified": true
             },
             {
@@ -5694,42 +5692,48 @@
               "item_name": "Darkspear Raider's Cloak",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.6525154995637052,
+              "dps_delta": -0.6134513155711296,
               "verified": true
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 250601,
-          "item_name": "Breastplate of Salvation",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
+          "item_id": 227151,
+          "item_name": "Knight-Captain's Lamellar Chestplate",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 227151,
-              "item_name": "Knight-Captain's Lamellar Chestplate",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -0.01519556795911562
-            },
             {
               "item_id": 16690,
               "item_name": "Devout Robe",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.09066651086550795
+              "dps_delta": -0.0754709429063906
             },
             {
-              "item_id": 23087,
-              "item_name": "Breastplate of Undead Slaying",
-              "source_kind": "world",
-              "source": "Shadow of Doom",
-              "dps_delta": -1.9563165699870595,
+              "item_id": 231641,
+              "item_name": "Field Marshal's Lamellar Chestplate",
+              "source_kind": "pvp",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "dps_delta": -0.25675442805142773
+            },
+            {
+              "item_id": 250601,
+              "item_name": "Breastplate of Salvation",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -0.3725262592638554,
               "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Lieutenant Commander's Redemption",
+            "pieces": 2,
+            "bonus": "Increases healing done by spells and effects by up to 44."
+          }
         },
         {
           "slot": "wrist",
@@ -5737,6 +5741,7 @@
           "item_name": "Gallant's Wristguards",
           "source": "Dire Maul: Guard Fengus",
           "source_kind": "dungeon",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
             {
@@ -5758,7 +5763,7 @@
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -1.5973378982502418,
+              "dps_delta": -1.705617974441223,
               "verified": true
             }
           ]
@@ -5769,22 +5774,23 @@
           "item_name": "Raider Handwraps",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 18326,
-              "item_name": "Razor Gauntlets",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -2.1922531305664874,
-              "verified": true
-            },
             {
               "item_id": 12554,
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
               "dps_delta": -2.385812021103051
+            },
+            {
+              "item_id": 18326,
+              "item_name": "Razor Gauntlets",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Alzzin the Wildshaper",
+              "dps_delta": -2.4345747029054756,
+              "verified": true
             },
             {
               "item_id": 231643,
@@ -5809,7 +5815,7 @@
               "item_name": "Devout Belt",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Blackhand Summoner",
-              "dps_delta": -0.08078210015066745,
+              "dps_delta": -0.19821777265017815,
               "verified": true
             },
             {
@@ -5817,7 +5823,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.9354594706902459
+              "dps_delta": -0.9354594706902468
             },
             {
               "item_id": 14465,
@@ -5834,6 +5840,7 @@
           "item_name": "Padre's Trousers",
           "source": "Dire Maul: Illyanna Ravenoak",
           "source_kind": "dungeon",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
             {
@@ -5855,44 +5862,48 @@
               "item_name": "Cloudkeeper Legplates",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.2262888901539686,
+              "dps_delta": -2.444016899906451,
               "verified": true
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 226983,
-          "item_name": "Soulforge Treads",
-          "source": "Mokvar",
+          "item_id": 227153,
+          "item_name": "Knight-Lieutenant's Lamellar Greaves",
+          "source": "Captain Dirgehammer",
           "source_kind": "vendor",
+          "sim_dps": 11.230712309154637,
           "verified": true,
-          "swap_note": "beat the scored pick Incandescent Mooncloth Boots (id 227862) in the sim: +0.2 DPS over it",
-          "dps_delta": 0.21497529220527412,
           "alternatives": [
             {
               "item_id": 227862,
               "item_name": "Incandescent Mooncloth Boots",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -0.21497529220527412,
-              "verified": true
-            },
-            {
-              "item_id": 227153,
-              "item_name": "Knight-Lieutenant's Lamellar Greaves",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -0.537162026357197
+              "dps_delta": 0
             },
             {
               "item_id": 16472,
               "item_name": "Marshal's Lamellar Boots",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.9699654873262558
+              "dps_delta": -0.4328034609690588
+            },
+            {
+              "item_id": 226983,
+              "item_name": "Soulforge Treads",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -1.0906341246929916,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Lieutenant Commander's Redemption",
+            "pieces": 2,
+            "bonus": "Increases healing done by spells and effects by up to 44."
+          }
         },
         {
           "slot": "finger1",
@@ -5900,6 +5911,7 @@
           "item_name": "Band of Piety",
           "source": "Superior Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
             {
@@ -5921,7 +5933,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.3879696762258824,
+              "dps_delta": -1.611004352378684,
               "verified": true
             }
           ]
@@ -5932,6 +5944,7 @@
           "item_name": "Seal of Rivendare",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
             {
@@ -5953,7 +5966,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.1548836841395218,
+              "dps_delta": -1.260314347876319,
               "verified": true
             }
           ]
@@ -5964,9 +5977,10 @@
           "item_name": "Serenity Field",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
+          "sim_dps": 11.230712309154637,
           "verified": true,
-          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, +1.1 DPS over it",
-          "dps_delta": 1.1335322332598228,
+          "swap_note": "confirmed by the sim against Darkspear Voodoo Seal (id 272061): kept the pick, +1.2 DPS (11.2 vs 10.1 set DPS)",
+          "dps_delta": 1.1524308269701198,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -5998,6 +6012,7 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
             {
@@ -6005,7 +6020,7 @@
               "item_name": "Briarwood Reed",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": -0.2395213513561849,
+              "dps_delta": -0.5435854526838693,
               "verified": true
             },
             {
@@ -6030,6 +6045,7 @@
           "item_name": "Hammer of the Grand Crusader",
           "source": "Stratholme: Balnazzar",
           "source_kind": "dungeon",
+          "sim_dps": 11.230712309154637,
           "verified": true,
           "alternatives": [
             {
@@ -6037,7 +6053,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.3248040962469911,
+              "dps_delta": -1.5295683420655504,
               "verified": true
             },
             {
@@ -6076,7 +6092,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 174.6562127581943,
+      "set_dps": 175.26577874130047,
       "no_source_count": 1674,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -6100,20 +6116,20 @@
         "neck: Wavefront Necklace",
         "shoulder: Darkspear Shoulderpads",
         "back: Hide of the Wild",
-        "chest: Breastplate of Salvation",
+        "chest: Knight-Captain's Lamellar Chestplate",
         "wrist: Gallant's Wristguards",
         "hands: Raider Handwraps",
         "waist: Belt of Tiny Heads",
         "legs: Padre's Trousers",
-        "feet: Soulforge Treads",
+        "feet: Knight-Lieutenant's Lamellar Greaves",
         "finger1: Band of Piety",
         "finger2: Seal of Rivendare",
         "trinket1: Serenity Field",
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.755716941,
-      "verify_run_seconds": 3.726968871,
+      "weights_run_seconds": 7.494556404,
+      "verify_run_seconds": 21.410755523,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6192,11 +6208,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 174.6562127581943,
-        "raw_hps": 174.67720582196364,
-        "overheal_pct": 0.00012018204476393901,
-        "mana_lasts_sec": 74.6699,
-        "hpm": 4.222284423947065
+        "hps": 175.26577874130047,
+        "raw_hps": 175.28860498285155,
+        "overheal_pct": 0.00013022090941572362,
+        "mana_lasts_sec": 75.205,
+        "hpm": 4.239166642887288
       }
     },
     {
@@ -6533,7 +6549,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.9354594706902459
+              "dps_delta": -0.9354594706902468
             },
             {
               "item_id": 14465,
@@ -6828,8 +6844,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.755716941,
-      "verify_run_seconds": 3.763099068,
+      "weights_run_seconds": 7.494556404,
+      "verify_run_seconds": 16.920822263,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -6994,7 +7010,7 @@
           "item_name": "Living Crown",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 104.52489151101997,
+          "score": 104.52489151101996,
           "verified": true,
           "alternatives": [
             {
@@ -7002,14 +7018,14 @@
               "item_name": "Lieutenant Commander's Lamellar Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -3.445613097191972
+              "dps_delta": -3.445613097191969
             },
             {
               "item_id": 231640,
               "item_name": "Field Marshal's Lamellar Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -5.314445227991209
+              "dps_delta": -5.314445227991206
             },
             {
               "item_id": 226981,
@@ -7075,7 +7091,7 @@
               "item_name": "Lieutenant Commander's Lamellar Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -4.1667489661375665
+              "dps_delta": -4.166748966137563
             },
             {
               "item_id": 12625,
@@ -7261,7 +7277,7 @@
               "item_name": "Padre's Trousers",
               "source_kind": "dungeon",
               "source": "Dire Maul: Illyanna Ravenoak",
-              "dps_delta": -2.8718740885077514
+              "dps_delta": -2.8718740885077545
             },
             {
               "item_id": 227150,
@@ -7328,14 +7344,14 @@
               "item_name": "Band of Mending",
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar",
-              "dps_delta": -0.9978194836587551
+              "dps_delta": -0.9978194836587566
             },
             {
               "item_id": 16058,
               "item_name": "Fordring's Seal",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.0253936761912041
+              "dps_delta": -1.0253936761912057
             },
             {
               "item_id": 11669,
@@ -7556,8 +7572,8 @@
         "trinket2: Mindtap Talisman",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 5.073458212,
-      "verify_run_seconds": 1.713246074,
+      "weights_run_seconds": 4.411862216,
+      "verify_run_seconds": 10.740738635,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7991,7 +8007,7 @@
               "item_name": "Padre's Trousers",
               "source_kind": "dungeon",
               "source": "Dire Maul: Illyanna Ravenoak",
-              "dps_delta": -2.8718740885077514
+              "dps_delta": -2.8718740885077545
             },
             {
               "item_id": 226980,
@@ -8032,7 +8048,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -1.4110975084505786
+              "dps_delta": -1.41109750845058
             },
             {
               "item_id": 227862,
@@ -8287,8 +8303,8 @@
         "trinket2: Mindtap Talisman",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 5.073458212,
-      "verify_run_seconds": 1.745816342,
+      "weights_run_seconds": 4.411862216,
+      "verify_run_seconds": 12.141582962,
       "coverage": {
         "back": {
           "eligible": 449,

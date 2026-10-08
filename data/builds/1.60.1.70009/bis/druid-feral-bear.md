@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 34.1. Weights run: 3.4s. Verify run: 1.3s. 193 eligible items had no known source.
+Set DPS (verified): 34.1. Weights run: 3.2s. Verify run: 1.8s. 193 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.083 ± 0.002, defense=0.169 ± 0.034 per rating point (1 rating = 1%, 0.169 per %), dodge=0.129 ± 0.010 per rating point (12 rating = 1%, 1.547 per %), strength=0.070 ± 0.000, agility=0.152 ± 0.006, attack_power=0.035 ± 0.000, hit=0.066 ± 0.006 per rating point (10 rating = 1%, 0.659 per %), crit=0.024 ± 0.002 per rating point (14 rating = 1%, 0.340 per %), expertise=1.471 ± 0.067
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 193, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-55230330000000000000-0000000000000000)
 
-Set DPS (verified): 40.5. Weights run: 3.3s. Verify run: 1.3s. 322 eligible items had no known source.
+Set DPS (verified): 40.5. Weights run: 3.2s. Verify run: 1.8s. 322 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.084 ± 0.004, defense=0.317 ± 0.056 per rating point (1 rating = 1%, 0.317 per %), dodge=0.139 ± 0.014 per rating point (12 rating = 1%, 1.667 per %), strength=0.065 ± 0.000, agility=0.161 ± 0.008, attack_power=0.032 ± 0.000, hit=0.073 ± 0.008 per rating point (10 rating = 1%, 0.732 per %), crit=0.024 ± 0.001 per rating point (14 rating = 1%, 0.337 per %), expertise=1.835 ± 0.100
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-55230332020132000000-0000000000000000)
 
-Set DPS (verified): 71.5. Weights run: 4.0s. Verify run: 1.4s. 438 eligible items had no known source.
+Set DPS (verified): 71.5. Weights run: 3.6s. Verify run: 2.0s. 438 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.025, armor=0.128 ± 0.007, defense=0.466 ± 0.082 per rating point (1 rating = 1%, 0.466 per %), dodge=0.176 ± 0.020 per rating point (12 rating = 1%, 2.117 per %), strength=0.072 ± 0.000, agility=0.183 ± 0.012, attack_power=0.036 ± 0.000, hit=0.072 ± 0.015 per rating point (10 rating = 1%, 0.722 per %), crit=0.031 ± 0.006 per rating point (14 rating = 1%, 0.430 per %), expertise=2.407 ± 0.170
 
@@ -98,37 +98,37 @@ No-known-source sample (15 of 438, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0000000000000000-55230332020132012511-0000000000000000)
 
-Set DPS (verified): 115.4. Weights run: 4.4s. Verify run: 1.5s. 577 eligible items had no known source.
+Set DPS (verified): 119.2. Weights run: 4.1s. Verify run: 4.2s. 577 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.035, armor=0.121 ± 0.010, defense=0.504 ± 0.123 per rating point (1 rating = 1%, 0.504 per %), dodge=0.239 ± 0.028 per rating point (12 rating = 1%, 2.864 per %), strength=0.059 ± 0.000, agility=0.249 ± 0.018, attack_power=0.029 ± 0.000, hit=not significant (0.071 ± 0.023) per rating point (10 rating = 1%, 0.708 per %), crit=0.043 ± 0.010 per rating point (14 rating = 1%, 0.605 per %), expertise=3.011 ± 0.259
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Sprightring Helm (17776) | Twisted Evils [quest] | 38.9 stamina points (1546.69 DPS) | yes | Knight-Lieutenant's Leather Headband (220850, -183.16 DPS) [vendor]; Embrace of the Lycan (9479, -285.94 DPS) [dungeon]; Impractical Headwarmer (274756, -337.51 DPS) [vendor] |
+| head | Knight-Lieutenant's Leather Headband (220850) | Captain Dirgehammer [vendor] | sim-verified (12048.4 DPS) | yes | Embrace of the Lycan (9479, -102.79 DPS) [dungeon]; Impractical Headwarmer (274756, -154.36 DPS) [vendor]; Sprightring Helm (17776, -755.36 DPS, sim-verified) [quest] |
 | neck | Master Sergeant's Insignia (18444) | PvP rank 8 · Master Sergeant · Alliance [vendor] | 14.0 stamina points (556.08 DPS) | yes | Shriveled Heart (9243, -39.72 DPS) [dungeon]; Darkspear Warding Pendant (272073, -39.72 DPS) [vendor]; Souvenier Sea Shell (274749, -39.72 DPS) [vendor] |
-| shoulder | Fleshhide Shoulders (10774) | Razorfen Downs: Glutton [dungeon] | 28.3 stamina points (1125.01 DPS) | yes | Penance Spaulders (11963, -24.68 DPS) [quest]; Phytoskin Spaulders (17749, -34.30 DPS) [dungeon]; Knight-Lieutenant's Leather Shoulders (220852, -57.37 DPS) [vendor] |
-| back | Graverot Cape (11677) | Blackrock Depths: Anub'shiah [dungeon] | 19.7 stamina points (783.93 DPS) | yes | Sergeant's Cape (18441, -54.19 DPS) [vendor]; Nightfall Drape (12465, -114.97 DPS, sim-verified) [dungeon]; Grovekeeper's Drape (17739, -128.81 DPS) [dungeon] |
-| chest | Warbear Harness (15064) | Leatherworking [crafted] | 51.3 stamina points (2038.09 DPS) | yes | Mixologist's Tunic (12793, -455.05 DPS, sim-verified) [dungeon]; Jinxed Hoodoo Skin (9473, -525.71 DPS) [dungeon]; Heraldic Breastplate (8119, -583.12 DPS) [world_drop] |
+| shoulder | Knight-Lieutenant's Leather Shoulders (220852) | Captain Dirgehammer [vendor] | sim-verified (12048.4 DPS) | yes | Penance Spaulders (11963, +0.00 DPS) [quest]; Phytoskin Spaulders (17749, +0.00 DPS) [dungeon]; Fleshhide Shoulders (10774, -764.46 DPS, sim-verified) [dungeon] |
+| back | Graverot Cape (11677) | Blackrock Depths: Anub'shiah [dungeon] | 19.7 stamina points (783.93 DPS) | yes | Nightfall Drape (12465, -44.54 DPS) [dungeon]; Sergeant's Cape (18441, -54.19 DPS) [vendor]; Grovekeeper's Drape (17739, -128.81 DPS) [dungeon] |
+| chest | Warbear Harness (15064) | Leatherworking [crafted] | 51.3 stamina points (2038.09 DPS) | yes | Mixologist's Tunic (12793, -338.32 DPS, sim-verified) [dungeon]; Jinxed Hoodoo Skin (9473, -525.71 DPS) [dungeon]; Heraldic Breastplate (8119, -583.12 DPS) [world_drop] |
 | wrist | Arena Bracers (18710) | Arena Treasure Chest [world] | 23.3 stamina points (924.08 DPS) | yes | Sergeant Major's Dragonhide Armsplints (18455, -59.27 DPS) [vendor]; Serpentskin Bracers (8257, -177.74 DPS) [world_drop]; Warden's Leather Bracers (252541, -182.27 DPS) [crafted] |
-| hands | Feralheart Grips (226802) | Mokvar [vendor] | 36.9 stamina points (1465.51 DPS) | yes | Warden's Leather Gauntlets (252549, -321.96 DPS) [crafted]; Feralheart Fists (226793, -400.79 DPS) [vendor]; Raider Gloves (272100, -419.99 DPS, sim-verified) [vendor] |
+| hands | Feralheart Grips (226802) | Mokvar [vendor] | 36.9 stamina points (1465.51 DPS) | yes | Raider Gloves (272100, -217.24 DPS, sim-verified) [vendor]; Warden's Leather Gauntlets (252549, -321.96 DPS) [crafted]; Feralheart Fists (226793, -400.79 DPS) [vendor] |
 | waist | Warden's Leather Waistguard (252475) | Leatherworking [crafted] | 25.5 stamina points (1013.41 DPS) | yes | Skulker's Leather Waistguard (252474, -20.59 DPS) [crafted]; Prowler's Leather Waistguard (252473, -35.68 DPS) [crafted]; Girdle of Beastial Fury (11686, -133.21 DPS) [dungeon] |
-| legs | Knight's Leather Pants (220858) | Captain Dirgehammer [vendor] | 33.1 stamina points (1315.37 DPS) | yes | Knight's Crackling Leather Leggings (220864, -219.60 DPS) [vendor]; Scorpashi Leggings (14659, -239.37 DPS) [world_drop]; Windscale Sarong (10842, -562.62 DPS, sim-verified) [world] |
+| legs | Knight's Leather Pants (220858) | Captain Dirgehammer [vendor] | 33.1 stamina points (1315.37 DPS) | yes | Knight's Crackling Leather Leggings (220864, -219.60 DPS) [vendor]; Scorpashi Leggings (14659, -239.37 DPS) [world_drop]; Windscale Sarong (10842, -1047.94 DPS, sim-verified) [world] |
 | feet | Shadefiend Boots (11675) | Blackrock Depths: Anub'shiah [dungeon] | 29.6 stamina points (1174.16 DPS) | yes | Slitherscale Boots (10801, -43.99 DPS) [dungeon]; Warden's Leather Boots (252470, -130.44 DPS) [crafted]; Skulker's Leather Boots (252469, -160.91 DPS) [crafted] |
 | finger1 | Insurgent's Band (272065) | Creeg Bothunk [vendor] | 14.4 stamina points (573.58 DPS) | yes | Ring of Saviors (1447, -17.50 DPS) [world_drop]; Darkspear Signet (272069, -17.50 DPS) [vendor]; Suspicious Spare Part (274754, -120.33 DPS) [vendor] |
 | finger2 | Darkmoon Ring (19302) (or Darkspear Signet (272069), Ring of Saviors (1447)) | Lhara [vendor] | 14.0 stamina points (556.08 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Darkspear Signet (272069, +0.00 DPS) [vendor]; Suspicious Spare Part (274754, -102.83 DPS) [vendor] |
-| trinket1 | Mark of the Chosen (17774) | The Pariah's Instructions [quest] | sim-verified (11237.9 DPS) | yes | Talisman of Arathor (21117, +0.00 DPS) [rep]; Relentless Raider's Seal (272060, +0.00 DPS) [vendor]; Smotts' Compass (4130, -160.52 DPS, sim-verified) [quest] |
-| trinket2 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (11237.9 DPS) | yes | Talisman of Arathor (21117, +0.00 DPS) [rep]; Relentless Raider's Seal (272060, +0.00 DPS) [vendor]; Guardian Talisman (1490, -39.72 DPS) [quest] |
-| main_hand | Radiant Staff (249453) | Enchanting [crafted] | sim-verified (11237.9 DPS) | yes | Dreamstaff (249454, +0.00 DPS) [crafted]; Glowing Brightwood Staff (812, -28.87 DPS) [world_drop]; Ragehammer (10626, -693.37 DPS, sim-verified) [dungeon] |
+| trinket1 | Mark of the Chosen (17774) | The Pariah's Instructions [quest] | sim-verified (12048.4 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Talisman of Arathor (21117, +0.00 DPS) [rep]; Relentless Raider's Seal (272060, +0.00 DPS) [vendor] |
+| trinket2 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (12048.4 DPS) | yes | Talisman of Arathor (21117, +0.00 DPS) [rep]; Relentless Raider's Seal (272060, +0.00 DPS) [vendor]; Guardian Talisman (1490, -39.72 DPS) [quest] |
+| main_hand | Radiant Staff (249453) | Enchanting [crafted] | sim-verified (12048.4 DPS) | yes | Dreamstaff (249454, +0.00 DPS) [crafted]; Glowing Brightwood Staff (812, -28.87 DPS) [world_drop]; Ragehammer (10626, -616.45 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Sprightring Helm; neck: Master Sergeant's Insignia; back: Graverot Cape; chest: Warbear Harness; wrist: Arena Bracers; hands: Feralheart Grips; waist: Warden's Leather Waistguard; legs: Knight's Leather Pants; feet: Shadefiend Boots; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Mark of the Chosen; trinket2: Darkspear Voodoo Seal; main_hand: Radiant Staff
+**New at 50:** head: Knight-Lieutenant's Leather Headband; neck: Master Sergeant's Insignia; shoulder: Knight-Lieutenant's Leather Shoulders; back: Graverot Cape; chest: Warbear Harness; wrist: Arena Bracers; hands: Feralheart Grips; waist: Warden's Leather Waistguard; legs: Knight's Leather Pants; feet: Shadefiend Boots; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Mark of the Chosen; trinket2: Darkspear Voodoo Seal; main_hand: Radiant Staff
 
 No-known-source sample (15 of 577, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher
 
 ### Band 60 (night-elf, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 138.1. Weights run: 4.4s. Verify run: 1.7s. 1449 eligible items had no known source.
+Set DPS (verified): 138.1. Weights run: 4.1s. Verify run: 6.4s. 1449 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.140 ± 0.015, defense=1.303 ± 0.250 per rating point (1 rating = 1%, 1.303 per %), dodge=0.708 ± 0.045 per rating point (12 rating = 1%, 8.495 per %), strength=0.119 ± 0.000, agility=0.547 ± 0.029, attack_power=0.059 ± 0.000, hit=0.184 ± 0.036 per rating point (10 rating = 1%, 1.839 per %), crit=0.086 ± 0.016 per rating point (14 rating = 1%, 1.198 per %), expertise=6.074 ± 0.393
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 287.1. Weights run: 4.6s. Verify run: 1.7s. 1449 eligible items had no known source.
+Set DPS (verified): 287.1. Weights run: 4.1s. Verify run: 6.5s. 1449 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.164 ± 0.018, defense=1.818 ± 0.327 per rating point (1 rating = 1%, 1.818 per %), dodge=0.995 ± 0.059 per rating point (12 rating = 1%, 11.936 per %), strength=0.137 ± 0.000, agility=0.770 ± 0.037, attack_power=0.069 ± 0.000, hit=0.257 ± 0.046 per rating point (10 rating = 1%, 2.574 per %), crit=0.130 ± 0.021 per rating point (14 rating = 1%, 1.814 per %), expertise=8.076 ± 0.505
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 35.0. Weights run: 3.4s. Verify run: 1.2s. 183 eligible items had no known source.
+Set DPS (verified): 35.0. Weights run: 3.2s. Verify run: 1.8s. 183 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.083 ± 0.002, defense=0.169 ± 0.034 per rating point (1 rating = 1%, 0.169 per %), dodge=0.129 ± 0.010 per rating point (12 rating = 1%, 1.547 per %), strength=0.070 ± 0.000, agility=0.152 ± 0.006, attack_power=0.035 ± 0.000, hit=0.066 ± 0.006 per rating point (10 rating = 1%, 0.659 per %), crit=0.024 ± 0.002 per rating point (14 rating = 1%, 0.340 per %), expertise=1.471 ± 0.067
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 183, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-55230330000000000000-0000000000000000)
 
-Set DPS (verified): 41.1. Weights run: 3.3s. Verify run: 1.3s. 315 eligible items had no known source.
+Set DPS (verified): 41.1. Weights run: 3.2s. Verify run: 1.7s. 315 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.084 ± 0.004, defense=0.317 ± 0.056 per rating point (1 rating = 1%, 0.317 per %), dodge=0.139 ± 0.014 per rating point (12 rating = 1%, 1.667 per %), strength=0.065 ± 0.000, agility=0.161 ± 0.008, attack_power=0.032 ± 0.000, hit=0.073 ± 0.008 per rating point (10 rating = 1%, 0.732 per %), crit=0.024 ± 0.001 per rating point (14 rating = 1%, 0.337 per %), expertise=1.835 ± 0.100
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 315, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-55230332020132000000-0000000000000000)
 
-Set DPS (verified): 71.4. Weights run: 4.0s. Verify run: 1.4s. 426 eligible items had no known source.
+Set DPS (verified): 71.4. Weights run: 3.6s. Verify run: 2.0s. 426 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.025, armor=0.128 ± 0.007, defense=0.466 ± 0.082 per rating point (1 rating = 1%, 0.466 per %), dodge=0.176 ± 0.020 per rating point (12 rating = 1%, 2.117 per %), strength=0.072 ± 0.000, agility=0.183 ± 0.012, attack_power=0.036 ± 0.000, hit=0.072 ± 0.015 per rating point (10 rating = 1%, 0.722 per %), crit=0.031 ± 0.006 per rating point (14 rating = 1%, 0.430 per %), expertise=2.407 ± 0.170
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 426, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0000000000000000-55230332020132012511-0000000000000000)
 
-Set DPS (verified): 115.1. Weights run: 4.4s. Verify run: 1.5s. 561 eligible items had no known source.
+Set DPS (verified): 115.1. Weights run: 4.1s. Verify run: 2.3s. 561 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.035, armor=0.121 ± 0.010, defense=0.504 ± 0.123 per rating point (1 rating = 1%, 0.504 per %), dodge=0.239 ± 0.028 per rating point (12 rating = 1%, 2.864 per %), strength=0.059 ± 0.000, agility=0.249 ± 0.018, attack_power=0.029 ± 0.000, hit=not significant (0.071 ± 0.023) per rating point (10 rating = 1%, 0.708 per %), crit=0.043 ± 0.010 per rating point (14 rating = 1%, 0.605 per %), expertise=3.011 ± 0.259
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 561, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 140.4. Weights run: 4.4s. Verify run: 1.6s. 1446 eligible items had no known source.
+Set DPS (verified): 140.4. Weights run: 4.1s. Verify run: 6.2s. 1446 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.140 ± 0.015, defense=1.303 ± 0.250 per rating point (1 rating = 1%, 1.303 per %), dodge=0.708 ± 0.045 per rating point (12 rating = 1%, 8.495 per %), strength=0.119 ± 0.000, agility=0.547 ± 0.029, attack_power=0.059 ± 0.000, hit=0.184 ± 0.036 per rating point (10 rating = 1%, 1.839 per %), crit=0.086 ± 0.016 per rating point (14 rating = 1%, 1.198 per %), expertise=6.074 ± 0.393
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1446, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 287.0. Weights run: 4.6s. Verify run: 1.7s. 1446 eligible items had no known source.
+Set DPS (verified): 287.0. Weights run: 4.1s. Verify run: 6.3s. 1446 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.164 ± 0.018, defense=1.818 ± 0.327 per rating point (1 rating = 1%, 1.818 per %), dodge=0.995 ± 0.059 per rating point (12 rating = 1%, 11.936 per %), strength=0.137 ± 0.000, agility=0.770 ± 0.037, attack_power=0.069 ± 0.000, hit=0.257 ± 0.046 per rating point (10 rating = 1%, 2.574 per %), crit=0.130 ± 0.021 per rating point (14 rating = 1%, 1.814 per %), expertise=8.076 ± 0.505
 

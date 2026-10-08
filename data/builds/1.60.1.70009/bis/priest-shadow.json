@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "f5002980c",
-  "generated_at": "2026-10-08T06:14:31Z",
+  "generated_at": "2026-10-08T12:31:44Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -549,8 +549,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.910259466,
-      "verify_run_seconds": 0.690725189,
+      "weights_run_seconds": 0.981477895,
+      "verify_run_seconds": 0.811629018,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1187,8 +1187,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.910259466,
-      "verify_run_seconds": 0.738666475,
+      "weights_run_seconds": 0.981477895,
+      "verify_run_seconds": 0.838964968,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1896,8 +1896,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.953549637,
-      "verify_run_seconds": 0.771260352,
+      "weights_run_seconds": 0.970766411,
+      "verify_run_seconds": 0.871684794,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2607,8 +2607,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.953549637,
-      "verify_run_seconds": 0.754114167,
+      "weights_run_seconds": 0.970766411,
+      "verify_run_seconds": 0.854441276,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3284,8 +3284,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.926443238,
-      "verify_run_seconds": 0.655099567,
+      "weights_run_seconds": 0.953669483,
+      "verify_run_seconds": 0.792183596,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3955,8 +3955,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.926443238,
-      "verify_run_seconds": 0.690475723,
+      "weights_run_seconds": 0.953669483,
+      "verify_run_seconds": 0.826269565,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4653,8 +4653,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.914796944,
-      "verify_run_seconds": 0.791507945,
+      "weights_run_seconds": 0.964563542,
+      "verify_run_seconds": 1.140870625,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5046,7 +5046,7 @@
           "item_name": "Ban'thok Sash",
           "source": "Blackrock Depths: Ok'thor the Breaker",
           "source_kind": "dungeon",
-          "score": 34.612320608685074,
+          "score": 34.61232060868507,
           "verified": true,
           "alternatives": [
             {
@@ -5054,14 +5054,14 @@
               "item_name": "Deathmage Sash",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Mordresh Fire Eye",
-              "dps_delta": -0.6780027162461116
+              "dps_delta": -0.6780027162461107
             },
             {
               "item_id": 17755,
               "item_name": "Satyrmane Sash",
               "source_kind": "dungeon",
               "source": "Maraudon: Lord Vyletongue",
-              "dps_delta": -0.7313975450344322
+              "dps_delta": -0.7313975450344313
             },
             {
               "item_id": 12466,
@@ -5350,8 +5350,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.914796944,
-      "verify_run_seconds": 0.816200555,
+      "weights_run_seconds": 0.964563542,
+      "verify_run_seconds": 1.050143632,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5546,7 +5546,7 @@
               "item_name": "Magister's Crown",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -9.266789762732628,
+              "dps_delta": -9.522783405054383,
               "verified": true
             }
           ]
@@ -5589,9 +5589,8 @@
           "item_name": "Virtuous Epaulets",
           "source": "Mokvar",
           "source_kind": "vendor",
+          "sim_dps": 326.20641844502336,
           "verified": true,
-          "swap_note": "beat the scored pick Rugged Mantle of the Timbermaw (id 227808) in the sim: +9.0 DPS over it",
-          "dps_delta": 9.023224395604359,
           "alternatives": [
             {
               "item_id": 231621,
@@ -5612,7 +5611,7 @@
               "item_name": "Rugged Mantle of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -9.023224395604359,
+              "dps_delta": -5.200153201710748,
               "verified": true
             }
           ]
@@ -5631,7 +5630,8 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.5570628445451837
+              "dps_delta": 0,
+              "verified": true
             },
             {
               "item_id": 20697,
@@ -5677,7 +5677,7 @@
               "item_name": "Magister's Robes",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -9.136279092296832,
+              "dps_delta": -9.788317780109367,
               "verified": true
             }
           ]
@@ -5690,8 +5690,8 @@
           "source_kind": "rep",
           "score": 31.137713943834385,
           "verified": true,
-          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (ilvl 55) (id 19596): kept the pick, +1.9 DPS over it",
-          "dps_delta": 1.8519580663866577,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (ilvl 55) (id 19596): kept the pick, +1.7 DPS (326.2 vs 324.5 set DPS)",
+          "dps_delta": 1.7054487049275622,
           "alternatives": [
             {
               "item_id": 18497,
@@ -5722,9 +5722,8 @@
           "item_name": "Virtuous Hands",
           "source": "Mokvar",
           "source_kind": "vendor",
+          "sim_dps": 326.20641844502336,
           "verified": true,
-          "swap_note": "beat the scored pick Raider Handwraps (id 272097) in the sim: +9.3 DPS over it",
-          "dps_delta": 9.329758281332488,
           "alternatives": [
             {
               "item_id": 17608,
@@ -5745,7 +5744,7 @@
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -9.329758281332488,
+              "dps_delta": -5.678976319723461,
               "verified": true
             }
           ]
@@ -5778,21 +5777,19 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -6.810451897593964,
+              "dps_delta": -6.109211579099053,
               "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 22752,
-          "item_name": "Sentinel's Silk Leggings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 49.70207061660666,
+          "item_id": 226956,
+          "item_name": "Virtuous Leggings",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 326.20641844502336,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (ilvl 78) (id 237815): kept the pick, +4.5 DPS over it",
-          "dps_delta": 4.456481759783344,
           "alternatives": [
             {
               "item_id": 17603,
@@ -5809,13 +5806,19 @@
               "dps_delta": 0
             },
             {
-              "item_id": 231626,
-              "item_name": "Marshal's Satin Legguards",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.8880609952437591
+              "item_id": 22752,
+              "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
+              "dps_delta": -4.439084441943805,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Virtuous",
+            "pieces": 6,
+            "bonus": "Increases damage and healing done by magical spells and effects by up to 23."
+          }
         },
         {
           "slot": "feet",
@@ -5845,7 +5848,7 @@
               "item_name": "Dragonrider Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -7.629609658543643,
+              "dps_delta": -8.457871743325711,
               "verified": true
             }
           ]
@@ -5856,6 +5859,7 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
+          "sim_dps": 326.20641844502336,
           "verified": true,
           "alternatives": [
             {
@@ -5877,7 +5881,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.646037352765063,
+              "dps_delta": -9.57870459043636,
               "verified": true
             }
           ]
@@ -5888,6 +5892,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Path of the Invoker",
           "source_kind": "quest",
+          "sim_dps": 326.20641844502336,
           "verified": true,
           "alternatives": [
             {
@@ -5909,7 +5914,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.844730909697546,
+              "dps_delta": -10.431681751717463,
               "verified": true
             }
           ]
@@ -5920,6 +5925,7 @@
           "item_name": "Second Wind",
           "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
+          "sim_dps": 326.20641844502336,
           "verified": true,
           "alternatives": [
             {
@@ -5941,7 +5947,7 @@
               "item_name": "Talisman of Ascendance",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -7.513542342699566,
+              "dps_delta": -7.908922377004387,
               "verified": true
             }
           ]
@@ -5952,6 +5958,7 @@
           "item_name": "Draconic Infused Emblem",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
+          "sim_dps": 326.20641844502336,
           "verified": true,
           "alternatives": [
             {
@@ -5984,6 +5991,7 @@
           "item_name": "Crackling Staff",
           "source": "Stormpike Guard",
           "source_kind": "rep",
+          "sim_dps": 326.20641844502336,
           "verified": true,
           "alternatives": [
             {
@@ -6005,7 +6013,7 @@
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -8.591657518426302,
+              "dps_delta": -8.693139721985062,
               "verified": true
             }
           ]
@@ -6029,7 +6037,7 @@
               "item_name": "Ritssyn's Wand of Bad Mojo",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -2.2591631108346633,
+              "dps_delta": -1.823255127241282,
               "verified": true
             },
             {
@@ -6049,7 +6057,7 @@
           ]
         }
       ],
-      "set_dps": 321.76733400307955,
+      "set_dps": 326.20641844502336,
       "no_source_count": 1129,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6077,7 +6085,7 @@
         "wrist: Dryad's Wrist Bindings",
         "hands: Virtuous Hands",
         "waist: Knowledge of the Timbermaw",
-        "legs: Sentinel's Silk Leggings",
+        "legs: Virtuous Leggings",
         "feet: Virtuous Slippers",
         "finger1: Elemental Focus Band",
         "finger2: Signet Ring of the Bronze Dragonflight",
@@ -6086,8 +6094,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.075585365,
-      "verify_run_seconds": 0.836957521,
+      "weights_run_seconds": 1.066129403,
+      "verify_run_seconds": 3.576268383,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6282,7 +6290,7 @@
               "item_name": "Magister's Crown",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -8.1409475043219,
+              "dps_delta": -10.538687136192038,
               "verified": true
             }
           ]
@@ -6325,9 +6333,8 @@
           "item_name": "Virtuous Epaulets",
           "source": "Mokvar",
           "source_kind": "vendor",
+          "sim_dps": 329.17836066863504,
           "verified": true,
-          "swap_note": "beat the scored pick Rugged Mantle of the Timbermaw (id 227808) in the sim: +8.9 DPS over it",
-          "dps_delta": 8.900822867642944,
           "alternatives": [
             {
               "item_id": 231611,
@@ -6348,7 +6355,7 @@
               "item_name": "Rugged Mantle of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -8.900822867642944,
+              "dps_delta": -6.147881006276748,
               "verified": true
             }
           ]
@@ -6367,8 +6374,7 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": -1.5570628445451837
             },
             {
               "item_id": 20697,
@@ -6414,7 +6420,7 @@
               "item_name": "Magister's Robes",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -8.388922178555333,
+              "dps_delta": -10.568335089791958,
               "verified": true
             }
           ]
@@ -6427,6 +6433,8 @@
           "source_kind": "rep",
           "score": 31.137713943834385,
           "verified": true,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (ilvl 55) (id 19596): kept the pick, +1.7 DPS (329.2 vs 327.5 set DPS)",
+          "dps_delta": 1.7049259125241178,
           "alternatives": [
             {
               "item_id": 18497,
@@ -6457,9 +6465,8 @@
           "item_name": "Virtuous Hands",
           "source": "Mokvar",
           "source_kind": "vendor",
+          "sim_dps": 329.17836066863504,
           "verified": true,
-          "swap_note": "beat the scored pick Raider Handwraps (id 272097) in the sim: +8.7 DPS over it",
-          "dps_delta": 8.656758818759442,
           "alternatives": [
             {
               "item_id": 17620,
@@ -6480,7 +6487,7 @@
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -8.656758818759442,
+              "dps_delta": -6.269823801143161,
               "verified": true
             }
           ]
@@ -6491,7 +6498,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 60.4344174955829,
+          "score": 60.434417495582906,
           "verified": true,
           "alternatives": [
             {
@@ -6499,32 +6506,32 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -3.972080127737885
+              "dps_delta": -3.9720801277378865
             },
             {
               "item_id": 13956,
               "item_name": "Clutch of Andros",
               "source_kind": "dungeon",
               "source": "Scholomance: Kirtonos the Herald",
-              "dps_delta": -4.416809862545007
+              "dps_delta": -4.4168098625450085
             },
             {
               "item_id": 18405,
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -4.8839585754257655,
+              "dps_delta": -5.73375558959475,
               "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 22747,
-          "item_name": "Outrider's Silk Leggings",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 49.70207061660666,
+          "item_id": 226956,
+          "item_name": "Virtuous Leggings",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 329.17836066863504,
           "verified": true,
           "alternatives": [
             {
@@ -6535,21 +6542,26 @@
               "dps_delta": 0
             },
             {
-              "item_id": 231634,
-              "item_name": "General's Satin Legguards",
-              "source_kind": "vendor",
-              "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.8880609952437591
-            },
-            {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.7381344497026134,
+              "dps_delta": 0
+            },
+            {
+              "item_id": 22747,
+              "item_name": "Outrider's Silk Leggings",
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
+              "dps_delta": -4.739433244060137,
               "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Virtuous",
+            "pieces": 6,
+            "bonus": "Increases damage and healing done by magical spells and effects by up to 23."
+          }
         },
         {
           "slot": "feet",
@@ -6579,7 +6591,7 @@
               "item_name": "Dragonrider Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -7.957898562575167,
+              "dps_delta": -8.691181951512476,
               "verified": true
             }
           ]
@@ -6590,6 +6602,7 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
+          "sim_dps": 329.17836066863504,
           "verified": true,
           "alternatives": [
             {
@@ -6611,7 +6624,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.429368882038716,
+              "dps_delta": -10.293422733236184,
               "verified": true
             }
           ]
@@ -6622,6 +6635,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Path of the Invoker",
           "source_kind": "quest",
+          "sim_dps": 329.17836066863504,
           "verified": true,
           "alternatives": [
             {
@@ -6643,7 +6657,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -10.221858217089391,
+              "dps_delta": -10.473089280373301,
               "verified": true
             }
           ]
@@ -6654,9 +6668,10 @@
           "item_name": "Second Wind",
           "source": "Blackrock Depths: Golem Lord Argelmach",
           "source_kind": "dungeon",
+          "sim_dps": 329.17836066863504,
           "verified": true,
-          "swap_note": "confirmed by the sim against Burst of Knowledge (id 11832): kept the pick, +16.8 DPS over it",
-          "dps_delta": 16.82546674753081,
+          "swap_note": "confirmed by the sim against Burst of Knowledge (id 11832): kept the pick, +16.4 DPS (329.2 vs 312.8 set DPS)",
+          "dps_delta": 16.40834509094816,
           "alternatives": [
             {
               "item_id": 12930,
@@ -6687,6 +6702,7 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
+          "sim_dps": 329.17836066863504,
           "verified": true,
           "alternatives": [
             {
@@ -6708,7 +6724,7 @@
               "item_name": "Talisman of Ascendance",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -3.564706096812074,
+              "dps_delta": -4.089901273196517,
               "verified": true
             }
           ]
@@ -6719,6 +6735,7 @@
           "item_name": "Lord Valthalak's Staff of Command",
           "source": "Blackrock Spire: Lord Valthalak",
           "source_kind": "dungeon",
+          "sim_dps": 329.17836066863504,
           "verified": true,
           "alternatives": [
             {
@@ -6733,14 +6750,14 @@
               "item_name": "Amethyst War Staff",
               "source_kind": "world",
               "source": "Azure Templar",
-              "dps_delta": -1.1572256255299196
+              "dps_delta": -1.1572256255299185
             },
             {
               "item_id": 2243,
               "item_name": "Hand of Edward the Odd",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.841621023332607,
+              "dps_delta": -10.918672323961232,
               "verified": true
             }
           ]
@@ -6764,7 +6781,8 @@
               "item_name": "Ritssyn's Wand of Bad Mojo",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -12.133121438458026
+              "dps_delta": -1.6397436040574576,
+              "verified": true
             },
             {
               "item_id": 13938,
@@ -6783,7 +6801,7 @@
           ]
         }
       ],
-      "set_dps": 324.4389274245749,
+      "set_dps": 329.17836066863504,
       "no_source_count": 1120,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6811,7 +6829,7 @@
         "wrist: Dryad's Wrist Bindings",
         "hands: Virtuous Hands",
         "waist: Knowledge of the Timbermaw",
-        "legs: Outrider's Silk Leggings",
+        "legs: Virtuous Leggings",
         "feet: Virtuous Slippers",
         "finger1: Elemental Focus Band",
         "finger2: Signet Ring of the Bronze Dragonflight",
@@ -6820,8 +6838,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.075585365,
-      "verify_run_seconds": 0.804151741,
+      "weights_run_seconds": 1.066129403,
+      "verify_run_seconds": 3.519156972,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7075,7 +7093,7 @@
               "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.4134176497360225
+              "dps_delta": -1.41341764973602
             },
             {
               "item_id": 18681,
@@ -7558,8 +7576,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.162996175,
-      "verify_run_seconds": 0.879912523,
+      "weights_run_seconds": 1.1514215700000001,
+      "verify_run_seconds": 2.837519931,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7813,7 +7831,7 @@
               "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.4134176497360225
+              "dps_delta": -1.41341764973602
             },
             {
               "item_id": 18681,
@@ -8293,8 +8311,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.162996175,
-      "verify_run_seconds": 0.856300297,
+      "weights_run_seconds": 1.1514215700000001,
+      "verify_run_seconds": 2.776418393,
       "coverage": {
         "back": {
           "eligible": 450,

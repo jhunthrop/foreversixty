@@ -13384,9 +13384,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 227808,
-              "source_kind": "vendor",
-              "source": "Meilosh"
+              "item_id": 15067,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272411,
@@ -13394,9 +13394,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 226776,
-              "source_kind": "quest",
-              "source": "Saving the Best for Last"
+              "item_id": 15066,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 19595,
@@ -13470,9 +13470,8 @@
           "horde": [
             252561,
             22657,
-            227808,
             272411,
-            226776,
+            15066,
             19595,
             228190,
             252486,
@@ -14121,9 +14120,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 17776,
-              "source_kind": "quest",
-              "source": "Twisted Evils"
+              "item_id": 220850,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 18444,
@@ -14131,9 +14130,9 @@
               "source": "PvP rank 8 · Master Sergeant · Alliance"
             },
             "shoulder": {
-              "item_id": 10774,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Glutton"
+              "item_id": 220852,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 11677,
@@ -14276,8 +14275,9 @@
         },
         "new_at_band": {
           "alliance": [
-            17776,
+            220850,
             18444,
+            220852,
             11677,
             15064,
             18710,
@@ -14551,9 +14551,9 @@
               "source": "Abominable Creatures"
             },
             "chest": {
-              "item_id": 252490,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 270015,
@@ -14561,9 +14561,9 @@
               "source": "Underground Assault"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -14571,9 +14571,9 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
               "item_id": 1121,
@@ -14618,9 +14618,9 @@
               "source": "Unending Torment"
             },
             "chest": {
-              "item_id": 252490,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14569,
@@ -14628,9 +14628,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -14638,9 +14638,9 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
               "item_id": 1121,
@@ -14670,11 +14670,11 @@
             20444,
             5404,
             279865,
-            252490,
+            10399,
             270015,
-            10413,
+            10401,
             10403,
-            252500,
+            10400,
             1121,
             20439,
             285330,
@@ -14685,11 +14685,11 @@
             20442,
             5404,
             279865,
-            252490,
+            10399,
             14569,
-            10413,
+            10401,
             10403,
-            252500,
+            10400,
             1121,
             20429,
             285330,
@@ -15281,9 +15281,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 272105,
+              "item_id": 226790,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 13340,
@@ -15296,9 +15296,9 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 19587,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
+              "item_id": 226788,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "hands": {
               "item_id": 272099,
@@ -15316,9 +15316,9 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 21532,
-              "source_kind": "quest",
-              "source": "The Nightmare Manifests"
+              "item_id": 226794,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 19514,
@@ -15363,9 +15363,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 272105,
+              "item_id": 226790,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 13340,
@@ -15378,9 +15378,9 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 19587,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 226788,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "hands": {
               "item_id": 272099,
@@ -15398,9 +15398,9 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 21532,
-              "source_kind": "quest",
-              "source": "The Nightmare Manifests"
+              "item_id": 226794,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 19510,
@@ -15438,14 +15438,14 @@
           "alliance": [
             226792,
             19491,
-            272105,
+            226790,
             13340,
             252484,
-            19587,
+            226788,
             272099,
             227805,
             15065,
-            21532,
+            226794,
             19514,
             21201,
             19289,
@@ -15456,14 +15456,14 @@
           "horde": [
             226792,
             19491,
-            272105,
+            226790,
             13340,
             252484,
-            19587,
+            226788,
             272099,
             227805,
             15065,
-            21532,
+            226794,
             19510,
             21201,
             19289,
@@ -15499,19 +15499,19 @@
               "source": "Friend of the Library"
             },
             "shoulder": {
-              "item_id": 6461,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Mutanus the Devourer"
+              "item_id": 12998,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "back": {
-              "item_id": 5969,
-              "source_kind": "world",
-              "source": "Ravenclaw Regent"
+              "item_id": 20428,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "chest": {
-              "item_id": 6465,
+              "item_id": 6473,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Cobrahn"
+              "source": "Wailing Caverns: Lord Pythas"
             },
             "wrist": {
               "item_id": 1974,
@@ -15519,12 +15519,12 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 253913,
+              "item_id": 252499,
               "source_kind": "crafted",
-              "source": "Tailoring"
+              "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 253887,
+              "item_id": 253925,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -15534,9 +15534,9 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 252424,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10411,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             },
             "finger1": {
               "item_id": 6332,
@@ -15626,14 +15626,14 @@
           "alliance": [
             253949,
             277203,
-            6461,
-            5969,
-            6465,
+            12998,
+            20428,
+            6473,
             1974,
-            253913,
-            253887,
+            252499,
+            253925,
             252503,
-            252424,
+            10411,
             6332,
             6463,
             2042
@@ -15900,7 +15900,7 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 254017,
+              "item_id": 10011,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -15910,9 +15910,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 7760,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey"
+              "item_id": 10010,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 252533,
@@ -16041,9 +16041,9 @@
             19532,
             10020,
             13119,
-            254017,
+            10011,
             254037,
-            7760,
+            10010,
             252533,
             272070,
             6750,
@@ -16355,9 +16355,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 252561,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 13390,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Postmaster Malown"
             },
             "neck": {
               "item_id": 14558,
@@ -16380,14 +16380,14 @@
               "source": "Avatar of Hakkar"
             },
             "wrist": {
-              "item_id": 22667,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 16683,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Rage Talon Fire Tongue"
             },
             "hands": {
-              "item_id": 226784,
-              "source_kind": "vendor",
-              "source": "Mokvar"
+              "item_id": 16684,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Doctor Theolen Krastinov"
             },
             "waist": {
               "item_id": 226780,
@@ -16447,11 +16447,12 @@
             15854
           ],
           "horde": [
-            252561,
+            13390,
             14558,
             226785,
             12968,
-            22667,
+            16683,
+            16684,
             226780,
             12756,
             226781,
@@ -17306,19 +17307,19 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 18375,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Prince Tortheldrin"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Maxwell's Mission"
+              "item_id": 16676,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: War Master Voone"
             },
             "waist": {
-              "item_id": 22232,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl"
+              "item_id": 226888,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "legs": {
               "item_id": 237819,
@@ -17326,9 +17327,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "item_id": 226881,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 21201,
@@ -17388,19 +17389,19 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 18375,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Prince Tortheldrin"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Warlord's Command"
+              "item_id": 16676,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: War Master Voone"
             },
             "waist": {
-              "item_id": 22232,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl"
+              "item_id": 226888,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "legs": {
               "item_id": 237819,
@@ -17408,9 +17409,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "item_id": 226881,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 21201,
@@ -17451,11 +17452,11 @@
             272105,
             272414,
             252483,
-            18375,
-            13963,
-            22232,
+            226885,
+            16676,
+            226888,
             237819,
-            13967,
+            226881,
             21201,
             19325,
             11832,
@@ -17469,11 +17470,11 @@
             272105,
             272414,
             252483,
-            18375,
-            13963,
-            22232,
+            226885,
+            16676,
+            226888,
             237819,
-            13967,
+            226881,
             21201,
             19325,
             11832,
@@ -17609,9 +17610,9 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10410,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Cobrahn"
             },
             "feet": {
               "item_id": 1121,
@@ -17666,7 +17667,7 @@
             3202,
             10413,
             10403,
-            252500,
+            10410,
             1121,
             285330,
             20429,
@@ -18109,9 +18110,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 17742,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Meshlok the Harvester"
+              "item_id": 220828,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 13120,
@@ -18119,9 +18120,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 272100,
+              "item_id": 220829,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "waist": {
               "item_id": 274757,
@@ -18129,14 +18130,14 @@
               "source": "Zippie Fizzbolt"
             },
             "legs": {
-              "item_id": 1718,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 220832,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 17728,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Rotgrip"
+              "item_id": 220837,
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "finger1": {
               "item_id": 17713,
@@ -18191,9 +18192,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 17742,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Meshlok the Harvester"
+              "item_id": 220827,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "wrist": {
               "item_id": 13120,
@@ -18211,14 +18212,14 @@
               "source": "Zippie Fizzbolt"
             },
             "legs": {
-              "item_id": 1718,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 220833,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "feet": {
-              "item_id": 17728,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Rotgrip"
+              "item_id": 220836,
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "finger1": {
               "item_id": 17713,
@@ -18258,11 +18259,12 @@
             13089,
             220825,
             13122,
-            17742,
+            220828,
             13120,
-            272100,
+            220829,
             274757,
-            17728,
+            220832,
+            220837,
             17713,
             9533,
             19991,
@@ -18274,11 +18276,12 @@
             8348,
             13089,
             13122,
-            17742,
+            220827,
             13120,
             272100,
             274757,
-            17728,
+            220833,
+            220836,
             17713,
             9533,
             19120,
@@ -18300,9 +18303,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 279253,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 226887,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22340,
@@ -18325,19 +18328,19 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 18375,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Prince Tortheldrin"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 272099,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 16676,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: War Master Voone"
             },
             "waist": {
-              "item_id": 22232,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl"
+              "item_id": 226888,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "legs": {
               "item_id": 237819,
@@ -18345,9 +18348,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "item_id": 226881,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 21201,
@@ -18382,9 +18385,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 279253,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 226887,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22340,
@@ -18407,19 +18410,19 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 18375,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Prince Tortheldrin"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 272099,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 16676,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: War Master Voone"
             },
             "waist": {
-              "item_id": 22232,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl"
+              "item_id": 226888,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "legs": {
               "item_id": 237819,
@@ -18427,9 +18430,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "item_id": 226881,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 21201,
@@ -18465,16 +18468,16 @@
         },
         "new_at_band": {
           "alliance": [
-            279253,
+            226887,
             22340,
             272105,
             13340,
             252483,
-            18375,
-            272099,
-            22232,
+            226885,
+            16676,
+            226888,
             237819,
-            13967,
+            226881,
             21201,
             19325,
             11832,
@@ -18483,16 +18486,16 @@
             279273
           ],
           "horde": [
-            279253,
+            226887,
             22340,
             272105,
             13340,
             252483,
-            18375,
-            272099,
-            22232,
+            226885,
+            16676,
+            226888,
             237819,
-            13967,
+            226881,
             21201,
             19325,
             11819,
@@ -18545,9 +18548,9 @@
               "source": "Underground Assault"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -18555,14 +18558,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20439,
@@ -18622,9 +18625,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -18632,14 +18635,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20429,
@@ -18676,10 +18679,10 @@
             6449,
             252490,
             270015,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20439,
             285330,
             1482,
@@ -18693,10 +18696,10 @@
             6449,
             252490,
             3202,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20429,
             285330,
             1482,
@@ -18737,9 +18740,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 7374,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14590,
@@ -18747,14 +18750,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7359,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
-              "item_id": 20090,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 10403,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6690,
@@ -18762,9 +18765,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 7686,
@@ -18814,9 +18817,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 7374,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14590,
@@ -18824,14 +18827,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7359,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
-              "item_id": 20152,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 10403,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6690,
@@ -18839,9 +18842,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 7686,
@@ -18876,10 +18879,8 @@
             7731,
             2278,
             14593,
-            7374,
+            10399,
             14590,
-            7359,
-            20090,
             6690,
             7686,
             19517,
@@ -18892,10 +18893,8 @@
             7731,
             2278,
             14593,
-            7374,
+            10399,
             14590,
-            7359,
-            20152,
             6690,
             7686,
             19513,
@@ -19141,9 +19140,9 @@
               "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "chest": {
-              "item_id": 15064,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 220828,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 18711,
@@ -19161,9 +19160,9 @@
               "source": "Blackrock Depths: Eviscerator"
             },
             "legs": {
-              "item_id": 9652,
-              "source_kind": "quest",
-              "source": "Saving Sharpbeak"
+              "item_id": 220832,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 12470,
@@ -19300,11 +19299,11 @@
             13089,
             220825,
             11626,
-            15064,
+            220828,
             18711,
             272100,
             11686,
-            9652,
+            220832,
             12470,
             17713,
             19516,
@@ -19347,9 +19346,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 279253,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 226887,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22340,
@@ -19357,9 +19356,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 272105,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 226884,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "back": {
               "item_id": 272414,
@@ -19372,19 +19371,19 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 13211,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Halycon"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Maxwell's Mission"
+              "item_id": 226883,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
-              "item_id": 20216,
+              "item_id": 226888,
               "source_kind": "quest",
-              "source": "A Collection of Heads"
+              "source": "Just Compensation"
             },
             "legs": {
               "item_id": 237819,
@@ -19392,9 +19391,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 14616,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lady Illucia Barov"
+              "item_id": 226881,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 19325,
@@ -19434,9 +19433,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 279253,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 226887,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 22340,
@@ -19444,9 +19443,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 272105,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 226884,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "back": {
               "item_id": 272414,
@@ -19459,19 +19458,19 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 13211,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Halycon"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Warlord's Command"
+              "item_id": 226883,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
-              "item_id": 20216,
+              "item_id": 226888,
               "source_kind": "quest",
-              "source": "A Collection of Heads"
+              "source": "Just Compensation"
             },
             "legs": {
               "item_id": 237819,
@@ -19479,9 +19478,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 14616,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Lady Illucia Barov"
+              "item_id": 226881,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 19325,
@@ -19522,16 +19521,16 @@
         },
         "new_at_band": {
           "alliance": [
-            279253,
+            226887,
             22340,
-            272105,
+            226884,
             272414,
             252483,
-            13211,
-            13963,
-            20216,
+            226885,
+            226883,
+            226888,
             237819,
-            14616,
+            226881,
             19325,
             21201,
             19289,
@@ -19541,16 +19540,16 @@
             18323
           ],
           "horde": [
-            279253,
+            226887,
             22340,
-            272105,
+            226884,
             272414,
             252483,
-            13211,
-            13963,
-            20216,
+            226885,
+            226883,
+            226888,
             237819,
-            14616,
+            226881,
             19325,
             21201,
             19289,
@@ -21386,14 +21385,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 237815,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
-            },
-            "feet": {
-              "item_id": 22064,
+              "item_id": 226933,
               "source_kind": "quest",
               "source": "Anthion's Parting Words"
+            },
+            "feet": {
+              "item_id": 226931,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 20682,
@@ -21421,9 +21420,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "ranged": {
-              "item_id": 22408,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
+              "item_id": 279246,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -21518,14 +21517,14 @@
             14152,
             19595,
             228190,
-            237815,
-            22064,
+            226933,
+            226931,
             20682,
             22339,
             12930,
             11832,
             22335,
-            22408
+            279246
           ],
           "horde": [
             226935,
@@ -22366,9 +22365,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -22376,14 +22375,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 237815,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
-            },
-            "feet": {
-              "item_id": 22064,
+              "item_id": 226933,
               "source_kind": "quest",
               "source": "Anthion's Parting Words"
+            },
+            "feet": {
+              "item_id": 226931,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 20682,
@@ -22448,9 +22447,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -22458,14 +22457,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 237815,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
-            },
-            "feet": {
-              "item_id": 22064,
+              "item_id": 226933,
               "source_kind": "quest",
               "source": "Anthion's Parting Words"
+            },
+            "feet": {
+              "item_id": 226931,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 20682,
@@ -22507,10 +22506,9 @@
             272411,
             14152,
             19595,
-            22066,
             228190,
-            237815,
-            22064,
+            226933,
+            226931,
             20682,
             22339,
             22678,
@@ -22525,10 +22523,9 @@
             272411,
             14152,
             19595,
-            22066,
             228190,
-            237815,
-            22064,
+            226933,
+            226931,
             20682,
             22339,
             22678,
@@ -23368,9 +23365,9 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 250601,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 227151,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 18459,
@@ -23393,9 +23390,9 @@
               "source": "Dire Maul: Illyanna Ravenoak"
             },
             "feet": {
-              "item_id": 226983,
+              "item_id": 227153,
               "source_kind": "vendor",
-              "source": "Mokvar"
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 22681,
@@ -23507,12 +23504,12 @@
             20685,
             272103,
             18510,
-            250601,
+            227151,
             18459,
             272097,
             20217,
             18386,
-            226983,
+            227153,
             22681,
             13345,
             272439,
@@ -24321,9 +24318,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 226990,
+              "item_id": 220807,
               "source_kind": "vendor",
-              "source": "Mokvar"
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "waist": {
               "item_id": 250572,
@@ -24331,9 +24328,9 @@
               "source": "Blacksmithing"
             },
             "legs": {
-              "item_id": 17711,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 220798,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "feet": {
               "item_id": 220800,
@@ -24398,9 +24395,9 @@
             11677,
             11678,
             250582,
-            226990,
+            220807,
             250572,
-            17711,
+            220798,
             220800,
             272065,
             19302,
@@ -24447,19 +24444,19 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 15413,
-              "source_kind": "quest",
-              "source": "In Dreams"
+              "item_id": 226992,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "wrist": {
-              "item_id": 13951,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Darkmaster Gandling"
+              "item_id": 226985,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "hands": {
-              "item_id": 279264,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 14622,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
               "item_id": 14620,
@@ -24529,14 +24526,14 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 15413,
-              "source_kind": "quest",
-              "source": "In Dreams"
+              "item_id": 14624,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "wrist": {
-              "item_id": 13951,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Darkmaster Gandling"
+              "item_id": 226985,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "hands": {
               "item_id": 279264,
@@ -24596,9 +24593,9 @@
             19491,
             20057,
             18511,
-            15413,
-            13951,
-            279264,
+            226992,
+            226985,
+            14622,
             14620,
             237825,
             227815,
@@ -24613,8 +24610,8 @@
             19491,
             20212,
             18511,
-            15413,
-            13951,
+            14624,
+            226985,
             279264,
             14620,
             237825,
@@ -24679,9 +24676,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 12994,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -24689,14 +24686,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 6087,
-              "source_kind": "quest",
-              "source": "The Defias Brotherhood"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 252439,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20439,
@@ -24746,9 +24743,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 12994,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -24756,14 +24753,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 250493,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 252439,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20429,
@@ -24790,10 +24787,10 @@
             4706,
             6627,
             2868,
-            12994,
+            10401,
             10403,
-            6087,
-            252439,
+            10400,
+            10402,
             20439,
             12054,
             6953
@@ -24805,10 +24802,10 @@
             4706,
             6627,
             2868,
-            12994,
+            10401,
             10403,
-            250493,
-            252439,
+            10400,
+            10402,
             20429,
             12054,
             270018
@@ -25027,9 +25024,9 @@
               "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "chest": {
-              "item_id": 10583,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Withered Warrior"
+              "item_id": 10020,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 19508,
@@ -25037,9 +25034,9 @@
               "source": "Scarlet Monastery: High Inquisitor Fairbanks"
             },
             "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10011,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 20116,
@@ -25047,9 +25044,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 10330,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 10010,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 250546,
@@ -25094,9 +25091,9 @@
               "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "chest": {
-              "item_id": 10583,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Withered Warrior"
+              "item_id": 10020,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 19508,
@@ -25104,9 +25101,9 @@
               "source": "Scarlet Monastery: High Inquisitor Fairbanks"
             },
             "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10011,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 20192,
@@ -25146,11 +25143,11 @@
             17772,
             250539,
             16336,
-            10583,
+            10020,
             19508,
-            867,
+            10011,
             20116,
-            10330,
+            10010,
             250546,
             19515,
             2262
@@ -25160,9 +25157,9 @@
             17772,
             274751,
             16340,
-            10583,
+            10020,
             19508,
-            867,
+            10011,
             20192,
             10330,
             250546,
@@ -25184,7 +25181,7 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 220804,
+              "item_id": 220819,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer"
             },
@@ -25194,7 +25191,7 @@
               "source": "World drop"
             },
             "shoulder": {
-              "item_id": 220795,
+              "item_id": 220818,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer"
             },
@@ -25204,7 +25201,7 @@
               "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "chest": {
-              "item_id": 220794,
+              "item_id": 220815,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer"
             },
@@ -25214,9 +25211,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 272096,
+              "item_id": 220817,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "waist": {
               "item_id": 20106,
@@ -25224,14 +25221,14 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 220797,
+              "item_id": 220816,
               "source_kind": "vendor",
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 12555,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anvilrage Overseer"
+              "item_id": 220814,
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "finger1": {
               "item_id": 17713,
@@ -25349,16 +25346,16 @@
         },
         "new_at_band": {
           "alliance": [
-            220804,
+            220819,
             13089,
-            220795,
+            220818,
             11626,
-            220794,
+            220815,
             250581,
-            272096,
+            220817,
             20106,
-            220797,
-            12555,
+            220816,
+            220814,
             17713,
             19516,
             249469,
@@ -25406,9 +25403,9 @@
               "source": "In Dreams"
             },
             "shoulder": {
-              "item_id": 272105,
+              "item_id": 226987,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "back": {
               "item_id": 272414,
@@ -25416,24 +25413,24 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 252484,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 226973,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "wrist": {
-              "item_id": 12936,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand"
+              "item_id": 226970,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             },
             "hands": {
-              "item_id": 13963,
+              "item_id": 226975,
               "source_kind": "quest",
-              "source": "Maxwell's Mission"
+              "source": "Just Compensation"
             },
             "waist": {
-              "item_id": 227814,
-              "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana"
+              "item_id": 226971,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "legs": {
               "item_id": 237819,
@@ -25441,9 +25438,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "item_id": 226991,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "finger1": {
               "item_id": 19325,
@@ -25498,9 +25495,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 252484,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 11726,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Gorosh the Dervish"
             },
             "wrist": {
               "item_id": 12936,
@@ -25508,9 +25505,9 @@
               "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Warlord's Command"
+              "item_id": 11730,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Eviscerator"
             },
             "waist": {
               "item_id": 227814,
@@ -25523,9 +25520,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
+              "item_id": 11731,
               "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "source": "Blackrock Depths: Anub'shiah"
             },
             "finger1": {
               "item_id": 19325,
@@ -25563,14 +25560,14 @@
           "alliance": [
             12640,
             15411,
-            272105,
+            226987,
             272414,
-            252484,
-            12936,
-            13963,
-            227814,
+            226973,
+            226970,
+            226975,
+            226971,
             237819,
-            13967,
+            226991,
             19325,
             21201,
             22268,
@@ -25583,12 +25580,12 @@
             15411,
             272105,
             272414,
-            252484,
+            11726,
             12936,
-            13963,
+            11730,
             227814,
             237819,
-            13967,
+            11731,
             19325,
             21201,
             22268,
@@ -27482,9 +27479,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 14140,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226947,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "neck": {
               "item_id": 21531,
@@ -27492,9 +27489,9 @@
               "source": "The Nightmare Manifests"
             },
             "shoulder": {
-              "item_id": 14139,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226951,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "back": {
               "item_id": 18510,
@@ -27502,14 +27499,14 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 14154,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 13346,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
             },
             "wrist": {
-              "item_id": 22667,
+              "item_id": 226949,
               "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "source": "An Earnest Proposition"
             },
             "hands": {
               "item_id": 12554,
@@ -27527,9 +27524,9 @@
               "source": "Dire Maul: Illyanna Ravenoak"
             },
             "feet": {
-              "item_id": 15802,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226952,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "finger1": {
               "item_id": 16058,
@@ -27574,9 +27571,9 @@
               "source": "The Nightmare Manifests"
             },
             "shoulder": {
-              "item_id": 14139,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226951,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "back": {
               "item_id": 18510,
@@ -27589,9 +27586,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 22667,
+              "item_id": 226949,
               "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "source": "An Earnest Proposition"
             },
             "hands": {
               "item_id": 12554,
@@ -27609,9 +27606,9 @@
               "source": "Dire Maul: Illyanna Ravenoak"
             },
             "feet": {
-              "item_id": 15802,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 226952,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "finger1": {
               "item_id": 16058,
@@ -27629,9 +27626,9 @@
               "source": "Creeg Bothunk"
             },
             "trinket2": {
-              "item_id": 18371,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Magister Kalendris"
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "main_hand": {
               "item_id": 22406,
@@ -27647,16 +27644,16 @@
         },
         "new_at_band": {
           "alliance": [
-            14140,
+            226947,
             21531,
-            14139,
+            226951,
             18510,
-            14154,
-            22667,
+            13346,
+            226949,
             12554,
             19047,
             18386,
-            15802,
+            226952,
             16058,
             22334,
             18469,
@@ -27666,17 +27663,17 @@
           "horde": [
             226947,
             21531,
-            14139,
+            226951,
             18510,
             14154,
-            22667,
+            226949,
             12554,
             19047,
             18386,
-            15802,
+            226952,
             16058,
             22334,
-            18371,
+            272439,
             22406,
             279246
           ]
@@ -28516,9 +28513,9 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 22752,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels"
+              "item_id": 226956,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "feet": {
               "item_id": 226959,
@@ -28598,9 +28595,9 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 22747,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 226956,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "feet": {
               "item_id": 226959,
@@ -28649,7 +28646,7 @@
             19595,
             226958,
             228190,
-            22752,
+            226956,
             226959,
             20682,
             21206,
@@ -28667,7 +28664,7 @@
             19595,
             226958,
             228190,
-            22747,
+            226956,
             226959,
             20682,
             21206,
@@ -28722,9 +28719,9 @@
               "source": "Underground Assault"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -28732,14 +28729,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20439,
@@ -28799,9 +28796,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -28809,14 +28806,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20429,
@@ -28853,10 +28850,10 @@
             6449,
             2041,
             270015,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20439,
             277210,
             1482,
@@ -28870,10 +28867,10 @@
             6449,
             252490,
             3202,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20429,
             277210,
             1482,
@@ -28992,9 +28989,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 7374,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14590,
@@ -29002,14 +28999,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7359,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
-              "item_id": 20152,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 10403,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6690,
@@ -29017,9 +29014,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 7686,
@@ -29059,6 +29056,7 @@
             7359,
             20090,
             6690,
+            1121,
             7686,
             19517,
             7687,
@@ -29070,10 +29068,8 @@
             7731,
             2278,
             14593,
-            7374,
+            10399,
             14590,
-            7359,
-            20152,
             6690,
             7686,
             19513,
@@ -29535,9 +29531,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 12927,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Pyroguard Emberseer"
+              "item_id": 15058,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -29565,9 +29561,9 @@
               "source": "Pix Xizzix"
             },
             "legs": {
-              "item_id": 237818,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 226831,
@@ -29622,9 +29618,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 12927,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Pyroguard Emberseer"
+              "item_id": 15058,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -29652,9 +29648,9 @@
               "source": "Pix Xizzix"
             },
             "legs": {
-              "item_id": 237818,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 226831,
@@ -29702,13 +29698,13 @@
           "alliance": [
             13404,
             22340,
-            12927,
+            15058,
             272414,
             252483,
             19587,
             21278,
             272395,
-            237818,
+            15057,
             226831,
             19325,
             21201,
@@ -29721,13 +29717,13 @@
           "horde": [
             13404,
             22340,
-            12927,
+            15058,
             272414,
             252483,
             19587,
             21278,
             272395,
-            237818,
+            15057,
             226831,
             19325,
             21201,
@@ -29784,9 +29780,9 @@
               "source": "Underground Assault"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -29794,14 +29790,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20439,
@@ -29861,9 +29857,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -29871,14 +29867,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20429,
@@ -29915,10 +29911,10 @@
             6449,
             252490,
             270015,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20439,
             277210,
             2236,
@@ -29932,10 +29928,10 @@
             6449,
             252490,
             3202,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20429,
             277210,
             2236,
@@ -29977,9 +29973,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 3566,
-              "source_kind": "quest",
-              "source": "Ormer's Revenge"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14590,
@@ -29987,14 +29983,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7359,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
-              "item_id": 20090,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 10403,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6690,
@@ -30002,9 +29998,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 7686,
@@ -30054,9 +30050,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 7374,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14590,
@@ -30064,14 +30060,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7359,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
-              "item_id": 20152,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 10403,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6690,
@@ -30079,9 +30075,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 7686,
@@ -30116,10 +30112,8 @@
             7731,
             2278,
             14593,
-            3566,
+            10399,
             14590,
-            7359,
-            20090,
             6690,
             7686,
             19517,
@@ -30132,10 +30126,8 @@
             7731,
             2278,
             14593,
-            7374,
+            10399,
             14590,
-            7359,
-            20152,
             6690,
             7686,
             19513,
@@ -30597,9 +30589,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 12927,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Pyroguard Emberseer"
+              "item_id": 15058,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -30617,9 +30609,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 272099,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 21278,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 272395,
@@ -30627,9 +30619,9 @@
               "source": "Pix Xizzix"
             },
             "legs": {
-              "item_id": 237818,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 226831,
@@ -30684,9 +30676,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 12927,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Pyroguard Emberseer"
+              "item_id": 15058,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -30704,9 +30696,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 272099,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 21278,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 272395,
@@ -30714,9 +30706,9 @@
               "source": "Pix Xizzix"
             },
             "legs": {
-              "item_id": 237818,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 226831,
@@ -30749,9 +30741,9 @@
               "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 19324,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan"
+              "item_id": 12590,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "ranged": {
               "item_id": 18323,
@@ -30764,13 +30756,13 @@
           "alliance": [
             13404,
             22340,
-            12927,
+            15058,
             272414,
             252483,
             19587,
-            272099,
+            21278,
             272395,
-            237818,
+            15057,
             226831,
             19325,
             21201,
@@ -30783,20 +30775,20 @@
           "horde": [
             13404,
             22340,
-            12927,
+            15058,
             272414,
             252483,
             19587,
-            272099,
+            21278,
             272395,
-            237818,
+            15057,
             226831,
             19325,
             21201,
             19289,
             19120,
             21522,
-            19324,
+            12590,
             18323
           ]
         },
@@ -30846,9 +30838,9 @@
               "source": "Underground Assault"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -30856,14 +30848,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20439,
@@ -30913,9 +30905,9 @@
               "source": "Wailing Caverns: Skum"
             },
             "chest": {
-              "item_id": 252490,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 3202,
@@ -30923,9 +30915,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10413,
+              "item_id": 10401,
               "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang"
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -30933,14 +30925,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252500,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20429,
@@ -30977,10 +30969,10 @@
             6449,
             252490,
             270015,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20439,
             277210,
             2236,
@@ -30992,12 +30984,12 @@
             20442,
             5404,
             6449,
-            252490,
+            10399,
             3202,
-            10413,
+            10401,
             10403,
-            252500,
-            1121,
+            10400,
+            10402,
             20429,
             277210,
             2236,
@@ -31039,9 +31031,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 3566,
-              "source_kind": "quest",
-              "source": "Ormer's Revenge"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14590,
@@ -31049,14 +31041,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7359,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
-              "item_id": 20090,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 10403,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6690,
@@ -31064,9 +31056,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 277226,
-              "source_kind": "quest",
-              "source": "WANTED: Incinerator Gar'im"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 7686,
@@ -31116,9 +31108,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 7374,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14590,
@@ -31126,14 +31118,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7359,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
-              "item_id": 20152,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 10403,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6690,
@@ -31141,9 +31133,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 1121,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 7686,
@@ -31178,12 +31170,9 @@
             7731,
             2278,
             14593,
-            3566,
+            10399,
             14590,
-            7359,
-            20090,
             6690,
-            277226,
             7686,
             19517,
             6691,
@@ -31195,10 +31184,7 @@
             7731,
             2278,
             14593,
-            7374,
             14590,
-            7359,
-            20152,
             6690,
             7686,
             19513,
@@ -31658,9 +31644,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 12927,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Pyroguard Emberseer"
+              "item_id": 15058,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -31678,9 +31664,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 272099,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 21278,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 272395,
@@ -31688,9 +31674,9 @@
               "source": "Pix Xizzix"
             },
             "legs": {
-              "item_id": 237818,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 226831,
@@ -31745,9 +31731,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 12927,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Pyroguard Emberseer"
+              "item_id": 15058,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -31765,9 +31751,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 272099,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 21278,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
               "item_id": 272395,
@@ -31775,9 +31761,9 @@
               "source": "Pix Xizzix"
             },
             "legs": {
-              "item_id": 237818,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 226831,
@@ -31825,13 +31811,13 @@
           "alliance": [
             13404,
             22340,
-            12927,
+            15058,
             272414,
             252483,
             19587,
-            272099,
+            21278,
             272395,
-            237818,
+            15057,
             226831,
             19325,
             21201,
@@ -31844,13 +31830,13 @@
           "horde": [
             13404,
             22340,
-            12927,
+            15058,
             272414,
             252483,
             19587,
-            272099,
+            21278,
             272395,
-            237818,
+            15057,
             226831,
             19325,
             21201,
@@ -32614,9 +32600,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 227808,
-              "source_kind": "vendor",
-              "source": "Meilosh"
+              "item_id": 15067,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272411,
@@ -32624,9 +32610,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 16666,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 15066,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 19595,
@@ -32706,9 +32692,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 16666,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 227004,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last"
             },
             "wrist": {
               "item_id": 19595,
@@ -32716,9 +32702,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 272101,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 227006,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -32771,9 +32757,8 @@
           "alliance": [
             252561,
             22657,
-            227808,
             272411,
-            16666,
+            15066,
             19595,
             272101,
             228190,
@@ -32791,9 +32776,9 @@
             22657,
             227808,
             272411,
-            16666,
+            227004,
             19595,
-            272101,
+            227006,
             228190,
             252486,
             227007,
@@ -32840,9 +32825,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 252434,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 270015,
@@ -32850,9 +32835,9 @@
               "source": "Underground Assault"
             },
             "hands": {
-              "item_id": 7348,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -32860,9 +32845,9 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252445,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
               "item_id": 252439,
@@ -32907,9 +32892,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 252434,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10399,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "wrist": {
               "item_id": 14569,
@@ -32917,9 +32902,9 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 7348,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -32927,9 +32912,9 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 252445,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
               "item_id": 252439,
@@ -32959,11 +32944,11 @@
             20444,
             5404,
             4706,
-            252434,
+            10399,
             270015,
-            7348,
+            10401,
             10403,
-            252445,
+            10400,
             252439,
             20439,
             12054,
@@ -32974,11 +32959,11 @@
             20442,
             5404,
             4706,
-            252434,
+            10399,
             14569,
-            7348,
+            10401,
             10403,
-            252445,
+            10400,
             252439,
             20429,
             12054,
@@ -33355,9 +33340,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 223075,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "neck": {
               "item_id": 13089,
@@ -33385,9 +33370,9 @@
               "source": "Arena Treasure Chest"
             },
             "hands": {
-              "item_id": 272100,
+              "item_id": 223076,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "waist": {
               "item_id": 11686,
@@ -33400,9 +33385,9 @@
               "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 252468,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 223077,
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "finger1": {
               "item_id": 17713,
@@ -33510,15 +33495,16 @@
         },
         "new_at_band": {
           "alliance": [
+            223075,
             13089,
             223073,
             11626,
             223078,
             18711,
-            272100,
+            223076,
             11686,
             223074,
-            252468,
+            223077,
             17713,
             19516,
             249469,
@@ -33586,14 +33572,14 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Maxwell's Mission"
+              "item_id": 14615,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
-              "item_id": 227805,
-              "source_kind": "vendor",
-              "source": "Meilosh"
+              "item_id": 14614,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "legs": {
               "item_id": 237819,
@@ -33601,9 +33587,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
+              "item_id": 14616,
               "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "finger1": {
               "item_id": 19325,
@@ -33653,9 +33639,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 252483,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 11726,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Gorosh the Dervish"
             },
             "wrist": {
               "item_id": 19587,
@@ -33678,9 +33664,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 13967,
+              "item_id": 11731,
               "source_kind": "dungeon",
-              "source": "Scholomance: Kirtonos the Herald"
+              "source": "Blackrock Depths: Anub'shiah"
             },
             "finger1": {
               "item_id": 19325,
@@ -33717,10 +33703,10 @@
             272414,
             252483,
             19587,
-            13963,
-            227805,
+            14615,
+            14614,
             237819,
-            13967,
+            14616,
             19325,
             21201,
             19289,
@@ -33732,12 +33718,12 @@
             22340,
             12927,
             272414,
-            252483,
+            11726,
             19587,
             13963,
             227805,
             237819,
-            13967,
+            11731,
             19325,
             21201,
             13965,
@@ -37756,9 +37742,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 12994,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -37766,14 +37752,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 6087,
-              "source_kind": "quest",
-              "source": "The Defias Brotherhood"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 252441,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 12054,
@@ -37823,9 +37809,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 12994,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -37833,14 +37819,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 250493,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 252441,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 12054,
@@ -37871,10 +37857,10 @@
             4706,
             6627,
             2868,
-            12994,
+            10401,
             10403,
-            6087,
-            252441,
+            10400,
+            10402,
             12054,
             20439,
             23171,
@@ -37886,10 +37872,10 @@
             4706,
             6627,
             2868,
-            12994,
+            10401,
             10403,
-            250493,
-            252441,
+            10400,
+            10402,
             12054,
             20429,
             23171,
@@ -38535,9 +38521,9 @@
               "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Maxwell's Mission"
+              "item_id": 14615,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
               "item_id": 227814,
@@ -38550,9 +38536,9 @@
               "source": "Blacksmithing"
             },
             "feet": {
-              "item_id": 21995,
-              "source_kind": "quest",
-              "source": "Anthion's Parting Words"
+              "item_id": 14616,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "finger1": {
               "item_id": 19325,
@@ -38617,9 +38603,9 @@
               "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "hands": {
-              "item_id": 13963,
-              "source_kind": "quest",
-              "source": "Warlord's Command"
+              "item_id": 14615,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
               "item_id": 227814,
@@ -38632,9 +38618,9 @@
               "source": "Blacksmithing"
             },
             "feet": {
-              "item_id": 21995,
-              "source_kind": "quest",
-              "source": "Anthion's Parting Words"
+              "item_id": 14616,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "finger1": {
               "item_id": 19325,
@@ -38676,10 +38662,10 @@
             272414,
             252484,
             12936,
-            13963,
+            14615,
             227814,
             22385,
-            21995,
+            14616,
             19325,
             21201,
             19289,
@@ -38694,10 +38680,10 @@
             272414,
             252484,
             12936,
-            13963,
+            14615,
             227814,
             22385,
-            21995,
+            14616,
             19325,
             21201,
             19289,
@@ -38751,9 +38737,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 12994,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -38761,14 +38747,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 6087,
-              "source_kind": "quest",
-              "source": "The Defias Brotherhood"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 252439,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20439,
@@ -38828,9 +38814,9 @@
               "source": "Blacksmithing"
             },
             "hands": {
-              "item_id": 12994,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10401,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "waist": {
               "item_id": 10403,
@@ -38838,14 +38824,14 @@
               "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
-              "item_id": 250493,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 10400,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Overseer"
             },
             "feet": {
-              "item_id": 252439,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 10402,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Strip Miner"
             },
             "finger1": {
               "item_id": 20429,
@@ -38882,10 +38868,10 @@
             4706,
             6627,
             2868,
-            12994,
+            10401,
             10403,
-            6087,
-            252439,
+            10400,
+            10402,
             20439,
             12054,
             1482,
@@ -38899,10 +38885,10 @@
             4706,
             6627,
             2868,
-            12994,
+            10401,
             10403,
-            250493,
-            252439,
+            10400,
+            10402,
             20429,
             12054,
             1482,

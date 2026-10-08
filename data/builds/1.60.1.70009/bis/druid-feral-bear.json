@@ -2,7 +2,7 @@
   "spec": "druid-feral-bear",
   "build": "1.60.1.70009",
   "engine_version": "f5002980c",
-  "generated_at": "2026-10-08T05:56:46Z",
+  "generated_at": "2026-10-08T12:07:16Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -625,8 +625,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.431343838,
-      "verify_run_seconds": 1.262544029,
+      "weights_run_seconds": 3.215049479,
+      "verify_run_seconds": 1.770268758,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -951,7 +951,7 @@
               "item_name": "Grave Shroud",
               "source_kind": "quest",
               "source": "Unending Torment",
-              "dps_delta": -11.323406241290275
+              "dps_delta": -11.323406241290254
             },
             {
               "item_id": 5444,
@@ -1330,8 +1330,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.431343838,
-      "verify_run_seconds": 1.238799419,
+      "weights_run_seconds": 3.215049479,
+      "verify_run_seconds": 1.753593476,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1717,7 +1717,7 @@
               "item_name": "Barbaric Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.7482836759447964
+              "dps_delta": -3.748283675944835
             },
             {
               "item_id": 3230,
@@ -2084,8 +2084,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.313434886,
-      "verify_run_seconds": 1.298289392,
+      "weights_run_seconds": 3.185749543,
+      "verify_run_seconds": 1.812156944,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2413,7 +2413,7 @@
               "item_name": "Enduring Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -41.19934295739916
+              "dps_delta": -41.1993429573992
             },
             {
               "item_id": 4643,
@@ -2829,8 +2829,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.313434886,
-      "verify_run_seconds": 1.315824821,
+      "weights_run_seconds": 3.185749543,
+      "verify_run_seconds": 1.738379906,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3562,8 +3562,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 3.960001625,
-      "verify_run_seconds": 1.406205503,
+      "weights_run_seconds": 3.632780549,
+      "verify_run_seconds": 1.985615718,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4016,7 +4016,7 @@
               "item_name": "Warden's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -51.76412036693943
+              "dps_delta": -51.76412036693953
             },
             {
               "item_id": 6788,
@@ -4297,8 +4297,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 3.960001625,
-      "verify_run_seconds": 1.4031899110000001,
+      "weights_run_seconds": 3.632780549,
+      "verify_run_seconds": 1.979247706,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4508,35 +4508,41 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 17776,
-          "item_name": "Sprightring Helm",
-          "source": "Twisted Evils",
-          "source_kind": "quest",
-          "score": 38.9400244385683,
+          "item_id": 220850,
+          "item_name": "Knight-Lieutenant's Leather Headband",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
+          "sim_dps": 12048.368724319871,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 220850,
-              "item_name": "Knight-Lieutenant's Leather Headband",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -183.15573386931231
-            },
             {
               "item_id": 9479,
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -285.94438813489137
+              "dps_delta": -102.78865426557905
             },
             {
               "item_id": 274756,
               "item_name": "Impractical Headwarmer",
               "source_kind": "vendor",
               "source": "Zippie Fizzbolt",
-              "dps_delta": -337.51330067370355
+              "dps_delta": -154.35756680439127
+            },
+            {
+              "item_id": 17776,
+              "item_name": "Sprightring Helm",
+              "source_kind": "quest",
+              "source": "Twisted Evils",
+              "dps_delta": -755.3579416786743,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Knight-Lieutenant's Leather",
+            "pieces": 3,
+            "bonus": "+15 Stamina."
+          }
         },
         {
           "slot": "neck",
@@ -4572,11 +4578,11 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 10774,
-          "item_name": "Fleshhide Shoulders",
-          "source": "Razorfen Downs: Glutton",
-          "source_kind": "dungeon",
-          "score": 28.32363109662981,
+          "item_id": 220852,
+          "item_name": "Knight-Lieutenant's Leather Shoulders",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
+          "sim_dps": 12048.368724319871,
           "verified": true,
           "alternatives": [
             {
@@ -4584,23 +4590,29 @@
               "item_name": "Penance Spaulders",
               "source_kind": "quest",
               "source": "Ribbly Screwspigot",
-              "dps_delta": -24.676349907131055
+              "dps_delta": 0
             },
             {
               "item_id": 17749,
               "item_name": "Phytoskin Spaulders",
               "source_kind": "dungeon",
               "source": "Maraudon: Razorlash",
-              "dps_delta": -34.30273774567792
+              "dps_delta": 0
             },
             {
-              "item_id": 220852,
-              "item_name": "Knight-Lieutenant's Leather Shoulders",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -57.3666534465449
+              "item_id": 10774,
+              "item_name": "Fleshhide Shoulders",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Glutton",
+              "dps_delta": -764.4556548535093,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Knight-Lieutenant's Leather",
+            "pieces": 3,
+            "bonus": "+15 Stamina."
+          }
         },
         {
           "slot": "back",
@@ -4612,19 +4624,18 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 12465,
+              "item_name": "Nightfall Drape",
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Morphaz",
+              "dps_delta": -44.543675072759584
+            },
+            {
               "item_id": 18441,
               "item_name": "Sergeant's Cape",
               "source_kind": "vendor",
               "source": "PvP rank 7 · Sergeant · Alliance",
               "dps_delta": -54.191620602776545
-            },
-            {
-              "item_id": 12465,
-              "item_name": "Nightfall Drape",
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Morphaz",
-              "dps_delta": -114.97202225215733,
-              "verified": true
             },
             {
               "item_id": 17739,
@@ -4649,7 +4660,7 @@
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -455.049211318601,
+              "dps_delta": -338.3246935908628,
               "verified": true
             },
             {
@@ -4710,6 +4721,14 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 272100,
+              "item_name": "Raider Gloves",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -217.23825164661685,
+              "verified": true
+            },
+            {
               "item_id": 252549,
               "item_name": "Warden's Leather Gauntlets",
               "source_kind": "crafted",
@@ -4722,14 +4741,6 @@
               "source_kind": "vendor",
               "source": "Mokvar",
               "dps_delta": -400.79278770272487
-            },
-            {
-              "item_id": 272100,
-              "item_name": "Raider Gloves",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -419.9883939270385,
-              "verified": true
             }
           ]
         },
@@ -4793,7 +4804,7 @@
               "item_name": "Windscale Sarong",
               "source_kind": "world",
               "source": "Avatar of Hakkar",
-              "dps_delta": -562.6238459978267,
+              "dps_delta": -1047.9430919165115,
               "verified": true
             }
           ]
@@ -4812,7 +4823,7 @@
               "item_name": "Slitherscale Boots",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Spawn of Hakkar",
-              "dps_delta": -43.99144185166011
+              "dps_delta": -43.991441851660255
             },
             {
               "item_id": 252470,
@@ -4838,8 +4849,8 @@
           "source_kind": "vendor",
           "score": 14.440569824081694,
           "verified": true,
-          "swap_note": "confirmed by the sim against Darkmoon Ring (id 19302): kept the pick, +517.9 DPS (11237.9 vs 10720.0 set DPS)",
-          "dps_delta": 517.8525333584876,
+          "swap_note": "confirmed by the sim against Darkmoon Ring (id 19302): kept the pick, +596.2 DPS (12048.4 vs 11452.2 set DPS)",
+          "dps_delta": 596.1981268497748,
           "alternatives": [
             {
               "item_id": 1447,
@@ -4912,9 +4923,16 @@
           "item_name": "Mark of the Chosen",
           "source": "The Pariah's Instructions",
           "source_kind": "quest",
-          "sim_dps": 11237.882563840101,
+          "sim_dps": 12048.368724319871,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 4130,
+              "item_name": "Smotts' Compass",
+              "source_kind": "quest",
+              "source": "Facing Negolash",
+              "dps_delta": 0
+            },
             {
               "item_id": 21117,
               "item_name": "Talisman of Arathor",
@@ -4928,14 +4946,6 @@
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": 0
-            },
-            {
-              "item_id": 4130,
-              "item_name": "Smotts' Compass",
-              "source_kind": "quest",
-              "source": "Facing Negolash",
-              "dps_delta": -160.52275396512232,
-              "verified": true
             }
           ]
         },
@@ -4945,7 +4955,7 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 11237.882563840101,
+          "sim_dps": 12048.368724319871,
           "verified": true,
           "alternatives": [
             {
@@ -4978,7 +4988,7 @@
           "item_name": "Radiant Staff",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 11237.882563840101,
+          "sim_dps": 12048.368724319871,
           "verified": true,
           "alternatives": [
             {
@@ -5000,7 +5010,7 @@
               "item_name": "Ragehammer",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Atal'ai Warrior",
-              "dps_delta": -693.3728909617403,
+              "dps_delta": -616.4505427479908,
               "verified": true
             }
           ]
@@ -5016,7 +5026,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 115.39561218712035,
+      "set_dps": 119.17924310550379,
       "no_source_count": 577,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -5036,8 +5046,9 @@
         "4964 Goblin Smasher"
       ],
       "new_at_band": [
-        "head: Sprightring Helm",
+        "head: Knight-Lieutenant's Leather Headband",
         "neck: Master Sergeant's Insignia",
+        "shoulder: Knight-Lieutenant's Leather Shoulders",
         "back: Graverot Cape",
         "chest: Warbear Harness",
         "wrist: Arena Bracers",
@@ -5051,8 +5062,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 4.405497883,
-      "verify_run_seconds": 1.505788177,
+      "weights_run_seconds": 4.1066573,
+      "verify_run_seconds": 4.219799845,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5133,12 +5144,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 421.5982389489946,
-        "tmi": 63.80672427805746,
-        "chance_of_death": 0.996,
-        "tps": 214.78129217474807,
-        "effective_health": 12669.896145899253,
-        "dps": 115.39561218712035
+        "dtps": 408.1898277647782,
+        "tmi": 59.614986151388464,
+        "chance_of_death": 0.986,
+        "tps": 221.63360182003504,
+        "effective_health": 13294.191697916413,
+        "dps": 119.17924310550379
       }
     },
     {
@@ -5274,7 +5285,7 @@
               "item_name": "Blood Guard's Leather Headband",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -183.15573386931231
+              "dps_delta": -183.15573386931203
             },
             {
               "item_id": 9479,
@@ -5788,8 +5799,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal"
       ],
-      "weights_run_seconds": 4.405497883,
-      "verify_run_seconds": 1.5174061189999999,
+      "weights_run_seconds": 4.1066573,
+      "verify_run_seconds": 2.311979262,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6200,7 +6211,7 @@
           "item_name": "Feralheart Grips",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 52.9210066367594,
+          "score": 52.921006636759415,
           "verified": true,
           "alternatives": [
             {
@@ -6215,7 +6226,7 @@
               "item_name": "Marshal's Dragonhide Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -335.00674886662085
+              "dps_delta": -335.00674886662193
             },
             {
               "item_id": 272099,
@@ -6544,8 +6555,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.438162346,
-      "verify_run_seconds": 1.677643703,
+      "weights_run_seconds": 4.053456274,
+      "verify_run_seconds": 6.404497314,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6867,7 +6878,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -32.901870895560634
+              "dps_delta": -32.90187089556008
             },
             {
               "item_id": 18495,
@@ -6988,7 +6999,7 @@
           "item_name": "Feralheart Waistguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 47.676449302258085,
+          "score": 47.67644930225809,
           "verified": true,
           "alternatives": [
             {
@@ -7004,14 +7015,14 @@
               "item_name": "Hivethrasher's Girdle",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -772.9165864999528
+              "dps_delta": -772.9165864999534
             },
             {
               "item_id": 20216,
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -774.1875290843102
+              "dps_delta": -774.1875290843108
             }
           ]
         },
@@ -7126,21 +7137,21 @@
               "item_name": "Band of Resolution",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -93.87116637488586
+              "dps_delta": -93.87116637488559
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -171.1029194358581
+              "dps_delta": -171.1029194358578
             },
             {
               "item_id": 272409,
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -238.77735255236868
+              "dps_delta": -238.7773525523684
             }
           ]
         },
@@ -7296,8 +7307,8 @@
         "trinket2: Vigilance Charm",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.438162346,
-      "verify_run_seconds": 1.621175299,
+      "weights_run_seconds": 4.053456274,
+      "verify_run_seconds": 6.218367419,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7722,7 +7733,7 @@
               "item_name": "Raider Gloves",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -655.5392100086659
+              "dps_delta": -655.5392100086666
             },
             {
               "item_id": 231700,
@@ -7739,7 +7750,7 @@
           "item_name": "Feralheart Waistguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 55.886884551313656,
+          "score": 55.88688455131365,
           "verified": true,
           "alternatives": [
             {
@@ -7755,14 +7766,14 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -1073.1808983596354
+              "dps_delta": -1073.1808983596347
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1159.269647134754
+              "dps_delta": -1159.2696471347533
             }
           ]
         },
@@ -8046,8 +8057,8 @@
         "trinket2: Vigilance Charm",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.553513351,
-      "verify_run_seconds": 1.722825002,
+      "weights_run_seconds": 4.136337137,
+      "verify_run_seconds": 6.547681944,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8408,7 +8419,7 @@
               "item_name": "Warlord's Dragonhide Tunic",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -959.4493767352792
+              "dps_delta": -959.4493767352806
             },
             {
               "item_id": 23089,
@@ -8800,8 +8811,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.553513351,
-      "verify_run_seconds": 1.6919989119999999,
+      "weights_run_seconds": 4.136337137,
+      "verify_run_seconds": 6.320369154,
       "coverage": {
         "back": {
           "eligible": 451,
