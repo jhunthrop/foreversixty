@@ -93,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-01000000000000000-000000000000000000 | main_hand:263937 | 0.0 | 0 | - | {SpellID: 25315}, {SpellID: 25316} |
-| 20 | 000000000000000000-03503000000000000-000000000000000000 | main_hand:890 | 19.8 | 3 | spell:2061=22.8, spell:2054=4.2, spell:7128=1.0 | {SpellID: 25315}, {SpellID: 25316} |
-| 30 | 000000000000000000-03505003030110000-000000000000000000 | main_hand:249392 | 28.6 | 3 | spell:9472=20.7, spell:6063=5.4, other:mana_gain=1.5, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
-| 38 | 000000000000000000-03505003030121420-000000000000000000 | main_hand:7757 | 42.7 | 3 | spell:9474=17.2, spell:6064=6.8, other:mana_gain=1.1, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
-| 40 | 000000000000000000-03505003030121431-000000000000000000 | main_hand:7757 | 17.8 | 4 | spell:401859=25.0, other:mana_gain=6.2, spell:6064=5.8, spell:1006=1.0, spell:9474=0.2 | {SpellID: 25315}, {SpellID: 25316} |
-| 50 | 025003000000000000-03505003030121431-000000000000000000 | main_hand:812 | 21.9 | 4 | spell:1240826=22.0, spell:6064=6.8, other:mana_gain=5.4, spell:10951=1.0, spell:10916=0.2 | {SpellID: 25315}, {SpellID: 25316} |
-| 60 | 025003031303000000-03505003030121431-000000000000000000 | main_hand:19355 | 96.4 | 4 | other:mana_gain=25.9, spell:6064=22.1, spell:1240827=13.8, spell:25315=3.1, spell:10952=1.0 | - |
+| 10 | 000000000000000000-01000000000000000-000000000000000000 | main_hand:263937 | 3.1 | 1 | spell:139=21.0 | {SpellID: 25316} |
+| 20 | 000000000000000000-03503000000000000-000000000000000000 | main_hand:890 | 19.0 | 4 | spell:6075=14.0, spell:2061=13.8, spell:2054=3.0, spell:7128=1.0 | {SpellID: 25316} |
+| 30 | 000000000000000000-03505003030110000-000000000000000000 | main_hand:249392 | 26.9 | 4 | other:mana_gain=25.8, spell:6076=13.5, spell:9472=11.4, spell:6063=4.7, spell:602=1.0 | {SpellID: 25316} |
+| 38 | 000000000000000000-03505003030121420-000000000000000000 | main_hand:7757 | 42.5 | 4 | other:mana_gain=22.2, spell:6078=12.0, spell:9474=9.2, spell:6064=5.8, spell:602=1.0 | {SpellID: 25316} |
+| 40 | 000000000000000000-03505003030121431-000000000000000000 | main_hand:7757 | 14.5 | 5 | spell:401859=25.2, other:mana_gain=8.1, spell:6064=3.8, spell:6078=2.0, spell:1006=1.0 | {SpellID: 25316} |
+| 50 | 025003000000000000-03505003030121431-000000000000000000 | main_hand:812 | 21.0 | 5 | spell:1240826=22.0, other:mana_gain=8.2, spell:6064=5.0, spell:10928=2.0, spell:10951=1.0 | {SpellID: 25316} |
+| 60 | 025003031303000000-03505003030121431-000000000000000000 | main_hand:19355 | 97.4 | 6 | other:mana_gain=47.3, spell:6064=20.1, spell:6075=20.0, spell:1240827=13.0, spell:14751=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -189,18 +189,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- priest-holy level=10 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=10 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=20 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=20 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=30 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=30 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=38 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=38 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=40 kind=dps_regression dps=17.8 prev_dps=42.7
-- priest-holy level=40 kind=unresolved_id action={SpellID: 25315}
+- priest-holy level=40 kind=dps_regression dps=14.5 prev_dps=42.5
 - priest-holy level=40 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=50 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=50 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=60 kind=zero_casts id=25316 authored=25316 (untracked ability; not in spellranks.json's rank chains)
-- priest-holy level=60 kind=zero_casts spell="Flash Heal" id=10917 authored=10917
+- priest-holy level=60 kind=zero_casts spell="Renew" id=10929 authored=6075
