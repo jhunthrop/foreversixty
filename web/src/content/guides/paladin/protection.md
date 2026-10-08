@@ -47,7 +47,7 @@ Protection is Forever's Paladin tanking tree, built around Seal of Fury for thre
 
 ## Talents and builds
 
-This build spends 38 points in Protection, 5 in Retribution and 8 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text. The first draft of it put the points past Holy Shield into the Holy tree's healing talents; pricing each choice in the simulator moved the paladin's chance of death in the tank fight from about one fight in seven to about one in a hundred, which is why the list below spends them where it does.
+This build spends 38 points in Protection, 5 in Retribution and 8 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text. An earlier draft of it put the points past Holy Shield into the Holy tree's healing talents; pricing each choice in the simulator showed that Deflection, Sacred Duty and Iron Creed together cut the chance of death in the tank fight many times over, which is why the list below spends them where it does.
 
 **Protection**, in roughly the order you would take them:
 

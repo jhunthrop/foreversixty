@@ -48,7 +48,7 @@ var tankStatNames = []struct {
 type bossSwingRow struct {
 	Swings                                      float64
 	Miss, Dodge, Parry, Block, Crit, Crush, Hit float64
-	DamagePerSwing, BlockedDamageShare          float64
+	DamagePerSwing, BlockedSwingsDamageShare    float64
 }
 
 func runTankReport(o options) (string, error) {
@@ -136,7 +136,7 @@ func bossSwings(res *proto.RaidSimResult, iterations float64) bossSwingRow {
 	row.Crit, row.Crush, row.Hit = 100*row.Crit/attempts, 100*row.Crush/attempts, 100*row.Hit/attempts
 	row.DamagePerSwing = damage / attempts
 	if damage+blockedDamage > 0 {
-		row.BlockedDamageShare = 100 * blockedDamage / (damage + blockedDamage)
+		row.BlockedSwingsDamageShare = 100 * blockedDamage / (damage + blockedDamage)
 	}
 	return row
 }
@@ -145,7 +145,7 @@ func tankMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 	var b strings.Builder
 	iters := float64(res.IterationsDone)
 	secs := float64(req.Encounter.DurationSec)
-	fmt.Fprintf(&b, "%s tank fight, %d iterations\n\n| Final stat | Value |\n|---|---|\n", req.Spec, res.IterationsDone)
+	fmt.Fprintf(&b, "%s tank fight, %d iterations\n\n| Stat before the fight's auras | Value |\n|---|---|\n", req.Spec, res.IterationsDone)
 	if final := firstFinalStats(computed); final != nil {
 		for _, s := range tankStatNames {
 			fmt.Fprintf(&b, "| %s | %.2f |\n", s.name, final.GetStats()[s.stat])
@@ -158,8 +158,8 @@ func tankMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 		p.GetDtps().GetAvg(), p.GetTmi().GetAvg(), 100*p.GetChanceOfDeath(), p.GetThreat().GetAvg(), p.GetDps().GetAvg())
 
 	swing := bossSwings(res, iters)
-	fmt.Fprintf(&b, "\n| Boss swings per fight | miss | dodge | parry | block | crit | crush | hit | damage per landed-or-not swing | share of damage blocked away |\n|---|---|---|---|---|---|---|---|---|---|\n| %.1f | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.0f | %.1f%% |\n",
-		swing.Swings, swing.Miss, swing.Dodge, swing.Parry, swing.Block, swing.Crit, swing.Crush, swing.Hit, swing.DamagePerSwing, swing.BlockedDamageShare)
+	fmt.Fprintf(&b, "\n| Boss swings per fight | miss | dodge | parry | block | crit | crush | hit | damage per landed-or-not swing | share of damage taken on blocked swings |\n|---|---|---|---|---|---|---|---|---|---|\n| %.1f | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.0f | %.1f%% |\n",
+		swing.Swings, swing.Miss, swing.Dodge, swing.Parry, swing.Block, swing.Crit, swing.Crush, swing.Hit, swing.DamagePerSwing, swing.BlockedSwingsDamageShare)
 
 	b.WriteString("\n| Tank action | casts/fight | shielding/s | threat/s |\n|---|---|---|---|\n")
 	for _, a := range p.GetActions() {
