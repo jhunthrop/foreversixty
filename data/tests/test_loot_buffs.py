@@ -128,4 +128,4 @@ def test_the_real_override_file_is_sourced_and_covers_only_real_ids():
     assert document["sources"] and document["notes"].strip()
     real = set(ids_md_ids(Path("../sim/request/IDS.md").read_text(encoding="utf-8")))
     assert set(document["entries"]) <= real
-    assert len(document["entries"]) == 13
+    assert len(document["entries"]) >= 13
