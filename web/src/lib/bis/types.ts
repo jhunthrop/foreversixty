@@ -174,10 +174,12 @@ export interface BisPresetMeta {
   notes?: string;
 }
 
-/** `BisBand.hit_to_cap` (`sim/cmd/leveling-bis/hitcap.go`): the weights character's distance to
- *  the hit caps, all in engine percent of hit (10 hit rating = 1%). Published only for a band
- *  whose spec swings or shoots; casters carry none. */
-export interface BisHitToCap {
+/** `BisBand.hit_to_cap` for a weapon user (`sim/cmd/leveling-bis/hitcap.go`): the weights
+ *  character's distance to the hit caps, all in engine percent of hit (10 hit rating = 1%).
+ *  Published for a band whose spec swings or shoots; a caster's is `BisSpellHitToCap`. It has
+ *  no `kind` key, which is how the two shapes are told apart. */
+export interface BisMeleeHitToCap {
+  kind?: undefined;
   /** The percent of hit the band's character has. */
   baseline: number;
   /** Percent still worth its full weight for specials, before the 9% cap against a level-63
@@ -186,6 +188,28 @@ export interface BisHitToCap {
   /** Percent to the white-swing cap; present only for a dual-wield spec. */
   white?: number;
 }
+
+/** `BisBand.hit_to_cap` for a caster (`spellHitToCap` in `hitcap.go`): the distance to the
+ *  16% spell hit cap against a level-63 target (17% base miss, 1% always left). */
+export interface BisSpellHitToCap {
+  kind: 'spell';
+  /** The percent of hit the band's character has before any school talent. */
+  baseline: number;
+  /** Percent still worth its full weight for a spell with only that baseline. */
+  spell: number;
+  /** Present when a talent adds hit to some spells (Elemental Precision, Arcane Focus,
+   *  Nature's Reach, Suppression): the distance for those spells, which is `spell` less the
+   *  bonus. */
+  school?: {
+    names: string[];
+    /** Those spells' total hit, in percent. */
+    hit: number;
+    /** Percent still worth its full weight for them. */
+    to_cap: number;
+  };
+}
+
+export type BisHitToCap = BisMeleeHitToCap | BisSpellHitToCap;
 
 /** The role a band was ranked for. Absent on a file published before roles: `'dps'`
  *  (`normaliseBisFile` defaults it). */
@@ -256,7 +280,7 @@ export interface BisBand {
   talents: string;
   talent_points: number;
   weights: BisStatWeight[];
-  /** See `BisHitToCap`. Absent on a file published before the key, and on casters;
+  /** See `BisHitToCap`. Absent on a file published before the key, and on a spec with no hit table;
    *  `normaliseBisFile` (`load.ts`) defaults it to `null`. */
   hit_to_cap?: BisHitToCap | null;
   slots: BisSlot[];
