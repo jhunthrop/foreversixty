@@ -94,12 +94,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-10000000000000000-000000000000000000 | main_hand:263937 | 0.0 | 0 | - | {SpellID: 25315}, {SpellID: 25316} |
-| 20 | 000000000000000000-33500000000000000-000000000000000000 | main_hand:890 | 19.7 | 3 | spell:2061=23.4, spell:2054=3.7, spell:7128=1.0 | {SpellID: 25315}, {SpellID: 25316} |
-| 30 | 000000000000000000-33554100000000000-000000000000000000 | main_hand:249392 | 27.2 | 3 | spell:9472=20.5, spell:6063=4.7, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
-| 38 | 000000000000000000-33554100030021020-000000000000000000 | main_hand:7757 | 41.1 | 3 | spell:9474=17.5, spell:6064=6.5, other:mana_gain=1.0, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
-| 40 | 000000000000000000-33554100030021031-000000000000000000 | main_hand:7757 | 16.4 | 4 | spell:401859=25.0, spell:6064=5.6, other:mana_gain=4.4, spell:1006=1.0, spell:9474=0.4 | {SpellID: 25315}, {SpellID: 25316} |
-| 50 | 523000000000000000-33554100030021031-000000000000000000 | main_hand:812 | 21.0 | 4 | spell:1240826=21.8, spell:6064=6.5, other:mana_gain=4.6, spell:10951=1.0, spell:10916=0.8 | {SpellID: 25315}, {SpellID: 25316} |
-| 60 | 525223100000000000-33554100030021031-000000000000000000 | main_hand:19355 | 88.8 | 6 | spell:6064=27.8, other:mana_gain=6.1, spell:1240827=2.0, spell:25315=1.9, spell:10952=1.0 | - |
+| 20 | 000000000000000000-33500000000000000-000000000000000000 | main_hand:890 | 19.7 | 3 | spell:2061=23.0, spell:2054=4.0, spell:7128=1.0 | {SpellID: 25315}, {SpellID: 25316} |
+| 30 | 000000000000000000-33554100000000000-000000000000000000 | main_hand:249392 | 27.1 | 3 | spell:9472=20.3, spell:6063=4.8, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
+| 38 | 000000000000000000-33554100030021020-000000000000000000 | main_hand:7757 | 41.4 | 3 | spell:9474=17.3, spell:6064=6.7, other:mana_gain=1.2, spell:602=1.0 | {SpellID: 25315}, {SpellID: 25316} |
+| 40 | 000000000000000000-33554100030021031-000000000000000000 | main_hand:7757 | 16.9 | 4 | spell:401859=25.0, other:mana_gain=6.7, spell:6064=5.4, spell:1006=1.0, spell:9474=0.7 | {SpellID: 25315}, {SpellID: 25316} |
+| 50 | 523000000000000000-33554100030021031-000000000000000000 | main_hand:812 | 20.9 | 4 | spell:1240826=22.0, spell:6064=6.4, other:mana_gain=5.7, spell:10951=1.0, spell:10916=0.6 | {SpellID: 25315}, {SpellID: 25316} |
+| 60 | 525223100000000000-33554100030021031-000000000000000000 | main_hand:19355 | 84.2 | 5 | spell:6064=25.2, other:mana_gain=8.5, spell:1240827=3.9, spell:25315=2.4, spell:10952=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -197,8 +197,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - priest-holy level=30 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=38 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=38 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=40 kind=dps_regression dps=16.4 prev_dps=41.1
+- priest-holy level=40 kind=dps_regression dps=16.9 prev_dps=41.4
 - priest-holy level=40 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=40 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=50 kind=unresolved_id action={SpellID: 25315}
 - priest-holy level=50 kind=unresolved_id action={SpellID: 25316}
+- priest-holy level=60 kind=zero_casts id=25316 authored=25316 (untracked ability; not in spellranks.json's rank chains)
