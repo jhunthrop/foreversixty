@@ -219,7 +219,10 @@ def test_the_book_flag_is_written_only_when_true():
         build="9.9.9.9", classes={"mage": _spell_ranks_for_class(spells, frozenset({2}))}
     )
     rows = file.model_dump(exclude_defaults=True)["classes"]["mage"]["Odd Bolt"]
-    assert rows == [{"id": 1, "rank": 9, "level": 58}, {"id": 2, "rank": 10, "level": 60, "book": True}]
+    assert rows == [
+        {"id": 1, "rank": 9, "level": 58},
+        {"id": 2, "rank": 10, "level": 60, "book": True},
+    ]
 
 
 def test_named_book_ids_are_flagged_level_sixty_ranks_in_the_active_build():
@@ -236,7 +239,9 @@ def test_named_book_ids_are_flagged_level_sixty_ranks_in_the_active_build():
         }
         for book_id in named.values():
             if book_id in rows:
-                assert rows[book_id].get("book") is True, f"{path.parent.name}: {book_id} not flagged"
+                assert rows[book_id].get("book") is True, (
+                    f"{path.parent.name}: {book_id} not flagged"
+                )
                 assert rows[book_id]["level"] == 60
 
 
@@ -272,10 +277,14 @@ def test_the_inferior_flag_is_written_only_when_true():
         "2": _spell("Odd Aspect", rank=6, level=58, cost=1),
     }
     file = spellranks.SpellRanksFile(
-        build="9.9.9.9", classes={"hunter": _spell_ranks_for_class(spells, inferior_ids=frozenset({2}))}
+        build="9.9.9.9",
+        classes={"hunter": _spell_ranks_for_class(spells, inferior_ids=frozenset({2}))},
     )
     rows = file.model_dump(exclude_defaults=True)["classes"]["hunter"]["Odd Aspect"]
-    assert rows == [{"id": 1, "rank": 5, "level": 48}, {"id": 2, "rank": 6, "level": 58, "inferior": True}]
+    assert rows == [
+        {"id": 1, "rank": 5, "level": 48},
+        {"id": 2, "rank": 6, "level": 58, "inferior": True},
+    ]
 
 
 def test_the_active_builds_hawk_rank_6_is_flagged_inferior():

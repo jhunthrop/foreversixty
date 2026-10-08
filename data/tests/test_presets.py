@@ -44,7 +44,12 @@ REQUIRED_DEBUFFS = {
 #: self-buff now, and Blessing of Kings is not in the live paladin trees.
 FORBIDDEN = {"shadow_weaving", "blessing_of_kings", "songflower_serenade", "spirit_of_zandalar"}
 #: Consumables from Ahn'Qiraj or Naxxramas, or a world buff by another name.
-FORBIDDEN_CONSUMES = {"spirit_of_zanza", "sheen_of_zanza", "swiftness_of_zanza", "flask_of_the_titans"}
+FORBIDDEN_CONSUMES = {
+    "spirit_of_zanza",
+    "sheen_of_zanza",
+    "swiftness_of_zanza",
+    "flask_of_the_titans",
+}
 
 
 @pytest.fixture(scope="module")
@@ -64,7 +69,12 @@ def _consume_entries(raid: dict) -> list[dict]:
     consumes = raid["consumes"]
     entries = [e for group in consumes["groups"].values() for e in group["ids"]]
     entries += [e for group in consumes["groups"].values() for e in group.get("dual_wield_ids", [])]
-    entries += [e for lists in (consumes["by_class"], consumes["by_spec"]) for v in lists.values() for e in v]
+    entries += [
+        e
+        for lists in (consumes["by_class"], consumes["by_spec"])
+        for v in lists.values()
+        for e in v
+    ]
     return entries
 
 
