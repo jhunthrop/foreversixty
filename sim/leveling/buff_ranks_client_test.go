@@ -107,3 +107,7 @@ func TestBattleShoutRanksMatchTheClient(t *testing.T) {
 func TestTrueshotAuraRanksMatchTheClient(t *testing.T) {
 	assertRanks(t, "Trueshot Aura", loadClass(t, "hunter"), core.TrueshotAuraRanks, auraModRangedAttackPower, 0, false)
 }
+
+func TestDevotionAuraRanksMatchTheClient(t *testing.T) {
+	assertRanks(t, "Devotion Aura", loadClass(t, "paladin"), core.DevotionAuraRanks, auraModResistance, miscArmor, false)
+}

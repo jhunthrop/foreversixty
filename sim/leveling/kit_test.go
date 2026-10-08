@@ -135,7 +135,7 @@ func TestKitBuffsDruidCarriesPlainMarkOfTheWild(t *testing.T) {
 }
 
 func TestKitBuffsPaladinCarriesBlessingOfMightFromFour(t *testing.T) {
-	for _, spec := range []string{"paladin-holy", "paladin-protection", "paladin-retribution"} {
+	for _, spec := range []string{"paladin-holy", "paladin-retribution"} {
 		if got := KitBuffs(spec, 3); got != nil {
 			t.Fatalf("%s at 3 = %v, want nothing (rank 1 is learned at 4)", spec, got)
 		}
@@ -144,6 +144,21 @@ func TestKitBuffsPaladinCarriesBlessingOfMightFromFour(t *testing.T) {
 			if len(got) != 1 || got[0] != "blessing_of_might" {
 				t.Fatalf("%s at %d = %v, want blessing_of_might", spec, level, got)
 			}
+		}
+	}
+}
+
+// A Protection paladin runs Devotion Aura, its own armor aura, from the
+// first level it can: rank 1 is learned at 1 (client spell 465). The
+// other two paladin specs run no aura of their own in the kit.
+func TestKitBuffsProtectionPaladinCarriesDevotionAura(t *testing.T) {
+	if got := KitBuffs("paladin-protection", 3); len(got) != 1 || got[0] != "devotion_aura" {
+		t.Fatalf("paladin-protection at 3 = %v, want devotion_aura alone (Blessing of Might is learned at 4)", got)
+	}
+	for _, level := range []int{4, 60} {
+		got := KitBuffs("paladin-protection", level)
+		if len(got) != 2 || got[0] != "blessing_of_might" || got[1] != "devotion_aura" {
+			t.Fatalf("paladin-protection at %d = %v, want blessing_of_might and devotion_aura", level, got)
 		}
 	}
 }

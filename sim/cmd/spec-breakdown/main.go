@@ -21,6 +21,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -48,6 +49,8 @@ type options struct {
 	talents    string
 	rotation   string
 	jsonOut    bool
+	tank       bool
+	gear       string
 }
 
 func main() {
@@ -63,6 +66,8 @@ func main() {
 	flag.StringVar(&o.buffs, "buffs", "", "comma list added to the request's buffs")
 	flag.StringVar(&o.talents, "talents", "", "talent string replacing the published one")
 	flag.StringVar(&o.rotation, "rotation", "", "JSON file whose \"rotation\" object (the curated file's shape) replaces the spec's own priority list")
+	flag.StringVar(&o.gear, "gear", "", "comma list of slot:item_id pairs replacing the published entry's items, e.g. off_hand:20688")
+	flag.BoolVar(&o.tank, "tank", false, "print the tank fight: final defensive stats, tank figures and the boss's swing outcomes (tank specs only)")
 	flag.BoolVar(&o.jsonOut, "json", false, "print the totals as JSON")
 	flag.Parse()
 	if err := run(o); err != nil {
@@ -74,6 +79,14 @@ func main() {
 func run(o options) error {
 	if o.spec == "" {
 		return fmt.Errorf("-spec is required")
+	}
+	if o.tank {
+		out, err := runTankReport(o)
+		if err != nil {
+			return err
+		}
+		fmt.Print(out)
+		return nil
 	}
 	req, err := buildRequest(o)
 	if err != nil {
@@ -168,6 +181,10 @@ func buildRequest(o options) (api.SimRequest, error) {
 	gear := make([]api.GearSlot, 0, len(entry.Slots))
 	for _, s := range entry.Slots {
 		gear = append(gear, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID})
+	}
+	gear, err = replaceGear(gear, o.gear)
+	if err != nil {
+		return api.SimRequest{}, err
 	}
 	talents := entry.Talents
 	if o.talents != "" {
@@ -370,4 +387,32 @@ func (r report) markdown() string {
 		fmt.Fprintf(&b, "| %s | %s | %.1f | %.1f |\n", a.Name, a.Type, a.GainPerIter, a.ActualPerIter)
 	}
 	return b.String()
+}
+
+// replaceGear applies a "slot:item_id,slot:item_id" list over the published
+// entry's gear: a slot the entry has takes the new item, a slot it lacks is
+// added.
+func replaceGear(gear []api.GearSlot, list string) ([]api.GearSlot, error) {
+	if list == "" {
+		return gear, nil
+	}
+	out := append([]api.GearSlot(nil), gear...)
+	for _, pair := range strings.Split(list, ",") {
+		slot, id, found := strings.Cut(pair, ":")
+		itemID, err := strconv.Atoi(id)
+		if !found || err != nil || slot == "" {
+			return nil, fmt.Errorf("-gear %q: want slot:item_id", pair)
+		}
+		replaced := false
+		for i := range out {
+			if out[i].Slot == slot {
+				out[i].ItemID = itemID
+				replaced = true
+			}
+		}
+		if !replaced {
+			out = append(out, api.GearSlot{Slot: slot, ItemID: itemID})
+		}
+	}
+	return out, nil
 }
