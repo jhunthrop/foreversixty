@@ -76,20 +76,37 @@ def write_hotfix_csv(rows: list[dict[str, str]], path: Path) -> None:
         writer.writerows(rows)
 
 
+#: Written beside a hotfix dump that was copied from another build's
+#: directory (the data workflow seeds a never-built build from the newest
+#: other build); it names that build. A dump that is not this build's own
+#: play session may only ADD the ids the shipped table lacks (the items the
+#: client carries as runtime hotfixes only: 1,002 of them on 1.60.1.70009),
+#: never replace a shipped row or remove one, because a value the new client
+#: baked in differently would otherwise be rolled back to the old hotfix.
+SEEDED_MARKER = "SEEDED_FROM"
+
+
 def merge_hotfix_rows(
-    shipped: list[dict[str, str]], hotfix: list[dict[str, str]]
+    shipped: list[dict[str, str]], hotfix: list[dict[str, str]], *, add_only: bool = False
 ) -> list[dict[str, str]]:
     """`shipped` (a raw table's own rows) with `hotfix` (`hotfix_csv_rows`'
     shape) merged over it: a `valid` hotfix id replaces the shipped row (or
     adds one, for an id `shipped` never had) and a `removed` hotfix id drops
     the row, whether or not `shipped` had it. Rows keep `shipped`'s column
     set; `HOTFIX_STATUS_COLUMN` never appears in the result.
+
+    With `add_only` (a dump seeded from another build, SEEDED_MARKER) a
+    `valid` id the shipped table already has is left as shipped and a
+    `removed` id is ignored; only ids the shipped table never had are added.
     """
     by_id = {row["ID"]: row for row in shipped}
     for row in hotfix:
         row_id = row["ID"]
         if row.get(HOTFIX_STATUS_COLUMN) == STATUS_REMOVED:
-            by_id.pop(row_id, None)
+            if not add_only:
+                by_id.pop(row_id, None)
+            continue
+        if add_only and row_id in by_id:
             continue
         by_id[row_id] = {k: v for k, v in row.items() if k != HOTFIX_STATUS_COLUMN}
     return [by_id[row_id] for row_id in sorted(by_id, key=int)]
@@ -97,12 +114,15 @@ def merge_hotfix_rows(
 
 def merge_hotfix_table(raw: Path, table: str) -> list[dict[str, str]]:
     """`raw/<table>.csv` merged with `raw/hotfixes/<table>.csv`, or the
-    shipped rows unchanged when no hotfix file exists for this table."""
+    shipped rows unchanged when no hotfix file exists for this table. A
+    hotfix directory carrying SEEDED_MARKER merges add-only."""
     shipped = read_csv(raw / f"{table}.csv")
-    hotfix_path = raw / "hotfixes" / f"{table}.csv"
+    hotfix_dir = raw / "hotfixes"
+    hotfix_path = hotfix_dir / f"{table}.csv"
     if not hotfix_path.exists():
         return shipped
-    return merge_hotfix_rows(shipped, read_csv(hotfix_path))
+    add_only = (hotfix_dir / SEEDED_MARKER).exists()
+    return merge_hotfix_rows(shipped, read_csv(hotfix_path), add_only=add_only)
 
 
 #: (table name, table hash, schema) for every table `python -m pipeline

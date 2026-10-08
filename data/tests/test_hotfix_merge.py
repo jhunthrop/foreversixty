@@ -13,6 +13,7 @@ from pipeline.hotfix_cache import (
 )
 from pipeline.hotfix_merge import (
     HOTFIX_STATUS_COLUMN,
+    SEEDED_MARKER,
     STATUS_REMOVED,
     STATUS_VALID,
     hotfix_csv_rows,
@@ -94,6 +95,43 @@ def test_merge_hotfix_rows_orders_the_result_by_id_numerically():
 # --- merge_hotfix_table: passthrough / csv round-trip -----------------------
 
 
+def test_merge_hotfix_rows_add_only_adds_missing_ids_and_never_overrides_or_removes():
+    """A dump seeded from another build (SEEDED_MARKER) may only add the ids
+    the shipped table lacks: a shipped row keeps the new client's values and a
+    removed-status id stays."""
+    shipped = [{"ID": "1", "Display_lang": "Shipped One"}, {"ID": "3", "Display_lang": "Three"}]
+    hotfix = [
+        {"ID": "1", "Display_lang": "Old Hotfix One", HOTFIX_STATUS_COLUMN: STATUS_VALID},
+        {"ID": "2", "Display_lang": "Hotfix Only Two", HOTFIX_STATUS_COLUMN: STATUS_VALID},
+        {"ID": "3", HOTFIX_STATUS_COLUMN: STATUS_REMOVED},
+    ]
+    merged = merge_hotfix_rows(shipped, hotfix, add_only=True)
+    assert merged == [
+        {"ID": "1", "Display_lang": "Shipped One"},
+        {"ID": "2", "Display_lang": "Hotfix Only Two"},
+        {"ID": "3", "Display_lang": "Three"},
+    ]
+
+
+def test_merge_hotfix_table_merges_add_only_when_the_dump_is_seeded(tmp_path: Path):
+    raw = tmp_path / "raw"
+    (raw / "hotfixes").mkdir(parents=True)
+    (raw / "T.csv").write_text("ID,Display_lang\n1,Shipped One\n", encoding="utf-8")
+    (raw / "hotfixes" / "T.csv").write_text(
+        f"ID,Display_lang,{HOTFIX_STATUS_COLUMN}\n1,Old One,{STATUS_VALID}\n2,Two,{STATUS_VALID}\n",
+        encoding="utf-8",
+    )
+    assert merge_hotfix_table(raw, "T") == [
+        {"ID": "1", "Display_lang": "Old One"},
+        {"ID": "2", "Display_lang": "Two"},
+    ]
+    (raw / "hotfixes" / SEEDED_MARKER).write_text("9.9.9.1\n", encoding="utf-8")
+    assert merge_hotfix_table(raw, "T") == [
+        {"ID": "1", "Display_lang": "Shipped One"},
+        {"ID": "2", "Display_lang": "Two"},
+    ]
+
+
 def test_merge_hotfix_table_is_a_passthrough_with_no_hotfix_file(tmp_path: Path):
     raw = tmp_path / "raw"
     raw.mkdir()
@@ -107,9 +145,7 @@ def test_merge_hotfix_table_is_a_passthrough_with_no_hotfix_file(tmp_path: Path)
 def test_merge_hotfix_table_merges_a_real_hotfix_csv_on_disk(tmp_path: Path):
     raw = tmp_path / "raw"
     raw.mkdir()
-    (raw / "ItemSparse.csv").write_text(
-        "ID,Name_lang,Level\n1,Old,0\n2,Keep,5\n", encoding="utf-8"
-    )
+    (raw / "ItemSparse.csv").write_text("ID,Name_lang,Level\n1,Old,0\n2,Keep,5\n", encoding="utf-8")
     hotfix_dir = raw / "hotfixes"
     hotfix_dir.mkdir()
     (hotfix_dir / "ItemSparse.csv").write_text(

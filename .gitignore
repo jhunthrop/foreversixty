@@ -106,6 +106,10 @@ data/builds/*/raw/classicdb/*
 data/builds/*/raw/hotfixes/*
 !data/builds/*/raw/hotfixes/ItemSparse.csv
 !data/builds/*/raw/hotfixes/Item.csv
+# 2026-10-08: the marker a seeded (copied from another build) dump carries;
+# pipeline.hotfix_merge merges add-only while it is present, so it must
+# travel with the dump it marks.
+!data/builds/*/raw/hotfixes/SEEDED_FROM
 data/.icon-cache/
 
 # git worktrees for parallel plan execution
