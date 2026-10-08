@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T23:06:45Z",
+  "engine_version": "37347ac0f",
+  "generated_at": "2026-10-08T00:14:11Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.344352047,
-      "verify_run_seconds": 1.545159937,
+      "weights_run_seconds": 3.291807515,
+      "verify_run_seconds": 1.52805742,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1141,8 +1141,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 3.344352047,
-      "verify_run_seconds": 1.540143732,
+      "weights_run_seconds": 3.291807515,
+      "verify_run_seconds": 1.519438614,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1788,8 +1788,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.769214666,
-      "verify_run_seconds": 1.874193711,
+      "weights_run_seconds": 3.749272315,
+      "verify_run_seconds": 1.857480547,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2436,8 +2436,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.769214666,
-      "verify_run_seconds": 1.8501109260000002,
+      "weights_run_seconds": 3.749272315,
+      "verify_run_seconds": 1.835430128,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3080,8 +3080,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.984781819,
-      "verify_run_seconds": 1.862962722,
+      "weights_run_seconds": 3.984140539,
+      "verify_run_seconds": 1.834275287,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3723,8 +3723,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.984781819,
-      "verify_run_seconds": 1.862684771,
+      "weights_run_seconds": 3.984140539,
+      "verify_run_seconds": 1.835982858,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4381,8 +4381,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.030288045,
-      "verify_run_seconds": 2.078970382,
+      "weights_run_seconds": 4.013972157,
+      "verify_run_seconds": 2.086957424,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5042,8 +5042,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.030288045,
-      "verify_run_seconds": 2.06559215,
+      "weights_run_seconds": 4.013972157,
+      "verify_run_seconds": 2.078472636,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5524,7 +5524,7 @@
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -0.2204392653779533
+              "dps_delta": -0.22043926537795386
             },
             {
               "item_id": 22472,
@@ -5762,8 +5762,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.838876279,
-      "verify_run_seconds": 2.009303988,
+      "weights_run_seconds": 3.829793937,
+      "verify_run_seconds": 2.044404421,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6483,8 +6483,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.838876279,
-      "verify_run_seconds": 2.011405665,
+      "weights_run_seconds": 3.829793937,
+      "verify_run_seconds": 2.014563117,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6963,7 +6963,7 @@
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -0.16104537259288973
+              "dps_delta": -0.16104537259288884
             },
             {
               "item_id": 22472,
@@ -7021,14 +7021,14 @@
               "item_name": "Protector's Band",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -0.38590282411030113
+              "dps_delta": -0.38590282411030025
             },
             {
               "item_id": 18500,
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -0.711119500446101
+              "dps_delta": -0.7111195004461001
             },
             {
               "item_id": 11669,
@@ -7201,8 +7201,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.8975710120000002,
-      "verify_run_seconds": 2.018132702,
+      "weights_run_seconds": 3.971403517,
+      "verify_run_seconds": 2.04097587,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7920,8 +7920,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.8975710120000002,
-      "verify_run_seconds": 2.071138783,
+      "weights_run_seconds": 3.971403517,
+      "verify_run_seconds": 2.012767993,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8060,6 +8060,10 @@
           "label": "Grace of Air Totem"
         },
         {
+          "id": "windfury_totem",
+          "label": "Windfury Totem"
+        },
+        {
           "id": "mana_spring_totem",
           "label": "Mana Spring Totem"
         }
@@ -8122,13 +8126,9 @@
         {
           "id": "juju_might",
           "label": "Juju Might"
-        },
-        {
-          "id": "main_hand_imbue:windfury",
-          "label": "Windfury Totem"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is the engine's main-hand imbue Windfury. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
     }
   }
 }
