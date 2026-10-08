@@ -1,8 +1,8 @@
 {
   "spec": "warrior-protection",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T03:02:04Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:47:16Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -316,7 +316,7 @@
               "item_name": "Blackened Defias Armor",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -90.45029179055737
+              "dps_delta": -90.45029179055744
             }
           ]
         },
@@ -423,7 +423,7 @@
           "item_name": "Guard's Chain Leggings",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 19.57898907331437,
+          "score": 19.578989073314375,
           "verified": true,
           "alternatives": [
             {
@@ -431,21 +431,21 @@
               "item_name": "Protector's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -30.77266021062334
+              "dps_delta": -30.77266021062349
             },
             {
               "item_id": 250493,
               "item_name": "Veteran's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -157.48638402970116
+              "dps_delta": -157.48638402970136
             },
             {
               "item_id": 250497,
               "item_name": "Crusader's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -237.57776113247422
+              "dps_delta": -237.57776113247436
             }
           ]
         },
@@ -707,8 +707,8 @@
         "off_hand: Gold-plated Buckler",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 6.174122812,
-      "verify_run_seconds": 1.670530461,
+      "weights_run_seconds": 5.851812511,
+      "verify_run_seconds": 1.6354252950000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1206,7 +1206,7 @@
           "item_name": "Guard's Chain Leggings",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 19.57898907331437,
+          "score": 19.578989073314375,
           "verified": true,
           "alternatives": [
             {
@@ -1214,21 +1214,21 @@
               "item_name": "Protector's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -30.77266021062334
+              "dps_delta": -30.77266021062349
             },
             {
               "item_id": 250493,
               "item_name": "Veteran's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -157.48638402970116
+              "dps_delta": -157.48638402970136
             },
             {
               "item_id": 250497,
               "item_name": "Crusader's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -237.57776113247422
+              "dps_delta": -237.57776113247436
             }
           ]
         },
@@ -1288,7 +1288,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -100.3738234303812
+              "dps_delta": -100.37382343038122
             },
             {
               "item_id": 12052,
@@ -1321,7 +1321,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -56.37474320628424
+              "dps_delta": -56.374743206284265
             },
             {
               "item_id": 12052,
@@ -1489,8 +1489,8 @@
         "off_hand: Gold-plated Buckler",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 6.174122812,
-      "verify_run_seconds": 1.542365177,
+      "weights_run_seconds": 5.851812511,
+      "verify_run_seconds": 1.496950462,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2331,8 +2331,8 @@
         "off_hand: Resplendent Guardian",
         "ranged: Ironweaver"
       ],
-      "weights_run_seconds": 5.697280258,
-      "verify_run_seconds": 1.484142818,
+      "weights_run_seconds": 5.444372093,
+      "verify_run_seconds": 1.473919521,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3168,8 +3168,8 @@
         "off_hand: Resplendent Guardian",
         "ranged: Ironweaver"
       ],
-      "weights_run_seconds": 5.697280258,
-      "verify_run_seconds": 1.487015051,
+      "weights_run_seconds": 5.444372093,
+      "verify_run_seconds": 1.4328845399999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3991,8 +3991,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 5.177738087,
-      "verify_run_seconds": 1.5491621420000001,
+      "weights_run_seconds": 5.045956668,
+      "verify_run_seconds": 1.452156226,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4390,7 +4390,7 @@
               "item_name": "Ironspine's Ribcage",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": -121.54294097005247
+              "dps_delta": -121.54294097005217
             },
             {
               "item_id": 1981,
@@ -4817,8 +4817,8 @@
         "off_hand: Aegis of the Scarlet Commander",
         "ranged: Blasting Hackbut"
       ],
-      "weights_run_seconds": 5.177738087,
-      "verify_run_seconds": 1.5397127739999998,
+      "weights_run_seconds": 5.045956668,
+      "verify_run_seconds": 1.477571751,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5373,7 +5373,7 @@
               "item_name": "Bloodshot Greaves",
               "source_kind": "world",
               "source": "Avatar of Hakkar",
-              "dps_delta": -139.56873538624984
+              "dps_delta": -139.56873538625018
             },
             {
               "item_id": 220799,
@@ -5650,8 +5650,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.334610425,
-      "verify_run_seconds": 1.4811166949999999,
+      "weights_run_seconds": 5.117162613,
+      "verify_run_seconds": 1.482600207,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6469,8 +6469,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.334610425,
-      "verify_run_seconds": 1.49801486,
+      "weights_run_seconds": 5.117162613,
+      "verify_run_seconds": 1.434558905,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6751,7 +6751,7 @@
           "item_name": "Rage of Mugamba",
           "source": "The Rage of Mugamba",
           "source_kind": "quest",
-          "score": 26.38304967477937,
+          "score": 26.383049674779375,
           "verified": true,
           "alternatives": [
             {
@@ -6759,21 +6759,21 @@
               "item_name": "Strength of Mugamba",
               "source_kind": "quest",
               "source": "Strength of Mount Mugamba",
-              "dps_delta": -113.97596091961597
+              "dps_delta": -113.97596091961663
             },
             {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -251.9316348954527
+              "dps_delta": -251.93163489545304
             },
             {
               "item_id": 19538,
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -565.8279907588867
+              "dps_delta": -565.827990758887
             }
           ]
         },
@@ -6863,7 +6863,7 @@
               "item_name": "Ornate Adamantium Breastplate",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -890.1627341566217
+              "dps_delta": -890.1627341566204
             },
             {
               "item_id": 23087,
@@ -7308,8 +7308,8 @@
         "off_hand: Earthen Guard",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 4.698717917,
-      "verify_run_seconds": 1.664089272,
+      "weights_run_seconds": 4.550324972,
+      "verify_run_seconds": 1.624435125,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7598,7 +7598,7 @@
               "item_name": "Strength of Mugamba",
               "source_kind": "quest",
               "source": "Strength of Mount Mugamba",
-              "dps_delta": -113.97596091961597
+              "dps_delta": -113.9759609196163
             },
             {
               "item_id": 19491,
@@ -7768,7 +7768,7 @@
               "item_name": "Heavy Thorium Gauntlets",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -443.5049239466354
+              "dps_delta": -443.5049239466361
             },
             {
               "item_id": 18326,
@@ -8142,8 +8142,8 @@
         "off_hand: Earthen Guard",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 4.698717917,
-      "verify_run_seconds": 1.6356405710000002,
+      "weights_run_seconds": 4.550324972,
+      "verify_run_seconds": 1.613750789,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8414,7 +8414,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -872.7488610022542
+              "dps_delta": -872.7488610022526
             }
           ]
         },
@@ -8596,7 +8596,7 @@
               "item_name": "Heavy Thorium Gauntlets",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -372.24039088285525
+              "dps_delta": -372.24039088285684
             },
             {
               "item_id": 231541,
@@ -8629,7 +8629,7 @@
               "item_name": "Valiant's Waistguard",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -145.49690070613613
+              "dps_delta": -145.49690070613454
             },
             {
               "item_id": 250572,
@@ -8979,8 +8979,8 @@
         "off_hand: Earthen Guard",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.425186815,
-      "verify_run_seconds": 1.8432146120000001,
+      "weights_run_seconds": 5.163453353,
+      "verify_run_seconds": 1.784150315,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -9293,7 +9293,7 @@
           "item_name": "Defiler's Plate Spaulders",
           "source": "The Defilers",
           "source_kind": "rep",
-          "score": 71.60774264222742,
+          "score": 71.60774264222744,
           "verified": true,
           "alternatives": [
             {
@@ -9308,7 +9308,7 @@
               "item_name": "Stockade Pauldrons",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -413.81255327231486
+              "dps_delta": -413.81255327231645
             },
             {
               "item_id": 226867,
@@ -9463,7 +9463,7 @@
               "item_name": "Valiant's Waistguard",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -145.49690070613613
+              "dps_delta": -145.49690070613454
             },
             {
               "item_id": 250572,
@@ -9558,14 +9558,14 @@
               "item_name": "Band of Resolution",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -185.4869509902276
+              "dps_delta": -185.486950990228
             },
             {
               "item_id": 22331,
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -321.18366365760284
+              "dps_delta": -321.18366365760323
             },
             {
               "item_id": 11669,
@@ -9590,14 +9590,14 @@
               "item_name": "Band of Resolution",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -107.53983758848446
+              "dps_delta": -107.53983758848486
             },
             {
               "item_id": 22331,
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -243.2365502558597
+              "dps_delta": -243.2365502558601
             },
             {
               "item_id": 11669,
@@ -9809,8 +9809,8 @@
         "off_hand: Earthen Guard",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.425186815,
-      "verify_run_seconds": 1.9180992350000001,
+      "weights_run_seconds": 5.163453353,
+      "verify_run_seconds": 1.778666641,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:27:34Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:13:54Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.828046098,
-      "verify_run_seconds": 0.69838578,
+      "weights_run_seconds": 1.762580909,
+      "verify_run_seconds": 0.659104371,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -632,6 +632,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -1.0896581217656631,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -1180,8 +1185,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.828046098,
-      "verify_run_seconds": 0.679344066,
+      "weights_run_seconds": 1.762580909,
+      "verify_run_seconds": 0.686008005,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1256,6 +1261,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -1.0896581217656631,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -1838,8 +1848,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.077191253,
-      "verify_run_seconds": 0.740050548,
+      "weights_run_seconds": 2.141801411,
+      "verify_run_seconds": 0.718809629,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1914,6 +1924,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.5790590543915678,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -2531,8 +2554,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 2.077191253,
-      "verify_run_seconds": 0.855648389,
+      "weights_run_seconds": 2.141801411,
+      "verify_run_seconds": 0.772866774,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2607,6 +2630,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.5790590543915678,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -3183,8 +3219,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.2910399,
-      "verify_run_seconds": 0.823371499,
+      "weights_run_seconds": 2.068319753,
+      "verify_run_seconds": 0.794168173,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3259,6 +3295,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -0.7637731700058735,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -3836,8 +3885,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.2910399,
-      "verify_run_seconds": 0.813821619,
+      "weights_run_seconds": 2.068319753,
+      "verify_run_seconds": 0.782004716,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3912,6 +3961,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -0.7637731700058735,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -4494,8 +4556,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.437002289,
-      "verify_run_seconds": 0.916090976,
+      "weights_run_seconds": 2.256257081,
+      "verify_run_seconds": 0.887398218,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4570,6 +4632,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.06631133267390531,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -4753,7 +4828,7 @@
               "item_name": "Blood Guard's Crackling Leather Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.9291236706081496
+              "dps_delta": -0.9291236706081503
             },
             {
               "item_id": 17732,
@@ -5154,8 +5229,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.437002289,
-      "verify_run_seconds": 0.86587142,
+      "weights_run_seconds": 2.256257081,
+      "verify_run_seconds": 0.858892567,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5230,6 +5305,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.06631133267390531,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -5400,7 +5488,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.026783645957906,
+          "score": 39.0267836459579,
           "verified": true,
           "alternatives": [
             {
@@ -5408,21 +5496,21 @@
               "item_name": "Field Marshal's Dragonhide Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.9396717242430588
+              "dps_delta": -0.9396717242430573
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.68578724802967
+              "dps_delta": -1.6857872480296687
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.7189102907209473
+              "dps_delta": -1.7189102907209457
             }
           ]
         },
@@ -5471,7 +5559,7 @@
               "item_name": "Field Marshal's Dragonhide Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.1939623930189156
+              "dps_delta": -0.1939623930189142
             },
             {
               "item_id": 18373,
@@ -5595,7 +5683,7 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 52.024766673275295,
+          "score": 52.0247666732753,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (id 237815): kept the pick, +3.0 DPS over it",
           "dps_delta": 2.986142633942819,
@@ -5605,14 +5693,14 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8711062160021226
+              "dps_delta": -1.871106216002124
             },
             {
               "item_id": 22752,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -2.2899489691635915
+              "dps_delta": -2.289948969163593
             }
           ]
         },
@@ -5864,8 +5952,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 2.4260829839999998,
-      "verify_run_seconds": 0.895476061,
+      "weights_run_seconds": 2.272049111,
+      "verify_run_seconds": 0.879104415,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5940,6 +6028,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.4876278500593685,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -6110,7 +6211,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.026783645957906,
+          "score": 39.0267836459579,
           "verified": true,
           "alternatives": [
             {
@@ -6118,21 +6219,21 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.9396717242430588
+              "dps_delta": -0.9396717242430573
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.68578724802967
+              "dps_delta": -1.6857872480296687
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.7189102907209473
+              "dps_delta": -1.7189102907209457
             }
           ]
         },
@@ -6305,7 +6406,7 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 52.0247666732753,
+          "score": 52.024766673275295,
           "verified": true,
           "alternatives": [
             {
@@ -6313,14 +6414,14 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.871106216002124
+              "dps_delta": -1.871106216002121
             },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.289948969163593
+              "dps_delta": -2.2899489691635915
             },
             {
               "item_id": 237815,
@@ -6580,8 +6681,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 2.4260829839999998,
-      "verify_run_seconds": 0.940501732,
+      "weights_run_seconds": 2.272049111,
+      "verify_run_seconds": 0.886469255,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6656,6 +6757,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0.4876278500593685,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -6820,7 +6934,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -1.9698696387931176
+              "dps_delta": -1.969869638793116
             }
           ]
         },
@@ -7307,8 +7421,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.399290095,
-      "verify_run_seconds": 0.730415626,
+      "weights_run_seconds": 1.359499981,
+      "verify_run_seconds": 0.703500366,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7383,6 +7497,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 8.461478798484618,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -7557,7 +7684,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 36.077548518650666,
+          "score": 36.07754851865067,
           "verified": true,
           "alternatives": [
             {
@@ -7565,7 +7692,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.031041760259923
+              "dps_delta": -2.031041760259926
             },
             {
               "item_id": 226778,
@@ -7580,7 +7707,7 @@
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -4.8412619481216135
+              "dps_delta": -4.841261948121617
             }
           ]
         },
@@ -7590,7 +7717,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 24.775279157105945,
+          "score": 24.775279157105942,
           "verified": true,
           "alternatives": [
             {
@@ -7598,21 +7725,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.562766882149395
+              "dps_delta": -1.5627668821493934
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -3.1591239284790564
+              "dps_delta": -3.1591239284790547
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.364680594968497
+              "dps_delta": -3.3646805949684953
             }
           ]
         },
@@ -7755,15 +7882,15 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -2.381948236508532
-            },
-            {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -2.3819482365085283
+            },
+            {
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -2.381948236508532
@@ -8029,8 +8156,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.399290095,
-      "verify_run_seconds": 0.779067629,
+      "weights_run_seconds": 1.359499981,
+      "verify_run_seconds": 0.768711637,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8105,6 +8232,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 8.461478798484618,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Arcane",
+            "Nature"
+          ],
+          "hit": 4,
+          "to_cap": 12
+        }
+      },
       "haste_on_items": false
     }
   ],

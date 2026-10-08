@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-03503000000000000-000000000000000000)
 
-Set DPS (verified): 30.4. Weights run: 9.1s. Verify run: 4.3s. 150 eligible items had no known source.
+Set DPS (verified): 30.4. Weights run: 8.7s. Verify run: 4.2s. 150 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.013, intellect=1.688 ± 0.012, spirit=1.209 ± 0.009, mp5=3.159 ± 0.024, crit=0.145 ± 0.007 per rating point (14 rating = 1%, 2.034 per %), spell_haste=not significant (0.016 ± 0.050)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 150, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-03505003030110000-000000000000000000)
 
-Set DPS (verified): 47.5. Weights run: 9.3s. Verify run: 4.6s. 244 eligible items had no known source.
+Set DPS (verified): 47.5. Weights run: 9.0s. Verify run: 4.4s. 244 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.030, intellect=2.337 ± 0.017, spirit=1.458 ± 0.016, mp5=3.536 ± 0.029, crit=0.206 ± 0.011 per rating point (14 rating = 1%, 2.882 per %), spell_haste=not significant (0.321 ± 0.091)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 244, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 000000000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 58.9. Weights run: 9.3s. Verify run: 4.6s. 328 eligible items had no known source.
+Set DPS (verified): 58.9. Weights run: 9.0s. Verify run: 4.4s. 328 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.077, intellect=10.374 ± 0.104, spirit=3.924 ± 0.103, mp5=4.519 ± 0.121, crit=0.250 ± 0.027 per rating point (14 rating = 1%, 3.494 per %), spell_haste=not significant (0.067 ± 0.119)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 328, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 025003000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 67.8. Weights run: 9.5s. Verify run: 4.6s. 423 eligible items had no known source.
+Set DPS (verified): 67.8. Weights run: 9.1s. Verify run: 4.5s. 423 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.044, intellect=6.209 ± 0.041, spirit=0.334 ± 0.023, mp5=1.779 ± 0.072, crit=0.299 ± 0.027 per rating point (14 rating = 1%, 4.181 per %), spell_haste=not significant (-0.173 ± 0.128)
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 423, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 208.0. Weights run: 10.0s. Verify run: 4.2s. 1129 eligible items had no known source.
+Set DPS (verified): 208.0. Weights run: 9.8s. Verify run: 4.1s. 1129 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.108, intellect=1.584 ± 0.040, spirit=8.731 ± 0.410, mp5=3.135 ± 0.048, crit=0.267 ± 0.018 per rating point (14 rating = 1%, 3.737 per %), spell_haste=not significant (-0.439 ± 0.295)
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1129, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 337.0. Weights run: 8.5s. Verify run: 3.7s. 1129 eligible items had no known source.
+Set DPS (verified): 337.0. Weights run: 8.4s. Verify run: 3.6s. 1129 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.137, intellect=1.431 ± 0.022, spirit=2.274 ± 0.032, mp5=3.081 ± 0.041, crit=0.295 ± 0.015 per rating point (14 rating = 1%, 4.124 per %), spell_haste=not significant (0.053 ± 0.215)
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1129, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 000000000000000000-03503000000000000-000000000000000000)
 
-Set DPS (verified): 29.6. Weights run: 9.1s. Verify run: 4.9s. 140 eligible items had no known source.
+Set DPS (verified): 29.6. Weights run: 8.7s. Verify run: 4.7s. 140 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.013, intellect=1.688 ± 0.012, spirit=1.209 ± 0.009, mp5=3.159 ± 0.024, crit=0.145 ± 0.007 per rating point (14 rating = 1%, 2.034 per %), spell_haste=not significant (0.016 ± 0.050)
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 140, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 000000000000000000-03505003030110000-000000000000000000)
 
-Set DPS (verified): 47.4. Weights run: 9.3s. Verify run: 5.1s. 231 eligible items had no known source.
+Set DPS (verified): 47.4. Weights run: 9.0s. Verify run: 4.9s. 231 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.030, intellect=2.337 ± 0.017, spirit=1.458 ± 0.016, mp5=3.536 ± 0.029, crit=0.206 ± 0.011 per rating point (14 rating = 1%, 2.882 per %), spell_haste=not significant (0.321 ± 0.091)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 231, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 000000000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 58.0. Weights run: 9.3s. Verify run: 5.0s. 311 eligible items had no known source.
+Set DPS (verified): 58.0. Weights run: 9.0s. Verify run: 4.9s. 311 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.077, intellect=10.374 ± 0.104, spirit=3.924 ± 0.103, mp5=4.519 ± 0.121, crit=0.250 ± 0.027 per rating point (14 rating = 1%, 3.494 per %), spell_haste=not significant (0.067 ± 0.119)
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 311, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 025003000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 63.2. Weights run: 9.5s. Verify run: 5.2s. 403 eligible items had no known source.
+Set DPS (verified): 63.2. Weights run: 9.1s. Verify run: 5.1s. 403 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.044, intellect=6.209 ± 0.041, spirit=0.334 ± 0.023, mp5=1.779 ± 0.072, crit=0.299 ± 0.027 per rating point (14 rating = 1%, 4.181 per %), spell_haste=not significant (-0.173 ± 0.128)
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 403, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 202.5. Weights run: 10.0s. Verify run: 4.6s. 1120 eligible items had no known source.
+Set DPS (verified): 202.5. Weights run: 9.8s. Verify run: 4.6s. 1120 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.108, intellect=1.584 ± 0.040, spirit=8.731 ± 0.410, mp5=3.135 ± 0.048, crit=0.267 ± 0.018 per rating point (14 rating = 1%, 3.737 per %), spell_haste=not significant (-0.439 ± 0.295)
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1120, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 327.5. Weights run: 8.5s. Verify run: 4.1s. 1120 eligible items had no known source.
+Set DPS (verified): 327.5. Weights run: 8.4s. Verify run: 4.0s. 1120 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.137, intellect=1.431 ± 0.022, spirit=2.274 ± 0.032, mp5=3.081 ± 0.041, crit=0.295 ± 0.015 per rating point (14 rating = 1%, 4.124 per %), spell_haste=not significant (0.053 ± 0.215)
 

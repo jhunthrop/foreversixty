@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:37:35Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:23:33Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.955030569,
-      "verify_run_seconds": 0.647500156,
+      "weights_run_seconds": 0.916217284,
+      "verify_run_seconds": 0.61146334,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -628,6 +628,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 2.7479335442470467,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -1181,8 +1194,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.955030569,
-      "verify_run_seconds": 0.663457635,
+      "weights_run_seconds": 0.916217284,
+      "verify_run_seconds": 0.65635984,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1257,6 +1270,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 2.7479335442470467,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -1892,8 +1918,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.089671138,
-      "verify_run_seconds": 0.806088521,
+      "weights_run_seconds": 1.041128481,
+      "verify_run_seconds": 0.775412632,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1968,6 +1994,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -2602,8 +2641,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.089671138,
-      "verify_run_seconds": 0.802193438,
+      "weights_run_seconds": 1.041128481,
+      "verify_run_seconds": 0.78343938,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,6 +2717,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -3278,8 +3330,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.001462244,
-      "verify_run_seconds": 0.662691483,
+      "weights_run_seconds": 0.977073469,
+      "verify_run_seconds": 0.630052678,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3354,6 +3406,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 1.162469990246672,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -3948,8 +4013,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.001462244,
-      "verify_run_seconds": 0.667397779,
+      "weights_run_seconds": 0.977073469,
+      "verify_run_seconds": 0.648499051,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4024,6 +4089,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 1.162469990246672,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -4645,8 +4723,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.949934107,
-      "verify_run_seconds": 0.726920901,
+      "weights_run_seconds": 0.89294925,
+      "verify_run_seconds": 0.709084297,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4721,6 +4799,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 6.273470625518936,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -4829,7 +4920,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.6982857881796596
+              "dps_delta": -1.6982857881796602
             },
             {
               "item_id": 15999,
@@ -5326,8 +5417,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.949934107,
-      "verify_run_seconds": 0.743870956,
+      "weights_run_seconds": 0.89294925,
+      "verify_run_seconds": 0.722491825,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5402,6 +5493,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 6.273470625518936,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -6063,8 +6167,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.022615008,
-      "verify_run_seconds": 0.755037901,
+      "weights_run_seconds": 1.016603268,
+      "verify_run_seconds": 0.710094051,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6139,6 +6243,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 9.606468122211483,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -6801,8 +6918,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.022615008,
-      "verify_run_seconds": 0.736768728,
+      "weights_run_seconds": 1.016603268,
+      "verify_run_seconds": 0.706471818,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6877,6 +6994,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 9.606468122211483,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 3,
+          "to_cap": 13
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -7452,7 +7582,7 @@
               "item_name": "Staff of Balzaphon",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -2.231753900425912
+              "dps_delta": -2.2317539004259177
             },
             {
               "item_id": 1728,
@@ -7539,8 +7669,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.05739961,
-      "verify_run_seconds": 0.740153685,
+      "weights_run_seconds": 0.98643186,
+      "verify_run_seconds": 0.734647987,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7615,6 +7745,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 23.49215476718826,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 5,
+          "to_cap": 11
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -7849,7 +7992,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.265641331564934
+              "dps_delta": -2.2656413315649373
             },
             {
               "item_id": 18385,
@@ -8190,7 +8333,7 @@
               "item_name": "Staff of Balzaphon",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -2.2317539004259177
+              "dps_delta": -2.231753900425915
             },
             {
               "item_id": 1728,
@@ -8277,8 +8420,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.05739961,
-      "verify_run_seconds": 0.751481727,
+      "weights_run_seconds": 0.98643186,
+      "verify_run_seconds": 0.736667953,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8353,6 +8496,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 23.49215476718826,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 5,
+          "to_cap": 11
+        }
+      },
       "haste_on_items": false
     }
   ],
