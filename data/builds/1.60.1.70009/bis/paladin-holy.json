@@ -1,8 +1,8 @@
 {
   "spec": "paladin-holy",
   "build": "1.60.1.70009",
-  "engine_version": "aa3e0be44",
-  "generated_at": "2026-10-08T01:52:23Z",
+  "engine_version": "583668528",
+  "generated_at": "2026-10-08T02:39:28Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -224,14 +224,14 @@
               "item_name": "Filigreed Pristine Gown",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.16527379278611562
+              "dps_delta": -0.16527379278611593
             },
             {
               "item_id": 6226,
               "item_name": "Bloody Apron",
               "source_kind": "dungeon",
               "source": "Shadowfang Keep: Razorclaw the Butcher",
-              "dps_delta": -0.5921106228280636
+              "dps_delta": -0.5921106228280639
             }
           ]
         },
@@ -330,7 +330,7 @@
               "item_name": "Novice Ardent's Sash",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.4310399800213018
+              "dps_delta": -0.4310399800213016
             }
           ]
         },
@@ -561,8 +561,8 @@
         "finger2: Black Pearl Ring",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 4.652277509,
-      "verify_run_seconds": 2.173866453,
+      "weights_run_seconds": 4.178722416,
+      "verify_run_seconds": 1.9393960080000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -863,7 +863,7 @@
               "item_name": "Filigreed Pristine Gown",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.1916507992188594
+              "dps_delta": -0.19165079921885914
             },
             {
               "item_id": 6226,
@@ -1200,8 +1200,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 4.652277509,
-      "verify_run_seconds": 2.298465635,
+      "weights_run_seconds": 4.178722416,
+      "verify_run_seconds": 2.011503347,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1879,8 +1879,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.577562679,
-      "verify_run_seconds": 2.167024386,
+      "weights_run_seconds": 4.211864963,
+      "verify_run_seconds": 1.943308885,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2202,7 +2202,7 @@
               "item_name": "Wisdom's Leather Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.36609981758698806
+              "dps_delta": -0.36609981758698773
             }
           ]
         },
@@ -2558,8 +2558,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.577562679,
-      "verify_run_seconds": 2.178763505,
+      "weights_run_seconds": 4.211864963,
+      "verify_run_seconds": 1.9711182310000002,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3232,8 +3232,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 7.787083068,
-      "verify_run_seconds": 3.482563252,
+      "weights_run_seconds": 7.277063772,
+      "verify_run_seconds": 3.2700130720000002,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3714,7 +3714,7 @@
               "item_name": "Gilded Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6575765825743783
+              "dps_delta": -0.6575765825743787
             }
           ]
         },
@@ -3906,8 +3906,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 7.787083068,
-      "verify_run_seconds": 3.475457808,
+      "weights_run_seconds": 7.277063772,
+      "verify_run_seconds": 3.274327658,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4157,14 +4157,14 @@
               "item_name": "Mender's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.14564092571153062
+              "dps_delta": -0.14564092571153112
             },
             {
               "item_id": 252569,
               "item_name": "Mender's Mail Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.14564092571153062
+              "dps_delta": -0.14564092571153112
             }
           ]
         },
@@ -4446,7 +4446,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5492011985280177
+              "dps_delta": -0.549201198528018
             }
           ]
         },
@@ -4479,7 +4479,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.354253579605575
+              "dps_delta": -0.3542535796055753
             }
           ]
         },
@@ -4651,8 +4651,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 8.283703299,
-      "verify_run_seconds": 3.674744296,
+      "weights_run_seconds": 7.7998108219999995,
+      "verify_run_seconds": 3.468959678,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4884,7 +4884,7 @@
           "item_name": "Lead Surveyor's Mantle",
           "source": "Blackrock Depths: Fineous Darkvire",
           "source_kind": "dungeon",
-          "score": 53.60998990641966,
+          "score": 53.60998990641967,
           "verified": true,
           "alternatives": [
             {
@@ -4892,14 +4892,14 @@
               "item_name": "Mender's Mail Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.14564092571153062
+              "dps_delta": -0.14564092571153112
             },
             {
               "item_id": 15067,
               "item_name": "Ironfeather Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.2406756150362355
+              "dps_delta": -0.240675615036236
             },
             {
               "item_id": 252538,
@@ -5183,7 +5183,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5492011985280177
+              "dps_delta": -0.549201198528018
             },
             {
               "item_id": 6750,
@@ -5216,7 +5216,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.354253579605575
+              "dps_delta": -0.3542535796055753
             },
             {
               "item_id": 6750,
@@ -5398,8 +5398,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 8.283703299,
-      "verify_run_seconds": 3.6977598179999998,
+      "weights_run_seconds": 7.7998108219999995,
+      "verify_run_seconds": 3.446114619,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5713,7 +5713,7 @@
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.8315814073625196
+              "dps_delta": -1.8315814073625205
             },
             {
               "item_id": 23087,
@@ -5738,14 +5738,14 @@
               "item_name": "Bracers of Mending",
               "source_kind": "dungeon",
               "source": "Dire Maul: Revanchion",
-              "dps_delta": -0.21377684089653687
+              "dps_delta": -0.21377684089653776
             },
             {
               "item_id": 13208,
               "item_name": "Bleak Howler Armguards",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Gizrul the Slavener",
-              "dps_delta": -0.4377699312500759
+              "dps_delta": -0.4377699312500768
             },
             {
               "item_id": 23090,
@@ -5777,7 +5777,7 @@
               "item_name": "Soulforge Fists",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.2653971243016448
+              "dps_delta": -0.2653971243016457
             },
             {
               "item_id": 18326,
@@ -6105,8 +6105,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 9.573604053,
-      "verify_run_seconds": 4.078958432,
+      "weights_run_seconds": 8.992957963,
+      "verify_run_seconds": 3.817721589,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6414,7 +6414,7 @@
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.8315814073625196
+              "dps_delta": -1.8315814073625205
             },
             {
               "item_id": 13314,
@@ -6446,7 +6446,7 @@
               "item_name": "Bracers of Mending",
               "source_kind": "dungeon",
               "source": "Dire Maul: Revanchion",
-              "dps_delta": -0.21377684089653687
+              "dps_delta": -0.21377684089653776
             },
             {
               "item_id": 13208,
@@ -6527,7 +6527,7 @@
               "item_name": "Devout Belt",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Blackhand Summoner",
-              "dps_delta": -0.6157972422101995
+              "dps_delta": -0.6157972422101986
             }
           ]
         },
@@ -6813,8 +6813,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 9.573604053,
-      "verify_run_seconds": 4.101368163,
+      "weights_run_seconds": 8.992957963,
+      "verify_run_seconds": 3.86530548,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -7055,7 +7055,7 @@
               "item_name": "Shimmering Dawnbringer Shoulders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.2305574014610188
+              "dps_delta": -1.230557401461017
             },
             {
               "item_id": 227148,
@@ -7126,7 +7126,7 @@
               "item_name": "Field Marshal's Lamellar Chestplate",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.1281756572269273
+              "dps_delta": -1.1281756572269255
             },
             {
               "item_id": 23087,
@@ -7518,8 +7518,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 7.769962737,
-      "verify_run_seconds": 2.807550743,
+      "weights_run_seconds": 7.507497707,
+      "verify_run_seconds": 2.603486676,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7774,7 +7774,7 @@
               "item_name": "Soulforge Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -4.860718392147329
+              "dps_delta": -4.860718392147328
             }
           ]
         },
@@ -7856,7 +7856,7 @@
               "item_name": "Bracers of Hope",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.7084860523681585
+              "dps_delta": -0.7084860523681576
             },
             {
               "item_id": 23129,
@@ -8223,8 +8223,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 7.769962737,
-      "verify_run_seconds": 2.821312389,
+      "weights_run_seconds": 7.507497707,
+      "verify_run_seconds": 2.6271916920000002,
       "coverage": {
         "back": {
           "eligible": 449,

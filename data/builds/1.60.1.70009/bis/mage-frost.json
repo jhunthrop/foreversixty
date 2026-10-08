@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "aa3e0be44",
-  "generated_at": "2026-10-08T01:50:21Z",
+  "engine_version": "583668528",
+  "generated_at": "2026-10-08T02:37:35Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.084013436,
-      "verify_run_seconds": 0.723902564,
+      "weights_run_seconds": 0.955030569,
+      "verify_run_seconds": 0.647500156,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.084013436,
-      "verify_run_seconds": 0.743881594,
+      "weights_run_seconds": 0.955030569,
+      "verify_run_seconds": 0.663457635,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1892,8 +1892,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.194676016,
-      "verify_run_seconds": 0.891058178,
+      "weights_run_seconds": 1.089671138,
+      "verify_run_seconds": 0.806088521,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2602,8 +2602,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.194676016,
-      "verify_run_seconds": 0.925318905,
+      "weights_run_seconds": 1.089671138,
+      "verify_run_seconds": 0.802193438,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3278,8 +3278,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.103517209,
-      "verify_run_seconds": 0.724604256,
+      "weights_run_seconds": 1.001462244,
+      "verify_run_seconds": 0.662691483,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3948,8 +3948,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.103517209,
-      "verify_run_seconds": 0.737995444,
+      "weights_run_seconds": 1.001462244,
+      "verify_run_seconds": 0.667397779,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4645,8 +4645,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.00090259,
-      "verify_run_seconds": 0.80988157,
+      "weights_run_seconds": 0.949934107,
+      "verify_run_seconds": 0.726920901,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4829,7 +4829,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.6982857881796602
+              "dps_delta": -1.6982857881796596
             },
             {
               "item_id": 15999,
@@ -5326,8 +5326,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.00090259,
-      "verify_run_seconds": 0.847159762,
+      "weights_run_seconds": 0.949934107,
+      "verify_run_seconds": 0.743870956,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6063,8 +6063,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.135149072,
-      "verify_run_seconds": 0.812329854,
+      "weights_run_seconds": 1.022615008,
+      "verify_run_seconds": 0.755037901,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6801,8 +6801,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.135149072,
-      "verify_run_seconds": 0.811734455,
+      "weights_run_seconds": 1.022615008,
+      "verify_run_seconds": 0.736768728,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7125,7 +7125,7 @@
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -7.201423700187034
+              "dps_delta": -7.2014237001870365
             }
           ]
         },
@@ -7452,7 +7452,7 @@
               "item_name": "Staff of Balzaphon",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -2.2317539004259177
+              "dps_delta": -2.231753900425912
             },
             {
               "item_id": 1728,
@@ -7539,8 +7539,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.147759119,
-      "verify_run_seconds": 0.810285976,
+      "weights_run_seconds": 1.05739961,
+      "verify_run_seconds": 0.740153685,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8190,7 +8190,7 @@
               "item_name": "Staff of Balzaphon",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -2.231753900425915
+              "dps_delta": -2.2317539004259177
             },
             {
               "item_id": 1728,
@@ -8277,8 +8277,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.147759119,
-      "verify_run_seconds": 0.807816072,
+      "weights_run_seconds": 1.05739961,
+      "verify_run_seconds": 0.751481727,
       "coverage": {
         "back": {
           "eligible": 450,

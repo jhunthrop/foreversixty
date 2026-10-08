@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-000000000000000000-5032100000000000)
 
-Set DPS (verified): 26.4. Weights run: 4.4s. Verify run: 2.3s. 225 eligible items had no known source.
+Set DPS (verified): 26.4. Weights run: 4.2s. Verify run: 2.1s. 225 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.751 ± 0.009, spirit=1.906 ± 0.006, mp5=5.250 ± 0.009, crit=0.123 ± 0.006 per rating point (14 rating = 1%, 1.728 per %), spell_haste=not significant (0.054 ± 0.020)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 225, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-000000000000000000-5032503300000000)
 
-Set DPS (verified): 43.5. Weights run: 4.5s. Verify run: 2.4s. 366 eligible items had no known source.
+Set DPS (verified): 43.5. Weights run: 4.2s. Verify run: 2.3s. 366 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.012, intellect=2.418 ± 0.014, spirit=2.475 ± 0.013, mp5=6.455 ± 0.015, crit=0.185 ± 0.009 per rating point (14 rating = 1%, 2.592 per %), spell_haste=not significant (0.199 ± 0.050)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 366, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-000000000000000000-5032503315400000)
 
-Set DPS (verified): 64.3. Weights run: 5.4s. Verify run: 2.9s. 592 eligible items had no known source.
+Set DPS (verified): 64.3. Weights run: 5.1s. Verify run: 2.7s. 592 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.008, intellect=2.362 ± 0.020, spirit=2.863 ± 0.016, mp5=7.383 ± 0.023, crit=0.375 ± 0.020 per rating point (14 rating = 1%, 5.256 per %), spell_haste=not significant (0.232 ± 0.065)
 
@@ -96,39 +96,39 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 No-known-source sample (15 of 592, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul
 
-### Band 50 (dwarf, 0000000000000000-000000000000000000-5032503315513140)
+### Band 50 (dwarf, 0000000000000000-000000000000000000-5032503315513131)
 
-Set DPS (verified): 99.3. Weights run: 6.2s. Verify run: 3.2s. 762 eligible items had no known source.
+Set DPS (verified): 110.6. Weights run: 8.9s. Verify run: 4.3s. 762 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.023, intellect=2.751 ± 0.026, spirit=3.030 ± 0.025, mp5=8.085 ± 0.029, crit=0.480 ± 0.026 per rating point (14 rating = 1%, 6.718 per %), spell_haste=not significant (0.000 ± 0.000)
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.112, intellect=2.353 ± 0.028, spirit=2.785 ± 0.021, mp5=7.034 ± 0.028, crit=0.427 ± 0.024 per rating point (14 rating = 1%, 5.981 per %), spell_haste=not significant (0.202 ± 0.092)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Helm of Exile (11124) | Jammal'an the Prophet [quest] | 104.1 healing_power points (4.62 DPS) | yes | Gemburst Circlet (10751, -0.06 DPS, sim-verified) [quest]; Soulcatcher Halo (10630, -0.22 DPS) [dungeon]; Braincage (12549, -0.36 DPS) [dungeon] |
-| neck | Horizon Choker (13085) | World drop [world_drop] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Darkmoon Necklace (19303, -0.14 DPS, sim-verified) [vendor]; Glowing Eye of Mordresh (10769, -0.16 DPS) [dungeon]; Gemshard Heart (17707, -0.22 DPS) [dungeon] |
-| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 79.3 healing_power points (3.52 DPS) | yes | Lead Surveyor's Mantle (11842, -0.06 DPS, sim-verified) [dungeon]; Dregmetal Spaulders (11722, -0.34 DPS) [dungeon]; Living Shoulders (15061, -0.39 DPS) [crafted] |
-| back | Darkspear Raider's Cloak (272076) | Creeg Bothunk [vendor] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Featherskin Cape (10843, -0.20 DPS, sim-verified) [world]; Imperial Red Cloak (8248, -0.50 DPS) [world_drop]; Caretaker's Cape (19531, -0.60 DPS) [rep] |
-| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 137.7 healing_power points (6.11 DPS) | yes | Ghostweave Vest (14141, -0.40 DPS, sim-verified) [crafted]; Robes of Insight (940, -1.04 DPS) [world_drop]; Vestments of the Atal'ai Prophet (10806, -1.14 DPS) [dungeon] |
-| wrist | Aristocratic Cuffs (12546) | Blackrock Depths: Anvilrage Overseer [dungeon] | 59.4 healing_power points (2.64 DPS) | yes | Mender's Leather Bracers (252543, -0.09 DPS, sim-verified) [crafted]; Mender's Mail Bracers (252573, -0.13 DPS) [crafted]; Nethergeld Cuffs (254061, -0.22 DPS) [crafted] |
-| hands | Grasp of The Five Thunders (227014) | Mokvar [vendor] | 108.8 healing_power points (4.83 DPS) | yes | Stonerender Gauntlets (17007, +0.00 DPS, sim-verified) [world_drop]; Mender's Leather Gauntlets (252551, -1.14 DPS) [crafted]; Mender's Mail Gauntlets (252587, -1.14 DPS) [crafted] |
-| waist | Mender's Leather Waistguard (252477) | Leatherworking [crafted] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Gilded Cord (254037, -0.04 DPS) [crafted]; Bloodlust Belt (14803, -0.08 DPS, sim-verified) [world_drop] |
-| legs | Kilt of the Atal'ai Prophet (10807) | Sunken Temple: Jammal'an the Prophet [dungeon] | 104.1 healing_power points (4.62 DPS) | yes | Dalewind Trousers (13008, -0.18 DPS, sim-verified) [world_drop]; Windscale Sarong (10842, -0.71 DPS) [world]; Jinxed Hoodoo Kilt (9474, -0.84 DPS) [dungeon] |
-| feet | Sandals of the Insurgent (13111) | World drop [world_drop] | 82.6 healing_power points (3.66 DPS) | yes | Mistwalker Boots (10629, -0.27 DPS) [dungeon]; Coldstone Slippers (18697, -0.52 DPS) [dungeon]; Furen's Boots (13100, -0.66 DPS) [world_drop] |
-| finger1 | Darkspear Signet (272069) | Creeg Bothunk [vendor] | 56.6 healing_power points (2.51 DPS) | yes | Eye of Adaegus (5266, -0.17 DPS) [world_drop]; Snake Hoop (6750, -0.72 DPS) [quest]; Cyclopean Band (11824, -0.72 DPS) [dungeon] |
-| finger2 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 56.4 healing_power points (2.50 DPS) | yes | Eye of Adaegus (5266, -0.18 DPS, sim-verified) [world_drop]; Snake Hoop (6750, -0.71 DPS) [quest]; Cyclopean Band (11824, -0.71 DPS) [dungeon] |
-| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Evonice's Landin' Pilla (18951, -4.04 DPS) [quest]; Thunderbrew's Boot Flask (744, -4.30 DPS) [quest]; Uther's Strength (11302, -4.58 DPS) [world_drop] |
-| trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, -0.27 DPS) [quest]; Thunderbrew's Boot Flask (744, -0.54 DPS) [quest]; Uther's Strength (11302, -0.81 DPS) [world_drop] |
-| main_hand | Soulkeeper (1607) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Brightwood Staff (812, -0.09 DPS) [world_drop]; Barman Shanker (12791, -0.56 DPS, sim-verified) [dungeon]; Resurgence Rod (17743, -0.89 DPS) [quest] |
+| head | Helm of Exile (11124) | Jammal'an the Prophet [quest] | 92.5 healing_power points (5.06 DPS) | yes | Gemburst Circlet (10751, -0.12 DPS, sim-verified) [quest]; Papal Fez (9431, -0.30 DPS) [dungeon]; Soulcatcher Halo (10630, -0.32 DPS) [dungeon] |
+| neck | Horizon Choker (13085) | World drop [world_drop] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Glowing Eye of Mordresh (10769, -0.09 DPS) [dungeon]; Lei of Lilies (1315, -0.13 DPS) [world_drop]; Darkmoon Necklace (19303, -0.16 DPS, sim-verified) [vendor] |
+| shoulder | Lead Surveyor's Mantle (11842) | Blackrock Depths: Fineous Darkvire [dungeon] | 70.2 healing_power points (3.84 DPS) | yes | Ironfeather Shoulders (15067, +0.00 DPS, sim-verified) [crafted]; Living Shoulders (15061, -0.17 DPS) [crafted]; Mender's Leather Shoulder (252538, -0.30 DPS) [crafted] |
+| back | Darkspear Raider's Cloak (272076) | Creeg Bothunk [vendor] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Featherskin Cape (10843, -0.28 DPS, sim-verified) [world]; Caretaker's Cape (19531, -0.45 DPS) [rep]; Imperial Red Cloak (8248, -0.54 DPS) [world_drop] |
+| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 123.6 healing_power points (6.75 DPS) | yes | Ghostweave Vest (14141, -0.47 DPS, sim-verified) [crafted]; Vestments of the Atal'ai Prophet (10806, -1.23 DPS) [dungeon]; Robes of Insight (940, -1.25 DPS) [world_drop] |
+| wrist | Mender's Leather Bracers (252543) (or Mender's Mail Bracers (252573)) | Leatherworking [crafted] | 52.2 healing_power points (2.85 DPS) | yes | Mender's Mail Bracers (252573, +0.00 DPS) [crafted]; Aristocratic Cuffs (12546, -0.01 DPS) [dungeon]; Nethergeld Cuffs (254061, -0.10 DPS) [crafted] |
+| hands | Grasp of The Five Thunders (227014) | Mokvar [vendor] | 100.0 healing_power points (5.47 DPS) | yes | Stonerender Gauntlets (17007, +0.00 DPS, sim-verified) [world_drop]; Mender's Leather Gauntlets (252551, -1.24 DPS) [crafted]; Mender's Mail Gauntlets (252587, -1.24 DPS) [crafted] |
+| waist | Mender's Leather Waistguard (252477) (or Mender's Mail Belt (252591)) | Leatherworking [crafted] | 58.2 healing_power points (3.18 DPS) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Bloodlust Belt (14803, -0.01 DPS) [world_drop]; Gilded Cord (254037, -0.04 DPS) [crafted] |
+| legs | Kilt of the Atal'ai Prophet (10807) | Sunken Temple: Jammal'an the Prophet [dungeon] | 92.5 healing_power points (5.06 DPS) | yes | Dalewind Trousers (13008, -0.27 DPS, sim-verified) [world_drop]; Windscale Sarong (10842, -0.72 DPS) [world]; Jinxed Hoodoo Kilt (9474, -0.88 DPS) [dungeon] |
+| feet | Sandals of the Insurgent (13111) | World drop [world_drop] | 74.5 healing_power points (4.07 DPS) | yes | Mistwalker Boots (10629, +0.00 DPS, sim-verified) [dungeon]; Coldstone Slippers (18697, -0.73 DPS) [dungeon]; Furen's Boots (13100, -0.74 DPS) [world_drop] |
+| finger1 | Darkspear Signet (272069) | Creeg Bothunk [vendor] | 49.2 healing_power points (2.69 DPS) | yes | Eye of Adaegus (5266, -0.09 DPS) [world_drop]; Cyclopean Band (11824, -0.69 DPS) [dungeon]; Choking Band (11868, -0.71 DPS) [quest] |
+| finger2 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 49.2 healing_power points (2.69 DPS) | yes | Eye of Adaegus (5266, -0.27 DPS, sim-verified) [world_drop]; Cyclopean Band (11824, -0.69 DPS) [dungeon]; Choking Band (11868, -0.71 DPS) [quest] |
+| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Evonice's Landin' Pilla (18951, -4.24 DPS) [quest]; Thunderbrew's Boot Flask (744, -4.55 DPS) [quest]; Uther's Strength (11302, -4.78 DPS) [world_drop] |
+| trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, +0.00 DPS, sim-verified) [quest]; Thunderbrew's Boot Flask (744, -0.61 DPS) [quest]; Uther's Strength (11302, -0.84 DPS) [world_drop] |
+| main_hand | Soulkeeper (1607) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Brightwood Staff (812, -0.27 DPS) [world_drop]; Barman Shanker (12791, -0.67 DPS, sim-verified) [dungeon]; Resurgence Rod (17743, -1.14 DPS) [quest] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Helm of Exile; neck: Horizon Choker; shoulder: Ironfeather Shoulders; back: Darkspear Raider's Cloak; chest: Embrace of the Wind Serpent; wrist: Aristocratic Cuffs; hands: Grasp of The Five Thunders; waist: Mender's Leather Waistguard; legs: Kilt of the Atal'ai Prophet; feet: Sandals of the Insurgent; finger1: Darkspear Signet; finger2: Brainlash; trinket1: Darkspear Voodoo Seal; main_hand: Soulkeeper
+**New at 50:** head: Helm of Exile; neck: Horizon Choker; shoulder: Lead Surveyor's Mantle; back: Darkspear Raider's Cloak; chest: Embrace of the Wind Serpent; wrist: Mender's Leather Bracers; hands: Grasp of The Five Thunders; waist: Mender's Leather Waistguard; legs: Kilt of the Atal'ai Prophet; feet: Sandals of the Insurgent; finger1: Darkspear Signet; finger2: Brainlash; trinket1: Darkspear Voodoo Seal; main_hand: Soulkeeper
 
 No-known-source sample (15 of 762, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul
 
 ### Band 60 (dwarf, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 231.7. Weights run: 10.3s. Verify run: 4.8s. 1751 eligible items had no known source.
+Set DPS (verified): 231.7. Weights run: 10.2s. Verify run: 4.6s. 1751 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.125, intellect=4.812 ± 0.061, spirit=4.336 ± 0.053, mp5=11.044 ± 0.061, crit=0.769 ± 0.054 per rating point (14 rating = 1%, 10.766 per %), spell_haste=not significant (0.236 ± 0.232)
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1751, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 370.5. Weights run: 9.0s. Verify run: 3.6s. 1751 eligible items had no known source.
+Set DPS (verified): 370.5. Weights run: 8.9s. Verify run: 3.4s. 1751 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.272, intellect=2.675 ± 0.051, spirit=2.238 ± 0.036, mp5=6.265 ± 0.052, crit=0.784 ± 0.045 per rating point (14 rating = 1%, 10.977 per %), spell_haste=not significant (-0.366 ± 0.372)
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1751, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-000000000000000000-5032100000000000)
 
-Set DPS (verified): 27.0. Weights run: 4.4s. Verify run: 2.3s. 205 eligible items had no known source.
+Set DPS (verified): 27.0. Weights run: 4.2s. Verify run: 2.2s. 205 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.751 ± 0.009, spirit=1.906 ± 0.006, mp5=5.250 ± 0.009, crit=0.123 ± 0.006 per rating point (14 rating = 1%, 1.728 per %), spell_haste=not significant (0.054 ± 0.020)
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 205, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-000000000000000000-5032503300000000)
 
-Set DPS (verified): 44.1. Weights run: 4.5s. Verify run: 2.4s. 349 eligible items had no known source.
+Set DPS (verified): 44.1. Weights run: 4.2s. Verify run: 2.2s. 349 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.012, intellect=2.418 ± 0.014, spirit=2.475 ± 0.013, mp5=6.455 ± 0.015, crit=0.185 ± 0.009 per rating point (14 rating = 1%, 2.592 per %), spell_haste=not significant (0.199 ± 0.050)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 349, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-000000000000000000-5032503315400000)
 
-Set DPS (verified): 63.2. Weights run: 5.4s. Verify run: 2.9s. 555 eligible items had no known source.
+Set DPS (verified): 63.2. Weights run: 5.1s. Verify run: 2.7s. 555 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.008, intellect=2.362 ± 0.020, spirit=2.863 ± 0.016, mp5=7.383 ± 0.023, crit=0.375 ± 0.020 per rating point (14 rating = 1%, 5.256 per %), spell_haste=not significant (0.232 ± 0.065)
 
@@ -278,39 +278,39 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 No-known-source sample (15 of 555, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
-### Band 50 (tauren, 0000000000000000-000000000000000000-5032503315513140)
+### Band 50 (tauren, 0000000000000000-000000000000000000-5032503315513131)
 
-Set DPS (verified): 99.2. Weights run: 6.2s. Verify run: 3.2s. 704 eligible items had no known source.
+Set DPS (verified): 110.4. Weights run: 8.9s. Verify run: 4.3s. 704 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.023, intellect=2.751 ± 0.026, spirit=3.030 ± 0.025, mp5=8.085 ± 0.029, crit=0.480 ± 0.026 per rating point (14 rating = 1%, 6.718 per %), spell_haste=not significant (0.000 ± 0.000)
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.112, intellect=2.353 ± 0.028, spirit=2.785 ± 0.021, mp5=7.034 ± 0.028, crit=0.427 ± 0.024 per rating point (14 rating = 1%, 5.981 per %), spell_haste=not significant (0.202 ± 0.092)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Helm of Exile (11124) | Jammal'an the Prophet [quest] | 104.1 healing_power points (4.62 DPS) | yes | Gemburst Circlet (10751, +0.00 DPS, sim-verified) [quest]; Soulcatcher Halo (10630, -0.22 DPS) [dungeon]; Braincage (12549, -0.36 DPS) [dungeon] |
-| neck | Horizon Choker (13085) | World drop [world_drop] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Darkmoon Necklace (19303, -0.10 DPS, sim-verified) [vendor]; Glowing Eye of Mordresh (10769, -0.16 DPS) [dungeon]; Gemshard Heart (17707, -0.22 DPS) [dungeon] |
-| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 79.3 healing_power points (3.52 DPS) | yes | Lead Surveyor's Mantle (11842, -0.07 DPS, sim-verified) [dungeon]; Dregmetal Spaulders (11722, -0.34 DPS) [dungeon]; Living Shoulders (15061, -0.39 DPS) [crafted] |
-| back | Darkspear Raider's Cloak (272076) | Creeg Bothunk [vendor] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Featherskin Cape (10843, -0.24 DPS, sim-verified) [world]; Imperial Red Cloak (8248, -0.50 DPS) [world_drop]; Battle Healer's Cloak (19527, -0.60 DPS) [rep] |
-| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 137.7 healing_power points (6.11 DPS) | yes | Ghostweave Vest (14141, -0.32 DPS, sim-verified) [crafted]; Robes of Insight (940, -1.04 DPS) [world_drop]; Vestments of the Atal'ai Prophet (10806, -1.14 DPS) [dungeon] |
-| wrist | Aristocratic Cuffs (12546) | Blackrock Depths: Anvilrage Overseer [dungeon] | 59.4 healing_power points (2.64 DPS) | yes | Mender's Leather Bracers (252543, -0.09 DPS, sim-verified) [crafted]; Mender's Mail Bracers (252573, -0.13 DPS) [crafted]; Nethergeld Cuffs (254061, -0.22 DPS) [crafted] |
-| hands | Grasp of The Five Thunders (227014) | Mokvar [vendor] | 108.8 healing_power points (4.83 DPS) | yes | Stonerender Gauntlets (17007, +0.00 DPS, sim-verified) [world_drop]; Mender's Leather Gauntlets (252551, -1.14 DPS) [crafted]; Mender's Mail Gauntlets (252587, -1.14 DPS) [crafted] |
-| waist | Mender's Leather Waistguard (252477) | Leatherworking [crafted] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Gilded Cord (254037, -0.04 DPS) [crafted]; Bloodlust Belt (14803, -0.06 DPS, sim-verified) [world_drop] |
-| legs | Kilt of the Atal'ai Prophet (10807) | Sunken Temple: Jammal'an the Prophet [dungeon] | 104.1 healing_power points (4.62 DPS) | yes | Dalewind Trousers (13008, -0.19 DPS, sim-verified) [world_drop]; Windscale Sarong (10842, -0.71 DPS) [world]; Jinxed Hoodoo Kilt (9474, -0.84 DPS) [dungeon] |
-| feet | Sandals of the Insurgent (13111) | World drop [world_drop] | 82.6 healing_power points (3.66 DPS) | yes | Mistwalker Boots (10629, +0.00 DPS, sim-verified) [dungeon]; Coldstone Slippers (18697, -0.52 DPS) [dungeon]; Furen's Boots (13100, -0.66 DPS) [world_drop] |
-| finger1 | Darkspear Signet (272069) | Creeg Bothunk [vendor] | 56.6 healing_power points (2.51 DPS) | yes | Eye of Adaegus (5266, -0.17 DPS) [world_drop]; Snake Hoop (6750, -0.72 DPS) [quest]; Cyclopean Band (11824, -0.72 DPS) [dungeon] |
-| finger2 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 56.4 healing_power points (2.50 DPS) | yes | Eye of Adaegus (5266, -0.19 DPS, sim-verified) [world_drop]; Snake Hoop (6750, -0.71 DPS) [quest]; Cyclopean Band (11824, -0.71 DPS) [dungeon] |
-| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Evonice's Landin' Pilla (18951, -4.04 DPS) [quest]; Uther's Strength (11302, -4.58 DPS) [world_drop]; Alchemists' Stone (13503, -4.84 DPS) [crafted] |
-| trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, +0.00 DPS, sim-verified) [quest]; Uther's Strength (11302, -0.81 DPS) [world_drop]; Alchemists' Stone (13503, -1.08 DPS) [crafted] |
-| main_hand | Soulkeeper (1607) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Brightwood Staff (812, -0.09 DPS) [world_drop]; Barman Shanker (12791, -0.49 DPS, sim-verified) [dungeon]; Resurgence Rod (17743, -0.89 DPS) [quest] |
+| head | Helm of Exile (11124) | Jammal'an the Prophet [quest] | 92.5 healing_power points (5.06 DPS) | yes | Gemburst Circlet (10751, -0.11 DPS, sim-verified) [quest]; Papal Fez (9431, -0.30 DPS) [dungeon]; Soulcatcher Halo (10630, -0.32 DPS) [dungeon] |
+| neck | Horizon Choker (13085) | World drop [world_drop] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Glowing Eye of Mordresh (10769, -0.09 DPS) [dungeon]; Darkmoon Necklace (19303, -0.12 DPS, sim-verified) [vendor]; Lei of Lilies (1315, -0.13 DPS) [world_drop] |
+| shoulder | Lead Surveyor's Mantle (11842) | Blackrock Depths: Fineous Darkvire [dungeon] | 70.2 healing_power points (3.84 DPS) | yes | Ironfeather Shoulders (15067, +0.00 DPS, sim-verified) [crafted]; Living Shoulders (15061, -0.17 DPS) [crafted]; Mender's Leather Shoulder (252538, -0.30 DPS) [crafted] |
+| back | Darkspear Raider's Cloak (272076) | Creeg Bothunk [vendor] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Featherskin Cape (10843, -0.32 DPS, sim-verified) [world]; Battle Healer's Cloak (19527, -0.45 DPS) [rep]; Imperial Red Cloak (8248, -0.54 DPS) [world_drop] |
+| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 123.6 healing_power points (6.75 DPS) | yes | Ghostweave Vest (14141, -0.46 DPS, sim-verified) [crafted]; Vestments of the Atal'ai Prophet (10806, -1.23 DPS) [dungeon]; Robes of Insight (940, -1.25 DPS) [world_drop] |
+| wrist | Mender's Leather Bracers (252543) (or Mender's Mail Bracers (252573)) | Leatherworking [crafted] | 52.2 healing_power points (2.85 DPS) | yes | Mender's Mail Bracers (252573, +0.00 DPS) [crafted]; Aristocratic Cuffs (12546, -0.01 DPS) [dungeon]; Nethergeld Cuffs (254061, -0.10 DPS) [crafted] |
+| hands | Grasp of The Five Thunders (227014) | Mokvar [vendor] | 100.0 healing_power points (5.47 DPS) | yes | Stonerender Gauntlets (17007, +0.00 DPS, sim-verified) [world_drop]; Mender's Leather Gauntlets (252551, -1.24 DPS) [crafted]; Mender's Mail Gauntlets (252587, -1.24 DPS) [crafted] |
+| waist | Mender's Leather Waistguard (252477) (or Mender's Mail Belt (252591)) | Leatherworking [crafted] | 58.2 healing_power points (3.18 DPS) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Bloodlust Belt (14803, -0.01 DPS) [world_drop]; Gilded Cord (254037, -0.04 DPS) [crafted] |
+| legs | Kilt of the Atal'ai Prophet (10807) | Sunken Temple: Jammal'an the Prophet [dungeon] | 92.5 healing_power points (5.06 DPS) | yes | Dalewind Trousers (13008, -0.26 DPS, sim-verified) [world_drop]; Windscale Sarong (10842, -0.72 DPS) [world]; Jinxed Hoodoo Kilt (9474, -0.88 DPS) [dungeon] |
+| feet | Sandals of the Insurgent (13111) | World drop [world_drop] | 74.5 healing_power points (4.07 DPS) | yes | Mistwalker Boots (10629, +0.00 DPS, sim-verified) [dungeon]; Coldstone Slippers (18697, -0.73 DPS) [dungeon]; Furen's Boots (13100, -0.74 DPS) [world_drop] |
+| finger1 | Darkspear Signet (272069) | Creeg Bothunk [vendor] | 49.2 healing_power points (2.69 DPS) | yes | Eye of Adaegus (5266, -0.09 DPS) [world_drop]; Cyclopean Band (11824, -0.69 DPS) [dungeon]; Snake Hoop (6750, -0.73 DPS) [quest] |
+| finger2 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 49.2 healing_power points (2.69 DPS) | yes | Eye of Adaegus (5266, -0.26 DPS, sim-verified) [world_drop]; Cyclopean Band (11824, -0.69 DPS) [dungeon]; Snake Hoop (6750, -0.72 DPS) [quest] |
+| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Evonice's Landin' Pilla (18951, -4.24 DPS) [quest]; Uther's Strength (11302, -4.78 DPS) [world_drop]; Alchemists' Stone (13503, -5.16 DPS) [crafted] |
+| trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, +0.00 DPS, sim-verified) [quest]; Uther's Strength (11302, -0.84 DPS) [world_drop]; Alchemists' Stone (13503, -1.22 DPS) [crafted] |
+| main_hand | Soulkeeper (1607) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Brightwood Staff (812, -0.27 DPS) [world_drop]; Barman Shanker (12791, -0.65 DPS, sim-verified) [dungeon]; Resurgence Rod (17743, -1.14 DPS) [quest] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Helm of Exile; neck: Horizon Choker; shoulder: Ironfeather Shoulders; back: Darkspear Raider's Cloak; chest: Embrace of the Wind Serpent; wrist: Aristocratic Cuffs; hands: Grasp of The Five Thunders; waist: Mender's Leather Waistguard; legs: Kilt of the Atal'ai Prophet; feet: Sandals of the Insurgent; finger1: Darkspear Signet; finger2: Brainlash; trinket1: Darkspear Voodoo Seal; main_hand: Soulkeeper
+**New at 50:** head: Helm of Exile; neck: Horizon Choker; shoulder: Lead Surveyor's Mantle; back: Darkspear Raider's Cloak; chest: Embrace of the Wind Serpent; wrist: Mender's Leather Bracers; hands: Grasp of The Five Thunders; waist: Mender's Leather Waistguard; legs: Kilt of the Atal'ai Prophet; feet: Sandals of the Insurgent; finger1: Darkspear Signet; finger2: Brainlash; trinket1: Darkspear Voodoo Seal; main_hand: Soulkeeper
 
 No-known-source sample (15 of 704, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 60 (tauren, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 231.1. Weights run: 10.3s. Verify run: 4.8s. 1672 eligible items had no known source.
+Set DPS (verified): 231.1. Weights run: 10.2s. Verify run: 4.6s. 1672 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.125, intellect=4.812 ± 0.061, spirit=4.336 ± 0.053, mp5=11.044 ± 0.061, crit=0.769 ± 0.054 per rating point (14 rating = 1%, 10.766 per %), spell_haste=not significant (0.236 ± 0.232)
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1672, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 370.2. Weights run: 9.0s. Verify run: 3.5s. 1672 eligible items had no known source.
+Set DPS (verified): 370.2. Weights run: 8.9s. Verify run: 3.5s. 1672 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.272, intellect=2.675 ± 0.051, spirit=2.238 ± 0.036, mp5=6.265 ± 0.052, crit=0.784 ± 0.045 per rating point (14 rating = 1%, 10.977 per %), spell_haste=not significant (-0.366 ± 0.372)
 

@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "aa3e0be44",
-  "generated_at": "2026-10-08T01:55:37Z",
+  "engine_version": "583668528",
+  "generated_at": "2026-10-08T02:42:39Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.965622752,
-      "verify_run_seconds": 1.246128857,
+      "weights_run_seconds": 1.8243354090000001,
+      "verify_run_seconds": 1.106673963,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1158,8 +1158,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.965622752,
-      "verify_run_seconds": 1.2275485800000001,
+      "weights_run_seconds": 1.8243354090000001,
+      "verify_run_seconds": 1.137858635,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1799,8 +1799,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.9950237,
-      "verify_run_seconds": 1.5199233109999999,
+      "weights_run_seconds": 1.832862234,
+      "verify_run_seconds": 1.40151359,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2443,8 +2443,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.9950237,
-      "verify_run_seconds": 1.523393552,
+      "weights_run_seconds": 1.832862234,
+      "verify_run_seconds": 1.3973859229999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3086,8 +3086,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.9809549610000001,
-      "verify_run_seconds": 1.46165646,
+      "weights_run_seconds": 1.867084739,
+      "verify_run_seconds": 1.30451489,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3729,8 +3729,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.9809549610000001,
-      "verify_run_seconds": 1.452550697,
+      "weights_run_seconds": 1.867084739,
+      "verify_run_seconds": 1.333408385,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4380,8 +4380,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.044911669,
-      "verify_run_seconds": 1.361611334,
+      "weights_run_seconds": 1.934137601,
+      "verify_run_seconds": 1.255913817,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5036,8 +5036,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.044911669,
-      "verify_run_seconds": 1.347883443,
+      "weights_run_seconds": 1.934137601,
+      "verify_run_seconds": 1.248679535,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5222,7 +5222,7 @@
               "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -5.161482161583298
+              "dps_delta": -5.161482161583297
             }
           ]
         },
@@ -5473,7 +5473,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.5692680461391041
+              "dps_delta": -0.5692680461391023
             },
             {
               "item_id": 237825,
@@ -5754,8 +5754,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.037241397,
-      "verify_run_seconds": 1.377081397,
+      "weights_run_seconds": 1.937721461,
+      "verify_run_seconds": 1.301765901,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6191,7 +6191,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.5692680461391023
+              "dps_delta": -0.5692680461391041
             },
             {
               "item_id": 237825,
@@ -6471,8 +6471,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.037241397,
-      "verify_run_seconds": 1.392279994,
+      "weights_run_seconds": 1.937721461,
+      "verify_run_seconds": 1.297402718,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -6656,7 +6656,7 @@
               "item_name": "Mask of the Unforgiven",
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
-              "dps_delta": -10.469104742535023,
+              "dps_delta": -10.465170195600422,
               "verified": true
             }
           ]
@@ -6701,7 +6701,7 @@
           "source_kind": "vendor",
           "verified": true,
           "swap_note": "beat the scored pick Truestrike Shoulders (id 12927) in the sim: +6.2 DPS over it",
-          "dps_delta": 6.180482790026076,
+          "dps_delta": 6.192295222153916,
           "alternatives": [
             {
               "item_id": 272106,
@@ -6722,7 +6722,7 @@
               "item_name": "Truestrike Shoulders",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Pyroguard Emberseer",
-              "dps_delta": -6.180482790026076,
+              "dps_delta": -6.192295222153916,
               "verified": true
             }
           ]
@@ -6786,7 +6786,7 @@
               "item_name": "Breastplate of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -19.31436773517595,
+              "dps_delta": -19.310645639738482,
               "verified": true
             }
           ]
@@ -6818,7 +6818,7 @@
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -4.295186158770662,
+              "dps_delta": -4.2909966700397035,
               "verified": true
             }
           ]
@@ -6862,7 +6862,7 @@
           "source_kind": "vendor",
           "verified": true,
           "swap_note": "beat the scored pick Belt of Preserved Heads (id 20216) in the sim: +5.6 DPS over it",
-          "dps_delta": 5.56411779645839,
+          "dps_delta": 5.564301921089168,
           "alternatives": [
             {
               "item_id": 227805,
@@ -6883,7 +6883,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -5.56411779645839,
+              "dps_delta": -5.564301921089168,
               "verified": true
             }
           ]
@@ -6901,7 +6901,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.365305541546984
+              "dps_delta": -1.3653055415469801
             },
             {
               "item_id": 237819,
@@ -6915,7 +6915,7 @@
               "item_name": "Cloudkeeper Legplates",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.98576900478713,
+              "dps_delta": -2.985172602150442,
               "verified": true
             }
           ]
@@ -6926,7 +6926,7 @@
           "item_name": "Bloodmail Boots",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "score": 71.10583025571862,
+          "score": 71.1058302557186,
           "verified": true,
           "alternatives": [
             {
@@ -6934,21 +6934,21 @@
               "item_name": "Knight-Lieutenant's Lamellar Sabatons",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.5852850871530715
+              "dps_delta": -1.5852850871530697
             },
             {
               "item_id": 21532,
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.8857330933515972
+              "dps_delta": -1.8857330933515954
             },
             {
               "item_id": 13967,
               "item_name": "Windreaver Greaves",
               "source_kind": "dungeon",
               "source": "Scholomance: Kirtonos the Herald",
-              "dps_delta": -3.6870708927336864,
+              "dps_delta": -3.6872143262799,
               "verified": true
             }
           ]
@@ -6980,7 +6980,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -6.789698717867509,
+              "dps_delta": -6.785612235922827,
               "verified": true
             }
           ]
@@ -7012,7 +7012,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.9284880698565985,
+              "dps_delta": -3.9242985811255267,
               "verified": true
             }
           ]
@@ -7025,7 +7025,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "confirmed by the sim against Hand of Justice (id 11815): kept the pick, +11.9 DPS over it",
-          "dps_delta": 11.934277080102788,
+          "dps_delta": 11.933539043134601,
           "alternatives": [
             {
               "item_id": 13965,
@@ -7080,7 +7080,7 @@
               "dps_delta": 0
             }
           ],
-          "faction_note": "Darkmoon Card: Maelstrom (from horde) and alliance's own pick Hand of Justice measure statistically indistinguishable on human (6.81 ± 1.62 vs 9.33 ± 2.27 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Darkmoon Card: Maelstrom (from horde) and alliance's own pick Hand of Justice measure statistically indistinguishable on human (6.82 ± 1.61 vs 9.35 ± 2.28 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -7110,7 +7110,7 @@
               "item_name": "Blackblade of Shahram",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -8.687112891486208,
+              "dps_delta": -8.695101636379377,
               "verified": true
             }
           ]
@@ -7138,7 +7138,7 @@
           ]
         }
       ],
-      "set_dps": 538.4507195510178,
+      "set_dps": 538.4875013402359,
       "no_source_count": 1674,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -7175,8 +7175,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.389390915,
-      "verify_run_seconds": 1.667560841,
+      "weights_run_seconds": 2.268971931,
+      "verify_run_seconds": 1.5541981059999999,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7353,7 +7353,7 @@
               "item_name": "Mask of the Unforgiven",
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
-              "dps_delta": -9.822383911443353,
+              "dps_delta": -9.822258404139006,
               "verified": true
             },
             {
@@ -7405,7 +7405,7 @@
           "source_kind": "vendor",
           "verified": true,
           "swap_note": "beat the scored pick Truestrike Shoulders (id 12927) in the sim: +6.4 DPS over it",
-          "dps_delta": 6.379995908567821,
+          "dps_delta": 6.382751746730833,
           "alternatives": [
             {
               "item_id": 272106,
@@ -7426,7 +7426,7 @@
               "item_name": "Truestrike Shoulders",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Pyroguard Emberseer",
-              "dps_delta": -6.379995908567821,
+              "dps_delta": -6.382751746730833,
               "verified": true
             }
           ]
@@ -7490,7 +7490,7 @@
               "item_name": "Breastplate of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -18.07682708091943,
+              "dps_delta": -18.072884916892008,
               "verified": true
             }
           ]
@@ -7522,7 +7522,7 @@
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.8474527746107015,
+              "dps_delta": -3.847538962580984,
               "verified": true
             }
           ]
@@ -7566,7 +7566,7 @@
           "source_kind": "vendor",
           "verified": true,
           "swap_note": "beat the scored pick Belt of Preserved Heads (id 20216) in the sim: +5.6 DPS over it",
-          "dps_delta": 5.5502156831316825,
+          "dps_delta": 5.550018261648688,
           "alternatives": [
             {
               "item_id": 227805,
@@ -7587,7 +7587,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -5.5502156831316825,
+              "dps_delta": -5.550018261648688,
               "verified": true
             }
           ]
@@ -7629,7 +7629,7 @@
           "item_name": "Bloodmail Boots",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "score": 71.1058302557186,
+          "score": 71.10583025571862,
           "verified": true,
           "alternatives": [
             {
@@ -7637,21 +7637,21 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.8857330933515954
+              "dps_delta": -1.8857330933515972
             },
             {
               "item_id": 227815,
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -2.1599319138059756
+              "dps_delta": -2.159931913805978
             },
             {
               "item_id": 13967,
               "item_name": "Windreaver Greaves",
               "source_kind": "dungeon",
               "source": "Scholomance: Kirtonos the Herald",
-              "dps_delta": -4.100219227555385,
+              "dps_delta": -4.099978434152945,
               "verified": true
             }
           ]
@@ -7683,7 +7683,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -6.756796108911317,
+              "dps_delta": -6.75669150964336,
               "verified": true
             }
           ]
@@ -7715,7 +7715,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.6875045457798024,
+              "dps_delta": -3.6875217833738816,
               "verified": true
             }
           ]
@@ -7728,7 +7728,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "confirmed by the sim against Darkmoon Card: Maelstrom (id 19289): kept the pick, +11.8 DPS over it",
-          "dps_delta": 11.836379949855313,
+          "dps_delta": 11.837235641654843,
           "alternatives": [
             {
               "item_id": 13965,
@@ -7780,11 +7780,11 @@
               "item_name": "Talisman of Ascendance",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -5.975698692978085,
+              "dps_delta": -6.039599395636969,
               "verified": true
             }
           ],
-          "faction_note": "Hand of Justice (from alliance) and horde's own pick Darkmoon Card: Maelstrom measure statistically indistinguishable on undead (13.17 ± 2.30 vs 15.89 ± 3.16 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Hand of Justice (from alliance) and horde's own pick Darkmoon Card: Maelstrom measure statistically indistinguishable on undead (12.95 ± 3.20 vs 15.97 ± 3.17 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -7814,7 +7814,7 @@
               "item_name": "Blackblade of Shahram",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -14.095394116003604,
+              "dps_delta": -14.070877963062344,
               "verified": true
             }
           ]
@@ -7833,16 +7833,16 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23203,
-              "item_name": "Libram of Fervor",
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 249442,
+              "item_name": "Libram of Invocation",
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "dps_delta": 0
             }
           ]
         }
       ],
-      "set_dps": 551.4584691426703,
+      "set_dps": 551.3856038093523,
       "no_source_count": 1699,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -7879,8 +7879,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.389390915,
-      "verify_run_seconds": 1.665087825,
+      "weights_run_seconds": 2.268971931,
+      "verify_run_seconds": 1.604162606,
       "coverage": {
         "back": {
           "eligible": 449,

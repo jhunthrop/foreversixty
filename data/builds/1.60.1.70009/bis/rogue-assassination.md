@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 32501000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 34.1. Weights run: 2.3s. Verify run: 1.5s. 197 eligible items had no known source.
+Set DPS (verified): 34.1. Weights run: 2.1s. Verify run: 1.4s. 197 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.309 ± 0.007, crit=0.632 ± 0.012 per rating point (14 rating = 1%, 8.842 per %), hit=0.870 ± 0.030 per rating point (10 rating = 1%, 8.701 per %), melee_haste=5.026 ± 0.296
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 197, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 32502110520000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 60.0. Weights run: 2.4s. Verify run: 1.4s. 331 eligible items had no known source.
+Set DPS (verified): 60.0. Weights run: 2.2s. Verify run: 1.4s. 331 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.341 ± 0.008, crit=0.696 ± 0.014 per rating point (14 rating = 1%, 9.744 per %), hit=1.132 ± 0.037 per rating point (10 rating = 1%, 11.321 per %), melee_haste=5.345 ± 0.380
 
@@ -66,11 +66,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 331, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
-### Band 40 (night-elf, 32502110551501000-00000000000000000-0000000000000000000)
+### Band 40 (night-elf, 32502110551401001-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 108.1. Weights run: 2.5s. Verify run: 1.6s. 459 eligible items had no known source.
+Set DPS (verified): 107.0. Weights run: 2.3s. Verify run: 1.5s. 459 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.356 ± 0.010, crit=0.739 ± 0.017 per rating point (14 rating = 1%, 10.348 per %), hit=2.210 ± 0.075 per rating point (10 rating = 1%, 22.096 per %), melee_haste=26.369 ± 0.714
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.356 ± 0.010, crit=0.740 ± 0.017 per rating point (14 rating = 1%, 10.356 per %), hit=2.166 ± 0.074 per rating point (10 rating = 1%, 21.665 per %), melee_haste=27.196 ± 0.748
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -78,9 +78,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | neck | Zealous Shadowshard Pendant (17772) | Shadowshard Fragments [quest] | 20.0 attack_power points (0.67 DPS) | yes | Sentinel's Medallion (19540, -0.17 DPS) [rep]; Ghostshard Talisman (7731, -0.20 DPS) [dungeon] |
 | shoulder | Sunburn Spaulders (274751) | Rettrick [vendor] | 26.9 attack_power points (0.90 DPS) | yes | Forest Tracker Epaulets (2278, -0.23 DPS) [world_drop]; Flintrock Shoulders (7755, -0.28 DPS) [dungeon]; Nightscape Shoulders (8192, -0.40 DPS) [crafted] |
 | back | Dark Hooded Cape (5257) | Nimar the Slayer [world] | 17.6 attack_power points (0.59 DPS) | yes | Sergeant Major's Cape (16336, -0.11 DPS) [pvp]; Hawkeye's Cloak (14593, -0.17 DPS) [world_drop]; Yeti Fur Cloak (2805, -0.22 DPS) [quest] |
-| chest | Quillward Harness (10583) | Razorfen Downs: Withered Warrior [dungeon] | 33.8 attack_power points (1.13 DPS) | yes | Wolffear Harness (13110, -0.39 DPS, sim-verified) [world_drop]; Nightscape Tunic (8175, -0.45 DPS) [crafted]; Dusky Leather Armor (7374, -0.50 DPS) [crafted] |
+| chest | Quillward Harness (10583) | Razorfen Downs: Withered Warrior [dungeon] | 33.8 attack_power points (1.13 DPS) | yes | Wolffear Harness (13110, -0.38 DPS, sim-verified) [world_drop]; Nightscape Tunic (8175, -0.45 DPS) [crafted]; Dusky Leather Armor (7374, -0.50 DPS) [crafted] |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 attack_power points (0.67 DPS) | yes | Hawkeye's Bracers (14590, -0.26 DPS) [world_drop]; Imperial Leather Bracers (4061, -0.31 DPS) [dungeon]; Dusky Bracers (7378, -0.31 DPS) [crafted] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | 30.3 attack_power points (1.02 DPS) | yes | Skulker's Leather Gloves (252525, -0.26 DPS) [crafted]; Prowler's Leather Gloves (252524, -0.27 DPS) [crafted]; Imperial Leather Gloves (4063, -0.31 DPS) [dungeon] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | 30.4 attack_power points (1.02 DPS) | yes | Skulker's Leather Gloves (252525, -0.26 DPS) [crafted]; Prowler's Leather Gloves (252524, -0.27 DPS) [crafted]; Imperial Leather Gloves (4063, -0.31 DPS) [dungeon] |
 | waist | Highlander's Leather Girdle (20116) | The League of Arathor [rep] | 30.0 attack_power points (1.01 DPS) | yes | Highlander's Chain Girdle (20090, -0.20 DPS) [rep]; Ogron's Sash (13117, -0.30 DPS) [world_drop]; Skulker's Leather Belt (252520, -0.40 DPS) [crafted] |
 | legs | Basilisk Hide Pants (1718) | World drop [world_drop] | 28.5 attack_power points (0.96 DPS) | yes | Triprunner Dungarees (9624, -0.04 DPS) [quest]; Ferine Leggings (6690, -0.08 DPS) [dungeon]; Brawler's Leather Legguards (252516, -0.31 DPS) [crafted] |
 | feet | Skulker's Leather Shoes (252531) | Leatherworking [crafted] | 21.9 attack_power points (0.74 DPS) | yes | Prowler's Leather Shoes (252465, -0.05 DPS) [crafted]; Imperial Leather Boots (6431, -0.07 DPS) [dungeon]; Excelsior Boots (4109, -0.09 DPS) [quest] |
@@ -89,7 +89,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Coldrage Dagger (10761, +0.00 DPS) [dungeon]; Ardent Custodian (868, -0.48 DPS) [world_drop]; Jhordy's Misplaced Screwdriver (274753, -1.10 DPS) [vendor] |
-| off_hand | Vanquisher's Sword (10823) | Bring the Light [quest] | sim-verified (108.1 DPS) | yes | Stonecloth Branch (15963, -14.74 DPS) [world_drop]; Satyr's Rod (15962, -14.79 DPS) [world_drop]; Ardent Custodian (868, -61.74 DPS, sim-verified) [world_drop] |
+| off_hand | Vanquisher's Sword (10823) | Bring the Light [quest] | sim-verified (107.0 DPS) | yes | Stonecloth Branch (15963, -14.74 DPS) [world_drop]; Satyr's Rod (15962, -14.79 DPS) [world_drop]; Ardent Custodian (868, -61.39 DPS, sim-verified) [world_drop] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Monolithic Bow (9426, -0.13 DPS) [dungeon]; Swiftwind (13038, -0.15 DPS) [world_drop]; Bow of Searing Arrows (2825, -0.49 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: White Bandit Mask; neck: Zealous Shadowshard Pendant; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Quillward Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Mark of Kern; finger2: Assault Band; main_hand: Gut Ripper; off_hand: Vanquisher's Sword; ranged: The Silencer
@@ -98,7 +98,7 @@ No-known-source sample (15 of 459, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32502110551501001-30230100000000000-0000000000000000000)
 
-Set DPS (verified): 172.6. Weights run: 3.3s. Verify run: 2.1s. 584 eligible items had no known source.
+Set DPS (verified): 172.6. Weights run: 3.1s. Verify run: 2.0s. 584 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.487 ± 0.011, crit=1.018 ± 0.019 per rating point (14 rating = 1%, 14.252 per %), hit=2.017 ± 0.075 per rating point (10 rating = 1%, 20.172 per %), melee_haste=7.463 ± 1.140
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 584, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 32502110551501001-30230300000000000-5120000000000000000)
 
-Set DPS (verified): 275.2. Weights run: 3.1s. Verify run: 2.0s. 1370 eligible items had no known source.
+Set DPS (verified): 275.2. Weights run: 2.9s. Verify run: 1.9s. 1370 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=2.055 ± 0.023, crit=2.226 ± 0.039 per rating point (14 rating = 1%, 31.167 per %), hit=4.385 ± 0.145 per rating point (10 rating = 1%, 43.850 per %), melee_haste=13.393 ± 2.472
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1370, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 01532310421501000-31530300001500000-0020000000000000000)
 
-Set DPS (verified): 646.4. Weights run: 3.3s. Verify run: 2.3s. 1370 eligible items had no known source.
+Set DPS (verified): 646.4. Weights run: 3.1s. Verify run: 2.1s. 1370 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=2.119 ± 0.022, crit=2.333 ± 0.039 per rating point (14 rating = 1%, 32.663 per %), hit=4.383 ± 0.211 per rating point (10 rating = 1%, 43.830 per %), melee_haste=16.756 ± 3.026
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1370, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 32501000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 33.7. Weights run: 2.3s. Verify run: 1.6s. 190 eligible items had no known source.
+Set DPS (verified): 33.7. Weights run: 2.1s. Verify run: 1.4s. 190 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.309 ± 0.007, crit=0.632 ± 0.012 per rating point (14 rating = 1%, 8.842 per %), hit=0.870 ± 0.030 per rating point (10 rating = 1%, 8.701 per %), melee_haste=5.026 ± 0.296
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 190, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 32502110520000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 59.0. Weights run: 2.4s. Verify run: 1.5s. 322 eligible items had no known source.
+Set DPS (verified): 59.0. Weights run: 2.2s. Verify run: 1.4s. 322 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.341 ± 0.008, crit=0.696 ± 0.014 per rating point (14 rating = 1%, 9.744 per %), hit=1.132 ± 0.037 per rating point (10 rating = 1%, 11.321 per %), melee_haste=5.345 ± 0.380
 
@@ -248,11 +248,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5748 Centaur Longbow; 5821 Darkstalker Boots
 
-### Band 40 (troll, 32502110551501000-00000000000000000-0000000000000000000)
+### Band 40 (troll, 32502110551401001-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 107.9. Weights run: 2.5s. Verify run: 1.6s. 444 eligible items had no known source.
+Set DPS (verified): 106.8. Weights run: 2.3s. Verify run: 1.5s. 444 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.356 ± 0.010, crit=0.739 ± 0.017 per rating point (14 rating = 1%, 10.348 per %), hit=2.210 ± 0.075 per rating point (10 rating = 1%, 22.096 per %), melee_haste=26.369 ± 0.714
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.356 ± 0.010, crit=0.740 ± 0.017 per rating point (14 rating = 1%, 10.356 per %), hit=2.166 ± 0.074 per rating point (10 rating = 1%, 21.665 per %), melee_haste=27.196 ± 0.748
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
@@ -262,7 +262,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | back | Dark Hooded Cape (5257) | Nimar the Slayer [world] | 17.6 attack_power points (0.59 DPS) | yes | First Sergeant's Cloak (16340, -0.11 DPS) [pvp]; Hawkeye's Cloak (14593, -0.17 DPS) [world_drop]; Parachute Cloak (10518, -0.23 DPS) [crafted] |
 | chest | Quillward Harness (10583) | Razorfen Downs: Withered Warrior [dungeon] | 33.8 attack_power points (1.13 DPS) | yes | Wolffear Harness (13110, -0.37 DPS, sim-verified) [world_drop]; Nightscape Tunic (8175, -0.45 DPS) [crafted]; Dusky Leather Armor (7374, -0.50 DPS) [crafted] |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 attack_power points (0.67 DPS) | yes | Forest Stalker's Bracers (19590, +0.00 DPS) [pvp]; Hawkeye's Bracers (14590, -0.26 DPS) [world_drop]; Dusky Bracers (7378, -0.31 DPS) [crafted] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | 30.3 attack_power points (1.02 DPS) | yes | Prowler's Leather Gloves (252524, -0.27 DPS) [crafted]; Imperial Leather Gloves (4063, -0.31 DPS) [dungeon]; Skulker's Leather Gloves (252525, -0.32 DPS, sim-verified) [crafted] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | 30.4 attack_power points (1.02 DPS) | yes | Prowler's Leather Gloves (252524, -0.27 DPS) [crafted]; Imperial Leather Gloves (4063, -0.31 DPS) [dungeon]; Skulker's Leather Gloves (252525, -0.32 DPS, sim-verified) [crafted] |
 | waist | Defiler's Leather Girdle (20192) | The Defilers [rep] | 30.0 attack_power points (1.01 DPS) | yes | Defiler's Chain Girdle (20152, -0.20 DPS) [rep]; Ogron's Sash (13117, -0.30 DPS) [world_drop]; Skulker's Leather Belt (252520, -0.40 DPS) [crafted] |
 | legs | Basilisk Hide Pants (1718) | World drop [world_drop] | 28.5 attack_power points (0.96 DPS) | yes | Triprunner Dungarees (9624, -0.04 DPS) [quest]; Ferine Leggings (6690, -0.08 DPS) [dungeon]; Brawler's Leather Legguards (252516, -0.31 DPS) [crafted] |
 | feet | Skulker's Leather Shoes (252531) | Leatherworking [crafted] | 21.9 attack_power points (0.74 DPS) | yes | Prowler's Leather Shoes (252465, -0.05 DPS) [crafted]; Imperial Leather Boots (6431, -0.07 DPS) [dungeon]; Excelsior Boots (4109, -0.09 DPS) [quest] |
@@ -271,7 +271,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Coldrage Dagger (10761, +0.00 DPS) [dungeon]; Ardent Custodian (868, -0.48 DPS) [world_drop]; Jhordy's Misplaced Screwdriver (274753, -1.10 DPS) [vendor] |
-| off_hand | Vanquisher's Sword (10823) | Bring the End [quest] | sim-verified (107.9 DPS) | yes | Stonecloth Branch (15963, -14.74 DPS) [world_drop]; Tork Wrench (11855, -14.77 DPS) [quest]; Ardent Custodian (868, -62.01 DPS, sim-verified) [world_drop] |
+| off_hand | Vanquisher's Sword (10823) | Bring the End [quest] | sim-verified (106.8 DPS) | yes | Stonecloth Branch (15963, -14.74 DPS) [world_drop]; Tork Wrench (11855, -14.77 DPS) [quest]; Ardent Custodian (868, -61.31 DPS, sim-verified) [world_drop] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Monolithic Bow (9426, -0.13 DPS) [dungeon]; Swiftwind (13038, -0.15 DPS) [world_drop]; Bow of Searing Arrows (2825, -0.49 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: White Bandit Mask; neck: Zealous Shadowshard Pendant; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Quillward Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Mark of Kern; finger2: Assault Band; main_hand: Gut Ripper; off_hand: Vanquisher's Sword; ranged: The Silencer
@@ -280,7 +280,7 @@ No-known-source sample (15 of 444, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 32502110551501001-30230100000000000-0000000000000000000)
 
-Set DPS (verified): 175.4. Weights run: 3.3s. Verify run: 2.2s. 564 eligible items had no known source.
+Set DPS (verified): 175.4. Weights run: 3.1s. Verify run: 2.1s. 564 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.487 ± 0.011, crit=1.018 ± 0.019 per rating point (14 rating = 1%, 14.252 per %), hit=2.017 ± 0.075 per rating point (10 rating = 1%, 20.172 per %), melee_haste=7.463 ± 1.140
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 564, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 32502110551501001-30230300000000000-5120000000000000000)
 
-Set DPS (verified): 274.5. Weights run: 3.1s. Verify run: 2.0s. 1367 eligible items had no known source.
+Set DPS (verified): 274.5. Weights run: 2.9s. Verify run: 1.9s. 1367 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=2.055 ± 0.023, crit=2.226 ± 0.039 per rating point (14 rating = 1%, 31.167 per %), hit=4.385 ± 0.145 per rating point (10 rating = 1%, 43.850 per %), melee_haste=13.393 ± 2.472
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1367, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 01532310421501000-31530300001500000-0020000000000000000)
 
-Set DPS (verified): 643.8. Weights run: 3.3s. Verify run: 2.3s. 1367 eligible items had no known source.
+Set DPS (verified): 643.8. Weights run: 3.1s. Verify run: 2.1s. 1367 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=2.119 ± 0.022, crit=2.333 ± 0.039 per rating point (14 rating = 1%, 32.663 per %), hit=4.383 ± 0.211 per rating point (10 rating = 1%, 43.830 per %), melee_haste=16.756 ± 3.026
 

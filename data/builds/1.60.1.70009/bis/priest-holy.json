@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70009",
-  "engine_version": "aa3e0be44",
-  "generated_at": "2026-10-08T02:01:24Z",
+  "engine_version": "583668528",
+  "generated_at": "2026-10-08T02:48:06Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -194,7 +194,7 @@
           "item_name": "Filigreed Pristine Gown",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 25.070234733813994,
+          "score": 25.070234733813997,
           "verified": true,
           "alternatives": [
             {
@@ -210,14 +210,14 @@
               "item_name": "Corsair's Overshirt",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.20095187667854317
+              "dps_delta": -0.20095187667854333
             },
             {
               "item_id": 2981,
               "item_name": "Seer's Robe",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.517143093527008
+              "dps_delta": -0.5171430935270082
             }
           ]
         },
@@ -571,8 +571,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 9.80081645,
-      "verify_run_seconds": 4.733449294,
+      "weights_run_seconds": 9.148262248,
+      "verify_run_seconds": 4.342494973,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 9.80081645,
-      "verify_run_seconds": 5.217663365,
+      "weights_run_seconds": 9.148262248,
+      "verify_run_seconds": 4.85973893,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1902,8 +1902,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 9.869670826,
-      "verify_run_seconds": 4.918014241,
+      "weights_run_seconds": 9.345577329,
+      "verify_run_seconds": 4.634332379,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2587,8 +2587,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 9.869670826,
-      "verify_run_seconds": 5.490318548,
+      "weights_run_seconds": 9.345577329,
+      "verify_run_seconds": 5.071967937,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3277,8 +3277,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 9.948101814,
-      "verify_run_seconds": 4.92583385,
+      "weights_run_seconds": 9.274285992,
+      "verify_run_seconds": 4.563673394,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3971,8 +3971,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 9.948101814,
-      "verify_run_seconds": 5.382913723,
+      "weights_run_seconds": 9.274285992,
+      "verify_run_seconds": 5.043876794,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4700,8 +4700,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.111852813,
-      "verify_run_seconds": 5.040528303,
+      "weights_run_seconds": 9.463373782,
+      "verify_run_seconds": 4.578834776,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5429,8 +5429,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.111852813,
-      "verify_run_seconds": 5.57424302,
+      "weights_run_seconds": 9.463373782,
+      "verify_run_seconds": 5.183466981,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5856,7 +5856,7 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -7.475208563035684
+              "dps_delta": -7.4752085630356815
             }
           ]
         },
@@ -6164,8 +6164,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 10.530615262,
-      "verify_run_seconds": 4.450614402,
+      "weights_run_seconds": 10.033871469,
+      "verify_run_seconds": 4.175979497,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6898,8 +6898,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 10.530615262,
-      "verify_run_seconds": 4.895470057,
+      "weights_run_seconds": 10.033871469,
+      "verify_run_seconds": 4.643972764,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7352,7 +7352,7 @@
               "item_name": "Marshal's Satin Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.3757952230038535
+              "dps_delta": -1.375795223003856
             },
             {
               "item_id": 226946,
@@ -7635,8 +7635,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 8.932960239,
-      "verify_run_seconds": 3.760566951,
+      "weights_run_seconds": 8.45421972,
+      "verify_run_seconds": 3.651041743,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8154,7 +8154,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.005188091160426
+              "dps_delta": -1.0051880911604272
             },
             {
               "item_id": 11669,
@@ -8186,7 +8186,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.2890984269648738
+              "dps_delta": -0.289098426964875
             },
             {
               "item_id": 11669,
@@ -8371,8 +8371,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 8.932960239,
-      "verify_run_seconds": 4.221281611,
+      "weights_run_seconds": 8.45421972,
+      "verify_run_seconds": 4.103516107,
       "coverage": {
         "back": {
           "eligible": 450,
