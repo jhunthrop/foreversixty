@@ -1,8 +1,8 @@
 {
   "spec": "paladin-protection",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T15:07:42Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T16:04:48Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -680,8 +680,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 4.66686094,
-      "verify_run_seconds": 1.882046859,
+      "weights_run_seconds": 6.272878661,
+      "verify_run_seconds": 2.398764577,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1439,8 +1439,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 4.66686094,
-      "verify_run_seconds": 1.8760985159999999,
+      "weights_run_seconds": 6.272878661,
+      "verify_run_seconds": 2.464881622,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1899,7 +1899,7 @@
               "item_name": "Ebon Vise",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Fallen Champion",
-              "dps_delta": -88.23451030890726
+              "dps_delta": -88.23451030890716
             },
             {
               "item_id": 3485,
@@ -1938,7 +1938,7 @@
               "item_name": "Warden's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -111.6815754136282
+              "dps_delta": -111.68157541362814
             }
           ]
         },
@@ -2250,8 +2250,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Resplendent Guardian"
       ],
-      "weights_run_seconds": 4.646102536,
-      "verify_run_seconds": 1.831185662,
+      "weights_run_seconds": 6.235786398,
+      "verify_run_seconds": 2.323371018,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3059,8 +3059,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Resplendent Guardian"
       ],
-      "weights_run_seconds": 4.646102536,
-      "verify_run_seconds": 1.705488886,
+      "weights_run_seconds": 6.235786398,
+      "verify_run_seconds": 2.288924516,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3581,7 +3581,7 @@
               "item_name": "Guard's Silvered Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -49.13882266788899
+              "dps_delta": -49.138822667888874
             },
             {
               "item_id": 7921,
@@ -3613,7 +3613,7 @@
               "item_name": "Sentinel's Boots",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -10.141426561621543
+              "dps_delta": -10.141426561621659
             },
             {
               "item_id": 250548,
@@ -3869,8 +3869,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 5.248606031,
-      "verify_run_seconds": 2.708649288,
+      "weights_run_seconds": 7.097117266,
+      "verify_run_seconds": 3.507177229,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4683,8 +4683,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 5.248606031,
-      "verify_run_seconds": 2.411128878,
+      "weights_run_seconds": 7.097117266,
+      "verify_run_seconds": 3.146904141,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5136,14 +5136,14 @@
               "item_name": "Warder's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -8.792258042907099
+              "dps_delta": -8.792258042907234
             },
             {
               "item_id": 272096,
               "item_name": "Raider Gauntlets",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -139.9335483954331
+              "dps_delta": -139.93354839543323
             },
             {
               "item_id": 250552,
@@ -5478,8 +5478,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 5.892777737,
-      "verify_run_seconds": 3.39237492,
+      "weights_run_seconds": 7.899647646,
+      "verify_run_seconds": 4.468926151,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6295,8 +6295,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 5.892777737,
-      "verify_run_seconds": 4.723755628,
+      "weights_run_seconds": 7.899647646,
+      "verify_run_seconds": 6.158059161,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6790,7 +6790,7 @@
               "item_name": "Belt of Valor",
               "source_kind": "dungeon",
               "source": "Stratholme: Patchwork Horror",
-              "dps_delta": -174.66486130230118
+              "dps_delta": -174.6648613023006
             },
             {
               "item_id": 250572,
@@ -6878,7 +6878,7 @@
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -165.63709780892185
+              "dps_delta": -165.6370978089216
             },
             {
               "item_id": 22331,
@@ -6910,7 +6910,7 @@
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -102.20415237517335
+              "dps_delta": -102.20415237517308
             },
             {
               "item_id": 22331,
@@ -7109,8 +7109,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 5.797549515,
-      "verify_run_seconds": 12.208620079,
+      "weights_run_seconds": 7.890915725,
+      "verify_run_seconds": 16.236434421,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7612,7 +7612,7 @@
               "item_name": "Belt of Valor",
               "source_kind": "dungeon",
               "source": "Stratholme: Patchwork Horror",
-              "dps_delta": -174.66486130230118
+              "dps_delta": -174.6648613023006
             },
             {
               "item_id": 250572,
@@ -7704,7 +7704,7 @@
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -165.63709780892185
+              "dps_delta": -165.6370978089216
             },
             {
               "item_id": 22331,
@@ -7737,7 +7737,7 @@
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -102.20415237517335
+              "dps_delta": -102.20415237517308
             },
             {
               "item_id": 22331,
@@ -7940,8 +7940,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 5.797549515,
-      "verify_run_seconds": 11.517127889,
+      "weights_run_seconds": 7.890915725,
+      "verify_run_seconds": 15.490050651,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -8211,7 +8211,7 @@
               "item_name": "Enchanted Thorium Helm",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -528.3937292940774
+              "dps_delta": -528.3937292940759
             }
           ]
         },
@@ -8236,7 +8236,7 @@
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -65.36155247747992
+              "dps_delta": -65.36155247747917
             },
             {
               "item_id": 13091,
@@ -8360,14 +8360,14 @@
               "item_name": "Warder's Wristguards",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -76.11645277513456
+              "dps_delta": -76.11645277513382
             },
             {
               "item_id": 13951,
               "item_name": "Vigorsteel Vambraces",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -302.1231936543023
+              "dps_delta": -302.1231936543016
             },
             {
               "item_id": 23090,
@@ -8497,7 +8497,7 @@
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1198.3310336685952
+              "dps_delta": -1198.3310336685938
             },
             {
               "item_id": 11787,
@@ -8755,8 +8755,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 5.542669525,
-      "verify_run_seconds": 9.8845562,
+      "weights_run_seconds": 7.452719386,
+      "verify_run_seconds": 13.245533189,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -9012,7 +9012,7 @@
               "item_name": "Enchanted Thorium Helm",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -528.3937292940759
+              "dps_delta": -528.3937292940774
             },
             {
               "item_id": 226989,
@@ -9287,7 +9287,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -671.2011867812876
+              "dps_delta": -671.201186781289
             }
           ]
         },
@@ -9567,8 +9567,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 5.542669525,
-      "verify_run_seconds": 9.523673092,
+      "weights_run_seconds": 7.452719386,
+      "verify_run_seconds": 12.836125737,
       "coverage": {
         "back": {
           "eligible": 449,

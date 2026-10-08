@@ -1,8 +1,8 @@
 {
   "spec": "paladin-holy",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T15:05:19Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T16:01:37Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -224,14 +224,14 @@
               "item_name": "Filigreed Pristine Gown",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.16585569000000086
+              "dps_delta": -0.16585569000000056
             },
             {
               "item_id": 6226,
               "item_name": "Bloody Apron",
               "source_kind": "dungeon",
               "source": "Shadowfang Keep: Razorclaw the Butcher",
-              "dps_delta": -0.5942875172753261
+              "dps_delta": -0.5942875172753258
             }
           ]
         },
@@ -561,8 +561,8 @@
         "finger2: Black Pearl Ring",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 3.103699072,
-      "verify_run_seconds": 2.0181699,
+      "weights_run_seconds": 4.18177998,
+      "verify_run_seconds": 2.596510465,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1200,8 +1200,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 3.103699072,
-      "verify_run_seconds": 2.088232637,
+      "weights_run_seconds": 4.18177998,
+      "verify_run_seconds": 2.7012959260000002,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1523,7 +1523,7 @@
               "item_name": "Wisdom's Leather Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.36735723273265763
+              "dps_delta": -0.3673572327326573
             }
           ]
         },
@@ -1879,8 +1879,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.131053135,
-      "verify_run_seconds": 1.982979983,
+      "weights_run_seconds": 4.121179569,
+      "verify_run_seconds": 2.577509512,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2557,8 +2557,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.131053135,
-      "verify_run_seconds": 2.08871975,
+      "weights_run_seconds": 4.121179569,
+      "verify_run_seconds": 2.69287777,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3036,7 +3036,7 @@
               "item_name": "Gilded Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6590587239969948
+              "dps_delta": -0.6590587239969952
             }
           ]
         },
@@ -3230,8 +3230,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 5.536936698,
-      "verify_run_seconds": 3.6141596480000002,
+      "weights_run_seconds": 7.542944235,
+      "verify_run_seconds": 4.7139044420000005,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3539,7 +3539,7 @@
               "item_name": "Pristine Gown",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.9325991396812747
+              "dps_delta": -2.932599139681274
             },
             {
               "item_id": 250521,
@@ -3710,7 +3710,7 @@
               "item_name": "Gilded Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6590587239969952
+              "dps_delta": -0.6590587239969948
             }
           ]
         },
@@ -3903,8 +3903,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 5.536936698,
-      "verify_run_seconds": 3.6024403339999997,
+      "weights_run_seconds": 7.542944235,
+      "verify_run_seconds": 4.728588649,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4258,7 +4258,7 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.029562359059634533
+              "dps_delta": -0.029562359059634027
             },
             {
               "item_id": 250584,
@@ -4651,8 +4651,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 5.907870663,
-      "verify_run_seconds": 4.602010306,
+      "weights_run_seconds": 7.928517293,
+      "verify_run_seconds": 6.032116532,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5396,8 +5396,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 5.907870663,
-      "verify_run_seconds": 4.258513851,
+      "weights_run_seconds": 7.928517293,
+      "verify_run_seconds": 5.564775798,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6128,8 +6128,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 6.578030657,
-      "verify_run_seconds": 18.140930452,
+      "weights_run_seconds": 8.941172684,
+      "verify_run_seconds": 23.608212141,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6844,8 +6844,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 6.578030657,
-      "verify_run_seconds": 14.090555887,
+      "weights_run_seconds": 8.941172684,
+      "verify_run_seconds": 18.526465702,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -7245,7 +7245,7 @@
               "item_name": "Wisdom of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.7545529419831853
+              "dps_delta": -1.754552941983187
             },
             {
               "item_id": 18391,
@@ -7572,8 +7572,8 @@
         "trinket2: Mindtap Talisman",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 3.890450301,
-      "verify_run_seconds": 8.813821338,
+      "weights_run_seconds": 5.16221275,
+      "verify_run_seconds": 10.986515522,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7746,7 +7746,7 @@
               "item_name": "Sanctified Leather Helm",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -6.87947939022476
+              "dps_delta": -6.8794793902247635
             },
             {
               "item_id": 21517,
@@ -7975,7 +7975,7 @@
               "item_name": "Wisdom of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.7545529419831853
+              "dps_delta": -1.754552941983187
             },
             {
               "item_id": 18391,
@@ -8014,7 +8014,7 @@
               "item_name": "Soulforge Leggings",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -8.244345591256737
+              "dps_delta": -8.244345591256739
             },
             {
               "item_id": 14554,
@@ -8073,14 +8073,14 @@
               "item_name": "Band of Mending",
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar",
-              "dps_delta": -0.9978194836587566
+              "dps_delta": -0.9978194836587551
             },
             {
               "item_id": 16058,
               "item_name": "Fordring's Seal",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.0253936761912057
+              "dps_delta": -1.0253936761912041
             },
             {
               "item_id": 11669,
@@ -8303,8 +8303,8 @@
         "trinket2: Mindtap Talisman",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 3.890450301,
-      "verify_run_seconds": 9.885956725,
+      "weights_run_seconds": 5.16221275,
+      "verify_run_seconds": 12.501165780000001,
       "coverage": {
         "back": {
           "eligible": 449,

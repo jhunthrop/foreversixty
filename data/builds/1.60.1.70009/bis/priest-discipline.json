@@ -1,8 +1,8 @@
 {
   "spec": "priest-discipline",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T15:11:49Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T16:10:15Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -575,8 +575,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 7.761723514,
-      "verify_run_seconds": 3.865556713,
+      "weights_run_seconds": 10.528377894,
+      "verify_run_seconds": 5.173190407,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1227,8 +1227,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 7.761723514,
-      "verify_run_seconds": 3.85006766,
+      "weights_run_seconds": 10.528377894,
+      "verify_run_seconds": 5.17651673,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1913,8 +1913,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 7.916778841,
-      "verify_run_seconds": 3.860090029,
+      "weights_run_seconds": 10.687755948,
+      "verify_run_seconds": 5.135751177,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2599,8 +2599,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 7.916778841,
-      "verify_run_seconds": 3.9062912709999997,
+      "weights_run_seconds": 10.687755948,
+      "verify_run_seconds": 5.178284645,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3314,8 +3314,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 9.169504583,
-      "verify_run_seconds": 4.838425786,
+      "weights_run_seconds": 12.365259153,
+      "verify_run_seconds": 6.3928152449999995,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3713,7 +3713,7 @@
           "item_name": "Gilded Cord",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 39.502042421848515,
+          "score": 39.50204242184851,
           "verified": true,
           "alternatives": [
             {
@@ -3729,14 +3729,14 @@
               "item_name": "Sutarn's Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.7805394439690507
+              "dps_delta": -1.78053944396905
             },
             {
               "item_id": 6726,
               "item_name": "Razzeric's Customized Seatbelt",
               "source_kind": "quest",
               "source": "Safety First",
-              "dps_delta": -1.789260280856581
+              "dps_delta": -1.7892602808565803
             }
           ]
         },
@@ -4028,8 +4028,8 @@
         "off_hand: Prophetic Cane",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 9.169504583,
-      "verify_run_seconds": 4.842792617,
+      "weights_run_seconds": 12.365259153,
+      "verify_run_seconds": 6.409934301,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4278,7 +4278,7 @@
               "item_name": "Kentic Amice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -0.3910837173331435
+              "dps_delta": -0.39108371733314273
             },
             {
               "item_id": 17732,
@@ -4560,7 +4560,7 @@
           "item_name": "Cyclopean Band",
           "source": "Blackrock Depths: Ok'thor the Breaker",
           "source_kind": "dungeon",
-          "score": 21.744991073714644,
+          "score": 21.744991073714647,
           "verified": true,
           "alternatives": [
             {
@@ -4576,14 +4576,14 @@
               "item_name": "Sea Giant's Toe Ring",
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
-              "dps_delta": -0.39827798606416315
+              "dps_delta": -0.39827798606416354
             },
             {
               "item_id": 17768,
               "item_name": "Woodseed Hoop",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": -0.719370421634174
+              "dps_delta": -0.7193704216341743
             }
           ]
         },
@@ -4785,8 +4785,8 @@
         "trinket2: Thunderbrew's Boot Flask",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 9.212179524,
-      "verify_run_seconds": 5.644366388,
+      "weights_run_seconds": 12.239433311,
+      "verify_run_seconds": 7.533286052,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5541,8 +5541,8 @@
         "trinket2: Alchemists' Stone",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 9.212179524,
-      "verify_run_seconds": 5.44107795,
+      "weights_run_seconds": 12.239433311,
+      "verify_run_seconds": 7.289518541,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5985,7 +5985,7 @@
               "item_name": "Marshal's Satin Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.8233684176633483
+              "dps_delta": -0.8233684176633499
             },
             {
               "item_id": 226946,
@@ -6273,8 +6273,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Sparkling Crystal Wand"
       ],
-      "weights_run_seconds": 8.800718661,
-      "verify_run_seconds": 8.676468411,
+      "weights_run_seconds": 11.813549533,
+      "verify_run_seconds": 11.081793074,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6815,14 +6815,14 @@
               "item_name": "Fordring's Seal",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -0.03640874458330743
+              "dps_delta": -0.03640874458330664
             },
             {
               "item_id": 18395,
               "item_name": "Emerald Flame Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -0.5097223651990416
+              "dps_delta": -0.5097223651990408
             },
             {
               "item_id": 11669,
@@ -7008,8 +7008,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Sparkling Crystal Wand"
       ],
-      "weights_run_seconds": 8.800718661,
-      "verify_run_seconds": 8.389536266,
+      "weights_run_seconds": 11.813549533,
+      "verify_run_seconds": 11.013523152,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7174,7 +7174,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 125.61352522320853,
+          "score": 125.61352522320851,
           "verified": true,
           "alternatives": [
             {
@@ -7189,7 +7189,7 @@
               "item_name": "Lieutenant Commander's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.3402582639499219
+              "dps_delta": -1.3402582639499199
             },
             {
               "item_id": 21517,
@@ -7305,7 +7305,7 @@
           "item_name": "Virtuous Robe",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 124.94949289283224,
+          "score": 124.94949289283225,
           "verified": true,
           "alternatives": [
             {
@@ -7320,7 +7320,7 @@
               "item_name": "Alanna's Embrace",
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -1.5472658310458585
+              "dps_delta": -1.5472658310458602
             },
             {
               "item_id": 14138,
@@ -7418,7 +7418,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.5428833702322056
+              "dps_delta": -0.5428833702322037
             },
             {
               "item_id": 19047,
@@ -7488,7 +7488,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.139061760099303
+              "dps_delta": -3.1390617600993047
             },
             {
               "item_id": 227862,
@@ -7545,14 +7545,14 @@
               "item_name": "Band of Mending",
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar",
-              "dps_delta": -0.1306235252516298
+              "dps_delta": -0.13062352525163073
             },
             {
               "item_id": 13345,
               "item_name": "Seal of Rivendare",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -0.576793826164737
+              "dps_delta": -0.576793826164738
             },
             {
               "item_id": 11669,
@@ -7726,8 +7726,8 @@
         "main_hand: Staff of Hale Magefire",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.062379131,
-      "verify_run_seconds": 8.136090235,
+      "weights_run_seconds": 8.054573319,
+      "verify_run_seconds": 10.585968152,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7892,7 +7892,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 125.61352522320854,
+          "score": 125.61352522320853,
           "verified": true,
           "alternatives": [
             {
@@ -7915,7 +7915,7 @@
               "item_name": "Champion's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.3402582639499236
+              "dps_delta": -1.3402582639499219
             }
           ]
         },
@@ -7925,7 +7925,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 80.22488522988057,
+          "score": 80.22488522988056,
           "verified": true,
           "alternatives": [
             {
@@ -7933,14 +7933,14 @@
               "item_name": "Jeweled Amulet of Cainwyn",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.7457557940857125
+              "dps_delta": -1.7457557940857107
             },
             {
               "item_id": 19593,
               "item_name": "The Eye of Zuldazar",
               "source_kind": "quest",
               "source": "The Eye of Zuldazar",
-              "dps_delta": -1.903339175895959
+              "dps_delta": -1.9033391758959572
             },
             {
               "item_id": 14558,
@@ -8041,7 +8041,7 @@
               "item_name": "Alanna's Embrace",
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -0.5155829563393433
+              "dps_delta": -0.5155829563393451
             },
             {
               "item_id": 226945,
@@ -8445,8 +8445,8 @@
         "main_hand: Staff of Hale Magefire",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.062379131,
-      "verify_run_seconds": 5.504563782,
+      "weights_run_seconds": 8.054573319,
+      "verify_run_seconds": 6.957034395,
       "coverage": {
         "back": {
           "eligible": 450,

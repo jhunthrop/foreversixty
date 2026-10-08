@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T15:24:28Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T16:26:55Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -892,8 +892,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.569543699,
-      "verify_run_seconds": 1.029089162,
+      "weights_run_seconds": 2.092801721,
+      "verify_run_seconds": 1.3279509680000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1937,8 +1937,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.569543699,
-      "verify_run_seconds": 1.071903638,
+      "weights_run_seconds": 2.092801721,
+      "verify_run_seconds": 1.39757327,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2653,8 +2653,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.594720055,
-      "verify_run_seconds": 0.973684053,
+      "weights_run_seconds": 2.091521534,
+      "verify_run_seconds": 1.288051439,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3369,8 +3369,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.594720055,
-      "verify_run_seconds": 0.992058405,
+      "weights_run_seconds": 2.091521534,
+      "verify_run_seconds": 1.291766437,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4055,8 +4055,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.584526183,
-      "verify_run_seconds": 1.07550846,
+      "weights_run_seconds": 2.031691476,
+      "verify_run_seconds": 1.377361742,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4737,8 +4737,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.584526183,
-      "verify_run_seconds": 1.063008934,
+      "weights_run_seconds": 2.031691476,
+      "verify_run_seconds": 1.386795152,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5194,7 +5194,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.687297783140027
+              "dps_delta": -3.6872977831400267
             },
             {
               "item_id": 14132,
@@ -5448,8 +5448,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.163109712,
-      "verify_run_seconds": 1.292955542,
+      "weights_run_seconds": 5.4001562960000005,
+      "verify_run_seconds": 1.6352496699999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6162,8 +6162,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.163109712,
-      "verify_run_seconds": 1.274836609,
+      "weights_run_seconds": 5.4001562960000005,
+      "verify_run_seconds": 1.622812851,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6894,8 +6894,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.426889286,
-      "verify_run_seconds": 2.806771815,
+      "weights_run_seconds": 5.771047126,
+      "verify_run_seconds": 3.579106656,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7636,8 +7636,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.426889286,
-      "verify_run_seconds": 2.799599694,
+      "weights_run_seconds": 5.771047126,
+      "verify_run_seconds": 3.597729328,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7864,7 +7864,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -3.2342153434940064
+              "dps_delta": -3.2342153434940086
             },
             {
               "item_id": 22657,
@@ -8052,7 +8052,7 @@
               "item_name": "Belt of the Archmage",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -6.077926495908431
+              "dps_delta": -6.077926495908429
             },
             {
               "item_id": 11662,
@@ -8372,8 +8372,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.2709309189999995,
-      "verify_run_seconds": 3.054534622,
+      "weights_run_seconds": 6.882837415,
+      "verify_run_seconds": 3.930007348,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8600,7 +8600,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -3.2342153434940086
+              "dps_delta": -3.2342153434940064
             },
             {
               "item_id": 22657,
@@ -9113,8 +9113,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.2709309189999995,
-      "verify_run_seconds": 2.984373167,
+      "weights_run_seconds": 6.882837415,
+      "verify_run_seconds": 3.884140848,
       "coverage": {
         "back": {
           "eligible": 450,

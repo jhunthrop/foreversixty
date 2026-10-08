@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T15:09:17Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T16:06:55Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -559,8 +559,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.517867897,
-      "verify_run_seconds": 2.426568819,
+      "weights_run_seconds": 1.989748571,
+      "verify_run_seconds": 3.182764569,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.517867897,
-      "verify_run_seconds": 2.531271271,
+      "weights_run_seconds": 1.989748571,
+      "verify_run_seconds": 3.309281993,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1843,8 +1843,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.530203245,
-      "verify_run_seconds": 1.597550563,
+      "weights_run_seconds": 2.055311088,
+      "verify_run_seconds": 2.093855836,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2496,8 +2496,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.530203245,
-      "verify_run_seconds": 1.606691892,
+      "weights_run_seconds": 2.055311088,
+      "verify_run_seconds": 2.086653349,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3150,8 +3150,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.542506892,
-      "verify_run_seconds": 2.926789405,
+      "weights_run_seconds": 2.047077321,
+      "verify_run_seconds": 3.8402305119999998,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3803,8 +3803,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.542506892,
-      "verify_run_seconds": 2.912839725,
+      "weights_run_seconds": 2.047077321,
+      "verify_run_seconds": 3.9809108589999997,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4489,8 +4489,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.553151656,
-      "verify_run_seconds": 3.427382775,
+      "weights_run_seconds": 2.177876744,
+      "verify_run_seconds": 4.623888688,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5174,8 +5174,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.553151656,
-      "verify_run_seconds": 3.306715856,
+      "weights_run_seconds": 2.177876744,
+      "verify_run_seconds": 4.451761994,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5917,8 +5917,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.545664938,
-      "verify_run_seconds": 8.993454925,
+      "weights_run_seconds": 2.146327196,
+      "verify_run_seconds": 11.909327579,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6095,7 +6095,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -5.046473729794459
+              "dps_delta": -5.046473729794458
             },
             {
               "item_id": 12587,
@@ -6650,8 +6650,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.545664938,
-      "verify_run_seconds": 8.317405188,
+      "weights_run_seconds": 2.146327196,
+      "verify_run_seconds": 11.079380691,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -7396,8 +7396,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.817747009,
-      "verify_run_seconds": 9.874419057,
+      "weights_run_seconds": 2.458768887,
+      "verify_run_seconds": 13.165630082,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7799,7 +7799,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 100.3300114633824,
+          "score": 100.33001146338239,
           "verified": true,
           "alternatives": [
             {
@@ -7807,21 +7807,21 @@
               "item_name": "Radiant Girdle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -0.9715403570879769
+              "dps_delta": -0.971540357087975
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.8529398814406688
+              "dps_delta": -1.852939881440667
             },
             {
               "item_id": 22232,
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -2.638740396639557
+              "dps_delta": -2.6387403966395553
             }
           ]
         },
@@ -8119,8 +8119,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.817747009,
-      "verify_run_seconds": 8.923208479,
+      "weights_run_seconds": 2.458768887,
+      "verify_run_seconds": 11.731790304,
       "coverage": {
         "back": {
           "eligible": 449,

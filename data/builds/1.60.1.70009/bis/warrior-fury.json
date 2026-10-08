@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T15:28:48Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T16:32:32Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -629,8 +629,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.156083666,
-      "verify_run_seconds": 3.048160229,
+      "weights_run_seconds": 2.819660749,
+      "verify_run_seconds": 3.891804516,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1333,8 +1333,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.156083666,
-      "verify_run_seconds": 3.101334325,
+      "weights_run_seconds": 2.819660749,
+      "verify_run_seconds": 3.87496993,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2025,8 +2025,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.366670478,
-      "verify_run_seconds": 1.7132753809999999,
+      "weights_run_seconds": 3.085430297,
+      "verify_run_seconds": 2.165781838,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2717,8 +2717,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.366670478,
-      "verify_run_seconds": 1.921728705,
+      "weights_run_seconds": 3.085430297,
+      "verify_run_seconds": 2.4457996189999998,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3413,8 +3413,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.518673342,
-      "verify_run_seconds": 2.100760561,
+      "weights_run_seconds": 3.240392922,
+      "verify_run_seconds": 2.719837054,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4110,8 +4110,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.518673342,
-      "verify_run_seconds": 2.115895836,
+      "weights_run_seconds": 3.240392922,
+      "verify_run_seconds": 2.782783027,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4821,8 +4821,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.514734324,
-      "verify_run_seconds": 2.783237181,
+      "weights_run_seconds": 3.277975299,
+      "verify_run_seconds": 3.611601516,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5552,8 +5552,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.514734324,
-      "verify_run_seconds": 2.828722234,
+      "weights_run_seconds": 3.277975299,
+      "verify_run_seconds": 3.636101773,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5988,7 +5988,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.9644368500258365
+              "dps_delta": -3.9644368500258333
             },
             {
               "item_id": 14554,
@@ -6300,8 +6300,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.506598342,
-      "verify_run_seconds": 8.996740138,
+      "weights_run_seconds": 3.297684324,
+      "verify_run_seconds": 11.633893703,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6741,7 +6741,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.0063459171322897
+              "dps_delta": -3.006345917132287
             },
             {
               "item_id": 22385,
@@ -7062,8 +7062,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.506598342,
-      "verify_run_seconds": 8.733202927,
+      "weights_run_seconds": 3.297684324,
+      "verify_run_seconds": 11.395512333,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7818,8 +7818,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.857379028,
-      "verify_run_seconds": 9.701627843,
+      "weights_run_seconds": 3.7115960599999998,
+      "verify_run_seconds": 12.627242364,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8218,7 +8218,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 100.35746089247098,
+          "score": 100.35746089247097,
           "verified": true,
           "alternatives": [
             {
@@ -8226,21 +8226,21 @@
               "item_name": "Radiant Girdle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.4613860125746605
+              "dps_delta": -1.4613860125746572
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -3.268120931914374
+              "dps_delta": -3.2681209319143707
             },
             {
               "item_id": 22232,
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.627196679509087
+              "dps_delta": -3.6271966795090838
             }
           ]
         },
@@ -8586,8 +8586,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.857379028,
-      "verify_run_seconds": 11.793344602,
+      "weights_run_seconds": 3.7115960599999998,
+      "verify_run_seconds": 15.304999623,
       "coverage": {
         "back": {
           "eligible": 450,

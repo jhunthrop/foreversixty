@@ -3962,7 +3962,7 @@ ns.Data = {
 					feet = { 22064, "Q", "Anthion's Parting Words" },
 					finger1 = { 20682, "W", "Prince Skaldrenox" },
 					finger2 = { 22339, "D", "Blackrock Spire: Lord Valthalak" },
-					hands = { 22066, "Q", "Just Compensation" },
+					hands = { 226930, "V", "Mokvar" },
 					head = { 226935, "Q", "Saving the Best for Last" },
 					legs = { 237815, "V", "Illiyana Moonblaze" },
 					main_hand = { 22335, "D", "Blackrock Spire: Lord Valthalak" },
@@ -5300,11 +5300,11 @@ ns.Data = {
 			[30] = {
 				alliance = {
 					back = { 14593, "B", "World drop" },
-					chest = { 7374, "C", "Leatherworking" },
-					feet = { 1121, "B", "World drop" },
+					chest = { 10399, "D", "The Deadmines: Edwin VanCleef" },
+					feet = { 10402, "D", "The Deadmines: Defias Strip Miner" },
 					finger1 = { 7686, "D", "Scarlet Monastery: Ironspine" },
 					finger2 = { 19517, "R", "Silverwing Sentinels" },
-					hands = { 7359, "C", "Leatherworking" },
+					hands = { 10401, "D", "The Deadmines: Defias Overseer" },
 					head = { 252512, "C", "Leatherworking" },
 					legs = { 6690, "D", "Razorfen Kraul: Agathelos the Raging" },
 					main_hand = { 7687, "D", "Scarlet Monastery: Ironspine" },
@@ -5312,7 +5312,7 @@ ns.Data = {
 					off_hand = { 9457, "D", "Gnomeregan: Dark Iron Ambassador" },
 					ranged = { 274748, "V", "Gezzy Gunkgear" },
 					shoulder = { 2278, "B", "World drop" },
-					waist = { 20090, "R", "The League of Arathor" },
+					waist = { 10403, "D", "The Deadmines: Captain Greenskin" },
 					wrist = { 14590, "B", "World drop" },
 				},
 				horde = {
@@ -5471,7 +5471,7 @@ ns.Data = {
 				},
 				horde = {
 					back = { 6449, "D", "Wailing Caverns: Skum" },
-					chest = { 252490, "C", "Leatherworking" },
+					chest = { 10399, "D", "The Deadmines: Edwin VanCleef" },
 					feet = { 10402, "D", "The Deadmines: Defias Strip Miner" },
 					finger1 = { 20429, "R", "Warsong Outriders" },
 					finger2 = { 277210, "Q", "The Horn of Xelthos" },
@@ -5594,7 +5594,7 @@ ns.Data = {
 					ranged = { 2100, "B", "World drop" },
 					shoulder = { 274751, "V", "Rettrick" },
 					trinket1 = { 19120, "Q", "Job Opening: Guard Captain of Revantusk Village" },
-					trinket2 = { 249469, "C", "Enchanting" },
+					trinket2 = { 249470, "C", "Enchanting" },
 					waist = { 11686, "D", "Blackrock Depths: Eviscerator" },
 					wrist = { 13120, "B", "World drop" },
 				},
@@ -7660,7 +7660,7 @@ ns.Data = {
 			},
 			[60] = {
 				alliance = { 226935, 22403, 227808, 272411, 14152, 19595, 228190, 226933, 226931, 20682, 22339, 12930, 11832, 22335, 279246 },
-				horde = { 226935, 22403, 227808, 272411, 14152, 19595, 22066, 228190, 237815, 22064, 20682, 22339, 12930, 22268, 22335, 279246 },
+				horde = { 226935, 22403, 227808, 272411, 14152, 19595, 228190, 237815, 22064, 20682, 22339, 12930, 22268, 22335, 279246 },
 			},
 		},
 		["mage-frost"] = {
@@ -7823,7 +7823,7 @@ ns.Data = {
 				horde = { 252504, 20442, 5404, 6449, 252490, 3202, 10401, 10403, 10400, 10402, 20429, 277210, 2194, 5191, 13136 },
 			},
 			[30] = {
-				alliance = { 252512, 7731, 2278, 14593, 7374, 14590, 7359, 20090, 6690, 1121, 7686, 19517, 7687, 9457, 274748 },
+				alliance = { 252512, 7731, 2278, 14593, 10399, 14590, 6690, 7686, 19517, 7687, 9457, 274748 },
 				horde = { 252512, 7731, 2278, 14593, 7374, 14590, 7359, 20152, 6690, 1121, 7686, 19513, 7687, 9457, 274748 },
 			},
 			[40] = {
@@ -7842,11 +7842,11 @@ ns.Data = {
 		["rogue-combat"] = {
 			[20] = {
 				alliance = { 252504, 20444, 5404, 6449, 252490, 270015, 10401, 10403, 10400, 10402, 20439, 277210, 2236, 1935, 13136 },
-				horde = { 252504, 20442, 5404, 6449, 252490, 3202, 10401, 10403, 10400, 10402, 20429, 277210, 2236, 1935, 13136 },
+				horde = { 252504, 20442, 5404, 6449, 10399, 3202, 10401, 10403, 10400, 10402, 20429, 277210, 2236, 1935, 13136 },
 			},
 			[30] = {
 				alliance = { 252455, 7731, 2278, 14593, 10399, 14590, 6690, 7686, 19517, 6691, 23168, 274748 },
-				horde = { 252455, 7731, 2278, 14593, 10399, 14590, 6690, 7686, 19513, 6691, 23168, 274748 },
+				horde = { 252455, 7731, 2278, 14593, 14590, 6690, 7686, 19513, 6691, 23168, 274748 },
 			},
 			[40] = {
 				alliance = { 10008, 17772, 274751, 5257, 10583, 19508, 867, 20116, 1718, 252531, 2262, 13095, 2164, 274753, 13138 },
@@ -7854,7 +7854,7 @@ ns.Data = {
 			},
 			[50] = {
 				alliance = { 19984, 13089, 220852, 11626, 220854, 13120, 272100, 11686, 220858, 12470, 17713, 19516, 249469, 249470, 2163, 6660, 2100 },
-				horde = { 19984, 13089, 11626, 220855, 13120, 272100, 11686, 220859, 12470, 17713, 11862, 19120, 249469, 2163, 6660, 2100 },
+				horde = { 19984, 13089, 11626, 220855, 13120, 272100, 11686, 220859, 12470, 17713, 11862, 19120, 249470, 2163, 6660, 2100 },
 			},
 			[60] = {
 				alliance = { 13404, 22340, 15058, 272414, 252483, 19587, 21278, 272395, 15057, 226831, 19325, 21201, 19289, 13965, 21522, 12590, 18323 },
@@ -8092,10 +8092,10 @@ ns.Data = {
 		},
 		["druid-feral"] = {
 			[20] = { ["agility"] = 1.482, ["attack_power"] = 1, ["crit"] = 0.689, ["feral_attack_power"] = 1, ["hit"] = 0.868, ["melee_haste"] = 5.607, ["strength"] = 2.2 },
-			[30] = { ["agility"] = 1.551, ["attack_power"] = 1, ["crit"] = 0.788, ["feral_attack_power"] = 1, ["hit"] = 0.888, ["melee_haste"] = 5.288, ["strength"] = 2.2 },
-			[40] = { ["agility"] = 1.616, ["attack_power"] = 1, ["crit"] = 0.88, ["feral_attack_power"] = 1, ["hit"] = 0.965, ["melee_haste"] = 5.36, ["strength"] = 2.2 },
-			[50] = { ["agility"] = 1.694, ["attack_power"] = 1, ["crit"] = 0.991, ["feral_attack_power"] = 1, ["hit"] = 1.107, ["melee_haste"] = 5.552, ["strength"] = 2.2 },
-			[60] = { ["agility"] = 1.768, ["attack_power"] = 1, ["crit"] = 1.097, ["feral_attack_power"] = 1, ["hit"] = 1.239, ["melee_haste"] = 6.36, ["strength"] = 2.2 },
+			[30] = { ["agility"] = 1.551, ["attack_power"] = 1, ["crit"] = 0.788, ["feral_attack_power"] = 1, ["hit"] = 0.888, ["melee_haste"] = 5.289, ["strength"] = 2.2 },
+			[40] = { ["agility"] = 1.615, ["attack_power"] = 1, ["crit"] = 0.878, ["feral_attack_power"] = 1, ["hit"] = 0.97, ["melee_haste"] = 5.322, ["strength"] = 2.2 },
+			[50] = { ["agility"] = 1.693, ["attack_power"] = 1, ["crit"] = 0.99, ["feral_attack_power"] = 1, ["hit"] = 1.106, ["melee_haste"] = 5.503, ["strength"] = 2.2 },
+			[60] = { ["agility"] = 1.767, ["attack_power"] = 1, ["crit"] = 1.096, ["feral_attack_power"] = 1, ["hit"] = 1.237, ["melee_haste"] = 6.472, ["strength"] = 2.2 },
 		},
 		["druid-feral-bear"] = {
 			[20] = { ["agility"] = 0.152, ["armor"] = 0.083, ["attack_power"] = 0.035, ["crit"] = 0.024, ["defense"] = 0.169, ["dodge"] = 0.129, ["expertise"] = 1.471, ["hit"] = 0.066, ["stamina"] = 1, ["strength"] = 0.07 },
@@ -8197,24 +8197,24 @@ ns.Data = {
 		},
 		["rogue-assassination"] = {
 			[20] = { ["agility"] = 1.304, ["attack_power"] = 1, ["crit"] = 0.628, ["hit"] = 0.941, ["melee_haste"] = 4.767, ["strength"] = 1 },
-			[30] = { ["agility"] = 1.345, ["attack_power"] = 1, ["crit"] = 0.704, ["hit"] = 1.083, ["melee_haste"] = 5.26, ["strength"] = 1 },
+			[30] = { ["agility"] = 1.345, ["attack_power"] = 1, ["crit"] = 0.704, ["hit"] = 1.083, ["melee_haste"] = 5.265, ["strength"] = 1 },
 			[40] = { ["agility"] = 1.356, ["attack_power"] = 1, ["crit"] = 0.74, ["hit"] = 2.166, ["melee_haste"] = 27.196, ["strength"] = 1 },
-			[50] = { ["agility"] = 1.477, ["attack_power"] = 1, ["crit"] = 0.995, ["hit"] = 2.105, ["melee_haste"] = 7.426, ["strength"] = 1 },
-			[60] = { ["agility"] = 2.056, ["attack_power"] = 1, ["crit"] = 2.203, ["hit"] = 4.47, ["strength"] = 1 },
+			[50] = { ["agility"] = 1.477, ["attack_power"] = 1, ["crit"] = 0.995, ["hit"] = 2.112, ["melee_haste"] = 7.417, ["strength"] = 1 },
+			[60] = { ["agility"] = 2.056, ["attack_power"] = 1, ["crit"] = 2.203, ["hit"] = 4.472, ["strength"] = 1 },
 		},
 		["rogue-combat"] = {
-			[20] = { ["agility"] = 1.133, ["attack_power"] = 1, ["crit"] = 0.287, ["hit"] = 0.841, ["melee_haste"] = 5.193, ["strength"] = 1 },
-			[30] = { ["agility"] = 1.136, ["attack_power"] = 1, ["crit"] = 0.292, ["hit"] = 1.09, ["melee_haste"] = 7.611, ["strength"] = 1 },
-			[40] = { ["agility"] = 1.379, ["attack_power"] = 1, ["crit"] = 0.795, ["hit"] = 1.13, ["melee_haste"] = 8.039, ["strength"] = 1 },
-			[50] = { ["agility"] = 1.451, ["attack_power"] = 1, ["crit"] = 0.934, ["hit"] = 1.57, ["melee_haste"] = 10.859, ["strength"] = 1 },
-			[60] = { ["agility"] = 2.083, ["attack_power"] = 1, ["crit"] = 2.24, ["hit"] = 3.354, ["melee_haste"] = 12.198, ["strength"] = 1 },
+			[20] = { ["agility"] = 1.133, ["attack_power"] = 1, ["crit"] = 0.287, ["hit"] = 0.841, ["melee_haste"] = 5.192, ["strength"] = 1 },
+			[30] = { ["agility"] = 1.136, ["attack_power"] = 1, ["crit"] = 0.292, ["hit"] = 1.092, ["melee_haste"] = 7.568, ["strength"] = 1 },
+			[40] = { ["agility"] = 1.379, ["attack_power"] = 1, ["crit"] = 0.795, ["hit"] = 1.128, ["melee_haste"] = 8.051, ["strength"] = 1 },
+			[50] = { ["agility"] = 1.45, ["attack_power"] = 1, ["crit"] = 0.932, ["hit"] = 1.588, ["melee_haste"] = 10.706, ["strength"] = 1 },
+			[60] = { ["agility"] = 2.083, ["attack_power"] = 1, ["crit"] = 2.239, ["hit"] = 3.314, ["melee_haste"] = 12.233, ["strength"] = 1 },
 		},
 		["rogue-subtlety"] = {
 			[20] = { ["agility"] = 1.037, ["attack_power"] = 1, ["crit"] = 0.08, ["hit"] = 0.768, ["melee_haste"] = 4.663, ["strength"] = 1 },
-			[30] = { ["agility"] = 1.033, ["attack_power"] = 1, ["crit"] = 0.071, ["hit"] = 1.005, ["melee_haste"] = 7.951, ["strength"] = 1 },
-			[40] = { ["agility"] = 1.037, ["attack_power"] = 1, ["crit"] = 0.075, ["hit"] = 0.993, ["melee_haste"] = 5.181, ["strength"] = 1 },
-			[50] = { ["agility"] = 1.358, ["attack_power"] = 1, ["crit"] = 0.753, ["hit"] = 1.552, ["melee_haste"] = 5.349, ["strength"] = 1 },
-			[60] = { ["agility"] = 1.873, ["attack_power"] = 1, ["crit"] = 1.81, ["hit"] = 2.93, ["melee_haste"] = 10.595, ["strength"] = 1 },
+			[30] = { ["agility"] = 1.033, ["attack_power"] = 1, ["crit"] = 0.071, ["hit"] = 1.004, ["melee_haste"] = 7.951, ["strength"] = 1 },
+			[40] = { ["agility"] = 1.037, ["attack_power"] = 1, ["crit"] = 0.075, ["hit"] = 0.993, ["melee_haste"] = 5.215, ["strength"] = 1 },
+			[50] = { ["agility"] = 1.358, ["attack_power"] = 1, ["crit"] = 0.753, ["hit"] = 1.564, ["melee_haste"] = 5.321, ["strength"] = 1 },
+			[60] = { ["agility"] = 1.875, ["attack_power"] = 1, ["crit"] = 1.812, ["hit"] = 2.906, ["melee_haste"] = 10.925, ["strength"] = 1 },
 		},
 		["shaman-elemental"] = {
 			[20] = { ["crit"] = 0.066, ["hit"] = 0.194, ["intellect"] = 0.591, ["nature_power"] = 0.935, ["spell_haste"] = -1.628, ["spell_power"] = 1 },

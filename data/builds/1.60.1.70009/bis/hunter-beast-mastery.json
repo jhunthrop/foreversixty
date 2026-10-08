@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T14:58:18Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T15:52:32Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -536,8 +536,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.007520395,
-      "verify_run_seconds": 1.806865752,
+      "weights_run_seconds": 2.705021865,
+      "verify_run_seconds": 2.400840074,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1175,8 +1175,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.007520395,
-      "verify_run_seconds": 3.285939924,
+      "weights_run_seconds": 2.705021865,
+      "verify_run_seconds": 4.326631788,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1905,8 +1905,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.207745205,
-      "verify_run_seconds": 1.927325325,
+      "weights_run_seconds": 3.000127099,
+      "verify_run_seconds": 2.6483311130000002,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2621,8 +2621,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.207745205,
-      "verify_run_seconds": 1.8823205779999999,
+      "weights_run_seconds": 3.000127099,
+      "verify_run_seconds": 2.515333399,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3301,8 +3301,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.369779454,
-      "verify_run_seconds": 2.388006209,
+      "weights_run_seconds": 3.19502359,
+      "verify_run_seconds": 3.209605134,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3982,8 +3982,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.369779454,
-      "verify_run_seconds": 2.326258887,
+      "weights_run_seconds": 3.19502359,
+      "verify_run_seconds": 3.129738146,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4659,8 +4659,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.44333371,
-      "verify_run_seconds": 2.757983531,
+      "weights_run_seconds": 3.304833077,
+      "verify_run_seconds": 3.672138677,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5346,8 +5346,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.44333371,
-      "verify_run_seconds": 2.789299516,
+      "weights_run_seconds": 3.304833077,
+      "verify_run_seconds": 3.725432099,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6093,8 +6093,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.3898709399999998,
-      "verify_run_seconds": 9.582889027,
+      "weights_run_seconds": 3.209507173,
+      "verify_run_seconds": 12.551138494,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6838,8 +6838,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.3898709399999998,
-      "verify_run_seconds": 9.271650394,
+      "weights_run_seconds": 3.209507173,
+      "verify_run_seconds": 12.120210311,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7584,8 +7584,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.434921498,
-      "verify_run_seconds": 9.555811127,
+      "weights_run_seconds": 3.234300107,
+      "verify_run_seconds": 12.611657192,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8023,7 +8023,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 163.18087552809175,
+          "score": 163.18087552809172,
           "verified": true,
           "alternatives": [
             {
@@ -8039,14 +8039,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -7.276613561751895
+              "dps_delta": -7.276613561751891
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -8.029275745350391
+              "dps_delta": -8.029275745350388
             }
           ]
         },
@@ -8331,8 +8331,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.434921498,
-      "verify_run_seconds": 9.602809557,
+      "weights_run_seconds": 3.234300107,
+      "verify_run_seconds": 12.586171176,
       "coverage": {
         "back": {
           "eligible": 450,

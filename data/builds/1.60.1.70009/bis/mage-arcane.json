@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "b8ecd4558",
-  "generated_at": "2026-10-08T15:02:00Z",
+  "engine_version": "35be2e187",
+  "generated_at": "2026-10-08T15:57:19Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.769172986,
-      "verify_run_seconds": 0.603175039,
+      "weights_run_seconds": 1.014390747,
+      "verify_run_seconds": 0.748511727,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.769172986,
-      "verify_run_seconds": 0.634988635,
+      "weights_run_seconds": 1.014390747,
+      "verify_run_seconds": 0.824806723,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1909,8 +1909,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.982275838,
-      "verify_run_seconds": 0.693072048,
+      "weights_run_seconds": 1.286281795,
+      "verify_run_seconds": 0.910135008,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2629,8 +2629,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.982275838,
-      "verify_run_seconds": 0.723800868,
+      "weights_run_seconds": 1.286281795,
+      "verify_run_seconds": 0.90426077,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3317,8 +3317,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.05084829,
-      "verify_run_seconds": 0.736962407,
+      "weights_run_seconds": 1.338880542,
+      "verify_run_seconds": 0.949960688,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3999,8 +3999,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.05084829,
-      "verify_run_seconds": 0.730616006,
+      "weights_run_seconds": 1.338880542,
+      "verify_run_seconds": 0.918766012,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4712,8 +4712,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.021790093,
-      "verify_run_seconds": 1.018789411,
+      "weights_run_seconds": 1.339728418,
+      "verify_run_seconds": 1.275427976,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5415,8 +5415,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.021790093,
-      "verify_run_seconds": 0.954953361,
+      "weights_run_seconds": 1.339728418,
+      "verify_run_seconds": 1.178550352,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5661,7 +5661,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.985384509649286,
+          "score": 45.98538450964928,
           "verified": true,
           "alternatives": [
             {
@@ -5669,14 +5669,14 @@
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.6688929988893824
+              "dps_delta": -2.66889299888938
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.809129430802063
+              "dps_delta": -3.8091294308020607
             },
             {
               "item_id": 272103,
@@ -5694,7 +5694,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 32.47406102339587,
+          "score": 32.47406102339586,
           "verified": true,
           "alternatives": [
             {
@@ -5702,14 +5702,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.238465799003819
+              "dps_delta": -3.2384657990038166
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -4.347949623765829
+              "dps_delta": -4.347949623765827
             },
             {
               "item_id": 20697,
@@ -5727,7 +5727,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 56.42848904510661,
+          "score": 56.428489045106616,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5736,14 +5736,14 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.8912164819422256
+              "dps_delta": -0.8912164819422279
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -4.7964815040474935
+              "dps_delta": -4.796481504047495
             },
             {
               "item_id": 18385,
@@ -6171,8 +6171,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.082578712,
-      "verify_run_seconds": 2.232757393,
+      "weights_run_seconds": 1.367597639,
+      "verify_run_seconds": 2.769873666,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6418,7 +6418,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.985384509649286,
+          "score": 45.98538450964928,
           "verified": true,
           "alternatives": [
             {
@@ -6426,14 +6426,14 @@
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.6688929988893824
+              "dps_delta": -2.66889299888938
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.809129430802063
+              "dps_delta": -3.809129430802058
             },
             {
               "item_id": 272103,
@@ -6611,7 +6611,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.281784292042901
+              "dps_delta": -7.281784292042899
             }
           ]
         },
@@ -6927,8 +6927,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.082578712,
-      "verify_run_seconds": 2.139653679,
+      "weights_run_seconds": 1.367597639,
+      "verify_run_seconds": 2.711283339,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7251,7 +7251,7 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.1341925852408146
+              "dps_delta": -3.134192585240811
             },
             {
               "item_id": 18385,
@@ -7673,8 +7673,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.223177252,
-      "verify_run_seconds": 2.387607722,
+      "weights_run_seconds": 1.537258579,
+      "verify_run_seconds": 2.916202887,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7995,7 +7995,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.134192585240811
+              "dps_delta": -3.1341925852408146
             },
             {
               "item_id": 18385,
@@ -8417,8 +8417,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.223177252,
-      "verify_run_seconds": 2.333281574,
+      "weights_run_seconds": 1.537258579,
+      "verify_run_seconds": 3.003401604,
       "coverage": {
         "back": {
           "eligible": 450,
