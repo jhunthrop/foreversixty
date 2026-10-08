@@ -6837,6 +6837,12 @@
         "level": 40,
         "lines": [
           {
+            "spell_id": 408490,
+            "name": "Lava Burst",
+            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "icon": "spell_shaman_lavaburst"
+          },
+          {
             "spell_id": 10495,
             "name": "Mana Spring Totem",
             "condition": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
@@ -6878,6 +6884,12 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 1238299,
+            "name": "Lava Burst",
+            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "icon": "spell_shaman_lavaburst"
+          },
+          {
             "spell_id": 10496,
             "name": "Mana Spring Totem",
             "condition": "Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a 180 s fight ends, so one 100-mana drop at the start returns about 900 mana.",
@@ -6918,6 +6930,12 @@
       {
         "level": 60,
         "lines": [
+          {
+            "spell_id": 1238300,
+            "name": "Lava Burst",
+            "condition": "Lava Burst on cooldown: 10 s cooldown, 2.0 s cast with Elemental Alacrity, and about as much damage per mana as Lightning Bolt for more damage per second of cast.",
+            "icon": "spell_shaman_lavaburst"
+          },
           {
             "spell_id": 10497,
             "name": "Mana Spring Totem",
@@ -14221,9 +14239,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -14362,7 +14380,6 @@
             272411,
             14152,
             19595,
-            22066,
             228190,
             237815,
             22064,
@@ -19636,9 +19653,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 7374,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 3566,
+              "source_kind": "quest",
+              "source": "Ormer's Revenge"
             },
             "wrist": {
               "item_id": 14590,
@@ -19775,7 +19792,7 @@
             7731,
             2278,
             14593,
-            7374,
+            3566,
             14590,
             7359,
             20090,
@@ -19806,10 +19823,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.143,
-          "crit": 0.305,
-          "hit": 0.918,
-          "melee_haste": 4.88
+          "agility": 1.136,
+          "crit": 0.292,
+          "hit": 1.071,
+          "melee_haste": 7.844
         }
       },
       {
@@ -20009,10 +20026,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.393,
-          "crit": 0.82,
-          "hit": 0.988,
-          "melee_haste": 5.596
+          "agility": 1.379,
+          "crit": 0.793,
+          "hit": 1.171,
+          "melee_haste": 9.086
         }
       },
       {
@@ -20177,9 +20194,9 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 12791,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Plugger Spazzring"
+              "item_id": 2163,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 6660,
@@ -20227,7 +20244,7 @@
             11862,
             19120,
             249469,
-            12791,
+            2163,
             6660,
             2100
           ]
@@ -20235,10 +20252,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.459,
-          "crit": 0.953,
-          "hit": 1.22,
-          "melee_haste": 5.165
+          "agility": 1.449,
+          "crit": 0.93,
+          "hit": 1.552,
+          "melee_haste": 9.896
         }
       },
       {
@@ -20246,9 +20263,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 279253,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 13404,
+              "source_kind": "dungeon",
+              "source": "Stratholme: The Unforgiven"
             },
             "neck": {
               "item_id": 22340,
@@ -20256,9 +20273,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 272105,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 12927,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Pyroguard Emberseer"
             },
             "back": {
               "item_id": 272414,
@@ -20311,9 +20328,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 13965,
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise"
             },
             "main_hand": {
               "item_id": 21522,
@@ -20321,9 +20338,9 @@
               "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 12590,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand"
+              "item_id": 19324,
+              "source_kind": "rep",
+              "source": "Stormpike Guard"
             },
             "ranged": {
               "item_id": 18323,
@@ -20333,9 +20350,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 279253,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 13404,
+              "source_kind": "dungeon",
+              "source": "Stratholme: The Unforgiven"
             },
             "neck": {
               "item_id": 22340,
@@ -20343,9 +20360,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "shoulder": {
-              "item_id": 272105,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 12927,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Pyroguard Emberseer"
             },
             "back": {
               "item_id": 272414,
@@ -20398,9 +20415,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
               "item_id": 21522,
@@ -20408,9 +20425,9 @@
               "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 19324,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan"
+              "item_id": 12590,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "ranged": {
               "item_id": 18323,
@@ -20421,9 +20438,9 @@
         },
         "new_at_band": {
           "alliance": [
-            279253,
+            13404,
             22340,
-            272105,
+            12927,
             272414,
             252483,
             19587,
@@ -20434,15 +20451,15 @@
             19325,
             21201,
             19289,
-            11815,
+            13965,
             21522,
-            12590,
+            19324,
             18323
           ],
           "horde": [
-            279253,
+            13404,
             22340,
-            272105,
+            12927,
             272414,
             252483,
             19587,
@@ -20453,19 +20470,19 @@
             19325,
             21201,
             19289,
-            11815,
+            19120,
             21522,
-            19324,
+            12590,
             18323
           ]
         },
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 2.096,
-          "crit": 2.286,
-          "hit": 2.791,
-          "melee_haste": 15.131
+          "agility": 2.079,
+          "crit": 2.249,
+          "hit": 3.228,
+          "melee_haste": 15.611
         }
       }
     ],
@@ -20869,10 +20886,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.043,
-          "crit": 0.087,
-          "hit": 0.859,
-          "melee_haste": 4.698
+          "agility": 1.035,
+          "crit": 0.073,
+          "hit": 0.995,
+          "melee_haste": 7.294
         }
       },
       {
@@ -21070,10 +21087,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.048,
-          "crit": 0.1,
-          "hit": 0.864,
-          "melee_haste": 4.831
+          "agility": 1.038,
+          "crit": 0.079,
+          "hit": 0.969,
+          "melee_haste": 6.921
         }
       },
       {
@@ -21296,10 +21313,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.379,
-          "crit": 0.788,
-          "hit": 1.299,
-          "melee_haste": 4.627
+          "agility": 1.367,
+          "crit": 0.763,
+          "hit": 1.666,
+          "melee_haste": 7.125
         }
       },
       {
@@ -21523,10 +21540,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.899,
-          "crit": 1.853,
-          "hit": 2.694,
-          "melee_haste": 12.109
+          "agility": 1.876,
+          "crit": 1.804,
+          "hit": 3.012,
+          "melee_haste": 11.265
         }
       }
     ],
@@ -21770,9 +21787,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 4322,
+              "item_id": 252456,
               "source_kind": "crafted",
-              "source": "Tailoring"
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 23169,
@@ -21858,7 +21875,7 @@
             9604
           ],
           "horde": [
-            4322,
+            252456,
             23169,
             7684,
             3719,
@@ -21876,10 +21893,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.528,
-          "crit": 0.082,
-          "hit": 0.224,
-          "nature_power": 0.943
+          "intellect": 0.562,
+          "crit": 0.081,
+          "hit": 0.245,
+          "spell_haste": -2.121,
+          "nature_power": 0.945
         }
       },
       {
@@ -22051,11 +22069,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.894,
-          "crit": 0.189,
-          "hit": 0.389,
-          "spell_haste": -2.658,
-          "nature_power": 0.945
+          "intellect": 0.908,
+          "crit": 0.194,
+          "hit": 0.39,
+          "spell_haste": -2.633,
+          "nature_power": 0.946
         }
       },
       {
@@ -22250,10 +22268,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.855,
-          "crit": 0.26,
-          "hit": 0.509,
-          "spell_haste": -2.521,
+          "intellect": 0.848,
+          "crit": 0.247,
+          "hit": 0.503,
+          "spell_haste": -2.533,
           "nature_power": 0.939
         }
       },
@@ -22465,11 +22483,11 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.764,
-          "crit": 0.3,
-          "hit": 0.539,
-          "spell_haste": -2.37,
-          "nature_power": 0.938
+          "intellect": 0.757,
+          "crit": 0.294,
+          "hit": 0.537,
+          "spell_haste": -2.329,
+          "nature_power": 0.939
         }
       }
     ],

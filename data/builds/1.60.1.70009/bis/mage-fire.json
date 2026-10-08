@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70009",
-  "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T23:11:22Z",
+  "engine_version": "37347ac0f",
+  "generated_at": "2026-10-08T00:18:51Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.06968595,
-      "verify_run_seconds": 0.756543502,
+      "weights_run_seconds": 1.112701864,
+      "verify_run_seconds": 0.756253167,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1185,8 +1185,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.06968595,
-      "verify_run_seconds": 0.763473028,
+      "weights_run_seconds": 1.112701864,
+      "verify_run_seconds": 0.779688144,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1888,8 +1888,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.110957848,
-      "verify_run_seconds": 0.802520845,
+      "weights_run_seconds": 1.143021043,
+      "verify_run_seconds": 0.818862392,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2592,8 +2592,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.110957848,
-      "verify_run_seconds": 0.77171333,
+      "weights_run_seconds": 1.143021043,
+      "verify_run_seconds": 0.787712896,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3263,8 +3263,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.226680861,
-      "verify_run_seconds": 0.731063598,
+      "weights_run_seconds": 1.221746192,
+      "verify_run_seconds": 0.755420648,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3928,8 +3928,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.226680861,
-      "verify_run_seconds": 0.740456794,
+      "weights_run_seconds": 1.221746192,
+      "verify_run_seconds": 0.744306902,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4624,8 +4624,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.156422566,
-      "verify_run_seconds": 0.847209516,
+      "weights_run_seconds": 1.210355724,
+      "verify_run_seconds": 0.907271369,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5306,8 +5306,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.156422566,
-      "verify_run_seconds": 0.878781353,
+      "weights_run_seconds": 1.210355724,
+      "verify_run_seconds": 0.900037831,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5516,14 +5516,14 @@
               "item_name": "Amulet of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.42839583814914883
+              "dps_delta": -0.42839583814914795
             },
             {
               "item_id": 22149,
               "item_name": "Beads of Ogre Mojo",
               "source_kind": "quest",
               "source": "Falrin's Vendetta",
-              "dps_delta": -1.1819502804937316
+              "dps_delta": -1.1819502804937305
             },
             {
               "item_id": 19601,
@@ -5614,7 +5614,7 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.68275773838505
+              "dps_delta": -0.6827577383850482
             },
             {
               "item_id": 227108,
@@ -5671,7 +5671,7 @@
           "item_name": "Sorcerer's Gloves",
           "source": "Just Compensation",
           "source_kind": "quest",
-          "score": 36.3260593538427,
+          "score": 36.326059353842695,
           "verified": true,
           "ties": [
             {
@@ -5750,7 +5750,7 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.39064120577562594
+              "dps_delta": -0.3906412057756278
             },
             {
               "item_id": 227109,
@@ -6048,8 +6048,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.315937733,
-      "verify_run_seconds": 0.870935538,
+      "weights_run_seconds": 1.296812723,
+      "verify_run_seconds": 0.879492015,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6416,12 +6416,6 @@
           "source_kind": "quest",
           "score": 36.3260593538427,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 226930,
-              "item_name": "Sorcerer's Gauntlets"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 16540,
@@ -6704,7 +6698,7 @@
               "item_name": "Staff of Balzaphon",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -1.2441041295948037
+              "dps_delta": -1.2441041295948019
             },
             {
               "item_id": 1728,
@@ -6791,8 +6785,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.315937733,
-      "verify_run_seconds": 0.879840865,
+      "weights_run_seconds": 1.296812723,
+      "verify_run_seconds": 0.903742272,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7000,14 +6994,14 @@
               "item_name": "Orb of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Orb of the Darkmoon",
-              "dps_delta": -0.7854575243374203
+              "dps_delta": -0.7854575243374187
             },
             {
               "item_id": 23125,
               "item_name": "Chains of the Lich",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -0.7854575243374203
+              "dps_delta": -0.7854575243374187
             },
             {
               "item_id": 19601,
@@ -7033,7 +7027,7 @@
               "item_name": "Lieutenant Commander's Silk Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -6.500966204361632
+              "dps_delta": -6.500966204361633
             },
             {
               "item_id": 231602,
@@ -7091,7 +7085,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 56.605536415095294,
+          "score": 56.6055364150953,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7100,14 +7094,14 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.3777226535723157
+              "dps_delta": -2.377722653572319
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -8.107139240312872
+              "dps_delta": -8.107139240312875
             },
             {
               "item_id": 18385,
@@ -7190,7 +7184,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.301018105218866,
+          "score": 45.30101810521886,
           "verified": true,
           "alternatives": [
             {
@@ -7198,14 +7192,14 @@
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.928159742623953
+              "dps_delta": -7.92815974262395
             },
             {
               "item_id": 20047,
               "item_name": "Highlander's Cloth Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -8.173702471892954
+              "dps_delta": -8.173702471892948
             },
             {
               "item_id": 18405,
@@ -7529,8 +7523,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.449014155,
-      "verify_run_seconds": 0.930914762,
+      "weights_run_seconds": 1.441299064,
+      "verify_run_seconds": 0.967894738,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7764,7 +7758,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 44.81751785394893,
+          "score": 44.81751785394892,
           "verified": true,
           "alternatives": [
             {
@@ -7780,14 +7774,14 @@
               "item_name": "Champion's Silk Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -6.500966204361632
+              "dps_delta": -6.50096620436163
             },
             {
               "item_id": 231594,
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -6.568590225624487
+              "dps_delta": -6.568590225624484
             }
           ]
         },
@@ -7830,7 +7824,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 56.6055364150953,
+          "score": 56.605536415095294,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7839,14 +7833,14 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.377722653572319
+              "dps_delta": -2.3777226535723157
             },
             {
               "item_id": 227106,
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -8.107139240312875
+              "dps_delta": -8.107139240312872
             },
             {
               "item_id": 18385,
@@ -7952,7 +7946,7 @@
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -8.173702471892954
+              "dps_delta": -8.173702471892952
             }
           ]
         },
@@ -8268,8 +8262,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.449014155,
-      "verify_run_seconds": 0.942841852,
+      "weights_run_seconds": 1.441299064,
+      "verify_run_seconds": 0.959979397,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8404,6 +8398,10 @@
           "label": "Grace of Air Totem"
         },
         {
+          "id": "windfury_totem",
+          "label": "Windfury Totem"
+        },
+        {
           "id": "mana_spring_totem",
           "label": "Mana Spring Totem"
         }
@@ -8476,7 +8474,7 @@
           "label": "Elixir of Fire Power"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is the engine's main-hand imbue Windfury. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
     }
   }
 }

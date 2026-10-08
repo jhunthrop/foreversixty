@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
-  "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T23:13:14Z",
+  "engine_version": "37347ac0f",
+  "generated_at": "2026-10-08T00:20:43Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -549,8 +549,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.968802843,
-      "verify_run_seconds": 0.703942593,
+      "weights_run_seconds": 0.946989772,
+      "verify_run_seconds": 0.711394074,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.968802843,
-      "verify_run_seconds": 0.739060057,
+      "weights_run_seconds": 0.946989772,
+      "verify_run_seconds": 0.747110714,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1886,8 +1886,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.946148111,
-      "verify_run_seconds": 0.727900714,
+      "weights_run_seconds": 0.922907652,
+      "verify_run_seconds": 0.753620818,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2592,8 +2592,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.946148111,
-      "verify_run_seconds": 0.736530675,
+      "weights_run_seconds": 0.922907652,
+      "verify_run_seconds": 0.769639005,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3264,8 +3264,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.967545809,
-      "verify_run_seconds": 0.674858714,
+      "weights_run_seconds": 1.035356742,
+      "verify_run_seconds": 0.67710836,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3930,8 +3930,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.967545809,
-      "verify_run_seconds": 0.687315223,
+      "weights_run_seconds": 1.035356742,
+      "verify_run_seconds": 0.71622893,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4366,7 +4366,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9262921566154595
+              "dps_delta": -0.926292156615459
             },
             {
               "item_id": 10807,
@@ -4623,8 +4623,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.969842073,
-      "verify_run_seconds": 0.760976873,
+      "weights_run_seconds": 0.971443863,
+      "verify_run_seconds": 0.805319469,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5052,7 +5052,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.926292156615459
+              "dps_delta": -0.9262921566154595
             },
             {
               "item_id": 10807,
@@ -5315,8 +5315,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.969842073,
-      "verify_run_seconds": 0.822678518,
+      "weights_run_seconds": 0.971443863,
+      "verify_run_seconds": 0.835500964,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5581,7 +5581,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 35.25970709131821,
+          "score": 35.25970709131822,
           "verified": true,
           "alternatives": [
             {
@@ -5589,21 +5589,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.4329263437648583
+              "dps_delta": -1.4329263437648592
             },
             {
               "item_id": 20697,
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.5903734269008674
+              "dps_delta": -1.5903734269008685
             },
             {
               "item_id": 22330,
               "item_name": "Shroud of Arcane Mastery",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Arena Spoils",
-              "dps_delta": -1.8786449546234711
+              "dps_delta": -1.8786449546234723
             }
           ]
         },
@@ -5958,7 +5958,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.4138770770232699
+              "dps_delta": -0.413877077023271
             },
             {
               "item_id": 2243,
@@ -6046,8 +6046,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.085367919,
-      "verify_run_seconds": 0.775185559,
+      "weights_run_seconds": 1.068280259,
+      "verify_run_seconds": 0.746585155,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6256,7 +6256,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -0.3020320791959335
+              "dps_delta": -0.30203207919593295
             },
             {
               "item_id": 22149,
@@ -6778,8 +6778,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.085367919,
-      "verify_run_seconds": 0.751341982,
+      "weights_run_seconds": 1.068280259,
+      "verify_run_seconds": 0.787192862,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7013,7 +7013,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 38.66557215219922,
+          "score": 38.665572152199225,
           "verified": true,
           "alternatives": [
             {
@@ -7035,7 +7035,7 @@
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -2.396419100173265
+              "dps_delta": -2.3964191001732673
             }
           ]
         },
@@ -7045,7 +7045,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 28.813033266790384,
+          "score": 28.81303326679038,
           "verified": true,
           "alternatives": [
             {
@@ -7061,14 +7061,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.6362999344372997
+              "dps_delta": -2.6362999344372984
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -3.680597261816141
+              "dps_delta": -3.6805972618161396
             }
           ]
         },
@@ -7510,8 +7510,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.146771008,
-      "verify_run_seconds": 0.826958349,
+      "weights_run_seconds": 1.156899459,
+      "verify_run_seconds": 0.870594554,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7745,7 +7745,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 38.665572152199225,
+          "score": 38.66557215219922,
           "verified": true,
           "alternatives": [
             {
@@ -7760,14 +7760,14 @@
               "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.3829954003315537
+              "dps_delta": -1.3829954003315512
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -2.3964191001732673
+              "dps_delta": -2.396419100173265
             }
           ]
         },
@@ -8241,8 +8241,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.146771008,
-      "verify_run_seconds": 0.877108395,
+      "weights_run_seconds": 1.156899459,
+      "verify_run_seconds": 0.876408002,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8377,6 +8377,10 @@
           "label": "Grace of Air Totem"
         },
         {
+          "id": "windfury_totem",
+          "label": "Windfury Totem"
+        },
+        {
           "id": "mana_spring_totem",
           "label": "Mana Spring Totem"
         }
@@ -8449,7 +8453,7 @@
           "label": "Elixir of Shadow Power"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is the engine's main-hand imbue Windfury. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
     }
   }
 }

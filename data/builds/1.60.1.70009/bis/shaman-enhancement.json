@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T23:18:27Z",
+  "engine_version": "37347ac0f",
+  "generated_at": "2026-10-08T00:25:59Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -515,8 +515,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.775413559,
-      "verify_run_seconds": 1.121370416,
+      "weights_run_seconds": 1.738511152,
+      "verify_run_seconds": 1.134160901,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1107,8 +1107,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.775413559,
-      "verify_run_seconds": 1.029840947,
+      "weights_run_seconds": 1.738511152,
+      "verify_run_seconds": 1.003449785,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1746,8 +1746,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.7790023640000001,
-      "verify_run_seconds": 1.292582339,
+      "weights_run_seconds": 1.8374851410000002,
+      "verify_run_seconds": 1.2916329260000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2385,8 +2385,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.7790023640000001,
-      "verify_run_seconds": 1.218317632,
+      "weights_run_seconds": 1.8374851410000002,
+      "verify_run_seconds": 1.227378323,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3027,8 +3027,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.211991704,
-      "verify_run_seconds": 1.3560233830000001,
+      "weights_run_seconds": 2.166680614,
+      "verify_run_seconds": 1.356354725,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3668,8 +3668,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.211991704,
-      "verify_run_seconds": 1.178173648,
+      "weights_run_seconds": 2.166680614,
+      "verify_run_seconds": 1.164260748,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4329,8 +4329,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.180714591,
-      "verify_run_seconds": 1.525866454,
+      "weights_run_seconds": 2.139034071,
+      "verify_run_seconds": 1.514930125,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4990,8 +4990,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.180714591,
-      "verify_run_seconds": 1.334355202,
+      "weights_run_seconds": 2.139034071,
+      "verify_run_seconds": 1.3404800080000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5696,8 +5696,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.226025509,
-      "verify_run_seconds": 1.487622466,
+      "weights_run_seconds": 2.131112156,
+      "verify_run_seconds": 1.500926761,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6401,8 +6401,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.226025509,
-      "verify_run_seconds": 1.408328426,
+      "weights_run_seconds": 2.131112156,
+      "verify_run_seconds": 1.418604892,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7103,8 +7103,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.509275422,
-      "verify_run_seconds": 1.6566890939999999,
+      "weights_run_seconds": 2.472260563,
+      "verify_run_seconds": 1.664429723,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7410,7 +7410,7 @@
               "item_name": "Legionnaire's Mail Hauberk",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -2.985977031744166
+              "dps_delta": -2.985977031744164
             },
             {
               "item_id": 23089,
@@ -7804,8 +7804,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.509275422,
-      "verify_run_seconds": 1.573154714,
+      "weights_run_seconds": 2.472260563,
+      "verify_run_seconds": 1.570892247,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7944,6 +7944,10 @@
           "label": "Grace of Air Totem"
         },
         {
+          "id": "windfury_totem",
+          "label": "Windfury Totem"
+        },
+        {
           "id": "mana_spring_totem",
           "label": "Mana Spring Totem"
         }
@@ -8008,15 +8012,15 @@
           "label": "Juju Might"
         },
         {
-          "id": "main_hand_imbue:windfury",
-          "label": "Windfury Totem"
+          "id": "main_hand_imbue:elemental_sharpening_stone",
+          "label": "Elemental Sharpening Stone"
         },
         {
           "id": "major_mana_potion",
           "label": "Major Mana Potion"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is the engine's main-hand imbue Windfury. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
     }
   }
 }

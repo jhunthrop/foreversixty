@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "642871a9c",
-  "generated_at": "2026-10-07T23:11:50Z",
+  "engine_version": "37347ac0f",
+  "generated_at": "2026-10-08T00:19:20Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.97846137,
-      "verify_run_seconds": 0.639337766,
+      "weights_run_seconds": 0.922055301,
+      "verify_run_seconds": 0.644951191,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1181,8 +1181,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.97846137,
-      "verify_run_seconds": 0.65308255,
+      "weights_run_seconds": 0.922055301,
+      "verify_run_seconds": 0.663079013,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1892,8 +1892,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.099691317,
-      "verify_run_seconds": 0.768842324,
+      "weights_run_seconds": 1.104057207,
+      "verify_run_seconds": 0.780457739,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2602,8 +2602,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.099691317,
-      "verify_run_seconds": 0.802915161,
+      "weights_run_seconds": 1.104057207,
+      "verify_run_seconds": 0.809619374,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3278,8 +3278,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.000772105,
-      "verify_run_seconds": 0.645997904,
+      "weights_run_seconds": 1.020882795,
+      "verify_run_seconds": 0.62993147,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3948,8 +3948,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.000772105,
-      "verify_run_seconds": 0.649050663,
+      "weights_run_seconds": 1.020882795,
+      "verify_run_seconds": 0.666039046,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4645,8 +4645,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.961056096,
-      "verify_run_seconds": 0.735077365,
+      "weights_run_seconds": 0.934594135,
+      "verify_run_seconds": 0.738724559,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4829,7 +4829,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.6982857881796596
+              "dps_delta": -1.6982857881796602
             },
             {
               "item_id": 15999,
@@ -5326,8 +5326,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.961056096,
-      "verify_run_seconds": 0.720315587,
+      "weights_run_seconds": 0.934594135,
+      "verify_run_seconds": 0.740936506,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6063,8 +6063,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.012183701,
-      "verify_run_seconds": 0.722110601,
+      "weights_run_seconds": 0.98960176,
+      "verify_run_seconds": 0.724297526,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6801,8 +6801,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.012183701,
-      "verify_run_seconds": 0.72889651,
+      "weights_run_seconds": 0.98960176,
+      "verify_run_seconds": 0.730348819,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7536,8 +7536,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.047950952,
-      "verify_run_seconds": 0.761635311,
+      "weights_run_seconds": 1.051462198,
+      "verify_run_seconds": 0.754311069,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8271,8 +8271,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.047950952,
-      "verify_run_seconds": 0.764556504,
+      "weights_run_seconds": 1.051462198,
+      "verify_run_seconds": 0.753733704,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8407,6 +8407,10 @@
           "label": "Grace of Air Totem"
         },
         {
+          "id": "windfury_totem",
+          "label": "Windfury Totem"
+        },
+        {
           "id": "mana_spring_totem",
           "label": "Mana Spring Totem"
         }
@@ -8479,7 +8483,7 @@
           "label": "Elixir of Frost Power"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is the engine's main-hand imbue Windfury. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
     }
   }
 }
