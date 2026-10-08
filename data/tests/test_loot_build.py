@@ -775,6 +775,13 @@ def test_every_raid_is_gated_and_nothing_else_is():
             assert opens in PHASES | {OPENS_LATER}, source["id"]
         elif source["kind"] == "vendor" and source["id"].endswith(":later"):
             assert opens == OPENS_LATER, source["id"]
+        elif source["id"] == "vendor:15192":
+            # 2026-10-08: the Anachronos war-effort override was removed
+            # (Wowhead's Forever payload no longer lists the vendor; the
+            # 1.60.1.70291 fetch has no such source). The gate it set lingers
+            # in the committed 1.60.1.70009 loot until the nightly merge
+            # rewrites it. Delete this branch when 70291 is the active build.
+            assert opens in (None, OPENS_LATER), source["id"]
         elif source["id"] in curated_opens():
             assert opens == curated_opens()[source["id"]], source["id"]
         else:

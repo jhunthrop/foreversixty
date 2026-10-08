@@ -21,8 +21,9 @@ def base() -> LootFile:
                 kind="raid",
                 name="Molten Core",
                 zone_id=2717,
-                bosses=[LootBoss(id="raid:molten-core:900", name="Big Boss", npc_id=900,
-                                 items=[100])],
+                bosses=[
+                    LootBoss(id="raid:molten-core:900", name="Big Boss", npc_id=900, items=[100])
+                ],
                 trash=[101],
             ),
             LootSource(
@@ -30,8 +31,11 @@ def base() -> LootFile:
                 kind="dungeon",
                 name="The Deadmines",
                 zone_id=1581,
-                bosses=[LootBoss(id="dungeon:the-deadmines:902", name="Dungeon Boss",
-                                 npc_id=902, items=[103])],
+                bosses=[
+                    LootBoss(
+                        id="dungeon:the-deadmines:902", name="Dungeon Boss", npc_id=902, items=[103]
+                    )
+                ],
             ),
         ]
     )
@@ -75,18 +79,25 @@ def test_an_overlay_with_no_source_is_refused(tmp_path):
 
 
 def test_an_overlay_source_kind_outside_the_vocabulary_is_refused(tmp_path):
-    write(tmp_path, "a.json", {
-        "sources": [{"label": "l", "url": "u", "kind": "hearsay"}], "notes": "x"})
+    write(
+        tmp_path,
+        "a.json",
+        {"sources": [{"label": "l", "url": "u", "kind": "hearsay"}], "notes": "x"},
+    )
     with pytest.raises(CuratedError, match="hearsay"):
         load_overlays(tmp_path)
 
 
 def test_adding_a_source_that_already_exists_is_refused(tmp_path):
-    write(tmp_path, "a.json", {
-        "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
-        "notes": "x",
-        "add": [{"id": "raid:molten-core", "kind": "raid", "name": "Again"}],
-    })
+    write(
+        tmp_path,
+        "a.json",
+        {
+            "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
+            "notes": "x",
+            "add": [{"id": "raid:molten-core", "kind": "raid", "name": "Again"}],
+        },
+    )
     with pytest.raises(OverlayError, match="already"):
         apply_overlays(base(), load_overlays(tmp_path))
 
@@ -96,10 +107,15 @@ def test_replacing_or_removing_an_unknown_source_is_refused(tmp_path):
         {"replace": [{"id": "raid:nope", "opens": "later"}]},
         {"remove": ["raid:nope"]},
     ):
-        write(tmp_path, "a.json", {
-            "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
-            "notes": "x",
-        } | payload)
+        write(
+            tmp_path,
+            "a.json",
+            {
+                "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
+                "notes": "x",
+            }
+            | payload,
+        )
         with pytest.raises(OverlayError, match="raid:nope"):
             apply_overlays(base(), load_overlays(tmp_path))
 
@@ -107,11 +123,15 @@ def test_replacing_or_removing_an_unknown_source_is_refused(tmp_path):
 def test_a_replace_may_restate_a_sources_item_lists(tmp_path):
     # Contract 10.4 has no per-item removal, so this is how a wrong item
     # is corrected: restate the list it is in.
-    write(tmp_path, "a.json", {
-        "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
-        "notes": "x",
-        "replace": [{"id": "raid:molten-core", "trash": []}],
-    })
+    write(
+        tmp_path,
+        "a.json",
+        {
+            "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
+            "notes": "x",
+            "replace": [{"id": "raid:molten-core", "trash": []}],
+        },
+    )
     result = apply_overlays(base(), load_overlays(tmp_path))
     molten = next(s for s in result.sources if s.id == "raid:molten-core")
     assert molten.trash == []
@@ -119,11 +139,15 @@ def test_a_replace_may_restate_a_sources_item_lists(tmp_path):
 
 
 def test_a_replace_may_not_change_a_sources_kind(tmp_path):
-    write(tmp_path, "a.json", {
-        "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
-        "notes": "x",
-        "replace": [{"id": "raid:molten-core", "kind": "dungeon"}],
-    })
+    write(
+        tmp_path,
+        "a.json",
+        {
+            "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
+            "notes": "x",
+            "replace": [{"id": "raid:molten-core", "kind": "dungeon"}],
+        },
+    )
     with pytest.raises(OverlayError, match="kind"):
         apply_overlays(base(), load_overlays(tmp_path))
 
@@ -133,17 +157,27 @@ def test_a_replace_touching_bosses_yields_real_loot_boss_instances(tmp_path):
     # re-validating; a `replace` that names `bosses` must still come back
     # out as `LootBoss` instances, not raw dicts, since `LootSourcePatch`
     # explicitly advertises `bosses` as a replaceable field.
-    write(tmp_path, "a.json", {
-        "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
-        "notes": "x",
-        "replace": [{
-            "id": "raid:molten-core",
-            "bosses": [
-                {"id": "raid:molten-core:900", "name": "New Boss", "npc_id": 900,
-                 "items": [100, 200]}
+    write(
+        tmp_path,
+        "a.json",
+        {
+            "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
+            "notes": "x",
+            "replace": [
+                {
+                    "id": "raid:molten-core",
+                    "bosses": [
+                        {
+                            "id": "raid:molten-core:900",
+                            "name": "New Boss",
+                            "npc_id": 900,
+                            "items": [100, 200],
+                        }
+                    ],
+                }
             ],
-        }],
-    })
+        },
+    )
     result = apply_overlays(base(), load_overlays(tmp_path))
     molten = next(s for s in result.sources if s.id == "raid:molten-core")
     assert len(molten.bosses) == 1
@@ -228,30 +262,6 @@ def test_the_notes_state_the_per_raid_gap():
         assert fragment in notes
 
 
-def anachronos_war_effort_overlay():
-    for path, document in load_overlays(CURATED):
-        if path.name == "anachronos-war-effort.json":
-            return document
-    raise AssertionError("no anachronos-war-effort.json under curated/loot")
-
-
-def test_anachronos_vendor_is_gated_to_the_same_phase_as_the_aq_raid():
-    """bis-ranker-integrity-16 lane, item 5: Anachronos (vendor:15192)
-    sells the Ahn'Qiraj War Effort reward line as a flat, ungated
-    vendor buy -- the same war-effort rewards `raid:ahnqiraj` gates to
-    `opens: "later"` (no announced AQ date) and
-    `sim/cmd/leveling-bis/data.go`'s own `raidLockedQuestOpens` already
-    gates for the quest-turn-in path. Kept in its own file, not
-    forever-raid-phases.json, because that file's own `replace` list is
-    pinned to exactly the seven raid sources the loot generator emits
-    (test_the_seven_generated_raids_are_all_patched_not_added, above)."""
-    document = anachronos_war_effort_overlay()
-    assert [patch.id for patch in document.replace] == ["vendor:15192"]
-    assert document.replace[0].opens == OPENS_LATER
-    assert document.add == []
-    assert document.remove == []
-
-
 def test_every_phase_an_overlay_names_is_a_real_phase_or_the_sentinel():
     """An `opens` the API does not know is a filter that matches nothing."""
     allowed = PHASES | {OPENS_LATER}
@@ -289,12 +299,15 @@ def _world_boss_document() -> LootFile:
 
     return LootFile(
         sources=[
-            LootSource(id=source_id, kind="world", name=source_id.removeprefix("world:"),
-                       items=[100 + i])
+            LootSource(
+                id=source_id, kind="world", name=source_id.removeprefix("world:"), items=[100 + i]
+            )
             for i, source_id in enumerate(sorted(WORLD_BOSS_SOURCE_IDS))
-        ] + [
-            LootSource(id="world:some-farmable-mob", kind="world", name="Some Farmable Mob",
-                       items=[200]),
+        ]
+        + [
+            LootSource(
+                id="world:some-farmable-mob", kind="world", name="Some Farmable Mob", items=[200]
+            ),
         ],
         quests={},
         factions={},
@@ -306,8 +319,12 @@ def test_the_world_boss_ids_are_exactly_the_six_named_bosses():
 
     assert set(WORLD_BOSS_NPC_NAMES) == {12397, 6109, 14889, 14888, 14890, 14887}
     assert WORLD_BOSS_SOURCE_IDS == {
-        "world:lord-kazzak", "world:azuregos", "world:emeriss",
-        "world:lethon", "world:taerar", "world:ysondre",
+        "world:lord-kazzak",
+        "world:azuregos",
+        "world:emeriss",
+        "world:lethon",
+        "world:taerar",
+        "world:ysondre",
     }
 
 
@@ -337,12 +354,15 @@ def test_a_curated_overlay_still_wins_over_the_world_boss_default(tmp_path):
     """`replace` runs before the default-fill loop, so a curated fact (a
     world boss server-first killed before the raid tier, say) is not
     clobbered back to WORLD_BOSS_DEFAULT_OPENS."""
-    write(tmp_path, "a.json", {
-        "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
-        "notes": "x",
-        "replace": [{"id": "world:lord-kazzak", "opens": "launch"}],
-    })
+    write(
+        tmp_path,
+        "a.json",
+        {
+            "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
+            "notes": "x",
+            "replace": [{"id": "world:lord-kazzak", "opens": "launch"}],
+        },
+    )
     out = apply_overlays(_world_boss_document(), load_overlays(tmp_path))
     by_id = {s.id: s for s in out.sources}
     assert by_id["world:lord-kazzak"].opens == "launch"
-
