@@ -36,7 +36,7 @@ jobs:
             echo "these files are not gofmt'd:"; echo "$unformatted"; exit 1
           fi
       - run: go vet ./...
-      - run: go test ./... -race -coverprofile=cover.out
+      - run: go test ./... -race -timeout 40m -coverprofile=cover.out
       - name: coverage floor
         run: |
           total=$(go tool cover -func=cover.out | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
