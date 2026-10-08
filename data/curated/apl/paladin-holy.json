@@ -1,7 +1,7 @@
 {
   "spec": "paladin-holy",
   "state": "written",
-  "notes": "Written for the fork's healing sim (sim/healsim: the healer is raid player 0, players 1-4 its party, player 5 the tank). Flash of Light is the staple, Holy Light covers a tank below 40 percent behind Divine Favor, and the instant Holy Shock and a second Holy Light line spend mana only while it is no further behind the fight clock than five points (currentManaPercent against remainingTimePercent). Measured on the fork's healsim under the site heal profile (data/curated/heal-profile.json) with healing gear of roughly 500 healing power, 250 intellect and 20 mp5: a healer short of mana, the usual case, never reaches the paced lines and heals as a Flash of Light healer, the best variant tried (Holy Shock at a fixed threshold cost about 8 percent of the effective healing, Holy Light below 70 percent about 1 percent); with a large mana pool the paced lines add about 13 percent effective HPS at under 1 percent overheal. Light's Vigil (a party heal through the next Holy Shock on its target, 1340 mana at level 60) is in the engine but left out of this rotation: it lowered effective HPS by 2 to 9 percent in every variant tried, because the profile's raid pulses (300 damage on three members) are too small for a five-target heal that costs as much mana as almost ten Flash of Lights. Downranking is not used: the client states no level penalty on a lower rank's healing power, so the sim would flatter rank 4 to 6 Holy Light beyond what the game allows. Prepull Greater Blessing of Light (raid-wide): it adds bonus healing to Holy Light and Flash of Light that counts through each spell's coefficient, an assumption, since the client states only the amount. Spirit regeneration, mp5 and the five second rule are the engine's own formulas (the client publishes no spirit regeneration table). Every healer number comes from the engine's fake raid, not from a boss fight.",
+  "notes": "Written for the fork's healing sim (sim/healsim: the healer is raid player 0, players 1-4 its party, player 5 the tank). Flash of Light is the staple, Holy Light covers a tank below 40 percent behind Divine Favor, and the instant Holy Shock and a second Holy Light line spend mana only while it is no further behind the fight clock than five points (currentManaPercent against remainingTimePercent). The paced lines open when the mana bar is no further behind the fight clock than five points: a healer with spare mana reaches them often, and a healer short of mana only now and then (Holy Shock at a fixed threshold, with no pacing, healed less than the paced line). Light's Vigil (a party heal through the next Holy Shock on its target, 1340 mana at level 60) is in the engine but left out of this rotation: it lowered effective HPS by 2 to 9 percent in every variant tried, because the profile's raid pulses (300 damage on three members) are too small for a five-target heal that costs as much mana as almost ten Flash of Lights. Ranks follow one rule, stated in design/reviews/2026-10-08-healer-mana-audit.md: starting from the top ranks, a lower rank (never one learned below level 20) is taken for a spell when it raises the ranker's guarded score by more than two percent, the biggest gain first, the tank's casts and the party members' casts counted apart, and compared on the raid gear the ranker published for the list being tried. The engine states the client's own numbers for every rank with no downrank penalty, so a lower rank is a statement about this profile, not a measurement of the game. The site runs this list as written at band 60 and lifts every ranked spell to the highest rank learned below it. Here that is Holy Shock at rank 1 and Flash of Light at rank 4 on the four party members; every other spell keeps its top rank. The comparison is repeated on the gear each new list makes the ranker choose until no spell moves. Prepull Greater Blessing of Light (raid-wide): it adds bonus healing to Holy Light and Flash of Light that counts through each spell's coefficient, an assumption, since the client states only the amount. Spirit regeneration, mp5 and the five second rule are the engine's own formulas (the client publishes no spirit regeneration table). Every healer number comes from the engine's fake raid, not from a boss fight.",
   "sources": [
     {
       "label": "This build's own client spell data: data/builds/1.60.1.70009/spellconst/paladin.json, trainables/paladin.json and talents/paladin.json (Holy tree index 0)",
@@ -21,7 +21,7 @@
         "action": {
           "autocastOtherCooldowns": {}
         },
-        "notes": "Mana potions, runes and other consumables the preset brings. Divine Favor is left to this rotation, not to the autocast, because it is only worth spending on the heal that must not fail."
+        "notes": "Mana potions, runes and other consumables the preset brings: the Major Mana Potion and the Demonic Rune, each used whenever it is ready and the bar has room for it. Divine Favor is left to this rotation, not to the autocast, because it is only worth spending on the heal that must not fail."
       },
       {
         "action": {
@@ -142,7 +142,7 @@
             }
           }
         },
-        "notes": "Surplus mana buys throughput: Holy Light on a tank below 70 percent, but only while mana is no more than five points behind the fight clock. A healer short of mana (the usual case) never reaches this line."
+        "notes": "Surplus mana buys throughput: Holy Light on a tank below 70 percent, but only while mana is no more than five points behind the fight clock. A healer short of mana rarely reaches this line."
       },
       {
         "action": {
@@ -193,8 +193,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 20930,
-              "rank": 4
+              "spellId": 1311606,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -202,7 +202,7 @@
             }
           }
         },
-        "notes": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana, so it is a use for spare mana, not a staple."
+        "notes": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple. Rank 1 is the rank this profile pays for: it costs about half of the top rank's mana and returned more guarded score."
       },
       {
         "action": {
@@ -253,8 +253,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 20930,
-              "rank": 4
+              "spellId": 1311606,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -312,8 +312,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 20930,
-              "rank": 4
+              "spellId": 1311606,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -371,8 +371,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 20930,
-              "rank": 4
+              "spellId": 1311606,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -430,8 +430,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 20930,
-              "rank": 4
+              "spellId": 1311606,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -471,7 +471,7 @@
             }
           }
         },
-        "notes": "Flash of Light is the staple: 140 mana for about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time."
+        "notes": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time. The tank gets the top rank and the four party members below get rank 4, the rank that came out ahead under the rank rule once the ranker had picked its gear."
       },
       {
         "action": {
@@ -495,8 +495,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 19943,
-              "rank": 6
+              "spellId": 19941,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -527,8 +527,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 19943,
-              "rank": 6
+              "spellId": 19941,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -559,8 +559,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 19943,
-              "rank": 6
+              "spellId": 19941,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -591,8 +591,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 19943,
-              "rank": 6
+              "spellId": 19941,
+              "rank": 4
             },
             "target": {
               "type": "Player",

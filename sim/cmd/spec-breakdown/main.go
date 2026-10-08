@@ -50,6 +50,9 @@ type options struct {
 	rotation   string
 	jsonOut    bool
 	tank       bool
+	heal       bool
+	duration   int
+	bisDir     string
 	gear       string
 }
 
@@ -67,6 +70,9 @@ func main() {
 	flag.StringVar(&o.talents, "talents", "", "talent string replacing the published one")
 	flag.StringVar(&o.rotation, "rotation", "", "JSON file whose \"rotation\" object (the curated file's shape) replaces the spec's own priority list")
 	flag.StringVar(&o.gear, "gear", "", "comma list of slot:item_id pairs replacing the published entry's items, e.g. off_hand:20688")
+	flag.BoolVar(&o.heal, "heal", false, "print the healer fight: mana income and spend against data/curated/heal-profile.json (healer specs only)")
+	flag.IntVar(&o.duration, "duration", 0, "with -heal: fight length in seconds, instead of the profile's (a shorter window shows a healer's mana rates before it runs dry)")
+	flag.StringVar(&o.bisDir, "bis-dir", "", "directory holding the published <spec>.json entries; defaults to the build's bis directory (point it at a ranker run's -out to break that run down)")
 	flag.BoolVar(&o.tank, "tank", false, "print the tank fight: final defensive stats, tank figures and the boss's swing outcomes (tank specs only)")
 	flag.BoolVar(&o.jsonOut, "json", false, "print the totals as JSON")
 	flag.Parse()
@@ -79,6 +85,14 @@ func main() {
 func run(o options) error {
 	if o.spec == "" {
 		return fmt.Errorf("-spec is required")
+	}
+	if o.heal {
+		out, err := runHealReport(o)
+		if err != nil {
+			return err
+		}
+		fmt.Print(out)
+		return nil
 	}
 	if o.tank {
 		out, err := runTankReport(o)
@@ -150,8 +164,16 @@ type bisEntry struct {
 	} `json:"slots"`
 }
 
+// bisDirectory is where the published entries are read from.
+func (o options) bisDirectory() string {
+	if o.bisDir != "" {
+		return o.bisDir
+	}
+	return filepath.Join(o.repoRoot, buildDir, "bis")
+}
+
 func loadEntry(o options) (bisEntry, error) {
-	raw, err := os.ReadFile(filepath.Join(o.repoRoot, buildDir, "bis", o.spec+".json"))
+	raw, err := os.ReadFile(filepath.Join(o.bisDirectory(), o.spec+".json"))
 	if err != nil {
 		return bisEntry{}, err
 	}

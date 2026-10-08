@@ -1,7 +1,7 @@
 {
   "spec": "shaman-restoration",
   "state": "written",
-  "notes": "Written for the healing sim (sim/healsim in the engine fork) against its fixed test profile: a 9000 health tank taking 900 every 2 s and four members taking 400 from pulses every 5 s, with the healer the first raid member and the tank raid member 5. Water Shield and a Healing Stream Totem go up before the pull. In the fight, tank first: Riptide on the tank whenever it is off cooldown and the tank is under 90 percent (the cheapest heal per mana, and its heal over time lifts the Chain Heal that follows), Healing Wave below 60 percent, Lesser Healing Wave below 30 percent, and Nature's Swiftness into an instant Healing Wave below 25 percent. Chain Heal is cast on the tank, so Riptide's 25 percent bonus applies to it, and jumps to the two most injured members; it fires when any member is under 70 percent. Members are healed directly (Riptide under 50 percent, Lesser Healing Wave under 25 percent) only while mana is above 50 percent, so the healer keeps mana for the tank. Mana Tide Totem is used below 25 percent mana and replaces the Healing Stream Totem for its 13 seconds, after which the rotation drops Healing Stream again. Nothing here uses autocast: Nature's Swiftness is spent by hand, and mana consumables are the preset's. Thresholds came from a random search over this profile at 180 s scored on damage that landed on targets at zero health (counting the tank at half weight, members in full) plus a penalty for overhealing above 30 percent, then rounded; they were checked on a lighter profile (a 400-damage tank hit and 250-damage pulses) where the same rotation never lets anyone die and the shaman lasts past 300 s. Against the full profile one healer runs out of mana at about 130 s; the profile is sized for more than one healer, and the sim ranks gear, not fights.",
+  "notes": "Written for the healing sim (sim/healsim in the engine fork) against its fixed test profile: a 9000 health tank taking 900 every 2 s and four members taking 400 from pulses every 5 s, with the healer the first raid member and the tank raid member 5. Water Shield and a Healing Stream Totem go up before the pull. In the fight, tank first: Riptide on the tank whenever it is off cooldown and the tank is under 90 percent (the cheapest heal per mana, and its heal over time lifts the Chain Heal that follows), Healing Wave below 60 percent, Lesser Healing Wave below 30 percent, and Nature's Swiftness into an instant Healing Wave below 25 percent. Chain Heal is cast on the tank, so Riptide's 25 percent bonus applies to it, and jumps to the two most injured members; it fires when any member is under 70 percent. Members are healed directly (Riptide under 50 percent, Lesser Healing Wave under 25 percent) only while mana is above 50 percent, so the healer keeps mana for the tank. Mana Tide Totem is used below 25 percent mana and replaces the Healing Stream Totem for its 13 seconds, after which the rotation drops Healing Stream again. The list opens with the autocast line, which is how the preset's mana potion and rune are used; Nature's Swiftness is spent by hand. Thresholds came from a random search over an earlier, lighter profile and were rounded; under the site's heal profile this shaman does not run out of mana, so its healing is bound by the health thresholds below and not by the mana bar.",
   "engineering_notes": {
     "chain_heal": "Chain Heal's jump count and falloff are not in the client spell constants; sim/shaman/chain_heal.go assumes two jumps at half the previous heal, to the most injured members. The rotation's Chain Heal is cast on the tank (player 5) for Riptide's bonus.",
     "earth_shield": "Earth Shield (974) has no SkillLineAbility learn row and is not in the Restoration tree, so a Forever shaman cannot learn it and the rotation does not cast it."
@@ -52,6 +52,12 @@
       }
     ],
     "priorityList": [
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        },
+        "notes": "Mana potions, runes and other consumables the preset brings: the Major Mana Potion and the Demonic Rune, each used whenever it is ready and the bar has room for it. Nature's Swiftness is not spent here: the engine holds it back for a healer, and the list below casts it by hand."
+      },
       {
         "action": {
           "castSpell": {

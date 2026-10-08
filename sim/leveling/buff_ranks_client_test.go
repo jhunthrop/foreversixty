@@ -22,6 +22,9 @@ const (
 	auraModResistance  = 22 // misc 1 = armor, a school mask otherwise
 	auraModStat        = 29 // misc -1 = all stats, 3 = Intellect
 	auraModAttackPower = 99
+	// Blessing of Wisdom's single effect is a periodic energize (aura 24)
+	// of mana every five seconds.
+	auraPeriodicEnergize = 24
 	// Trueshot Aura's single effect is ranged attack power (aura 124, misc
 	// 0); the engine grants the same amount to melee as the client's area
 	// aura does.
@@ -89,6 +92,10 @@ func TestArcaneIntellectRanksMatchTheClient(t *testing.T) {
 
 func TestBlessingOfMightRanksMatchTheClient(t *testing.T) {
 	assertRanks(t, "Blessing of Might", loadClass(t, "paladin"), core.BlessingOfMightRanks, auraModAttackPower, 0, false)
+}
+
+func TestBlessingOfWisdomRanksMatchTheClient(t *testing.T) {
+	assertRanks(t, "Blessing of Wisdom", loadClass(t, "paladin"), core.BlessingOfWisdomRanks, auraPeriodicEnergize, 0, false)
 }
 
 func TestMarkOfTheWildRanksMatchTheClient(t *testing.T) {

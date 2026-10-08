@@ -1,5 +1,7 @@
 # Healer BiS (2026-10-07)
 
+> Superseded in part by [2026-10-08-healer-mana-audit.md](2026-10-08-healer-mana-audit.md): the mana figures in section 4 and assumptions 4, 7, 11 and 12 were measured against an engine whose healers never drank a potion or a rune.
+
 What was built, the numbers it produces, and every assumption behind them. The rule the whole lane keeps:
 **a healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats
 another, and every published healer number carries the profile's name.**

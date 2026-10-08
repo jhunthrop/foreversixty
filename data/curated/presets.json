@@ -192,27 +192,22 @@
           {
             "id": "mageblood_potion",
             "label": "Mageblood Elixir",
-            "reason": "Mana per five seconds, in the engine's mana-regeneration elixir slot; client level 40. Forever's Greater Mageblood Elixir (level 55) is not in the engine's consumable list, so the plain one stands in for it."
-          },
-          {
-            "id": "food_nightfin_soup",
-            "label": "Nightfin Soup",
-            "reason": "The healer's food: mana per five seconds. Client level 35."
+            "reason": "Mana per five seconds, in the engine's mana-regeneration elixir slot; client level 40. Forever's Greater Mageblood Elixir (level 55) restores more and is not in the engine's consumable list, so the plain one stands in for it."
           },
           {
             "id": "main_hand_imbue:brilliant_mana_oil",
             "label": "Brilliant Mana Oil",
-            "reason": "Mana per five seconds and healing power on the main hand; client level 45."
+            "reason": "Mana per five seconds and healing power on the main hand; client level 45. The engine states the client's amounts for the three mana oils."
           },
           {
             "id": "major_mana_potion",
             "label": "Major Mana Potion",
-            "reason": "Used on cooldown by the engine when mana allows; client level 49."
+            "reason": "Drunk by the engine's major-cooldown pass (the rotation's autocast line) whenever the bar has room for it and the two-minute cooldown is up; client level 49."
           },
           {
             "id": "conjured_demonic_rune",
             "label": "Demonic Rune",
-            "reason": "Used on cooldown by the engine, in the engine's conjured slot; it is the mana rune the engine models."
+            "reason": "Used by the engine's major-cooldown pass (the rotation's autocast line) whenever the bar has room for it and the two-minute cooldown is up, in the engine's conjured slot; it is the mana rune the engine models."
           }
         ]
       },

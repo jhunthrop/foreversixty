@@ -326,11 +326,13 @@ func TestRaidPresetGivesAShapeshifterNoImbue(t *testing.T) {
 }
 
 // A healer is matched by its role before its reference stat, which it
-// shares with every caster: it carries the healer's flask, food and mana
-// consumables, not the caster's spell-power elixirs.
+// shares with every caster: it carries the healer's flask and mana
+// consumables, not the caster's spell-power elixirs. It carries no food: the
+// client turned Nightfin Soup, the engine's one food that once gave mana,
+// into a spell damage meal, which a healer gains nothing from.
 func TestHealersCarryTheHealerConsumables(t *testing.T) {
 	presets := loadRealPresets(t)
-	wantAlways := []string{"flask_of_distilled_wisdom", "mageblood_potion", "food_nightfin_soup"}
+	wantAlways := []string{"flask_of_distilled_wisdom", "mageblood_potion"}
 	for _, spec := range specs.All {
 		resolved, err := presets.Resolve(RaidPreset, spec)
 		if err != nil {
