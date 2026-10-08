@@ -130,11 +130,14 @@ func run(execPath string, args []string) error {
 	return runSpec(realEngine{}, *repoRoot, buildDir, activeBuild, outDir, *spec, bands, *weightsIterations, resolveTalentLayout)
 }
 
-// specTimeout bounds one spec's subprocess: generous next to every
-// measured single-spec run in this lane's report (under a minute
-// each), but short enough that a hang is caught and reported rather
-// than repeating the incident this function's caller documents.
-const specTimeout = 5 * time.Minute
+// specTimeout bounds one spec's subprocess: it catches a hang rather
+// than repeating the incident this function's caller documents, while
+// leaving room for the slowest honest spec. A healer at band 60 runs its
+// ranking sims at healIterationScale times the DPS count on top of set
+// completion and the incumbent check, which took the five healers past
+// the old five-minute ceiling on 2026-10-08 and had the nightly skip
+// them all; thirty minutes is several times the slowest measured spec.
+const specTimeout = 30 * time.Minute
 
 // runAllSpecsIsolated runs writtenSpecs, one subprocess per spec, and
 // reports which (if any) failed or hung - see run()'s own doc for why
