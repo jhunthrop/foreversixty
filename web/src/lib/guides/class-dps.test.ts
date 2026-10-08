@@ -39,8 +39,8 @@ describe('classLandingSetDps', () => {
     expect(hordeDps).not.toBe(allianceDps);
   });
 
-  it('is undefined for a spec with no ranked BiS file (Protection)', () => {
-    expect(classLandingSetDps(BUILD, 'warrior-protection', 'warrior', ['dwarf'])).toBeUndefined();
+  it('is undefined for a spec with no ranked BiS file', () => {
+    expect(classLandingSetDps(BUILD, 'warrior-nonexistent', 'warrior', ['dwarf'])).toBeUndefined();
   });
 });
 
@@ -59,8 +59,8 @@ describe('band60Weights', () => {
     expect(result!.hitToCap).toEqual(expected.hit_to_cap ?? null);
   });
 
-  it('is undefined for a spec with no ranked BiS file (Protection)', () => {
-    expect(band60Weights(BUILD, 'warrior-protection', 'warrior', ['dwarf'])).toBeUndefined();
+  it('is undefined for a spec with no ranked BiS file', () => {
+    expect(band60Weights(BUILD, 'warrior-nonexistent', 'warrior', ['dwarf'])).toBeUndefined();
   });
 
   it('is undefined when the guide names no recommended race', () => {
