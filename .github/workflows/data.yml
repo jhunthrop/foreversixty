@@ -157,6 +157,27 @@ jobs:
       # `faction_restriction`, which pipeline/simdb/items.py reads into
       # SimItem. Both refresh the same manifest, and the diff step at the
       # end sees the finished directory either way.
+      # A build directory that has never been built starts with none of the
+      # nightly fill-in caches (bis.yml's quest-levels, item-sources and
+      # loot-merge commit them under raw/ over many nights), and loot's curated
+      # overlays name sources only those caches supply (the first 1.60.1.70291
+      # fetch, 2026-10-08, failed on `vendor:15192`). Item and quest ids are
+      # stable across builds, so a new build is seeded from the newest other
+      # build's caches, file by file and only where it has none. raw/hotfixes
+      # is deliberately not copied: a hotfix the new client baked in with a
+      # different value must not be re-applied from an older dump.
+      - name: Seed the fill-in caches from the previous build
+        run: |
+          PREV=$(ls builds | grep -vx "$BUILD" | sort -V | tail -1)
+          [ -n "$PREV" ] || exit 0
+          for rel in quests/quest-levels.json items/item-sources.json classicdb/*.json; do
+            for src in builds/"$PREV"/raw/$rel; do
+              [ -e "$src" ] || continue
+              dst="builds/$BUILD/raw/${src#builds/$PREV/raw/}"
+              [ -e "$dst" ] && continue
+              mkdir -p "$(dirname "$dst")" && cp "$src" "$dst" && echo "seeded $dst from $PREV"
+            done
+          done
       - run: uv run python -m pipeline loot --build "$BUILD" --engine ../.engine $SHRINK
       # simdb reads the same raw inputs normalize does and refreshes
       # manifest.json, so it runs after the normalize that covers icons and
