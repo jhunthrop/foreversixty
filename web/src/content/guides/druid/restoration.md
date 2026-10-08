@@ -30,7 +30,7 @@ Restoration is Druid's healer tree, keeping Rejuvenation rolling on multiple tar
 
 ## Talents and builds
 
-The build spends most of its points in Restoration and fills Balance with the periodic-healing and critical-chance talents. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build spends most of its points in Restoration and fills Balance with the periodic-healing and critical-chance talents. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 - **Naturalist** shortens Healing Touch, **Gift of Nature** strengthens every heal, and **Improved Rejuvenation** strengthens Rejuvenation.
 - **Reflection** keeps part of your regeneration running while you cast, **Tranquil Spirit** makes Healing Touch and Tranquility cheaper, and **Living Spirit** lifts Spirit.
@@ -49,7 +49,7 @@ The rotation does not downrank.
 
 In simulator-derived order, per point of stat: **MP5** first, **Spirit** behind it, then **healing power**, **Intellect** and **critical strike**. Spirit also reaches the Living Spirit bonus. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
 
-Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 

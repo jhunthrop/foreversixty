@@ -1,25 +1,25 @@
 {
-  "id": "onyxia-sized",
-  "label": "Onyxia-sized tank hits and raid pulses",
-  "summary": "One healer's share of a Phase 1 boss fight: a tank taking big melee hits, raid-wide damage in regular pulses, and four more raid members to look after.",
-  "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption sized to a Phase 1 raid boss; the first raid tier (9 December) is Onyxia, Barrow Deeps and Hyjal Summit. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights.",
+  "id": "phase1-scaled",
+  "label": "Phase 1 tank hits and raid pulses, scaled so gear separates",
+  "summary": "One healer's share of a Phase 1 raid fight, scaled up until the strongest raid-ready healer covers about 80 percent of what comes in and the weakest about 60: a tank taking big melee hits, raid-wide damage in regular pulses, and four more raid members to look after.",
+  "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption, and this profile is a stand-in for Phase 1 that is NOT a named boss. It was first sized to an Onyxia-class boss, but at that size the raid-ready healers covered 80 to 97 percent of what came in, healing met the damage, and more healing power changed nothing, so gear tied. The retune rule (design/reviews/2026-10-08-heal-profile-retune.md) is: scale the tank hit size and the raid-wide pulse damage together, keeping their ratio and cadence, by the smallest multiplier at which the strongest raid-ready healer covers about 80 percent of the incoming damage, the weakest about 60, every bare set (no raid consumables) covers less than half, and mana is a live constraint (a bare set's mana runs out before the fight ends for every healer, and a raid set's for at least one). The multiplier chosen is 1.5. The next retune (Phase 2 gear) follows the same rule. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights.",
   "duration_sec": 300,
   "damage_spread": 0.25,
   "tank": {
     "health": 9500,
-    "hit_damage": 1150,
+    "hit_damage": 1725,
     "swing_seconds": 3.3,
-    "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. An Onyxia-sized boss hits a mitigated tank for about 1,150, and with misses, dodges and parries averaged in one hit lands about every 3.3 seconds, which is about 350 damage a second; each hit rolls 25 percent either side."
+    "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. The hit is a stand-in sized by the retune rule, not a boss's: 1.5 times the 1,150 an Onyxia-class boss was first assumed to land on a mitigated tank, which is the smallest scale at which the five healers' raid-ready sets cover between about 60 and 85 percent of the incoming damage and bare sets less than half. With misses, dodges and parries averaged in one hit lands about every 3.3 seconds, about 520 damage a second; each hit rolls 25 percent either side."
   },
   "members": {
     "health": 5000,
     "reason": "A raid member that is not the tank has about 5,000 health: a plate or mail wearer sits above it and a cloth wearer below."
   },
   "pulse": {
-    "damage": 300,
+    "damage": 450,
     "interval_seconds": 5.0,
     "members": 3,
-    "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the four raid members take 300, which is about 180 damage a second spread over the group the healer stands in."
+    "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the four raid members take 450, about 270 damage a second spread over the group the healer stands in. Scaled by the same 1.5 as the tank hit, so the tank-to-raid ratio and the cadence are what they were."
   },
   "sources": [
     {

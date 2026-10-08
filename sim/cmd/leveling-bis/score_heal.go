@@ -21,6 +21,20 @@ package main
 // squared (healingScore). A set whose mana lasts the fight is scored by
 // its effective healing per second alone.
 //
+// The profile is retuned by one rule, so the ranking keeps its signal.
+// Once healing meets the incoming damage, more healing power changes
+// nothing and gear ties. So the tank hit size and the raid-wide pulse
+// damage are scaled TOGETHER (their ratio and cadence kept) by the
+// smallest multiplier at which, with the five healers at band 60: the
+// strongest raid-ready set covers about 80 percent of the incoming
+// damage and the weakest about 60; every bare set (no raid consumables)
+// covers less than half; and mana stays a live constraint (mana_lasts_sec
+// under the fight length for every bare set and for at least one raid
+// set). The multipliers are swept, the table is in
+// design/reviews/2026-10-08-heal-profile-retune.md, and the next retune
+// (Phase 2 gear) follows the same rule. The profile is a stand-in sized
+// by that rule, never a named boss.
+//
 // Every published healer number carries the profile's name: the band
 // entry names it (healerFields.Profile) and the file carries the profile
 // itself, reasons included (specReport.HealProfile).

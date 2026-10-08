@@ -33,7 +33,7 @@ Holy is Forever's Paladin healing tree: single-target direct healing backed by H
 
 ## Talents and builds
 
-The build is nearly all Holy, with the remaining points in Protection where they cost nothing a healer uses. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build is nearly all Holy, with the remaining points in Protection where they cost nothing a healer uses. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 - **Divine Intellect** lifts your mana pool, and **Reverence** keeps part of your regeneration running while you cast.
 - **Healing Light** strengthens Holy Light, Flash of Light and Holy Shock; **Spiritual Focus** protects those casts from damage pushback.
@@ -52,7 +52,7 @@ The curated rotation opens with **Greater Blessing of Light** before the pull an
 
 In simulator-derived order, per point of stat: **MP5** first, then **Intellect**, with **healing power** and **Spirit** close together behind and **critical strike** after them. Intellect feeds both your pool and Illumination's mana return. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
 
-Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the Onyxia-sized tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
 ## Gear
 
