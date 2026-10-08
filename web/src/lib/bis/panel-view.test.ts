@@ -692,6 +692,24 @@ describe('bandInfosFor: evidence line and verified-glyph title', () => {
   });
 });
 
+describe('bandInfosFor: set_bonus note', () => {
+  it('words a set-bonus pick for the row and its hover text', () => {
+    const set_bonus = { set: 'Feralheart Raiment', pieces: 4, bonus: '+30 Attack Power.' };
+    const file = fileWith([band({ slots: [slot({ set_bonus })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.setBonus).toEqual({
+      line: 'Worn for the Feralheart Raiment 4-piece bonus',
+      title: 'Feralheart Raiment (4): +30 Attack Power.',
+    });
+  });
+
+  it('is undefined on a pick the ranker chose on its own merit', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.setBonus).toBeUndefined();
+  });
+});
+
 describe('bandInfosFor: effect_unmodelled and low_value flags', () => {
   it('carries effect_unmodelled through on a pick', () => {
     const file = fileWith([band({ slots: [slot({ effect_unmodelled: true })] })]);

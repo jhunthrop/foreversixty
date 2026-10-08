@@ -173,6 +173,24 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                 <span class="gear-row-ilvl tabular">· {bisCopy.itemLevelShort(row.itemLevel)}</span>
               )}
             </span>
+            {row.setBonus && (
+              <span
+                class="gear-row-set-bonus text-muted"
+                data-testid="bis-row-set-bonus"
+                title={row.setBonus.title}
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  class="gear-row-set-bonus-icon"
+                  aria-hidden="true"
+                >
+                  <use href="#bis-set-bonus" />
+                </svg>
+                {row.setBonus.line}
+              </span>
+            )}
             {row.evidenceLine && (
               <span class="gear-row-evidence text-muted" data-testid="bis-row-evidence">
                 <VerifiedGlyph size={11} decorative />
@@ -461,6 +479,20 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
   /* The evidence line (spec item 1): one more muted line under the source line, prefixed by
      the same verified glyph the name line uses, this time decorative -- the line's own text
      already states the fact. */
+  .gear-row-set-bonus {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 11px;
+  }
+  .gear-row-set-bonus-icon {
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
   .gear-row-evidence {
     display: flex;
     align-items: center;

@@ -4,7 +4,12 @@
 // SlotIcon / SourceKindIcon and the verified check mark reference them with <use>, so a
 // page with hundreds of rows carries each path once. Included once per page, before the
 // first row.
-import { SLOT_GLYPH_PATHS, SOURCE_KIND_GLYPH_PATHS, VERIFIED_GLYPH_PATH } from '../../lib/bis/glyphs';
+import {
+  SET_BONUS_GLYPH_PATH,
+  SLOT_GLYPH_PATHS,
+  SOURCE_KIND_GLYPH_PATHS,
+  VERIFIED_GLYPH_PATH,
+} from '../../lib/bis/glyphs';
 ---
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -18,6 +23,9 @@ import { SLOT_GLYPH_PATHS, SOURCE_KIND_GLYPH_PATHS, VERIFIED_GLYPH_PATH } from '
       <path d={d} />
     </symbol>
   ))}
+  <symbol id="bis-set-bonus" viewBox="0 0 24 24">
+    <path d={SET_BONUS_GLYPH_PATH} />
+  </symbol>
   <symbol id="bis-verified" viewBox="0 0 24 24">
     <path d={VERIFIED_GLYPH_PATH} />
   </symbol>

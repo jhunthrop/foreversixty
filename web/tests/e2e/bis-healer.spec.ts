@@ -71,6 +71,18 @@ test('no band-level number on a healer band says DPS, and the simulator link is 
   await expect(raidView(page).getByTestId('bis-weights-alliance-60')).toContainText('HPS');
 });
 
+test('every set-bonus note names its set and bonus, and no row shows more than one', async ({ page }) => {
+  await page.goto(HEALER_PAGE);
+  // Shape, not count: the fixture carries one adopted slot, a published file carries however
+  // many the nightly ranker found (possibly none), and the published file wins.
+  const notes = await raidView(page).getByTestId('bis-row-set-bonus').all();
+  for (const note of notes) {
+    await expect(note).toHaveText(/^Worn for the .+ \d+-piece bonus$/);
+    await expect(note).toHaveAttribute('title', /^.+ \(\d+\): .+/);
+  }
+  await expect(raidView(page).locator('li:has([data-testid="bis-row-set-bonus"])')).toHaveCount(notes.length);
+});
+
 test('the healer weights and runners-up read in HPS', async ({ page }) => {
   await page.goto(HEALER_PAGE);
   const weights = raidView(page).getByTestId('bis-weights-alliance-60');

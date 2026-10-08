@@ -1,178 +1,314 @@
 package main
 
 import (
+	"encoding/json"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
+
+const testSetID = 41 // a real entry in setids_generated.go
 
 func setItem(id int, name string, setID int, slots ...string) scored {
 	sid := setID
 	return scored{candidate: candidate{ID: id, Name: name, SetID: &sid, Slots: slots}}
 }
 
-func TestBestSetPiecesKeepsOnlyEngineImplementedSetsAndSkipsTrinkets(t *testing.T) {
-	// 41 is a real entry in setids_generated.go (this lane's own
-	// generated table); 999999 is not a real set id at all.
-	bySlot := map[string][]scored{
-		"head":      {setItem(1, "Implemented Set Head", 41, "head")},
-		"chest":     {setItem(2, "Unimplemented Set Chest", 999999, "chest")},
-		"trinket1":  {setItem(3, "Set Trinket", 41, "trinket1")}, // excluded: trinkets ranked separately
-		"main_hand": {effectItem(4, "No Set Weapon", "", "main_hand")},
-	}
-	got := bestSetPieces(bySlot, "")
-	if len(got) != 1 {
-		t.Fatalf("bestSetPieces = %+v, want exactly one implemented set (41)", got)
-	}
-	pieces, ok := got[41]
-	if !ok || len(pieces) != 1 || pieces[0].slot != "head" {
-		t.Fatalf("bestSetPieces[41] = %+v, want the one head candidate", pieces)
-	}
-}
-
-// The real bug this test guards: finger1 and finger2 fan out from the
-// exact same candidate list (data.go's plannerSlots - a ring's Slots
-// is always both), so their own #1-scored item is the identical
-// physical ring in both. Before this dedup, bestSetPieces counted
-// that one ring as TWO of its own set's pieces, and
-// trySetCompletion's trial equipped it in finger1 AND finger2 at
-// once - the literal "same trinket twice" shape (there, a ring
-// instead) this lane's audit found by eye elsewhere in tonight's
-// output (applySwaps' own new test, verify_test.go).
-func TestBestSetPiecesNeverCountsTheSamePhysicalRingTwice(t *testing.T) {
-	ring := setItem(50, "Set Ring", 41, "finger1", "finger2")
-	bySlot := map[string][]scored{
-		"finger1": {ring},
-		"finger2": {ring},
-		"chest":   {setItem(51, "Set Chest", 41, "chest")},
-	}
-	got := bestSetPieces(bySlot, "")
-	pieces, ok := got[41]
-	if !ok {
-		t.Fatalf("bestSetPieces = %+v, want set 41", got)
-	}
-	seenRing := 0
-	for _, p := range pieces {
-		if p.item.ID == ring.ID {
-			seenRing++
-		}
-	}
-	if seenRing != 1 {
-		t.Fatalf("set 41's pieces = %+v, want the ring counted exactly once (finger1 and finger2 share one candidate list)", pieces)
-	}
-	if len(pieces) != 2 {
-		t.Fatalf("set 41's pieces = %+v, want the ring once plus the chest piece (2 total)", pieces)
-	}
-}
-
-// Mirrors rank.go's own dual-wield defense: a two-hander must never be
-// offered as a dual-wield spec's main-hand set piece either, or
-// trySetCompletion could equip it alongside an off-hand item from a
-// completely different, independently-scored trial.
-func TestBestSetPiecesExcludesTwoHandMainHandForADualWieldSpec(t *testing.T) {
-	twoHander := scored{candidate: candidate{ID: 60, Name: "Two-Hand Set Sword", SetID: intPtr(41), Slots: []string{"main_hand"}, TwoHand: true}}
-	bySlot := map[string][]scored{
-		"main_hand": {twoHander},
-	}
-	got := bestSetPieces(bySlot, "hunter-survival")
-	if len(got) != 0 {
-		t.Fatalf("bestSetPieces = %+v, want no set pieces (the only main_hand candidate is a two-hander, excluded for a dual-wield spec)", got)
-	}
+func withScore(item scored, score float64) scored {
+	item.Score = score
+	return item
 }
 
 func intPtr(n int) *int { return &n }
 
-func TestTrySetCompletionAdoptsTheSetWhenItVerifiesHigher(t *testing.T) {
-	picks := map[string]slotPick{
-		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Score-based Head"}}},
-		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Score-based Chest"}}},
+func testCatalog() setCatalog {
+	return setCatalog{testSetID: {Name: "Test Regalia", Bonuses: []setBonusTier{
+		{Pieces: 2, Description: "two piece"},
+		{Pieces: 3, Description: "three piece"},
+	}}}
+}
+
+func gear(pairs ...int) string {
+	var g []api.GearSlot
+	slots := []string{"head", "chest", "legs"}
+	for i, id := range pairs {
+		g = append(g, api.GearSlot{Slot: slots[i], ItemID: id})
 	}
+	return gearKey(g)
+}
+
+func TestBestSetPiecePerSlotSkipsTrinketsAndOtherSets(t *testing.T) {
 	bySlot := map[string][]scored{
-		"head":  {setItem(11, "Set Head", 41, "head")},
-		"chest": {setItem(21, "Set Chest", 41, "chest")},
+		"head":     {setItem(1, "Other Set Head", 999999, "head"), setItem(2, "Set Head", testSetID, "head")},
+		"trinket1": {setItem(3, "Set Trinket", testSetID, "trinket1")},
 	}
-	fake := &fakeEngine{
-		DPSByGear: map[string]float64{
-			gearKey([]api.GearSlot{{Slot: "head", ItemID: 10}, {Slot: "chest", ItemID: 20}}): 100, // baseline (independently-scored picks)
-			gearKey([]api.GearSlot{{Slot: "head", ItemID: 11}, {Slot: "chest", ItemID: 21}}): 150, // the completed set - higher
-		},
-	}
-	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot)
-	if len(notes) != 1 {
-		t.Fatalf("notes = %v, want exactly 1 (the adoption note)", notes)
-	}
-	if out["head"].Item == nil || out["head"].Item.ID != 11 {
-		t.Fatalf("head = %+v, want the set piece (11)", out["head"].Item)
-	}
-	if out["chest"].Item == nil || out["chest"].Item.ID != 21 {
-		t.Fatalf("chest = %+v, want the set piece (21)", out["chest"].Item)
-	}
-	// This lane's brief, item 7: every adopted piece carries the
-	// winning trial's own measured DPS - report.go's buildReport reads
-	// this to publish sim_dps instead of score()'s stat estimate for
-	// both slots.
-	if out["head"].Item.MeasuredDPS != 150 {
-		t.Errorf("head MeasuredDPS = %v, want 150", out["head"].Item.MeasuredDPS)
-	}
-	if out["chest"].Item.MeasuredDPS != 150 {
-		t.Errorf("chest MeasuredDPS = %v, want 150", out["chest"].Item.MeasuredDPS)
+	got := bestSetPiecePerSlot(bySlot, "", testSetID)
+	if len(got) != 1 || got["head"].ID != 2 {
+		t.Fatalf("pieces = %+v, want only the set head (2)", got)
 	}
 }
 
-func TestTrySetCompletionKeepsTheIndependentlyScoredPicksWhenTheSetDoesNotVerifyHigher(t *testing.T) {
+// finger1 and finger2 share one candidate list: one physical ring must not
+// count as two pieces, and the second finger takes the next distinct ring.
+func TestBestSetPiecePerSlotNeverCountsTheSameRingTwice(t *testing.T) {
+	ringA := setItem(50, "Set Ring A", testSetID, "finger1", "finger2")
+	ringB := setItem(52, "Set Ring B", testSetID, "finger1", "finger2")
+	bySlot := map[string][]scored{
+		"finger1": {ringA, ringB},
+		"finger2": {ringA, ringB},
+	}
+	got := bestSetPiecePerSlot(bySlot, "", testSetID)
+	if got["finger1"].ID != 50 || got["finger2"].ID != 52 {
+		t.Fatalf("pieces = %+v, want ring A on finger1 and ring B on finger2", got)
+	}
+	single := bestSetPiecePerSlot(map[string][]scored{"finger1": {ringA}, "finger2": {ringA}}, "", testSetID)
+	if len(single) != 1 {
+		t.Fatalf("pieces = %+v, want the lone ring once", single)
+	}
+}
+
+func TestBestSetPiecePerSlotExcludesTwoHandMainHandForADualWieldSpec(t *testing.T) {
+	twoHander := scored{candidate: candidate{ID: 60, Name: "Two-Hand Set Sword", SetID: intPtr(testSetID), Slots: []string{"main_hand"}, TwoHand: true}}
+	got := bestSetPiecePerSlot(map[string][]scored{"main_hand": {twoHander}}, "hunter-survival", testSetID)
+	if len(got) != 0 {
+		t.Fatalf("pieces = %+v, want none (the only main_hand piece is a two-hander)", got)
+	}
+}
+
+// Two mediocre pieces of a set with a strong 2-piece bonus beat two better
+// loose pieces: the per-slot pass picked the loose ones (higher score), the
+// set trial is adopted and the changed slots say why.
+func TestTrySetCompletionAdoptsAStrongTwoPieceBonus(t *testing.T) {
 	picks := map[string]slotPick{
-		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Score-based Head"}}},
-		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Score-based Chest"}}},
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+		"legs":  {Item: &scored{candidate: candidate{ID: 30, Name: "Loose Legs"}, Score: 5}},
 	}
 	bySlot := map[string][]scored{
-		"head":  {setItem(11, "Set Head", 41, "head")},
-		"chest": {setItem(21, "Set Chest", 41, "chest")},
+		"head":  {withScore(setItem(11, "Set Head", testSetID, "head"), 6)},
+		"chest": {withScore(setItem(21, "Set Chest", testSetID, "chest"), 7)},
 	}
-	fake := &fakeEngine{
-		DPSByGear: map[string]float64{
-			gearKey([]api.GearSlot{{Slot: "head", ItemID: 10}, {Slot: "chest", ItemID: 20}}): 200, // baseline wins
-			gearKey([]api.GearSlot{{Slot: "head", ItemID: 11}, {Slot: "chest", ItemID: 21}}): 150,
-		},
+	fake := &fakeEngine{DPSByGear: map[string]float64{
+		gear(10, 20, 30): 100,
+		gear(11, 21, 30): 112, // the pair of set pieces wins on the bonus
+	}}
+	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	for _, slot := range []string{"head", "chest"} {
+		pk := out[slot]
+		if pk.Item.ID != map[string]int{"head": 11, "chest": 21}[slot] {
+			t.Fatalf("%s = %+v, want the set piece", slot, pk.Item)
+		}
+		if pk.Item.MeasuredDPS != 112 {
+			t.Errorf("%s MeasuredDPS = %v, want 112", slot, pk.Item.MeasuredDPS)
+		}
+		want := setBonusNote{Set: "Test Regalia", Pieces: 2, Bonus: "two piece"}
+		if pk.SetBonus == nil || *pk.SetBonus != want {
+			t.Errorf("%s SetBonus = %+v, want %+v", slot, pk.SetBonus, want)
+		}
 	}
-	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot)
-	if len(notes) != 0 {
-		t.Fatalf("notes = %v, want none (the set did not win)", notes)
+	if out["head"].RunnerUp == nil || out["head"].RunnerUp.ID != 10 {
+		t.Errorf("head runner-up = %+v, want the replaced per-slot pick (10), so verifyBand can still swap it back", out["head"].RunnerUp)
 	}
-	if out["head"].Item.ID != 10 || out["chest"].Item.ID != 20 {
-		t.Fatalf("picks changed despite the set losing: %+v / %+v", out["head"].Item, out["chest"].Item)
+	if out["legs"].Item.ID != 30 || out["legs"].SetBonus != nil {
+		t.Errorf("legs = %+v, want the untouched per-slot pick without a set note", out["legs"])
+	}
+	if len(fake.Calls) != 4 || !strings.Contains(strings.Join(notes, "|"), "4 extra sim runs in") {
+		t.Errorf("calls = %d, notes = %v, want a screen baseline and trial, then a confirm baseline and trial", len(fake.Calls), notes)
+	}
+}
+
+func TestTrySetCompletionChangesNothingWhenTheBonusDoesNotPay(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {withScore(setItem(11, "Set Head", testSetID, "head"), 6)},
+		"chest": {withScore(setItem(21, "Set Chest", testSetID, "chest"), 7)},
+	}
+	fake := &fakeEngine{DPSByGear: map[string]float64{gear(10, 20): 100, gear(11, 21): 98}}
+	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	if out["head"].Item.ID != 10 || out["chest"].Item.ID != 20 || out["head"].SetBonus != nil {
+		t.Fatalf("picks changed although the set lost: %+v / %+v", out["head"], out["chest"])
+	}
+	for _, n := range notes {
+		if strings.Contains(n, "adopted") {
+			t.Fatalf("notes = %v, want no adoption", notes)
+		}
+	}
+}
+
+func TestTrySetCompletionNeedsMoreThanTheSimError(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {setItem(11, "Set Head", testSetID, "head")},
+		"chest": {setItem(21, "Set Chest", testSetID, "chest")},
+	}
+	// +2%: clears the margin but sits inside two 2.0 standard errors.
+	fake := &fakeEngine{DefaultStdErr: 2, DPSByGear: map[string]float64{gear(10, 20): 100, gear(11, 21): 102}}
+	out, _ := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	if out["head"].Item.ID != 10 {
+		t.Fatalf("head = %+v, want the per-slot pick (the gain is inside the sim error)", out["head"].Item)
+	}
+}
+
+// A weak 2-piece bonus loses, the 3-piece trial then wins against the
+// unchanged picks: the ladder keeps climbing past a losing threshold.
+// A trial the short screening run already finds losing never costs the
+// full-length run: one screening baseline, one screening trial, nothing else.
+func TestTrySetCompletionStopsAtTheScreenWhenTheTrialLoses(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {setItem(11, "Set Head", testSetID, "head")},
+		"chest": {setItem(21, "Set Chest", testSetID, "chest")},
+	}
+	fake := &fakeEngine{DPSByGear: map[string]float64{gear(10, 20): 100, gear(11, 21): 99}}
+	_, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	if len(fake.Calls) != 2 {
+		t.Fatalf("calls = %d, want 2 (screening baseline and trial only)", len(fake.Calls))
+	}
+	if !strings.Contains(strings.Join(notes, "|"), "2 extra sim runs in") {
+		t.Errorf("notes = %v, want the run count", notes)
+	}
+}
+
+func TestTrySetCompletionClimbsPastALosingThreshold(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+		"legs":  {Item: &scored{candidate: candidate{ID: 30, Name: "Loose Legs"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {withScore(setItem(11, "Set Head", testSetID, "head"), 8)},
+		"chest": {withScore(setItem(21, "Set Chest", testSetID, "chest"), 7)},
+		"legs":  {withScore(setItem(31, "Set Legs", testSetID, "legs"), 1)},
+	}
+	fake := &fakeEngine{DPSByGear: map[string]float64{
+		gear(10, 20, 30): 100,
+		gear(11, 21, 30): 99,
+		gear(11, 21, 31): 120,
+	}}
+	out, _ := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	if out["legs"].Item.ID != 31 || out["legs"].SetBonus == nil || out["legs"].SetBonus.Pieces != 3 {
+		t.Fatalf("legs = %+v, want the set legs adopted for the 3-piece bonus", out["legs"])
 	}
 }
 
 func TestTrySetCompletionSkipsASetAlreadyFullyEquipped(t *testing.T) {
 	picks := map[string]slotPick{
-		"head":  {Item: &scored{candidate: candidate{ID: 11, Name: "Set Head"}}},
-		"chest": {Item: &scored{candidate: candidate{ID: 21, Name: "Set Chest"}}},
+		"head":  {Item: &scored{candidate: setItem(11, "Set Head", testSetID, "head").candidate}},
+		"chest": {Item: &scored{candidate: setItem(21, "Set Chest", testSetID, "chest").candidate}},
 	}
 	bySlot := map[string][]scored{
-		"head":  {setItem(11, "Set Head", 41, "head")},
-		"chest": {setItem(21, "Set Chest", 41, "chest")},
+		"head":  {setItem(11, "Set Head", testSetID, "head")},
+		"chest": {setItem(21, "Set Chest", testSetID, "chest")},
 	}
 	fake := &fakeEngine{}
-	_, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot)
-	if len(notes) != 0 {
-		t.Fatalf("notes = %v, want none", notes)
-	}
-	if len(fake.Calls) != 0 {
-		t.Fatalf("fake engine was called %d times, want 0 (already fully equipped, nothing to try)", len(fake.Calls))
+	_, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	if len(notes) != 0 || len(fake.Calls) != 0 {
+		t.Fatalf("notes = %v, calls = %d, want none (no threshold above 2 is reachable with two pieces)", notes, len(fake.Calls))
 	}
 }
 
 func TestTrySetCompletionNoImplementedSetsReturnsUnchanged(t *testing.T) {
 	original := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Plain Head"}}}}
 	fake := &fakeEngine{}
-	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", original, map[string][]scored{})
-	if len(notes) != 0 {
-		t.Fatalf("notes = %v, want none", notes)
+	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", original, map[string][]scored{}, testCatalog())
+	if len(notes) != 0 || out["head"].Item.ID != 1 || len(fake.Calls) != 0 {
+		t.Fatalf("out = %+v, notes = %v, calls = %d, want unchanged and no runs", out, notes, len(fake.Calls))
 	}
-	if out["head"].Item.ID != 1 {
-		t.Fatalf("out = %+v, want unchanged", out)
+}
+
+func TestSlotRowSetBonusShape(t *testing.T) {
+	with, err := json.Marshal(slotRow{Slot: "head", ItemID: 11, SetBonus: &setBonusNote{Set: "Test Regalia", Pieces: 2, Bonus: "two piece"}})
+	if err != nil {
+		t.Fatal(err)
 	}
-	if len(fake.Calls) != 0 {
-		t.Fatalf("fake engine was called %d times, want 0", len(fake.Calls))
+	if want := `"set_bonus":{"set":"Test Regalia","pieces":2,"bonus":"two piece"}`; !strings.Contains(string(with), want) {
+		t.Errorf("row json = %s, want it to contain %s", with, want)
+	}
+	without, err := json.Marshal(slotRow{Slot: "head", ItemID: 11})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(without), "set_bonus") {
+		t.Errorf("row json = %s, want no set_bonus key", without)
+	}
+}
+
+func TestLoadSetCatalogSortsBonuses(t *testing.T) {
+	dir := t.TempDir()
+	if err := writeFile(t, dir+"/sets.json", `[{"id":7,"name":"S","item_ids":[1],"bonuses":[{"pieces":4,"description":"b"},{"pieces":2,"description":"a"}]}]`); err != nil {
+		t.Fatal(err)
+	}
+	cat, err := loadSetCatalog(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := cat[7]; got.Name != "S" || got.Bonuses[0].Pieces != 2 || got.Bonuses[1].Pieces != 4 {
+		t.Fatalf("catalog[7] = %+v", got)
+	}
+}
+
+func completionFixture() (verifiedBand, map[string][]scored) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {withScore(setItem(11, "Set Head", testSetID, "head"), 6)},
+		"chest": {withScore(setItem(21, "Set Chest", testSetID, "chest"), 7)},
+	}
+	return verifiedBand{picks: picks, setDPS: 100}, bySlot
+}
+
+// The completed set is verified again and published when it beats the
+// per-slot set the page would otherwise show.
+func TestCompleteSetsKeepsTheCompletedSetWhenItVerifiesHigher(t *testing.T) {
+	before, bySlot := completionFixture()
+	fake := &fakeEngine{DPSByGear: map[string]float64{gear(10, 20): 100, gear(11, 21): 112}}
+	got, _, err := completeSets(fake, specInfo{}, "dwarf", "hunter", 60, "", before, bySlot, testCatalog())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.setDPS != 112 || got.picks["head"].Item.ID != 11 || got.picks["head"].SetBonus == nil {
+		t.Fatalf("band = %+v, want the completed set at 112 with its set note", got)
+	}
+}
+
+// A completed set whose second verification comes in at or below the
+// per-slot set is dropped: set completion can never publish a lower set.
+func TestCompleteSetsRevertsWhenTheCompletedSetVerifiesLower(t *testing.T) {
+	before, bySlot := completionFixture()
+	seen := 0
+	fake := &fakeEngine{DPSFunc: func(req api.SimRequest) (float64, error) {
+		switch gearKey(req.Character.Gear) {
+		case gear(10, 20):
+			return 100, nil
+		case gear(11, 21):
+			seen++
+			if seen <= 2 { // the screen and the confirmation
+				return 112, nil
+			}
+			return 90, nil // the second verification
+		}
+		return 0, nil
+	}}
+	got, notes, err := completeSets(fake, specInfo{}, "dwarf", "hunter", 60, "", before, bySlot, testCatalog())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.setDPS != 100 || got.picks["head"].Item.ID != 10 || hasSetBonus(got.picks) {
+		t.Fatalf("band = %+v, want the per-slot set back", got)
+	}
+	if !strings.Contains(strings.Join(notes, "|"), "reverted") {
+		t.Errorf("notes = %v, want the revert noted", notes)
 	}
 }

@@ -867,7 +867,12 @@
             }
           ],
           "dps_delta": 11.1,
-          "swap_note": "confirmed by the sim against Zulian Headdress (id 22720): kept the pick, 386.7 vs 375.6 set DPS"
+          "swap_note": "confirmed by the sim against Zulian Headdress (id 22720): kept the pick, 386.7 vs 375.6 set DPS",
+          "set_bonus": {
+            "set": "Vestments of the Virtuous",
+            "pieces": 3,
+            "bonus": "Your Renew and Flash Heal spells have a chance to restore mana."
+          }
         },
         {
           "slot": "neck",

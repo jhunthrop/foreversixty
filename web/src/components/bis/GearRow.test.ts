@@ -41,6 +41,44 @@ function repRow(overrides: Partial<RowView> = {}): RowView {
   };
 }
 
+describe('GearRow set-bonus note', () => {
+  it('shows the set-bonus line, with the bonus text as its title, on a row that carries one', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(GearRow, {
+      props: {
+        row: repRow({
+          setBonus: {
+            line: 'Worn for the Test Regalia 2-piece bonus',
+            title: 'Test Regalia (2): +20 Armor.',
+          },
+        }),
+        isNew: false,
+        build: 'test-build',
+        faction: 'alliance',
+        slotTestId: 'test-slot',
+      },
+    });
+    const note = extractSpan(html, 'data-testid="bis-row-set-bonus"');
+    expect(note).toContain('Worn for the Test Regalia 2-piece bonus');
+    expect(note).toContain('title="Test Regalia (2): +20 Armor."');
+    expect(note).toContain('href="#bis-set-bonus"');
+  });
+
+  it('renders no note on an ordinary row', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(GearRow, {
+      props: {
+        row: repRow(),
+        isNew: false,
+        build: 'test-build',
+        faction: 'alliance',
+        slotTestId: 'test-slot',
+      },
+    });
+    expect(html).not.toContain('bis-row-set-bonus');
+  });
+});
+
 describe('GearRow', () => {
   it.each(['alliance', 'horde'] as const)(
     'shows the 16px FactionMark before a reputation source line on the pick, for %s',

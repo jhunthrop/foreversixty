@@ -413,6 +413,10 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// stats. weaponSubclassesSource is logged once so the nightly log
 	// says whether this run read a published table or fell back to
 	// weapon_requirements.go's own static one.
+	setCat, err := loadSetCatalog(buildDir)
+	if err != nil {
+		return err
+	}
 	weaponSubclasses, weaponSubclassesSource, err := loadWeaponSubclasses(buildDir, specInfo.ClassSlug)
 	if err != nil {
 		return fmt.Errorf("loading %s's weapon proficiency: %w", specInfo.ClassSlug, err)
@@ -720,39 +724,33 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 					}
 				}
 
-				// A pick that would complete an engine-implemented 2- or
-				// 3-piece set is tried together and kept only if it
-				// verifies ahead of the independently-scored picks (sets.go;
-				// this lane's brief, item 3's second half).
-				var setNotes []string
-				picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot)
-				for _, n := range setNotes {
-					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
-				}
 				effectSeconds := time.Since(effectStart).Seconds()
 
-				// Re-assert pick()'s own two-hand/off-hand rule: either of
-				// the two passes just above can replace main_hand's pick
-				// with a two-hander without knowing off_hand exists (see
-				// pick.go's enforceTwoHandOffHandInvariant doc - this
-				// lane's report names every spec it found the gap on).
+				// Re-assert pick()'s own two-hand/off-hand rule: the effect
+				// pass just above can replace main_hand's pick with a
+				// two-hander without knowing off_hand exists (see pick.go's
+				// enforceTwoHandOffHandInvariant doc - this lane's report
+				// names every spec it found the gap on).
 				picks = enforceTwoHandOffHandInvariant(picks)
 
 				verifyStart := time.Now()
-				setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks)
+				verified, err := verifyAndSwap(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks)
 				if err != nil {
-					return fmt.Errorf("band %d %s verify run (baseline): %w", band, f.name, err)
+					return fmt.Errorf("band %d %s: %w", band, f.name, err)
 				}
+				// Set completion runs on the swapped set, so a set trial must
+				// beat the picks the page would otherwise publish (sets.go).
+				var setNotes []string
+				verified, setNotes, err = completeSets(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, pickBySlot, setCat)
+				if err != nil {
+					return fmt.Errorf("band %d %s: %w", band, f.name, err)
+				}
+				for _, n := range setNotes {
+					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+				}
+				picks, setDPS, swaps, verifyErrors := verified.picks, verified.setDPS, verified.swaps, verified.errors
 				for _, e := range verifyErrors {
 					log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
-				}
-				// A runner-up the sim measured ahead of the scored pick IS the
-				// pick: swap it into the slot and re-measure the whole set once,
-				// so the published row, the set DPS and the next band's diff all
-				// name the item a player should actually wear.
-				picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, swaps, setDPS)
-				if err != nil {
-					return fmt.Errorf("band %d %s verify run (after swaps): %w", band, f.name, err)
 				}
 				verifySeconds := time.Since(verifyStart).Seconds()
 
