@@ -160,7 +160,7 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     42: "spell_power",
     43: "mp5",
     45: "spell_power",
-    48: "block",
+    48: "block_value",
     51: "fire_res",
     52: "frost_res",
     53: None,  # holy resistance

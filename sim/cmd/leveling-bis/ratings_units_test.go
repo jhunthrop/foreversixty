@@ -90,3 +90,40 @@ func TestPercentSharedScoreMatchesAStatUnitItem(t *testing.T) {
 		t.Fatalf("1%% aura hit scored %v and 10-rating hit scored %v, both want 1.5", a, r)
 	}
 }
+
+// A shield's block value is a flat amount taken off a blocked hit, not a
+// rating: dividing it by the block factor would score it as chance.
+func TestConvertRatingStatsLeavesBlockValueFlat(t *testing.T) {
+	got := convertRatingStats(map[string]float64{"block": 5, "block_value": 27}, nil, wantRatingFactors)
+	if got["block"] != 1 || got["block_value"] != 27 {
+		t.Fatalf("block %v, block_value %v; want 1 and 27", got["block"], got["block_value"])
+	}
+}
+
+const immovableObjectID = 19321
+
+func TestTheImmovableObjectScoresBlockValueAndNoBlockChance(t *testing.T) {
+	activeBuild, err := leveling.ReadActiveBuild(publishedRepoRoot)
+	if err != nil {
+		t.Fatalf("ReadActiveBuild: %v", err)
+	}
+	buildDir := filepath.Join(publishedRepoRoot, "data", "builds", activeBuild)
+	items, _, err := loadCandidates(buildDir, "warrior")
+	if err != nil {
+		t.Fatalf("loadCandidates: %v", err)
+	}
+	factors, err := loadRatingFactors(buildDir)
+	if err != nil {
+		t.Fatalf("loadRatingFactors: %v", err)
+	}
+	for _, c := range convertCandidateRatings(items, factors) {
+		if c.ID != immovableObjectID {
+			continue
+		}
+		if c.Stats["block_value"] != 27 || c.Stats["block"] != 0 {
+			t.Fatalf("The Immovable Object scores block_value %v, block %v; want 27 and 0", c.Stats["block_value"], c.Stats["block"])
+		}
+		return
+	}
+	t.Fatalf("item %d missing from the warrior candidates", immovableObjectID)
+}

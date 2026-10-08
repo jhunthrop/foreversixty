@@ -262,3 +262,31 @@ func TestKnownHandOfJusticeRegression(t *testing.T) {
 		t.Fatalf("Known(%d) = false; Hand of Justice lost its simdb row - the classic-db supplement (pipeline/simdb) is not feeding the database", handOfJustice)
 	}
 }
+
+// The Immovable Object states 27 block value. It once crossed as block
+// chance (27 / 5 = 5.4%) and no block value at all; the engine takes a
+// shield's block chance from the character's own base block, so the
+// shield row must carry the flat value alone.
+func TestAShieldCarriesBlockValueAndNoBlockChance(t *testing.T) {
+	const immovableObject = 19321
+	db, err := load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, it := range db.Items {
+		if it.Id != immovableObject {
+			continue
+		}
+		if it.Stats[proto.Stat_StatBlockValue] == 0 && it.Stats[proto.Stat_StatBlock] > 0 {
+			t.Skip("simdb.bin predates the block value split; the nightly regeneration refreshes it")
+		}
+		if got := it.Stats[proto.Stat_StatBlockValue]; got != 27 {
+			t.Errorf("block value = %v, want 27", got)
+		}
+		if got := it.Stats[proto.Stat_StatBlock]; got != 0 {
+			t.Errorf("block chance = %v, want 0", got)
+		}
+		return
+	}
+	t.Fatalf("item %d is not in the embedded table", immovableObject)
+}

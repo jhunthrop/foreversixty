@@ -1453,7 +1453,7 @@ type talentSpellFile struct {
 // keyed by every rank's OWN spell id rather than by (tier, column): the
 // map from a spell id any rank of any talent grants to that talent's
 // own stable node id, which is what a warned action's id and a truncated
-// build's per-talent point count (ladderTalentPoints) share as a common
+// build's per-talent ranks (leveling.TalentRanksFromString) share as a common
 // key.
 func loadTalentSpellIDs(repoRoot, build, class string) (map[int]int, error) {
 	path := filepath.Join(repoRoot, "data", "builds", build, "talents", class+".json")
@@ -1525,50 +1525,6 @@ func expandTalentSpellIDs(talentSpellIDs map[int]int, abilities classAbilities) 
 		}
 	}
 	return out
-}
-
-// ladderTalentPoints is ladderTalentString's own budget-spending walk
-// (lines ~159-213), recomputed here to return points-per-talent-node
-// rather than a rendered digit string - the shape rule 1 needs and the
-// string does not carry. Any future change to the truncation rule
-// belongs in ladderTalentString; this copy exists only because that
-// function is protected for lane bis-all's migration and returns the
-// wrong shape for this reader anyway.
-func ladderTalentPoints(activeTrees []leveling.TalentTree, targets map[int]int, ownTreeIndex, level int) map[int]int {
-	budget := level - 9
-	if budget < 0 {
-		budget = 0
-	}
-	order := make([]int, 0, len(activeTrees))
-	order = append(order, ownTreeIndex)
-	for i := range activeTrees {
-		if i != ownTreeIndex {
-			order = append(order, i)
-		}
-	}
-
-	points := map[int]int{}
-	for _, ti := range order {
-		if ti < 0 || ti >= len(activeTrees) {
-			continue
-		}
-		for _, node := range activeTrees[ti].Talents {
-			if budget <= 0 {
-				break
-			}
-			target := targets[node.ID]
-			if target > node.MaxRank {
-				target = node.MaxRank
-			}
-			give := target
-			if give > budget {
-				give = budget
-			}
-			points[node.ID] = give
-			budget -= give
-		}
-	}
-	return points
 }
 
 // idLearnLevel is every id spellranks.json tracks, for ANY class, mapped

@@ -97,7 +97,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 00000000000000000-05150000000000000-000000000000000000 | main_hand:1482 off_hand:2236 | 23.6 | 5 | other:attack/2=121.3, other:rage_gain=119.1, other:attack/1=48.2, spell:285/1=19.6, spell:285=19.4 | {SpellID: 12328}, {SpellID: 23894} |
 | 30 | 00000000000000000-05153105010000000-000000000000000000 | main_hand:6692 off_hand:9457 | 45.6 | 6 | other:rage_gain=108.6, other:attack/2=79.3, other:attack/1=54.9, spell:1608/1=21.4, spell:1608=21.1 | {SpellID: 12328}, {SpellID: 23894} |
 | 38 | 00000000000000000-05153105022011300-000000000000000000 | main_hand:868 off_hand:6829 | 68.9 | 7 | other:rage_gain=117.0, other:attack/2=85.6, other:attack/1=66.6, spell:11564/1=23.4, spell:11564=23.2 | {SpellID: 23894} |
-| 40 | 00000000000000000-05153105022011500-000000000000000000 | main_hand:2164 off_hand:9359 | 83.0 | 8 | other:rage_gain=122.5, other:attack/2=83.7, other:attack/1=81.8, spell:11565/1=25.3, spell:11565=25.1 | {SpellID: 23881} |
+| 40 | 00000000000000000-05153105022011401-000000000000000000 | main_hand:2164 off_hand:9359 | 82.2 | 9 | other:rage_gain=118.9, other:attack/1=101.6, other:attack/2=83.1, spell:20660=20.5, spell:23881=18.8 | - |
 | 50 | 34200000000000000-05153105022011501-000000000000000000 | main_hand:810 off_hand:2163 | 115.5 | 9 | other:rage_gain=140.6, other:attack/2=139.6, other:attack/1=85.7, spell:20661=21.3, spell:23892=19.4 | - |
 | 60 | 34320003002000000-05153105022011501-200000000000000000 | main_hand:22736 off_hand:23054 | 239.7 | 9 | other:rage_gain=102.0, other:attack/2=73.0, other:attack/1=62.1, spell:23894=19.3, spell:20662=18.3 | - |
 
@@ -143,7 +143,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Bloodthirst (spell 23881)
 - Hamstring (spell 7372)
 - Mocking Blow (spell 7402)
 - Mortal Strike (spell 12294)

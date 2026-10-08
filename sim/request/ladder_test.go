@@ -220,7 +220,10 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		if err != nil {
 			t.Fatalf("%s level %d: converting talents to the engine's own layout: %v", spec.Spec, level, err)
 		}
-		talentPoints := ladderTalentPoints(activeTrees, targets, spec.TreeIndex, level)
+		talentPoints, err := leveling.TalentRanksFromString(activeTrees, talents)
+		if err != nil {
+			t.Fatalf("%s level %d: reading the ladder's own talent string: %v", spec.Spec, level, err)
+		}
 		gear := ladderGear(items, knownItems, requiredLevelFloors, spec.Spec, level)
 
 		req := api.SimRequest{
