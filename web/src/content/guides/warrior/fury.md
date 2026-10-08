@@ -60,7 +60,7 @@ This build reaching Bloodthirst spends 32 points in Fury, with 17 in Arms and 2 
 
 ## Rotation and priority
 
-This site's own Fury priority list opens the same way Arms does: top up Rage with Bloodrage below 80, since Rage limits the rest of the rotation. Death Wish is used on cooldown as the spec's burst window, and Battle Shout is kept active for the group buff. Bloodthirst is the priority hit whenever its six-second cooldown is up, since it's the highest damage-per-Rage button in the kit; Whirlwind fills the gap whenever Bloodthirst isn't ready, hitting everything nearby rather than sitting idle. Below 20% target health, Execute replaces the rest of the priority. Leftover Rage goes into Heroic Strike, but only above 40 Rage, so it never starves Bloodthirst or Execute of what they need.
+This site's own Fury priority list opens the same way Arms does: top up Rage with Bloodrage below 80, since Rage limits the rest of the rotation. Death Wish is used on cooldown as the spec's burst window, and Battle Shout is kept active for the group buff. Below 20% target health, Execute comes first, ahead of Bloodthirst and Whirlwind (moving it up was worth about +1% in the raid-ready run and helps the bare character too). Otherwise Bloodthirst is the priority hit whenever its six-second cooldown is up, since it's the highest damage-per-Rage button in the kit; Whirlwind fills the gap whenever Bloodthirst isn't ready, hitting everything nearby rather than sitting idle. Leftover Rage goes into Heroic Strike, but only above 40 Rage, so it never starves Bloodthirst or Execute of what they need.
 
 ## Stat priority
 

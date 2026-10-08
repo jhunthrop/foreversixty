@@ -10,13 +10,14 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
-// hunter-marksmanship: one of the two hunter rotations left that still
+// hunter-beast-mastery: one of the two hunter rotations left that still
 // reference Serpent Sting's max rank (25295) and Multi-Shot (2643) --
 // hunter-survival used to be the third until the rotation-accuracy
 // program's melee rewrite (2026-09-28) dropped every ranged shot and
 // Serpent Sting from it (they require a range this now-melee spec never
 // occupies; see data/curated/apl/hunter-survival.json's own notes), so
-// this file points at marksmanship instead. Multi-Shot's own
+// this file points at beast mastery instead (marksmanship dropped Serpent
+// Sting on 2026-10-08 on the raid rotation search). Multi-Shot's own
 // spellranks.json row is rank 0 (the reference table never lists this
 // build's higher client ranks 14288/14289/14290/25294 at all), but it is
 // NOT unranked in the engine's own sense: sim/hunter/multi_shot.go gates
@@ -25,7 +26,7 @@ import (
 // carries this id specifically so HighestLearnedSpellID agrees with the
 // engine below level 18, rather than treating 2643 as always-learned the
 // way a genuinely unranked ability (Bloodrage, Judgement) is.
-const hunterSpecForRankTests = "hunter-marksmanship"
+const hunterSpecForRankTests = "hunter-beast-mastery"
 
 func readHunterAPL(t *testing.T) []byte {
 	t.Helper()

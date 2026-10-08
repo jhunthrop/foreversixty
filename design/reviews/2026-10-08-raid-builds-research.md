@@ -42,11 +42,14 @@ Reports: `design/reviews/talent-search/<spec>-raid.md` (all twenty regenerated).
 
 ## Rotation changes
 
-Two lines adopted, both in `data/curated/apl`, synced to the site and fork copies and checked by `make apl-check`.
+Five changes adopted (two from the first pass, three from the follow-up on the specs outside the build set), all in `data/curated/apl`, synced to the site and fork copies and checked by `make apl-check`.
 
 | Spec | Line | Raid-ready gain | Bare guide build | Model check | Decision |
 |---|---|---|---|---|---|
 | Retribution | Consecration (rank 5) last, while mana is above 65% | +8.9% (ungated: +10.5%) | level (254.3 before, 253.6 after, error 0.5) | the client puts the damage on a companion row per rank; `TestConsecrationDamageMatchesClient` holds the engine's tick damage, extra damage on the first targets, coefficient and target count to those rows | **adopted** (this closes the 2026-10-07 hold, which was for want of a client-stated damage) |
+| Beast Mastery | Multi-Shot ahead of Serpent Sting (order only) | +0.4% | level (239.1 before and after) | order only | **adopted** |
+| Marksmanship | remove Serpent Sting | +1.2% | 239.6 to 238.0 (-0.7%, error 0.6); ranker bare level | `Serpent Sting` damage is held to the client's amount in `2026-10-07-damage-conformance.md` and `2026-10-07-damage-melee.md`, so the drop is of a verified ability | **adopted** |
+| Fury | Execute ahead of Bloodthirst and Whirlwind (order only) | +1.0% | 297.6 to 299.8 (better) | order only | **adopted** |
 | Enhancement | Earth Shock (rank 7) last, while mana is above 50% | +18.7% on the old build, from 498.2 to 591.3 together with the new build | level (226.4 before, 227.0 after, error 0.8) | `TestEarthShockDamageMatchesClient` (and Flame and Frost Shock) | **adopted** |
 
 The mana gate is the guard on the bare entry: ungated, Consecration costs the bare character 8.5% and Earth Shock 5%. Gates tried (raid / bare, percent of the ungated raid result): Consecration 20% 100 / -5.3%, 35% 100 / -4.0%, 50% 99.2 / -1.5%, 65% 98.6 / -0.3%; Earth Shock 20% 100 / -5.3%, 40% 99.7 / -1.2%, 50% 96.3 / level, 60% 94.9 / level. The Flame Shock line the stalled attempt had also added is not in the Enhancement search winner and is not adopted.
@@ -60,11 +63,9 @@ The mana gate is the guard on the bare entry: ungated, Consecration costs the ba
 | Destruction | replace Bane of Doom with Curse of the Elements | +9.3 DPS | the 2026-10-08 hold stands: the raid preset's own Curse of the Elements collides with the cast one, and the action probe prices Bane of Doom at +51 |
 | Destruction | Shoot gate from 40% to 50% | +0.8 DPS alone, within error | the +5.4 in the search was measured after two other mutations |
 | Subtlety | remove Eviscerate (and then Ghostly Strike) | +3.6% | the search itself marks the winner "not adoptable" (it never casts Eviscerate), and Eviscerate's attack power term is the unverified part of its model (`2026-10-07-rogue-parity.md`); tables otherwise match the client |
-| Beast Mastery | swap Serpent Sting and Multi-Shot | +0.4% | outside this lane's set of specs (build and engine models unchanged); not applied |
-| Marksmanship | remove Serpent Sting | +1.2% | same, and a drop with no model review |
-| Survival | Lacerate refresh below 3 s | +0.4% | wins the raid, loses the bare build (2026-10-07 precedent) |
-| Shadow | Shadow Word: Death without its execute gate | +3.4% | unpriced self-damage (2026-10-07 hold) |
-| Fury | swap Execute order; remove Death Wish | +1.5% | outside the lane's set; the drop has no model review |
+| Survival | Lacerate refresh below 3 s | +0.4% | tried and reverted: the bare build loses beyond error (230.0 to 228.8, error 0.57) and the ranker bare reads -1.8% against +0.3% on the raid (alliance) |
+| Shadow | Shadow Word: Death without its execute gate | +3.4% | unpriced self-damage: the client states a backlash of 10% of maximum health that the sim does not price, and the engine's differs (2026-10-07 hold; model not verified) |
+| Fury | remove Death Wish | +0.4% on top of the reorder | a drop; Death Wish's model is not verified in any review |
 | Elemental, Mage Fire (Frost Nova) | swap Lava Burst and Mana Spring; insert Frost Nova | +0.2%, +0.6% | within error |
 
 Every other rotation report reads "the curated rotation is already the best found". Reports: `design/reviews/rotation-search/<spec>-raid.md` (all twenty, regenerated with `-build-code <raid build>` on the final builds).
@@ -79,8 +80,11 @@ Band 60, one `leveling-bis -spec <spec> -bands 60` run per spec per side into a 
 | shaman-elemental | 472.8 | 484.1 | +2.4% | 472.7 | 481.4 | +1.8% | 157.5 | 157.5 | +0.0% |
 | shaman-enhancement | 515.0 | 580.4 | +12.7% | 523.2 | 596.7 | +14.0% | 226.0 | 227.9 | +0.8% |
 | warlock-demonology | 792.6 | 837.8 | +5.7% | 784.0 | 828.4 | +5.7% | 418.2 | 418.2 | +0.0% |
+| hunter-beast-mastery | 648.8 | 655.6 | +1.1% | 660.1 | 667.9 | +1.2% | 237.8 | 235.5 | -1.0% |
+| hunter-marksmanship | 621.8 | 632.3 | +1.7% | 638.3 | 648.2 | +1.6% | 228.9 | 228.8 | -0.1% |
+| warrior-fury | 782.6 | 788.9 | +0.8% | 788.0 | 792.9 | +0.6% | 296.0 | 301.6 | +1.9% |
 
-The ranker re-picks gear for the new build, so the raid columns can differ from the fixed-gear searches above (Enhancement before is 515 on the ranker's own gear, 498 on the search's); the bare column is the guard.
+The ranker re-picks gear for the new build, so the raid columns can differ from the fixed-gear searches above (Enhancement before is 515 on the ranker's own gear, 498 on the search's); the bare column is the guard (Beast Mastery's -1.0% is the ranker re-picking gear on a noisy sweep: the fixed-gear bare search is level).
 
 ## Checks
 
