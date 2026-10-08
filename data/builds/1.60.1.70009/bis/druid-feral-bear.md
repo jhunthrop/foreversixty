@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 34.1. Weights run: 3.5s. Verify run: 1.8s. 193 eligible items had no known source.
+Set DPS (verified): 34.1. Weights run: 3.3s. Verify run: 1.8s. 193 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.083 ± 0.002, defense=0.169 ± 0.034 per rating point (1 rating = 1%, 0.169 per %), dodge=0.129 ± 0.010 per rating point (12 rating = 1%, 1.547 per %), strength=0.070 ± 0.000, agility=0.152 ± 0.006, attack_power=0.035 ± 0.000, hit=0.066 ± 0.006 per rating point (10 rating = 1%, 0.659 per %), crit=0.024 ± 0.002 per rating point (14 rating = 1%, 0.340 per %), expertise=1.471 ± 0.067
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 193, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-55230330000000000000-0000000000000000)
 
-Set DPS (verified): 40.5. Weights run: 3.4s. Verify run: 1.8s. 322 eligible items had no known source.
+Set DPS (verified): 40.5. Weights run: 3.3s. Verify run: 1.8s. 322 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.084 ± 0.004, defense=0.317 ± 0.056 per rating point (1 rating = 1%, 0.317 per %), dodge=0.139 ± 0.014 per rating point (12 rating = 1%, 1.667 per %), strength=0.065 ± 0.000, agility=0.161 ± 0.008, attack_power=0.032 ± 0.000, hit=0.073 ± 0.008 per rating point (10 rating = 1%, 0.732 per %), crit=0.024 ± 0.001 per rating point (14 rating = 1%, 0.337 per %), expertise=1.835 ± 0.100
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 322, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-55230332020132000000-0000000000000000)
 
-Set DPS (verified): 71.5. Weights run: 4.1s. Verify run: 2.0s. 438 eligible items had no known source.
+Set DPS (verified): 71.5. Weights run: 4.0s. Verify run: 2.0s. 438 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.025, armor=0.128 ± 0.007, defense=0.466 ± 0.082 per rating point (1 rating = 1%, 0.466 per %), dodge=0.176 ± 0.020 per rating point (12 rating = 1%, 2.117 per %), strength=0.072 ± 0.000, agility=0.183 ± 0.012, attack_power=0.036 ± 0.000, hit=0.072 ± 0.015 per rating point (10 rating = 1%, 0.722 per %), crit=0.031 ± 0.006 per rating point (14 rating = 1%, 0.430 per %), expertise=2.407 ± 0.170
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 438, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0000000000000000-55230332020132012511-0000000000000000)
 
-Set DPS (verified): 119.2. Weights run: 4.5s. Verify run: 4.4s. 577 eligible items had no known source.
+Set DPS (verified): 119.2. Weights run: 4.3s. Verify run: 4.3s. 577 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.035, armor=0.121 ± 0.010, defense=0.504 ± 0.123 per rating point (1 rating = 1%, 0.504 per %), dodge=0.239 ± 0.028 per rating point (12 rating = 1%, 2.864 per %), strength=0.059 ± 0.000, agility=0.249 ± 0.018, attack_power=0.029 ± 0.000, hit=not significant (0.071 ± 0.023) per rating point (10 rating = 1%, 0.708 per %), crit=0.043 ± 0.010 per rating point (14 rating = 1%, 0.605 per %), expertise=3.011 ± 0.259
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 577, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 138.1. Weights run: 4.5s. Verify run: 6.7s. 1449 eligible items had no known source.
+Set DPS (verified): 138.1. Weights run: 4.4s. Verify run: 6.4s. 1449 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.140 ± 0.015, defense=1.303 ± 0.250 per rating point (1 rating = 1%, 1.303 per %), dodge=0.708 ± 0.045 per rating point (12 rating = 1%, 8.495 per %), strength=0.119 ± 0.000, agility=0.547 ± 0.029, attack_power=0.059 ± 0.000, hit=0.184 ± 0.036 per rating point (10 rating = 1%, 1.839 per %), crit=0.086 ± 0.016 per rating point (14 rating = 1%, 1.198 per %), expertise=6.074 ± 0.393
 
@@ -158,31 +158,31 @@ No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 287.1. Weights run: 4.6s. Verify run: 6.7s. 1449 eligible items had no known source.
+Set DPS (verified): 327.0. Weights run: 4.5s. Verify run: 6.6s. 1449 eligible items had no known source.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.164 ± 0.018, defense=1.818 ± 0.327 per rating point (1 rating = 1%, 1.818 per %), dodge=0.995 ± 0.059 per rating point (12 rating = 1%, 11.936 per %), strength=0.137 ± 0.000, agility=0.770 ± 0.037, attack_power=0.069 ± 0.000, hit=0.257 ± 0.046 per rating point (10 rating = 1%, 2.574 per %), crit=0.130 ± 0.021 per rating point (14 rating = 1%, 1.814 per %), expertise=8.076 ± 0.505
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.182 ± 0.018, defense=1.814 ± 0.316 per rating point (1 rating = 1%, 1.814 per %), dodge=0.967 ± 0.059 per rating point (12 rating = 1%, 11.608 per %), strength=0.130 ± 0.000, agility=0.795 ± 0.038, attack_power=0.059 ± 0.000, hit=0.280 ± 0.044 per rating point (10 rating = 1%, 2.798 per %), crit=0.112 ± 0.019 per rating point (14 rating = 1%, 1.562 per %), expertise=8.423 ± 0.481
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Feralheart Faceguard (226801) | Mokvar [vendor] | sim-verified (42801.1 DPS) | yes | Field Marshal's Dragonhide Headguard (231689, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Headdress (231701, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -721.62 DPS, sim-verified) [crafted] |
-| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 26.0 stamina points (2506.11 DPS) | yes | Medallion of Grand Marshal Morris (13091, -79.53 DPS) [world_drop]; Evil Eye Pendant (18381, -166.56 DPS) [dungeon]; Talisman of Evasion (13177, -391.07 DPS) [dungeon] |
-| shoulder | Glowing Mantle of the Dawn (227818) | Argent Quartermaster Hasana [vendor] | 76.0 stamina points (7321.85 DPS) | yes | Field Marshal's Dragonhide Shoulders (231693, -573.56 DPS) [vendor]; Darkspear Pauldrons (272105, -1503.80 DPS, sim-verified) [vendor]; Field Marshal's Dragonhide Spaulders (231699, -1649.45 DPS) [pvp] |
-| back | Shifting Cloak (18511) | Leatherworking [crafted] | 40.9 stamina points (3941.09 DPS) | yes | Stoneshield Cloak (12551, -361.50 DPS) [dungeon]; Stoneskin Gargoyle Cape (13397, -436.44 DPS) [dungeon]; Redoubt Cloak (18495, -558.28 DPS) [dungeon] |
-| chest | Dire Warbear Harness (227803) | Meilosh [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Dragonhide Chestpiece (231690, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Tunic (231702, -959.45 DPS) [vendor]; Tunic of Undead Slaying (23089, -5101.13 DPS, sim-verified) [world] |
-| wrist | Feralheart Wristguards (226796) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forest Stalker's Bracers (19587, -107.32 DPS) [rep]; Bracers of Subterfuge (22668, -110.90 DPS) [quest]; Wristwraps of Undead Slaying (23093, -847.41 DPS, sim-verified) [world] |
-| hands | Feralheart Grips (226802) | Mokvar [vendor] | 64.3 stamina points (6193.43 DPS) | yes | Marshal's Dragonhide Grips (231694, -85.81 DPS) [vendor]; Raider Gloves (272099, -655.54 DPS) [vendor]; Marshal's Dragonhide Gloves (231700, -1201.34 DPS) [vendor] |
-| waist | Feralheart Waistguard (226797) | Mokvar [vendor] | 55.9 stamina points (5385.87 DPS) | yes | Shifter's Belt (272396, -530.02 DPS, sim-verified) [vendor]; Belt of Preserved Heads (20216, -1073.18 DPS) [quest]; Ferocity of the Timbermaw (227805, -1159.27 DPS) [vendor] |
-| legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 96.4 stamina points (9286.92 DPS) | yes | Marshal's Dragonhide Leggings (231691, -211.21 DPS) [vendor]; Dire Warbear Woolies (227804, -450.74 DPS, sim-verified) [vendor]; Feralheart Legguards (226799, -1315.42 DPS) [vendor] |
-| feet | Fine Dawn Treaders (227815) | Argent Quartermaster Hasana [vendor] | 76.2 stamina points (7338.89 DPS) | yes | Marshal's Dragonhide Treads (231692, -1039.15 DPS) [vendor]; Drudge Boots (21532, -1262.61 DPS, sim-verified) [quest]; Feralheart Treads (226803, -1623.11 DPS) [vendor] |
-| finger1 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Naglering (11669, -113.54 DPS) [dungeon]; Band of Resolution (22680, -132.41 DPS) [quest]; Band of the Steadfast Hero (22331, -267.55 DPS) [dungeon] |
-| finger2 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Naglering (11669, -16.89 DPS) [dungeon]; Band of Resolution (22680, -35.75 DPS) [quest]; Band of the Steadfast Hero (22331, -170.90 DPS) [dungeon] |
-| trinket1 | Mark of Tyranny (13966) | General Drakkisath's Demise [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Stormpike Insignia Rank 6 (17904, -1693.10 DPS) [quest]; Defender's Grip Stabilizer (272440, -1716.12 DPS) [vendor]; Arena Grand Master (19024, -2819.29 DPS, sim-verified) [quest] |
-| trinket2 | Vigilance Charm (18370) | Dire Maul: Immol'thar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Stormpike Insignia Rank 6 (17904, +0.00 DPS) [quest]; Defender's Grip Stabilizer (272440, -23.03 DPS) [vendor]; Force of Will (11810, -1074.22 DPS) [dungeon] |
-| main_hand | Headmaster's Charge (13937) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Electrified Dagger (19100, -2024.52 DPS, sim-verified) [rep] |
+| head | Feralheart Faceguard (226801) | Mokvar [vendor] | sim-verified (49103.3 DPS) | yes | Field Marshal's Dragonhide Headguard (231689, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Headdress (231701, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -1074.74 DPS, sim-verified) [crafted] |
+| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 26.4 stamina points (2971.06 DPS) | yes | Evil Eye Pendant (18381, -200.90 DPS) [dungeon]; Talisman of Evasion (13177, -502.11 DPS) [dungeon]; Medallion of Grand Marshal Morris (13091, -604.88 DPS, sim-verified) [world_drop] |
+| shoulder | Glowing Mantle of the Dawn (227818) | Argent Quartermaster Hasana [vendor] | 79.1 stamina points (8902.25 DPS) | yes | Field Marshal's Dragonhide Shoulders (231693, -702.24 DPS) [vendor]; Darkspear Pauldrons (272105, -1041.23 DPS, sim-verified) [vendor]; Field Marshal's Dragonhide Spaulders (231699, -1980.53 DPS) [pvp] |
+| back | Shifting Cloak (18511) | Leatherworking [crafted] | 41.8 stamina points (4707.49 DPS) | yes | Stoneshield Cloak (12551, -150.62 DPS) [dungeon]; Stoneskin Gargoyle Cape (13397, -414.36 DPS) [dungeon]; Windshear Cape (20691, -652.00 DPS) [world] |
+| chest | Dire Warbear Harness (227803) | Meilosh [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Dragonhide Chestpiece (231690, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Tunic (231702, -1120.89 DPS) [vendor]; Tunic of Undead Slaying (23089, -5435.80 DPS, sim-verified) [world] |
+| wrist | Feralheart Wristguards (226796) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forest Stalker's Bracers (19587, -72.63 DPS) [rep]; Bracers of Subterfuge (22668, -97.28 DPS) [quest]; Wristwraps of Undead Slaying (23093, -1391.32 DPS, sim-verified) [world] |
+| hands | Feralheart Grips (226802) | Mokvar [vendor] | 65.9 stamina points (7415.14 DPS) | yes | Marshal's Dragonhide Grips (231694, -33.23 DPS) [vendor]; Raider Gloves (272099, -775.56 DPS, sim-verified) [vendor]; Marshal's Dragonhide Gloves (231700, -1322.89 DPS) [vendor] |
+| waist | Feralheart Waistguard (226797) | Mokvar [vendor] | 57.8 stamina points (6503.10 DPS) | yes | Shifter's Belt (272396, -950.03 DPS, sim-verified) [vendor]; Cloudrunner Girdle (13252, -1176.67 DPS) [dungeon]; Belt of Preserved Heads (20216, -1197.60 DPS) [quest] |
+| legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 100.1 stamina points (11261.01 DPS) | yes | Marshal's Dragonhide Leggings (231691, -273.57 DPS) [vendor]; Dire Warbear Woolies (227804, -356.31 DPS) [vendor]; Marshal's Dragonhide Legguards (231703, -1610.96 DPS) [pvp] |
+| feet | Fine Dawn Treaders (227815) | Argent Quartermaster Hasana [vendor] | 79.0 stamina points (8888.24 DPS) | yes | Drudge Boots (21532, -931.19 DPS, sim-verified) [quest]; Marshal's Dragonhide Treads (231692, -1255.35 DPS) [vendor]; Feralheart Treads (226803, -1954.79 DPS) [vendor] |
+| finger1 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | 28.4 stamina points (3191.27 DPS) | yes | Ring of Awareness (272409, -113.14 DPS) [vendor]; Band of Resolution (22680, -146.21 DPS) [quest]; Band of the Steadfast Hero (22331, -310.80 DPS) [dungeon] |
+| finger2 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | 28.1 stamina points (3166.63 DPS) | yes | Ring of Awareness (272409, -88.50 DPS) [vendor]; Band of Resolution (22680, -121.57 DPS) [quest]; Band of the Steadfast Hero (22331, -286.17 DPS) [dungeon] |
+| trinket1 | Mark of Tyranny (13966) | General Drakkisath's Demise [quest] | sim-verified (+3568.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Stormpike Insignia Rank 6 (17904, -2371.70 DPS) [quest]; Vigilance Charm (18370, -2371.70 DPS) [dungeon]; Force of Will (11810, -3555.31 DPS) [dungeon] |
+| trinket2 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Stormpike Insignia Rank 6 (17904, -40.52 DPS) [quest]; Vigilance Charm (18370, -40.52 DPS) [dungeon]; Force of Will (11810, -1224.13 DPS) [dungeon] |
+| main_hand | Headmaster's Charge (13937) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Electrified Dagger (19100, -1675.15 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Feralheart Faceguard; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Shifting Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Ring of Awareness; trinket1: Mark of Tyranny; trinket2: Vigilance Charm; main_hand: Headmaster's Charge
+**New at 60:** head: Feralheart Faceguard; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Shifting Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Naglering; trinket1: Mark of Tyranny; trinket2: Defender's Grip Stabilizer; main_hand: Headmaster's Charge
 
 No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1449, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 35.0. Weights run: 3.5s. Verify run: 1.8s. 183 eligible items had no known source.
+Set DPS (verified): 35.0. Weights run: 3.3s. Verify run: 1.7s. 183 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.083 ± 0.002, defense=0.169 ± 0.034 per rating point (1 rating = 1%, 0.169 per %), dodge=0.129 ± 0.010 per rating point (12 rating = 1%, 1.547 per %), strength=0.070 ± 0.000, agility=0.152 ± 0.006, attack_power=0.035 ± 0.000, hit=0.066 ± 0.006 per rating point (10 rating = 1%, 0.659 per %), crit=0.024 ± 0.002 per rating point (14 rating = 1%, 0.340 per %), expertise=1.471 ± 0.067
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 183, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-55230330000000000000-0000000000000000)
 
-Set DPS (verified): 41.1. Weights run: 3.4s. Verify run: 1.9s. 315 eligible items had no known source.
+Set DPS (verified): 41.1. Weights run: 3.3s. Verify run: 1.8s. 315 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.084 ± 0.004, defense=0.317 ± 0.056 per rating point (1 rating = 1%, 0.317 per %), dodge=0.139 ± 0.014 per rating point (12 rating = 1%, 1.667 per %), strength=0.065 ± 0.000, agility=0.161 ± 0.008, attack_power=0.032 ± 0.000, hit=0.073 ± 0.008 per rating point (10 rating = 1%, 0.732 per %), crit=0.024 ± 0.001 per rating point (14 rating = 1%, 0.337 per %), expertise=1.835 ± 0.100
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 315, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-55230332020132000000-0000000000000000)
 
-Set DPS (verified): 71.4. Weights run: 4.1s. Verify run: 2.0s. 426 eligible items had no known source.
+Set DPS (verified): 71.4. Weights run: 4.0s. Verify run: 2.0s. 426 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.025, armor=0.128 ± 0.007, defense=0.466 ± 0.082 per rating point (1 rating = 1%, 0.466 per %), dodge=0.176 ± 0.020 per rating point (12 rating = 1%, 2.117 per %), strength=0.072 ± 0.000, agility=0.183 ± 0.012, attack_power=0.036 ± 0.000, hit=0.072 ± 0.015 per rating point (10 rating = 1%, 0.722 per %), crit=0.031 ± 0.006 per rating point (14 rating = 1%, 0.430 per %), expertise=2.407 ± 0.170
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 426, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0000000000000000-55230332020132012511-0000000000000000)
 
-Set DPS (verified): 115.1. Weights run: 4.5s. Verify run: 2.4s. 561 eligible items had no known source.
+Set DPS (verified): 115.1. Weights run: 4.3s. Verify run: 2.3s. 561 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.035, armor=0.121 ± 0.010, defense=0.504 ± 0.123 per rating point (1 rating = 1%, 0.504 per %), dodge=0.239 ± 0.028 per rating point (12 rating = 1%, 2.864 per %), strength=0.059 ± 0.000, agility=0.249 ± 0.018, attack_power=0.029 ± 0.000, hit=not significant (0.071 ± 0.023) per rating point (10 rating = 1%, 0.708 per %), crit=0.043 ± 0.010 per rating point (14 rating = 1%, 0.605 per %), expertise=3.011 ± 0.259
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 561, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 140.4. Weights run: 4.5s. Verify run: 6.3s. 1446 eligible items had no known source.
+Set DPS (verified): 140.4. Weights run: 4.4s. Verify run: 6.1s. 1446 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.140 ± 0.015, defense=1.303 ± 0.250 per rating point (1 rating = 1%, 1.303 per %), dodge=0.708 ± 0.045 per rating point (12 rating = 1%, 8.495 per %), strength=0.119 ± 0.000, agility=0.547 ± 0.029, attack_power=0.059 ± 0.000, hit=0.184 ± 0.036 per rating point (10 rating = 1%, 1.839 per %), crit=0.086 ± 0.016 per rating point (14 rating = 1%, 1.198 per %), expertise=6.074 ± 0.393
 
@@ -340,31 +340,31 @@ No-known-source sample (15 of 1446, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 287.0. Weights run: 4.6s. Verify run: 6.4s. 1446 eligible items had no known source.
+Set DPS (verified): 332.1. Weights run: 4.5s. Verify run: 6.4s. 1446 eligible items had no known source.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.164 ± 0.018, defense=1.818 ± 0.327 per rating point (1 rating = 1%, 1.818 per %), dodge=0.995 ± 0.059 per rating point (12 rating = 1%, 11.936 per %), strength=0.137 ± 0.000, agility=0.770 ± 0.037, attack_power=0.069 ± 0.000, hit=0.257 ± 0.046 per rating point (10 rating = 1%, 2.574 per %), crit=0.130 ± 0.021 per rating point (14 rating = 1%, 1.814 per %), expertise=8.076 ± 0.505
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.182 ± 0.018, defense=1.814 ± 0.316 per rating point (1 rating = 1%, 1.814 per %), dodge=0.967 ± 0.059 per rating point (12 rating = 1%, 11.608 per %), strength=0.130 ± 0.000, agility=0.795 ± 0.038, attack_power=0.059 ± 0.000, hit=0.280 ± 0.044 per rating point (10 rating = 1%, 2.798 per %), crit=0.112 ± 0.019 per rating point (14 rating = 1%, 1.562 per %), expertise=8.423 ± 0.481
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Feralheart Faceguard (226801) | Mokvar [vendor] | sim-verified (+1296.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Warlord's Dragonhide Headdress (231675, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -1295.95 DPS, sim-verified) [crafted] |
-| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 26.0 stamina points (2506.11 DPS) | yes | Medallion of Grand Marshal Morris (13091, -79.53 DPS) [world_drop]; Evil Eye Pendant (18381, -166.56 DPS) [dungeon]; Talisman of Evasion (13177, -391.07 DPS) [dungeon] |
-| shoulder | Glowing Mantle of the Dawn (227818) | Argent Quartermaster Hasana [vendor] | 76.0 stamina points (7321.85 DPS) | yes | Warlord's Dragonhide Shoulders (231684, -573.56 DPS) [vendor]; Darkspear Pauldrons (272105, -1475.03 DPS, sim-verified) [vendor]; Warlord's Dragonhide Spaulders (231681, -1649.45 DPS) [vendor] |
-| back | Stoneshield Cloak (12551) | Blackrock Depths: Anvilrage Overseer [dungeon] | sim-verified (+955.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Stoneskin Gargoyle Cape (13397, -74.94 DPS) [dungeon]; Redoubt Cloak (18495, -196.79 DPS) [dungeon]; Shifting Cloak (18511, -955.40 DPS, sim-verified) [crafted] |
-| chest | Dire Warbear Harness (227803) | Meilosh [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Dragonhide Chestpiece (231686, +0.00 DPS) [vendor]; Warlord's Dragonhide Tunic (231674, -959.45 DPS) [vendor]; Tunic of Undead Slaying (23089, -4875.57 DPS, sim-verified) [world] |
-| wrist | Feralheart Wristguards (226796) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forest Stalker's Bracers (19587, -107.32 DPS) [rep]; Bracers of Subterfuge (22668, -110.90 DPS) [quest]; Wristwraps of Undead Slaying (23093, -1599.78 DPS, sim-verified) [world] |
-| hands | Feralheart Grips (226802) | Mokvar [vendor] | 64.3 stamina points (6193.43 DPS) | yes | General's Dragonhide Grips (231688, -85.81 DPS) [vendor]; Raider Gloves (272099, -582.35 DPS, sim-verified) [vendor]; General's Dragonhide Gloves (231677, -1201.34 DPS) [pvp] |
-| waist | Feralheart Waistguard (226797) | Mokvar [vendor] | 55.9 stamina points (5385.87 DPS) | yes | Shifter's Belt (272396, -830.87 DPS, sim-verified) [vendor]; Belt of Preserved Heads (20216, -1073.18 DPS) [quest]; Ferocity of the Timbermaw (227805, -1159.27 DPS) [vendor] |
-| legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 96.4 stamina points (9286.92 DPS) | yes | General's Dragonhide Leggings (231685, -211.21 DPS) [pvp]; Dire Warbear Woolies (227804, -281.31 DPS) [vendor]; Feralheart Legguards (226799, -1315.42 DPS) [vendor] |
-| feet | Fine Dawn Treaders (227815) | Argent Quartermaster Hasana [vendor] | 76.2 stamina points (7338.89 DPS) | yes | General's Dragonhide Treads (231683, -1039.15 DPS) [vendor]; Drudge Boots (21532, -1072.05 DPS, sim-verified) [quest]; Feralheart Treads (226803, -1623.11 DPS) [vendor] |
-| finger1 | Thrall's Resolve (12544) | The Princess Saved? [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ring of Awareness (272409, -450.64 DPS) [vendor]; Band of Resolution (22680, -486.39 DPS) [quest]; Naglering (11669, -808.05 DPS, sim-verified) [dungeon] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ring of Awareness (272409, -96.65 DPS) [vendor]; Naglering (11669, -113.54 DPS) [dungeon]; Band of Resolution (22680, -132.41 DPS) [quest] |
-| trinket1 | Mark of Tyranny (13966) | For The Horde! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frostwolf Insignia Rank 6 (17909, -1693.10 DPS) [quest]; Vigilance Charm (18370, -1926.38 DPS, sim-verified) [dungeon]; Force of Will (11810, -2767.32 DPS) [dungeon] |
-| trinket2 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frostwolf Insignia Rank 6 (17909, +0.00 DPS) [quest]; Vigilance Charm (18370, +0.00 DPS) [dungeon]; Defiler's Talisman (20072, -527.88 DPS, sim-verified) [rep] |
-| main_hand | Headmaster's Charge (13937) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's War Staff (234549, +0.00 DPS) [pvp]; The Lobotomizer (19324, -2173.33 DPS, sim-verified) [rep] |
+| head | Feralheart Faceguard (226801) | Mokvar [vendor] | sim-verified (51507.2 DPS) | yes | Warlord's Dragonhide Headdress (231675, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -529.68 DPS, sim-verified) [crafted] |
+| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 26.4 stamina points (2971.06 DPS) | yes | Evil Eye Pendant (18381, -200.90 DPS) [dungeon]; Talisman of Evasion (13177, -502.11 DPS) [dungeon]; Medallion of Grand Marshal Morris (13091, -521.99 DPS, sim-verified) [world_drop] |
+| shoulder | Glowing Mantle of the Dawn (227818) | Argent Quartermaster Hasana [vendor] | 79.1 stamina points (8902.25 DPS) | yes | Warlord's Dragonhide Shoulders (231684, -702.24 DPS) [vendor]; Darkspear Pauldrons (272105, -1621.60 DPS, sim-verified) [vendor]; Warlord's Dragonhide Spaulders (231681, -1980.53 DPS) [vendor] |
+| back | Shifting Cloak (18511) | Leatherworking [crafted] | 41.8 stamina points (4707.49 DPS) | yes | Stoneshield Cloak (12551, -150.62 DPS) [dungeon]; Stoneskin Gargoyle Cape (13397, -414.36 DPS) [dungeon]; Windshear Cape (20691, -652.00 DPS) [world] |
+| chest | Dire Warbear Harness (227803) | Meilosh [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Dragonhide Chestpiece (231686, +0.00 DPS) [vendor]; Warlord's Dragonhide Tunic (231674, -1120.89 DPS) [vendor]; Tunic of Undead Slaying (23089, -5553.93 DPS, sim-verified) [world] |
+| wrist | Feralheart Wristguards (226796) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forest Stalker's Bracers (19587, -72.63 DPS) [rep]; Bracers of Subterfuge (22668, -97.28 DPS) [quest]; Wristwraps of Undead Slaying (23093, -1686.99 DPS, sim-verified) [world] |
+| hands | Feralheart Grips (226802) | Mokvar [vendor] | 65.9 stamina points (7415.14 DPS) | yes | General's Dragonhide Grips (231688, -33.23 DPS) [vendor]; Raider Gloves (272099, -577.38 DPS, sim-verified) [vendor]; General's Dragonhide Gloves (231677, -1322.89 DPS) [pvp] |
+| waist | Feralheart Waistguard (226797) | Mokvar [vendor] | 57.8 stamina points (6503.10 DPS) | yes | Shifter's Belt (272396, -1143.69 DPS, sim-verified) [vendor]; Cloudrunner Girdle (13252, -1176.67 DPS) [dungeon]; Belt of Preserved Heads (20216, -1197.60 DPS) [quest] |
+| legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 100.1 stamina points (11261.01 DPS) | yes | General's Dragonhide Leggings (231685, -273.57 DPS) [pvp]; Dire Warbear Woolies (227804, -502.66 DPS, sim-verified) [vendor]; General's Dragonhide Legguards (231673, -1610.96 DPS) [vendor] |
+| feet | Fine Dawn Treaders (227815) | Argent Quartermaster Hasana [vendor] | 79.0 stamina points (8888.24 DPS) | yes | General's Dragonhide Treads (231683, -1255.35 DPS) [vendor]; Drudge Boots (21532, -1408.49 DPS, sim-verified) [quest]; Feralheart Treads (226803, -1954.79 DPS) [vendor] |
+| finger1 | Thrall's Resolve (12544) | The Princess Saved? [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ring of Awareness (272409, -832.48 DPS) [vendor]; Band of Resolution (22680, -865.55 DPS) [quest]; Naglering (11669, -1092.77 DPS, sim-verified) [dungeon] |
+| finger2 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Naglering (11669, -24.64 DPS) [dungeon]; Ring of Awareness (272409, -113.14 DPS) [vendor]; Band of Resolution (22680, -146.21 DPS) [quest] |
+| trinket1 | Mark of Tyranny (13966) | For The Horde! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defender's Grip Stabilizer (272440, -2224.61 DPS, sim-verified) [vendor]; Frostwolf Insignia Rank 6 (17909, -2371.70 DPS) [quest]; Force of Will (11810, -3555.31 DPS) [dungeon] |
+| trinket2 | Vigilance Charm (18370) | Dire Maul: Immol'thar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frostwolf Insignia Rank 6 (17909, +0.00 DPS) [quest]; Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor]; Force of Will (11810, -1183.61 DPS) [dungeon] |
+| main_hand | Headmaster's Charge (13937) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Seeping Willow (12969, -2576.32 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Feralheart Faceguard; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Stoneshield Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Thrall's Resolve; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Mark of Tyranny; trinket2: Defender's Grip Stabilizer; main_hand: Headmaster's Charge
+**New at 60:** head: Feralheart Faceguard; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Shifting Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Thrall's Resolve; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Mark of Tyranny; trinket2: Vigilance Charm; main_hand: Headmaster's Charge
 
 No-known-source sample (15 of 1446, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
