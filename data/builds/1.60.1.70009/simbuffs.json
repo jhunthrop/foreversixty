@@ -620,6 +620,10 @@
       "name": "Trueshot Aura",
       "icon": "ability_trueshot"
     },
+    "windfury_totem": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury"
+    },
     "winterfall_firewater": {
       "name": "Winterfall Firewater",
       "icon": "inv_potion_92"

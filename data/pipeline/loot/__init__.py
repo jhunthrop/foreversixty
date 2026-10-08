@@ -53,6 +53,8 @@ from pipeline.loot.buffs import (
     fork_tables,
     ids_md_ids,
     load_overrides,
+    load_simbuffs,
+    merge_simbuffs,
 )
 from pipeline.loot.gear import (
     apply_fork_columns,
@@ -536,6 +538,17 @@ def merge_loot_files(
         document, item_sources, build_items, item_levels, item_qualities
     )
     write_document(document, build_dir / LOOT)
+    # An engine buff id IDS.md gained since the last full rebuild (a raid
+    # aura the fork added) must be named before the site can show it, and
+    # the full rebuild only runs on a night wowhead fetched; name it from
+    # the fork's own tables here, keeping every committed entry as it is.
+    simbuffs = merge_simbuffs(
+        ids_md_ids(IDS_MD.read_text(encoding="utf-8")),
+        fork_tables(fork),
+        load_simbuffs(build_dir),
+        load_overrides(),
+    )
+    write_document(simbuffs, build_dir / SIMBUFFS)
     superseded_marked = mark_superseded_items(build_dir, superseded)
     # Day3 data-followups-7 lane, 2026-09-30: same placement/reasoning as
     # `write_loot_files`' own call.
@@ -568,6 +581,10 @@ def merge_loot_files(
     refresh_manifest(build_dir)
     return [
         build_dir / LOOT,
-        *([build_dir / "items.json", *sorted((build_dir / "items").glob("*.json"))]
-          if superseded or quest_class_gate_dropped else []),
+        build_dir / SIMBUFFS,
+        *(
+            [build_dir / "items.json", *sorted((build_dir / "items").glob("*.json"))]
+            if superseded or quest_class_gate_dropped
+            else []
+        ),
     ]

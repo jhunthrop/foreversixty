@@ -115,8 +115,7 @@ def client_tables(build_dir: Path, raw: Path) -> tuple[list[NameTable], IconFor]
         if row.get("SpellID")
     }
     item_icon = {
-        int(row["ID"]): int(row["IconFileDataID"] or 0)
-        for row in read_csv(raw / "Item.csv")
+        int(row["ID"]): int(row["IconFileDataID"] or 0) for row in read_csv(raw / "Item.csv")
     }
 
     def table(path: Path, icons: dict[int, int], what: str) -> NameTable:
@@ -204,3 +203,55 @@ def build_simbuffs(
             f"data/curated/simbuffs.json with a source, or fix the join."
         )
     return SimBuffsFile(entries=dict(sorted(entries.items())))
+
+
+def merge_simbuffs(
+    ids: list[str],
+    tables: list[NameTable],
+    existing: dict[str, SimBuffEntry],
+    overrides: dict[str, BuffOverride],
+) -> SimBuffsFile:
+    """The merge-only night's `simbuffs.json`: every id IDS.md lists, kept
+    as the committed file names it, with a new id (an engine buff the
+    fork gained since the last full rebuild) named from the fork's own
+    tables. An override whose icon needs a client row keeps the committed
+    entry when there is one; a new id with no name anywhere is the same
+    hard error as the full build's. An id IDS.md dropped is dropped."""
+    entries: dict[str, SimBuffEntry] = {}
+    unresolved: list[str] = []
+    for buff_id in ids:
+        kept = existing.get(buff_id)
+        if kept is not None:
+            entries[buff_id] = kept
+            continue
+        names = [overrides[buff_id].name] if buff_id in overrides else []
+        names += _candidates(buff_id)
+        found = next(
+            (
+                table[normalise(name)]
+                for name in names
+                for table in tables
+                if normalise(name) in table
+            ),
+            None,
+        )
+        if found is None:
+            unresolved.append(buff_id)
+            continue
+        entries[buff_id] = SimBuffEntry(name=found[0], icon=found[1])
+    if unresolved:
+        raise BuffError(
+            f"{len(unresolved)} IDS.md id(s) are new since the last full loot rebuild and "
+            f"have no name in the fork database: {', '.join(unresolved)}. Run the full "
+            f"`pipeline loot`, or add each to data/curated/simbuffs.json with a source."
+        )
+    return SimBuffsFile(entries=dict(sorted(entries.items())))
+
+
+def load_simbuffs(build_dir: Path) -> dict[str, SimBuffEntry]:
+    """The committed `simbuffs.json` entries, or none before the first build."""
+    path = build_dir / SIMBUFFS
+    if not path.exists():
+        return {}
+    document = SimBuffsFile.model_validate_json(path.read_text(encoding="utf-8"))
+    return dict(document.entries)

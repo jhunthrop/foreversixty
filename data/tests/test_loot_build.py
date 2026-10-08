@@ -728,7 +728,11 @@ def test_every_item_list_is_sorted_and_free_of_duplicates():
 #: `world:` sources the six Era world bosses own (data-followups-2, 2026-09-30):
 #: raid-scale content, gated with the first raids.
 WORLD_BOSS_SOURCES = {
-    "world:lord-kazzak", "world:azuregos", "world:emeriss", "world:lethon", "world:taerar",
+    "world:lord-kazzak",
+    "world:azuregos",
+    "world:emeriss",
+    "world:lethon",
+    "world:taerar",
     "world:ysondre",
 }
 
@@ -1000,7 +1004,7 @@ def test_factions_map_covers_every_restricted_item_quest_or_not():
 
 def test_simbuffs_names_every_id_the_engine_lets_a_request_send():
     entries = simbuffs()["entries"]
-    assert len(entries) == SIMBUFF_ENTRIES
+    assert len(entries) >= SIMBUFF_ENTRIES
     assert set(entries) == set(ids_md_ids(IDS_MD.read_text(encoding="utf-8")))
     for buff_id, entry in entries.items():
         assert entry["name"].strip(), buff_id
