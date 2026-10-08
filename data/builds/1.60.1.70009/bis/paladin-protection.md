@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 00000000000000000-5510000000000000-00000000000000000)
 
-Set DPS (verified): 19.4. Weights run: 5.8s. Verify run: 1.7s. 239 eligible items had no known source.
+Set DPS (verified): 19.4. Weights run: 5.7s. Verify run: 1.7s. 239 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.026 ± 0.000, defense=0.270 ± 0.043 per rating point (1 rating = 1%, 0.270 per %), dodge=0.147 ± 0.010 per rating point (12 rating = 1%, 1.763 per %), parry=0.120 ± 0.007 per rating point (15 rating = 1%, 1.801 per %), block=not significant (-0.007 ± 0.013) per rating point (5 rating = 1%, -0.035 per %), block_value=0.227 ± 0.002, strength=0.082 ± 0.000, agility=0.163 ± 0.006, attack_power=0.035 ± 0.000, hit=0.076 ± 0.007 per rating point (10 rating = 1%, 0.760 per %), crit=0.037 ± 0.001 per rating point (14 rating = 1%, 0.518 per %), expertise=1.883 ± 0.081
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 239, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 00000000000000000-5530512000000000-00000000000000000)
 
-Set DPS (verified): 31.2. Weights run: 5.8s. Verify run: 1.7s. 404 eligible items had no known source.
+Set DPS (verified): 31.2. Weights run: 5.7s. Verify run: 1.7s. 404 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.027 ± 0.000, defense=0.341 ± 0.051 per rating point (1 rating = 1%, 0.341 per %), dodge=0.172 ± 0.011 per rating point (12 rating = 1%, 2.067 per %), parry=0.138 ± 0.009 per rating point (15 rating = 1%, 2.077 per %), block=not significant (0.024 ± 0.017) per rating point (5 rating = 1%, 0.120 per %), block_value=0.104 ± 0.001, strength=0.058 ± 0.000, agility=0.176 ± 0.007, attack_power=0.026 ± 0.000, hit=0.056 ± 0.008 per rating point (10 rating = 1%, 0.564 per %), crit=0.031 ± 0.001 per rating point (14 rating = 1%, 0.441 per %), expertise=1.904 ± 0.094
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 404, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 00000000000000000-5530513321101001-00000000000000000)
 
-Set DPS (verified): 66.7. Weights run: 6.6s. Verify run: 2.1s. 562 eligible items had no known source.
+Set DPS (verified): 66.7. Weights run: 6.4s. Verify run: 2.1s. 562 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.048, armor=0.021 ± 0.004, defense=not significant (0.243 ± 0.122) per rating point (1 rating = 1%, 0.243 per %), dodge=0.107 ± 0.023 per rating point (12 rating = 1%, 1.280 per %), parry=0.091 ± 0.018 per rating point (15 rating = 1%, 1.366 per %), block=not significant (0.033 ± 0.043) per rating point (5 rating = 1%, 0.167 per %), block_value=not significant (0.188 ± 0.055), strength=0.051 ± 0.003, agility=0.118 ± 0.014, attack_power=0.021 ± 0.000, hit=not significant (0.043 ± 0.022) per rating point (10 rating = 1%, 0.431 per %), crit=0.026 ± 0.002 per rating point (14 rating = 1%, 0.362 per %), expertise=1.419 ± 0.245
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 562, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 30000000000000000-5530513321301051-00000000000000000)
 
-Set DPS (verified): 104.6. Weights run: 7.3s. Verify run: 2.2s. 722 eligible items had no known source.
+Set DPS (verified): 104.6. Weights run: 7.1s. Verify run: 2.1s. 722 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.078, armor=0.025 ± 0.006, defense=not significant (0.278 ± 0.219) per rating point (1 rating = 1%, 0.278 per %), dodge=0.158 ± 0.039 per rating point (12 rating = 1%, 1.897 per %), parry=0.127 ± 0.031 per rating point (15 rating = 1%, 1.911 per %), block=not significant (0.202 ± 0.078) per rating point (5 rating = 1%, 1.010 per %), block_value=not significant (0.181 ± 0.077), strength=0.052 ± 0.004, agility=0.167 ± 0.024, attack_power=0.021 ± 0.000, hit=not significant (0.045 ± 0.037) per rating point (10 rating = 1%, 0.448 per %), crit=0.031 ± 0.003 per rating point (14 rating = 1%, 0.431 per %), expertise=1.738 ± 0.415
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 722, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 165.8. Weights run: 7.4s. Verify run: 2.3s. 1674 eligible items had no known source.
+Set DPS (verified): 165.8. Weights run: 7.0s. Verify run: 2.3s. 1674 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.037 ± 0.000, defense=1.498 ± 0.188 per rating point (1 rating = 1%, 1.498 per %), dodge=0.896 ± 0.040 per rating point (12 rating = 1%, 10.747 per %), parry=0.729 ± 0.030 per rating point (15 rating = 1%, 10.938 per %), block=0.926 ± 0.052 per rating point (5 rating = 1%, 4.632 per %), block_value=0.696 ± 0.002, strength=0.083 ± 0.000, agility=0.665 ± 0.024, attack_power=0.024 ± 0.000, hit=0.147 ± 0.036 per rating point (10 rating = 1%, 1.468 per %), crit=0.078 ± 0.002 per rating point (14 rating = 1%, 1.091 per %), expertise=4.447 ± 0.406
 
@@ -158,31 +158,31 @@ No-known-source sample (15 of 1674, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (dwarf, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 383.9. Weights run: 6.9s. Verify run: 2.2s. 1674 eligible items had no known source.
+Set DPS (verified): 382.2. Weights run: 6.6s. Verify run: 2.0s. 1674 eligible items had no known source.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.050 ± 0.000, defense=2.289 ± 0.203 per rating point (1 rating = 1%, 2.289 per %), dodge=1.522 ± 0.048 per rating point (12 rating = 1%, 18.258 per %), parry=1.244 ± 0.036 per rating point (15 rating = 1%, 18.660 per %), block=1.175 ± 0.055 per rating point (5 rating = 1%, 5.875 per %), block_value=1.118 ± 0.003, strength=0.121 ± 0.000, agility=1.093 ± 0.029, attack_power=0.033 ± 0.000, hit=0.209 ± 0.043 per rating point (10 rating = 1%, 2.088 per %), crit=0.112 ± 0.003 per rating point (14 rating = 1%, 1.562 per %), expertise=7.241 ± 0.499
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.050 ± 0.000, defense=2.303 ± 0.207 per rating point (1 rating = 1%, 2.303 per %), dodge=1.535 ± 0.048 per rating point (12 rating = 1%, 18.422 per %), parry=1.248 ± 0.037 per rating point (15 rating = 1%, 18.724 per %), block=1.163 ± 0.056 per rating point (5 rating = 1%, 5.813 per %), block_value=1.115 ± 0.003, strength=0.121 ± 0.000, agility=1.098 ± 0.029, attack_power=0.034 ± 0.000, hit=0.219 ± 0.044 per rating point (10 rating = 1%, 2.192 per %), crit=0.112 ± 0.003 per rating point (14 rating = 1%, 1.572 per %), expertise=7.476 ± 0.497
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | sim-verified (+467.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Field Marshal's Lamellar Helmet (231640, +0.00 DPS) [vendor]; Field Marshal's Lamellar Headguard (231648, +0.00 DPS) [vendor]; Helm of Awareness (18313, -466.96 DPS, sim-verified) [dungeon] |
-| neck | Talisman of Evasion (13177) | Blackrock Spire: War Master Voone [dungeon] | 32.5 stamina points (3412.66 DPS) | yes | Evil Eye Pendant (18381, -5.25 DPS) [dungeon]; Amulet of the Darkmoon (19491, -51.61 DPS) [quest]; Medallion of Grand Marshal Morris (13091, -270.97 DPS) [world_drop] |
-| shoulder | Highlander's Plate Spaulders (20057) | The League of Arathor [rep] | 68.2 stamina points (7166.39 DPS) | yes | Field Marshal's Lamellar Pauldrons (231645, +0.00 DPS) [pvp]; Stockade Pauldrons (14552, -198.12 DPS) [world_drop]; Glowing Mantle of the Dawn (227818, -431.15 DPS, sim-verified) [vendor] |
-| back | Shifting Cloak (18511) | Leatherworking [crafted] | 47.2 stamina points (4963.28 DPS) | yes | Windshear Cape (20691, -1406.14 DPS) [world]; Redoubt Cloak (18495, -1467.92 DPS) [dungeon]; Stoneskin Gargoyle Cape (13397, -1998.92 DPS) [dungeon] |
-| chest | Deathbone Chestplate (14624) | Scholomance: Lady Illucia Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ornate Adamantium Breastplate (15413, -53.00 DPS) [quest]; Dire Warbear Harness (227803, -175.16 DPS) [vendor]; Breastplate of Undead Slaying (23087, -1049.96 DPS, sim-verified) [world] |
-| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warder's Wristguards (250583, -76.27 DPS) [crafted]; Vigorsteel Vambraces (13951, -295.10 DPS) [dungeon]; Bracers of Undead Slaying (23090, -690.33 DPS, sim-verified) [world] |
-| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Soulforge Handguards (226990, -491.47 DPS) [vendor]; Sentinel's Gloves (250552, -704.11 DPS) [crafted]; Razor Gauntlets (18326, -2173.76 DPS, sim-verified) [dungeon] |
-| waist | Deathbone Girdle (14620) | Scholomance: Lady Illucia Barov [dungeon] | sim-verified (+453.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Warder's Waistguard (250573, -41.73 DPS) [crafted]; Belt of Valor (16736, -143.56 DPS) [dungeon]; Sentinel's Waistguard (250572, -453.47 DPS, sim-verified) [crafted] |
-| legs | Soulforge Legguards (226988) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cloudkeeper Legplates (14554, +0.00 DPS) [world_drop]; Sentinel's Chain Leggings (237819, -114.99 DPS) [vendor]; Sentinel's Plate Legguards (237825, -675.02 DPS) [vendor] |
-| feet | Boots of Avoidance (14549) | World drop [world_drop] | 80.7 stamina points (8479.29 DPS) | yes | Marshal's Lamellar Greaves (231646, -1082.39 DPS) [vendor]; Fine Dawn Treaders (227815, -1192.75 DPS) [vendor]; Shalehusk Boots (11787, -1941.97 DPS) [dungeon] |
-| finger1 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Resolution (22680, -223.16 DPS) [quest]; Band of the Steadfast Hero (22331, -283.67 DPS) [dungeon]; Naglering (11669, -458.72 DPS, sim-verified) [dungeon] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Resolution (22680, -127.11 DPS) [quest]; Band of the Steadfast Hero (22331, -187.63 DPS) [dungeon]; Naglering (11669, -582.49 DPS, sim-verified) [dungeon] |
-| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Stormpike Insignia Rank 6 (17904, +0.00 DPS) [quest]; Talisman of Arathor (20071, +0.00 DPS) [rep]; Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor] |
-| trinket2 | Vigilance Charm (18370) | Dire Maul: Immol'thar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Stormpike Insignia Rank 6 (17904, +0.00 DPS) [quest]; Defender's Grip Stabilizer (272440, -710.64 DPS) [vendor]; Mark of Tyranny (13966, -980.98 DPS) [quest] |
-| main_hand | Ravencrest's Legacy (21520) | Treasure of the Timeless One [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quel'Serrar (18348, +0.00 DPS) [quest]; Grand Marshal's Warhammer (234576, -85.40 DPS) [vendor]; Greenhammer (279261, -762.98 DPS) [crafted] |
-| off_hand | Earthen Guard (20688) | Baron Kazum [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Aegis (234588, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Skullflame Shield (1168, -2443.05 DPS, sim-verified) [world_drop] |
+| head | Helm of Awareness (18313) | Dire Maul: Zevrim Thornhoof [dungeon] | 78.3 stamina points (8213.95 DPS) | yes | Field Marshal's Lamellar Headguard (231648, -146.31 DPS) [vendor]; Field Marshal's Lamellar Helmet (231640, -320.47 DPS) [vendor]; Enchanted Thorium Helm (12620, -528.39 DPS) [crafted] |
+| neck | Talisman of Evasion (13177) | Blackrock Spire: War Master Voone [dungeon] | 32.7 stamina points (3431.41 DPS) | yes | Evil Eye Pendant (18381, -11.32 DPS) [dungeon]; Amulet of the Darkmoon (19491, -65.36 DPS) [quest]; Medallion of Grand Marshal Morris (13091, -280.87 DPS) [world_drop] |
+| shoulder | Highlander's Plate Spaulders (20057) | The League of Arathor [rep] | 68.3 stamina points (7162.39 DPS) | yes | Field Marshal's Lamellar Pauldrons (231645, +0.00 DPS) [pvp]; Stockade Pauldrons (14552, -192.96 DPS) [world_drop]; Glowing Mantle of the Dawn (227818, -629.43 DPS, sim-verified) [vendor] |
+| back | Shifting Cloak (18511) | Leatherworking [crafted] | 47.5 stamina points (4981.52 DPS) | yes | Windshear Cape (20691, -380.51 DPS, sim-verified) [world]; Redoubt Cloak (18495, -1482.31 DPS) [dungeon]; Stoneskin Gargoyle Cape (13397, -2017.96 DPS) [dungeon] |
+| chest | Deathbone Chestplate (14624) | Scholomance: Lady Illucia Barov [dungeon] | sim-verified (35483.7 DPS) | yes | Ornate Adamantium Breastplate (15413, -63.33 DPS) [quest]; Dire Warbear Harness (227803, -161.58 DPS) [vendor]; Breastplate of Undead Slaying (23087, -1453.20 DPS, sim-verified) [world] |
+| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | sim-verified (35483.7 DPS) | yes | Warder's Wristguards (250583, -76.12 DPS) [crafted]; Vigorsteel Vambraces (13951, -302.12 DPS) [dungeon]; Bracers of Undead Slaying (23090, -773.45 DPS, sim-verified) [world] |
+| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | sim-verified (35483.7 DPS) | yes | Soulforge Handguards (226990, -495.04 DPS) [vendor]; Sentinel's Gloves (250552, -704.06 DPS) [crafted]; Razor Gauntlets (18326, -2245.24 DPS, sim-verified) [dungeon] |
+| waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 54.7 stamina points (5735.05 DPS) | yes | Deathbone Girdle (14620, -124.76 DPS) [dungeon]; Warder's Waistguard (250573, -164.92 DPS) [crafted]; Belt of Valor (16736, -268.37 DPS) [dungeon] |
+| legs | Soulforge Legguards (226988) | Mokvar [vendor] | sim-verified (35483.7 DPS) | yes | Cloudkeeper Legplates (14554, +0.00 DPS) [world_drop]; Sentinel's Chain Leggings (237819, -91.28 DPS) [vendor]; Sentinel's Plate Legguards (237825, -671.20 DPS) [vendor] |
+| feet | Boots of Avoidance (14549) | World drop [world_drop] | 81.1 stamina points (8506.27 DPS) | yes | Marshal's Lamellar Greaves (231646, -1123.42 DPS) [vendor]; Fine Dawn Treaders (227815, -1198.33 DPS) [vendor]; Shalehusk Boots (11787, -1946.73 DPS) [dungeon] |
+| finger1 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-verified (35483.7 DPS) | yes | Band of Resolution (22680, -228.47 DPS) [quest]; Band of the Steadfast Hero (22331, -286.03 DPS) [dungeon]; Naglering (11669, -354.45 DPS, sim-verified) [dungeon] |
+| finger2 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | sim-verified (35483.7 DPS) | yes | Band of Resolution (22680, -126.86 DPS) [quest]; Band of the Steadfast Hero (22331, -184.43 DPS) [dungeon]; Naglering (11669, -594.67 DPS, sim-verified) [dungeon] |
+| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (35483.7 DPS) | yes | Stormpike Insignia Rank 6 (17904, +0.00 DPS) [quest]; Vigilance Charm (18370, +0.00 DPS) [dungeon]; Talisman of Arathor (20071, +0.00 DPS) [rep] |
+| trinket2 | Mark of Tyranny (13966) | General Drakkisath's Demise [quest] | sim-verified (35483.7 DPS) | yes | Stormpike Insignia Rank 6 (17904, +0.00 DPS) [quest]; Vigilance Charm (18370, +0.00 DPS) [dungeon]; Talisman of Arathor (20071, +0.00 DPS) [rep] |
+| main_hand | Ravencrest's Legacy (21520) | Treasure of the Timeless One [quest] | sim-verified (35483.7 DPS) | yes | Quel'Serrar (18348, +0.00 DPS) [quest]; Grand Marshal's Warhammer (234576, -89.21 DPS) [vendor]; Greenhammer (279261, -751.70 DPS) [crafted] |
+| off_hand | Earthen Guard (20688) | Baron Kazum [world] | sim-verified (35483.7 DPS) | yes | Grand Marshal's Aegis (234588, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Skullflame Shield (1168, -2542.99 DPS, sim-verified) [world_drop] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Enchanted Thorium Helm; neck: Talisman of Evasion; shoulder: Highlander's Plate Spaulders; back: Shifting Cloak; chest: Deathbone Chestplate; wrist: Sentinel's Wristguards; hands: Heavy Thorium Gauntlets; waist: Deathbone Girdle; legs: Soulforge Legguards; feet: Boots of Avoidance; finger1: Ring of Awareness; finger2: Signet Ring of the Bronze Dragonflight; trinket2: Vigilance Charm; main_hand: Ravencrest's Legacy; off_hand: Earthen Guard
+**New at 60:** head: Helm of Awareness; neck: Talisman of Evasion; shoulder: Highlander's Plate Spaulders; back: Shifting Cloak; chest: Deathbone Chestplate; wrist: Sentinel's Wristguards; hands: Heavy Thorium Gauntlets; legs: Soulforge Legguards; feet: Boots of Avoidance; finger1: Ring of Awareness; finger2: Signet Ring of the Bronze Dragonflight; trinket2: Mark of Tyranny; main_hand: Ravencrest's Legacy; off_hand: Earthen Guard
 
 No-known-source sample (15 of 1674, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4765 Enamelled Broadsword; 4777 Ironwood Maul
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1674, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 00000000000000000-5510000000000000-00000000000000000)
 
-Set DPS (verified): 24.6. Weights run: 5.8s. Verify run: 1.8s. 219 eligible items had no known source.
+Set DPS (verified): 24.6. Weights run: 5.7s. Verify run: 1.8s. 219 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.026 ± 0.000, defense=0.270 ± 0.043 per rating point (1 rating = 1%, 0.270 per %), dodge=0.147 ± 0.010 per rating point (12 rating = 1%, 1.763 per %), parry=0.120 ± 0.007 per rating point (15 rating = 1%, 1.801 per %), block=not significant (-0.007 ± 0.013) per rating point (5 rating = 1%, -0.035 per %), block_value=0.227 ± 0.002, strength=0.082 ± 0.000, agility=0.163 ± 0.006, attack_power=0.035 ± 0.000, hit=0.076 ± 0.007 per rating point (10 rating = 1%, 0.760 per %), crit=0.037 ± 0.001 per rating point (14 rating = 1%, 0.518 per %), expertise=1.883 ± 0.081
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 219, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-5530512000000000-00000000000000000)
 
-Set DPS (verified): 38.5. Weights run: 5.8s. Verify run: 1.6s. 381 eligible items had no known source.
+Set DPS (verified): 38.5. Weights run: 5.7s. Verify run: 1.6s. 381 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.027 ± 0.000, defense=0.341 ± 0.051 per rating point (1 rating = 1%, 0.341 per %), dodge=0.172 ± 0.011 per rating point (12 rating = 1%, 2.067 per %), parry=0.138 ± 0.009 per rating point (15 rating = 1%, 2.077 per %), block=not significant (0.024 ± 0.017) per rating point (5 rating = 1%, 0.120 per %), block_value=0.104 ± 0.001, strength=0.058 ± 0.000, agility=0.176 ± 0.007, attack_power=0.026 ± 0.000, hit=0.056 ± 0.008 per rating point (10 rating = 1%, 0.564 per %), crit=0.031 ± 0.001 per rating point (14 rating = 1%, 0.441 per %), expertise=1.904 ± 0.094
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 381, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 00000000000000000-5530513321101001-00000000000000000)
 
-Set DPS (verified): 75.4. Weights run: 6.6s. Verify run: 2.0s. 531 eligible items had no known source.
+Set DPS (verified): 75.4. Weights run: 6.4s. Verify run: 1.9s. 531 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.048, armor=0.021 ± 0.004, defense=not significant (0.243 ± 0.122) per rating point (1 rating = 1%, 0.243 per %), dodge=0.107 ± 0.023 per rating point (12 rating = 1%, 1.280 per %), parry=0.091 ± 0.018 per rating point (15 rating = 1%, 1.366 per %), block=not significant (0.033 ± 0.043) per rating point (5 rating = 1%, 0.167 per %), block_value=not significant (0.188 ± 0.055), strength=0.051 ± 0.003, agility=0.118 ± 0.014, attack_power=0.021 ± 0.000, hit=not significant (0.043 ± 0.022) per rating point (10 rating = 1%, 0.431 per %), crit=0.026 ± 0.002 per rating point (14 rating = 1%, 0.362 per %), expertise=1.419 ± 0.245
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 531, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 30000000000000000-5530513321301051-00000000000000000)
 
-Set DPS (verified): 117.9. Weights run: 7.3s. Verify run: 2.1s. 702 eligible items had no known source.
+Set DPS (verified): 117.9. Weights run: 7.1s. Verify run: 2.1s. 702 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.078, armor=0.025 ± 0.006, defense=not significant (0.278 ± 0.219) per rating point (1 rating = 1%, 0.278 per %), dodge=0.158 ± 0.039 per rating point (12 rating = 1%, 1.897 per %), parry=0.127 ± 0.031 per rating point (15 rating = 1%, 1.911 per %), block=not significant (0.202 ± 0.078) per rating point (5 rating = 1%, 1.010 per %), block_value=not significant (0.181 ± 0.077), strength=0.052 ± 0.004, agility=0.167 ± 0.024, attack_power=0.021 ± 0.000, hit=not significant (0.045 ± 0.037) per rating point (10 rating = 1%, 0.448 per %), crit=0.031 ± 0.003 per rating point (14 rating = 1%, 0.431 per %), expertise=1.738 ± 0.415
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 702, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (undead, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 189.2. Weights run: 7.4s. Verify run: 2.3s. 1699 eligible items had no known source.
+Set DPS (verified): 189.2. Weights run: 7.0s. Verify run: 2.2s. 1699 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.037 ± 0.000, defense=1.498 ± 0.188 per rating point (1 rating = 1%, 1.498 per %), dodge=0.896 ± 0.040 per rating point (12 rating = 1%, 10.747 per %), parry=0.729 ± 0.030 per rating point (15 rating = 1%, 10.938 per %), block=0.926 ± 0.052 per rating point (5 rating = 1%, 4.632 per %), block_value=0.696 ± 0.002, strength=0.083 ± 0.000, agility=0.665 ± 0.024, attack_power=0.024 ± 0.000, hit=0.147 ± 0.036 per rating point (10 rating = 1%, 1.468 per %), crit=0.078 ± 0.002 per rating point (14 rating = 1%, 1.091 per %), expertise=4.447 ± 0.406
 
@@ -340,31 +340,31 @@ No-known-source sample (15 of 1699, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 419.8. Weights run: 6.9s. Verify run: 2.0s. 1699 eligible items had no known source.
+Set DPS (verified): 418.5. Weights run: 6.6s. Verify run: 2.2s. 1699 eligible items had no known source.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.050 ± 0.000, defense=2.289 ± 0.203 per rating point (1 rating = 1%, 2.289 per %), dodge=1.522 ± 0.048 per rating point (12 rating = 1%, 18.258 per %), parry=1.244 ± 0.036 per rating point (15 rating = 1%, 18.660 per %), block=1.175 ± 0.055 per rating point (5 rating = 1%, 5.875 per %), block_value=1.118 ± 0.003, strength=0.121 ± 0.000, agility=1.093 ± 0.029, attack_power=0.033 ± 0.000, hit=0.209 ± 0.043 per rating point (10 rating = 1%, 2.088 per %), crit=0.112 ± 0.003 per rating point (14 rating = 1%, 1.562 per %), expertise=7.241 ± 0.499
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.050 ± 0.000, defense=2.303 ± 0.207 per rating point (1 rating = 1%, 2.303 per %), dodge=1.535 ± 0.048 per rating point (12 rating = 1%, 18.422 per %), parry=1.248 ± 0.037 per rating point (15 rating = 1%, 18.724 per %), block=1.163 ± 0.056 per rating point (5 rating = 1%, 5.813 per %), block_value=1.115 ± 0.003, strength=0.121 ± 0.000, agility=1.098 ± 0.029, attack_power=0.034 ± 0.000, hit=0.219 ± 0.044 per rating point (10 rating = 1%, 2.192 per %), crit=0.112 ± 0.003 per rating point (14 rating = 1%, 1.572 per %), expertise=7.476 ± 0.497
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Helm of Awareness (18313) | Dire Maul: Zevrim Thornhoof [dungeon] | 78.0 stamina points (8194.79 DPS) | yes | Enchanted Thorium Helm (12620, -507.57 DPS) [crafted]; Soulforge Faceguard (226989, -636.99 DPS) [vendor]; Gyth's Skull (12952, -1274.27 DPS) [dungeon] |
-| neck | Talisman of Evasion (13177) | Blackrock Spire: War Master Voone [dungeon] | 32.5 stamina points (3412.66 DPS) | yes | Evil Eye Pendant (18381, -5.25 DPS) [dungeon]; Amulet of the Darkmoon (19491, -51.61 DPS) [quest]; Medallion of Grand Marshal Morris (13091, -270.97 DPS) [world_drop] |
-| shoulder | Defiler's Plate Spaulders (20212) | The Defilers [rep] | 68.2 stamina points (7166.39 DPS) | yes | Stockade Pauldrons (14552, -198.12 DPS) [world_drop]; Glowing Mantle of the Dawn (227818, -501.40 DPS, sim-verified) [vendor]; Soulforge Pauldrons (226987, -658.83 DPS) [vendor] |
-| back | Shifting Cloak (18511) | Leatherworking [crafted] | 47.2 stamina points (4963.28 DPS) | yes | Windshear Cape (20691, -419.48 DPS, sim-verified) [world]; Redoubt Cloak (18495, -1467.92 DPS) [dungeon]; Stoneskin Gargoyle Cape (13397, -1998.92 DPS) [dungeon] |
-| chest | Deathbone Chestplate (14624) | Scholomance: Lady Illucia Barov [dungeon] | sim-verified (35925.4 DPS) | yes | Ornate Adamantium Breastplate (15413, -53.00 DPS) [quest]; Dire Warbear Harness (227803, -175.16 DPS) [vendor]; Breastplate of Undead Slaying (23087, -1454.87 DPS, sim-verified) [world] |
-| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | sim-verified (35925.4 DPS) | yes | Warder's Wristguards (250583, -76.27 DPS) [crafted]; Vigorsteel Vambraces (13951, -295.10 DPS) [dungeon]; Bracers of Undead Slaying (23090, -573.35 DPS, sim-verified) [world] |
-| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | sim-verified (35925.4 DPS) | yes | Soulforge Handguards (226990, -491.47 DPS) [vendor]; Sentinel's Gloves (250552, -704.11 DPS) [crafted]; Razor Gauntlets (18326, -2488.91 DPS, sim-verified) [dungeon] |
-| waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 54.5 stamina points (5731.45 DPS) | yes | Deathbone Girdle (14620, -123.51 DPS) [dungeon]; Warder's Waistguard (250573, -165.25 DPS) [crafted]; Belt of Valor (16736, -267.07 DPS) [dungeon] |
-| legs | Soulforge Legguards (226988) | Mokvar [vendor] | sim-verified (35925.4 DPS) | yes | Sentinel's Chain Leggings (237819, -114.99 DPS) [vendor]; Cloudkeeper Legplates (14554, -656.91 DPS, sim-verified) [world_drop]; Sentinel's Plate Legguards (237825, -675.02 DPS) [vendor] |
-| feet | Boots of Avoidance (14549) | World drop [world_drop] | 80.7 stamina points (8479.29 DPS) | yes | Fine Dawn Treaders (227815, -811.78 DPS, sim-verified) [vendor]; Shalehusk Boots (11787, -1941.97 DPS) [dungeon]; Dense Timbermaw Boots (227810, -2186.22 DPS) [vendor] |
-| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (35925.4 DPS) | yes | Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon]; Band of Resolution (22680, +0.00 DPS) [quest]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | 30.7 stamina points (3222.08 DPS) | yes | Ring of Awareness (272409, +0.00 DPS) [vendor]; Band of Resolution (22680, -127.11 DPS) [quest]; Band of the Steadfast Hero (22331, -187.63 DPS) [dungeon] |
-| trinket1 | Defiler's Talisman (20072) | The Defilers [rep] | sim-verified (35925.4 DPS) | yes | Mark of Tyranny (13966, +0.00 DPS) [quest]; Frostwolf Insignia Rank 6 (17909, +0.00 DPS) [quest]; Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor] |
-| trinket2 | Vigilance Charm (18370) | Dire Maul: Immol'thar [dungeon] | sim-verified (35925.4 DPS) | yes | Frostwolf Insignia Rank 6 (17909, +0.00 DPS) [quest]; Relentless Raider's Seal (272060, +0.00 DPS) [vendor]; Defender's Grip Stabilizer (272440, -710.64 DPS) [vendor] |
-| main_hand | Ravencrest's Legacy (21520) | Treasure of the Timeless One [quest] | sim-verified (35925.4 DPS) | yes | Quel'Serrar (18348, +0.00 DPS) [quest]; High Warlord's Battle Mace (234551, -85.40 DPS) [vendor]; Greenhammer (279261, -762.98 DPS) [crafted] |
-| off_hand | Earthen Guard (20688) | Baron Kazum [world] | sim-verified (35925.4 DPS) | yes | High Warlord's Shield Wall (234562, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Skullflame Shield (1168, -2670.49 DPS, sim-verified) [world_drop] |
+| head | Helm of Awareness (18313) | Dire Maul: Zevrim Thornhoof [dungeon] | 78.3 stamina points (8213.95 DPS) | yes | Enchanted Thorium Helm (12620, -528.39 DPS) [crafted]; Soulforge Faceguard (226989, -664.83 DPS) [vendor]; Gyth's Skull (12952, -1293.69 DPS) [dungeon] |
+| neck | Talisman of Evasion (13177) | Blackrock Spire: War Master Voone [dungeon] | 32.7 stamina points (3431.41 DPS) | yes | Evil Eye Pendant (18381, -11.32 DPS) [dungeon]; Amulet of the Darkmoon (19491, -65.36 DPS) [quest]; Medallion of Grand Marshal Morris (13091, -280.87 DPS) [world_drop] |
+| shoulder | Defiler's Plate Spaulders (20212) | The Defilers [rep] | 68.3 stamina points (7162.39 DPS) | yes | Stockade Pauldrons (14552, -192.96 DPS) [world_drop]; Soulforge Pauldrons (226987, -666.63 DPS) [vendor]; Glowing Mantle of the Dawn (227818, -737.04 DPS, sim-verified) [vendor] |
+| back | Shifting Cloak (18511) | Leatherworking [crafted] | 47.5 stamina points (4981.52 DPS) | yes | Windshear Cape (20691, -432.33 DPS, sim-verified) [world]; Redoubt Cloak (18495, -1482.31 DPS) [dungeon]; Stoneskin Gargoyle Cape (13397, -2017.96 DPS) [dungeon] |
+| chest | Deathbone Chestplate (14624) | Scholomance: Lady Illucia Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ornate Adamantium Breastplate (15413, -63.33 DPS) [quest]; Dire Warbear Harness (227803, -161.58 DPS) [vendor]; Breastplate of Undead Slaying (23087, -1059.63 DPS, sim-verified) [world] |
+| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warder's Wristguards (250583, -76.12 DPS) [crafted]; Vigorsteel Vambraces (13951, -302.12 DPS) [dungeon]; Bracers of Undead Slaying (23090, -957.29 DPS, sim-verified) [world] |
+| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Soulforge Handguards (226990, -495.04 DPS) [vendor]; Sentinel's Gloves (250552, -704.06 DPS) [crafted]; Razor Gauntlets (18326, -2512.74 DPS, sim-verified) [dungeon] |
+| waist | Deathbone Girdle (14620) | Scholomance: Lady Illucia Barov [dungeon] | sim-verified (36908.5 DPS) | yes | Warder's Waistguard (250573, -40.15 DPS) [crafted]; Belt of Valor (16736, -143.61 DPS) [dungeon]; Sentinel's Waistguard (250572, -400.90 DPS, sim-verified) [crafted] |
+| legs | Soulforge Legguards (226988) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Sentinel's Chain Leggings (237819, -91.28 DPS) [vendor]; Cloudkeeper Legplates (14554, -467.31 DPS, sim-verified) [world_drop]; Sentinel's Plate Legguards (237825, -671.20 DPS) [vendor] |
+| feet | Boots of Avoidance (14549) | World drop [world_drop] | 81.1 stamina points (8506.27 DPS) | yes | Fine Dawn Treaders (227815, -784.65 DPS, sim-verified) [vendor]; Shalehusk Boots (11787, -1946.73 DPS) [dungeon]; Dense Timbermaw Boots (227810, -2200.99 DPS) [vendor] |
+| finger1 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Resolution (22680, -228.47 DPS) [quest]; Band of the Steadfast Hero (22331, -286.03 DPS) [dungeon]; Naglering (11669, -645.83 DPS, sim-verified) [dungeon] |
+| finger2 | Signet Ring of the Bronze Dragonflight (21196) | The Path of the Protector [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Resolution (22680, -126.86 DPS) [quest]; Band of the Steadfast Hero (22331, -184.43 DPS) [dungeon]; Naglering (11669, -731.77 DPS, sim-verified) [dungeon] |
+| trinket1 | Mark of Tyranny (13966) | For The Horde! [quest] | sim-verified (+1266.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Frostwolf Insignia Rank 6 (17909, +0.00 DPS) [quest]; Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor]; Counterattack Lodestone (18537, -827.16 DPS) [dungeon] |
+| trinket2 | Vigilance Charm (18370) | Dire Maul: Immol'thar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frostwolf Insignia Rank 6 (17909, +0.00 DPS) [quest]; Defender's Grip Stabilizer (272440, -725.28 DPS) [vendor]; Counterattack Lodestone (18537, -1824.07 DPS) [dungeon] |
+| main_hand | Ravencrest's Legacy (21520) | Treasure of the Timeless One [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quel'Serrar (18348, +0.00 DPS) [quest]; High Warlord's Battle Mace (234551, -89.21 DPS) [vendor]; Greenhammer (279261, -751.70 DPS) [crafted] |
+| off_hand | Earthen Guard (20688) | Baron Kazum [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Shield Wall (234562, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Skullflame Shield (1168, -2774.21 DPS, sim-verified) [world_drop] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Helm of Awareness; neck: Talisman of Evasion; shoulder: Defiler's Plate Spaulders; back: Shifting Cloak; chest: Deathbone Chestplate; hands: Heavy Thorium Gauntlets; legs: Soulforge Legguards; feet: Boots of Avoidance; finger1: Naglering; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Defiler's Talisman; trinket2: Vigilance Charm; main_hand: Ravencrest's Legacy; off_hand: Earthen Guard
+**New at 60:** head: Helm of Awareness; neck: Talisman of Evasion; shoulder: Defiler's Plate Spaulders; back: Shifting Cloak; chest: Deathbone Chestplate; hands: Heavy Thorium Gauntlets; waist: Deathbone Girdle; legs: Soulforge Legguards; feet: Boots of Avoidance; finger1: Ring of Awareness; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Mark of Tyranny; trinket2: Vigilance Charm; main_hand: Ravencrest's Legacy; off_hand: Earthen Guard
 
 No-known-source sample (15 of 1699, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band
 

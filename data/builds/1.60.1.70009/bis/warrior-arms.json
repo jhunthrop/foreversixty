@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "23ddbe226",
-  "generated_at": "2026-10-08T03:44:37Z",
+  "engine_version": "ad30bef89",
+  "generated_at": "2026-10-08T04:28:39Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -552,8 +552,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.713870436,
-      "verify_run_seconds": 1.126667171,
+      "weights_run_seconds": 1.700825442,
+      "verify_run_seconds": 1.117189402,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1199,8 +1199,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.713870436,
-      "verify_run_seconds": 1.078030151,
+      "weights_run_seconds": 1.700825442,
+      "verify_run_seconds": 1.069840522,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1872,8 +1872,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.022582256,
-      "verify_run_seconds": 1.428563228,
+      "weights_run_seconds": 1.9416980320000001,
+      "verify_run_seconds": 1.401129472,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2551,8 +2551,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.022582256,
-      "verify_run_seconds": 1.407350422,
+      "weights_run_seconds": 1.9416980320000001,
+      "verify_run_seconds": 1.419397641,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3229,8 +3229,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.2921242250000002,
-      "verify_run_seconds": 1.340624184,
+      "weights_run_seconds": 2.216400196,
+      "verify_run_seconds": 1.3397839,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3907,8 +3907,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.2921242250000002,
-      "verify_run_seconds": 1.359656375,
+      "weights_run_seconds": 2.216400196,
+      "verify_run_seconds": 1.3433525689999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4591,8 +4591,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.2835591490000002,
-      "verify_run_seconds": 1.560253695,
+      "weights_run_seconds": 2.245852896,
+      "verify_run_seconds": 1.5081190169999998,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5285,8 +5285,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.2835591490000002,
-      "verify_run_seconds": 1.5376740020000002,
+      "weights_run_seconds": 2.245852896,
+      "verify_run_seconds": 1.570093304,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5999,8 +5999,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.444965694,
-      "verify_run_seconds": 1.593240612,
+      "weights_run_seconds": 2.427975285,
+      "verify_run_seconds": 1.554148358,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6718,8 +6718,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.444965694,
-      "verify_run_seconds": 1.61936679,
+      "weights_run_seconds": 2.427975285,
+      "verify_run_seconds": 1.485586158,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7148,14 +7148,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.2735903037958156
+              "dps_delta": -2.2735903037958103
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.738155698688983
+              "dps_delta": -2.7381556986889777
             }
           ]
         },
@@ -7431,8 +7431,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.113921367,
-      "verify_run_seconds": 1.477050604,
+      "weights_run_seconds": 2.080430506,
+      "verify_run_seconds": 1.471236696,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7868,14 +7868,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.2735903037958103
+              "dps_delta": -2.2735903037958156
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.738155698688983
+              "dps_delta": -2.7381556986889777
             }
           ]
         },
@@ -8152,8 +8152,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.113921367,
-      "verify_run_seconds": 1.475704517,
+      "weights_run_seconds": 2.080430506,
+      "verify_run_seconds": 1.472594609,
       "coverage": {
         "back": {
           "eligible": 450,

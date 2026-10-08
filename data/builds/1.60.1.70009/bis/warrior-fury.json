@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "23ddbe226",
-  "generated_at": "2026-10-08T03:45:43Z",
+  "engine_version": "ad30bef89",
+  "generated_at": "2026-10-08T04:29:45Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -609,8 +609,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.6777778,
-      "verify_run_seconds": 1.490243523,
+      "weights_run_seconds": 2.579750282,
+      "verify_run_seconds": 1.472260831,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1294,8 +1294,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.6777778,
-      "verify_run_seconds": 1.489566781,
+      "weights_run_seconds": 2.579750282,
+      "verify_run_seconds": 1.455040139,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1986,8 +1986,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.988385821,
-      "verify_run_seconds": 1.583339197,
+      "weights_run_seconds": 2.846123699,
+      "verify_run_seconds": 1.5457101199999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,8 +2678,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.988385821,
-      "verify_run_seconds": 1.620717105,
+      "weights_run_seconds": 2.846123699,
+      "verify_run_seconds": 1.552217972,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3374,8 +3374,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.179952759,
-      "verify_run_seconds": 1.711176802,
+      "weights_run_seconds": 2.968107819,
+      "verify_run_seconds": 1.638492021,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4071,8 +4071,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.179952759,
-      "verify_run_seconds": 1.757448146,
+      "weights_run_seconds": 2.968107819,
+      "verify_run_seconds": 1.656771259,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4779,8 +4779,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.160799897,
-      "verify_run_seconds": 2.056190103,
+      "weights_run_seconds": 2.9798104309999998,
+      "verify_run_seconds": 2.030878204,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5518,8 +5518,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.160799897,
-      "verify_run_seconds": 2.120514838,
+      "weights_run_seconds": 2.9798104309999998,
+      "verify_run_seconds": 2.06810933,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5952,7 +5952,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.80128947111977
+              "dps_delta": -2.801289471119767
             },
             {
               "item_id": 22385,
@@ -6274,8 +6274,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.120928419,
-      "verify_run_seconds": 2.11529568,
+      "weights_run_seconds": 3.007422873,
+      "verify_run_seconds": 2.105955615,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6715,7 +6715,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.80128947111977
+              "dps_delta": -2.801289471119767
             },
             {
               "item_id": 22385,
@@ -6781,14 +6781,14 @@
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -2.8369257246734216
+              "dps_delta": -2.836925724673423
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.0754975568062917
+              "dps_delta": -3.075497556806293
             },
             {
               "item_id": 11669,
@@ -7036,8 +7036,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.120928419,
-      "verify_run_seconds": 2.167941504,
+      "weights_run_seconds": 3.007422873,
+      "verify_run_seconds": 2.173703824,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7208,7 +7208,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -17.25102940323845
+              "dps_delta": -17.251029403238448
             },
             {
               "item_id": 13404,
@@ -7339,7 +7339,7 @@
               "item_name": "Savage Gladiator Chain",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -7.944200666490656
+              "dps_delta": -7.944200666490652
             },
             {
               "item_id": 23087,
@@ -7785,8 +7785,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.5690693810000003,
-      "verify_run_seconds": 2.333254175,
+      "weights_run_seconds": 3.373015505,
+      "verify_run_seconds": 2.35605927,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7949,7 +7949,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 196.2934617405582,
+          "score": 196.29346174055817,
           "verified": true,
           "alternatives": [
             {
@@ -7957,7 +7957,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -17.251029403238455
+              "dps_delta": -17.25102940323845
             },
             {
               "item_id": 13404,
@@ -7972,7 +7972,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -18.646993530106258
+              "dps_delta": -18.64699353010625
             }
           ]
         },
@@ -8180,7 +8180,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 98.14549908167994,
+          "score": 98.14549908167993,
           "verified": true,
           "alternatives": [
             {
@@ -8188,21 +8188,21 @@
               "item_name": "Radiant Girdle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -0.9633483125338755
+              "dps_delta": -0.9633483125338722
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.8248057682939067
+              "dps_delta": -2.824805768293903
             },
             {
               "item_id": 22232,
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.7222270984415395
+              "dps_delta": -3.722227098441536
             }
           ]
         },
@@ -8544,8 +8544,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.5690693810000003,
-      "verify_run_seconds": 2.392939745,
+      "weights_run_seconds": 3.373015505,
+      "verify_run_seconds": 2.344677936,
       "coverage": {
         "back": {
           "eligible": 450,
