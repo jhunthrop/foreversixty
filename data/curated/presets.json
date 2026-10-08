@@ -190,9 +190,24 @@
             "reason": "The healer's flask: a large pool of mana for the whole fight. Client level 50."
           },
           {
-            "id": "mageblood_potion",
-            "label": "Mageblood Elixir",
-            "reason": "Mana per five seconds, in the engine's mana-regeneration elixir slot; client level 40. Forever's Greater Mageblood Elixir (level 55) restores more and is not in the engine's consumable list, so the plain one stands in for it."
+            "id": "greater_mageblood_elixir",
+            "label": "Greater Mageblood Elixir",
+            "reason": "Mana per five seconds, in the engine's mana-regeneration elixir slot; client level 55 (item 250341, spell 1250948). It replaces the plain Mageblood Elixir, which restores less."
+          },
+          {
+            "id": "greater_clerics_elixir",
+            "label": "Greater Cleric's Elixir",
+            "reason": "Healing power for half an hour; client level 55 (item 250333, spell 1250926). The lesser Cleric's Elixir is the same slot and gives less."
+          },
+          {
+            "id": "elixir_of_sages",
+            "label": "Elixir of Sages",
+            "reason": "Spirit and spell critical strike for half an hour; client level 55 (item 250338, spell 1250941). Spirit is the healer's regeneration stat."
+          },
+          {
+            "id": "food_sages_tea",
+            "label": "Sage's Tea",
+            "reason": "A drink that makes the healer well fed with healing power; client level 45 (item 249870, spell 1249925). Nightfin Soup, the caster's meal, gives spell damage and is no use to a healer."
           },
           {
             "id": "main_hand_imbue:brilliant_mana_oil",

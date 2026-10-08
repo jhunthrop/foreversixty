@@ -94,12 +94,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-01000000000000000-000000000000000000 | main_hand:263937 | 3.1 | 1 | spell:139=21.0 | {SpellID: 25316} |
-| 20 | 000000000000000000-03503000000000000-000000000000000000 | main_hand:890 | 19.0 | 4 | spell:6075=14.0, spell:2061=13.8, spell:2054=3.0, spell:7128=1.0 | {SpellID: 25316} |
-| 30 | 000000000000000000-03505003030110000-000000000000000000 | main_hand:249392 | 26.9 | 4 | other:mana_gain=25.8, spell:6076=13.5, spell:9472=11.4, spell:6063=4.7, spell:602=1.0 | {SpellID: 25316} |
-| 38 | 000000000000000000-03505003030121420-000000000000000000 | main_hand:7757 | 42.5 | 4 | other:mana_gain=22.2, spell:6078=12.0, spell:9474=9.2, spell:6064=5.8, spell:602=1.0 | {SpellID: 25316} |
-| 40 | 000000000000000000-03505003030121431-000000000000000000 | main_hand:7757 | 14.5 | 5 | spell:401859=25.2, other:mana_gain=8.1, spell:6064=3.8, spell:6078=2.0, spell:1006=1.0 | {SpellID: 25316} |
-| 50 | 025003000000000000-03505003030121431-000000000000000000 | main_hand:812 | 21.0 | 5 | spell:1240826=22.0, other:mana_gain=8.2, spell:6064=5.0, spell:10928=2.0, spell:10951=1.0 | {SpellID: 25316} |
-| 60 | 025003031303000000-03505003030121431-000000000000000000 | main_hand:19355 | 97.4 | 6 | other:mana_gain=47.3, spell:6064=20.1, spell:6075=20.0, spell:1240827=13.0, spell:14751=2.0 | - |
+| 20 | 000000000000000000-03503000000000000-000000000000000000 | main_hand:890 | 23.2 | 6 | spell:2061=20.4, other:mana_gain=15.0, spell:6075=14.2, spell:2054=2.6, spell:1277324=1.0 | {SpellID: 25316} |
+| 30 | 000000000000000000-03505003030110000-000000000000000000 | main_hand:249392 | 33.9 | 6 | other:mana_gain=42.3, spell:9472=21.0, spell:6076=14.0, spell:6063=3.7, spell:1277325=1.0 | {SpellID: 25316} |
+| 38 | 000000000000000000-03505003030121420-000000000000000000 | main_hand:7757 | 55.0 | 6 | other:mana_gain=40.4, spell:9474=15.0, spell:6078=12.4, spell:6064=7.2, spell:1277325=1.0 | {SpellID: 25316} |
+| 40 | 000000000000000000-03505003030121431-000000000000000000 | main_hand:7757 | 29.2 | 7 | other:mana_gain=28.6, spell:401859=25.4, spell:9474=8.2, spell:6064=3.8, spell:6078=3.2 | {SpellID: 25316} |
+| 50 | 025003000000000000-03505003030121431-000000000000000000 | main_hand:812 | 46.9 | 7 | other:mana_gain=31.8, spell:1240826=22.9, spell:6064=10.1, spell:10928=3.9, spell:10916=1.9 | {SpellID: 25316} |
+| 60 | 025003031303000000-03505003030121431-000000000000000000 | main_hand:19355 | 139.1 | 9 | other:mana_gain=69.7, spell:6064=24.7, spell:6075=20.0, spell:1240827=13.7, spell:10917=4.6 | - |
 
 ## Learned but unused (informational)
 
@@ -114,7 +114,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 20
 
 - Chastise (spell 1277331)
-- Dark Sacrifice (spell 1277324)
 - Holy Fire (spell 14914)
 - Holy Nova (spell 15237)
 - Mind Blast (spell 8102)
@@ -126,7 +125,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 30
 
 - Chastise (spell 1277332)
-- Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15263)
 - Holy Nova (spell 15430)
 - Mind Blast (spell 8104)
@@ -138,7 +136,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 38
 
 - Chastise (spell 1277332)
-- Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
 - Mind Blast (spell 8105)
@@ -151,7 +148,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 40
 
 - Chastise (spell 1277333)
-- Dark Sacrifice (spell 1277326)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
 - Mind Blast (spell 8106)
@@ -164,7 +160,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 50
 
 - Chastise (spell 1277334)
-- Dark Sacrifice (spell 1277327)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
 - Mind Blast (spell 10945)
@@ -177,7 +172,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Chastise (spell 1277335)
-- Dark Sacrifice (spell 1277328)
 - Holy Fire (spell 15261)
 - Holy Nova (spell 27801)
 - Mind Blast (spell 10947)
@@ -190,11 +184,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - priest-holy level=10 kind=unresolved_id action={SpellID: 25316}
+- priest-holy level=10 kind=zero_casts id=401977 authored=401977 (untracked ability; not in spellranks.json's rank chains)
 - priest-holy level=20 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=30 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=38 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=40 kind=dps_regression dps=14.5 prev_dps=42.5
+- priest-holy level=40 kind=dps_regression dps=29.2 prev_dps=55.0
 - priest-holy level=40 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=50 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=60 kind=zero_casts id=25316 authored=25316 (untracked ability; not in spellranks.json's rank chains)
 - priest-holy level=60 kind=zero_casts spell="Renew" id=10929 authored=6075
