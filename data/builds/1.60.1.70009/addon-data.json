@@ -6365,7 +6365,7 @@
           {
             "spell_id": 19750,
             "name": "Flash of Light",
-            "condition": "Flash of Light is the staple: 140 mana for about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6412,7 +6412,7 @@
           {
             "spell_id": 1311606,
             "name": "Holy Shock",
-            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana, so it is a use for spare mana, not a staple.",
+            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6442,7 +6442,7 @@
           {
             "spell_id": 19939,
             "name": "Flash of Light",
-            "condition": "Flash of Light is the staple: 140 mana for about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6489,7 +6489,7 @@
           {
             "spell_id": 1311606,
             "name": "Holy Shock",
-            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana, so it is a use for spare mana, not a staple.",
+            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6519,7 +6519,7 @@
           {
             "spell_id": 19940,
             "name": "Flash of Light",
-            "condition": "Flash of Light is the staple: 140 mana for about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6566,7 +6566,7 @@
           {
             "spell_id": 20473,
             "name": "Holy Shock",
-            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana, so it is a use for spare mana, not a staple.",
+            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6596,7 +6596,7 @@
           {
             "spell_id": 19940,
             "name": "Flash of Light",
-            "condition": "Flash of Light is the staple: 140 mana for about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6643,7 +6643,7 @@
           {
             "spell_id": 20929,
             "name": "Holy Shock",
-            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana, so it is a use for spare mana, not a staple.",
+            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6673,7 +6673,7 @@
           {
             "spell_id": 19942,
             "name": "Flash of Light",
-            "condition": "Flash of Light is the staple: 140 mana for about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6720,7 +6720,7 @@
           {
             "spell_id": 20930,
             "name": "Holy Shock",
-            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana, so it is a use for spare mana, not a staple.",
+            "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -6750,7 +6750,7 @@
           {
             "spell_id": 19943,
             "name": "Flash of Light",
-            "condition": "Flash of Light is the staple: 140 mana for about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
+            "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7387,6 +7387,12 @@
         "level": 10,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 17,
             "name": "Power Word: Shield",
             "condition": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper.",
@@ -7397,6 +7403,18 @@
       {
         "level": 20,
         "lines": [
+          {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277324,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
@@ -7436,7 +7454,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7498,6 +7516,18 @@
       {
         "level": 30,
         "lines": [
+          {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277325,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 402174,
             "name": "Penance",
@@ -7573,7 +7603,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7635,6 +7665,18 @@
       {
         "level": 38,
         "lines": [
+          {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277325,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 402174,
             "name": "Penance",
@@ -7710,7 +7752,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7772,6 +7814,18 @@
       {
         "level": 40,
         "lines": [
+          {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277326,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 1240720,
             "name": "Penance",
@@ -7847,7 +7901,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7909,6 +7963,18 @@
       {
         "level": 50,
         "lines": [
+          {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277327,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 1240721,
             "name": "Penance",
@@ -7984,7 +8050,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8046,6 +8112,18 @@
       {
         "level": 60,
         "lines": [
+          {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277328,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 1316995,
             "name": "Penance",
@@ -8121,7 +8199,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8186,9 +8264,15 @@
         "level": 10,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 425268,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight.",
+            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "inv_misc_questionmark"
           }
         ]
@@ -8197,9 +8281,21 @@
         "level": 20,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277324,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 425270,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight.",
+            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8235,7 +8331,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8298,9 +8394,21 @@
         "level": 30,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277325,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 425271,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight.",
+            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8342,7 +8450,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8405,9 +8513,21 @@
         "level": 38,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277325,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 425273,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight.",
+            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8449,7 +8569,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8512,6 +8632,18 @@
         "level": 40,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277326,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 401859,
             "name": "Prayer of Mending",
             "condition": "Prayer of Mending (rank 3) goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
@@ -8520,7 +8652,7 @@
           {
             "spell_id": 425273,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight.",
+            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8562,7 +8694,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8625,6 +8757,18 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277327,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
             "condition": "Prayer of Mending (rank 3) goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
@@ -8633,7 +8777,7 @@
           {
             "spell_id": 425275,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight.",
+            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8675,7 +8819,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8738,6 +8882,18 @@
         "level": 60,
         "lines": [
           {
+            "spell_id": 440054,
+            "name": "Shadowfiend",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 1277328,
+            "name": "Dark Sacrifice",
+            "condition": "Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 1240827,
             "name": "Prayer of Mending",
             "condition": "Prayer of Mending (rank 3) goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
@@ -8746,7 +8902,7 @@
           {
             "spell_id": 425277,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight.",
+            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -8788,7 +8944,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -15506,11 +15662,11 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.207,
+          "intellect": 1.22,
           "spirit": 1.493,
-          "mp5": 3.146,
-          "crit": 0.037,
-          "spell_haste": -5.386
+          "mp5": 3.165,
+          "crit": 0.038,
+          "spell_haste": -5.534
         }
       },
       {
@@ -15703,9 +15859,9 @@
         "weights": {
           "healing_power": 1.0,
           "intellect": 1.453,
-          "spirit": 2.925,
-          "mp5": 4.578,
-          "crit": 0.041
+          "spirit": 2.927,
+          "mp5": 4.581,
+          "crit": 0.042
         }
       },
       {
@@ -15913,10 +16069,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.333,
+          "intellect": 1.335,
           "spirit": 2.46,
-          "mp5": 4.822,
-          "crit": 0.044
+          "mp5": 4.827,
+          "crit": 0.046
         }
       },
       {
@@ -16115,10 +16271,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.457,
-          "spirit": 3.182,
-          "mp5": 4.509,
-          "crit": 0.058
+          "intellect": 1.458,
+          "spirit": 3.178,
+          "mp5": 4.502,
+          "crit": 0.061
         }
       },
       {
@@ -16311,10 +16467,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 2.25,
-          "spirit": 4.526,
-          "mp5": 6.784,
-          "crit": 0.093
+          "intellect": 2.251,
+          "spirit": 4.529,
+          "mp5": 6.786,
+          "crit": 0.094
         }
       }
     ],
@@ -21306,9 +21462,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 22066,
-              "source_kind": "quest",
-              "source": "Just Compensation"
+              "item_id": 226930,
+              "source_kind": "vendor",
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -21382,7 +21538,6 @@
             272411,
             14152,
             19595,
-            22066,
             228190,
             237815,
             22064,
@@ -23220,9 +23375,9 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 22667,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 18459,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Guard Fengus"
             },
             "hands": {
               "item_id": 272097,
@@ -23230,9 +23385,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 20217,
-              "source_kind": "quest",
-              "source": "A Collection of Heads"
+              "item_id": 18327,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Alzzin the Wildshaper"
             },
             "legs": {
               "item_id": 250600,
@@ -23250,9 +23405,9 @@
               "source": "Superior Armaments of Battle - Friend of the Dawn"
             },
             "finger2": {
-              "item_id": 18314,
+              "item_id": 22334,
               "source_kind": "dungeon",
-              "source": "Dire Maul: Alzzin the Wildshaper"
+              "source": "Stratholme: Balnazzar"
             },
             "trinket1": {
               "item_id": 272061,
@@ -23277,9 +23432,9 @@
               "source": "The Only Prescription"
             },
             "neck": {
-              "item_id": 14558,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20685,
+              "source_kind": "world",
+              "source": "Lord Skwol"
             },
             "shoulder": {
               "item_id": 227859,
@@ -23297,9 +23452,9 @@
               "source": "Blacksmithing"
             },
             "wrist": {
-              "item_id": 22667,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
+              "item_id": 18459,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Guard Fengus"
             },
             "hands": {
               "item_id": 272097,
@@ -23307,9 +23462,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 20217,
-              "source_kind": "quest",
-              "source": "A Collection of Heads"
+              "item_id": 18327,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Alzzin the Wildshaper"
             },
             "legs": {
               "item_id": 250600,
@@ -23327,9 +23482,9 @@
               "source": "Superior Armaments of Battle - Friend of the Dawn"
             },
             "finger2": {
-              "item_id": 18314,
+              "item_id": 22334,
               "source_kind": "dungeon",
-              "source": "Dire Maul: Alzzin the Wildshaper"
+              "source": "Stratholme: Balnazzar"
             },
             "trinket1": {
               "item_id": 272061,
@@ -23355,39 +23510,39 @@
             227859,
             18510,
             250601,
-            22667,
+            18459,
             272097,
-            20217,
+            18327,
             250600,
             226983,
             22681,
-            18314,
+            22334,
             18371,
             18717
           ],
           "horde": [
             21517,
-            14558,
+            20685,
             227859,
             18510,
             250601,
-            22667,
+            18459,
             272097,
-            20217,
+            18327,
             250600,
             226983,
             22681,
-            18314,
+            22334,
             18371,
             18717
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 2.838,
-          "spirit": 2.289,
-          "mp5": 7.125,
-          "crit": 0.538
+          "intellect": 2.406,
+          "spirit": 1.308,
+          "mp5": 4.844,
+          "crit": 0.405
         }
       }
     ],
@@ -25493,9 +25648,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 253925,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 2911,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "legs": {
               "item_id": 253937,
@@ -25503,19 +25658,19 @@
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 6191,
-              "source_kind": "quest",
-              "source": "WANTED: Chok'sul"
+              "item_id": 253889,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 6332,
-              "source_kind": "world",
-              "source": "Lady Vespira"
-            },
-            "finger2": {
               "item_id": 1156,
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid"
+            },
+            "finger2": {
+              "item_id": 6332,
+              "source_kind": "world",
+              "source": "Lady Vespira"
             },
             "main_hand": {
               "item_id": 890,
@@ -25545,9 +25700,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 20427,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 14376,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 253901,
@@ -25565,9 +25720,9 @@
               "source": "The New Plague"
             },
             "waist": {
-              "item_id": 253925,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 2911,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "legs": {
               "item_id": 253937,
@@ -25580,14 +25735,14 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 6332,
-              "source_kind": "world",
-              "source": "Lady Vespira"
-            },
-            "finger2": {
               "item_id": 1156,
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid"
+            },
+            "finger2": {
+              "item_id": 281673,
+              "source_kind": "quest",
+              "source": "The Offering of Blood"
             },
             "main_hand": {
               "item_id": 251534,
@@ -25610,11 +25765,11 @@
             253901,
             1974,
             253913,
-            253925,
+            2911,
             253937,
-            6191,
-            6332,
+            253889,
             1156,
+            6332,
             890,
             5326
           ],
@@ -25622,26 +25777,26 @@
             4373,
             277203,
             12998,
-            20427,
+            14376,
             253901,
             1974,
             279877,
-            253925,
+            2911,
             253937,
             253889,
-            6332,
             1156,
+            281673,
             251534,
             5252
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.947,
-          "spirit": 1.465,
-          "mp5": 3.514,
-          "crit": 0.143,
-          "spell_haste": 0.448
+          "intellect": 2.58,
+          "spirit": 1.351,
+          "mp5": 2.935,
+          "crit": 0.149,
+          "spell_haste": 0.153
         }
       },
       {
@@ -25664,14 +25819,14 @@
               "source": "Razorfen Kraul: Blind Hunter"
             },
             "back": {
-              "item_id": 6901,
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Old Serra'kis"
+              "item_id": 272078,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
-              "item_id": 7728,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey"
+              "item_id": 253961,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 1974,
@@ -25756,9 +25911,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 9395,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 9491,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan: Caverndeep Burrower"
             },
             "waist": {
               "item_id": 6780,
@@ -25807,8 +25962,8 @@
             4039,
             13084,
             6697,
-            6901,
-            7728,
+            272078,
+            253961,
             9395,
             14406,
             253987,
@@ -25825,7 +25980,7 @@
             6697,
             272078,
             253961,
-            9395,
+            9491,
             6780,
             253987,
             254001,
@@ -25838,10 +25993,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.999,
-          "spirit": 2.351,
-          "mp5": 4.895,
-          "crit": 0.214
+          "intellect": 2.158,
+          "spirit": 1.926,
+          "mp5": 3.911,
+          "crit": 0.228
         }
       },
       {
@@ -25854,14 +26009,14 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 7722,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "item_id": 17773,
+              "source_kind": "quest",
+              "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 4734,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 14432,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "back": {
               "item_id": 23178,
@@ -25941,14 +26096,14 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 7722,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "item_id": 17773,
+              "source_kind": "quest",
+              "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 4734,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 14432,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "back": {
               "item_id": 23178,
@@ -25981,9 +26136,9 @@
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 13100,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 254001,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 274746,
@@ -26025,8 +26180,8 @@
         "new_at_band": {
           "alliance": [
             9431,
-            7722,
-            4734,
+            17773,
+            14432,
             23178,
             10020,
             14429,
@@ -26041,14 +26196,13 @@
           ],
           "horde": [
             9431,
-            7722,
-            4734,
+            17773,
+            14432,
             23178,
             10020,
             14429,
             10011,
             254037,
-            13100,
             274746,
             6750,
             1713,
@@ -26059,9 +26213,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.534,
-          "spirit": 0.766,
-          "crit": 0.426
+          "intellect": 1.518,
+          "spirit": 0.538,
+          "mp5": 0.42,
+          "crit": 0.473
         }
       },
       {
@@ -26084,9 +26239,9 @@
               "source": "Tailoring"
             },
             "back": {
-              "item_id": 23178,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Lady Falther'ess"
+              "item_id": 272076,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 10020,
@@ -26134,7 +26289,7 @@
               "source": "Creeg Bothunk"
             },
             "trinket2": {
-              "item_id": 1713,
+              "item_id": 11302,
               "source_kind": "world_drop",
               "source": "World drop"
             },
@@ -26144,9 +26299,9 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             "off_hand": {
-              "item_id": 9393,
+              "item_id": 11625,
               "source_kind": "dungeon",
-              "source": "Uldaman: Shadowforge Relic Hunter"
+              "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "ranged": {
               "item_id": 13064,
@@ -26161,9 +26316,9 @@
               "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 19303,
-              "source_kind": "vendor",
-              "source": "Lhara"
+              "item_id": 13085,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 254049,
@@ -26171,9 +26326,9 @@
               "source": "Tailoring"
             },
             "back": {
-              "item_id": 19527,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 272076,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 10020,
@@ -26196,9 +26351,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 220902,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 9484,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
             },
             "feet": {
               "item_id": 254107,
@@ -26221,9 +26376,9 @@
               "source": "Creeg Bothunk"
             },
             "trinket2": {
-              "item_id": 13503,
-              "source_kind": "crafted",
-              "source": "Alchemy"
+              "item_id": 11302,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "main_hand": {
               "item_id": 2816,
@@ -26231,14 +26386,14 @@
               "source": "Razorfen Kraul: Death Speaker Jargba"
             },
             "off_hand": {
-              "item_id": 9393,
+              "item_id": 11625,
               "source_kind": "dungeon",
-              "source": "Uldaman: Shadowforge Relic Hunter"
+              "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "ranged": {
-              "item_id": 13064,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 19118,
+              "source_kind": "quest",
+              "source": "Dark Vessels"
             }
           }
         },
@@ -26246,6 +26401,7 @@
           "alliance": [
             19303,
             254049,
+            272076,
             254061,
             272098,
             254081,
@@ -26253,29 +26409,33 @@
             254107,
             6440,
             11824,
-            272061
+            272061,
+            11302,
+            11625
           ],
           "horde": [
-            19303,
+            13085,
             254049,
-            19527,
+            272076,
             254061,
             272098,
             254081,
-            220902,
+            9484,
             254107,
             6440,
             11824,
             272061,
-            13503,
-            9393
+            11302,
+            11625,
+            19118
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.387,
-          "mp5": 2.113,
-          "crit": 0.632
+          "intellect": 1.579,
+          "mp5": 2.676,
+          "crit": 0.726,
+          "spell_haste": 5.244
         }
       },
       {
@@ -26283,9 +26443,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 226947,
-              "source_kind": "quest",
-              "source": "Saving the Best for Last"
+              "item_id": 16693,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling"
             },
             "neck": {
               "item_id": 20685,
@@ -26293,9 +26453,9 @@
               "source": "Lord Skwol"
             },
             "shoulder": {
-              "item_id": 18681,
+              "item_id": 16695,
               "source_kind": "dungeon",
-              "source": "Scholomance: Lady Illucia Barov"
+              "source": "Blackrock Spire: Solakar Flamewreath"
             },
             "back": {
               "item_id": 18510,
@@ -26303,9 +26463,9 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 13346,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
+              "item_id": 14154,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 22667,
@@ -26318,9 +26478,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 18327,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Alzzin the Wildshaper"
+              "item_id": 19047,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 18386,
@@ -26328,39 +26488,34 @@
               "source": "Dire Maul: Illyanna Ravenoak"
             },
             "feet": {
-              "item_id": 227862,
-              "source_kind": "vendor",
-              "source": "Meilosh"
+              "item_id": 226952,
+              "source_kind": "quest",
+              "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 16058,
-              "source_kind": "quest",
-              "source": "In Dreams"
-            },
-            "finger2": {
               "item_id": 22334,
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar"
             },
-            "trinket1": {
-              "item_id": 272061,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+            "finger2": {
+              "item_id": 22681,
+              "source_kind": "quest",
+              "source": "Superior Armaments of Battle - Friend of the Dawn"
             },
-            "trinket2": {
+            "trinket1": {
               "item_id": 18469,
               "source_kind": "quest",
               "source": "Holy Bologna: What the Light Won't Tell You"
             },
-            "main_hand": {
-              "item_id": 2816,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Death Speaker Jargba"
+            "trinket2": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
-            "off_hand": {
-              "item_id": 19312,
-              "source_kind": "rep",
-              "source": "Stormpike Guard"
+            "main_hand": {
+              "item_id": 22406,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Cannon Master Willey"
             },
             "ranged": {
               "item_id": 279246,
@@ -26380,9 +26535,9 @@
               "source": "Lord Skwol"
             },
             "shoulder": {
-              "item_id": 18681,
+              "item_id": 16695,
               "source_kind": "dungeon",
-              "source": "Scholomance: Lady Illucia Barov"
+              "source": "Blackrock Spire: Solakar Flamewreath"
             },
             "back": {
               "item_id": 18510,
@@ -26390,9 +26545,9 @@
               "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 13346,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
+              "item_id": 14154,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 22667,
@@ -26400,14 +26555,14 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "hands": {
-              "item_id": 20717,
-              "source_kind": "quest",
-              "source": "Armaments of War"
+              "item_id": 272097,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 18327,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Alzzin the Wildshaper"
+              "item_id": 19047,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 18386,
@@ -26420,34 +26575,29 @@
               "source": "Meilosh"
             },
             "finger1": {
-              "item_id": 16058,
-              "source_kind": "quest",
-              "source": "In Dreams"
-            },
-            "finger2": {
               "item_id": 22334,
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar"
             },
-            "trinket1": {
-              "item_id": 272061,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+            "finger2": {
+              "item_id": 22681,
+              "source_kind": "quest",
+              "source": "Superior Armaments of Battle - Friend of the Dawn"
             },
-            "trinket2": {
+            "trinket1": {
               "item_id": 18469,
               "source_kind": "quest",
               "source": "Holy Bologna: What the Light Won't Tell You"
             },
-            "main_hand": {
-              "item_id": 2816,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Death Speaker Jargba"
+            "trinket2": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
-            "off_hand": {
-              "item_id": 19312,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan"
+            "main_hand": {
+              "item_id": 22406,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Cannon Master Willey"
             },
             "ranged": {
               "item_id": 279246,
@@ -26458,46 +26608,48 @@
         },
         "new_at_band": {
           "alliance": [
-            226947,
+            16693,
             20685,
-            18681,
+            16695,
             18510,
-            13346,
+            14154,
             22667,
             272097,
-            18327,
+            19047,
             18386,
-            227862,
-            16058,
+            226952,
             22334,
+            22681,
             18469,
-            19312,
+            272061,
+            22406,
             279246
           ],
           "horde": [
             226947,
             20685,
-            18681,
+            16695,
             18510,
-            13346,
+            14154,
             22667,
-            20717,
-            18327,
+            272097,
+            19047,
             18386,
             227862,
-            16058,
             22334,
+            22681,
             18469,
-            19312,
+            272061,
+            22406,
             279246
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.076,
-          "spirit": -0.682,
-          "mp5": 1.039,
-          "crit": 0.706
+          "intellect": 1.751,
+          "spirit": 0.754,
+          "mp5": 1.962,
+          "crit": 0.628
         }
       }
     ],
@@ -26557,14 +26709,14 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 6332,
-              "source_kind": "world",
-              "source": "Lady Vespira"
-            },
-            "finger2": {
               "item_id": 1156,
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid"
+            },
+            "finger2": {
+              "item_id": 6332,
+              "source_kind": "world",
+              "source": "Lady Vespira"
             },
             "main_hand": {
               "item_id": 890,
@@ -26594,9 +26746,9 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 20427,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 14376,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "chest": {
               "item_id": 253901,
@@ -26629,14 +26781,14 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 6332,
-              "source_kind": "world",
-              "source": "Lady Vespira"
-            },
-            "finger2": {
               "item_id": 1156,
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid"
+            },
+            "finger2": {
+              "item_id": 281673,
+              "source_kind": "quest",
+              "source": "The Offering of Blood"
             },
             "main_hand": {
               "item_id": 251534,
@@ -26662,8 +26814,8 @@
             253925,
             253937,
             253889,
-            6332,
             1156,
+            6332,
             890,
             5326
           ],
@@ -26671,25 +26823,26 @@
             4373,
             277203,
             12998,
-            20427,
+            14376,
             253901,
             1974,
             279877,
             253925,
             253937,
             253889,
-            6332,
             1156,
+            281673,
             251534,
             5252
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.688,
-          "spirit": 1.209,
-          "mp5": 3.159,
-          "crit": 0.145
+          "intellect": 1.33,
+          "spirit": 0.667,
+          "mp5": 1.558,
+          "crit": 0.06,
+          "spell_haste": 0.086
         }
       },
       {
@@ -26697,9 +26850,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 4039,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 253975,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "neck": {
               "item_id": 23169,
@@ -26712,14 +26865,14 @@
               "source": "Razorfen Kraul: Blind Hunter"
             },
             "back": {
-              "item_id": 272078,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 19533,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "chest": {
-              "item_id": 6682,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Death Speaker Jargba"
+              "item_id": 253961,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 1974,
@@ -26727,9 +26880,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 9491,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Burrower"
+              "item_id": 7049,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 253925,
@@ -26747,14 +26900,14 @@
               "source": "Tailoring"
             },
             "finger1": {
+              "item_id": 274746,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
+            },
+            "finger2": {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
-            },
-            "finger2": {
-              "item_id": 6199,
-              "source_kind": "world",
-              "source": "Leech Widow"
             },
             "trinket1": {
               "item_id": 272059,
@@ -26774,14 +26927,14 @@
           },
           "horde": {
             "head": {
-              "item_id": 4039,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 253975,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "neck": {
-              "item_id": 13084,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 23169,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
               "item_id": 6697,
@@ -26789,9 +26942,9 @@
               "source": "Razorfen Kraul: Blind Hunter"
             },
             "back": {
-              "item_id": 272078,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 19529,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "chest": {
               "item_id": 253961,
@@ -26804,9 +26957,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 9491,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Burrower"
+              "item_id": 7049,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "waist": {
               "item_id": 6780,
@@ -26824,14 +26977,14 @@
               "source": "Tailoring"
             },
             "finger1": {
+              "item_id": 274746,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
+            },
+            "finger2": {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
-            },
-            "finger2": {
-              "item_id": 6199,
-              "source_kind": "world",
-              "source": "Leech Widow"
             },
             "trinket1": {
               "item_id": 272059,
@@ -26852,32 +27005,32 @@
         },
         "new_at_band": {
           "alliance": [
-            4039,
+            253975,
             23169,
             6697,
-            272078,
-            6682,
-            9491,
+            19533,
+            253961,
+            7049,
             253987,
             254001,
+            274746,
             6750,
-            6199,
             272059,
             6689,
             13063
           ],
           "horde": [
-            4039,
-            13084,
+            253975,
+            23169,
             6697,
-            272078,
+            19529,
             253961,
-            9491,
+            7049,
             6780,
             253987,
             254001,
+            274746,
             6750,
-            6199,
             272059,
             6689,
             13063
@@ -26885,10 +27038,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 2.337,
-          "spirit": 1.458,
-          "mp5": 3.536,
-          "crit": 0.206
+          "intellect": 1.312,
+          "spirit": 0.835,
+          "mp5": 1.564,
+          "crit": 0.1
         }
       },
       {
@@ -26916,9 +27069,9 @@
               "source": "Razorfen Downs: Lady Falther'ess"
             },
             "chest": {
-              "item_id": 14417,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10020,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 14429,
@@ -26926,7 +27079,7 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10011,
+              "item_id": 254021,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -26936,24 +27089,24 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 7062,
+              "item_id": 253987,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 10578,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Withered Warrior"
+              "item_id": 254001,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
+              "item_id": 274746,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
+            },
+            "finger2": {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
-            },
-            "finger2": {
-              "item_id": 1996,
-              "source_kind": "world",
-              "source": "Bloodscalp Witch Doctor"
             },
             "trinket1": {
               "item_id": 272059,
@@ -26966,9 +27119,14 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 873,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 2816,
+              "source_kind": "dungeon",
+              "source": "Razorfen Kraul: Death Speaker Jargba"
+            },
+            "off_hand": {
+              "item_id": 9393,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "ranged": {
               "item_id": 13064,
@@ -26978,29 +27136,29 @@
           },
           "horde": {
             "head": {
-              "item_id": 10574,
+              "item_id": 9431,
               "source_kind": "dungeon",
-              "source": "Razorfen Downs: Withered Warrior"
+              "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "neck": {
-              "item_id": 7722,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "item_id": 17773,
+              "source_kind": "quest",
+              "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 14432,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 254033,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "back": {
-              "item_id": 23178,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Lady Falther'ess"
+              "item_id": 272077,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
-              "item_id": 14417,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10020,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
               "item_id": 14429,
@@ -27008,7 +27166,7 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10011,
+              "item_id": 254021,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -27018,24 +27176,24 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 7062,
+              "item_id": 253987,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 9658,
-              "source_kind": "quest",
-              "source": "Gordunni Cobalt"
+              "item_id": 254001,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
+              "item_id": 274746,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
+            },
+            "finger2": {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
-            },
-            "finger2": {
-              "item_id": 1996,
-              "source_kind": "world",
-              "source": "Bloodscalp Witch Doctor"
             },
             "trinket1": {
               "item_id": 272059,
@@ -27048,9 +27206,14 @@
               "source": "World drop"
             },
             "main_hand": {
-              "item_id": 873,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 2816,
+              "source_kind": "dungeon",
+              "source": "Razorfen Kraul: Death Speaker Jargba"
+            },
+            "off_hand": {
+              "item_id": 9393,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Shadowforge Relic Hunter"
             },
             "ranged": {
               "item_id": 13064,
@@ -27065,40 +27228,37 @@
             7722,
             14432,
             23178,
-            14417,
+            10020,
             14429,
-            10011,
+            254021,
             254037,
-            7062,
-            10578,
-            1996,
             1713,
-            873,
+            2816,
+            9393,
             13064
           ],
           "horde": [
-            10574,
-            7722,
-            14432,
-            23178,
-            14417,
+            9431,
+            17773,
+            254033,
+            272077,
+            10020,
             14429,
-            10011,
+            254021,
             254037,
-            7062,
-            9658,
-            1996,
             1713,
-            873,
+            2816,
+            9393,
             13064
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 10.374,
-          "spirit": 3.924,
-          "mp5": 4.519,
-          "crit": 0.25
+          "intellect": 1.728,
+          "spirit": 0.581,
+          "mp5": 0.854,
+          "crit": 0.173,
+          "spell_haste": 2.593
         }
       },
       {
@@ -27116,9 +27276,9 @@
               "source": "World drop"
             },
             "shoulder": {
-              "item_id": 11624,
+              "item_id": 17732,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
+              "source": "Maraudon: Rotgrip"
             },
             "back": {
               "item_id": 272076,
@@ -27141,9 +27301,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 12466,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Morphaz"
+              "item_id": 254081,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 10807,
@@ -27151,9 +27311,9 @@
               "source": "Sunken Temple: Jammal'an the Prophet"
             },
             "feet": {
-              "item_id": 18697,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Old Treasure Chest"
+              "item_id": 254107,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 6440,
@@ -27213,9 +27373,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 12546,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anvilrage Overseer"
+              "item_id": 254061,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "hands": {
               "item_id": 272098,
@@ -27223,9 +27383,9 @@
               "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 12466,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Morphaz"
+              "item_id": 254081,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
               "item_id": 10807,
@@ -27233,9 +27393,9 @@
               "source": "Sunken Temple: Jammal'an the Prophet"
             },
             "feet": {
-              "item_id": 18697,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Old Treasure Chest"
+              "item_id": 254107,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 6440,
@@ -27273,14 +27433,14 @@
           "alliance": [
             11839,
             13085,
-            11624,
+            17732,
             272076,
             940,
             12546,
             272098,
-            12466,
+            254081,
             10807,
-            18697,
+            254107,
             6440,
             10634,
             272061,
@@ -27292,11 +27452,11 @@
             11624,
             272076,
             940,
-            12546,
+            254061,
             272098,
-            12466,
+            254081,
             10807,
-            18697,
+            254107,
             6440,
             10634,
             272061,
@@ -27305,10 +27465,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 6.209,
-          "spirit": 0.334,
-          "mp5": 1.779,
-          "crit": 0.299
+          "intellect": 3.463,
+          "spirit": 0.331,
+          "mp5": 1.134,
+          "crit": 0.223
         }
       },
       {
@@ -27316,49 +27476,49 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 13986,
-              "source_kind": "quest",
-              "source": "The Lich, Ras Frostwhisper"
+              "item_id": 16693,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling"
             },
             "neck": {
-              "item_id": 19593,
+              "item_id": 21531,
               "source_kind": "quest",
-              "source": "The Eye of Zuldazar"
+              "source": "The Nightmare Manifests"
             },
             "shoulder": {
-              "item_id": 226951,
-              "source_kind": "quest",
-              "source": "Anthion's Parting Words"
+              "item_id": 16695,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Solakar Flamewreath"
             },
             "back": {
-              "item_id": 10843,
-              "source_kind": "world",
-              "source": "Avatar of Hakkar"
+              "item_id": 18510,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "chest": {
-              "item_id": 12462,
-              "source_kind": "world",
-              "source": "Avatar of Hakkar"
+              "item_id": 14154,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 23129,
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Revanchion"
+              "item_id": 22667,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "hands": {
-              "item_id": 226950,
+              "item_id": 272097,
               "source_kind": "vendor",
-              "source": "Mokvar"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 272394,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
+              "item_id": 19047,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "legs": {
-              "item_id": 11929,
+              "item_id": 18386,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Chest of The Seven"
+              "source": "Dire Maul: Illyanna Ravenoak"
             },
             "feet": {
               "item_id": 226952,
@@ -27366,14 +27526,96 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 13392,
+              "item_id": 22334,
               "source_kind": "dungeon",
-              "source": "Stratholme: Postmaster Malown"
+              "source": "Stratholme: Balnazzar"
             },
             "finger2": {
-              "item_id": 5266,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 16058,
+              "source_kind": "quest",
+              "source": "In Dreams"
+            },
+            "trinket1": {
+              "item_id": 18469,
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You"
+            },
+            "trinket2": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "main_hand": {
+              "item_id": 22406,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Cannon Master Willey"
+            },
+            "ranged": {
+              "item_id": 279246,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 16693,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling"
+            },
+            "neck": {
+              "item_id": 21531,
+              "source_kind": "quest",
+              "source": "The Nightmare Manifests"
+            },
+            "shoulder": {
+              "item_id": 16695,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Solakar Flamewreath"
+            },
+            "back": {
+              "item_id": 18510,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
+            },
+            "chest": {
+              "item_id": 14154,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            },
+            "wrist": {
+              "item_id": 22667,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
+            },
+            "hands": {
+              "item_id": 272097,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "waist": {
+              "item_id": 19047,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            },
+            "legs": {
+              "item_id": 18386,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Illyanna Ravenoak"
+            },
+            "feet": {
+              "item_id": 227862,
+              "source_kind": "vendor",
+              "source": "Meilosh"
+            },
+            "finger1": {
+              "item_id": 22334,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar"
+            },
+            "finger2": {
+              "item_id": 16058,
+              "source_kind": "quest",
+              "source": "In Dreams"
             },
             "trinket1": {
               "item_id": 272061,
@@ -27386,91 +27628,9 @@
               "source": "Pix Xizzix"
             },
             "main_hand": {
-              "item_id": 15854,
-              "source_kind": "quest",
-              "source": "Dawn's Gambit"
-            },
-            "ranged": {
-              "item_id": 279246,
-              "source_kind": "crafted",
-              "source": "Enchanting"
-            }
-          },
-          "horde": {
-            "head": {
-              "item_id": 13986,
-              "source_kind": "quest",
-              "source": "The Lich, Ras Frostwhisper"
-            },
-            "neck": {
-              "item_id": 19593,
-              "source_kind": "quest",
-              "source": "The Eye of Zuldazar"
-            },
-            "shoulder": {
-              "item_id": 227888,
-              "source_kind": "vendor",
-              "source": "Argent Quartermaster Hasana"
-            },
-            "back": {
-              "item_id": 10843,
-              "source_kind": "world",
-              "source": "Avatar of Hakkar"
-            },
-            "chest": {
-              "item_id": 12462,
-              "source_kind": "world",
-              "source": "Avatar of Hakkar"
-            },
-            "wrist": {
-              "item_id": 23129,
+              "item_id": 22406,
               "source_kind": "dungeon",
-              "source": "Dire Maul: Revanchion"
-            },
-            "hands": {
-              "item_id": 226950,
-              "source_kind": "vendor",
-              "source": "Mokvar"
-            },
-            "waist": {
-              "item_id": 272394,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            "legs": {
-              "item_id": 11929,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Chest of The Seven"
-            },
-            "feet": {
-              "item_id": 226952,
-              "source_kind": "quest",
-              "source": "Anthion's Parting Words"
-            },
-            "finger1": {
-              "item_id": 13392,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Postmaster Malown"
-            },
-            "finger2": {
-              "item_id": 5266,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "trinket1": {
-              "item_id": 18469,
-              "source_kind": "quest",
-              "source": "Holy Bologna: What the Light Won't Tell You"
-            },
-            "trinket2": {
-              "item_id": 272439,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            "main_hand": {
-              "item_id": 15854,
-              "source_kind": "quest",
-              "source": "Dawn's Gambit"
+              "source": "Stratholme: Cannon Master Willey"
             },
             "ranged": {
               "item_id": 279246,
@@ -27481,47 +27641,47 @@
         },
         "new_at_band": {
           "alliance": [
-            13986,
-            19593,
-            226951,
-            10843,
-            12462,
-            23129,
-            226950,
-            272394,
-            11929,
+            16693,
+            21531,
+            16695,
+            18510,
+            14154,
+            22667,
+            272097,
+            19047,
+            18386,
             226952,
-            13392,
-            5266,
-            272439,
-            15854,
+            22334,
+            16058,
+            18469,
+            272061,
+            22406,
             279246
           ],
           "horde": [
-            13986,
-            19593,
-            227888,
-            10843,
-            12462,
-            23129,
-            226950,
-            272394,
-            11929,
-            226952,
-            13392,
-            5266,
-            18469,
+            16693,
+            21531,
+            16695,
+            18510,
+            14154,
+            22667,
+            272097,
+            19047,
+            18386,
+            227862,
+            22334,
+            16058,
             272439,
-            15854,
+            22406,
             279246
           ]
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.584,
-          "spirit": 8.731,
-          "mp5": 3.135,
-          "crit": 0.267
+          "intellect": 1.877,
+          "spirit": 0.906,
+          "mp5": 1.181,
+          "crit": 0.293
         }
       }
     ],

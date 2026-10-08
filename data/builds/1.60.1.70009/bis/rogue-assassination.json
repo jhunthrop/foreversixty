@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
-  "engine_version": "23ddbe226",
-  "generated_at": "2026-10-08T03:35:08Z",
+  "engine_version": "ad30bef89",
+  "generated_at": "2026-10-08T04:19:12Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -568,8 +568,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.96706711,
-      "verify_run_seconds": 1.321142092,
+      "weights_run_seconds": 1.9961925489999999,
+      "verify_run_seconds": 1.362130292,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1222,8 +1222,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.96706711,
-      "verify_run_seconds": 1.358291998,
+      "weights_run_seconds": 1.9961925489999999,
+      "verify_run_seconds": 1.364878352,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1905,8 +1905,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.151270833,
-      "verify_run_seconds": 1.282136117,
+      "weights_run_seconds": 2.052611467,
+      "verify_run_seconds": 1.3413173729999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2595,8 +2595,8 @@
         "off_hand: Royal Diplomatic Scepter",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.151270833,
-      "verify_run_seconds": 1.326030173,
+      "weights_run_seconds": 2.052611467,
+      "verify_run_seconds": 1.376240108,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3283,8 +3283,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.21513083,
-      "verify_run_seconds": 1.380298233,
+      "weights_run_seconds": 2.060197476,
+      "verify_run_seconds": 1.397396707,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3972,8 +3972,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.21513083,
-      "verify_run_seconds": 1.448683507,
+      "weights_run_seconds": 2.060197476,
+      "verify_run_seconds": 1.357000862,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4678,8 +4678,8 @@
         "off_hand: Shadowblade",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.928878336,
-      "verify_run_seconds": 1.861962409,
+      "weights_run_seconds": 2.799174887,
+      "verify_run_seconds": 1.853146904,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5382,8 +5382,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.928878336,
-      "verify_run_seconds": 1.960802387,
+      "weights_run_seconds": 2.799174887,
+      "verify_run_seconds": 1.98442706,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6132,8 +6132,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.779326114,
-      "verify_run_seconds": 1.804780256,
+      "weights_run_seconds": 2.654608855,
+      "verify_run_seconds": 1.8537899009999999,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6890,8 +6890,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.779326114,
-      "verify_run_seconds": 1.776749597,
+      "weights_run_seconds": 2.654608855,
+      "verify_run_seconds": 1.7879829790000001,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7634,8 +7634,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.947668021,
-      "verify_run_seconds": 2.020692795,
+      "weights_run_seconds": 2.7764368189999997,
+      "verify_run_seconds": 2.028628616,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8384,8 +8384,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.947668021,
-      "verify_run_seconds": 2.04234164,
+      "weights_run_seconds": 2.7764368189999997,
+      "verify_run_seconds": 2.087371941,
       "coverage": {
         "back": {
           "eligible": 451,
