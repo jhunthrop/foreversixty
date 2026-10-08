@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "f5002980c",
-  "generated_at": "2026-10-08T06:26:17Z",
+  "generated_at": "2026-10-08T12:49:08Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -93,7 +93,7 @@
               "item_name": "Defender's Leather Hood",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.23396125286244285,
+              "dps_delta": -0.23597154900919293,
               "verified": true
             },
             {
@@ -203,19 +203,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 250488,
-              "item_name": "Veteran's Chain Shirt",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.2248836592573582,
-              "verified": true
-            },
-            {
               "item_id": 252434,
               "item_name": "Defender's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.22686180507433498
+            },
+            {
+              "item_id": 250488,
+              "item_name": "Veteran's Chain Shirt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -0.2579705595178581,
+              "verified": true
             },
             {
               "item_id": 252490,
@@ -260,11 +260,11 @@
         },
         {
           "slot": "hands",
-          "item_id": 12994,
-          "item_name": "Thorbia's Gauntlets",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 16,
+          "item_id": 10401,
+          "item_name": "Blackened Defias Gloves",
+          "source": "The Deadmines: Defias Overseer",
+          "source_kind": "dungeon",
+          "sim_dps": 34.87951598021757,
           "verified": true,
           "alternatives": [
             {
@@ -272,23 +272,29 @@
               "item_name": "Gold-flecked Gloves",
               "source_kind": "dungeon",
               "source": "The Deadmines: Sneed",
-              "dps_delta": -0.10720174410461919
+              "dps_delta": 0
             },
             {
               "item_id": 7606,
               "item_name": "Polar Gauntlets",
               "source_kind": "quest",
               "source": "Underground Assault",
-              "dps_delta": -0.21440348820923838
+              "dps_delta": 0
             },
             {
-              "item_id": 10401,
-              "item_name": "Blackened Defias Gloves",
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Defias Overseer",
-              "dps_delta": -0.21440348820923838
+              "item_id": 12994,
+              "item_name": "Thorbia's Gauntlets",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.6061232020785425,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Defias Leather",
+            "pieces": 4,
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+          }
         },
         {
           "slot": "waist",
@@ -299,13 +305,6 @@
           "score": 18,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 6460,
-              "item_name": "Cobrahn's Grasp",
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Cobrahn",
-              "dps_delta": -0.11966006096971579
-            },
             {
               "item_id": 5975,
               "item_name": "Ruffian Belt",
@@ -319,16 +318,24 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.40968415087039917
+            },
+            {
+              "item_id": 6460,
+              "item_name": "Cobrahn's Grasp",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Cobrahn",
+              "dps_delta": -2.9896303670358435,
+              "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 6087,
-          "item_name": "Chausses of Westfall",
-          "source": "The Defias Brotherhood",
-          "source_kind": "quest",
-          "score": 22,
+          "item_id": 10400,
+          "item_name": "Blackened Defias Leggings",
+          "source": "The Deadmines: Defias Overseer",
+          "source_kind": "dungeon",
+          "sim_dps": 34.87951598021757,
           "verified": true,
           "alternatives": [
             {
@@ -336,55 +343,67 @@
               "item_name": "Veteran's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -0.056497776143367456
+              "dps_delta": 0
             },
             {
               "item_id": 252445,
               "item_name": "Defender's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.08807891855654172
+              "dps_delta": 0
             },
             {
-              "item_id": 252446,
-              "item_name": "Totemic Leather Pants",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.21440348820923838
+              "item_id": 6087,
+              "item_name": "Chausses of Westfall",
+              "source_kind": "quest",
+              "source": "The Defias Brotherhood",
+              "dps_delta": -2.3962011968417087,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Defias Leather",
+            "pieces": 4,
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+          }
         },
         {
           "slot": "feet",
-          "item_id": 252439,
-          "item_name": "Brawler's Leather Boots",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 12.945954161189192,
+          "item_id": 10402,
+          "item_name": "Blackened Defias Boots",
+          "source": "The Deadmines: Defias Strip Miner",
+          "source_kind": "dungeon",
+          "sim_dps": 34.87951598021757,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 250503,
-              "item_name": "Veteran's Boots",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.03158114241317417
-            },
             {
               "item_id": 1121,
               "item_name": "Feet of the Lynx",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.11966006096971579
+              "dps_delta": 0
             },
             {
-              "item_id": 252441,
-              "item_name": "Defender's Leather Boots",
+              "item_id": 250503,
+              "item_name": "Veteran's Boots",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 252439,
+              "item_name": "Brawler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.15790571206587092
+              "dps_delta": -2.252965554350247,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Defias Leather",
+            "pieces": 4,
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+          }
         },
         {
           "slot": "finger1",
@@ -394,8 +413,8 @@
           "source_kind": "rep",
           "score": 10.356763328951354,
           "verified": true,
-          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.6 DPS (33.3 vs 32.7 set DPS)",
-          "dps_delta": 0.5961122968646464,
+          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.6 DPS (34.9 vs 34.3 set DPS)",
+          "dps_delta": 0.5678121202480426,
           "alternatives": [
             {
               "item_id": 285330,
@@ -434,7 +453,7 @@
               "item_name": "Signet of the Zhevra",
               "source_kind": "world",
               "source": "Swiftmane",
-              "dps_delta": -0.28956828168755067,
+              "dps_delta": -0.2802477010396984,
               "verified": true
             },
             {
@@ -471,8 +490,8 @@
           "source_kind": "dungeon",
           "score": 248.92000000000002,
           "verified": true,
-          "swap_note": "confirmed by the sim against Butcher's Cleaver (id 1292): kept the pick, +8.1 DPS (33.3 vs 25.2 set DPS)",
-          "dps_delta": 8.100310824895743,
+          "swap_note": "confirmed by the sim against Butcher's Cleaver (id 1292): kept the pick, +8.6 DPS (34.9 vs 26.3 set DPS)",
+          "dps_delta": 8.572039344031616,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -512,7 +531,8 @@
               "item_name": "Diamond Hammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0
+              "dps_delta": -0.41020333746238435,
+              "verified": true
             },
             {
               "item_id": 12997,
@@ -573,7 +593,7 @@
           ]
         }
       ],
-      "set_dps": 33.26874506552318,
+      "set_dps": 34.87951598021757,
       "no_source_count": 302,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -599,18 +619,18 @@
         "back: Lambent Scale Cloak",
         "chest: Mutant Scale Breastplate",
         "wrist: Patterned Bronze Bracers",
-        "hands: Thorbia's Gauntlets",
+        "hands: Blackened Defias Gloves",
         "waist: Blackened Defias Belt",
-        "legs: Chausses of Westfall",
-        "feet: Brawler's Leather Boots",
+        "legs: Blackened Defias Leggings",
+        "feet: Blackened Defias Boots",
         "finger1: Protector's Band",
         "finger2: Demon Band",
         "main_hand: Shadowfang",
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.776028761,
-      "verify_run_seconds": 1.48646952,
+      "weights_run_seconds": 2.632757057,
+      "verify_run_seconds": 3.8297239320000003,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -781,7 +801,7 @@
               "item_name": "Defender's Leather Hood",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.23863556133632358,
+              "dps_delta": -0.2376615160189317,
               "verified": true
             },
             {
@@ -891,19 +911,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 250488,
+              "item_name": "Veteran's Chain Shirt",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -0.22487651389413088,
+              "verified": true
+            },
+            {
               "item_id": 252434,
               "item_name": "Defender's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.22686180507433498
-            },
-            {
-              "item_id": 250488,
-              "item_name": "Veteran's Chain Shirt",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.2485089836458343,
-              "verified": true
             },
             {
               "item_id": 252490,
@@ -935,7 +955,7 @@
               "item_name": "Raptorcrest Bracers",
               "source_kind": "quest",
               "source": "Earthen Arise",
-              "dps_delta": -0.23863556133632358,
+              "dps_delta": -0.2376615160189317,
               "verified": true
             },
             {
@@ -949,11 +969,11 @@
         },
         {
           "slot": "hands",
-          "item_id": 12994,
-          "item_name": "Thorbia's Gauntlets",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 16,
+          "item_id": 10401,
+          "item_name": "Blackened Defias Gloves",
+          "source": "The Deadmines: Defias Overseer",
+          "source_kind": "dungeon",
+          "sim_dps": 35.347414981131806,
           "verified": true,
           "alternatives": [
             {
@@ -961,23 +981,29 @@
               "item_name": "Gold-flecked Gloves",
               "source_kind": "dungeon",
               "source": "The Deadmines: Sneed",
-              "dps_delta": -0.10720174410461919
-            },
-            {
-              "item_id": 10401,
-              "item_name": "Blackened Defias Gloves",
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Defias Overseer",
-              "dps_delta": -0.21440348820923838
+              "dps_delta": 0
             },
             {
               "item_id": 7348,
               "item_name": "Fletcher's Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.22599110457346971
+              "dps_delta": -0.011587616364231338
+            },
+            {
+              "item_id": 12994,
+              "item_name": "Thorbia's Gauntlets",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.3876742284943475,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Defias Leather",
+            "pieces": 4,
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+          }
         },
         {
           "slot": "waist",
@@ -988,14 +1014,6 @@
           "score": 18,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 6460,
-              "item_name": "Cobrahn's Grasp",
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Cobrahn",
-              "dps_delta": -0.1843416867242027,
-              "verified": true
-            },
             {
               "item_id": 5975,
               "item_name": "Ruffian Belt",
@@ -1009,16 +1027,24 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.40968415087039917
+            },
+            {
+              "item_id": 6460,
+              "item_name": "Cobrahn's Grasp",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Cobrahn",
+              "dps_delta": -2.774648784842711,
+              "verified": true
             }
           ]
         },
         {
           "slot": "legs",
-          "item_id": 250493,
-          "item_name": "Veteran's Chain Leggings",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 20.945954161189192,
+          "item_id": 10400,
+          "item_name": "Blackened Defias Leggings",
+          "source": "The Deadmines: Defias Overseer",
+          "source_kind": "dungeon",
+          "sim_dps": 35.347414981131806,
           "verified": true,
           "alternatives": [
             {
@@ -1026,55 +1052,67 @@
               "item_name": "Defender's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.03158114241317426
+              "dps_delta": 0
             },
             {
               "item_id": 252446,
               "item_name": "Totemic Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.15790571206587092
+              "dps_delta": 0
             },
             {
-              "item_id": 14748,
-              "item_name": "Hulking Leggings",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.17036402893096753
+              "item_id": 250493,
+              "item_name": "Veteran's Chain Leggings",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -2.28751824458854,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Defias Leather",
+            "pieces": 4,
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+          }
         },
         {
           "slot": "feet",
-          "item_id": 252439,
-          "item_name": "Brawler's Leather Boots",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 12.945954161189192,
+          "item_id": 10402,
+          "item_name": "Blackened Defias Boots",
+          "source": "The Deadmines: Defias Strip Miner",
+          "source_kind": "dungeon",
+          "sim_dps": 35.347414981131806,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 250503,
-              "item_name": "Veteran's Boots",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -0.03158114241317417
-            },
             {
               "item_id": 1121,
               "item_name": "Feet of the Lynx",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.11966006096971579
+              "dps_delta": 0
             },
             {
-              "item_id": 252441,
-              "item_name": "Defender's Leather Boots",
+              "item_id": 250503,
+              "item_name": "Veteran's Boots",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 252439,
+              "item_name": "Brawler's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.15790571206587092
+              "dps_delta": -2.048647536340681,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Defias Leather",
+            "pieces": 4,
+            "bonus": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+          }
         },
         {
           "slot": "finger1",
@@ -1084,8 +1122,8 @@
           "source_kind": "rep",
           "score": 10.356763328951354,
           "verified": true,
-          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.6 DPS (33.9 vs 33.2 set DPS)",
-          "dps_delta": 0.6335734357777838,
+          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.6 DPS (35.3 vs 34.7 set DPS)",
+          "dps_delta": 0.6149703680953493,
           "alternatives": [
             {
               "item_id": 281673,
@@ -1160,8 +1198,8 @@
           "source_kind": "dungeon",
           "score": 248.92000000000002,
           "verified": true,
-          "swap_note": "confirmed by the sim against Butcher's Cleaver (id 1292): kept the pick, +8.5 DPS (33.9 vs 25.4 set DPS)",
-          "dps_delta": 8.491160104389085,
+          "swap_note": "confirmed by the sim against Butcher's Cleaver (id 1292): kept the pick, +8.8 DPS (35.3 vs 26.6 set DPS)",
+          "dps_delta": 8.768671738774003,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -1201,7 +1239,8 @@
               "item_name": "Diamond Hammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": 0
+              "dps_delta": -0.408282082848757,
+              "verified": true
             },
             {
               "item_id": 12997,
@@ -1258,7 +1297,7 @@
           ]
         }
       ],
-      "set_dps": 33.8629275659253,
+      "set_dps": 35.347414981131806,
       "no_source_count": 272,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1284,18 +1323,18 @@
         "back: Lambent Scale Cloak",
         "chest: Mutant Scale Breastplate",
         "wrist: Patterned Bronze Bracers",
-        "hands: Thorbia's Gauntlets",
+        "hands: Blackened Defias Gloves",
         "waist: Blackened Defias Belt",
-        "legs: Veteran's Chain Leggings",
-        "feet: Brawler's Leather Boots",
+        "legs: Blackened Defias Leggings",
+        "feet: Blackened Defias Boots",
         "finger1: Legionnaire's Band",
         "finger2: Demon Band",
         "main_hand: Shadowfang",
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.776028761,
-      "verify_run_seconds": 1.456723837,
+      "weights_run_seconds": 2.632757057,
+      "verify_run_seconds": 3.801116054,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1986,8 +2025,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.011203392,
-      "verify_run_seconds": 1.586033802,
+      "weights_run_seconds": 2.799848429,
+      "verify_run_seconds": 2.314914512,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,8 +2717,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.011203392,
-      "verify_run_seconds": 1.663273673,
+      "weights_run_seconds": 2.799848429,
+      "verify_run_seconds": 2.3360995940000002,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3374,8 +3413,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.247172936,
-      "verify_run_seconds": 1.687199969,
+      "weights_run_seconds": 3.003124951,
+      "verify_run_seconds": 2.626885109,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4071,8 +4110,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.247172936,
-      "verify_run_seconds": 1.7696905200000002,
+      "weights_run_seconds": 3.003124951,
+      "verify_run_seconds": 2.676552884,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4779,8 +4818,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.262351909,
-      "verify_run_seconds": 2.113435648,
+      "weights_run_seconds": 2.9926834429999998,
+      "verify_run_seconds": 3.529239112,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5518,8 +5557,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.262351909,
-      "verify_run_seconds": 2.195242847,
+      "weights_run_seconds": 2.9926834429999998,
+      "verify_run_seconds": 3.493158557,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6274,8 +6313,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.285102109,
-      "verify_run_seconds": 2.165277908,
+      "weights_run_seconds": 3.02328985,
+      "verify_run_seconds": 11.28341616,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6781,14 +6820,14 @@
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -2.836925724673423
+              "dps_delta": -2.8369257246734216
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.075497556806293
+              "dps_delta": -3.0754975568062917
             },
             {
               "item_id": 11669,
@@ -7036,8 +7075,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.285102109,
-      "verify_run_seconds": 2.228480546,
+      "weights_run_seconds": 3.02328985,
+      "verify_run_seconds": 10.967233383,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7208,14 +7247,14 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -17.25102940323845
+              "dps_delta": -17.251029403238448
             },
             {
               "item_id": 13404,
               "item_name": "Mask of the Unforgiven",
               "source_kind": "dungeon",
               "source": "Stratholme: The Unforgiven",
-              "dps_delta": -18.234034810008552,
+              "dps_delta": -19.121231607344157,
               "verified": true
             }
           ]
@@ -7226,7 +7265,7 @@
           "item_name": "Pendant of Celerity",
           "source": "Blackrock Spire: Lord Valthalak",
           "source_kind": "dungeon",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7280,7 +7319,7 @@
               "item_name": "Darkspear Pauldrons",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -8.36603333234973,
+              "dps_delta": -5.2354887942881305,
               "verified": true
             }
           ]
@@ -7299,8 +7338,7 @@
               "item_name": "Cape of the Black Baron",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -4.67985407534502,
-              "verified": true
+              "dps_delta": -4.220024764326636
             },
             {
               "item_id": 20691,
@@ -7324,7 +7362,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7346,7 +7384,7 @@
               "item_name": "Breastplate of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -27.757543301460828,
+              "dps_delta": -26.287142111317394,
               "verified": true
             }
           ]
@@ -7357,7 +7395,7 @@
           "item_name": "Battleborn Armbraces",
           "source": "Blackrock Spire: Warchief Rend Blackhand",
           "source_kind": "dungeon",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7379,18 +7417,18 @@
               "item_name": "Bracers of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -12.79924335566136,
+              "dps_delta": -14.861294201039186,
               "verified": true
             }
           ]
         },
         {
           "slot": "hands",
-          "item_id": 13963,
-          "item_name": "Voone's Vice Grips",
-          "source": "Maxwell's Mission",
+          "item_id": 226861,
+          "item_name": "Gauntlets of Heroism",
+          "source": "Just Compensation",
           "source_kind": "quest",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7398,24 +7436,29 @@
               "item_name": "Stormshroud Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -4.220254035352813
+              "dps_delta": 0
             },
             {
               "item_id": 231541,
               "item_name": "Marshal's Plate Gauntlets",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -4.253246185424207
+              "dps_delta": 0
             },
             {
-              "item_id": 18326,
-              "item_name": "Razor Gauntlets",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -8.31060617793969,
+              "item_id": 13963,
+              "item_name": "Voone's Vice Grips",
+              "source_kind": "quest",
+              "source": "Maxwell's Mission",
+              "dps_delta": -4.9302805090354695,
               "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Battlegear of Heroism",
+            "pieces": 2,
+            "bonus": "+8 All Resistances."
+          }
         },
         {
           "slot": "waist",
@@ -7423,7 +7466,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 98.14549908167993,
+          "score": 98.14549908167994,
           "verified": true,
           "alternatives": [
             {
@@ -7439,14 +7482,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.824805768293903
+              "dps_delta": -2.8248057682939067
             },
             {
               "item_id": 22232,
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.722227098441536
+              "dps_delta": -3.7222270984415395
             }
           ]
         },
@@ -7456,7 +7499,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7478,18 +7521,18 @@
               "item_name": "Cloudkeeper Legplates",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -10.693104426602304,
+              "dps_delta": -10.449923330918068,
               "verified": true
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 13967,
-          "item_name": "Windreaver Greaves",
-          "source": "Scholomance: Kirtonos the Herald",
-          "source_kind": "dungeon",
-          "score": 80.14673087027907,
+          "item_id": 226857,
+          "item_name": "Battleboots of Heroism",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7497,8 +7540,7 @@
               "item_name": "Boots of Heroism",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 231539,
@@ -7508,13 +7550,19 @@
               "dps_delta": 0
             },
             {
-              "item_id": 226857,
-              "item_name": "Battleboots of Heroism",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -0.0011463551308680774
+              "item_id": 13967,
+              "item_name": "Windreaver Greaves",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Kirtonos the Herald",
+              "dps_delta": -4.918717526774799,
+              "verified": true
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Battlegear of Heroism",
+            "pieces": 2,
+            "bonus": "+8 All Resistances."
+          }
         },
         {
           "slot": "finger1",
@@ -7522,7 +7570,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7544,7 +7592,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -17.6318044896841,
+              "dps_delta": -19.62954103910579,
               "verified": true
             }
           ]
@@ -7555,7 +7603,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Path of the Conqueror",
           "source_kind": "quest",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7577,7 +7625,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -11.985360696359407,
+              "dps_delta": -13.090092859425567,
               "verified": true
             }
           ]
@@ -7588,7 +7636,7 @@
           "item_name": "Hand of Justice",
           "source": "Blackrock Depths: Emperor Dagran Thaurissan",
           "source_kind": "dungeon",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7610,7 +7658,7 @@
               "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
               "source": "General Drakkisath's Demise",
-              "dps_delta": -3.3567644140701987,
+              "dps_delta": -6.412952925506602,
               "verified": true
             }
           ]
@@ -7621,7 +7669,7 @@
           "item_name": "Diamond Flask",
           "source": "Voodoo Feathers",
           "source_kind": "quest",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7632,18 +7680,19 @@
               "dps_delta": 0
             },
             {
-              "item_id": 19289,
-              "item_name": "Darkmoon Card: Maelstrom",
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck",
-              "dps_delta": 0
-            },
-            {
               "item_id": 249469,
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
               "dps_delta": 0
+            },
+            {
+              "item_id": 19289,
+              "item_name": "Darkmoon Card: Maelstrom",
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck",
+              "dps_delta": -4.156812825549764,
+              "verified": true
             }
           ]
         },
@@ -7653,7 +7702,7 @@
           "item_name": "Ravencrest's Legacy",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7675,7 +7724,7 @@
               "item_name": "Felstriker",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -13.623480485074651,
+              "dps_delta": -14.623584912064189,
               "verified": true
             }
           ]
@@ -7686,7 +7735,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7708,7 +7757,7 @@
               "item_name": "Skullflame Shield",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -215.80275725048432,
+              "dps_delta": -211.19776124244618,
               "verified": true
             }
           ]
@@ -7719,7 +7768,7 @@
           "item_name": "Satyr's Bow",
           "source": "Dire Maul: Zevrim Thornhoof",
           "source_kind": "dungeon",
-          "sim_dps": 782.6130926647347,
+          "sim_dps": 792.4256394584079,
           "verified": true,
           "alternatives": [
             {
@@ -7741,13 +7790,13 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -7.238540011569057,
+              "dps_delta": -5.889356581223751,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 782.6130926647347,
+      "set_dps": 792.4256394584079,
       "no_source_count": 1943,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -7773,10 +7822,10 @@
         "back: Howler's Furs",
         "chest: Dawn Armor",
         "wrist: Battleborn Armbraces",
-        "hands: Voone's Vice Grips",
+        "hands: Gauntlets of Heroism",
         "waist: Belt of Preserved Heads",
         "legs: Sentinel's Chain Leggings",
-        "feet: Windreaver Greaves",
+        "feet: Battleboots of Heroism",
         "finger1: Don Julio's Band",
         "finger2: Signet Ring of the Bronze Dragonflight",
         "trinket1: Hand of Justice",
@@ -7785,8 +7834,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.685845047,
-      "verify_run_seconds": 2.394163372,
+      "weights_run_seconds": 3.385027618,
+      "verify_run_seconds": 14.777772407,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7972,7 +8021,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -18.646993530106247
+              "dps_delta": -18.64699353010625
             }
           ]
         },
@@ -8544,8 +8593,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.685845047,
-      "verify_run_seconds": 2.442967,
+      "weights_run_seconds": 3.385027618,
+      "verify_run_seconds": 12.616333252,
       "coverage": {
         "back": {
           "eligible": 450,

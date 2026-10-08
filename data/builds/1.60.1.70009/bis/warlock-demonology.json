@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "f5002980c",
-  "generated_at": "2026-10-08T06:23:29Z",
+  "generated_at": "2026-10-08T12:44:35Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -560,8 +560,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.303085222,
-      "verify_run_seconds": 1.072082768,
+      "weights_run_seconds": 2.187774945,
+      "verify_run_seconds": 1.1652929,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1207,8 +1207,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.303085222,
-      "verify_run_seconds": 1.107516051,
+      "weights_run_seconds": 2.187774945,
+      "verify_run_seconds": 1.184948014,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1932,8 +1932,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.28024591,
-      "verify_run_seconds": 1.184765438,
+      "weights_run_seconds": 2.204316207,
+      "verify_run_seconds": 1.280797452,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2651,8 +2651,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.28024591,
-      "verify_run_seconds": 1.20422267,
+      "weights_run_seconds": 2.204316207,
+      "verify_run_seconds": 1.273029531,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3344,8 +3344,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.903730732,
-      "verify_run_seconds": 1.003631851,
+      "weights_run_seconds": 1.8252605769999999,
+      "verify_run_seconds": 1.155682545,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4030,8 +4030,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.903730732,
-      "verify_run_seconds": 1.023538922,
+      "weights_run_seconds": 1.8252605769999999,
+      "verify_run_seconds": 1.15680228,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4749,8 +4749,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.992270637,
-      "verify_run_seconds": 1.167131672,
+      "weights_run_seconds": 4.782240431,
+      "verify_run_seconds": 1.4876922719999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5468,8 +5468,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.992270637,
-      "verify_run_seconds": 1.185838315,
+      "weights_run_seconds": 4.782240431,
+      "verify_run_seconds": 1.508679394,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5714,7 +5714,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.1957868709680217
+              "dps_delta": -2.1957868709680213
             }
           ]
         },
@@ -5921,7 +5921,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 36.71413513796503,
+          "score": 36.71413513796502,
           "verified": true,
           "alternatives": [
             {
@@ -5936,14 +5936,14 @@
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -0.6523495646857215
+              "dps_delta": -0.6523495646857189
             },
             {
               "item_id": 227095,
               "item_name": "Knight-Captain's Dreadweave Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -2.621797763312039
+              "dps_delta": -2.6217977633120366
             }
           ]
         },
@@ -6217,8 +6217,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.032348285,
-      "verify_run_seconds": 1.292061654,
+      "weights_run_seconds": 1.908808592,
+      "verify_run_seconds": 3.37853063,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6462,7 +6462,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.1957868709680217
+              "dps_delta": -2.1957868709680213
             }
           ]
         },
@@ -6472,7 +6472,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 30.502633244664736,
+          "score": 30.502633244664732,
           "verified": true,
           "alternatives": [
             {
@@ -6480,21 +6480,21 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.290113530812577
+              "dps_delta": -1.2901135308125757
             },
             {
               "item_id": 19059,
               "item_name": "Argent Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.9968154594896197
+              "dps_delta": -1.9968154594896184
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.1461023217167465
+              "dps_delta": -3.1461023217167456
             }
           ]
         },
@@ -6964,8 +6964,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.032348285,
-      "verify_run_seconds": 1.256577584,
+      "weights_run_seconds": 1.908808592,
+      "verify_run_seconds": 3.375895108,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7163,7 +7163,7 @@
               "item_name": "Deathmist Mask",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -2.0389222315132813
+              "dps_delta": -2.038922231513283
             },
             {
               "item_id": 15999,
@@ -7713,8 +7713,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.654954125,
-      "verify_run_seconds": 1.440303821,
+      "weights_run_seconds": 6.24344259,
+      "verify_run_seconds": 3.666715934,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7913,7 +7913,7 @@
               "item_name": "Deathmist Mask",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -2.038922231513283
+              "dps_delta": -2.0389222315132813
             },
             {
               "item_id": 15999,
@@ -8463,8 +8463,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.654954125,
-      "verify_run_seconds": 1.420470486,
+      "weights_run_seconds": 6.24344259,
+      "verify_run_seconds": 3.652103526,
       "coverage": {
         "back": {
           "eligible": 450,
