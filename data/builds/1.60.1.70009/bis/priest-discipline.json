@@ -1,8 +1,8 @@
 {
   "spec": "priest-discipline",
   "build": "1.60.1.70009",
-  "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T14:23:37Z",
+  "engine_version": "b8ecd4558",
+  "generated_at": "2026-10-08T15:11:49Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -575,8 +575,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 7.785375013,
-      "verify_run_seconds": 3.896141546,
+      "weights_run_seconds": 7.761723514,
+      "verify_run_seconds": 3.865556713,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1227,8 +1227,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 7.785375013,
-      "verify_run_seconds": 3.902856275,
+      "weights_run_seconds": 7.761723514,
+      "verify_run_seconds": 3.85006766,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1913,8 +1913,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 7.892375349,
-      "verify_run_seconds": 3.875871814,
+      "weights_run_seconds": 7.916778841,
+      "verify_run_seconds": 3.860090029,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2599,8 +2599,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 7.892375349,
-      "verify_run_seconds": 3.856043373,
+      "weights_run_seconds": 7.916778841,
+      "verify_run_seconds": 3.9062912709999997,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3314,8 +3314,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 9.144667746,
-      "verify_run_seconds": 4.831618942,
+      "weights_run_seconds": 9.169504583,
+      "verify_run_seconds": 4.838425786,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4028,8 +4028,8 @@
         "off_hand: Prophetic Cane",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 9.144667746,
-      "verify_run_seconds": 4.869928777,
+      "weights_run_seconds": 9.169504583,
+      "verify_run_seconds": 4.842792617,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4785,8 +4785,8 @@
         "trinket2: Thunderbrew's Boot Flask",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 9.127897755,
-      "verify_run_seconds": 5.688247815,
+      "weights_run_seconds": 9.212179524,
+      "verify_run_seconds": 5.644366388,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5317,7 +5317,7 @@
           "item_name": "Cyclopean Band",
           "source": "Blackrock Depths: Ok'thor the Breaker",
           "source_kind": "dungeon",
-          "score": 21.744991073714647,
+          "score": 21.744991073714644,
           "verified": true,
           "alternatives": [
             {
@@ -5325,21 +5325,21 @@
               "item_name": "Mindseye Circle",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Atal'ai Warrior",
-              "dps_delta": -0.18830414077476615
+              "dps_delta": -0.18830414077476576
             },
             {
               "item_id": 274746,
               "item_name": "Sea Giant's Toe Ring",
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
-              "dps_delta": -0.39827798606416354
+              "dps_delta": -0.39827798606416315
             },
             {
               "item_id": 17768,
               "item_name": "Woodseed Hoop",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": -0.7193704216341743
+              "dps_delta": -0.719370421634174
             }
           ]
         },
@@ -5541,8 +5541,8 @@
         "trinket2: Alchemists' Stone",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 9.127897755,
-      "verify_run_seconds": 5.485138927,
+      "weights_run_seconds": 9.212179524,
+      "verify_run_seconds": 5.44107795,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6273,8 +6273,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Sparkling Crystal Wand"
       ],
-      "weights_run_seconds": 8.713977413,
-      "verify_run_seconds": 8.605135337,
+      "weights_run_seconds": 8.800718661,
+      "verify_run_seconds": 8.676468411,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6717,7 +6717,7 @@
               "item_name": "General's Satin Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.8233684176633499
+              "dps_delta": -0.8233684176633483
             },
             {
               "item_id": 226946,
@@ -7008,8 +7008,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Sparkling Crystal Wand"
       ],
-      "weights_run_seconds": 8.713977413,
-      "verify_run_seconds": 8.394314465,
+      "weights_run_seconds": 8.800718661,
+      "verify_run_seconds": 8.389536266,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7174,7 +7174,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 125.61352522320851,
+          "score": 125.61352522320853,
           "verified": true,
           "alternatives": [
             {
@@ -7189,7 +7189,7 @@
               "item_name": "Lieutenant Commander's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.3402582639499199
+              "dps_delta": -1.3402582639499219
             },
             {
               "item_id": 21517,
@@ -7207,7 +7207,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 80.22488522988057,
+          "score": 80.22488522988056,
           "verified": true,
           "alternatives": [
             {
@@ -7215,14 +7215,14 @@
               "item_name": "Jeweled Amulet of Cainwyn",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.7457557940857125
+              "dps_delta": -1.7457557940857107
             },
             {
               "item_id": 19593,
               "item_name": "The Eye of Zuldazar",
               "source_kind": "quest",
               "source": "The Eye of Zuldazar",
-              "dps_delta": -1.903339175895959
+              "dps_delta": -1.9033391758959572
             },
             {
               "item_id": 14558,
@@ -7488,7 +7488,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.1390617600993047
+              "dps_delta": -3.139061760099303
             },
             {
               "item_id": 227862,
@@ -7726,8 +7726,8 @@
         "main_hand: Staff of Hale Magefire",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.935481499,
-      "verify_run_seconds": 8.368102148,
+      "weights_run_seconds": 6.062379131,
+      "verify_run_seconds": 8.136090235,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7892,7 +7892,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 125.61352522320851,
+          "score": 125.61352522320854,
           "verified": true,
           "alternatives": [
             {
@@ -7915,7 +7915,7 @@
               "item_name": "Champion's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.3402582639499199
+              "dps_delta": -1.3402582639499236
             }
           ]
         },
@@ -8100,7 +8100,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.3748885810525751
+              "dps_delta": -0.374888581052577
             },
             {
               "item_id": 16692,
@@ -8445,8 +8445,8 @@
         "main_hand: Staff of Hale Magefire",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.935481499,
-      "verify_run_seconds": 5.662268922,
+      "weights_run_seconds": 6.062379131,
+      "verify_run_seconds": 5.504563782,
       "coverage": {
         "back": {
           "eligible": 450,

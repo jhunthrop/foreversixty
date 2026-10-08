@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 26.3. Weights run: 3.2s. Verify run: 2.0s. 239 eligible items had no known source.
+Set DPS (verified): 26.3. Weights run: 3.1s. Verify run: 2.0s. 239 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=0.900 ± 0.002, spirit=0.222 ± 0.001, mp5=1.695 ± 0.023, crit=0.037 ± 0.001 per rating point (14 rating = 1%, 0.515 per %), spell_haste=0.104 ± 0.012
 
@@ -113,7 +113,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Mender's Leather Gauntlets (252551, -0.15 DPS) [crafted]; Mender's Mail Gauntlets (252587, -0.15 DPS) [crafted]; Soulforge Fists (226982, -0.70 DPS, sim-verified) [vendor] |
 | waist | Mender's Leather Waistguard (252477) (or Mender's Mail Belt (252591)) | Leatherworking [crafted] | 52.1 healing_power points (3.71 DPS) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Prefect's Waistguard (250574, -0.26 DPS) [crafted]; Gilded Waistcord (254081, -0.46 DPS) [crafted] |
 | legs | Kilt of the Atal'ai Prophet (10807) | Sunken Temple: Jammal'an the Prophet [dungeon] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Knight's Imbued Leggings (220809, -0.19 DPS, sim-verified) [vendor]; Dalewind Trousers (13008, -0.47 DPS) [world_drop]; Windscale Sarong (10842, -0.85 DPS) [world] |
-| feet | Mender's Leather Boots (252472) (or Mender's Mail Sabatons (252579)) | Leatherworking [crafted] | 48.2 healing_power points (3.44 DPS) | yes | Mender's Mail Sabatons (252579, +0.00 DPS) [crafted]; Gilded Sandals (254107, -0.05 DPS) [crafted]; Mender's Mail Boots (252565, -0.10 DPS) [crafted] |
+| feet | Mender's Leather Boots (252472) (or Mender's Mail Sabatons (252579)) | Leatherworking [crafted] | 48.2 healing_power points (3.44 DPS) | yes | Mender's Mail Sabatons (252579, +0.00 DPS) [crafted]; Gilded Sandals (254107, -0.05 DPS) [crafted]; Mender's Leather Shoes (252533, -0.10 DPS) [crafted] |
 | finger1 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 34.7 healing_power points (2.47 DPS) | yes | Eye of Adaegus (5266, -0.47 DPS) [world_drop]; Chivalrous Signet (20505, -0.48 DPS) [quest]; Cyclopean Band (11824, -0.51 DPS) [dungeon] |
 | finger2 | Darkspear Signet (272069) | Creeg Bothunk [vendor] | 32.8 healing_power points (2.33 DPS) | yes | Eye of Adaegus (5266, -0.34 DPS) [world_drop]; Chivalrous Signet (20505, -0.35 DPS) [quest]; Cyclopean Band (11824, -0.37 DPS) [dungeon] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+0.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, -3.72 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -3.99 DPS) [quest]; Thunderbrew's Boot Flask (744, -4.20 DPS) [quest] |
@@ -128,7 +128,7 @@ No-known-source sample (15 of 722, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 175.3. Weights run: 6.6s. Verify run: 18.0s. 1674 eligible items had no known source.
+Set DPS (verified): 175.3. Weights run: 6.6s. Verify run: 18.1s. 1674 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.126, intellect=4.925 ± 0.058, spirit=1.708 ± 0.014, mp5=7.069 ± 0.046, crit=0.442 ± 0.030 per rating point (14 rating = 1%, 6.193 per %), spell_haste=not significant (0.104 ± 0.054)
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1674, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 510.0. Weights run: 3.8s. Verify run: 8.4s. 1674 eligible items had no known source.
+Set DPS (verified): 510.0. Weights run: 3.9s. Verify run: 8.8s. 1674 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.403, intellect=1.291 ± 0.067, spirit=0.592 ± 0.066, mp5=3.362 ± 0.085, crit=0.851 ± 0.079 per rating point (14 rating = 1%, 11.914 per %), spell_haste=not significant (-0.534 ± 0.948)
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1674, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 25.5. Weights run: 3.2s. Verify run: 2.1s. 219 eligible items had no known source.
+Set DPS (verified): 25.5. Weights run: 3.1s. Verify run: 2.1s. 219 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=0.900 ± 0.002, spirit=0.222 ± 0.001, mp5=1.695 ± 0.023, crit=0.037 ± 0.001 per rating point (14 rating = 1%, 0.515 per %), spell_haste=0.104 ± 0.012
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 219, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 48.8. Weights run: 3.1s. Verify run: 2.0s. 381 eligible items had no known source.
+Set DPS (verified): 48.8. Weights run: 3.1s. Verify run: 2.1s. 381 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.980 ± 0.003, spirit=0.488 ± 0.002, mp5=2.096 ± 0.007, crit=0.092 ± 0.004 per rating point (14 rating = 1%, 1.293 per %), spell_haste=0.037 ± 0.009
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 702, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 173.6. Weights run: 6.6s. Verify run: 14.0s. 1699 eligible items had no known source.
+Set DPS (verified): 173.6. Weights run: 6.6s. Verify run: 14.1s. 1699 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.126, intellect=4.925 ± 0.058, spirit=1.708 ± 0.014, mp5=7.069 ± 0.046, crit=0.442 ± 0.030 per rating point (14 rating = 1%, 6.193 per %), spell_haste=not significant (0.104 ± 0.054)
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1699, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 508.8. Weights run: 3.8s. Verify run: 9.5s. 1699 eligible items had no known source.
+Set DPS (verified): 508.8. Weights run: 3.9s. Verify run: 9.9s. 1699 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.403, intellect=1.291 ± 0.067, spirit=0.592 ± 0.066, mp5=3.362 ± 0.085, crit=0.851 ± 0.079 per rating point (14 rating = 1%, 11.914 per %), spell_haste=not significant (-0.534 ± 0.948)
 

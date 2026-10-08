@@ -1,8 +1,8 @@
 {
   "spec": "shaman-restoration",
   "build": "1.60.1.70009",
-  "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T14:35:22Z",
+  "engine_version": "b8ecd4558",
+  "generated_at": "2026-10-08T15:23:38Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -557,8 +557,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 3.5181353570000002,
-      "verify_run_seconds": 2.374421778,
+      "weights_run_seconds": 3.554346477,
+      "verify_run_seconds": 2.517040452,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1191,8 +1191,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Gnarled Necromancer's Staff"
       ],
-      "weights_run_seconds": 3.5181353570000002,
-      "verify_run_seconds": 2.369215165,
+      "weights_run_seconds": 3.554346477,
+      "verify_run_seconds": 2.34813361,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1630,7 +1630,7 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.16201859077028086
+              "dps_delta": -0.16201859077028113
             },
             {
               "item_id": 253999,
@@ -1870,8 +1870,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Defective Samophlange"
       ],
-      "weights_run_seconds": 3.612005409,
-      "verify_run_seconds": 2.467027913,
+      "weights_run_seconds": 3.664498708,
+      "verify_run_seconds": 2.487784617,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2310,7 +2310,7 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.16201859077028086
+              "dps_delta": -0.16201859077028113
             },
             {
               "item_id": 253999,
@@ -2546,8 +2546,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.612005409,
-      "verify_run_seconds": 2.389090874,
+      "weights_run_seconds": 3.664498708,
+      "verify_run_seconds": 2.450748349,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2945,7 +2945,7 @@
           "item_name": "Gilded Cord",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 58.66852632735443,
+          "score": 58.668526327354435,
           "verified": true,
           "alternatives": [
             {
@@ -2961,14 +2961,14 @@
               "item_name": "Windchaser Cinch",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5625340109050936
+              "dps_delta": -0.5625340109050939
             },
             {
               "item_id": 13105,
               "item_name": "Sutarn's Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6935635235377693
+              "dps_delta": -0.6935635235377696
             }
           ]
         },
@@ -3230,8 +3230,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Ravager's Shield"
       ],
-      "weights_run_seconds": 4.211097736,
-      "verify_run_seconds": 3.202043986,
+      "weights_run_seconds": 4.347958096,
+      "verify_run_seconds": 3.236736423,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3629,7 +3629,7 @@
           "item_name": "Gilded Cord",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 58.66852632735443,
+          "score": 58.668526327354435,
           "verified": true,
           "alternatives": [
             {
@@ -3645,14 +3645,14 @@
               "item_name": "Windchaser Cinch",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5625340109050936
+              "dps_delta": -0.5625340109050939
             },
             {
               "item_id": 13105,
               "item_name": "Sutarn's Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6935635235377693
+              "dps_delta": -0.6935635235377696
             }
           ]
         },
@@ -3914,8 +3914,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Ravager's Shield"
       ],
-      "weights_run_seconds": 4.211097736,
-      "verify_run_seconds": 3.1335210350000002,
+      "weights_run_seconds": 4.347958096,
+      "verify_run_seconds": 3.154502442,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4622,8 +4622,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 7.46238102,
-      "verify_run_seconds": 5.348853501,
+      "weights_run_seconds": 7.51251226,
+      "verify_run_seconds": 5.421906735,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5331,8 +5331,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 7.46238102,
-      "verify_run_seconds": 5.27678308,
+      "weights_run_seconds": 7.51251226,
+      "verify_run_seconds": 5.291881967,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6039,8 +6039,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 8.489223645,
-      "verify_run_seconds": 14.096105591,
+      "weights_run_seconds": 8.520490177,
+      "verify_run_seconds": 14.220897146,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6378,7 +6378,7 @@
               "item_name": "Bracers of Mending",
               "source_kind": "dungeon",
               "source": "Dire Maul: Revanchion",
-              "dps_delta": -0.21308890733052727
+              "dps_delta": -0.21308890733052663
             },
             {
               "item_id": 13208,
@@ -6673,7 +6673,7 @@
               "item_name": "Quel'dorai Channeling Rod",
               "source_kind": "dungeon",
               "source": "Dire Maul: Lethtendris",
-              "dps_delta": -0.17136560533300466
+              "dps_delta": -0.17136560533300335
             },
             {
               "item_id": 2243,
@@ -6747,8 +6747,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 8.489223645,
-      "verify_run_seconds": 13.953092925,
+      "weights_run_seconds": 8.520490177,
+      "verify_run_seconds": 14.073337934,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7456,8 +7456,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 6.354192998,
-      "verify_run_seconds": 10.769735787,
+      "weights_run_seconds": 6.4599782040000004,
+      "verify_run_seconds": 10.783177506,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7762,7 +7762,7 @@
               "item_name": "Tunic of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.4660982315379485
+              "dps_delta": -1.4660982315379454
             },
             {
               "item_id": 14138,
@@ -7835,7 +7835,7 @@
               "item_name": "Grasp of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.2978830070177505
+              "dps_delta": -1.297883007017752
             },
             {
               "item_id": 18527,
@@ -8098,7 +8098,7 @@
               "item_name": "Staff of Metanoia",
               "source_kind": "dungeon",
               "source": "Scholomance: Jandice Barov",
-              "dps_delta": -2.578401911028217
+              "dps_delta": -2.57840191102822
             },
             {
               "item_id": 2243,
@@ -8165,8 +8165,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 6.354192998,
-      "verify_run_seconds": 10.341673696,
+      "weights_run_seconds": 6.4599782040000004,
+      "verify_run_seconds": 10.42512242,
       "coverage": {
         "back": {
           "eligible": 451,

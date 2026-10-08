@@ -1,8 +1,8 @@
 {
   "spec": "druid-restoration",
   "build": "1.60.1.70009",
-  "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T14:08:34Z",
+  "engine_version": "b8ecd4558",
+  "generated_at": "2026-10-08T14:56:45Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -565,8 +565,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 4.221254242,
-      "verify_run_seconds": 5.105204378,
+      "weights_run_seconds": 4.169134218,
+      "verify_run_seconds": 4.877412867,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1205,8 +1205,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 4.221254242,
-      "verify_run_seconds": 5.122380929,
+      "weights_run_seconds": 4.169134218,
+      "verify_run_seconds": 4.950626596,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1890,8 +1890,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Defective Samophlange"
       ],
-      "weights_run_seconds": 6.073615349,
-      "verify_run_seconds": 3.607720326,
+      "weights_run_seconds": 5.949693756,
+      "verify_run_seconds": 3.44028768,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2572,8 +2572,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 6.073615349,
-      "verify_run_seconds": 3.578027114,
+      "weights_run_seconds": 5.949693756,
+      "verify_run_seconds": 3.498236275,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3266,8 +3266,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 6.717210484,
-      "verify_run_seconds": 7.311712827,
+      "weights_run_seconds": 6.687552711,
+      "verify_run_seconds": 7.142857382,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3948,8 +3948,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 6.717210484,
-      "verify_run_seconds": 4.3425407400000005,
+      "weights_run_seconds": 6.687552711,
+      "verify_run_seconds": 4.239965422,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4471,7 +4471,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -1.1373969032590097
+              "dps_delta": -1.1373969032590099
             }
           ]
         },
@@ -4496,7 +4496,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5875139430446666
+              "dps_delta": -0.587513943044667
             },
             {
               "item_id": 11868,
@@ -4652,8 +4652,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 6.765336121,
-      "verify_run_seconds": 4.408329352,
+      "weights_run_seconds": 6.834593539,
+      "verify_run_seconds": 4.333300138,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5169,7 +5169,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -1.1373969032590099
+              "dps_delta": -1.1373969032590097
             },
             {
               "item_id": 6750,
@@ -5194,7 +5194,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.587513943044667
+              "dps_delta": -0.5875139430446666
             },
             {
               "item_id": 6750,
@@ -5354,8 +5354,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 6.765336121,
-      "verify_run_seconds": 4.107260141,
+      "weights_run_seconds": 6.834593539,
+      "verify_run_seconds": 4.027560481,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5535,7 +5535,7 @@
               "item_name": "Feralheart Headdress",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -3.2598459488668916
+              "dps_delta": -3.2598459488668947
             },
             {
               "item_id": 16720,
@@ -5553,7 +5553,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 92.32357055160729,
+          "score": 92.32357055160728,
           "verified": true,
           "alternatives": [
             {
@@ -5569,14 +5569,14 @@
               "item_name": "Jeweled Amulet of Cainwyn",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.9433474116183894
+              "dps_delta": -0.943347411618388
             },
             {
               "item_id": 13960,
               "item_name": "Heart of the Fiend",
               "source_kind": "dungeon",
               "source": "Scholomance: Kirtonos the Herald",
-              "dps_delta": -1.7159806313825754
+              "dps_delta": -1.715980631382574
             }
           ]
         },
@@ -5759,14 +5759,14 @@
               "item_name": "Elderwild Waistcord",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7175379221355894
+              "dps_delta": -0.717537922135588
             },
             {
               "item_id": 19047,
               "item_name": "Wisdom of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.3441863568265247
+              "dps_delta": -1.344186356826522
             },
             {
               "item_id": 272398,
@@ -5825,7 +5825,7 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.7758350946390813
+              "dps_delta": -3.7758350946390826
             },
             {
               "item_id": 16691,
@@ -6058,8 +6058,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Dancing Sliver"
       ],
-      "weights_run_seconds": 7.087444252,
-      "verify_run_seconds": 10.74514176,
+      "weights_run_seconds": 6.985025161,
+      "verify_run_seconds": 10.523879594,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6544,7 +6544,7 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.7758350946390813
+              "dps_delta": -3.7758350946390826
             },
             {
               "item_id": 16691,
@@ -6782,8 +6782,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Dancing Sliver"
       ],
-      "weights_run_seconds": 7.087444252,
-      "verify_run_seconds": 13.8068755,
+      "weights_run_seconds": 6.985025161,
+      "verify_run_seconds": 13.374633203,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6963,7 +6963,7 @@
               "item_name": "Feralheart Headdress",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -8.131120355941885
+              "dps_delta": -8.131120355941881
             },
             {
               "item_id": 22689,
@@ -7120,7 +7120,7 @@
               "item_name": "Bracers of Mending",
               "source_kind": "dungeon",
               "source": "Dire Maul: Revanchion",
-              "dps_delta": -0.25433458702933626
+              "dps_delta": -0.25433458702933465
             },
             {
               "item_id": 13208,
@@ -7267,7 +7267,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -5.589300503504532
+              "dps_delta": -5.589300503504534
             }
           ]
         },
@@ -7488,8 +7488,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 5.173332228,
-      "verify_run_seconds": 8.849961212,
+      "weights_run_seconds": 5.167194098,
+      "verify_run_seconds": 8.386239739,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7687,7 +7687,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 52.916021115749025,
+          "score": 52.91602111574903,
           "verified": true,
           "alternatives": [
             {
@@ -7695,14 +7695,14 @@
               "item_name": "Lady Maye's Pendant",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.3176607699070164
+              "dps_delta": -2.3176607699070177
             },
             {
               "item_id": 21531,
               "item_name": "Drake Tooth Necklace",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -2.397097273529218
+              "dps_delta": -2.3970972735292193
             },
             {
               "item_id": 18723,
@@ -8192,8 +8192,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 5.173332228,
-      "verify_run_seconds": 8.336182538,
+      "weights_run_seconds": 5.167194098,
+      "verify_run_seconds": 8.015482425,
       "coverage": {
         "back": {
           "eligible": 451,

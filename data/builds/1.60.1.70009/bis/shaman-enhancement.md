@@ -38,7 +38,7 @@ No-known-source sample (15 of 225, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-255130030002000000-0000000000000000)
 
-Set DPS (verified): 86.1. Weights run: 1.5s. Verify run: 1.4s. 366 eligible items had no known source.
+Set DPS (verified): 86.1. Weights run: 1.5s. Verify run: 1.5s. 366 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.006, agility=0.989 ± 0.029, crit=1.385 ± 0.042 per rating point (14 rating = 1%, 19.395 per %), hit=2.098 ± 0.101 per rating point (10 rating = 1%, 20.981 per %), melee_haste=10.824 ± 0.391
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 762, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (dwarf, 3230300000000000-255130030005102051-0520000000000000)
 
-Set DPS (verified): 236.2. Weights run: 1.7s. Verify run: 7.0s. 1751 eligible items had no known source.
+Set DPS (verified): 236.2. Weights run: 1.8s. Verify run: 6.9s. 1751 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.685 ± 0.065, crit=2.377 ± 0.093 per rating point (14 rating = 1%, 33.284 per %), hit=3.881 ± 0.176 per rating point (10 rating = 1%, 38.809 per %), melee_haste=11.635 ± 1.346
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1751, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 3230031000000000-255030031005102031-0530000000000000)
 
-Set DPS (verified): 611.4. Weights run: 1.8s. Verify run: 7.3s. 1751 eligible items had no known source.
+Set DPS (verified): 611.4. Weights run: 1.8s. Verify run: 7.4s. 1751 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.902 ± 0.068, crit=2.661 ± 0.096 per rating point (14 rating = 1%, 37.260 per %), hit=4.491 ± 0.260 per rating point (10 rating = 1%, 44.911 per %), melee_haste=21.838 ± 1.891
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 704, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 3230300000000000-255130030005102051-0520000000000000)
 
-Set DPS (verified): 239.1. Weights run: 1.7s. Verify run: 6.8s. 1672 eligible items had no known source.
+Set DPS (verified): 239.1. Weights run: 1.8s. Verify run: 6.7s. 1672 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.685 ± 0.065, crit=2.377 ± 0.093 per rating point (14 rating = 1%, 33.284 per %), hit=3.881 ± 0.176 per rating point (10 rating = 1%, 38.809 per %), melee_haste=11.635 ± 1.346
 
@@ -320,7 +320,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | neck | Pendant of Celerity (22340) | Blackrock Spire: Lord Valthalak [dungeon] | 64.1 attack_power points (4.65 DPS) | yes | Beads of Ogre Might (22150, -0.09 DPS) [quest]; Mark of Fordring (15411, -0.35 DPS) [quest]; Medallion of the Dawn (22659, -0.49 DPS) [quest] |
 | shoulder | Darkspear Pauldrons (272105) | Creeg Bothunk [vendor] | sim-verified (239.1 DPS) | yes | Champion's Mail Pauldrons (227154, +0.00 DPS) [pvp]; Warlord's Mail Pauldrons (231654, +0.00 DPS) [vendor]; Truestrike Shoulders (12927, -2.02 DPS, sim-verified) [dungeon] |
 | back | Howler's Furs (272414) | Pix Xizzix [vendor] | 66.8 attack_power points (4.85 DPS) | yes | Deathguard's Cloak (20068, -1.77 DPS) [rep]; Windshear Cape (20691, -1.85 DPS) [world]; Cape of the Black Baron (13340, -2.44 DPS, sim-verified) [dungeon] |
-| chest | Dawn Armor (252483) | Leatherworking [crafted] | sim-verified (239.1 DPS) | yes | Timbermaw Tunic (252484, -0.35 DPS) [crafted]; Legionnaire's Mail Hauberk (227157, -1.33 DPS) [pvp]; Tunic of Undead Slaying (23089, -12.56 DPS, sim-verified) [world] |
+| chest | Dawn Armor (252483) | Leatherworking [crafted] | sim-verified (239.1 DPS) | yes | Timbermaw Tunic (252484, -0.35 DPS) [crafted]; Warlord's Mail Hauberk (231653, -1.33 DPS) [vendor]; Tunic of Undead Slaying (23089, -12.56 DPS, sim-verified) [world] |
 | wrist | Bands of The Five Thunders (227017) | Mokvar [vendor] | sim-verified (239.1 DPS) | yes | Blackmist Armguards (12966, +0.00 DPS) [dungeon]; Slashclaw Bracers (13211, +0.00 DPS) [dungeon]; Forest Stalker's Bracers (19587, -2.00 DPS, sim-verified) [rep] |
 | hands | Fists of The Five Thunders (227022) | Mokvar [vendor] | sim-verified (239.1 DPS) | yes | Voone's Vice Grips (13963, +0.00 DPS) [quest]; Bloodmail Gauntlets (14615, +0.00 DPS) [dungeon]; General's Mail Vices (231655, +0.00 DPS) [vendor] |
 | waist | Girdle of The Five Thunders (227018) | Mokvar [vendor] | sim-verified (239.1 DPS) | yes | Belt of Preserved Heads (20216, +0.00 DPS) [quest]; Ferocity of the Timbermaw (227805, +0.00 DPS) [vendor]; Bloodmail Belt (14614, -2.15 DPS, sim-verified) [dungeon] |
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1672, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 3230031000000000-255030031005102031-0530000000000000)
 
-Set DPS (verified): 610.3. Weights run: 1.8s. Verify run: 7.1s. 1672 eligible items had no known source.
+Set DPS (verified): 610.3. Weights run: 1.8s. Verify run: 7.0s. 1672 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.902 ± 0.068, crit=2.661 ± 0.096 per rating point (14 rating = 1%, 37.260 per %), hit=4.491 ± 0.260 per rating point (10 rating = 1%, 44.911 per %), melee_haste=21.838 ± 1.891
 

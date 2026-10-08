@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 03323000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 26.8. Weights run: 1.3s. Verify run: 2.3s. 302 eligible items had no known source.
+Set DPS (verified): 26.8. Weights run: 1.3s. Verify run: 2.4s. 302 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000) per rating point (14 rating = 1%, 0.000 per %), hit=1.241 ± 0.074 per rating point (10 rating = 1%, 12.414 per %), melee_haste=9.065 ± 0.670
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1913, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (orc, 02305213032515001-55050000001000000-200000000000000000)
 
-Set DPS (verified): 703.3. Weights run: 1.7s. Verify run: 8.3s. 1913 eligible items had no known source.
+Set DPS (verified): 703.3. Weights run: 1.7s. Verify run: 8.2s. 1913 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.618 ± 0.076, crit=2.311 ± 0.108 per rating point (14 rating = 1%, 32.356 per %), hit=4.182 ± 0.324 per rating point (10 rating = 1%, 41.820 per %), melee_haste=14.377 ± 2.512
 

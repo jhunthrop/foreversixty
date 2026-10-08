@@ -142,7 +142,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | wrist | Dryad's Wrist Bindings (19595) | Silverwing Sentinels [rep] | sim-verified (162.2 DPS) | yes | Modest Armguards (18458, -0.93 DPS) [dungeon]; Sublime Wristguards (18497, -0.93 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -7.43 DPS, sim-verified) [world] |
 | hands | Raider Handguards (272101) | Creeg Bothunk [vendor] | 35.2 spell_power points (4.02 DPS) | yes | Raider Handwraps (272097, -0.29 DPS) [vendor]; Hands of Power (13253, -0.42 DPS) [dungeon]; Gloves of Undead Cleansing (23084, -0.92 DPS) [quest] |
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 50.1 spell_power points (5.73 DPS) | yes | Stormseeker's Girdle (272399, -1.39 DPS) [vendor]; Girdle of Insight (18504, -1.61 DPS) [crafted]; Belt of the Archmage (18405, -2.76 DPS, sim-verified) [crafted] |
-| legs | Ironfeather Leggings (252486) | Leatherworking [crafted] | 58.9 spell_power points (6.74 DPS) | yes | Sentinel's Lizardhide Pants (237817, -1.01 DPS) [vendor]; Red Dragonscale Leggings (252603, -1.11 DPS) [crafted]; Sentinel's Silk Leggings (237815, -1.98 DPS, sim-verified) [vendor] |
+| legs | Ironfeather Leggings (252486) | Leatherworking [crafted] | 58.9 spell_power points (6.74 DPS) | yes | Sentinel's Silk Leggings (237815, -1.01 DPS) [vendor]; Red Dragonscale Leggings (252603, -1.11 DPS) [crafted]; Sentinel's Lizardhide Pants (237817, -1.98 DPS, sim-verified) [vendor] |
 | feet | Slippers of The Five Thunders (227007) | Mokvar [vendor] | 35.6 spell_power points (4.07 DPS) | yes | Dragonrider Boots (18102, -0.34 DPS) [dungeon]; Omnicast Boots (11822, -0.53 DPS) [dungeon]; Waterspout Boots (18322, -0.59 DPS) [dungeon] |
 | finger1 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (162.2 DPS) | yes | Songstone of Ironforge (12543, -0.88 DPS) [quest]; Maiden's Circle (13001, -0.88 DPS) [world_drop]; Naglering (11669, -7.12 DPS, sim-verified) [dungeon] |
 | finger2 | Signet Ring of the Bronze Dragonflight (21206) | The Path of the Invoker [quest] | sim-verified (162.2 DPS) | yes | Songstone of Ironforge (12543, -0.34 DPS) [quest]; Maiden's Circle (13001, -0.34 DPS) [world_drop]; Naglering (11669, -7.27 DPS, sim-verified) [dungeon] |
@@ -220,7 +220,7 @@ No-known-source sample (15 of 205, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 5530311300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 41.4. Weights run: 2.1s. Verify run: 1.2s. 349 eligible items had no known source.
+Set DPS (verified): 41.4. Weights run: 2.1s. Verify run: 1.3s. 349 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.562 ± 0.009, crit=0.081 ± 0.002 per rating point (14 rating = 1%, 1.128 per %), hit=0.245 ± 0.007 per rating point (10 rating = 1%, 2.449 per %), spell_haste=-2.121 ± 0.118, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.945 ± 0.003
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 704, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 5530311300103050-030000000000000000-5533020000000000)
 
-Set DPS (verified): 163.6. Weights run: 2.2s. Verify run: 6.0s. 1672 eligible items had no known source.
+Set DPS (verified): 163.6. Weights run: 2.2s. Verify run: 5.9s. 1672 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.914 ± 0.026, crit=0.319 ± 0.009 per rating point (14 rating = 1%, 4.466 per %), hit=0.501 ± 0.029 per rating point (10 rating = 1%, 5.014 per %), spell_haste=not significant (-0.457 ± 0.321), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.945 ± 0.003
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1672, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 5530311300103051-020000000000000000-0533520000000000)
 
-Set DPS (verified): 481.4. Weights run: 1.4s. Verify run: 4.2s. 1672 eligible items had no known source.
+Set DPS (verified): 481.4. Weights run: 1.4s. Verify run: 4.1s. 1672 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.419 ± 0.019, crit=0.330 ± 0.009 per rating point (14 rating = 1%, 4.615 per %), hit=0.653 ± 0.039 per rating point (10 rating = 1%, 6.525 per %), spell_haste=2.346 ± 0.483, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.779 ± 0.002
 
