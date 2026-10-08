@@ -4,6 +4,7 @@ classSlug: priest
 spec: shadow
 role: dps
 build: 'FS1:1.60.1.70009:priest:gnome:5240110313/0/543120301201300051:'
+raidBuild: 'FS1:1.60.1.70009:priest:gnome:3250010313/0/523120501201300251:'
 recommendedRaces: [gnome, undead]
 statPriority: [Intellect, Hit, Spell power, Shadow power, Critical strike, Spell haste, Spell penetration]
 description: 'Shadow Priest overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -35,6 +36,8 @@ In rough priority order: **Mind Flay** (1 point) is a required pick, not an opti
 **Improved Mind Blast** still cuts Mind Blast's cooldown and now holds 3 of its 5 points, down from 4. The engine measures each of those points at no damage in this build, so the point moves to **Mental Agility**, taken at 3/3 (a mana-cost cut on Smite, Holy Fire and instant casts, measured by the engine as a real damage gain). **Silent Resolve**'s point (a threat talent, zero damage) and both points in **Early Demise** go to the same place, and the freed Shadow points go into a second rank of **Improved Shadow Word: Pain** (6 extra seconds of Shadow Word: Pain duration), which the probe credits as a clear damage gain. Early Demise, which raised Shadow Word: Death's critical strike chance below 20% health, is no longer taken: the engine measures it at zero damage, and Shadow Word: Death is still cast in the execute window. **Power in Light**, **Holy Precision**, **Improved Power Word: Shield** and **Blackout** hold their ranks: the engine has no code path for them, so this site cannot measure what they are worth and the build leaves them alone. This build measures about +6.9% over the previous spend in our level-60 search run.
 
 Point allocation runs deep into Shadow to reach Shadowform at the bottom of the tree, 33 points, with the remaining 18 in Discipline: **Inner Focus** (1 point) is a required pick alongside the Meditation talent's mana regeneration while casting — it's the free, empowered Devouring Plague cast this build's Rotation section calls out below, so it has to be taken for that line to be legal, not just Meditation. This spend is still a projection — the beta cap of 30 has not let anyone test it live, only this site's own simulator. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
+
+**Raid build.** For a raid the search found about +2% over the leveling build above in the raid-ready run: it moves the Discipline points that only help before Shadowform (Power in Light and Holy Precision, which strengthen Holy spells) and Blackout (a stun chance) into Twin Disciplines, Early Demise and two ranks of Improved Mind Blast. Shadow Affinity (less threat), Improved Power Word: Shield, Inner Focus, Vampiric Embrace and Shadowform stay.
 
 ## Rotation and priority
 

@@ -301,25 +301,11 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// guards against). One read per spec, not per band: the trees and
 	// targets do not change across bands, only how many points
 	// LadderTalentString spends from them.
-	guideBuild, treeDigits, err := leveling.GuideBuildTalents(repoRoot, specInfo.ClassSlug, specInfo.SpecSlug)
-	if err != nil {
-		return err
-	}
-	// GuideTalentTargets (below) maps treeDigits onto talent ids by
-	// walking guideBuild's own trees POSITIONALLY; that read is only
-	// right if guideBuild's own tree shape is the one treeDigits was
-	// actually authored against. Every guide's stamp briefly said
-	// otherwise (lane guide-codes-70009's own finding - the digits
-	// were always in 1.60.1.70009's order, every stamp just said
-	// 1.60.1.69893), which would have silently misaligned a digit for
-	// any class whose tree shape moved between the two builds. This
-	// guard is the same invariant RequireGuideBuildMatchesActive's own
-	// doc already explains, checked before a mismatch can reach
-	// GuideTalentTargets at all.
-	if err := leveling.RequireGuideBuildMatchesActive(guideBuild, activeBuild); err != nil {
-		return err
-	}
-	guideTrees, err := leveling.LoadTalentTrees(repoRoot, guideBuild, specInfo.ClassSlug)
+	// Both guide builds, read by stable talent id against the active
+	// build's trees (raid_build.go): the leveling build for every leveling
+	// band and the bare band 60, the raid build for the raid preset's
+	// band 60 only. Each stamp is checked against the active build there.
+	targets, err := loadPassTargets(repoRoot, activeBuild, specInfo)
 	if err != nil {
 		return err
 	}
@@ -327,7 +313,6 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err != nil {
 		return err
 	}
-	talentTargets := leveling.GuideTalentTargets(guideTrees, treeDigits)
 
 	// engineLayout: the COMPILED engine's own talent string layout for
 	// this class, by stable talent id (sim/internal/enginetalents' own
@@ -498,7 +483,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// or paladin and shaman misread every talent at and after the
 			// first talent whose tree position moved between the engine's
 			// proto build and the active one (this lane's own brief).
-			talents, engineTalents, err := bandTalentStrings(activeTrees, talentTargets, specInfo.TreeIndex, band, engineLayout)
+			talents, engineTalents, err := bandTalentStrings(activeTrees, targets.forPass(pass.name), specInfo.TreeIndex, band, engineLayout)
 			if err != nil {
 				return fmt.Errorf("band %d: %w", band, err)
 			}

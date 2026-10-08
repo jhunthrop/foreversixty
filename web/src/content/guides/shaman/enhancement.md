@@ -34,6 +34,8 @@ In rough priority order: **Thundering Strikes** raises critical strike chance wi
 
 Point allocation runs deep into Enhancement to reach Maelstrom Weapon and Rage of the Farseer near the bottom of the tree (33 points, with Ancestral Knowledge raised to five), with 11 in Elemental (Convection 3, Concussion 2, Elemental Warding, Call of Flame 3) and 7 in Restoration for Totemic Focus (maxed) and 2 in Mindfulness. This replaces the earlier 20/31/0 build, and the talent search on the current engine put it about 2% ahead, beyond the run's error. The points came from Convection, Concussion, Reverberation and Elemental Devastation, which the search measured at little or no damage for this spec, and went to Ancestral Knowledge, Totemic Focus, Call of Flame and Mindfulness; Stormstrike, Maelstrom Weapon, Flurry and the rest of the melee core are untouched. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
 
+**Raid build.** The raid-ready search found no build that beats this one beyond error while keeping what the rotation casts, the group buffs the raid already counts on and the threat and survival talents, so the raid build is the leveling build and one tree serves both.
+
 ## Rotation and priority
 
 Weapon imbues are class kit, not a rotation line — applied before the pull and reapplied whenever it falls off, the same way a Rogue keeps poisons up. Shamans don't dual-wield in Forever, so there's only ever one weapon to imbue: Rockbiter Weapon goes on it from level 1 (it's the only imbue learned that early), and Windfury Weapon replaces Rockbiter there once learned at level 30, staying on through 60. The off hand carries a shield or another held item rather than a second weapon.

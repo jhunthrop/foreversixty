@@ -39,6 +39,9 @@ func (r report) markdown() string {
 	if c, ok := r.bestClean(); ok && c.Label != r.eval.Guide.Label {
 		fmt.Fprintf(&b, "- Winner keeping every unmodeled guide talent: `%s`\n", t.fs1(r.in.clientBuild, spec.ClassSlug, r.in.setup.band.Race, c.Build))
 	}
+	if names := splitKeep(r.opts.keep); len(names) > 0 {
+		fmt.Fprintf(&b, "- Kept at the guide's rank or more in every candidate (-keep): %s\n", strings.Join(names, ", "))
+	}
 	b.WriteString("\n")
 	r.writeFinal(&b)
 	r.writeEngineGaps(&b)

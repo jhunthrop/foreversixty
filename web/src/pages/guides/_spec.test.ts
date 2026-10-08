@@ -59,3 +59,31 @@ describe('/guides/warrior/fury', () => {
     expect(rotationIndex).toBeGreaterThan(talentsIndex);
   });
 });
+
+describe('/guides/rogue/assassination (a spec with a raid build)', () => {
+  it('shows the leveling build and the raid build as two labelled trees with their own links', async () => {
+    const entry = loadGuideEntry('rogue/assassination');
+    const raidBuild = entry.data.raidBuild as string;
+    expect(raidBuild).not.toBe(entry.data.build);
+    const html = await container.renderToString(SpecPage, { props: { entry } });
+    expect(html).toContain('data-testid="guide-build-leveling"');
+    expect(html).toContain('data-testid="guide-build-raid"');
+    expect(html).toContain('>Leveling build</h3>');
+    expect(html).toContain('>Raid build</h3>');
+    expect(html).toContain(raidBuild);
+    expect(html).toContain('data-testid="guide-load-raid-build"');
+    expect(html).toContain('data-testid="guide-sim-raid-build"');
+    expect(html).toContain(`href="/planner?code=${encodeURIComponent(raidBuild)}"`);
+  });
+});
+
+describe('/guides/warrior/fury (a spec whose raid build is its leveling build)', () => {
+  it('shows one tree under a single "Leveling and raid build" heading', async () => {
+    const entry = loadGuideEntry('warrior/fury');
+    expect(entry.data.raidBuild).toBeUndefined();
+    const html = await container.renderToString(SpecPage, { props: { entry } });
+    expect(html).toContain('data-testid="guide-build-both"');
+    expect(html).toContain('>Leveling and raid build</h3>');
+    expect(html).not.toContain('data-testid="guide-build-raid"');
+  });
+});

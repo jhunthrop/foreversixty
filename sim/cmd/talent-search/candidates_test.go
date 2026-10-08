@@ -21,7 +21,7 @@ func testCredits() map[int]credit {
 func TestSwapsAreLegalAtTheSameTotalAndMoveOnlyNonDamagePoints(t *testing.T) {
 	tr := testTrees()
 	guide := build{1: 3, 2: 2, 5: 3}
-	got := swaps(tr, guide, testCredits(), "")
+	got := swaps(tr, guide, testCredits(), nil, "")
 	if len(got) == 0 {
 		t.Fatal("no swaps generated")
 	}
@@ -48,7 +48,7 @@ func TestSwapsRespectTierGatesWhenPointsLeave(t *testing.T) {
 	// B's 2 points hold C's tier-1 gate (A 3 + B 2 = 5): taking one out
 	// of B would strand C, so no swap may do it.
 	guide := build{1: 3, 2: 2, 3: 1, 5: 1}
-	for _, c := range swaps(tr, guide, testCredits(), "") {
+	for _, c := range swaps(tr, guide, testCredits(), nil, "") {
 		if c.Build[2] < 2 && c.Build[1]+c.Build[2] < 5 {
 			t.Errorf("%s: stranded C: %v", c.Label, c.Build)
 		}
@@ -107,7 +107,7 @@ func TestGenerateIsLegalDedupedAndKeepsUnmodeledInTheModeledRespend(t *testing.T
 	tr := testTrees()
 	guide := build{1: 5, 2: 2, 5: 3}
 	modeled := map[int]bool{1: true, 2: true, 3: true, 4: true, 6: true} // E is unmodeled
-	pool := generate(tr, guide, testCredits(), modeled, guide.points(), 2)
+	pool := generate(tr, guide, testCredits(), modeled, nil, guide.points(), 2)
 	seen := map[string]bool{tr.key(guide): true}
 	var modeledRespend *candidate
 	for i, c := range pool {

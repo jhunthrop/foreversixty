@@ -154,7 +154,34 @@
             }
           }
         }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "rank": 3,
+              "spellId": 7373
+            }
+          },
+          "condition": {
+            "auraIsKnown": {
+              "auraId": {
+                "spellId": 10610
+              }
+            }
+          }
+        },
+        "notes": "Hamstring on every free global once Rend, Mortal Strike, Overpower and Execute are spent, only while a Windfury Totem reaches the warrior (the gate asks whether the engine registered the totem's attack power buff, spell 10610, so a character with no totem skips the line): 10 rage for 45 damage, and a main-hand special that rolls the totem's extra attack and weapon procs. The client states the cost and damage. Without the totem it measured as a loss, rage that Mortal Strike and Overpower need."
       }
     ]
-  }
+  },
+  "inert": [
+    10610
+  ],
+  "expected_idle": [
+    {
+      "id": 7373,
+      "reason": "Hamstring is gated on the Windfury Totem buff (spell 10610), which the engine registers only for a character a totem reaches; the ladder character has no raid around it, so the gate is false and the line correctly never fires at any level. In the raid-ready run it is the spec's free-global filler."
+    }
+  ]
 }

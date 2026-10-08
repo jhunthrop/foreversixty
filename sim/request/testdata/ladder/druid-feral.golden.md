@@ -95,11 +95,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:1933 | 8.4 | 4 | spell:5177=44.2, other:attack/1=31.3, spell:8924=5.5, spell:1259799=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
 | 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 51.6 | 4 | other:attack/1=182.1, spell:1082=46.5, spell:1079=8.6, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
-| 30 | 0000000000000000-55232031000000000000-0000000000000000 | bare | 71.7 | 6 | other:attack/1=182.1, spell:6800=27.1, spell:1822=20.1, spell:9492=8.7, spell:5217=6.6 | {SpellID: 1322605} |
-| 38 | 0000000000000000-55232032121030000000-0000000000000000 | bare | 99.9 | 8 | other:attack/1=182.1, spell:8992=33.8, spell:1823=20.2, spell:9493=9.9, spell:1322605=8.3 | - |
-| 40 | 0000000000000000-55232032121032000000-0000000000000000 | bare | 102.5 | 8 | other:attack/1=182.1, spell:8992=33.4, spell:1823=20.2, spell:9493=10.5, spell:1322605=8.3 | - |
-| 50 | 0100000000000000-55232032121032012001-5000000000000000 | bare | 135.1 | 10 | other:attack/1=182.1, spell:9829=32.1, spell:1824=20.3, spell:9752=11.6, spell:1322605=8.0 | - |
-| 60 | 0100000000000000-55232032121032012001-5053200000000000 | bare | 190.8 | 10 | other:attack/1=182.1, spell:9830=33.8, spell:9904=20.2, spell:9896=12.0, spell:1322605=9.8 | - |
+| 30 | 0000000000000000-55232031000000000000-0000000000000000 | bare | 75.3 | 5 | other:attack/1=182.1, spell:6800=44.3, spell:9492=8.3, spell:5217=6.6, spell:1259799=1.5 | {SpellID: 1322605} |
+| 38 | 0000000000000000-55232032121030000000-0000000000000000 | bare | 104.6 | 7 | other:attack/1=182.1, spell:8992=50.9, spell:9493=9.7, spell:1322605=8.3, spell:5217=6.6 | - |
+| 40 | 0000000000000000-55232032121032000000-0000000000000000 | bare | 107.5 | 7 | other:attack/1=182.1, spell:8992=50.2, spell:9493=10.4, spell:1322605=8.3, spell:5217=6.6 | - |
+| 50 | 0100000000000000-55232032121032012001-5000000000000000 | bare | 142.3 | 8 | other:attack/1=182.1, spell:9829=49.1, spell:9752=11.4, spell:1322605=8.0, spell:5217=6.6 | - |
+| 60 | 0100000000000000-55232032121032012001-5053200000000000 | bare | 196.3 | 8 | other:attack/1=182.1, spell:9830=50.6, spell:9896=11.8, spell:1322605=9.8, spell:5217=6.6 | - |
 
 ## Learned but unused (informational)
 
@@ -127,6 +127,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Maul (spell 6809)
 - Moonfire (spell 8927)
 - Primal Bite (spell 407995)
+- Rake (spell 1822)
 - Starfire (spell 8949)
 - Swipe (spell 780)
 - Wrath (spell 5180)
@@ -140,6 +141,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Maul (spell 8972)
 - Moonfire (spell 8928)
 - Primal Bite (spell 1238069)
+- Rake (spell 1823)
 - Starfire (spell 8950)
 - Swipe (spell 769)
 - Wrath (spell 6780)
@@ -154,6 +156,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Maul (spell 8972)
 - Moonfire (spell 8929)
 - Primal Bite (spell 1238069)
+- Rake (spell 1823)
 - Starfire (spell 8950)
 - Swipe (spell 769)
 - Wrath (spell 6780)
@@ -162,12 +165,14 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9849)
 - Entangling Roots (spell 9852)
+- Ferocious Bite (spell 22828)
 - Hurricane (spell 17401)
 - Insect Swarm (spell 24976)
 - Lacerate (spell 1235826)
 - Maul (spell 9880)
 - Moonfire (spell 9833)
 - Primal Bite (spell 1238070)
+- Rake (spell 1824)
 - Starfire (spell 9875)
 - Swipe (spell 9754)
 - Wrath (spell 8905)
@@ -176,12 +181,14 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 9850)
 - Entangling Roots (spell 9853)
+- Ferocious Bite (spell 22829)
 - Hurricane (spell 17402)
 - Insect Swarm (spell 24977)
 - Lacerate (spell 1235827)
 - Maul (spell 9881)
 - Moonfire (spell 9835)
 - Primal Bite (spell 1238073)
+- Rake (spell 9904)
 - Starfire (spell 9876)
 - Swipe (spell 9908)
 - Test Maul (spell 24042)
@@ -191,3 +198,5 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - druid-feral level=38 kind=zero_casts spell="Ferocious Bite" id=22568 authored=22829
 - druid-feral level=40 kind=zero_casts spell="Ferocious Bite" id=22827 authored=22829
+- druid-feral level=50 kind=zero_casts spell="Ferocious Bite" id=22828 authored=22829
+- druid-feral level=60 kind=zero_casts spell="Ferocious Bite" id=22829 authored=22829

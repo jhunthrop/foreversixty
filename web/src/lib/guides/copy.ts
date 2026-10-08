@@ -30,4 +30,13 @@ export const guidesCopy = {
   loadInPlanner: 'Load in planner',
   loadBuildRailAriaLabel: 'Load this build in the planner (summary)',
   simBuildRailAriaLabel: 'Sim this build (summary)',
+  // --- raid build (2026-10-07) -------------------------------------------------------------
+  levelingBuild: 'Leveling build',
+  raidBuild: 'Raid build',
+  /** The one heading a spec shows when its raid build is its leveling build. */
+  levelingAndRaidBuild: 'Leveling and raid build',
+  loadLevelingBuildAriaLabel: 'Load the leveling build in the planner',
+  simLevelingBuildAriaLabel: 'Sim the leveling build',
+  loadRaidBuildAriaLabel: 'Load the raid build in the planner',
+  simRaidBuildAriaLabel: 'Sim the raid build',
 } as const;

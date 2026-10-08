@@ -4,6 +4,7 @@ classSlug: rogue
 spec: combat
 role: dps
 build: 'FS1:1.60.1.70009:rogue:night-elf:32531/32530300001515201/51:'
+raidBuild: 'FS1:1.60.1.70009:rogue:night-elf:005320105/31530300001515231/002:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Combat Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -35,6 +36,8 @@ In rough priority order: **Improved Sinister Strike** lowers the energy cost of 
 One point moved in the latest talent search: **Deflection** became **Flawless Execution**, about +2.5% in the search run. Deflection is a defensive talent the simulation credits at zero damage, and Flawless Execution adds damage on top of the same fight with nothing the rotation casts given up. A larger rebuild toward Assassination talents scored much higher in the same search but would drop talents the engine cannot yet measure (Improved Gouge, Remorseless Attacks, Camouflage, Master of Deception), so this guide keeps the conservative build until the engine can price them.
 
 Point allocation runs deep into Combat to reach Adrenaline Rush at the bottom of the tree, roughly 31 points, with the remainder split as a few points in Assassination for crit and poison utility and a few in Subtlety for utility talents. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+
+**Raid build.** For a raid the search found about +16% over the leveling build above in the raid-ready run, the largest of any spec. It moves the points the simulator measures at no damage or cannot see and a raid rogue does not use (Improved Gouge, a stun; Camouflage and Master of Deception, stealth; Remorseless Attacks, a kill-chain bonus for solo play) and one Improved Sinister Strike into five Lethality, three Aggression, two Opportunity, Murder and Relentless Strikes. Adrenaline Rush and Blade Flurry stay.
 
 ## Rotation and priority
 

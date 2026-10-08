@@ -190,3 +190,43 @@ func TestRequireGuideBuildMatchesActiveRejectsADrift(t *testing.T) {
 		t.Fatalf("err = %v, want it to wrap ErrGuideBuildMismatch", err)
 	}
 }
+
+const raidGuideFrontmatter = "---\nbuild: 'FS1:testbuild:hunter:dwarf:2050501/50/005:'\nraidBuild: 'FS1:testbuild:hunter:dwarf:2050500/55/005:'\n---\n"
+
+func TestGuideRaidBuildTalentsReadsRaidBuildLine(t *testing.T) {
+	dir := t.TempDir()
+	if err := writeFile(t, dir+"/web/src/content/guides/hunter/raid.md", raidGuideFrontmatter); err != nil {
+		t.Fatal(err)
+	}
+	build, trees, err := GuideRaidBuildTalents(dir, "hunter", "raid")
+	if err != nil {
+		t.Fatalf("GuideRaidBuildTalents: %v", err)
+	}
+	if want := [3]string{"2050500", "55", "005"}; build != "testbuild" || trees != want {
+		t.Errorf("raid build = %q %v, want testbuild %v", build, trees, want)
+	}
+	// The leveling reader must still see the leveling line only.
+	_, levelingTrees, err := GuideBuildTalents(dir, "hunter", "raid")
+	if err != nil {
+		t.Fatalf("GuideBuildTalents: %v", err)
+	}
+	if want := [3]string{"2050501", "50", "005"}; levelingTrees != want {
+		t.Errorf("leveling trees = %v, want %v", levelingTrees, want)
+	}
+}
+
+func TestGuideRaidBuildTalentsFallsBackToLevelingBuild(t *testing.T) {
+	_, trees, err := GuideRaidBuildTalents(repoRootFixture, "hunter", "marksmanship")
+	if err != nil {
+		t.Fatalf("GuideRaidBuildTalents: %v", err)
+	}
+	if want := [3]string{"2050501", "50", "005"}; trees != want {
+		t.Errorf("trees = %v, want the leveling build %v", trees, want)
+	}
+}
+
+func TestGuideRaidBuildTalentsMissingGuide(t *testing.T) {
+	if _, _, err := GuideRaidBuildTalents(t.TempDir(), "hunter", "marksmanship"); err == nil {
+		t.Fatal("missing guide: want an error, got nil")
+	}
+}

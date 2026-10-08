@@ -4,6 +4,7 @@ classSlug: druid
 spec: balance
 role: dps
 build: 'FS1:1.60.1.70009:druid:night-elf:5232221115400051/05/503301:'
+raidBuild: 'FS1:1.60.1.70009:druid:night-elf:4132220115501051/05/5053:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
@@ -45,6 +46,8 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
 
 This build spends 34 points in Balance and reaches Moonkin Form at the bottom, keeping Improved Wrath, Vengeance, Improved Starfire, Insect Swarm and Moonfury, and now also takes Moonglow, Nature's Reach and Nature's Splendor, with 5 points in Feral's Heart of the Wild and 12 in Restoration: Nature's Focus at rank 5, 3 points of Naturalist, 3 of Subtlety and one of Reflection. In the search run this beats the old build by about 21%. It drops Furor (5 points), Natural Shapeshifter (3) and Nature's Grace (1), which the simulator measures at no damage, and spends them on Moonglow, Nature's Reach, Nature's Splendor, Heart of the Wild and Reflection, all of which it credits with damage. Nature's Focus and Subtlety stay because the engine does not model them yet. Nature's Grace is no longer in the build: the simulator finds no gain from it. A deeper variant that also drops Subtlety, Nature's Focus and Improved Entangling Roots scored higher still, but it gives up talents the engine cannot yet measure, so this guide holds it back. (This split is a common 1.12 hybrid pattern, but it is not confirmed for Forever specifically.) Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+
+**Raid build.** For a raid the search found a better spend of the same 51 points, about +8% over the leveling build above in the raid-ready run (the group's buffs and debuffs on a long single target). It takes a rank of Improved Starfire, Nature's Grace and two more ranks of Naturalist, and pays with one point each from Improved Wrath, Genesis and Reflection, which the simulator measures at little or no damage once the rest of the build is in, and from Improved Entangling Roots, a root, which a raid Balance druid does not use. Moonkin Form (the raid's crit aura), Insect Swarm, Nature's Focus and Subtlety (30% less threat on Nature and Arcane spells) all stay. Level with the build above and respec for the raid.
 
 ## Rotation and priority
 
