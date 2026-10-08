@@ -271,6 +271,11 @@ export const bisCopy = {
   effectUnmodelledTag: 'effect not simulated',
   effectUnmodelledTitle:
     "This item's proc or use effect is not modelled yet; it was ranked on its stats alone",
+  /** A row's set-bonus note: this piece is worn for the bonus it completes, not for its own
+   *  stats (the ranker only adopts it after a sim run proves the set beats the loose pieces). */
+  setBonusLine: (setName: string, pieces: number): string => `Worn for the ${setName} ${pieces}-piece bonus`,
+  setBonusTitle: (setName: string, pieces: number, bonus: string): string =>
+    `${setName} (${pieces}): ${bonus}`,
   lowValueTag: 'best available',
   lowValueTitle: (unit: RateUnit = 'DPS'): string =>
     `No sourced weapon at this level adds ${unit}; this is the best by item level`,

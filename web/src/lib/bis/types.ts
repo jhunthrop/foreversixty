@@ -61,6 +61,14 @@ export interface BisStatWeight {
  * file checks for that with `hasKnownSource` (`source-cell.ts`) before trusting `item_id`
  * and friends, the same discipline `sourceBadgeLabel` already applies to `source_kind`.
  */
+/** The set bonus a pick was adopted for (`sim/cmd/leveling-bis/sets.go`'s `setBonusNote`):
+ *  the ranker wears this piece to complete `pieces` of `set`, not for its own stats. */
+export interface BisSetBonus {
+  set: string;
+  pieces: number;
+  bonus: string;
+}
+
 export interface BisSlot {
   slot: string;
   item_id: number;
@@ -79,6 +87,8 @@ export interface BisSlot {
   /** A weapon slot where no sourced candidate carried a positive score and the ranker
    *  fell back to the best by item level rather than publish an empty weapon slot. */
   low_value?: boolean;
+  /** Present only on a slot the ranker adopted for the set bonus it completes. */
+  set_bonus?: BisSetBonus;
   /** Why an empty slot is empty: `two_hand_equipped`, `no_dps_value`, `no_sourced_item`,
    *  `effect_not_modelled`. */
   empty_reason?: string;

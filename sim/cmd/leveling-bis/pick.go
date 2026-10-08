@@ -116,6 +116,9 @@ type slotPick struct {
 	// wonder why the same obtainable-by-both item was kept on one side
 	// and not the other. Empty for every slot that pass never touches.
 	FactionNote string
+	// SetBonus is set only by trySetCompletion (sets.go): the set bonus this
+	// slot's piece was adopted for. Nil for every slot that pass never changes.
+	SetBonus *setBonusNote
 	// FactionNoteNeedsPick is true only when FactionNote's own wording
 	// names Item itself as "this faction's own pick" (the
 	// gainsIndistinguishable branch of reconcileTrinketDirection,

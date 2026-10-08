@@ -216,6 +216,10 @@ type slotRow struct {
 	// for every row that pass never touches, including a trinket slot
 	// that simply was never faction-neutral to begin with.
 	FactionNote string `json:"faction_note,omitempty"`
+	// SetBonus is present only on a slot trySetCompletion (sets.go) adopted
+	// for the set bonus it completes: the piece is worn for the bonus, not
+	// for its own stats. Absent from every other row.
+	SetBonus *setBonusNote `json:"set_bonus,omitempty"`
 	// LabelSuffix disambiguates this row's own ItemName from a
 	// DIFFERENT item sharing the exact same display name elsewhere in
 	// this same row (an Alternatives entry, almost always - see
@@ -1550,6 +1554,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		if pk.Item != nil {
 			row.ItemID = pk.Item.ID
 			row.ItemName = pk.Item.Name
+			row.SetBonus = pk.SetBonus
 			row.Score = pk.Item.Score
 			// This lane's brief, item 7: a candidate a real sim actually
 			// measured (MeasuredDPS > 0 - trinkets.go/rank.go/sets.go's

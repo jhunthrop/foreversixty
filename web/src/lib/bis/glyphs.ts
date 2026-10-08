@@ -37,6 +37,9 @@ export const SOURCE_KIND_GLYPH_PATHS: Record<string, string> = {
   pvp: 'M4 5l8 8M20 5l-8 8M4 19l6-6M20 19l-6-6M4 5l3-1M20 5l-3-1M4 19l3 1M20 19l-3 1',
 };
 
+/** The set-bonus note's glyph: two linked pieces. */
+export const SET_BONUS_GLYPH_PATH = 'M9 15a4 4 0 1 1 0-8h2M15 9a4 4 0 1 1 0 8h-2M9 12h6';
+
 /** The verified-pick check mark. */
 export const VERIFIED_GLYPH_PATH = 'M5 13l4 4L19 7';
 
