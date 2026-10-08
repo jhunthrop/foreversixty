@@ -215,13 +215,19 @@ func prepare(o options) (inputs, error) {
 	return in, err
 }
 
-// guideBuild is the guide's level-60 build read by stable talent id
+// guideBuild is the guide's level-60 build (its raid build under the raid preset) read by stable talent id
 // (leveling.GuideTalentTargets) and truncated to this level the way
 // the ranker and the ladder truncate it (leveling.LadderTalentString),
 // so a guide still exported from an older client build lands on the
 // right talents of the active one.
 func guideBuild(o options, spec specInfo, activeTrees []leveling.TalentTree, trees talentTrees) (build, string, error) {
-	guideClient, digits, err := leveling.GuideBuildTalents(o.repoRoot, spec.ClassSlug, spec.SpecSlug)
+	readBuild := leveling.GuideBuildTalents
+	if o.preset == request.RaidPreset {
+		// A raid search starts from the build the raid-ready entry is
+		// simmed on (the guide's raidBuild, else its leveling build).
+		readBuild = leveling.GuideRaidBuildTalents
+	}
+	guideClient, digits, err := readBuild(o.repoRoot, spec.ClassSlug, spec.SpecSlug)
 	if err != nil {
 		return nil, "", err
 	}
